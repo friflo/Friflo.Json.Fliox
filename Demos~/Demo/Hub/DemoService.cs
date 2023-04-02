@@ -42,7 +42,7 @@ namespace DemoHub
             client.WritePretty  = true;
             
             if (!param.GetValidate(out var fake, out var error)) {
-                command.Error(error);
+                command.ValidationError(error);
                 return null;
             }
             var result = FakeUtils.CreateFakes(fake);
@@ -72,7 +72,7 @@ namespace DemoHub
             client.UserInfo = command.UserInfo;
             
             if (!param.GetValidate(out var duration, out var error)) {
-                command.Error(error);
+                command.ValidationError(error);
                 return null;
             }
             
@@ -103,7 +103,7 @@ namespace DemoHub
             client.UserInfo = command.UserInfo;
             
             if (!param.GetValidate(out var duration, out var error)) {
-                command.Error(error);
+                command.ValidationError(error);
                 return null;
             }
             var seconds         = duration ?? 60;
@@ -139,7 +139,7 @@ namespace DemoHub
         private static double Add(Param<Operands> param, MessageContext command)
         {
             if (!param.GetValidate(out var operands, out var error)) {
-                command.Error(error);
+                command.ValidationError(error);
                 return 0;
             }
             if (operands == null)

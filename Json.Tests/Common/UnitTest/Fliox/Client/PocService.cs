@@ -108,7 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public int CommandInt(Param<int> param, MessageContext command) {
             if (!param.Get(out int value, out var error))
-                command.Error(error);
+                command.ValidationError(error);
             return value;
         }
         
@@ -123,7 +123,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public int[] CommandIntArray(Param<int[]> param, MessageContext command) {
             if (!param.Get(out int[] value, out var error)) {
-                command.Error(error);
+                command.ValidationError(error);
             }
             if (value == null)
                 return new int[] { 1, 2, 3 };
@@ -132,7 +132,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public Article[] CommandClassArray(Param<Article[]> param, MessageContext command) {
             if (!param.Get(out Article[] value, out var error)) {
-                command.Error(error);
+                command.ValidationError(error);
             }
             if (value == null)
                 return new Article[] { new Article { id = "foo", name = "bar" } };

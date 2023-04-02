@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static async Task<int> Delay (Param<int> param, MessageContext context) {
             if (!param.Get(out var delay, out var error)) {
-                context.Error(error);
+                context.ValidationError(error);
                 return 0;
             }
             var start = Stopwatch.GetTimestamp();
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static HostInfo HostInfo (Param<HostParam> param, MessageContext context) {
             if (!param.Get(out var hostParam, out var error)) {
-                context.Error(error);
+                context.ValidationError(error);
                 return null;
             }
             if (hostParam?.gcCollect == true) {
@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var database        = context.Database;
             string[] containerNames;
             if (!param.GetValidate(out var containerName, out var error)) {
-                context.Error(error);
+                context.ValidationError(error);
                 return null;
             }
 
@@ -156,7 +156,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static async Task<UserResult> User (Param<UserParam> param, MessageContext context) {
             if (!param.GetValidate(out UserParam options, out var error)) {
-                context.Error(error);
+                context.ValidationError(error);
                 return null;
             }
             var user    = context.User;
@@ -195,7 +195,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return context.Error<ClientResult>("Missing client id (clt)");
             } */
             if (!param.GetValidate(out var clientParam, out string error)) { 
-                context.Error(error);
+                context.ValidationError(error);
                 return null;
             }
             error = EnsureClientId(clientParam, context);

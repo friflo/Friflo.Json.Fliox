@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         
         private static string Hello(Param<string> param, MessageContext command) {
             if (!param.GetValidate(out string value, out string error)) {
-                command.Error(error);
+                command.ValidationError(error);
                 return null;
             }
             return $"hello {value}!";

@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         private static async Task<AddHostResult> AddHost (Param<AddHost> param, MessageContext command)
         {
             if (!param.GetValidate(out var value, out string error)) {
-                command.Error(error);
+                command.ValidationError(error);
                 return null;
             }
             var signaling   = new Signaling(command.Hub, command.Database.name)  { UserInfo = command.UserInfo };
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         private async Task<ConnectClientResult> ConnectClient (Param<ConnectClient> param, MessageContext command)
         {
             if (!param.GetValidate(out var value, out string error)) {
-                command.Error(error);
+                command.ValidationError(error);
                 return null;
             }
             // --- find WebRTC Host in database

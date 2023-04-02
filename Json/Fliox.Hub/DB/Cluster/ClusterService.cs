@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         internal List<ModelFiles> ModelFiles (Param<ModelFilesQuery> param, MessageContext command) {
             if (!param.GetValidate(out var query, out string error)) {
-                command.Error(error);
+                command.ValidationError(error);
                 return null;
             }
             var allDatabases = command.Hub.GetDatabases();

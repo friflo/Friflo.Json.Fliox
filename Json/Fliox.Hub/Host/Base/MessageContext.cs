@@ -63,6 +63,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             error       = message ?? throw new ArgumentNullException(nameof(message));
             errorType   = TaskErrorType.CommandError;
         }
+        
+        public void ValidationError(string message) {
+            error       = message ?? throw new ArgumentNullException(nameof(message));
+            errorType   = TaskErrorType.ValidationError;
+        }
 
         private UserInfo GetUserInfo() { 
             var user = syncContext.User;
