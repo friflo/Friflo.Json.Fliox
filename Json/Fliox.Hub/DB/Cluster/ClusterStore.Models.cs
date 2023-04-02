@@ -226,4 +226,28 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// <summary>filter change events of deleted entities.</summary>
         delete  = 8,
     }
+    
+    public class ModelFilesQuery {
+        /// <summary>specific database or null to retrieve all available models</summary>
+                    public          string              db;
+        /// <summary>specific model type - e.g. 'typescript' or null to retrieve all available model types</summary>
+                    public          string              type;
+    }
+
+    public class ModelFiles {
+        [Required]  public          string              db;
+        [Required]  public          string              schemaName;
+        [Required]  public          string              type;
+        [Required]  public          string              label;
+        [Required]  public          List<ModelFile>     files;
+        
+                    public override string              ToString() => $"db: {db}, type: {type}";
+    }
+    
+    public class ModelFile {
+        [Required]  public          string              path;
+        [Required]  public          string              content;
+        
+                    public override string              ToString() => path;
+    }
 }

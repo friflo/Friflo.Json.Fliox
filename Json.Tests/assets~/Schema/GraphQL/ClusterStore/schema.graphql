@@ -20,6 +20,7 @@ type Query {
     countContainers(filter: String) : Int
     countMessages  (filter: String) : Int
     countSchemas   (filter: String) : Int
+    ModelFiles     (param: ModelFilesQueryInput) : [ModelFiles!]!
     std_Echo       (param: Any!) : Any!
     std_Delay      (param: Int!) : Int!
     std_Containers  : DbContainers!
@@ -112,6 +113,42 @@ input DbSchemaInput {
     schemaName  : String!
     schemaPath  : String!
     jsonSchemas : Any
+}
+
+type ModelFilesQuery {
+    db   : String
+    type : String
+}
+
+input ModelFilesQueryInput {
+    db   : String
+    type : String
+}
+
+type ModelFiles {
+    db         : String!
+    schemaName : String!
+    type       : String!
+    label      : String!
+    files      : [ModelFile!]!
+}
+
+input ModelFilesInput {
+    db         : String!
+    schemaName : String!
+    type       : String!
+    label      : String!
+    files      : [ModelFileInput!]!
+}
+
+type ModelFile {
+    path    : String!
+    content : String!
+}
+
+input ModelFileInput {
+    path    : String!
+    content : String!
 }
 
 type DbStats {

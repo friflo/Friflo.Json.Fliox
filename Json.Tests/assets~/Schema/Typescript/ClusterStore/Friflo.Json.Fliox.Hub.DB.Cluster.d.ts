@@ -16,6 +16,7 @@ export interface ClusterStore {
     schemas     : { [key: string]: DbSchema };
 
     // --- commands
+    ["ModelFiles"]         (param: ModelFilesQuery | null) : ModelFiles[];
     /** Echos the given parameter to assure the database is working appropriately. */
     ["std.Echo"]           (param: any) : any;
     /** A command that completes after a specified number of milliseconds. */
@@ -78,6 +79,26 @@ export class DbSchema {
      * Each JSON Schema is identified by its unique path
      */
     jsonSchemas  : { [key: string]: any };
+}
+
+export class ModelFilesQuery {
+    /** specific database or null to retrieve all available models */
+    db?   : string | null;
+    /** specific model type - e.g. 'typescript' or null to retrieve all available model types */
+    type? : string | null;
+}
+
+export class ModelFiles {
+    db          : string;
+    schemaName  : string;
+    type        : string;
+    label       : string;
+    files       : ModelFile[];
+}
+
+export class ModelFile {
+    path     : string;
+    content  : string;
 }
 
 /** list of container statistics. E.g. the number of entities per container */

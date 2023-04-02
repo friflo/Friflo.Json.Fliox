@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -9,12 +10,19 @@ using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Schema.Language;
 
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     internal sealed class ClusterService : DatabaseService
     {
-        internal ClusterDB clusterDB;
+        internal            ClusterDB                               clusterDB;
+        private   readonly  Dictionary<string,List<SchemaModel>>    schemaModelsMap;
+        
+        internal ClusterService() {
+            AddCommandHandler<ModelFilesQuery, List<ModelFiles>> (nameof(ModelFiles), ModelFiles);
+            schemaModelsMap = new Dictionary<string, List<SchemaModel>>();
+        }
 
         protected internal override void PreExecuteTasks(SyncContext syncContext) {
             var pool = syncContext.pool;
@@ -100,6 +108,50 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             query.filter        = sb.ToString();
             query.filterTree    = default;
             // Console.WriteLine(query.filter);
+        }
+        
+        internal List<ModelFiles> ModelFiles (Param<ModelFilesQuery> param, MessageContext command) {
+            if (!param.GetValidate(out var query, out string error)) {
+                return command.Error<List<ModelFiles>>(error);
+            }
+            var allDatabases = command.Hub.GetDatabases();
+            EntityDatabase[] databases;
+            if (query?.db != null) {
+                if (!allDatabases.TryGetValue(query.db, out var database)) {
+                    return command.Error<List<ModelFiles>>($"database not found: {query.db}");
+                }
+                databases = new [] { database };
+            } else {
+                databases = allDatabases.Values.ToArray();
+            }
+            var result        = new List<ModelFiles>();
+            foreach (var database in databases) {
+                var dbName = database.name;
+                if (!schemaModelsMap.TryGetValue(dbName, out var schemaModels)) {
+                    var schema          = database.Schema;
+                    var entityTypeMap   = schema.typeSchema.GetEntityTypes();
+                    var entityTypes     = entityTypeMap.Values;
+                    schemaModels        = SchemaModel.GenerateSchemaModels (schema.typeSchema, entityTypes);
+                    schemaModelsMap.Add(dbName, schemaModels);
+                }
+                foreach (var model in schemaModels) {
+                    if (query?.type != null && query?.type != model.type) {
+                        continue;
+                    }
+                    var modelFiles = new ModelFiles {
+                        db          = dbName,
+                        type        = model.type,
+                        label       = model.label,
+                        files       = new List<ModelFile>()
+                    };
+                    foreach (var file in model.files) {
+                        var typeModel = new ModelFile { path = file.Key, content = file.Value };
+                        modelFiles.files.Add(typeModel);
+                    }
+                    result.Add(modelFiles);
+                }
+            }
+            return result;
         }
     }
 }
