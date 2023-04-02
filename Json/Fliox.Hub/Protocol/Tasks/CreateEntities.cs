@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             entityContainer = database.GetOrCreateContainer(container);
             errorMsg = entityContainer.database.Schema?.ValidateEntities (container, entities, env, EntityErrorType.WriteError, ref validationErrors);
             if (errorMsg != null) {
-                return TaskError(new CommandError(TaskErrorResultType.ValidationError, errorMsg));
+                return TaskError(new TaskExecuteError(TaskErrorResultType.ValidationError, errorMsg));
             }
 
             // may call patcher.Copy() always to ensure a valid JSON value
@@ -115,9 +115,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// <summary>
     /// Result of a <see cref="CreateEntities"/> task
     /// </summary>
-    public sealed class CreateEntitiesResult : SyncTaskResult, ICommandResult
+    public sealed class CreateEntitiesResult : SyncTaskResult, ITaskResultError
     {
-        [Ignore]    public CommandError        Error { get; set; }
+        [Ignore]    public TaskExecuteError    Error { get; set; }
         /// <summary>list of entity errors failed to create</summary>
                     public List<EntityError>   errors;
         

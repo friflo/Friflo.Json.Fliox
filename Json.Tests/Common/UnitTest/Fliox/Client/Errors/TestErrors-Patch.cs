@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 AreEqual(TaskErrorType.UnhandledException, customerPatches.Error.type);
                 AreEqualTrimStack(@"UnhandledException ~ SimulationException: simulated read task exception", customerPatches.Error.Message);
             } {
-                testCustomers.readTaskErrors[readError]    = () => new CommandError("simulated read task error");
+                testCustomers.readTaskErrors[readError]    = () => new TaskExecuteError("simulated read task error");
                 customerReadError.Result.name   = "<change read 3>";
                 var customerPatches = customers.DetectPatches();
 
@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 AreEqual(TaskErrorType.UnhandledException, customerPatches.Error.type);
                 AreEqualTrimStack(@"UnhandledException ~ SimulationException: simulated write task exception", customerPatches.Error.Message);
             } {
-                testCustomers.writeTaskErrors [writeError]    = () => new CommandError("simulated write task error");
+                testCustomers.writeTaskErrors [writeError]    = () => new TaskExecuteError("simulated write task error");
                 customerWriteError.Result.name   = "<change write 4>";
                 var customerPatches = customers.DetectPatches();
 

@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     var result = await CountEntitiesAsync(command, syncContext).ConfigureAwait(false);
                     return result;
             }
-            return new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} not implement") };
+            return new AggregateEntitiesResult { Error = new TaskExecuteError($"aggregate {command.type} not implement") };
         }
 
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {

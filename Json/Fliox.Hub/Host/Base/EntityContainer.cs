@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   Additional to memory implementation <see cref="FileContainer"/> shows also how to handle database errors.
     ///   These errors fall into two categories:
     ///   <para>1. A complete database request fails. E.g. a SELECT in SQL.
-    ///         => <see cref="ICommandResult.Error"/> need to be set.
+    ///         => <see cref="ITaskResultError.Error"/> need to be set.
     ///   </para> 
     ///   <para>2. The database request was successful, but one or more entities (key/values) had an error when accessing.
     ///         E.g. Writing an entity to a file with a <see cref="FileContainer"/> fails because it is used by another process.
@@ -48,8 +48,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   </para>
     ///   
     ///   All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
-    ///   <see cref="CreateEntitiesAsync"/>, <see cref="ReadEntitiesAsync"/>, ... implement <see cref="ICommandResult"/>.
-    ///   In case a database command fails completely  <see cref="ICommandResult.Error"/> needs to be set.
+    ///   <see cref="CreateEntitiesAsync"/>, <see cref="ReadEntitiesAsync"/>, ... implement <see cref="ITaskResultError"/>.
+    ///   In case a database command fails completely  <see cref="ITaskResultError.Error"/> needs to be set.
     ///   See <see cref="FlioxHub.ExecuteRequestAsync"/> for proper error handling.
     /// </para>
     /// </remarks>
@@ -190,7 +190,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             var valError = database.Schema?.ValidateEntities(container, targets, env, EntityErrorType.PatchError, ref patchErrors);
             if (valError != null) {
-                return new MergeEntitiesResult{Error = new CommandError(TaskErrorResultType.ValidationError, valError)};
+                return new MergeEntitiesResult{Error = new TaskExecuteError(TaskErrorResultType.ValidationError, valError)};
             }
             
             // --- write merged entities back
@@ -237,7 +237,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return nextCursor;
         }
         
-        protected bool FindCursor(string cursor, SyncContext syncContext, out QueryEnumerator enumerator, out CommandError error) {
+        protected bool FindCursor(string cursor, SyncContext syncContext, out QueryEnumerator enumerator, out TaskExecuteError error) {
             if (cursor == null) {
                 enumerator  = null;
                 error       = null;
@@ -252,7 +252,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
             }
             enumerator  = null;
-            error       = new CommandError(TaskErrorResultType.InvalidTask, $"cursor '{cursor}' not found");
+            error       = new TaskExecuteError(TaskErrorResultType.InvalidTask, $"cursor '{cursor}' not found");
             return false;
         }
 

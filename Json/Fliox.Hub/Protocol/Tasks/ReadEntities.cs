@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public  List<ReferencesResult>  references;
         [Ignore]    public  EntityValue[]           entities;
         
-        [Ignore]    public  CommandError            Error { get; set; }
+        [Ignore]    public  TaskExecuteError        Error { get; set; }
         internal override   TaskType                TaskType => TaskType.read;
         
         /// <summary>

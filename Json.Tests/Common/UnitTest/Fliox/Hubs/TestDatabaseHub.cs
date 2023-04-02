@@ -132,7 +132,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     /// <summary>
     /// Used to create all possible errors and exceptions which can be made by a <see cref="EntityContainer"/> implementation.
     /// These are:
-    /// <para>1. A task error set to <see cref="ICommandResult.Error"/> in a <see cref="ICommandResult"/>.</para>
+    /// <para>1. A task error set to <see cref="ITaskResultError.Error"/> in a <see cref="ITaskResultError"/>.</para>
     /// <para>2. Exceptions thrown by a <see cref="EntityContainer"/> command by a buggy implementation.</para>
     /// <para>3. One or more <see cref="SimValue"/> entity errors</para>
     /// <para>4. One or more <see cref="SimWriteError"/> entity errors</para>
@@ -143,12 +143,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     public class TestContainer : EntityContainer
     {
         private readonly    EntityContainer local;
-        public  readonly    Dictionary<string, SimValue>            readEntityErrors    = new Dictionary<string, SimValue>();
-        public  readonly    HashSet<string>                         missingResultErrors = new HashSet<string>();
-        public  readonly    Dictionary<string, Func<CommandError>>  readTaskErrors      = new Dictionary<string, Func<CommandError>>();
+        public  readonly    Dictionary<string, SimValue>                readEntityErrors    = new Dictionary<string, SimValue>();
+        public  readonly    HashSet<string>                             missingResultErrors = new HashSet<string>();
+        public  readonly    Dictionary<string, Func<TaskExecuteError>>  readTaskErrors      = new Dictionary<string, Func<TaskExecuteError>>();
 
-        public  readonly    Dictionary<string, SimWriteError>       writeEntityErrors   = new Dictionary<string, SimWriteError>();
-        public  readonly    Dictionary<string, Func<CommandError>>  writeTaskErrors     = new Dictionary<string, Func<CommandError>>();
+        public  readonly    Dictionary<string, SimWriteError>           writeEntityErrors   = new Dictionary<string, SimWriteError>();
+        public  readonly    Dictionary<string, Func<TaskExecuteError>>  writeTaskErrors     = new Dictionary<string, Func<TaskExecuteError>>();
 
         public  readonly    Dictionary<string, Func<QueryEntitiesResult>>  queryErrors  = new Dictionary<string,  Func<QueryEntitiesResult>>();
         
@@ -221,7 +221,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         
         
         // --- simulate read/write error methods
-        private CommandError SimulateReadErrors(EntityValue[] entities) {
+        private TaskExecuteError SimulateReadErrors(EntityValue[] entities) {
             for (int n = 0; n < entities.Length; n++) {
                 var entity  = entities[n];
                 var id      = entity.key.AsString();
@@ -239,7 +239,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             return null;
         }
         
-        private CommandError SimulateWriteErrors(IEnumerable<JsonKey> entities, out List<EntityError> errors) {
+        private TaskExecuteError SimulateWriteErrors(IEnumerable<JsonKey> entities, out List<EntityError> errors) {
             errors = null;
             foreach (var pair in writeEntityErrors) {
                 var id = new JsonKey(pair.Key);

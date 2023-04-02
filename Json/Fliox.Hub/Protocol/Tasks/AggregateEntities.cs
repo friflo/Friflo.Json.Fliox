@@ -66,17 +66,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// <summary>
     /// Result of a <see cref="AggregateEntities"/> task
     /// </summary>
-    public sealed class AggregateEntitiesResult : SyncTaskResult, ICommandResult
+    public sealed class AggregateEntitiesResult : SyncTaskResult, ITaskResultError
     {
         /// <summary>container name - not utilized by Protocol</summary>
-        [Serialize                            ("cont")]
-        [DebugInfo]     public  ShortString     container;
-                        public  double?         value;      // set if not using groupBy
-        [Ignore]        public  CommandError    Error { get; set; }
+        [Serialize                                ("cont")]
+        [DebugInfo]     public  ShortString         container;
+                        public  double?             value;      // set if not using groupBy
+        [Ignore]        public  TaskExecuteError    Error { get; set; }
 
         
-        internal override   TaskType            TaskType => TaskType.aggregate;
-        public   override   string              ToString() => $"(container: {container})";
+        internal override   TaskType                TaskType => TaskType.aggregate;
+        public   override   string                  ToString() => $"(container: {container})";
     }
     
     /// <summary>

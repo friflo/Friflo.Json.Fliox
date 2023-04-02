@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return isSync;
         }
 
-        internal static TaskErrorResult TaskError(CommandError error) {
+        internal static TaskErrorResult TaskError(TaskExecuteError error) {
             return new TaskErrorResult (error.type, error.message);   
         }
         

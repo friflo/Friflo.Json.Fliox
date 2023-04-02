@@ -88,9 +88,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
 
     // ----------------------------------- task result -----------------------------------
-    public abstract class SyncMessageResult : SyncTaskResult, ICommandResult
+    public abstract class SyncMessageResult : SyncTaskResult, ITaskResultError
     {
-        [Ignore]    public  CommandError    Error { get; set; }
+        [Ignore]    public  TaskExecuteError    Error { get; set; }
     }
     
     /// <summary>

@@ -30,12 +30,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             const string deleteTaskError        = "delete-task-error";
             const string readTaskError          = "read-task-error";
             
-            testCustomers.writeTaskErrors.Add(createTaskError,  () => new CommandError("simulated create task error"));
-            testCustomers.writeTaskErrors.Add(upsertTaskError,  () => new CommandError("simulated upsert task error"));
-            testCustomers.writeTaskErrors.Add(deleteTaskError,  () => new CommandError("simulated delete task error"));
-            testCustomers.readTaskErrors. Add(readTaskError,    () => new CommandError("simulated read task error"));
+            testCustomers.writeTaskErrors.Add(createTaskError,  () => new TaskExecuteError("simulated create task error"));
+            testCustomers.writeTaskErrors.Add(upsertTaskError,  () => new TaskExecuteError("simulated upsert task error"));
+            testCustomers.writeTaskErrors.Add(deleteTaskError,  () => new TaskExecuteError("simulated delete task error"));
+            testCustomers.readTaskErrors. Add(readTaskError,    () => new TaskExecuteError("simulated read task error"));
             // Query(c => c.id == "query-task-error")
-            testCustomers.queryErrors.Add("o => o.id == 'query-task-error'", () => new QueryEntitiesResult {Error = new CommandError("simulated query error")});
+            testCustomers.queryErrors.Add("o => o.id == 'query-task-error'", () => new QueryEntitiesResult {Error = new TaskExecuteError("simulated query error")});
         
             var customers = store.customers;
 

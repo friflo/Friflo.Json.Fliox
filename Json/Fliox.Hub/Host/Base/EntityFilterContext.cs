@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public QueryEntitiesResult QueryError(QueryEntitiesResult result) {
-            result.Error = new CommandError (TaskErrorResultType.FilterError, error );
+            result.Error = new TaskExecuteError (TaskErrorResultType.FilterError, error );
             return result;
         } 
         

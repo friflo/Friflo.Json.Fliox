@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             testArticles.readEntityErrors.Add(article2JsonError, new SimJson(@"{""invalidJson"" XXX}"));
             testArticles.readEntityErrors.Add(article1ReadError, new SimReadError());
-            testCustomers.readTaskErrors. Add(readTaskError,     () => new CommandError("simulated read task error"));
+            testCustomers.readTaskErrors. Add(readTaskError,     () => new TaskExecuteError("simulated read task error"));
 
             var orders      = store.orders;
             var articles    = store.articles;

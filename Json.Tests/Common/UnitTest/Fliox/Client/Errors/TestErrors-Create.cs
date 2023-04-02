@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
             {
                 var createError = "create-error";
-                testProducers.writeTaskErrors.Add(createError, () => new CommandError("simulated create task error"));
+                testProducers.writeTaskErrors.Add(createError, () => new TaskExecuteError("simulated create task error"));
                 var producer1 = new Producer {id = createError};
                 var producerError = store.producers.Create(producer1);
                 patchArticle.Result.producer = producer1.id;

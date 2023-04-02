@@ -411,7 +411,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             var restResult  = CreateRestResult(context, syncResult);
             if (restResult.taskResult == null)
                 return;
-            var taskResult  = (ICommandResult)restResult.taskResult;
+            var taskResult  = (ITaskResultError)restResult.taskResult;
             var resultError = taskResult.Error;
             if (resultError != null) {
                 context.WriteError("PUT error", resultError.message, 500);

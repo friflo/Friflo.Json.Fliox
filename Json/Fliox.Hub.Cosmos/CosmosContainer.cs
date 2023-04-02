@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 var result = new AggregateEntitiesResult { container = command.container, value = count };
                 return result;
             }
-            return new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} - unexpected query result" ) };
+            return new AggregateEntitiesResult { Error = new TaskExecuteError($"aggregate {command.type} - unexpected query result" ) };
         }
         
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {

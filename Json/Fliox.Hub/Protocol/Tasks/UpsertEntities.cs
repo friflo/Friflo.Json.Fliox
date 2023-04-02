@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             errorMsg = database.Schema?.ValidateEntities (container, entities, env, EntityErrorType.WriteError, ref validationErrors);
             if (errorMsg != null) {
-                return TaskError(new CommandError(TaskErrorResultType.ValidationError, errorMsg));
+                return TaskError(new TaskExecuteError(TaskErrorResultType.ValidationError, errorMsg));
             }
             entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
@@ -112,9 +112,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// <summary>
     /// Result of a <see cref="UpsertEntities"/> task
     /// </summary>
-    public sealed class UpsertEntitiesResult : SyncTaskResult, ICommandResult
+    public sealed class UpsertEntitiesResult : SyncTaskResult, ITaskResultError
     {
-        [Ignore]    public  CommandError        Error { get; set; }
+        [Ignore]    public  TaskExecuteError    Error { get; set; }
         /// <summary>list of entity errors failed to upsert</summary>
                     public  List<EntityError>   errors;
         

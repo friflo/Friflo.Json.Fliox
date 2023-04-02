@@ -92,12 +92,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// <summary>
     /// Result of a <see cref="MergeEntities"/> task
     /// </summary>
-    public sealed class MergeEntitiesResult : SyncTaskResult, ICommandResult
+    public sealed class MergeEntitiesResult : SyncTaskResult, ITaskResultError
     {
-        [Ignore]    public CommandError        Error { get; set; }
+        [Ignore]    public TaskExecuteError     Error { get; set; }
         /// <summary>list of entity errors failed to patch</summary>
-                    public List<EntityError>   errors;
+                    public List<EntityError>    errors;
         
-        internal override  TaskType            TaskType => TaskType.merge;
+        internal override  TaskType             TaskType => TaskType.merge;
     }
 }

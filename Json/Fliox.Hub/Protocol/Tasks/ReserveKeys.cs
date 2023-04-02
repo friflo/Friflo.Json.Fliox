@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 var sequenceTask    = read.Find(containerKey);
                 var sync            = await store.TrySyncTasks().ConfigureAwait(false);
                 if (!sync.Success) {
-                    return  new ReserveKeysResult { Error = new CommandError(sync.Message) };
+                    return  new ReserveKeysResult { Error = new TaskExecuteError(sync.Message) };
                 }
                 var sequence = sequenceTask.Result;
                 if (sequence == null) {
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 store.sequence.Upsert(sequence);
                 sync = await store.TrySyncTasks().ConfigureAwait(false);
                 if (!sync.Success) {
-                    return  new ReserveKeysResult { Error = new CommandError(sync.Message) };
+                    return  new ReserveKeysResult { Error = new TaskExecuteError(sync.Message) };
                 }
                 var keys = new ReservedKeys {
                     start = sequence.autoId,
@@ -74,10 +74,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class ReserveKeysResult : SyncTaskResult
     {
-                    public  ReservedKeys?   keys;
+                    public  ReservedKeys?       keys;
         
-        [Ignore]    public  CommandError    Error { get; set; }
-        internal override   TaskType        TaskType => TaskType.reserveKeys;
+        [Ignore]    public  TaskExecuteError    Error { get; set; }
+        internal override   TaskType            TaskType => TaskType.reserveKeys;
     }
     
     /// <summary>

@@ -150,7 +150,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// <summary>
     /// Result of a <see cref="QueryEntities"/> task
     /// </summary>
-    public sealed class QueryEntitiesResult : SyncTaskResult, ICommandResult
+    public sealed class QueryEntitiesResult : SyncTaskResult, ITaskResultError
     {
         /// <summary>container name - not utilized by Protocol</summary>
         [Serialize                                ("cont")]
@@ -162,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public  List<ReferencesResult>  references;
                         
         [Ignore]    public  EntityValue[]           entities;
-        [Ignore]    public  CommandError            Error { get; set; }
+        [Ignore]    public  TaskExecuteError        Error { get; set; }
 
         
         internal override   TaskType                TaskType    => TaskType.query;
