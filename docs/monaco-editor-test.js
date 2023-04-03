@@ -6,6 +6,7 @@
 //    https://stackoverflow.com/questions/43058191/how-to-use-addextralib-in-monaco-with-an-external-type-definition
 // 3. create Typescript module with createModel() intended for editing
 // 4. create monaco text editor and add module created in 3.
+// 5. hide lines in text editor
 
 // compiler options
 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
@@ -44,7 +45,8 @@ monaco.languages.typescript.typescriptDefaults.addExtraLib(globalTypes);
 
 // --- 3. create main file shown in the editor intended for editing
 const mainContent =
-`import * as t from "test"
+`// --- hidden text line ---
+import * as t from "test"
 
 type Test = { id: string, name: string, val: number };
 const filter: (o: Test) => boolean =
@@ -57,12 +59,18 @@ const test = new t.Test();
 const mainModel = monaco.editor.createModel(mainContent,"typescript", monaco.Uri.parse("file:///main.ts"));
 
 
+
 // --- 4. create editor and show main model in the editor
 const editor = monaco.editor.create(document.getElementById("container"), {
 	model: mainModel, 
 	// language: "typescript",
 	// automaticLayout: true, 
 });
+
+// --- 5. hide lines in text editor
+const hiddenAreas = [new monaco.Range(1,0,1,0)];
+editor.setHiddenAreas(hiddenAreas); // internal editor method
+
 
 // editor.setModel(testModel) // change model displayed in editor
 
