@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Utils;
@@ -141,10 +142,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (content == null) {
                 return false;
             }
+            var body        = WriteContent(context, content, true);
             var contentType = ContentTypeFromPath(path);
-            var body        = new JsonValue(content);
             context.Write(body, contentType, 200);
             return true;
+        }
+        
+        private static JsonValue WriteContent(RequestContext context, byte[] content , bool gzip) {
+            if (!gzip) {
+                return new JsonValue(content);
+            }
+            var memoryIn    = new MemoryStream();
+            var memoryOut   = new MemoryStream();
+            memoryIn.Write(content);
+            memoryIn.Position = 0;
+            using (GZipStream zipStream = new GZipStream(memoryOut, CompressionMode.Compress, false)) {
+                memoryIn.CopyTo(zipStream);
+                memoryIn.Flush();
+            }
+            context.AddHeader("Content-Encoding", "gzip");
+            return new JsonValue(memoryOut.ToArray());
         }
         
         private bool ListDirectory (RequestContext context) {
