@@ -23,7 +23,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     
     /// <summary>Set of <see cref="roles"/> assigned to a user used for authorization</summary>
     public sealed class UserPermission {
-        /// <summary>user id</summary>
+        /// <summary>
+        /// user id.<br/>
+        /// id's with specific behavior:<br/>
+        /// .all-users - specify permissions for authenticated and non authenticated users.<br/> 
+        /// .authenticated-users - specify permissions for authenticated users.
+        /// </summary>
         [Required]  public  string          id;
         /// <summary>set of <see cref="roles"/> assigned to a user</summary>
         [Relation(nameof(UserStore.roles))]

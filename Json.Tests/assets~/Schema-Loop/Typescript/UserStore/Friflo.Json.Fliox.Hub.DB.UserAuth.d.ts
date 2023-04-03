@@ -93,7 +93,12 @@ export class UserCredential {
 
 /** Set of **roles** assigned to a user used for authorization */
 export class UserPermission {
-    /** user id */
+    /**
+     * user id.  
+     * id's with specific behavior:  
+     * .all-users - specify permissions for authenticated and non authenticated users.   
+     * .authenticated-users - specify permissions for authenticated users.
+     */
     id     : string;
     /** set of **roles** assigned to a user */
     roles  : string[];

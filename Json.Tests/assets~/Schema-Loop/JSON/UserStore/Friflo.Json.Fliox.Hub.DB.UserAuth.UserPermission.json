@@ -7,7 +7,7 @@
             "type": "object",
             "description": "Set of <b>roles</b> assigned to a user used for authorization",
             "properties": {
-                "id":    { "type": "string", "description": "user id" },
+                "id":    { "type": "string", "description": "user id.<br/>\nid's with specific behavior:<br/>\n.all-users - specify permissions for authenticated and non authenticated users.<br/> \n.authenticated-users - specify permissions for authenticated users." },
                 "roles": { "type": "array", "items": { "type": "string" }, "relation": "roles", "description": "set of <b>roles</b> assigned to a user" }
             },
             "required": [
