@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var memoryIn    = new MemoryStream();
             var memoryOut   = new MemoryStream();
-            memoryIn.Write(content);
+            memoryIn.Write(content, 0, content.Length);
             memoryIn.Position = 0;
             using (GZipStream zipStream = new GZipStream(memoryOut, CompressionMode.Compress, false)) {
                 memoryIn.CopyTo(zipStream);
