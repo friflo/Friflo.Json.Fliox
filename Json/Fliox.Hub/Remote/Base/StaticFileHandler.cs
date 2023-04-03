@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (content == null) {
                 return false;
             }
-            var body        = WriteContent(context, content, true);
+            var body        = WriteContent(context, content, cacheControl != null);
             var contentType = ContentTypeFromPath(path);
             context.Write(body, contentType, 200);
             return true;
