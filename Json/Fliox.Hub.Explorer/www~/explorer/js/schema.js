@@ -50,7 +50,7 @@ export class Schema {
                     const path = "/" + schemaPath + "#/definitions/" + definitionName;
                     const schemaId = "." + path;
                     const uri = "http://" + database + path;
-                    let schemaRef = { $ref: schemaId, _resolvedDef: null };
+                    let schemaRef = { $ref: uri, _resolvedDef: null };
                     const containers = containersByType[schemaId];
                     if (containers) {
                         for (const container of containers) {
@@ -145,17 +145,17 @@ export class Schema {
         for (const commandName in commands) {
             const command = commands[commandName];
             // assign file matcher for command param
-            const paramType = Schema.replaceLocalRefsClone(command.param, schemaPath);
+            const paramType = Schema.replaceLocalRefsClone(database, command.param, schemaPath);
             Schema.addCommandArgument("message-param", database, commandName, paramType, schemaMap);
             // assign file matcher for command result
-            const resultType = Schema.replaceLocalRefsClone(command.result, schemaPath);
+            const resultType = Schema.replaceLocalRefsClone(database, command.result, schemaPath);
             Schema.addCommandArgument("message-result", database, commandName, resultType, schemaMap);
         }
         const messages = dbType.messages;
         for (const messageName in messages) {
             const message = messages[messageName];
             // assign file matcher for command param
-            const paramType = Schema.replaceLocalRefsClone(message.param, schemaPath);
+            const paramType = Schema.replaceLocalRefsClone(database, message.param, schemaPath);
             Schema.addCommandArgument("message-param", database, messageName, paramType, schemaMap);
             // note: messages have no result -> no return type
         }
@@ -191,15 +191,16 @@ export class Schema {
             return type;
         return { $ref: "./" + schemaPath + $ref, _resolvedDef: null };
     }
-    static replaceLocalRefsClone(type, schemaPath) {
+    static replaceLocalRefsClone(database, type, schemaPath) {
         if (!type) {
             return null;
         }
         const clone = JSON.parse(JSON.stringify(type));
-        Schema.replaceLocalRefs(clone, schemaPath);
+        Schema.replaceLocalRefs(database, clone, schemaPath);
         return clone;
     }
-    static replaceLocalRefs(node, schemaPath) {
+    /** $ref uri's must be absolute. See {@link MonacoSchema.schema} */
+    static replaceLocalRefs(database, node, schemaPath) {
         for (const propertyName in node) {
             const property = node[propertyName];
             switch (typeof property) {
@@ -209,6 +210,9 @@ export class Schema {
                         if ($ref && $ref[0] == "#") {
                             node.$ref = "./" + schemaPath + $ref;
                         }
+                        if (node.$ref.startsWith("./")) {
+                            node.$ref = `http://${database}/` + node.$ref.substring(2); // replace "./"
+                        }
                     }
                     break;
                 case "object":
@@ -216,7 +220,7 @@ export class Schema {
                         node[propertyName] = null;
                         break;
                     }
-                    Schema.replaceLocalRefs(property, schemaPath);
+                    Schema.replaceLocalRefs(database, property, schemaPath);
                     break;
             }
         }

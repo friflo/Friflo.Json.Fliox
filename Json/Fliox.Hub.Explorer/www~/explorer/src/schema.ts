@@ -36,6 +36,11 @@ export type MonacoSchema = {
              fileMatch?: string[];
     /**
      * The schema for the given URI.
+     * NOTE !!!
+     * Since monaco-editor 0.34.0-dev.20220401
+     * "$ref" properties used by monaco.languages.json.jsonDefaults.setDiagnosticsOptions({schemas: MonacoSchema[]})
+     * must not use relative uri's.                     E.g. { "$ref": "./foo-schema.json#/definitions/Main" }
+     * Since 0.34.0 uri's are required to be absolute.  E.g. { "$ref": "http://myserver/foo-schema.json#/definitions/Main", }
      */
     readonly schema?: JSONSchema;
 
@@ -95,7 +100,7 @@ export class Schema
                     const path          = "/" + schemaPath + "#/definitions/" + definitionName;
                     const schemaId      = "." + path;
                     const uri           = "http://" + database + path;
-                    let schemaRef : JSONSchema = { $ref: schemaId, _resolvedDef: null };
+                    let schemaRef : JSONSchema = { $ref: uri, _resolvedDef: null };
                     const containers    = containersByType[schemaId];
                     if (containers) {
                         for (const container of containers) {
@@ -193,18 +198,18 @@ export class Schema
         for (const commandName in commands) {
             const command   = commands[commandName];
             // assign file matcher for command param
-            const paramType = Schema.replaceLocalRefsClone(command.param, schemaPath);
+            const paramType = Schema.replaceLocalRefsClone(database, command.param, schemaPath);
             Schema.addCommandArgument("message-param", database, commandName, paramType, schemaMap);
 
             // assign file matcher for command result
-            const resultType   = Schema.replaceLocalRefsClone(command.result, schemaPath);
+            const resultType   = Schema.replaceLocalRefsClone(database, command.result, schemaPath);
             Schema.addCommandArgument("message-result", database, commandName, resultType, schemaMap);
         }
         const messages        = dbType.messages;
         for (const messageName in messages) {
             const message   = messages[messageName];
             // assign file matcher for command param
-            const paramType = Schema.replaceLocalRefsClone(message.param, schemaPath);
+            const paramType = Schema.replaceLocalRefsClone(database, message.param, schemaPath);
             Schema.addCommandArgument("message-param", database, messageName, paramType, schemaMap);
             // note: messages have no result -> no return type
         }
@@ -250,16 +255,17 @@ export class Schema
         return { $ref: "./" + schemaPath + $ref, _resolvedDef: null };
     }
 
-    private static replaceLocalRefsClone (type: FieldType, schemaPath: string) : FieldType {
+    private static replaceLocalRefsClone (database: string, type: FieldType, schemaPath: string) : FieldType {
         if (!type) {
             return null;
         }
         const clone = JSON.parse(JSON.stringify(type)) as FieldType;
-        Schema.replaceLocalRefs(clone, schemaPath);
+        Schema.replaceLocalRefs(database, clone, schemaPath);
         return clone;
     }
 
-    private static replaceLocalRefs (node: any, schemaPath: string) : void {
+    /** $ref uri's must be absolute. See {@link MonacoSchema.schema} */
+    private static replaceLocalRefs (database: string, node: any, schemaPath: string) : void {
         for (const propertyName in node) {
             const property = node[propertyName];
             switch (typeof property) {
@@ -268,7 +274,10 @@ export class Schema
                         const $ref = property;
                         if ($ref && $ref[0] == "#") {
                             node.$ref = "./" + schemaPath + $ref; 
-                        }        
+                        }
+                        if (node.$ref.startsWith("./")) {
+                            node.$ref = `http://${database}/` + node.$ref.substring(2); // replace "./"
+                        }
                     }
                     break;
                 case "object":
@@ -276,7 +285,7 @@ export class Schema
                         node[propertyName] = null;
                         break;
                     }
-                    Schema.replaceLocalRefs(property, schemaPath);
+                    Schema.replaceLocalRefs(database, property, schemaPath);
                     break;
             }
         }
