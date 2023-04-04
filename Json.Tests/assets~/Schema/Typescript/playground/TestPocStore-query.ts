@@ -1,4 +1,4 @@
-import { Article, Order, TestType } from "../PocStore/UnitTest.Fliox.Client"
+import { Article, Order, TestType, PocStore } from "../PocStore/UnitTest.Fliox.Client"
 
 const PI:   number = 3.141592653589793;
 const E:    number = 2.718281828459045;
@@ -110,3 +110,4 @@ query<Order>(o => o.items.Count   (o => o.name == "Camera") == 2);
 
 query<Order>(o => Abs(o.items.Length) == 1);
 
+type EntityType = PocStore["articles"][string]

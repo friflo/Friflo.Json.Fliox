@@ -393,6 +393,7 @@ export class App {
             { "task": "query", "cont": "containers" },
             { "task": "query", "cont": "messages" },
             { "task": "query", "cont": "schemas" },
+            { "task": "cmd", "name": "ModelFiles", param: { "type": "typescript" } },
         ];
         clusterExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response = await App.postRequestTasks("cluster", tasks);
@@ -418,6 +419,8 @@ export class App {
         const website = this.hostInfo.projectWebsite;
         const envName = this.hostInfo.envName;
         const envColor = this.hostInfo.envColor;
+        const modelFileResult = content.tasks[4];
+        this.modelFiles = modelFileResult.result;
         flioxVersionEl.innerText = "Version " + flioxVersion;
         if (name) {
             projectName.innerText = name;
@@ -725,10 +728,10 @@ export class App {
         // --- create Explorer filter editor
         if (filterContainer) {
             this.filterEditor = monaco.editor.create(filterContainer, {
-                lineNumbers: "off",
                 minimap: { enabled: false },
-                codeLens: false,
                 folding: false,
+                lineNumbers: "off",
+                codeLens: false,
                 renderLineHighlight: "none",
                 scrollbar: { vertical: "hidden", horizontal: "hidden" },
                 overviewRulerLanes: 0,

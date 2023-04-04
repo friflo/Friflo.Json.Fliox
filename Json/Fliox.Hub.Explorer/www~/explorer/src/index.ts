@@ -8,11 +8,11 @@ import { Playground }                                           from "./playgrou
 import { Events, eventsInfo }                                               from "./events.js";
 import { ClusterTree }                                          from "./components.js";
 
-import { FieldType, JSONSchema, JsonType }                      from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbSchema, DbContainers, DbMessages, HostInfo }         from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { FieldType, JSONSchema, JsonType }                          from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
+import { DbSchema, DbContainers, DbMessages, HostInfo, ModelFiles } from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 import { SyncRequest, SyncResponse, ProtocolResponse_Union,
-         ContainerEntities }                                    from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
-import { SyncRequestTask_Union, SendCommandResult }             from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
+         ContainerEntities }                                        from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
+import { SyncRequestTask_Union, SendCommandResult }                 from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 declare global {
     interface Window {
@@ -436,6 +436,7 @@ export class App {
 
 
     private             hostInfo:       HostInfo;
+    public              modelFiles:     ModelFiles[];
     public  readonly    clusterTree:    ClusterTree;
 
     private async loadCluster () {
@@ -444,6 +445,7 @@ export class App {
             { "task": "query", "cont": "containers"},
             { "task": "query", "cont": "messages"},
             { "task": "query", "cont": "schemas"},
+            { "task": "cmd",   "name": "ModelFiles", param: { "type": "typescript" } },
         ];
         clusterExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response  = await App.postRequestTasks("cluster", tasks);
@@ -469,6 +471,8 @@ export class App {
         const website       = this.hostInfo.projectWebsite;
         const envName       = this.hostInfo.envName;
         const envColor      = this.hostInfo.envColor;
+        const modelFileResult = content.tasks[4]                as SendCommandResult;
+        this.modelFiles     = modelFileResult.result            as ModelFiles[];
         flioxVersionEl.innerText = "Version " + flioxVersion;
         if (name) {
             projectName.innerText   = name;
@@ -841,10 +845,10 @@ export class App {
         if (filterContainer)
         {
             this.filterEditor   = monaco.editor.create(filterContainer, {
-                lineNumbers:            "off",
                 minimap:                { enabled: false },
-                codeLens:               false,
                 folding:                false,
+                lineNumbers:            "off",
+                codeLens:               false,
                 renderLineHighlight:    "none",
                 scrollbar:              { vertical: "hidden", horizontal: "hidden" },
                 overviewRulerLanes:     0,

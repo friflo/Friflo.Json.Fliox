@@ -92,25 +92,58 @@ export class Explorer {
             noSemanticValidation: false,
             noSyntaxValidation: false
         });
+        // const hiddenAreas = [new monaco.Range(1, 1, 3,1)];
+        // (app.filterEditor as any).setHiddenAreas(hiddenAreas); // internal editor method
         const filterUri = monaco.Uri.parse("file:///query-filter.ts");
         this.filterModel = monaco.editor.createModel(null, "typescript", filterUri);
         app.filterEditor.setModel(this.filterModel);
         app.filterEditor.onKeyDown((e) => {
             this.onFilterKeyDown(e);
         });
-        const testContent = `
-/** test docs for class */
-export class Test {
-    id      : string;
-    name	: string;
-}
-`;
-        monaco.editor.createModel(testContent, "typescript", monaco.Uri.parse("file:///node_modules/@types/test.d.ts"));
-        // app.filterEditor.setModel(model);
+        // const testContent = "/** test docs for class */\nexport class Test { id : string; name: string; }";
+        // monaco.editor.createModel(testContent, "typescript",	monaco.Uri.file("node_modules/@types/test.d.ts"));
+        this.createFilterTypes();
+    }
+    createFilterTypes() {
+        const modelFiles = app.modelFiles;
+        for (const model of modelFiles) {
+            for (const file of model.files) {
+                const uri = monaco.Uri.file(`node_modules/@types/${model.db}/${file.path}`);
+                monaco.editor.createModel(file.content, "typescript", uri);
+            }
+        }
+        const schemas = app.databaseSchemas;
+        for (const dbName in schemas) {
+            const schema = schemas[dbName];
+            const uri = monaco.Uri.file(`node_modules/@types/${dbName}.d.ts`);
+            const module = schema.schemaPath.replace(".json", "");
+            const content = `export { ${schema.schemaName} } from "${dbName}/${module}"`;
+            monaco.editor.createModel(content, "typescript", uri);
+        }
+    }
+    getFilterValue() {
+        if (entityFilter)
+            return entityFilter.value;
+        const lines = this.filterModel.getValue().split("\n");
+        const value = lines.slice(3).join("\n");
+        return value;
+    }
+    setFilterValue(database, container, filter) {
+        if (entityFilter) {
+            entityFilter.value = filter;
+            return;
+        }
+        const schema = app.databaseSchemas[database];
+        const schemaName = schema.schemaName;
+        const text = `import  { ${schemaName} } from "${database}"
+type EntityType = ${schemaName}["${container}"][string]
+const filter: (o: EntityType) => boolean =
+${filter}`;
+        this.filterModel.setValue(text);
     }
     onFilterKeyDown(e) {
         if (e.code == "Enter") {
-            app.applyFilter();
+            // app.applyFilter();
             // e.stopPropagation (); 
             // e.preventDefault ();
         }
@@ -157,21 +190,11 @@ export class Test {
         this.explorerTable = null;
         entityExplorer.innerHTML = "";
     }
-    getFilterValue() {
-        if (entityFilter)
-            return entityFilter.value;
-        return this.filterModel.getValue();
-    }
     async loadContainer(p, query) {
         var _a;
         const storedFilter = (_a = this.config.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];
         const filter = storedFilter && storedFilter[0] != undefined ? storedFilter[0] : 'o => o.id == "abc"';
-        if (entityFilter) {
-            entityFilter.value = filter;
-        }
-        else {
-            this.filterModel.setValue(filter);
-        }
+        this.setFilterValue(p.database, p.container, filter);
         setClass(explorerEl, !!query, "filterActive");
         const entityType = app.getContainerSchema(p.database, p.container);
         app.filter.database = p.database;
