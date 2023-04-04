@@ -205,7 +205,15 @@ export class Explorer
 type EntityType = ${schemaName}["${container}"][string]
 const filter: (o: EntityType) => boolean =
 ${filter}`;
+        // hide first three line containing import, type & filter signature
+        this.hideFilterLines([]);  // reset hidden lines is required before setting them again
         this.filterModel.setValue(text);
+        const hiddenLines = [new monaco.Range(1, 0, 3, 0)];
+        this.hideFilterLines(hiddenLines);
+    }
+
+    private hideFilterLines(ranges: monaco.Range[]) {
+        (app.filterEditor as any).setHiddenAreas(ranges); // internal editor method
     }
 
     private onFilterKeyDown(e: monaco.IKeyboardEvent) {
