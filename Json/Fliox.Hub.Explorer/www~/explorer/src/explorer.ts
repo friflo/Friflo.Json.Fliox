@@ -146,6 +146,7 @@ export class Explorer
             moduleResolution:       monaco.languages.typescript.ModuleResolutionKind.NodeJs,
             module:                 monaco.languages.typescript.ModuleKind.CommonJS,
             noEmit:                 true,
+            lib:                    ["es2016"], // omit DOM types
             noLib:                  false,
             typeRoots: ["node_modules/@types"]
         });            
