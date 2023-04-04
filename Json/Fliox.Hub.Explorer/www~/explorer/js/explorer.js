@@ -101,6 +101,9 @@ export class Explorer {
         app.filterEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
             app.applyFilter();
         });
+        app.filterEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Backspace, () => {
+            app.removeFilter();
+        });
         // const testContent = "/** test docs for class */\nexport class Test { id : string; name: string; }";
         // monaco.editor.createModel(testContent, "typescript",	monaco.Uri.file("node_modules/@types/test.d.ts"));
         monaco.editor.createModel(filterSource, "typescript", monaco.Uri.file("node_modules/@types/filter.d.ts"));

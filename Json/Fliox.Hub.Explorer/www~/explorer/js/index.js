@@ -735,6 +735,11 @@ export class App {
                 renderLineHighlight: "none",
                 scrollbar: { vertical: "hidden", horizontal: "hidden" },
                 overviewRulerLanes: 0,
+                scrollBeyondLastLine: false,
+                smoothScrolling: true,
+                guides: {
+                    indentation: false // hide vertical indentation lines
+                }
             });
             this.explorer.initFilterEditor();
         }
