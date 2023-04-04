@@ -97,8 +97,9 @@ export class Explorer {
         const filterUri = monaco.Uri.parse("file:///query-filter.ts");
         this.filterModel = monaco.editor.createModel(null, "typescript", filterUri);
         app.filterEditor.setModel(this.filterModel);
-        app.filterEditor.onKeyDown((e) => {
-            this.onFilterKeyDown(e);
+        // app.filterEditor.onKeyDown( (e) => { });
+        app.filterEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+            app.applyFilter();
         });
         // const testContent = "/** test docs for class */\nexport class Test { id : string; name: string; }";
         // monaco.editor.createModel(testContent, "typescript",	monaco.Uri.file("node_modules/@types/test.d.ts"));
@@ -141,6 +142,9 @@ import  { Filter } from "filter"
 type EntityType = ${schemaName}["${container}"][string]
 const filter: (o: Filter<EntityType>) => boolean =
 ${filter}`;
+        if (this.filterModel.getValue() == text) {
+            return;
+        }
         // hide first three line containing import, type & filter signature
         this.hideFilterLines([]); // reset hidden lines is required before setting them again
         this.filterModel.setValue(text);
@@ -149,13 +153,6 @@ ${filter}`;
     }
     hideFilterLines(ranges) {
         app.filterEditor.setHiddenAreas(ranges); // internal editor method
-    }
-    onFilterKeyDown(e) {
-        if (e.code == "Enter") {
-            // app.applyFilter();
-            // e.stopPropagation (); 
-            // e.preventDefault ();
-        }
     }
     loadMoreAvailable() {
         const e = this.explorer;
