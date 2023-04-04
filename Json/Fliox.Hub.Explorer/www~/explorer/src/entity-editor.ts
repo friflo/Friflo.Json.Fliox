@@ -36,7 +36,7 @@ const entityDelete      = el("entityDelete")    as HTMLButtonElement;
 const entitySave        = el("entitySave")      as HTMLButtonElement;
 const entityPatch       = el("entityPatch")     as HTMLButtonElement;
 
-const entityFilter      = el("entityFilter")    as HTMLInputElement;
+const filterArea        = el("filterArea")      as HTMLDivElement;
 const filterRow         = el("filterRow");
 const commandSignature  = el("commandSignature");
 const commandAnchor     = el("commandAnchor")   as HTMLAnchorElement;
@@ -157,7 +157,7 @@ export class EntityEditor
         explorerTools.innerHTML         = "";
         el("databaseLabel").innerHTML   = schemaType;
         filterRow.style.visibility      = "hidden";
-        entityFilter.style.visibility   = "hidden";
+        filterArea.style.visibility     = "hidden";
         const messagesLink              = App.getMessagesLink(database);
         readEntitiesDB.innerHTML        = messagesLink;
         readEntities.innerHTML          = "";

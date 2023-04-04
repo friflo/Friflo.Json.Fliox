@@ -17,7 +17,9 @@ const authState = el("authState");
 const clusterExplorer = el("clusterExplorer");
 const entityExplorer = el("entityExplorer");
 const entityFilter = el("entityFilter");
-// request response editor
+// Playground filter editor
+const filterContainer = el("filterContainer");
+// Playground request response editor
 const requestContainer = el("requestContainer");
 const responseContainer = el("responseContainer");
 // entity/command/events editor
@@ -682,9 +684,10 @@ export class App {
     async setupEditors() {
         // this.setExplorerEditor("none");
         // --- setup JSON Schema for monaco
-        const requestUri = monaco.Uri.parse("request://jsonRequest.json"); // a made up unique URI for our model
-        const responseUri = monaco.Uri.parse("request://jsonResponse.json"); // a made up unique URI for our model
-        const eventUri = monaco.Uri.parse("request://jsonEvent.json"); // a made up unique URI for our model
+        const filterUri = monaco.Uri.parse("filter://query.ts");
+        const requestUri = monaco.Uri.parse("request://jsonRequest.json");
+        const responseUri = monaco.Uri.parse("request://jsonResponse.json");
+        const eventUri = monaco.Uri.parse("request://jsonEvent.json");
         const monacoSchemas = await this.createProtocolSchemas();
         {
             const schema = App.findSchema(monacoSchemas, "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolRequest.json");
@@ -721,9 +724,23 @@ export class App {
             monacoSchemas.push(eventListSchema);
         }
         this.addSchemas(monacoSchemas);
-        // --- create request editor
+        // --- create Explorer filter editor
+        if (filterContainer) {
+            this.filterEditor = monaco.editor.create(filterContainer, {
+                lineNumbers: "off",
+                minimap: { enabled: false },
+                codeLens: false,
+                folding: false,
+                renderLineHighlight: "none",
+                scrollbar: { vertical: "hidden", horizontal: "hidden" },
+                overviewRulerLanes: 0,
+            });
+            this.filterModel = monaco.editor.createModel(null, null, filterUri);
+            this.filterEditor.setModel(this.filterModel);
+        }
+        // --- create Playground request editor
         {
-            this.requestEditor = monaco.editor.create(requestContainer, { /* model: model */});
+            this.requestEditor = monaco.editor.create(requestContainer, {});
             this.requestModel = monaco.editor.createModel(null, "json", requestUri);
             this.requestEditor.setModel(this.requestModel);
             const defaultRequest = `{
@@ -738,9 +755,9 @@ export class App {
 }`;
             this.requestModel.setValue(defaultRequest);
         }
-        // --- create response editor
+        // --- create Playground response editor
         {
-            this.responseEditor = monaco.editor.create(responseContainer, { /* model: model */});
+            this.responseEditor = monaco.editor.create(responseContainer, {});
             this.responseModel = monaco.editor.createModel(null, "json", responseUri);
             this.responseEditor.setModel(this.responseModel);
         }

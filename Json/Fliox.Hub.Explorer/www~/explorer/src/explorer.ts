@@ -58,7 +58,7 @@ const readEntitiesCount = el("readEntitiesCount");
 const catalogSchema     = el("catalogSchema");
 const explorerTools     = el("explorerTools");
 
-
+const filterArea        = el("filterArea")      as HTMLDivElement;
 const entityFilter      = el("entityFilter")    as HTMLInputElement;
 const filterRow         = el("filterRow");
 
@@ -208,8 +208,8 @@ export class Explorer
         this.initExplorer(p.database, p.container, query, entityType);
 
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
-        filterRow.style.visibility      = "";
-        entityFilter.style.visibility   = "";
+        filterRow.style.visibility  = "";
+        filterArea.style.visibility = "";
     //  const schema             = app.databaseSchemas[p.database];
     //  const entityDocs         = schema ? "&nbsp;·&nbsp;" + app.getEntityType(p.database, p.container) : "";
     //  catalogSchema.innerHTML  = app.getSchemaType(p.database) + entityDocs;
