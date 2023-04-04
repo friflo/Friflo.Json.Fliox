@@ -164,6 +164,7 @@ export class Explorer
         });
         // const testContent = "/** test docs for class */\nexport class Test { id : string; name: string; }";
         // monaco.editor.createModel(testContent, "typescript",	monaco.Uri.file("node_modules/@types/test.d.ts"));
+        monaco.editor.createModel(filterSource, "typescript",	monaco.Uri.file("node_modules/@types/filter.d.ts"));
         this.createFilterTypes();
     }
 
@@ -189,7 +190,7 @@ export class Explorer
         if (entityFilter)
             return entityFilter.value;
         const lines = this.filterModel.getValue().split("\n");
-        const value = lines.slice(3).join("\n");
+        const value = lines.slice(4).join("\n");
         return value;
     }
 
@@ -202,13 +203,14 @@ export class Explorer
         const schemaName = schema.schemaName;
         const text =
 `import  { ${schemaName} } from "${database}"
+import  { Filter } from "filter"
 type EntityType = ${schemaName}["${container}"][string]
-const filter: (o: EntityType) => boolean =
+const filter: (o: Filter<EntityType>) => boolean =
 ${filter}`;
         // hide first three line containing import, type & filter signature
         this.hideFilterLines([]);  // reset hidden lines is required before setting them again
         this.filterModel.setValue(text);
-        const hiddenLines = [new monaco.Range(1, 0, 3, 0)];
+        const hiddenLines = [new monaco.Range(1, 0, 4, 0)];
         this.hideFilterLines(hiddenLines);
     }
 
@@ -1238,3 +1240,64 @@ ${filter}`;
         document.body.style.cursor  = "auto";
     }
 }
+
+const filterSource =
+`
+// ------------- query Filter<T> -----------------
+const PI:   number = 3.141592653589793;
+const E:    number = 2.718281828459045;
+const Tau:  number = 6.283185307179586;
+
+function Abs    (value: number) : number { return 0; }
+function Log    (value: number) : number { return 0; }
+function Exp    (value: number) : number { return 0; }
+function Sqrt   (value: number) : number { return 0; }
+function Floor  (value: number) : number { return 0; }
+function Ceiling(value: number) : number { return 0; }
+
+/** Scalar object property like string, number or boolean. */
+type Property = string | number | boolean;
+
+type List<T> = {
+    /** Return the length of the array. */
+    readonly Length : number,
+    /** Return **true** if *all* the elements in a sequence satisfy the filter condition. */
+    All     (filter: (o: T) => boolean) : boolean;
+    /** Return **true** if *any* element in a sequence satisfy the filter condition. */
+    Any     (filter: (o: T) => boolean) : boolean;
+
+    /** Return the minimum value of an array. */
+    Min     (filter: (o: T) => Property) : number;
+    /** Return the maximum value of an array. */
+    Max     (filter: (o: T) => Property) : number;
+    /** Return the sum of all values. */
+    Sum     (filter: (o: T) => Property) : number;
+    /** Return the average of all values. */
+    Average (filter: (o: T) => Property) : number;
+
+    /** Counts the elements in an array which satisfy the filter condition. */
+    Count   (filter: (o: T) => boolean) : number;
+}
+
+type StringFilter = {
+    /** Return the length of the string. */
+    readonly Length : number,
+    
+    /** Return **true** if the value matches the beginning of the string. */
+    StartsWith  (value: string) : boolean,
+    /** Return **true** if the value matches the end of the string. */
+    EndsWith    (value: string) : boolean,
+    /** Return **true** if the value occurs within the string. */
+    Contains    (value: string) : boolean,
+}
+
+type FilterTypes<T> =
+    T extends string         ? StringFilter & (string | { }) : // remove string methods: at(), length, ...
+    T extends number         ? number | { }                  : // remove Number methods: toFixed(), toString(), ...
+    T extends Array<infer U> ? List<U>
+    : Filter<T>
+
+export type Filter<T> = {
+    readonly [K in keyof T]-? : FilterTypes<T[K]> & { }     // type NonNullable<T> = T & {};
+}
+`;

@@ -1,5 +1,20 @@
 import { Article, Order, TestType, PocStore } from "../PocStore/UnitTest.Fliox.Client"
 
+/*
+type UnArray<T> = T extends Array<infer U> ? U : T;
+
+type RecursiveObject<T> = T extends Array<T> ? never : UnArray<UnArray<T>>
+
+export type Filter<TModel> = {
+    [Key in keyof TModel]-? : TModel[Key] extends RecursiveObject<TModel[Key]>  // -? declare all fields required
+        ? Filter<TModel[Key]>                                                   // convert nested fields recursive
+        : List<NonNullable<UnArray<TModel[Key]>>>;                              // convert T[] -> List<T>, NonNullable<> remove null | undefined from array type
+}; */
+
+// type Without<T, K> = Pick<T, Exclude<keyof T, K>>;
+// type Str = Exclude<string, "length"> | { Length: number };
+
+// ------------- query Filter<T> -----------------
 const PI:   number = 3.141592653589793;
 const E:    number = 2.718281828459045;
 const Tau:  number = 6.283185307179586;
@@ -35,20 +50,6 @@ type List<T> = {
     Count   (filter: (o: T) => boolean) : number;
 }
 
-/*
-type UnArray<T> = T extends Array<infer U> ? U : T;
-
-type RecursiveObject<T> = T extends Array<T> ? never : UnArray<UnArray<T>>
-
-export type Filter<TModel> = {
-    [Key in keyof TModel]-? : TModel[Key] extends RecursiveObject<TModel[Key]>  // -? declare all fields required
-        ? Filter<TModel[Key]>                                                   // convert nested fields recursive
-        : List<NonNullable<UnArray<TModel[Key]>>>;                              // convert T[] -> List<T>, NonNullable<> remove null | undefined from array type
-}; */
-
-// type Without<T, K> = Pick<T, Exclude<keyof T, K>>;
-// type Str = Exclude<string, "length"> | { Length: number };
-
 type StringFilter = {
     /** Return the length of the string. */
     readonly Length : number,
@@ -67,9 +68,11 @@ type FilterTypes<T> =
     T extends Array<infer U> ? List<U>
     : Filter<T>
 
-type Filter<T> = {
+export type Filter<T> = {
     readonly [K in keyof T]-? : FilterTypes<T[K]> & { }     // type NonNullable<T> = T & {};
 }
+
+// ------------- query Filter<T> ----------------- end
 
 function query<T>(filter: (o: FilterTypes<T>) => boolean) { }
 
