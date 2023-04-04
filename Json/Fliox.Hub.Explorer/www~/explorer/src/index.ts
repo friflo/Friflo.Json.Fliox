@@ -34,8 +34,6 @@ const authState             = el("authState");
 const clusterExplorer       = el("clusterExplorer");
 const entityExplorer        = el("entityExplorer");
 
-const entityFilter          = el("entityFilter")    as HTMLInputElement;
-
 // Playground filter editor
 const filterContainer       = el("filterContainer");
 
@@ -640,7 +638,7 @@ export class App {
     public applyFilter() : void {
         const database  = this.filter.database;
         const container = this.filter.container;
-        const filter    = entityFilter.value;
+        const filter    = this.explorer.getFilterValue();
         const query     = filter.trim() == "" ? null : `filter=${encodeURIComponent(filter)}`;
         const params: Resource    = { database: database, container: container, ids: [] };
         this.saveFilter(database, container, filter);
@@ -660,7 +658,7 @@ export class App {
     }
 
     public updateFilterLink(): void {
-        const filter    = entityFilter.value;
+        const filter    = this.explorer.getFilterValue();
         const query     = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
         const url       = `./rest/${this.filter.database}/${this.filter.container}${query}`;
         el<HTMLAnchorElement>("filterLink").href = url;

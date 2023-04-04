@@ -121,6 +121,9 @@ export class Explorer {
         this.explorerTable = null;
         entityExplorer.innerHTML = "";
     }
+    getFilterValue() {
+        return entityFilter.value;
+    }
     async loadContainer(p, query) {
         var _a;
         const storedFilter = (_a = this.config.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];

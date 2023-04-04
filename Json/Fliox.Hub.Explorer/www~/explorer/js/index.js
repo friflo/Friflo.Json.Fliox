@@ -16,7 +16,6 @@ const userList = el("userList");
 const authState = el("authState");
 const clusterExplorer = el("clusterExplorer");
 const entityExplorer = el("entityExplorer");
-const entityFilter = el("entityFilter");
 // Playground filter editor
 const filterContainer = el("filterContainer");
 // Playground request response editor
@@ -561,7 +560,7 @@ export class App {
     applyFilter() {
         const database = this.filter.database;
         const container = this.filter.container;
-        const filter = entityFilter.value;
+        const filter = this.explorer.getFilterValue();
         const query = filter.trim() == "" ? null : `filter=${encodeURIComponent(filter)}`;
         const params = { database: database, container: container, ids: [] };
         this.saveFilter(database, container, filter);
@@ -579,7 +578,7 @@ export class App {
         this.setConfig("filters", filters);
     }
     updateFilterLink() {
-        const filter = entityFilter.value;
+        const filter = this.explorer.getFilterValue();
         const query = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
         const url = `./rest/${this.filter.database}/${this.filter.container}${query}`;
         el("filterLink").href = url;
