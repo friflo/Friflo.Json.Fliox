@@ -24,7 +24,7 @@ const readEntitiesCount = el("readEntitiesCount");
 const catalogSchema = el("catalogSchema");
 const explorerTools = el("explorerTools");
 const filterArea = el("filterArea");
-const entityFilter = el("entityFilter");
+const entityFilter = el("entityFilter"); // only used as reference using an <input> element
 const filterRow = el("filterRow");
 // ----------------------------------------------- Explorer -----------------------------------------------
 /** The public methods of this class must not use DOM elements as parameters or return values.
@@ -79,6 +79,42 @@ export class Explorer {
         const row = focus.parentElement;
         return { column: focus.cellIndex, row: row.rowIndex };
     }
+    initFilterEditor() {
+        monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+            target: monaco.languages.typescript.ScriptTarget.ES2016,
+            allowNonTsExtensions: true,
+            moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+            module: monaco.languages.typescript.ModuleKind.CommonJS,
+            noEmit: true,
+            typeRoots: ["node_modules/@types"]
+        });
+        monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+            noSemanticValidation: false,
+            noSyntaxValidation: false
+        });
+        const filterUri = monaco.Uri.parse("file:///query-filter.ts");
+        this.filterModel = monaco.editor.createModel(null, "typescript", filterUri);
+        app.filterEditor.setModel(this.filterModel);
+        app.filterEditor.onKeyDown((e) => {
+            this.onFilterKeyDown(e);
+        });
+        const testContent = `
+/** test docs for class */
+export class Test {
+    id      : string;
+    name	: string;
+}
+`;
+        monaco.editor.createModel(testContent, "typescript", monaco.Uri.parse("file:///node_modules/@types/test.d.ts"));
+        // app.filterEditor.setModel(model);
+    }
+    onFilterKeyDown(e) {
+        if (e.code == "Enter") {
+            app.applyFilter();
+            // e.stopPropagation (); 
+            // e.preventDefault ();
+        }
+    }
     loadMoreAvailable() {
         const e = this.explorer;
         return e.cursor && e.loadMorePending == false;
@@ -122,13 +158,20 @@ export class Explorer {
         entityExplorer.innerHTML = "";
     }
     getFilterValue() {
-        return entityFilter.value;
+        if (entityFilter)
+            return entityFilter.value;
+        return this.filterModel.getValue();
     }
     async loadContainer(p, query) {
         var _a;
         const storedFilter = (_a = this.config.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];
         const filter = storedFilter && storedFilter[0] != undefined ? storedFilter[0] : 'o => o.id == "abc"';
-        entityFilter.value = filter;
+        if (entityFilter) {
+            entityFilter.value = filter;
+        }
+        else {
+            this.filterModel.setValue(filter);
+        }
         setClass(explorerEl, !!query, "filterActive");
         const entityType = app.getContainerSchema(p.database, p.container);
         app.filter.database = p.database;

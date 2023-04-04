@@ -59,7 +59,7 @@ const catalogSchema     = el("catalogSchema");
 const explorerTools     = el("explorerTools");
 
 const filterArea        = el("filterArea")      as HTMLDivElement;
-const entityFilter      = el("entityFilter")    as HTMLInputElement;
+const entityFilter      = el("entityFilter")    as HTMLInputElement; // only used as reference using an <input> element
 const filterRow         = el("filterRow");
 
 
@@ -93,6 +93,7 @@ export class Explorer
     private             entityFields:   { [key: string] : Column }              = {}
     private             selectedRows    =  new Map<string, HTMLTableRowElement>(); // Map<,> support insertion order
     private             explorerRows    =  new Map<string, HTMLTableRowElement>(); // Map<,> support insertion order
+    private             filterModel:   monaco.editor.ITextModel;
 
 
     public getFocusedCell() : { row: number, column: number } | null {
@@ -136,6 +137,46 @@ export class Explorer
                 this.loadMore();
             }
         });
+    }
+
+    public initFilterEditor() : void {
+        monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+            target: monaco.languages.typescript.ScriptTarget.ES2016,
+            allowNonTsExtensions: true,
+            moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+            module: monaco.languages.typescript.ModuleKind.CommonJS,
+            noEmit: true,
+            typeRoots: ["node_modules/@types"]
+        });            
+        monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+            noSemanticValidation: false,
+            noSyntaxValidation: false
+        });
+        const filterUri     = monaco.Uri.parse("file:///query-filter.ts");
+        this.filterModel   = monaco.editor.createModel(null, "typescript", filterUri);
+        app.filterEditor.setModel (this.filterModel);
+
+
+        app.filterEditor.onKeyDown( (e) => {
+            this.onFilterKeyDown(e);
+        });
+        const testContent = `
+/** test docs for class */
+export class Test {
+    id      : string;
+    name	: string;
+}
+`;
+        monaco.editor.createModel(testContent, "typescript",	monaco.Uri.parse("file:///node_modules/@types/test.d.ts"));
+        // app.filterEditor.setModel(model);
+    }
+
+    private onFilterKeyDown(e: monaco.IKeyboardEvent) {
+        if (e.code == "Enter") {
+            app.applyFilter();
+            // e.stopPropagation (); 
+            // e.preventDefault ();
+        }
     }
 
     private loadMoreAvailable() {
@@ -196,14 +237,19 @@ export class Explorer
     }
 
     public getFilterValue() : string {
-        return entityFilter.value;
+        if (entityFilter)
+            return entityFilter.value;
+        return this.filterModel.getValue();
     }
 
     public async loadContainer (p: Resource, query: string)  : Promise<void> {
         const storedFilter  = this.config.filters[p.database]?.[p.container];
         const filter        = storedFilter && storedFilter[0] != undefined ? storedFilter[0] : 'o => o.id == "abc"';
-        entityFilter.value  = filter;
-
+        if (entityFilter) {
+            entityFilter.value  = filter;
+        } else {
+            this.filterModel.setValue(filter);
+        }
         setClass(explorerEl, !!query, "filterActive");
         
         const entityType        = app.getContainerSchema(p.database, p.container);

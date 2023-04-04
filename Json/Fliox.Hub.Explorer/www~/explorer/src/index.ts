@@ -762,7 +762,6 @@ export class App {
         return schemas;
     }
 
-    public              filterModel:        monaco.editor.ITextModel;
     public              requestModel:       monaco.editor.ITextModel;
     public              responseModel:      monaco.editor.ITextModel;
 
@@ -798,7 +797,6 @@ export class App {
         // this.setExplorerEditor("none");
         
         // --- setup JSON Schema for monaco
-        const filterUri     = monaco.Uri.parse("filter://query.ts");
         const requestUri    = monaco.Uri.parse("request://jsonRequest.json");
         const responseUri   = monaco.Uri.parse("request://jsonResponse.json");
         const eventUri      = monaco.Uri.parse("request://jsonEvent.json");
@@ -851,8 +849,7 @@ export class App {
                 scrollbar:              { vertical: "hidden", horizontal: "hidden" },
                 overviewRulerLanes:     0,
             });
-            this.filterModel    = monaco.editor.createModel(null, null, filterUri);
-            this.filterEditor.setModel (this.filterModel);
+            this.explorer.initFilterEditor();
         }
 
         // --- create Playground request editor
