@@ -65,7 +65,8 @@ type StringFilter = {
 type FilterTypes<T> =
     T extends string         ? StringFilter & (string | { }) : // remove string methods: at(), length, ...
     T extends number         ? number | { }                  : // remove Number methods: toFixed(), toString(), ...
-    T extends Array<infer U> ? List<U>
+//  T extends Array<infer U> ? List<U>
+    T extends (infer U)[]    ? List<U>                         // alternative for: Array<infer U>
     : Filter<T>
 
 export type Filter<T> = {

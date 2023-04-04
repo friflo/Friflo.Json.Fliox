@@ -146,15 +146,13 @@ export class Explorer
             moduleResolution:       monaco.languages.typescript.ModuleResolutionKind.NodeJs,
             module:                 monaco.languages.typescript.ModuleKind.CommonJS,
             noEmit:                 true,
-            noLib:                  true,
+            noLib:                  false,
             typeRoots: ["node_modules/@types"]
         });            
         monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
             noSemanticValidation: false,
             noSyntaxValidation: false
         });
-        // const hiddenAreas = [new monaco.Range(1, 1, 3,1)];
-        // (app.filterEditor as any).setHiddenAreas(hiddenAreas); // internal editor method
 
         const filterUri     = monaco.Uri.parse("file:///query-filter.ts");
         this.filterModel    = monaco.editor.createModel(null, "typescript", filterUri);
@@ -1290,7 +1288,8 @@ type StringFilter = {
 type FilterTypes<T> =
     T extends string         ? StringFilter & (string | { }) : // remove string methods: at(), length, ...
     T extends number         ? number | { }                  : // remove Number methods: toFixed(), toString(), ...
-    T extends Array<infer U> ? List<U>
+//  T extends Array<infer U> ? List<U>
+    T extends (infer U)[]    ? List<U>                         // alternative for: Array<infer U>
     : Filter<T>
 
 export type Filter<T> = {

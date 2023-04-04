@@ -15,7 +15,7 @@ monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
     moduleResolution:       monaco.languages.typescript.ModuleResolutionKind.NodeJs,
     module:                 monaco.languages.typescript.ModuleKind.CommonJS,
     noEmit:                 true,
-    noLib:                  true,
+    noLib:                  false,
     typeRoots:              ["node_modules/@types"]
 });
 
