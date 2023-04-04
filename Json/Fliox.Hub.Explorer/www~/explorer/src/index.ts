@@ -1,4 +1,4 @@
-/// <reference types="../../../../../node_modules/monaco-editor/monaco" />
+/// <reference types="./node_modules/monaco-editor/monaco" />
 
 import { el, Resource, Method, ConfigKey, Config, defaultConfig, getColorBasedOnBackground, MessageCategory } from "./types.js";
 import { Schema, MonacoSchema }                                 from "./schema.js";
