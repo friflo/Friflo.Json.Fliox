@@ -6,6 +6,7 @@ const schemas = [{
 	uri: 		"http://myserver/foo-schema.json#/definitions/Main",
 	fileMatch:  ["http://db/test.json"], // associate with our model
 	schema: {
+        // since monaco-editor v0.34.0 $ref must be an absolute uri - not relative "./foo-schema.json#/definitions/Main"
 		$ref: "http://myserver/foo-schema.json#/definitions/Main",
 	}
 },	
