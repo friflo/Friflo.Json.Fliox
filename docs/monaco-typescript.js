@@ -10,12 +10,13 @@
 
 // compiler options
 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-    target: monaco.languages.typescript.ScriptTarget.ES2016,
-    allowNonTsExtensions: true,
-    moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-    module: monaco.languages.typescript.ModuleKind.CommonJS,
-    noEmit: true,
-    typeRoots: ["node_modules/@types"]
+    target:                 monaco.languages.typescript.ScriptTarget.ES2016,
+    allowNonTsExtensions:   true,
+    moduleResolution:       monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+    module:                 monaco.languages.typescript.ModuleKind.CommonJS,
+    noEmit:                 true,
+    noLib:                  true,
+    typeRoots:              ["node_modules/@types"]
 });
 
 monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({

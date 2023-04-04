@@ -86,6 +86,7 @@ export class Explorer {
             moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
             module: monaco.languages.typescript.ModuleKind.CommonJS,
             noEmit: true,
+            noLib: true,
             typeRoots: ["node_modules/@types"]
         });
         monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
