@@ -152,25 +152,25 @@ When using a filter for a container query it is converted into an expression tre
 | &#124;&#124;  | or                       |
 | !             | not                      |
 
-| wildcard                  |                          |
-| ------------------------- | ------------------------ |
+| wildcard                  |                                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------- |
 | value.StartsWith(string)  | determine if value starts with the given string.  Equivalent to LIKE to 'string%'     |
 | value.EndsWith(string)    | determine if value ends with the given string.    Equivalent to LIKE to '%string'     |
 | value.Contains(string)    | determine if value contains the given string.     Equivalent to LIKE to '%string%'    |
 
-| arithmetic    |                                                                   |
-| ------------- | ----------------------------------------------------------------- |
-| +             | add                                                               |
-| -             | subtract                                                          |
-| *             | multiply                                                          |
-| /             | divide                                                            |
-| %             | modulo                                                            |
-| Abs(number)         | absolute value of the specified number                            |
-| Ceiling(number)     | smallest integral value greater or equal to the specified number  |
-| Floor(number)       | largest integral value less or equal to the specified number      |
-| Exp(number)         | e raised to the specified power                                   |
-| Log(number)         | logarithm of a specified number                                   |
-| Sqrt(number)        | square root of a specified number                                 |
+| arithmetic        |                                                                   |
+| ----------------- | ----------------------------------------------------------------- |
+| +                 | add                                                               |
+| -                 | subtract                                                          |
+| *                 | multiply                                                          |
+| /                 | divide                                                            |
+| %                 | modulo                                                            |
+| Abs(number)       | absolute value of the specified number                            |
+| Ceiling(number)   | smallest integral value greater or equal to the specified number  |
+| Floor(number)     | largest integral value less or equal to the specified number      |
+| Exp(number)       | e raised to the specified power                                   |
+| Log(number)       | logarithm of a specified number                                   |
+| Sqrt(number)      | square root of a specified number                                 |
 
 | aggregate                       |                                                                     |
 | ------------------------------- | ------------------------------------------------------------------- |
