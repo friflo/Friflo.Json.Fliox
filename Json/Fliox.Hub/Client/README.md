@@ -163,7 +163,7 @@ When using a filter for a container query it is converted into an expression tre
 | +             | add                                                               |
 | -             | subtract                                                          |
 | *             | multiply                                                          |
-| /             | device                                                            |
+| /             | divide                                                            |
 | %             | modulo                                                            |
 | Abs(number)         | absolute value of the specified number                            |
 | Ceiling(number)     | smallest integral value greater or equal to the specified number  |
@@ -178,7 +178,7 @@ When using a filter for a container query it is converted into an expression tre
 | items.Max(i => i.Property)      | maximum value of a collection                                     |
 | items.Sum(i => i.Property)      | sum of a values within a collection                               |
 | items.Average(i => i.Property)  | average of values within a collection                             |
-| items.Count(i => bool)          | element counts satisfying a predicate function within collection  |
+| items.Count(i => bool)          | count of elements satisfying a predicate function within collection  |
 
 
 
