@@ -136,7 +136,7 @@ The LINQ filter syntax is an [infix notation](https://en.wikipedia.org/wiki/Infi
 When using a filter for a container query it is converted into an expression tree. Each node in the tree is an operation.
 [Supported operations](../../../Json.Tests/assets~/Schema/Markdown/Filter/class-diagram.md)
 
-### LINQ operators
+### LINQ operators and methods
 | compare       |                          |
 | ------------- | ------------------------ |
 | ==            | equals                   |
@@ -152,14 +152,33 @@ When using a filter for a container query it is converted into an expression tre
 | &#124;&#124;  | or                       |
 | !             | not                      |
 
-| arithmetic    |                          |
-| ------------- | ------------------------ |
-| +             | add                      |
-| -             | subtract                 |
-| *             | multiply                 |
-| /             | device                   |
-| %             | modulo                   |
+| string                    |                          |
+| ------------------------- | ------------------------ |
+| value.StartsWith(string)  | determine if value starts with the given string.  Equivalent to LIKE to 'string%'     |
+| value.EndsWith(string)    | determine if value ends with the given string.    Equivalent to LIKE to '%string'     |
+| value.Contains(string)    | determine if value contains the given string.     Equivalent to LIKE to '%string%'    |
 
+| arithmetic    |                                                                   |
+| ------------- | ----------------------------------------------------------------- |
+| +             | add                                                               |
+| -             | subtract                                                          |
+| *             | multiply                                                          |
+| /             | device                                                            |
+| %             | modulo                                                            |
+| Abs(number)         | absolute value of the specified number                            |
+| Ceiling(number)     | smallest integral value greater or equal to the specified number  |
+| Floor(number)       | largest integral value less or equal to the specified number      |
+| Exp(number)         | e raised to the specified power                                   |
+| Log(number)         | logarithm of a specified number                                   |
+| Sqrt(number)        | square root of a specified number                                 |
+
+| aggregate                       |                                                                   |
+| ------------------------------- | ----------------------------------------------------------------- |
+| items.Min(i => i.Property)      | minimum value of a collection                                     |
+| items.Max(i => i.Property)      | maximum value of a collection                                     |
+| items.Sum(i => i.Property)      | sum of a values within a collection                               |
+| items.Average(i => i.Property)  | average of values within a collection                             |
+| items.Count(i => bool)          | element counts satisfying a predicate function within collection  |
 
 
 
