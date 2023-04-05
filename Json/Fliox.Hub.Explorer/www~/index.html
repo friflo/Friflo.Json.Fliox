@@ -172,12 +172,13 @@
             display: grid;
             grid-template-areas: 
                 "ex-filter      .           ex-filter-input     ex-filter-input     ex-filter-input"
+                ".              .           ex-bar0             ex-bar0             ex-bar0"
                 ".              .           ex-schema           .                   ex-action"
                 "ex-link-db     .           ex-link-container   .                   ex-link-entity"
                 "ex-result      ex-result   ex-result           ex-result           ex-result"
                 "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity";
             grid-template-columns:  150px var(--bar-width) 400px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
-            grid-template-rows:     40px 28px 19px 14px 1fr;
+            grid-template-rows:     30px 2px 28px 19px 14px 1fr;
             grid-gap:   0px;
         }
 
@@ -692,8 +693,12 @@
         <div class="editor" id="filterContainer" style="width: 100%;"></div>
     </div>
 
+    <div id="exBar0" style="grid-area: ex-bar0; cursor: ns-resize;" class="vbar"
+         onmousedown="app.startDrag(event, 'explorer', id, false)"></div>
+
     <!-- ------- schema link, entity command/type ------- -->
-    <div style="grid-area: ex-schema; display:flex; height: 23px; padding-top: 1px; overflow:hidden;">
+    <div style="grid-area: ex-schema; display:flex; height: 23px; padding-top: 1px; overflow:hidden; cursor: ns-resize;"
+         onmousedown="app.startDrag(event, 'explorer', 'exBar0', false)">
       <span  id="explorerTools"></span>
       <small id="catalogSchema" class="docLink" style="display: flex; justify-content: center; align-items: center;"></small>
       <span style="flex-grow: 1"></span>
@@ -701,7 +706,8 @@
         <span style="vertical-align: text-bottom; font-size: 10px;">💬</span>
       </div> -->
     </div>
-    <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px; padding-top: 1px;">
+    <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px; padding-top: 1px; cursor: ns-resize;"
+         onmousedown="app.startDrag(event, 'explorer', 'exBar0', false)">
         <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos - 1)">⏴</div>
         <div style="width:4px;"></div>
         <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos + 1)">⏵</div>

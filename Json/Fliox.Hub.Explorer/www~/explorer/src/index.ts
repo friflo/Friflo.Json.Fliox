@@ -850,14 +850,15 @@ export class App {
                 lineNumbers:            "off",
                 codeLens:               false,
                 renderLineHighlight:    "none",
-                lineDecorationsWidth:   1,          // Line decorations are placed between line numbers and the editor content. default 10px
-                scrollbar:              { vertical: "hidden", horizontal: "hidden" },
+                lineDecorationsWidth:   2,          // Line decorations are placed between line numbers and the editor content. default 10px
+                scrollbar:              { vertical: "visible", horizontal: "hidden" },
                 overviewRulerLanes:     0,
                 scrollBeyondLastLine:   false,      // avoid scrolling an additional line up when on bottom of editor
                 smoothScrolling:        true,       // when using mouse wheel
                 guides: {
                     indentation:            false   // hide vertical indentation lines
-                }
+                },
+                automaticLayout:        true
             });
             this.explorer.initFilterEditor();
         }
@@ -1084,6 +1085,11 @@ export class App {
             if (!cssRules) throw `cssRules not found: #${template}`;
             this.dragTemplate.style.gridTemplateColumns = cssRules.style.gridTemplateColumns;
         }
+        if (!this.dragTemplate.style.gridTemplateRows) {
+            const cssRules  = App.getCssRuleByName(`#${template}`);
+            if (!cssRules) throw `cssRules not found: #${template}`;
+            this.dragTemplate.style.gridTemplateRows = cssRules.style.gridTemplateRows;
+        }
         document.body.style.cursor = "ew-resize";
         document.body.onmousemove = (event)  => app.onDrag(event);
         document.body.onmouseup   = ()       => app.endDrag();
@@ -1099,10 +1105,12 @@ export class App {
             case "playground":          return [xy + "px", "var(--bar-width)", "1fr"];
             case "events":              return [xy + "px", "var(--bar-width)", "1fr"];
             case "explorer": {
-                const cols = this.dragTemplate.style.gridTemplateColumns.split(" ");
+                const col = this.dragTemplate.style.gridTemplateColumns.split(" ");
+                const row = this.dragTemplate.style.gridTemplateRows.split(" ");
                 switch (this.dragBar.id) { //  [150px var(--bar-width) 200px var(--bar-width) 1fr];
-                    case "exBar1":      return [xy + "px", cols[1], cols[2], cols[3]];
-                    case "exBar2":      return [cols[0], cols[1], xy + "px", cols[3]];
+                    case "exBar0":      return [xy + "px", row[1], row[2], row[3], row[4], row[5]];
+                    case "exBar1":      return [xy + "px", col[1], col[2], col[3]];
+                    case "exBar2":      return [col[0], col[1], xy + "px", col[3]];
                 }
                 break;
             }
