@@ -571,7 +571,7 @@
   </table>
   </div>
   <!-- [How To Create Tabs] https://www.w3schools.com/howto/howto_js_tabs.asp -->
-  <div style="grid-area: body-tabs; overflow:initial; white-space:nowrap; margin-top: 10px; display:flex;">
+  <div style="grid-area: body-tabs; overflow:hidden; white-space:nowrap; margin-top: 10px; display:flex;">
     <div id="toggleDescription" onclick="app.toggleDescription()" style="border-bottom: 1px solid var(--tab-border); margin: 0;" title="toggle Hub description">
         <div class="toggleDescription" ></div>
     </div>
@@ -632,7 +632,7 @@
       <small id="socketStatus" class="inline">disconnected</small> &nbsp;&nbsp;&nbsp;&nbsp;
     </div>
 
-    <div style="grid-area: pl-title-req; padding-left: 7px;">
+    <div style="grid-area: pl-title-req; overflow: hidden; padding-left: 7px;">
         <small>
             <a href="./schema/protocol/html/schema.html#Friflo.Json.Fliox.Hub.Protocol.SyncRequest" class="docLink"
                title="open request definition in new tab"  target="_blank" rel="noopener noreferrer"">SyncRequest</a>
@@ -644,7 +644,7 @@
         </div>
     </div>
     
-    <div style="grid-area: pl-title-resp; padding-right: 7px;" class="nobreak">
+    <div style="grid-area: pl-title-resp; overflow: hidden; padding-right: 7px;" class="nobreak">
       <small>
         <a href="./schema/protocol/html/schema.html#Friflo.Json.Fliox.Hub.Protocol.SyncResponse" class="docLink"
            title="open response definition in new tab"  target="_blank" rel="noopener noreferrer">SyncResponse</a>
@@ -658,11 +658,11 @@
     </div>
 
     <!-- used overflow: visible; to allow editor tooltip warning displayed outside editor rectangle -->
-    <div  style="grid-area: pl-request; overflow: visible;">
+    <div  style="grid-area: pl-request; overflow: hidden;">
         <div class="editor" id="requestContainer"></div>
     </div>
     <div id="plBar" style="grid-area: pl-bar; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'playground', id, true)"></div>
-    <div class="editor" style="grid-area: pl-response; overflow: visible;">
+    <div class="editor" style="grid-area: pl-response; overflow: hidden;">
         <div class="editor" id="responseContainer"></div>
     </div>
   </div>
@@ -753,7 +753,7 @@
      --><span id="readEntitiesCount"  style="opacity: 0.7;"></span>
         </small>
     </div>
-    <div style="grid-area: ex-link-entity; overflow:visible; grid-template-columns: 200px 5px 1fr; white-space:nowrap; padding-left: 2px;">
+    <div style="grid-area: ex-link-entity; overflow:hidden; grid-template-columns: 200px 5px 1fr; white-space:nowrap; padding-left: 2px;">
         <span id="entityHeader" style="display: none;">
             <small style="display: flex; align-items: center;">
                 <a     id="entityIdsContainer" href="#" style="opacity:0.7; margin-right:3px;"></a>

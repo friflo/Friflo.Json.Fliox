@@ -725,29 +725,19 @@ export class App {
             monacoSchemas.push(eventListSchema);
         }
         this.addSchemas(monacoSchemas);
+        const defaultOpt = {
+            fixedOverflowWidgets: true // ensure tooltip's / popups are not clipped by parent elements with style overflow:hidden
+        };
         // --- create Explorer filter editor
         if (filterContainer) {
-            this.filterEditor = monaco.editor.create(filterContainer, {
-                minimap: { enabled: false },
-                folding: false,
-                lineNumbers: "off",
-                codeLens: false,
-                renderLineHighlight: "none",
-                lineDecorationsWidth: 2,
-                scrollbar: { vertical: "visible", horizontal: "hidden" },
-                overviewRulerLanes: 0,
-                scrollBeyondLastLine: false,
-                smoothScrolling: true,
-                guides: {
+            this.filterEditor = monaco.editor.create(filterContainer, Object.assign({ minimap: { enabled: false }, folding: false, lineNumbers: "off", codeLens: false, renderLineHighlight: "none", lineDecorationsWidth: 2, scrollbar: { vertical: "visible", horizontal: "hidden" }, overviewRulerLanes: 0, scrollBeyondLastLine: false, smoothScrolling: true, guides: {
                     indentation: false // hide vertical indentation lines
-                },
-                automaticLayout: true
-            });
+                }, automaticLayout: true }, defaultOpt));
             this.explorer.initFilterEditor();
         }
         // --- create Playground request editor
         {
-            this.requestEditor = monaco.editor.create(requestContainer, {});
+            this.requestEditor = monaco.editor.create(requestContainer, defaultOpt);
             this.requestModel = monaco.editor.createModel(null, "json", requestUri);
             this.requestEditor.setModel(this.requestModel);
             const defaultRequest = `{
@@ -764,13 +754,13 @@ export class App {
         }
         // --- create Playground response editor
         {
-            this.responseEditor = monaco.editor.create(responseContainer, {});
+            this.responseEditor = monaco.editor.create(responseContainer, defaultOpt);
             this.responseModel = monaco.editor.createModel(null, "json", responseUri);
             this.responseEditor.setModel(this.responseModel);
         }
         // --- create entity editor
         {
-            this.entityEditor = monaco.editor.create(entityContainer, {});
+            this.entityEditor = monaco.editor.create(entityContainer, defaultOpt);
             this.entityEditor.onMouseDown((e) => {
                 if (!e.event.ctrlKey)
                     return;
@@ -785,7 +775,7 @@ export class App {
         }
         // --- create command value editor
         {
-            this.commandValueEditor = monaco.editor.create(commandValue, {});
+            this.commandValueEditor = monaco.editor.create(commandValue, defaultOpt);
             // this.commandValueModel   = monaco.editor.createModel(null, "json");
             // this.commandValueEditor.setModel(this.commandValueModel);
             //this.commandValueEditor.setValue("{}");
@@ -793,7 +783,7 @@ export class App {
         this.editor.initEditor(this.entityEditor, this.commandValueEditor);
         // --- create subscription event editor
         {
-            this.eventsEditor = monaco.editor.create(eventsContainer, {});
+            this.eventsEditor = monaco.editor.create(eventsContainer, defaultOpt);
             const eventModel = monaco.editor.createModel(null, "json", eventUri);
             this.eventsEditor.setModel(eventModel);
             this.eventsEditor.setValue(eventsInfo);
