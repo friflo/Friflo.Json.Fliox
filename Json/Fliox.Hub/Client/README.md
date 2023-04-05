@@ -118,6 +118,52 @@ public static async Task AccessDatabase() {
 }
 ```
 
+## Query filter
+
+Query filters are used to extract only the entities from a container that fullfil the specified filter condition.  
+Filters are lambda expressions using the [LINQ](https://en.wikipedia.org/wiki/Language_Integrated_Query) syntax of **.NET**.
+E.g.
+```csharp
+store.articles.Query(o => o.name == "Bread")
+```
+
+The **same filter** expression can also be used for filtering entities of the selected container in the [Hub Explorer](../../Fliox.Hub.Explorer/README.md).
+```typescript
+o => o.name == "Bread"
+```
+
+The LINQ filter syntax is an [infix notation](https://en.wikipedia.org/wiki/Infix_notation). Its intention is to be compact and easy to read by humans.  
+When using a filter for a container query it is converted into an expression tree. Each node in the tree is an operation.
+[Supported operations](../../../Json.Tests/assets~/Schema/Markdown/Filter/class-diagram.md)
+
+### LINQ operators
+| compare       |                          |
+| ------------- | ------------------------ |
+| ==            | equals                   |
+| !=            | not equals               |
+| <             | less than                |
+| <=            | less than or equals      |
+| >             | greater than             |
+| >=            | greater than or equals   |
+
+| boolean       |                          |
+| ------------- | ------------------------ |
+| &&            | and                      |
+| &#124;&#124;  | or                       |
+| !             | not                      |
+
+| arithmetic    |                          |
+| ------------- | ------------------------ |
+| +             | add                      |
+| -             | subtract                 |
+| *             | multiply                 |
+| /             | device                   |
+| %             | modulo                   |
+
+
+
+
+
 ## Schema generation
 
 As mentioned above `ShopStore` also defines a database schema.  
