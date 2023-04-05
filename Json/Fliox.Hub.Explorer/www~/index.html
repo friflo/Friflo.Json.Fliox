@@ -320,7 +320,7 @@
         .applyFilter        { cursor: pointer; border-radius: 2px; width: 28px; height: 14px; display:inline-block; text-align: center;
                               margin-right: 1px; font-size: 11px; padding-top: 3px; padding-bottom: 3px; margin-top: 2px; }
         .applyFilter:hover  { background-color: var(--tab-hover); }
-        .applyFilter:active { background-color: var(--background3); font-size: 10px; box-shadow: inset 1px 1px 1px #00000010; }
+        .applyFilter:active { background-color: var(--background3); box-shadow: inset 1px 1px 1px #00000010; }
 
                       #entityFilter         { opacity: 0.3; }
                       #removeFilter         { visibility: hidden; }
@@ -651,7 +651,7 @@
       </small> <small id="response-state"></small>
       
       <span style="float:right;">
-        <small style="opacity: 0.7; cursor: default;" title="all WebSocket messages: request, response & event &#10;DevTools · Network · ws-* · Messages">🛈</small>&nbsp;
+        <small style="opacity: 0.7; cursor: default;" title="all WebSocket messages: request, response & event &#10;DevTools · Network · ws-* · Messages">ⓘ</small>&nbsp;
         <small>events: <span id="subscriptionCount">0</span></small>&nbsp;
         <code style="font-weight: bold">"seq": <span id="subscriptionSeq">-</span></code>
       </span>
@@ -673,16 +673,16 @@
     <!-- ------- filter ------- -->
     <div id="filterRow" style="grid-area: ex-filter; visibility: hidden; margin-top: -2px;">
       <div style="float: right; overflow: hidden; height: 28px;">
-         <a id="removeFilter" style="width: 20px; color: red; font-weight: bold; margin-left: 2px;"
-            href="#" class="applyFilter" title="Remove filter (Ctrl + 🡄)" onclick="app.removeFilter()">✖</a><!--
-      --><a href="#" class="applyFilter" title="Apply filter (Ctrl + Enter)"  onclick="app.applyFilter()">🔎</a><!--
-      --><a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md#query-filter"
-            style="font-size: 12px; margin-right: 5px; opacity: 0.4;" target='_blank'
-            title='open documentation&#013;query filter ⊂ LINQ where ≈ SQL WHERE&#013;e.g.  o => o.id=="abc"&#013;'>🛈</a><!--
-      --><a id="filterLink" title="open filter in new tab" style="opacity: 0.7;" href="#" target="_blank" onclick="app.updateFilterLink()"><!--
-        --><small>filter</small>
-         </a>
-         <small style="margin-left: 5px; opacity: 0.5;" title="parameter o used for lambda expression body"></small>
+        <a id="removeFilter" style="width: 20px; color: red; font-weight: bold; margin-left: 2px;"
+           href="#" class="applyFilter" title="Remove filter (Ctrl + 🡄)" onclick="app.removeFilter()">✖</a>
+        <a href="#" class="applyFilter" title="Apply filter (Ctrl + Enter)"  onclick="app.applyFilter()">🔎</a>
+        <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md#query-filter"
+           class="docLink" style="font-size: 10px; margin-left: -3px; margin-right: 3px;" target='_blank'
+           title='open documentation&#013;query filter ⊂ LINQ where ≈ SQL WHERE&#013;e.g.  o => o.id=="abc"'>ⓘ</a>
+        <a id="filterLink" title="open filter in new tab" style="opacity: 0.7;" href="#" target="_blank" onclick="app.updateFilterLink()">
+          <small>filter</small>
+        </a>
+        <small style="margin-left: 5px; opacity: 0.5;" title="parameter o used for lambda expression body"></small>
       </div>
     </div>
     <div id="filterArea"style="grid-area: ex-filter-input; display: flex; visibility: hidden;">
@@ -697,17 +697,15 @@
          onmousedown="app.startDrag(event, 'explorer', id, false)"></div>
 
     <!-- ------- schema link, entity command/type ------- -->
-    <div style="grid-area: ex-schema; display:flex; height: 23px; padding-top: 1px; overflow:hidden; cursor: ns-resize;"
-         onmousedown="app.startDrag(event, 'explorer', 'exBar0', false)">
+    <div style="grid-area: ex-schema; display:flex; height: 23px; overflow:hidden;">
       <span  id="explorerTools"></span>
       <small id="catalogSchema" class="docLink" style="display: flex; justify-content: center; align-items: center;"></small>
-      <span style="flex-grow: 1"></span>
+      <span style="flex-grow: 1; cursor: ns-resize;" onmousedown="app.startDrag(event, 'explorer', 'exBar0', false)"></span>
       <!-- <div title="events" class="navigate" onclick="app.editor.showEvents()">
         <span style="vertical-align: text-bottom; font-size: 10px;">💬</span>
       </div> -->
     </div>
-    <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px; padding-top: 1px; cursor: ns-resize;"
-         onmousedown="app.startDrag(event, 'explorer', 'exBar0', false)">
+    <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px;">
         <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos - 1)">⏴</div>
         <div style="width:4px;"></div>
         <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos + 1)">⏵</div>
@@ -724,6 +722,7 @@
             </div> -->
             &nbsp;
             <small id="entityType" title="entity type" style="display: flex; justify-content: center; align-items: center;"><span style="opacity: 0.4;">entity type</span></small>
+            <span style="flex-grow: 1; cursor: ns-resize;" onmousedown="app.startDrag(event, 'explorer', 'exBar0', false)"></span>
         </span>
         <span id="commandTools" style="display: none;">
             <button type="button" onclick="app.editor.sendCommand()" title="Send command/message using POST (Ctrl+S)">Send</button>
@@ -736,6 +735,7 @@
         </span>
         <span id="databaseTools" style="display: none;">
             <small id="databaseLabel" title="database schema" style="display: flex; justify-content: center; align-items: center;"></small>
+            <span style="flex-grow: 1; cursor: ns-resize;" onmousedown="app.startDrag(event, 'explorer', 'exBar0', false)"></span>
         </span>
         <span id="eventTools" style="display: none;">
             <small title="subscription events" style="display: flex; justify-content: center; align-items: center;">Subscription events</small>
