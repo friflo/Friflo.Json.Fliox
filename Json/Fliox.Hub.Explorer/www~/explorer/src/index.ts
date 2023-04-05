@@ -850,6 +850,7 @@ export class App {
                 lineNumbers:            "off",
                 codeLens:               false,
                 renderLineHighlight:    "none",
+                lineDecorationsWidth:   1,          // Line decorations are placed between line numbers and the editor content. default 10px
                 scrollbar:              { vertical: "hidden", horizontal: "hidden" },
                 overviewRulerLanes:     0,
                 scrollBeyondLastLine:   false,      // avoid scrolling an additional line up when on bottom of editor

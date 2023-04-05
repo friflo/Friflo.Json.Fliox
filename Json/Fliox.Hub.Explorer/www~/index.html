@@ -478,6 +478,14 @@
         #databaseInfo.selected              { background-color: var(--selected-color); }
         #databaseInfo:hover                 { background-color: var(--item-hover); }
 
+        /*--- filter editor ---*/
+        #filterArea              > div .monaco-editor-background    { background-color: var(--background);        }
+        #explorer.filterActive   > div .monaco-editor-background,
+        #filterArea:focus-within > div .monaco-editor-background    { background-color: var(--background2); }
+        #filterArea                 { opacity: 0.5; }
+        #filterArea:focus-within,
+        .filterActive #filterArea   { opacity: 1; }
+
         .command                    { display: none; padding-left: 2px; padding-right: 2px; font-size: 12px; }
         .command:hover              { background-color: var(--oas-color); color: white;  }
         .command:active             { background-color:#22ee22; }

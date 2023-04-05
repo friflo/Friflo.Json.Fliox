@@ -733,6 +733,7 @@ export class App {
                 lineNumbers: "off",
                 codeLens: false,
                 renderLineHighlight: "none",
+                lineDecorationsWidth: 1,
                 scrollbar: { vertical: "hidden", horizontal: "hidden" },
                 overviewRulerLanes: 0,
                 scrollBeyondLastLine: false,
