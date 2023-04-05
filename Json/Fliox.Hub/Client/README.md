@@ -146,13 +146,13 @@ When using a filter for a container query it is converted into an expression tre
 | >             | greater than             |
 | >=            | greater than or equals   |
 
-| boolean       |                          |
+| logical       |                          |
 | ------------- | ------------------------ |
 | &&            | and                      |
 | &#124;&#124;  | or                       |
 | !             | not                      |
 
-| string                    |                          |
+| wildcard                  |                          |
 | ------------------------- | ------------------------ |
 | value.StartsWith(string)  | determine if value starts with the given string.  Equivalent to LIKE to 'string%'     |
 | value.EndsWith(string)    | determine if value ends with the given string.    Equivalent to LIKE to '%string'     |
@@ -172,13 +172,18 @@ When using a filter for a container query it is converted into an expression tre
 | Log(number)         | logarithm of a specified number                                   |
 | Sqrt(number)        | square root of a specified number                                 |
 
-| aggregate                       |                                                                   |
-| ------------------------------- | ----------------------------------------------------------------- |
-| items.Min(i => i.Property)      | minimum value of a collection                                     |
-| items.Max(i => i.Property)      | maximum value of a collection                                     |
-| items.Sum(i => i.Property)      | sum of a values within a collection                               |
-| items.Average(i => i.Property)  | average of values within a collection                             |
-| items.Count(i => bool)          | count of elements satisfying a predicate function within collection  |
+| aggregate                       |                                                                     |
+| ------------------------------- | ------------------------------------------------------------------- |
+| items.Min(i =>     i.Property)  | minimum value of a collection                                       |
+| items.Max(i =>     i.Property)  | maximum value of a collection                                       |
+| items.Sum(i =>     i.Property)  | sum of a values within a collection                                 |
+| items.Average(i => i.Property)  | average of values within a collection                               |
+| items.Count(i => condition)     | count of elements satisfying a condition within collection          |
+
+| quantify                        |                                                                     |
+| ------------------------------- | ------------------------------------------------------------------- |
+| items.All(i => condition)       | determines whether all elements of a collection satisfy a condition |
+| items.Any(i => condition )      | determines whether any element of a collection satisfy a condition  |
 
 
 
