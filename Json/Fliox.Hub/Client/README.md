@@ -120,14 +120,16 @@ public static async Task AccessDatabase() {
 
 ## Query filter
 
-Query filters are used to extract only the entities from a container that fullfil the specified filter condition.  
-Filters are lambda expressions using the [LINQ](https://en.wikipedia.org/wiki/Language_Integrated_Query) syntax of **.NET**.
-E.g.
+Query filters are **LINQ** expressions used to extract only the entities from a container that fullfil the specified filter condition.  
+LINQ filters are the counterpart of the **WHERE** clause in **SQL** statements.  
+In contrast to **SQL** statements **LINQ** has compiler support and enable code navigation, searching and refactoring.
+
+Query filters are lambda expressions using the [LINQ](https://en.wikipedia.org/wiki/Language_Integrated_Query) syntax of **.NET**. E.g.
 ```csharp
 store.articles.Query(o => o.name == "Bread")
 ```
 
-The **same filter** expression can also be used for filtering entities of the selected container in the [Hub Explorer](../../Fliox.Hub.Explorer/README.md).
+The **same expression** can also be used to filter entities of the selected container in the [Hub Explorer](../../Fliox.Hub.Explorer/README.md).
 ```typescript
 o => o.name == "Bread"
 ```
