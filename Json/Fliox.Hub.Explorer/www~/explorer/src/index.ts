@@ -1084,12 +1084,8 @@ export class App {
     private dragOffset:             number;
     private dragHorizontal:         boolean;
 
-    public startDrag(event: MouseEvent, template: string, bar: string, horizontal: boolean): void {
-        // console.log(`drag start: ${event.offsetX}, ${template}, ${bar}`)
-        this.dragHorizontal = horizontal;
-        this.dragOffset     = horizontal ? event.offsetX : event.offsetY;
+    private setInitialGridTemplates(template: string) {
         this.dragTemplate   = el(template);
-        this.dragBar        = el(bar);
         if (!this.dragTemplate.style.gridTemplateColumns) {
             const cssRules  = App.getCssRuleByName(`#${template}`);
             if (!cssRules) throw `cssRules not found: #${template}`;
@@ -1100,6 +1096,23 @@ export class App {
             if (!cssRules) throw `cssRules not found: #${template}`;
             this.dragTemplate.style.gridTemplateRows = cssRules.style.gridTemplateRows;
         }
+    }
+
+    public toggleFilterBar() : void {
+        this.setInitialGridTemplates("explorer");
+        const explorerEl    = el("explorer");
+        const rows          = this.dragTemplate.style.gridTemplateRows.split(" ");
+        rows[0]             = rows[0] == "0px" ? "40px" : "0px";
+        explorerEl.style.gridTemplateRows = rows.join(" ");
+        this.layoutEditors();
+    }
+
+    public startDrag(event: MouseEvent, template: string, bar: string, horizontal: boolean): void {
+        // console.log(`drag start: ${event.offsetX}, ${template}, ${bar}`)
+        this.dragHorizontal = horizontal;
+        this.dragOffset     = horizontal ? event.offsetX : event.offsetY;
+        this.dragBar        = el(bar);
+        this.setInitialGridTemplates(template);
         document.body.style.cursor = "ew-resize";
         document.body.onmousemove = (event)  => app.onDrag(event);
         document.body.onmouseup   = ()       => app.endDrag();

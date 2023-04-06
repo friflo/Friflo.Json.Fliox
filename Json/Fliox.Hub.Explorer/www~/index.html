@@ -178,7 +178,7 @@
                 "ex-result      ex-result   ex-result           ex-result           ex-result"
                 "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity";
             grid-template-columns:  150px var(--bar-width) 400px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
-            grid-template-rows:     40px 5px 28px 19px 14px 1fr;
+            grid-template-rows:     0px 5px 28px 19px 14px 1fr;
             grid-gap:   0px;
         }
 
@@ -707,7 +707,7 @@
     </div>
     <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px;">
         <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos - 1)">⏴</div>
-        <div style="width:4px;"></div>
+        <div style="width:3px;"></div>
         <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos + 1)">⏵</div>
         <div style="width:8px;"></div>
         <span id="entityTools" style="display: contents;">
