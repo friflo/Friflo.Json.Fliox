@@ -1123,16 +1123,32 @@ Explorer.defaultColumnWidth = 50;
 Explorer.maxColumnWidth = 200;
 const filterSource = `
 // ------------- query Filter<T> -----------------
-const PI:   number = 3.141592653589793;
-const E:    number = 2.718281828459045;
-const Tau:  number = 6.283185307179586;
+type String = {
+    /** Return the length of the string. */
+    readonly Length : number,
+    
+    /** Return **true** if the value matches the beginning of the string. */
+    StartsWith  (value: string) : boolean,
+    /** Return **true** if the value matches the end of the string. */
+    EndsWith    (value: string) : boolean,
+    /** Return **true** if the value occurs within the string. */
+    Contains    (value: string) : boolean,
+} & (string | { }) // remove string methods: at(), length, ...
 
-function Abs    (value: number) : number { return 0; }
-function Log    (value: number) : number { return 0; }
-function Exp    (value: number) : number { return 0; }
-function Sqrt   (value: number) : number { return 0; }
-function Floor  (value: number) : number { return 0; }
-function Ceiling(value: number) : number { return 0; }
+
+// type Number = {} & (number | { })     // remove number methods: toFixed(), toString(), ...
+type Number = Pick<number, "valueOf">    // remove number methods: toFixed(), toString(), ... picked most useless method
+
+const PI:   Number = 3.141592653589793;
+const E:    Number = 2.718281828459045;
+const Tau:  Number = 6.283185307179586;
+
+function Abs    (value: number) : Number { return 0; }
+function Log    (value: number) : Number { return 0; }
+function Exp    (value: number) : Number { return 0; }
+function Sqrt   (value: number) : Number { return 0; }
+function Floor  (value: number) : Number { return 0; }
+function Ceiling(value: number) : Number { return 0; }
 
 /** Scalar object property like string, number or boolean. */
 type Property = string | number | boolean;
@@ -1146,33 +1162,21 @@ type List<T> = {
     Any     (filter: (o: T) => boolean) : boolean;
 
     /** Return the minimum value of an array. */
-    Min     (filter: (o: T) => Property) : number;
+    Min     (filter: (o: T) => Property) : Number;
     /** Return the maximum value of an array. */
-    Max     (filter: (o: T) => Property) : number;
+    Max     (filter: (o: T) => Property) : Number;
     /** Return the sum of all values. */
-    Sum     (filter: (o: T) => Property) : number;
+    Sum     (filter: (o: T) => Property) : Number;
     /** Return the average of all values. */
-    Average (filter: (o: T) => Property) : number;
+    Average (filter: (o: T) => Property) : Number;
 
     /** Counts the elements in an array which satisfy the filter condition. */
-    Count   (filter: (o: T) => boolean) : number;
-}
-
-type StringFilter = {
-    /** Return the length of the string. */
-    readonly Length : number,
-    
-    /** Return **true** if the value matches the beginning of the string. */
-    StartsWith  (value: string) : boolean,
-    /** Return **true** if the value matches the end of the string. */
-    EndsWith    (value: string) : boolean,
-    /** Return **true** if the value occurs within the string. */
-    Contains    (value: string) : boolean,
+    Count   (filter: (o: T) => boolean)  : Number;
 }
 
 type FilterTypes<T> =
-    T extends string         ? StringFilter & (string | { }) : // remove string methods: at(), length, ...
-    T extends number         ? number | { }                  : // remove Number methods: toFixed(), toString(), ...
+    T extends string         ? String : 
+    T extends number         ? Number                  : 
 //  T extends Array<infer U> ? List<U>
     T extends (infer U)[]    ? List<U>                         // alternative for: Array<infer U>
     : Filter<T>

@@ -15,41 +15,6 @@ export type Filter<TModel> = {
 // type Str = Exclude<string, "length"> | { Length: number };
 
 // ------------- query Filter<T> -----------------
-const PI:   number = 3.141592653589793;
-const E:    number = 2.718281828459045;
-const Tau:  number = 6.283185307179586;
-
-function Abs    (value: number) : number { return 0; }
-function Log    (value: number) : number { return 0; }
-function Exp    (value: number) : number { return 0; }
-function Sqrt   (value: number) : number { return 0; }
-function Floor  (value: number) : number { return 0; }
-function Ceiling(value: number) : number { return 0; }
-
-/** Scalar object property like string, number or boolean. */
-type Property = string | number | boolean;
-
-type List<T> = {
-    /** Return the length of the array. */
-    readonly Length : number,
-    /** Return **true** if *all* the elements in a sequence satisfy the filter condition. */
-    All     (filter: (o: T) => boolean) : boolean;
-    /** Return **true** if *any* element in a sequence satisfy the filter condition. */
-    Any     (filter: (o: T) => boolean) : boolean;
-
-    /** Return the minimum value of an array. */
-    Min     (filter: (o: T) => Property) : number;
-    /** Return the maximum value of an array. */
-    Max     (filter: (o: T) => Property) : number;
-    /** Return the sum of all values. */
-    Sum     (filter: (o: T) => Property) : number;
-    /** Return the average of all values. */
-    Average (filter: (o: T) => Property) : number;
-
-    /** Counts the elements in an array which satisfy the filter condition. */
-    Count   (filter: (o: T) => boolean) : number;
-}
-
 type String = {
     /** Return the length of the string. */
     readonly Length : number,
@@ -63,9 +28,44 @@ type String = {
 } & (string | { }) // remove string methods: at(), length, ...
 
 
-type Number = number | { }                  // remove Number methods: toFixed(), toString(), ...
-// type Number = Pick<number, "valueOf">    // remove Number methods: toFixed(), toString(), ...
- 
+// type Number = {} & (number | { })     // remove number methods: toFixed(), toString(), ...
+type Number = Pick<number, "valueOf">    // remove number methods: toFixed(), toString(), ... picked most useless method
+
+const PI:   Number = 3.141592653589793;
+const E:    Number = 2.718281828459045;
+const Tau:  Number = 6.283185307179586;
+
+function Abs    (value: number) : Number { return 0; }
+function Log    (value: number) : Number { return 0; }
+function Exp    (value: number) : Number { return 0; }
+function Sqrt   (value: number) : Number { return 0; }
+function Floor  (value: number) : Number { return 0; }
+function Ceiling(value: number) : Number { return 0; }
+
+/** Scalar object property like string, number or boolean. */
+type Property = string | number | boolean;
+
+type List<T> = {
+    /** Return the length of the array. */
+    readonly Length : number,
+    /** Return **true** if *all* the elements in a sequence satisfy the filter condition. */
+    All     (filter: (o: T) => boolean) : boolean;
+    /** Return **true** if *any* element in a sequence satisfy the filter condition. */
+    Any     (filter: (o: T) => boolean) : boolean;
+
+    /** Return the minimum value of an array. */
+    Min     (filter: (o: T) => Property) : Number;
+    /** Return the maximum value of an array. */
+    Max     (filter: (o: T) => Property) : Number;
+    /** Return the sum of all values. */
+    Sum     (filter: (o: T) => Property) : Number;
+    /** Return the average of all values. */
+    Average (filter: (o: T) => Property) : Number;
+
+    /** Counts the elements in an array which satisfy the filter condition. */
+    Count   (filter: (o: T) => boolean)  : Number;
+}
+
 type FilterTypes<T> =
     T extends string         ? String : 
     T extends number         ? Number                  : 
@@ -89,7 +89,7 @@ query(o => true);
 
 query<IntClass>(o => o.id  == 3);
 query<IntClass>(o => o.id  == 3);
-query<IntClass>(o => o.id  == "3"); // should error
+
 
 // --- ensure presence string filter methods
 query<Article>(o => o.id  == "3");
@@ -99,12 +99,14 @@ query<Article>(o => o.id.EndsWith  ("abc"));
 query<Article>(o => o.id.Contains  ("abc"));
 
 // --- ensure absence of standard string & number methods
-// @ts-expect-error : Property 'length' does not exist on type 'StringFilter'.
+// @ts-expect-error : Property 'length' does not exist on type String & {}'.
 query<Article>(o => o.id.length == 3);  // expect error!
-// @ts-expect-error : Property 'at' does not exist on type 'StringFilter'.
+// @ts-expect-error : Property 'at' does not exist on type 'String & {}'.
 query<Article>(o => o.id.at(1) == "d"); // expect error!
-// @ts-expect-error : Property 'toFixed' does not exist on type 'number | {}'.
+// @ts-expect-error : Property 'toFixed' does not exist on type 'Number'.
 query<TestType>(o => o.int32.toFixed() == 1);
+// @ts-expect-error :  This comparison appears to be unintentional because the types 'Number' and 'string' have no overlap
+query<IntClass>(o => o.id  == "3"); // should error
 
 // --- ensure presence standard scalar operator
 query<TestType> (o => o.derivedClass.amount == 1);
