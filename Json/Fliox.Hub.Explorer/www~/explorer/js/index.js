@@ -735,7 +735,7 @@ export class App {
         };
         // --- create Explorer filter editor
         if (filterContainer) {
-            this.filterEditor = monaco.editor.create(filterContainer, Object.assign({ minimap: { enabled: false }, folding: false, lineNumbers: "off", codeLens: false, renderLineHighlight: "none", lineDecorationsWidth: 2, scrollbar: { vertical: "visible", horizontal: "hidden" }, overviewRulerLanes: 0, scrollBeyondLastLine: false, smoothScrolling: true, guides: {
+            this.filterEditor = monaco.editor.create(filterContainer, Object.assign({ minimap: { enabled: false }, folding: false, lineNumbers: "off", codeLens: false, renderLineHighlight: "none", lineDecorationsWidth: 2, scrollbar: { vertical: "visible", horizontal: "auto" }, overviewRulerLanes: 0, scrollBeyondLastLine: false, smoothScrolling: true, guides: {
                     indentation: false // hide vertical indentation lines
                 }, automaticLayout: true }, defaultOpt));
             this.explorer.initFilterEditor();
