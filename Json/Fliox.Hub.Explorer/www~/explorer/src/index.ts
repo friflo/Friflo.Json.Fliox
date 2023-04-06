@@ -436,7 +436,7 @@ export class App {
 
 
     private             hostInfo:       HostInfo;
-    private             modelFiles:     ModelFiles[];
+    public              modelFiles:     ModelFiles[];
     public  readonly    clusterTree:    ClusterTree;
 
     private async loadCluster () {
@@ -1172,7 +1172,6 @@ export class App {
         this.playground.initExampleRequestList();
         // --- methods performing network requests - note: methods are not awaited
         this.loadCluster().then(() => {
-            this.explorer.createFilterTypes(this.modelFiles);
             if (this.hostInfo.routes.includes("/examples")) {
                 this.playground.addRemoteExamples("./examples");
             }

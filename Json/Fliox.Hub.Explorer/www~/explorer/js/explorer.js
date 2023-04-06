@@ -44,6 +44,7 @@ export class Explorer {
         this.selectedRows = new Map(); // Map<,> support insertion order
         this.explorerRows = new Map(); // Map<,> support insertion order
         this.touchMoveLoadMore = 0;
+        this.modelsCreated = false;
         this.config = config;
         const parent = entityExplorer.parentElement;
         // add { passive: true } for Lighthouse
@@ -94,9 +95,6 @@ export class Explorer {
             noSemanticValidation: false,
             noSyntaxValidation: false
         });
-        const filterUri = monaco.Uri.parse("file:///query-filter.ts");
-        this.filterModel = monaco.editor.createModel(null, "typescript", filterUri);
-        app.filterEditor.setModel(this.filterModel);
         // app.filterEditor.onKeyDown( (e) => { });
         app.filterEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
             app.applyFilter();
@@ -104,9 +102,23 @@ export class Explorer {
         app.filterEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Backspace, () => {
             app.removeFilter();
         });
-        monaco.editor.createModel(filterSource, "typescript", monaco.Uri.file("node_modules/@types/filter.d.ts"));
     }
-    createFilterTypes(modelFiles) {
+    /**
+     * This method create required "typescript" models on demand.
+     * Creating "typescript" models trigger monaco-editor to load required Typescript specific scripts like:
+     *      monaco-editor/min/vs/language/typescript/tsMode.js       23 Kb
+     *      monaco-editor/min/vs/language/typescript/tsWorker.js  4.700 MB
+     */
+    createFilterModels() {
+        if (this.modelsCreated) {
+            return;
+        }
+        this.modelsCreated = true;
+        const modelFiles = app.modelFiles;
+        const filterUri = monaco.Uri.parse("file:///query-filter.ts");
+        this.filterModel = monaco.editor.createModel(null, "typescript", filterUri);
+        app.filterEditor.setModel(this.filterModel);
+        monaco.editor.createModel(filterSource, "typescript", monaco.Uri.file("node_modules/@types/filter.d.ts"));
         for (const model of modelFiles) {
             for (const file of model.files) {
                 const uri = monaco.Uri.file(`node_modules/@types/${model.db}/${file.path}`);
@@ -125,6 +137,7 @@ export class Explorer {
     getFilterValue() {
         if (entityFilter)
             return entityFilter.value;
+        this.createFilterModels();
         const lines = this.filterModel.getValue().split("\n");
         const value = lines.slice(4).join("\n");
         return value;
@@ -134,6 +147,7 @@ export class Explorer {
             entityFilter.value = filter;
             return;
         }
+        this.createFilterModels();
         const schema = app.databaseSchemas[database];
         const schemaName = schema.schemaName;
         const text = `import  { ${schemaName} } from "${database}"
