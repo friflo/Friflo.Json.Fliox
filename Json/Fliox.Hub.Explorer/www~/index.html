@@ -281,7 +281,7 @@
         option[value=""][disabled]  {  display: none;  }
         option                      {  color: black; }
 
-        .vbar           { background-color: var(--background); }
+        .vbar           { background-color: var(--background); touch-action: none; /** prevent triggering browser default event like reload */ }
 
         .toggleDescription                      { width: 23px; height: 23px; transform: rotate(270deg) translate(-2px, 5px);
                                                   opacity: 1; cursor: pointer; border-radius: 2px; }
@@ -701,7 +701,7 @@
     <div style="grid-area: ex-schema; display:flex; height: 23px; overflow:hidden;">
       <span  id="explorerTools"></span>
       <small id="catalogSchema" class="docLink" style="display: flex; justify-content: center; align-items: center;"></small>
-      <span style="flex-grow: 1; cursor: ns-resize;" onpointerdown="app.startDrag(event, 'explorer', 'exBar0', false)"></span>
+      <span class="vbar" style="flex-grow: 1; cursor: ns-resize;" onpointerdown="app.startDrag(event, 'explorer', 'exBar0', false)"></span>
       <!-- <div title="events" class="navigate" onclick="app.editor.showEvents()">
         <span style="vertical-align: text-bottom; font-size: 10px;">💬</span>
       </div> -->
