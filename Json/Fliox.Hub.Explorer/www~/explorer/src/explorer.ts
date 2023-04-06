@@ -1,5 +1,6 @@
 
 import { FieldType, JsonType }  from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
+import { ModelFiles }           from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 import { Resource, Config, el, createEl, Entity, parseAst }     from "./types.js";
 import { App, app, setClass }                                   from "./index.js";
 import { EntityEditor }                                         from "./entity-editor.js";
@@ -148,11 +149,11 @@ export class Explorer
             noEmit:                 true,
             lib:                    ["es2016"], // omit DOM types
             noLib:                  false,
-            typeRoots: ["node_modules/@types"]
+            typeRoots:              ["node_modules/@types"]
         });            
         monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-            noSemanticValidation: false,
-            noSyntaxValidation: false
+            noSemanticValidation:   false,
+            noSyntaxValidation:     false
         });
 
         const filterUri     = monaco.Uri.parse("file:///query-filter.ts");
@@ -164,15 +165,12 @@ export class Explorer
         });
         app.filterEditor.addCommand (monaco.KeyMod.CtrlCmd | monaco.KeyCode.Backspace, () => {
             app.removeFilter();
-        });    
-        // const testContent = "/** test docs for class */\nexport class Test { id : string; name: string; }";
-        // monaco.editor.createModel(testContent, "typescript",	monaco.Uri.file("node_modules/@types/test.d.ts"));
+        });
         monaco.editor.createModel(filterSource, "typescript",	monaco.Uri.file("node_modules/@types/filter.d.ts"));
-        this.createFilterTypes();
     }
 
-    private createFilterTypes() {
-        const modelFiles = app.modelFiles;
+    public createFilterTypes(modelFiles: ModelFiles[]) : void
+    {
         for (const model of modelFiles) {
             for (const file of model.files) {
                 const uri = monaco.Uri.file(`node_modules/@types/${model.db}/${file.path}`);
