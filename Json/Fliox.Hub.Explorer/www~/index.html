@@ -172,8 +172,8 @@
             display: grid;
             grid-template-areas: 
                 "ex-filter      .           ex-filter-input     ex-filter-input     ex-filter-input"
-                ".              .           ex-bar0             ex-bar0             ex-bar0"
-                ".              .           ex-schema           .                   ex-action"
+                "ex-empty       .           ex-bar0             ex-bar0             ex-bar0"
+                "ex-empty       .           ex-schema           .                   ex-action"
                 "ex-link-db     .           ex-link-container   .                   ex-link-entity"
                 "ex-result      ex-result   ex-result           ex-result           ex-result"
                 "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity";
@@ -697,6 +697,7 @@
          onmousedown="app.startDrag(event, 'explorer', id, false)"></div>
 
     <!-- ------- schema link, entity command/type ------- -->
+    <div style="grid-area: ex-empty; overflow:hidden; z-index: 1; background-color: var(--background);"></div>
     <div style="grid-area: ex-schema; display:flex; height: 23px; overflow:hidden;">
       <span  id="explorerTools"></span>
       <small id="catalogSchema" class="docLink" style="display: flex; justify-content: center; align-items: center;"></small>

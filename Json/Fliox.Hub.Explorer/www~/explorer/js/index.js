@@ -965,8 +965,8 @@ export class App {
         var _a;
         const prev = this.dragBar.previousElementSibling;
         xy = xy - (this.dragHorizontal ? prev.offsetLeft : prev.offsetTop);
-        if (xy < 20)
-            xy = 20;
+        if (xy < 0)
+            xy = 0;
         // console.log (`drag x: ${x}`);
         switch (this.dragTemplate.id) {
             case "playground": return [xy + "px", "var(--bar-width)", "1fr"];
