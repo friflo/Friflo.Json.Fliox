@@ -50,7 +50,7 @@ type List<T> = {
     Count   (filter: (o: T) => boolean) : number;
 }
 
-type StringFilter = {
+type String = {
     /** Return the length of the string. */
     readonly Length : number,
     
@@ -60,11 +60,15 @@ type StringFilter = {
     EndsWith    (value: string) : boolean,
     /** Return **true** if the value occurs within the string. */
     Contains    (value: string) : boolean,
-}
+} & (string | { }) // remove string methods: at(), length, ...
 
+
+type Number = number | { }                  // remove Number methods: toFixed(), toString(), ...
+// type Number = Pick<number, "valueOf">    // remove Number methods: toFixed(), toString(), ...
+ 
 type FilterTypes<T> =
-    T extends string         ? StringFilter & (string | { }) : // remove string methods: at(), length, ...
-    T extends number         ? number | { }                  : // remove Number methods: toFixed(), toString(), ...
+    T extends string         ? String : 
+    T extends number         ? Number                  : 
 //  T extends Array<infer U> ? List<U>
     T extends (infer U)[]    ? List<U>                         // alternative for: Array<infer U>
     : Filter<T>
@@ -75,11 +79,20 @@ export type Filter<T> = {
 
 // ------------- query Filter<T> ----------------- end
 
+export class IntClass {
+    id        : number;
+}
+
 function query<T>(filter: (o: FilterTypes<T>) => boolean) { }
 
 query(o => true);
 
+query<IntClass>(o => o.id  == 3);
+query<IntClass>(o => o.id  == 3);
+query<IntClass>(o => o.id  == "3"); // should error
+
 // --- ensure presence string filter methods
+query<Article>(o => o.id  == "3");
 query<Article>(o => o.id.Length == 3);
 query<Article>(o => o.id.StartsWith("abc"));
 query<Article>(o => o.id.EndsWith  ("abc"));
