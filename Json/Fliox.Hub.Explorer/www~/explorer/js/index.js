@@ -927,25 +927,25 @@ export class App {
             child.style.height = pair.elem.clientHeight + "px";
         }
     }
-    setInitialGridTemplates(template) {
-        this.dragTemplate = el(template);
-        if (!this.dragTemplate.style.gridTemplateColumns) {
+    static copyGridTemplateStyle(template) {
+        const gridEl = el(template);
+        if (!gridEl.style.gridTemplateColumns) {
             const cssRules = App.getCssRuleByName(`#${template}`);
             if (!cssRules)
                 throw `cssRules not found: #${template}`;
-            this.dragTemplate.style.gridTemplateColumns = cssRules.style.gridTemplateColumns;
+            gridEl.style.gridTemplateColumns = cssRules.style.gridTemplateColumns;
         }
-        if (!this.dragTemplate.style.gridTemplateRows) {
+        if (!gridEl.style.gridTemplateRows) {
             const cssRules = App.getCssRuleByName(`#${template}`);
             if (!cssRules)
                 throw `cssRules not found: #${template}`;
-            this.dragTemplate.style.gridTemplateRows = cssRules.style.gridTemplateRows;
+            gridEl.style.gridTemplateRows = cssRules.style.gridTemplateRows;
         }
     }
     toggleFilterBar() {
-        this.setInitialGridTemplates("explorer");
+        App.copyGridTemplateStyle("explorer");
         const explorerEl = el("explorer");
-        const rows = this.dragTemplate.style.gridTemplateRows.split(" ");
+        const rows = explorerEl.style.gridTemplateRows.split(" ");
         rows[0] = rows[0] == "0px" ? "40px" : "0px";
         explorerEl.style.gridTemplateRows = rows.join(" ");
         this.layoutEditors();
@@ -955,10 +955,12 @@ export class App {
         this.dragHorizontal = horizontal;
         this.dragOffset = horizontal ? event.offsetX : event.offsetY;
         this.dragBar = el(bar);
-        this.setInitialGridTemplates(template);
+        this.dragTemplate = el(template);
+        App.copyGridTemplateStyle(template);
         document.body.style.cursor = "ew-resize";
-        document.body.onmousemove = (event) => app.onDrag(event);
-        document.body.onmouseup = () => app.endDrag();
+        document.body.onpointermove = (event) => app.onDrag(event);
+        document.body.onpointerup = (event) => app.endDrag(event);
+        this.dragBar.setPointerCapture(event.pointerId);
         event.preventDefault();
     }
     getGridColumns(xy) {
@@ -1003,7 +1005,8 @@ export class App {
         this.layoutEditors();
         event.preventDefault();
     }
-    endDrag() {
+    endDrag(event) {
+        this.dragBar.releasePointerCapture(event.pointerId);
         if (!this.dragTemplate)
             return;
         document.body.onmousemove = undefined;

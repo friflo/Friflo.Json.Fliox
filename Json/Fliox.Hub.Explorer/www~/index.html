@@ -480,12 +480,12 @@
         #databaseInfo:hover                 { background-color: var(--item-hover); }
 
         /*--- filter editor ---*/
-        #filterArea              > div .monaco-editor-background    { background-color: var(--background);        }
+    /* #filterArea              > div .monaco-editor-background    { background-color: var(--background);        }
         #explorer.filterActive   > div .monaco-editor-background,
         #filterArea:focus-within > div .monaco-editor-background    { background-color: var(--background2); }
         #filterArea                 { opacity: 0.5; }
         #filterArea:focus-within,
-        .filterActive #filterArea   { opacity: 1; }
+        .filterActive #filterArea   { opacity: 1; }  */
 
         .command                    { display: none; padding-left: 2px; padding-right: 2px; font-size: 12px; }
         .command:hover              { background-color: var(--oas-color); color: white;  }
@@ -661,7 +661,7 @@
     <div  style="grid-area: pl-request; overflow: hidden;">
         <div class="editor" id="requestContainer"></div>
     </div>
-    <div id="plBar" style="grid-area: pl-bar; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'playground', id, true)"></div>
+    <div id="plBar" style="grid-area: pl-bar; cursor: ew-resize;" class="vbar" onpointerdown="app.startDrag(event, 'playground', id, true)"></div>
     <div class="editor" style="grid-area: pl-response; overflow: hidden;">
         <div class="editor" id="responseContainer"></div>
     </div>
@@ -694,14 +694,14 @@
     </div>
 
     <div id="exBar0" style="grid-area: ex-bar0; cursor: ns-resize;" class="vbar"
-         onmousedown="app.startDrag(event, 'explorer', id, false)"></div>
+         onpointerdown="app.startDrag(event, 'explorer', id, false)"></div>
 
     <!-- ------- schema link, entity command/type ------- -->
     <div style="grid-area: ex-empty; overflow:hidden; z-index: 1; background-color: var(--background);"></div>
     <div style="grid-area: ex-schema; display:flex; height: 23px; overflow:hidden;">
       <span  id="explorerTools"></span>
       <small id="catalogSchema" class="docLink" style="display: flex; justify-content: center; align-items: center;"></small>
-      <span style="flex-grow: 1; cursor: ns-resize;" onmousedown="app.startDrag(event, 'explorer', 'exBar0', false)"></span>
+      <span style="flex-grow: 1; cursor: ns-resize;" onpointerdown="app.startDrag(event, 'explorer', 'exBar0', false)"></span>
       <!-- <div title="events" class="navigate" onclick="app.editor.showEvents()">
         <span style="vertical-align: text-bottom; font-size: 10px;">💬</span>
       </div> -->
@@ -723,7 +723,7 @@
             </div> -->
             &nbsp;
             <small id="entityType" title="entity type" style="display: flex; justify-content: center; align-items: center;"><span style="opacity: 0.4;">entity type</span></small>
-            <span style="flex-grow: 1; cursor: ns-resize;" onmousedown="app.startDrag(event, 'explorer', 'exBar0', false)"></span>
+            <span style="flex-grow: 1; cursor: ns-resize;" onpointerdown="app.startDrag(event, 'explorer', 'exBar0', false)"></span>
         </span>
         <span id="commandTools" style="display: none;">
             <button type="button" onclick="app.editor.sendCommand()" title="Send command/message using POST (Ctrl+S)">Send</button>
@@ -736,7 +736,7 @@
         </span>
         <span id="databaseTools" style="display: none;">
             <small id="databaseLabel" title="database schema" style="display: flex; justify-content: center; align-items: center;"></small>
-            <span style="flex-grow: 1; cursor: ns-resize;" onmousedown="app.startDrag(event, 'explorer', 'exBar0', false)"></span>
+            <span style="flex-grow: 1; cursor: ns-resize;" onpointerdown="app.startDrag(event, 'explorer', 'exBar0', false)"></span>
         </span>
         <span id="eventTools" style="display: none;">
             <small title="subscription events" style="display: flex; justify-content: center; align-items: center;">Subscription events</small>
@@ -785,14 +785,14 @@
       </div>
     </div>
 
-    <div id="exBar1" style="grid-area: ex-bar1; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id, true)"></div>
+    <div id="exBar1" style="grid-area: ex-bar1; cursor: ew-resize;" class="vbar" onpointerdown="app.startDrag(event, 'explorer', id, true)"></div>
 
     <div style="grid-area: ex-container; background-color: var(--background2); overflow: auto; overscroll-behavior: auto contain;">
       <div id="entityExplorer"  style="display: block; white-space:nowrap; outline: 0px solid transparent;"
            onkeydown="app.explorer.explorerKeyDown(event)" tabindex="0"></div>
     </div>
 
-    <div id="exBar2" style="grid-area: ex-bar2; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id, true)"></div>
+    <div id="exBar2" style="grid-area: ex-bar2; cursor: ew-resize;" class="vbar" onpointerdown="app.startDrag(event, 'explorer', id, true)"></div>
 
     <!-- used overflow: visible; to allow editor tooltip warning displayed outside editor rectangle -->
     <div id="explorerEdit" style="grid-area: ex-entity; grid-template-rows: 0 0 1fr; overflow: visible;">
@@ -801,7 +801,7 @@
             <div class="editor" id="commandValue"></div>
         </div>
         <div id="commandParamBar" style="grid-area: edit-bar; cursor: ns-resize; background: var(--background); text-align: center;"
-             class="vbar" onmousedown="app.startDrag(event, 'explorerEdit', id, false)">
+             class="vbar" onpointerdown="app.startDrag(event, 'explorerEdit', id, false)">
              <small style="vertical-align: top; opacity: 0.7;">command response</small>
         </div>
         <div style="grid-area: edit-response; display: flex;">
@@ -877,7 +877,7 @@
           <!-- [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
       </div>
     </div>
-    <div id="evBar1" style="grid-area: ev-bar1; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'events', id, true)"></div>
+    <div id="evBar1" style="grid-area: ev-bar1; cursor: ew-resize;" class="vbar" onpointerdown="app.startDrag(event, 'events', id, true)"></div>
     <div class="editor" style="grid-area: ev-editor; overflow: visible;">
         <div id="eventsContainer" class="editor"></div>
     </div>
