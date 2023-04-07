@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Sum", field, arg, array, cx);
         
         internal override EvalResult Eval(EvalCx cx) {
-            Scalar sum = new Scalar(0);
+            Scalar sum = Scalar.Zero;
             var eval = array.Eval(cx);
             foreach (var val in eval.values) {
                 sum = sum.Add(val, this);
@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Average", field, arg, array, cx);
 
         internal override EvalResult Eval(EvalCx cx) {
-            Scalar sum = new Scalar(0);
+            Scalar sum = Scalar.Zero;
             var eval = array.Eval(cx);
             int count = 0;
             foreach (var val in eval.values) {

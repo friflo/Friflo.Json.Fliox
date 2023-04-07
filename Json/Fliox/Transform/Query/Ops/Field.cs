@@ -67,9 +67,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 return evalResult;
             } */
             int groupIndex = cx.GroupIndex;
-            if (groupIndex == -1)
+            if (groupIndex == -1) {
                 return evalResult;
-            
+            }
             var groupIndices = evalResult.groupIndices;
             if (groupIndices.Count == 0) {
                 evalResult.SetRange(0, 0);

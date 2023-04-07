@@ -155,7 +155,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 IsFalse(eval.Filter(john,  allChildAgeEquals20));
                 
                 var  allEqualUnknownField  = new All (new Field ("p.children"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString"))).Filter("p");
-                IsTrue(eval.Filter(john, allEqualUnknownField));
+                IsFalse(eval.Filter(john, allEqualUnknownField));
                 
                 // --- Count() with lambda parameter -> is not a Filter
                 var countChildAgeEquals20 = new Lambda ("p", new CountWhere (new Field ("p.children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20)))).Lambda();

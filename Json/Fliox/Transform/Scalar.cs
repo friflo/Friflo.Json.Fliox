@@ -48,6 +48,8 @@ namespace Friflo.Json.Fliox.Transform
 
         public static readonly  Scalar          True    = new Scalar(true); 
         public static readonly  Scalar          False   = new Scalar(false);
+        
+        public static readonly  Scalar          Zero    = new Scalar(0); 
 
         // ReSharper disable once InconsistentNaming
         public static readonly  Scalar          PI      = new Scalar(Math.PI);

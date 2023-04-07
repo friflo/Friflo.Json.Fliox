@@ -20,6 +20,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Arity
         public override string ToString() => $"({left}, {right})";
     }
     
+    /// <summary>
+    /// Enumerator of a <see cref="BinaryResult"/>.
+    /// The enumerator guarantees the first <see cref="MoveNext"/> call always returns true. 
+    /// </summary>
     internal struct BinaryResultEnumerator : IEnumerator<BinaryPair>
     {
         private readonly    Scalar?      leftValue;
@@ -35,19 +39,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Arity
             if (leftResult.Count == 1)
                 leftValue = leftResult.values[leftResult.StartIndex];
             else {
-                leftValue = null;
+                leftValue = Scalar.Null;
             }
             if (rightResult.Count == 1)
                 rightValue = rightResult.values[rightResult.StartIndex];
             else
-                rightValue = null;
+                rightValue = Scalar.Null;
             last = GetLast(leftResult, rightResult);
+            if (last < 0) throw new InvalidOperationException("enumerator ensures at least one iteration");
             pos = -1;
         }
 
         private static int GetLast(EvalResult leftResult, EvalResult rightResult) {
-            if (leftResult.Count == 0 || rightResult.Count == 0)
-                return -1; // if only one of the results is empty the iterator return no elements
             return Math.Max(leftResult.Count, rightResult.Count) - 1;
         }
         

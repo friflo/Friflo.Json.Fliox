@@ -161,7 +161,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestEvalString() {
             using (var eval = new JsonEvaluator()) {
                 string  error;
-                // --- error
+                // ------ error
                 {
                     Eval ("o => o.strVal.Contains(o.intVal)", Json, eval, out error);
                     AreEqual("expect string operands. left: 'abc', right: 42 in o.strVal.Contains(o.intVal)", error);
@@ -175,7 +175,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     Eval ("o => o.intVal.EndsWith('abc')", Json, eval, out error);
                     AreEqual("expect string operands. left: 42, right: 'abc' in o.intVal.EndsWith('abc')", error);
                 }
-                // --- success
+                // ------ success
+                // --- non null & string methods
                 {
                     var result = Filter ("o => o.strVal.EndsWith('abc')", Json, eval, out _);
                     IsTrue(result);
@@ -188,7 +189,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var result = Filter ("o => o.strVal.EndsWith(o.foo)", Json, eval, out _);
                     IsFalse(result);
                 }
-                // --- null left
+                // --- null left & string methods
                 {
                     var result = Eval ("o => o.nullVal.Contains('abc')", Json, eval, out _);
                     IsNull(result);
@@ -199,7 +200,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var result = Eval ("o => o.nullVal.StartsWith('abc')", Json, eval, out _);
                     IsNull(result);
                 }
-                // --- null right
+                // --- null right & string methods
                 {
                     var result = Eval ("o => 'abc'.Contains(o.nullVal)", Json, eval, out _);
                     IsNull(result);
@@ -213,6 +214,49 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
+        [Test]
+        public static void TestEvalNull() {
+            using (var eval = new JsonEvaluator()) {
+                string  error;
+                // --- null compare: == !=
+                {
+                    var result = Filter ("o => null == null", Json, eval, out _);
+                    IsTrue(result);
+                } {
+                    var result = Filter ("o => null != null", Json, eval, out _);
+                    IsFalse(result);
+                }
+                // --- string property set - compare: == !=
+                {
+                    var result = Filter ("o => o.strVal == null", Json, eval, out _);
+                    IsFalse(result);
+                } {
+                    var result = Filter ("o => o.strVal != null", Json, eval, out _);
+                    IsTrue(result);
+                } {
+                    var result = Filter ("o => null == o.strVal", Json, eval, out _);
+                    IsFalse(result);
+                } {
+                    var result = Filter ("o => null != o.strVal", Json, eval, out _);
+                    IsTrue(result);
+                }
+                // --- string property null - compare: == !=
+                {
+                    var result = Filter ("o => o.nullVal == null", Json, eval, out _);
+                    IsTrue(result);
+                } {
+                    var result = Filter ("o => o.nullVal != null", Json, eval, out _);
+                    IsFalse(result);
+                } {
+                    var result = Filter ("o => null == o.nullVal", Json, eval, out _);
+                    IsTrue(result);
+                } {
+                    var result = Filter ("o => null != o.nullVal", Json, eval, out _);
+                    IsFalse(result);
+                }
+            }
+        }
+
         [Test]
         public static void TestEvalEquality() {
             using (var eval = new JsonEvaluator()) {
@@ -253,19 +297,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // --- null left / right
                 {
                     var result = Eval ("o => o.nullVal == 1", Json, eval, out error);
-                    IsNull(result);
+                    IsFalse((bool)result);
                 } {
                     var result = Eval ("o => 1 == o.nullVal", Json, eval, out error);
-                    IsNull(result);
+                    IsFalse((bool)result);
                 } {
                     var result = Eval ("o => 1.1 == o.nullVal", Json, eval, out error);
-                    IsNull(result);
+                    IsFalse((bool)result);
                 } {
                     var result = Eval ("o => 'abc' == o.nullVal", Json, eval, out error);
-                    IsNull(result);
+                    IsFalse((bool)result);
                 } {
                     var result = Eval ("o => true == o.nullVal", Json, eval, out error);
-                    IsNull(result);
+                    IsFalse((bool)result);
                 }
             }
         }
@@ -330,7 +374,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var result = Filter ("o => 'abc' < o.nullVal", Json, eval, out _);
                     IsFalse(result);
                 } {
-                    // Abs(null) = null, 1 < null = null
+                    // Abs(null) = null, 1 < null = false (as ISO SQL)
                     var result = Eval ("o => 1 < Abs(o.nullVal)", Json, eval, out error);
                     IsNull(result);
                 }
@@ -363,22 +407,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestFilterUndefinedScalar() {
             using (var eval = new JsonEvaluator()) {
-                // use an aggregate (Max) of an empty array and compare it to a scalar
-                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) == 1", eval);
-                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) != 1", eval);
-                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) <  1", eval);
-                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) <= 1", eval);
-                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) >  1", eval);
-                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) >= 1", eval);
+                // use an aggregate (Max) of an empty array and compare it to a scalar => Max([]) == null
+                // Equality compare n== != with null
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) == null", true,  eval);
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) == 1",    false, eval);
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) != 1",    true,  eval);
+                // Ordering operators: <, <=, >, >= with null with Long or Double is always false (as ISO SQL)
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) <  1",    false, eval);
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) <= 1",    false, eval);
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) >  1",    false, eval);
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) >= 1",    false, eval);
             }
         }
         
-        private static void AssertFilterUndefinedScalar(string operation, JsonEvaluator eval) {
+        private static void AssertFilterUndefinedScalar(string operation, bool expect, JsonEvaluator eval) {
             var json    = @"{ ""items"": [] }";
             var op      = (FilterOperation)QueryBuilder.Parse(operation, out _);
             var filter  = new JsonFilter(op);
-            var result  = eval.Filter(new JsonValue(json), filter, out _);
-            IsFalse(result);
+            var value   = new JsonValue(json);
+            var result  = eval.Filter(value, filter, out _);
+            
+            AreEqual(expect, result);
         } 
     }
 }

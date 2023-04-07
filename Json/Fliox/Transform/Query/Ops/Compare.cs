@@ -88,8 +88,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 var compare = pair.left.CompareTo(pair.right, this, out Scalar result);
                 if (result.IsError)
                     return evalResult.SetError(result);
-                if (!result.IsNull)
-                    result = compare < 0 ? True : False;
+                result = result.IsNull ? Null : compare < 0 ? True : False;
                 evalResult.Add(result);
             }
             return evalResult;
@@ -111,8 +110,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 var compare = pair.left.CompareTo(pair.right, this, out Scalar result);
                 if (result.IsError)
                     return evalResult.SetError(result);
-                if (!result.IsNull)
-                    result = compare <= 0 ? True : False;
+                result = result.IsNull ? Null : compare <= 0 ? True : False;
                 evalResult.Add(result);
             }
             return evalResult;
@@ -134,8 +132,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 var compare = pair.left.CompareTo(pair.right, this, out Scalar result);
                 if (result.IsError)
                     return evalResult.SetError(result);
-                if (!result.IsNull)
-                    result = compare > 0 ? True : False;
+                result = result.IsNull ? Null : compare > 0 ? True : False;
                 evalResult.Add(result);
             }
             return evalResult;
@@ -157,8 +154,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 var compare = pair.left.CompareTo(pair.right, this, out Scalar result);
                 if (result.IsError)
                     return evalResult.SetError(result);
-                if (!result.IsNull)
-                    result = compare >= 0 ? True : False;
+                result = result.IsNull ? Null : compare >= 0 ? True : False;
                 evalResult.Add(result);
             }
             return evalResult;

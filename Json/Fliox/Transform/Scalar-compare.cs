@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Transform {
                 case ScalarType.Null:
                     if (other.IsNull)
                         return True;
-                    return Null;
+                    return False;
                 case ScalarType.Object:
                 case ScalarType.Array:
                     return CompareError("invalid operand", other, operation);
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Transform {
         private Scalar EqualsDefault(in Scalar other, Operation operation) {
             switch (other.type) {
                 case ScalarType.Null:
-                    return Null;
+                    return type == ScalarType.Null ? True : False;
                 case ScalarType.Array:
                 case ScalarType.Object:
                     return CompareError("invalid operand", other, operation);
