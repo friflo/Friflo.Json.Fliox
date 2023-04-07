@@ -217,7 +217,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestEvalNull() {
             using (var eval = new JsonEvaluator()) {
-                string  error;
                 // --- null compare: == !=
                 {
                     var result = Filter ("o => null == null", Json, eval, out _);
