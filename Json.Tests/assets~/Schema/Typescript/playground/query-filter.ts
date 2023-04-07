@@ -1,5 +1,5 @@
 // ------------- query Filter<T> -----------------
-type String = {
+type StringFilter = {
     /** return the length of the string. */
     readonly Length : Number,
     
@@ -9,18 +9,20 @@ type String = {
     EndsWith    (value: string) : boolean,
     /** return **true** if the value occurs within the string. */
     Contains    (value: string) : boolean,
-}
-& (string | { })                        // remove string methods: at(), length, ...
+}                        
 
+type String = StringFilter & (string | { }); // remove string methods: at(), length, ...
 
 // type Number = {} & (number | { })    // remove number methods: toFixed(), toString(), ...
 type Number = Pick<number, "valueOf">   // remove number methods: toFixed(), toString(), ... picked most useless method
 
 
+// todo - should export math constants with namespace Math
 export const PI:   Number = 3.141592653589793;
 export const E:    Number = 2.718281828459045;
 export const Tau:  Number = 6.283185307179586;
 
+// todo - should export math methods with namespace Math
 export function Abs    (value: number | Number) : Number { return 0; }
 export function Log    (value: number | Number) : Number { return 0; }
 export function Exp    (value: number | Number) : Number { return 0; }
@@ -52,13 +54,14 @@ type List<T> = {
     Count   (filter: (o: T) => boolean)  : Number;
 }
 
+
 type FilterTypes<T> =
-    T extends string         ? String   : 
-    T extends number         ? Number   : 
+    T extends string         ? String   :
+    T extends number         ? Number   :
 //  T extends Array<infer U> ? List<U>
-    T extends (infer U)[]    ? List<U>                  // alternative for: Array<infer U>
-    : Filter<T>
+    T extends (infer U)[]    ? List<U>  // alternative for: Array<infer U>
+    : Filter<T & { }>                   // type NonNullable<T> = T & {};
 
 export type Filter<T> = {
-    readonly [K in keyof T]-? : FilterTypes<T[K]> & { } // type NonNullable<T> = T & {};
+    readonly [K in keyof T]-? : FilterTypes<T[K]>
 }

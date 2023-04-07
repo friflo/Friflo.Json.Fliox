@@ -1,4 +1,4 @@
-import { Article, Order, TestType, PocStore } from "../PocStore/UnitTest.Fliox.Client"
+import { Article, Order, TestType, PocStore, Producer } from "../PocStore/UnitTest.Fliox.Client"
 import { Abs, Log, Exp, Sqrt, Floor, Ceiling, Filter } from "./query-filter";
 
 /*
@@ -16,7 +16,9 @@ export type Filter<TModel> = {
 // type Str = Exclude<string, "length"> | { Length: number };
 
 
+/** some IntClass docs */
 export class IntClass {
+    /** some num docs */
     num : number;
 }
 
@@ -72,6 +74,7 @@ query<Order>    (o => o.items.Average (o => o.amount)           == 3);
 
 query<Order>    (o => o.items.Count   (o => o.name == "Camera") == 2);
 
+
 // ------------ Math
 // --- ensure presence of Math methods
 query<IntClass> (o => Abs(42) == 1);
@@ -80,7 +83,6 @@ query<IntClass> (o => Exp(o.num) == 1);
 query<IntClass> (o => Sqrt(o.num) == 1);
 query<IntClass> (o => Floor(o.num) == 1);
 query<IntClass> (o => Ceiling(o.num) == 1);
-
 
 
 type EntityType = PocStore["articles"][string]

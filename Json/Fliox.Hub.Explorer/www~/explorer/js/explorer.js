@@ -1,6 +1,7 @@
 import { el, createEl, parseAst } from "./types.js";
 import { App, app, setClass } from "./index.js";
 import { EntityEditor } from "./entity-editor.js";
+import { filterSource } from "./filter.js";
 function createMeasureTextWidth(width) {
     const div = document.createElement("div");
     document.body.appendChild(div);
@@ -1121,68 +1122,4 @@ Explorer.selectAllHtml = `<span style="display:flex">
 </span>`;
 Explorer.defaultColumnWidth = 50;
 Explorer.maxColumnWidth = 200;
-const filterSource = `
-// ------------- query Filter<T> -----------------
-type String = {
-    /** Return the length of the string. */
-    readonly Length : number,
-    
-    /** Return **true** if the value matches the beginning of the string. */
-    StartsWith  (value: string) : boolean,
-    /** Return **true** if the value matches the end of the string. */
-    EndsWith    (value: string) : boolean,
-    /** Return **true** if the value occurs within the string. */
-    Contains    (value: string) : boolean,
-} & (string | { }) // remove string methods: at(), length, ...
-
-
-// type Number = {} & (number | { })     // remove number methods: toFixed(), toString(), ...
-type Number = Pick<number, "valueOf">    // remove number methods: toFixed(), toString(), ... picked most useless method
-
-const PI:   Number = 3.141592653589793;
-const E:    Number = 2.718281828459045;
-const Tau:  Number = 6.283185307179586;
-
-function Abs    (value: number) : Number { return 0; }
-function Log    (value: number) : Number { return 0; }
-function Exp    (value: number) : Number { return 0; }
-function Sqrt   (value: number) : Number { return 0; }
-function Floor  (value: number) : Number { return 0; }
-function Ceiling(value: number) : Number { return 0; }
-
-/** Scalar object property like string, number or boolean. */
-type Property = string | number | boolean;
-
-type List<T> = {
-    /** Return the length of the array. */
-    readonly Length : number,
-    /** Return **true** if *all* the elements in a sequence satisfy the filter condition. */
-    All     (filter: (o: T) => boolean) : boolean;
-    /** Return **true** if *any* element in a sequence satisfy the filter condition. */
-    Any     (filter: (o: T) => boolean) : boolean;
-
-    /** Return the minimum value of an array. */
-    Min     (filter: (o: T) => Property) : Number;
-    /** Return the maximum value of an array. */
-    Max     (filter: (o: T) => Property) : Number;
-    /** Return the sum of all values. */
-    Sum     (filter: (o: T) => Property) : Number;
-    /** Return the average of all values. */
-    Average (filter: (o: T) => Property) : Number;
-
-    /** Counts the elements in an array which satisfy the filter condition. */
-    Count   (filter: (o: T) => boolean)  : Number;
-}
-
-type FilterTypes<T> =
-    T extends string         ? String : 
-    T extends number         ? Number                  : 
-//  T extends Array<infer U> ? List<U>
-    T extends (infer U)[]    ? List<U>                         // alternative for: Array<infer U>
-    : Filter<T>
-
-export type Filter<T> = {
-    readonly [K in keyof T]-? : FilterTypes<T[K]> & { }     // type NonNullable<T> = T & {};
-}
-`;
 //# sourceMappingURL=explorer.js.map
