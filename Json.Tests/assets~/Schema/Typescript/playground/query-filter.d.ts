@@ -18,17 +18,26 @@ type Number = Pick<number, "valueOf">   // remove number methods: toFixed(), toS
 
 
 // todo - should export math constants with namespace Math
+/** Represents the ratio of the circumference of a circle to its diameter, specified by the constant, π. */
 export const PI:   Number = 3.141592653589793;
+/** Represents the natural logarithmic base, specified by the constant, e. */
 export const E:    Number = 2.718281828459045;
+/** Represents the number of radians in one turn, specified by the constant, τ. */
 export const Tau:  Number = 6.283185307179586;
 
 // todo - should export math methods with namespace Math
-export function Abs    (value: number | Number) : Number { return 0; }
-export function Log    (value: number | Number) : Number { return 0; }
-export function Exp    (value: number | Number) : Number { return 0; }
-export function Sqrt   (value: number | Number) : Number { return 0; }
-export function Floor  (value: number | Number) : Number { return 0; }
-export function Ceiling(value: number | Number) : Number { return 0; }
+/** Returns the absolute value of the given number. */
+export declare function Abs    (value: number | Number) : Number;
+/** Returns the logarithm of the given number */
+export declare function Log    (value: number | Number) : Number;
+/** Returns e raised to the power of the given number. */
+export declare function Exp    (value: number | Number) : Number;
+/** Returns the square root of the given number. */
+export declare function Sqrt   (value: number | Number) : Number;
+/** Returns the largest integral value less than or equal to the given number. */
+export declare function Floor  (value: number | Number) : Number;
+/** Returns the smallest integral value greater than or equal to the given number. */
+export declare function Ceiling(value: number | Number) : Number;
 
 /** Scalar object property like string, number or boolean. */
 type Property = string | number | boolean;
@@ -65,3 +74,5 @@ type FilterTypes<T> =
 export type Filter<T> = {
     readonly [K in keyof T]-? : FilterTypes<T[K]>
 }
+
+export type FilterExpression<T> = (o: Filter<T>) => boolean

@@ -1,5 +1,5 @@
 import { Article, Order, TestType, PocStore, Producer } from "../PocStore/UnitTest.Fliox.Client"
-import { Abs, Log, Exp, Sqrt, Floor, Ceiling, Filter } from "./query-filter";
+import { FilterExpression, PI, E, Tau, Abs, Log, Exp, Sqrt, Floor, Ceiling } from "./query-filter";
 
 /*
 type UnArray<T> = T extends Array<infer U> ? U : T;
@@ -22,7 +22,7 @@ export class IntClass {
     num : number;
 }
 
-function query<T>(filter: (o: Filter<T>) => boolean) { }
+function query<T>(filter: FilterExpression<T>) { }
 
 query(o => true);
 

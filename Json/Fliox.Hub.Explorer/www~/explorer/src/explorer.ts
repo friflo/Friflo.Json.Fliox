@@ -179,10 +179,10 @@ export class Explorer
         }
         this.modelsCreated  = true;
         const modelFiles    = app.modelFiles;
-        const filterUri     = monaco.Uri.parse("file:///query-filter.ts");
+        const filterUri     = monaco.Uri.parse("file:///filter-model.ts");
         this.filterModel    = monaco.editor.createModel(null, "typescript", filterUri);
         app.filterEditor.setModel (this.filterModel);
-        monaco.editor.createModel(filterSource, "typescript",	monaco.Uri.file("node_modules/@types/filter.d.ts"));
+        monaco.editor.createModel(filterSource, "typescript",	monaco.Uri.file("node_modules/@types/query-filter.d.ts"));
 
         for (const model of modelFiles) {
             for (const file of model.files) {
@@ -218,10 +218,10 @@ export class Explorer
         const schema = app.databaseSchemas[database];
         const schemaName = schema.schemaName;
         const text =
-`import  { ${schemaName} } from "${database}"
-import  { Filter } from "filter"
-type EntityType = ${schemaName}["${container}"][string]
-const filter: (o: Filter<EntityType>) => boolean =
+`import { ${schemaName} } from "${database}";
+import { FilterExpression, PI, E, Tau, Abs, Log, Exp, Sqrt, Floor, Ceiling } from "query-filter";
+type  EntityType = ${schemaName}["${container}"][string];
+const filter: FilterExpression<EntityType> =
 ${filter}`;
         if (this.filterModel.getValue() == text) {
             return;
