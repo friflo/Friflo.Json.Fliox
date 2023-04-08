@@ -178,7 +178,7 @@
                 "ex-result      ex-result   ex-result           ex-result           ex-result"
                 "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity";
             grid-template-columns:  150px var(--bar-width) 400px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
-            grid-template-rows:     0px 5px 28px 19px 14px 1fr;
+            grid-template-rows:     0px 3px 28px 19px 14px 1fr;
             grid-gap:   0px;
         }
 
@@ -317,8 +317,8 @@
         .project-env    { height: 18px; padding: 0px 4px; margin: 0; background-color: rgb(117, 117, 117); color: white;
                           border-top-right-radius: 3px; border-bottom-right-radius: 3px; border: 1px solid var(--background2); border-left: 0; }
 
-        .applyFilter        { cursor: pointer; border-radius: 2px; width: 28px; height: 14px; display:inline-block; text-align: center;
-                              margin-right: 1px; font-size: 11px; padding-top: 3px; padding-bottom: 3px; margin-top: 2px; }
+        .applyFilter        { cursor: pointer; border-radius: 2px; width: 24px; height: 14px; display:inline-block; text-align: center;
+                              margin-right: 1px; font-size: 11px; padding-top: 3px; padding-bottom: 3px; }
         .applyFilter:hover  { background-color: var(--tab-hover); }
         .applyFilter:active { background-color: var(--background3); box-shadow: inset 1px 1px 1px #00000010; }
 
@@ -671,19 +671,32 @@
   <div style="grid-area: body-explorer; overflow: hidden; padding-top: 3px;"
        id="explorer" class="tabContent">
     <!-- ------- filter ------- -->
-    <div id="filterRow" style="grid-area: ex-filter; visibility: hidden; margin-top: -2px;">
-      <div style="float: right; overflow: hidden; height: 28px;">
-        <a id="removeFilter" style="width: 20px; color: red; font-weight: bold; margin-left: 2px;"
-           href="#" class="applyFilter" title="Remove filter (Ctrl + 🡄)" onclick="app.removeFilter()">✖</a>
-        <a href="#" class="applyFilter" title="Apply filter (Ctrl + Enter)"  onclick="app.applyFilter()">🔎</a>
-        <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md#query-filter"
-           class="docLink" style="font-size: 10px; margin-left: -3px; margin-right: 3px;" target='_blank'
-           title='open documentation&#013;query filter ⊂ LINQ where ≈ SQL WHERE&#013;e.g.  o => o.id=="abc"'>ⓘ</a>
-        <a id="filterLink" title="open filter in new tab" style="opacity: 0.7;" href="#" target="_blank" onclick="app.updateFilterLink()">
-          <small>filter</small>
-        </a>
-        <small style="margin-left: 5px; opacity: 0.5;" title="parameter o used for lambda expression body"></small>
+    <div style="grid-area: ex-filter; display: flex; flex-direction: row;">
+      <div style="width: 5px; flex-shrink: 0;"></div>
+      <div title="Toggle query filter" class="navigate" style="margin-top: 3px; flex-shrink: 0;" onclick="app.toggleFilterBar()">
+        <div style="filter: grayscale(100%); opacity: 0.4; font-size: 9px; padding-top: 4px;">🔎</div>
       </div>
+      <span style="flex-grow: 1;"></span>
+      <span id="filterRow" style="visibility: hidden; overflow: hidden; padding: 2px;">
+        <span style="display: flex; flex-direction: column;">
+          <span style="display: flex; flex-direction: row; height: 18px;">
+            <a id="removeFilter" style="width: 20px; color: red; font-weight: bold;"
+               href="#" class="applyFilter" title="Remove query filter (Ctrl + 🡄)" onclick="app.removeFilter()">✖</a>
+            <a href="#" class="applyFilter" title="Apply query filter (Ctrl + Enter)"  onclick="app.applyFilter()">🔎</a>
+            <a id="filterLink" title="Open query in new tab" style="opacity: 0.7;" href="#" target="_blank" onclick="app.updateFilterLink()">
+              <small>filter</small>
+            </a>
+          </span>
+          <span style="display: flex; flex-direction: row;">
+            <span style="flex-grow: 1;"></span>
+            <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md#query-filter"
+               class="docLink" target='_blank'
+               title='Open documentation for&#013;query filter ⊂ LINQ where ≈ SQL WHERE&#013;e.g.  o => o.id=="abc"'>
+               <small style="font-size: 10px;">ⓘ</small>
+            </a>
+          </span>
+        </span>
+      </span>
     </div>
     <div id="filterArea" style="grid-area: ex-filter-input; overflow: hidden; display: flex; visibility: hidden;">
         <!-- <input id="entityFilter" style="width: 100%;" class="input" type="text" spellcheck="false"
@@ -697,7 +710,9 @@
          onpointerdown="app.startDrag(event, 'explorer', id, false)"></div>
 
     <!-- ------- schema link, entity command/type ------- -->
-    <div style="grid-area: ex-empty; overflow:hidden; z-index: 1; background-color: var(--background);"></div>
+    <div style="grid-area: ex-empty; overflow:hidden; z-index: 1; margin-left: 30px; cursor: ns-resize; background-color: var(--background);"
+         onpointerdown="app.startDrag(event, 'explorer', 'exBar0', false)">
+    </div>
     <div style="grid-area: ex-schema; display:flex; height: 23px; overflow:hidden;">
       <span  id="explorerTools"></span>
       <small id="catalogSchema" class="docLink" style="display: flex; justify-content: center; align-items: center;"></small>

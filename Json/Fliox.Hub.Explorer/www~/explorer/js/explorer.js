@@ -1108,10 +1108,6 @@ ${filter}`;
     }
 }
 Explorer.selectAllHtml = `<span style="display:flex">
-    <div title="Toggle filter bar"  class="navigate" onclick="app.toggleFilterBar()">
-       <div style="filter: grayscale(100%); opacity: 0.4; font-size: 9px; padding-top: 4px;">🔎</div>
-    </div>
-    <div style="width:3px;"></div>
     <div title="Select\n- All     (Ctrl + A)\n- None (Esc)" class="navigate selectAll" onclick="app.explorer.selectAllNone()">
        <div  style="padding-left: 2px; padding-top: 3px;">
          <span>● ---</span><br>
