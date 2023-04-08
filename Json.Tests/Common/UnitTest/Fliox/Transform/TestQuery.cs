@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using static System.Math;
 
 using static Friflo.Json.Tests.Common.UnitTest.Fliox.Transform.AssertEqual;
 using Contains = Friflo.Json.Fliox.Transform.Query.Ops.Contains;
@@ -134,7 +135,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 IsFalse(eval.Filter(john, equalUnknownField));
 
                 // --- Any
-                var hasChildPaul = new Any (new Field ("p.children"), "child", new Equal (new Field ("child.name"), new StringLiteral ("Paul"))).Filter("p");;
+                var hasChildPaul = new Any (new Field ("p.children"), "child", new Equal (new Field ("child.name"), new StringLiteral ("Paul"))).Filter("p");
                 bool HasChildPaul(Person p) => p.children.Any(child => child.name == "Paul");
                 
                 var hasChildAgeLess12 = new Any (new Field ("p.children"), "child", new Less (new Field ("child.age"), new LongLiteral (12))).Filter("p");
@@ -178,11 +179,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Exception e;
                 // --- compare operations must not be reused
                 e = Throws<InvalidOperationException>(() => _ = new Equal(isAgeGreater35Op, isAgeGreater35Op).Filter("p"));
+                NotNull(e);
                 AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: Greater, instance: p.age > 35", e.Message);
                 
                 // --- group operations must not be reused
                 var testGroupOp = new And(new List<FilterOperation> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
                 e = Throws<InvalidOperationException>(() => _ = new Equal(testGroupOp, testGroupOp).Filter());
+                NotNull(e);
                 AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: And, instance: 'A' == 'B'", e.Message);
 
                 // --- literal and field operations are applicable for reuse
@@ -299,11 +302,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AssertJson(mapper, floor, "{'op':'floor','value':{'op':'double','value':2.5}}");
                 AreEqual(2,         eval.Eval("{}", floor.Lambda()));
             } {
-                var exp     = new Exp(new DoubleLiteral(Math.Log(2)));
+                var exp     = new Exp(new DoubleLiteral(Log(2)));
                 AssertJson(mapper, exp, "{'op':'exp','value':{'op':'double','value':0.6931471805599453}}");
                 AreEqual(2,         eval.Eval("{}", exp.Lambda()));
             } {
-                var log     = new Log(new DoubleLiteral(Math.Exp(3)));
+                var log     = new Log(new DoubleLiteral(Exp(3)));
                 AssertJson(mapper, log, "{'op':'log','value':{'op':'double','value':20.085536923187668}}");
                 AreEqual(3,         eval.Eval("{}", log.Lambda()));
             } {
@@ -534,54 +537,54 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             // --- unary arithmetic operations
             {
                 var abs     = (Abs)     FromLambda((object p) =>
-                     Math.Abs(-1));
+                          Abs(-1));
                 AreEqual("Abs(-1)", abs.Linq);
             } { 
                 var ceiling = (Ceiling) FromLambda((object p) =>
-                     Math.Ceiling(2.5));
+                          Ceiling(2.5));
                 AreEqual("Ceiling(2.5)", ceiling.Linq);
             } { 
                 var floor   = (Floor)   FromLambda((object p) =>
-                     Math.Floor(2.5));
+                          Floor(2.5));
                 AreEqual("Floor(2.5)", floor.Linq);
             } { 
                 var exp     = (Exp)     FromLambda((object p) =>
-                     Math.Exp(2.5));
+                          Exp(2.5));
                 AreEqual("Exp(2.5)", exp.Linq);
             } { 
                 var log     = (Log)     FromLambda((object p) =>
-                     Math.Log(2.5));
+                          Log(2.5));
                 AreEqual("Log(2.5)", log.Linq);
             } { 
                 var sqrt    = (Sqrt)    FromLambda((object p) =>
-                     Math.Sqrt(2.5));
+                          Sqrt(2.5));
                 AreEqual("Sqrt(2.5)", sqrt.Linq);
             } { 
                 var negate  = (Negate)  FromLambda((object p) =>
-                      -Math.Abs(-1));
+                          -Abs(-1));
                 AreEqual("-(Abs(-1))", negate.Linq);
             } { 
                 var plus    = (Abs)     FromLambda((object p) =>
-                    +Math.Abs(-1)); // + will be eliminated
+                         +Abs(-1)); // + will be eliminated
                 AreEqual("Abs(-1)", plus.Linq);
             }
             
             // --- binary arithmetic operations
             {
                 var add         = (Add)     FromLambda((object p) =>
-                     1 + Math.Abs(1.0));
+                          1 + Abs(1.0));
                 AreEqual("1 + Abs(1)", add.Linq);
             } {
                 var subtract    = (Subtract)FromLambda((object p) =>
-                          1 - Math.Abs(1.0));
+                          1 - Abs(1.0));
                 AreEqual("1 - Abs(1)", subtract.Linq);
             } {
                 var multiply    = (Multiply)FromLambda((object p) =>
-                          1 * Math.Abs(1.0));
+                          1 * Abs(1.0));
                 AreEqual("1 * Abs(1)", multiply.Linq);
             } {
                 var divide      = (Divide)  FromLambda((object p) =>
-                          1 / Math.Abs(1.0));
+                          1 / Abs(1.0));
                 AreEqual("1 / Abs(1)", divide.Linq);
             } 
             
@@ -635,7 +638,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         [Test]
         public static void TestField() {
-          using (var mapper = new ObjectMapper()) {
             {
                 var is20 =          (Equal)          FromFilter((Person p) =>
                           p.age == 20);
@@ -649,7 +651,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                           p.address.street.name == "Lombard St");
                 AreEqual("p.address.street.name == 'Lombard St'", isLombardSt.Linq);
             }
-          }
         }
     }
     
