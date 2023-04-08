@@ -135,12 +135,12 @@ The **same** filter expression can also be used to filter entities of the select
 o => o.name == "Bread"
 ```
 
-The LINQ filter syntax is an [infix notation](https://en.wikipedia.org/wiki/Infix_notation). Its intention is to be compact and easy to read by humans.  
+The Syntax of lambda expressions / LINQ filters syntax is an [infix notation](https://en.wikipedia.org/wiki/Infix_notation). Its intention is to be compact and easy to read by humans.  
 When using a filter for a container query it is converted into an expression tree. Each node in the tree is an operation.
-[Supported operations](../../../Js|             |on.Tests/assets~/Schema/Markdown/Filter/class-diagram.md)
+[Supported operations](../../../Json.Tests/assets~/Schema/Markdown/Filter/class-diagram.md)
 
-### LINQ operators and methods
-|             | Operation                       |                                                                                       |
+### Query filter operators and methods
+|             | operator / method                       |                                                                                       |
 | ----------- | ------------------------------- | ------------------------------------------------------------------------------------- |
 | **compare**                                                                                                                           |
 |             | ==                              | equals                                                                                |
