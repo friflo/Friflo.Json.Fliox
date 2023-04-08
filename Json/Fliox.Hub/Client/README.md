@@ -134,7 +134,7 @@ The **same** filter expression can also be used to filter entities of the select
 ```typescript
 o => o.name == "Bread"
 ```
-![Query filter](../../../docs/images/query-filter.png)
+[![Query filter](../../../docs/images/query-filter.png)](http://ec2-18-215-176-108.compute-1.amazonaws.com)
 
 
 The syntax of lambda expressions / LINQ filters is an [infix notation](https://en.wikipedia.org/wiki/Infix_notation). Its intention is to be compact and easy to read by humans.  
