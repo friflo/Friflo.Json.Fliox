@@ -175,6 +175,12 @@ When using a filter for a container query it is converted into an expression tre
 | Log(number)       | logarithm of a specified number                                   |
 | Sqrt(number)      | square root of a specified number                                 |
 
+| constants         |                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------ |
+| PI                | ratio of the circumference of a circle to its diameter, specified by the constant, π |
+| E                 | natural logarithmic base, specified by the constant, e                               |
+| Tau               | number of radians in one turn, specified by the constant, τ                          |
+
 | aggregate                       |                                                                     |
 | ------------------------------- | ------------------------------------------------------------------- |
 | items.Min(i =>     i.Property)  | minimum value of a collection                                       |
