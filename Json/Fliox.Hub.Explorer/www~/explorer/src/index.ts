@@ -1,4 +1,4 @@
-/// <reference types="./node_modules/monaco-editor/monaco" />
+/// <reference types="../../../../../node_modules/monaco-editor/monaco" />
 
 import { el, Resource, Method, ConfigKey, Config, defaultConfig, getColorBasedOnBackground, MessageCategory } from "./types.js";
 import { Schema, MonacoSchema }                                 from "./schema.js";
@@ -183,7 +183,7 @@ export class App {
         authState.title = `user: ${user} · ${state}`;
     }
 
-    private lastCtrlKey:        boolean;
+    private lastMetaKey:        boolean;
     public  refLinkDecoration:  CSSStyleRule;
 
     private static getCssRuleByName (name: string) : CSSStyleRule {
@@ -196,25 +196,26 @@ export class App {
         return null;
     }
 
-    private applyCtrlKey(event: KeyboardEvent) {
-        if (this.lastCtrlKey == event.ctrlKey)
+    private applyMetaKey(event: KeyboardEvent) {
+        const metaKey = event.metaKey;
+        if (this.lastMetaKey == metaKey)
             return;
-        this.lastCtrlKey = event.ctrlKey;
+        this.lastMetaKey = metaKey;
         if (!this.refLinkDecoration) {
             const rule = App.getCssRuleByName(".refLinkDecoration:hover");
             this.refLinkDecoration = rule;
         }
-        this.refLinkDecoration.style.cursor = this.lastCtrlKey ? "pointer" : "";
+        this.refLinkDecoration.style.cursor = metaKey ? "pointer" : "";
     }
 
     public onKeyUp (event: KeyboardEvent) : void {
         if (event.code == "ControlLeft")
-            this.applyCtrlKey(event);
+            this.applyMetaKey(event);
     }
 
     public onKeyDown (event: KeyboardEvent) : void {
         if (event.code == "ControlLeft")
-            this.applyCtrlKey(event);
+            this.applyMetaKey(event);
 
         switch (this.config.activeTab) {
         case "playground":
@@ -224,19 +225,20 @@ export class App {
             this.onKeyDownExplorer(event);
             break;
         }
-        // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
+        // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.metaKey}, alt:${event.altKey}`);
     }
 
     private onKeyDownPlayground (event: KeyboardEvent) : void {
-        if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
+        const metaKey = event.metaKey;
+        if (event.code == 'Enter' && metaKey && event.altKey) {
             this.playground.sendSyncRequest();
             event.preventDefault();
         }
-        if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
+        if (event.code == 'KeyP' && metaKey && event.altKey) {
             this.playground.postSyncRequest();
             event.preventDefault();
         }
-        if (event.code == 'KeyS' && event.ctrlKey) {
+        if (event.code == 'KeyS' && metaKey) {
             // event.preventDefault(); // avoid accidentally opening "Save As" dialog
         }
     }
@@ -245,7 +247,7 @@ export class App {
         const editor = this.editor;
         switch (event.code) {
             case 'KeyS':
-                if (!event.ctrlKey)
+                if (!event.metaKey)
                     return;
                 switch (editor.activeExplorerEditor) {
                     case "command":
@@ -257,7 +259,7 @@ export class App {
                 }
                 break;
             case 'KeyP':
-                    if (!event.ctrlKey)
+                    if (!event.metaKey)
                         return;
                     switch (editor.activeExplorerEditor) {
                         case "entity":
@@ -903,7 +905,7 @@ export class App {
         {
             this.entityEditor   = monaco.editor.create(entityContainer, defaultOpt);
             this.entityEditor.onMouseDown((e) => {
-                if (!e.event.ctrlKey)
+                if (!e.event.metaKey)
                     return;
                 if (this.editor.activeExplorerEditor != "entity")
                     return;

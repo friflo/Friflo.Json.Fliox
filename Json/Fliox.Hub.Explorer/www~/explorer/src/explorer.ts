@@ -379,7 +379,7 @@ ${filter}`;
             await this.selectEntityRange(lastRow.rowIndex);            
             return;
         }
-        const select        = ev.ctrlKey ? "toggle" : "id";
+        const select        = ev.metaKey ? "toggle" : "id";
         const selectedIds   = this.getSelectionFromPath(path, select);
         if (selectedIds === null)
             return;
@@ -545,10 +545,11 @@ ${filter}`;
             return;
         const table     = this.explorerTable;
         const row       = td.parentElement as HTMLTableRowElement;
+        const metaKey   = event.metaKey;
         switch (event.code) {
             case 'Home':
                 event.preventDefault();
-                if (event.ctrlKey) {
+                if (event.metaKey) {
                     this.setFocusCellSelectValue (1, td.cellIndex, "smooth");
                 } else {
                     this.setFocusCellSelectValue (row.rowIndex, 1, "smooth");
@@ -556,7 +557,7 @@ ${filter}`;
                 return;
             case 'End':
                 event.preventDefault();
-                if (event.ctrlKey) {
+                if (event.metaKey) {
                     this.setFocusCellSelectValue (table.rows.length - 1, td.cellIndex, "smooth");
                 } else {
                     this.setFocusCellSelectValue (row.rowIndex, row.cells.length - 1, "smooth");
@@ -574,7 +575,7 @@ ${filter}`;
                 event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex - 1, td.cellIndex);
                 const focused = this.focusedCell.parentElement as HTMLTableRowElement;
-                if (event.ctrlKey && row.rowIndex != focused.rowIndex) {
+                if (metaKey && row.rowIndex != focused.rowIndex) {
                     const id = this.getRowId(focused);
                     await this.selectExplorerEntities([id]);
                     this.selectCellValue(this.focusedCell);
@@ -585,7 +586,7 @@ ${filter}`;
                 event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex + 1, td.cellIndex);
                 const focused = this.focusedCell.parentElement as HTMLTableRowElement;
-                if (event.ctrlKey && row.rowIndex != focused.rowIndex) {
+                if (metaKey && row.rowIndex != focused.rowIndex) {
                     const id = this.getRowId(focused);
                     await this.selectExplorerEntities([id]);
                     this.selectCellValue(this.focusedCell);
@@ -624,7 +625,7 @@ ${filter}`;
                 return;
             }
             case 'KeyA': {
-                if (!event.ctrlKey)
+                if (!metaKey)
                     return;
                 event.preventDefault();
                 const ids = [...this.explorerRows.keys()];
@@ -637,7 +638,7 @@ ${filter}`;
                 return;
             }
             case 'KeyC': {
-                if (!event.ctrlKey)
+                if (!metaKey)
                     return;
                 event.preventDefault();
                 const editorValue = app.entityEditor.getValue();
@@ -770,7 +771,7 @@ ${filter}`;
                     entityExplorer.focus();
                     break;
                 case 'Enter':
-                    if (event.ctrlKey || event.altKey) {
+                    if (event.metaKey || event.altKey) {
                         const pos =  edit.selectionStart;
                         edit.value = edit.value.substring(0,pos) + "\n" + edit.value.substring(pos);
                         edit.selectionStart = edit.selectionEnd = pos + 1;
