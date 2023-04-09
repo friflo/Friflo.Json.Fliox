@@ -1,4 +1,4 @@
-/// <reference types="../../../../../node_modules/monaco-editor/monaco" />
+/// <reference types="./node_modules/monaco-editor/monaco" />
 
 import { el, Resource, Method, ConfigKey, Config, defaultConfig, getColorBasedOnBackground, MessageCategory } from "./types.js";
 import { Schema, MonacoSchema }                                 from "./schema.js";
@@ -45,6 +45,11 @@ const responseContainer     = el("responseContainer");
 const commandValue          = el("commandValue");
 const entityContainer       = el("entityContainer");
 const eventsContainer       = el("eventsContainer");
+
+/** return true if "Control" key is pressed. Windows: Ctrl, MacOS: Command ⌘ */
+export function isCtrlKey(event: MouseEvent | KeyboardEvent | monaco.IMouseEvent) : boolean {
+    return event.ctrlKey || event.metaKey;
+}
 
 /* if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").then(registration => {
@@ -196,27 +201,28 @@ export class App {
         return null;
     }
 
-    private applyMetaKey(event: KeyboardEvent) {
-        const metaKey = event.metaKey;
-        if (this.lastMetaKey == metaKey)
+    private applyMetaKey(metaKeyPressed: boolean) {
+
+        if (this.lastMetaKey == metaKeyPressed)
             return;
-        this.lastMetaKey = metaKey;
+        this.lastMetaKey = metaKeyPressed;
         if (!this.refLinkDecoration) {
             const rule = App.getCssRuleByName(".refLinkDecoration:hover");
             this.refLinkDecoration = rule;
         }
-        this.refLinkDecoration.style.cursor = metaKey ? "pointer" : "";
+        this.refLinkDecoration.style.cursor = metaKeyPressed ? "pointer" : "";
     }
 
     public onKeyUp (event: KeyboardEvent) : void {
-        if (event.code == "ControlLeft")
-            this.applyMetaKey(event);
+        if (event.key == "Control") {
+            this.applyMetaKey(false);
+        }
     }
 
     public onKeyDown (event: KeyboardEvent) : void {
-        if (event.code == "ControlLeft")
-            this.applyMetaKey(event);
-
+        if (event.key == "Control") {
+            this.applyMetaKey(true);
+        }
         switch (this.config.activeTab) {
         case "playground":
             this.onKeyDownPlayground(event);
@@ -229,25 +235,26 @@ export class App {
     }
 
     private onKeyDownPlayground (event: KeyboardEvent) : void {
-        const metaKey = event.metaKey;
-        if (event.code == 'Enter' && metaKey && event.altKey) {
+        const ctrlKey = isCtrlKey(event);
+        if (event.code == 'Enter' && ctrlKey && event.altKey) {
             this.playground.sendSyncRequest();
             event.preventDefault();
         }
-        if (event.code == 'KeyP' && metaKey && event.altKey) {
+        if (event.code == 'KeyP' && ctrlKey && event.altKey) {
             this.playground.postSyncRequest();
             event.preventDefault();
         }
-        if (event.code == 'KeyS' && metaKey) {
+        if (event.code == 'KeyS' && ctrlKey) {
             // event.preventDefault(); // avoid accidentally opening "Save As" dialog
         }
     }
 
     private onKeyDownExplorer (event: KeyboardEvent) : void {
-        const editor = this.editor;
+        const editor    = this.editor;
+        const ctrlKey   = isCtrlKey(event);
         switch (event.code) {
             case 'KeyS':
-                if (!event.metaKey)
+                if (!ctrlKey)
                     return;
                 switch (editor.activeExplorerEditor) {
                     case "command":
@@ -259,7 +266,7 @@ export class App {
                 }
                 break;
             case 'KeyP':
-                    if (!event.metaKey)
+                    if (!ctrlKey)
                         return;
                     switch (editor.activeExplorerEditor) {
                         case "entity":
@@ -905,7 +912,8 @@ export class App {
         {
             this.entityEditor   = monaco.editor.create(entityContainer, defaultOpt);
             this.entityEditor.onMouseDown((e) => {
-                if (!e.event.metaKey)
+                const ctrlKey = isCtrlKey(e.event);
+                if (!ctrlKey)
                     return;
                 if (this.editor.activeExplorerEditor != "entity")
                     return;

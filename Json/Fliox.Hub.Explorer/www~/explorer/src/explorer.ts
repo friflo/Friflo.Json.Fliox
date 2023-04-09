@@ -1,7 +1,7 @@
 
 import { FieldType, JsonType }  from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
 import { Resource, Config, el, createEl, Entity, parseAst }     from "./types.js";
-import { App, app, setClass }                                   from "./index.js";
+import { App, app, isCtrlKey, setClass }                        from "./index.js";
 import { EntityEditor }                                         from "./entity-editor.js";
 import { filterSource }                                         from "./filter.js";
 
@@ -379,7 +379,7 @@ ${filter}`;
             await this.selectEntityRange(lastRow.rowIndex);            
             return;
         }
-        const select        = ev.metaKey ? "toggle" : "id";
+        const select        = isCtrlKey(ev) ? "toggle" : "id";
         const selectedIds   = this.getSelectionFromPath(path, select);
         if (selectedIds === null)
             return;
@@ -545,11 +545,11 @@ ${filter}`;
             return;
         const table     = this.explorerTable;
         const row       = td.parentElement as HTMLTableRowElement;
-        const metaKey   = event.metaKey;
+        const ctrlKey   = isCtrlKey(event);
         switch (event.code) {
             case 'Home':
                 event.preventDefault();
-                if (event.metaKey) {
+                if (ctrlKey) {
                     this.setFocusCellSelectValue (1, td.cellIndex, "smooth");
                 } else {
                     this.setFocusCellSelectValue (row.rowIndex, 1, "smooth");
@@ -557,7 +557,7 @@ ${filter}`;
                 return;
             case 'End':
                 event.preventDefault();
-                if (event.metaKey) {
+                if (ctrlKey) {
                     this.setFocusCellSelectValue (table.rows.length - 1, td.cellIndex, "smooth");
                 } else {
                     this.setFocusCellSelectValue (row.rowIndex, row.cells.length - 1, "smooth");
@@ -575,7 +575,7 @@ ${filter}`;
                 event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex - 1, td.cellIndex);
                 const focused = this.focusedCell.parentElement as HTMLTableRowElement;
-                if (metaKey && row.rowIndex != focused.rowIndex) {
+                if (ctrlKey && row.rowIndex != focused.rowIndex) {
                     const id = this.getRowId(focused);
                     await this.selectExplorerEntities([id]);
                     this.selectCellValue(this.focusedCell);
@@ -586,7 +586,7 @@ ${filter}`;
                 event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex + 1, td.cellIndex);
                 const focused = this.focusedCell.parentElement as HTMLTableRowElement;
-                if (metaKey && row.rowIndex != focused.rowIndex) {
+                if (ctrlKey && row.rowIndex != focused.rowIndex) {
                     const id = this.getRowId(focused);
                     await this.selectExplorerEntities([id]);
                     this.selectCellValue(this.focusedCell);
@@ -625,7 +625,7 @@ ${filter}`;
                 return;
             }
             case 'KeyA': {
-                if (!metaKey)
+                if (!ctrlKey)
                     return;
                 event.preventDefault();
                 const ids = [...this.explorerRows.keys()];
@@ -638,7 +638,7 @@ ${filter}`;
                 return;
             }
             case 'KeyC': {
-                if (!metaKey)
+                if (!ctrlKey)
                     return;
                 event.preventDefault();
                 const editorValue = app.entityEditor.getValue();
@@ -764,6 +764,7 @@ ${filter}`;
             }
         };
         edit.onkeydown      = (event) => {
+            const ctrlKey = isCtrlKey(event);
             switch (event.code) {
                 case 'Escape':
                     event.stopPropagation();
@@ -771,7 +772,7 @@ ${filter}`;
                     entityExplorer.focus();
                     break;
                 case 'Enter':
-                    if (event.metaKey || event.altKey) {
+                    if (ctrlKey || event.altKey) {
                         const pos =  edit.selectionStart;
                         edit.value = edit.value.substring(0,pos) + "\n" + edit.value.substring(pos);
                         edit.selectionStart = edit.selectionEnd = pos + 1;
