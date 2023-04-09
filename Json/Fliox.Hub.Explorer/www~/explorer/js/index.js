@@ -181,12 +181,12 @@ export class App {
         this.refLinkDecoration.style.cursor = metaKeyPressed ? "pointer" : "";
     }
     onKeyUp(event) {
-        if (event.key == "Control") {
+        if (event.key == "Control" || event.key == "Meta") {
             this.applyMetaKey(false);
         }
     }
     onKeyDown(event) {
-        if (event.key == "Control") {
+        if (event.key == "Control" || event.key == "Meta") {
             this.applyMetaKey(true);
         }
         switch (this.config.activeTab) {

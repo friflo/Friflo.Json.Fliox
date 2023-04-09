@@ -214,13 +214,13 @@ export class App {
     }
 
     public onKeyUp (event: KeyboardEvent) : void {
-        if (event.key == "Control") {
+        if (event.key == "Control" || event.key == "Meta") {
             this.applyMetaKey(false);
         }
     }
 
     public onKeyDown (event: KeyboardEvent) : void {
-        if (event.key == "Control") {
+        if (event.key == "Control" || event.key == "Meta") {
             this.applyMetaKey(true);
         }
         switch (this.config.activeTab) {
