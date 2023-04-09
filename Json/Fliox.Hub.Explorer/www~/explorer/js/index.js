@@ -1,4 +1,4 @@
-/// <reference types="./node_modules/monaco-editor/monaco" />
+/// <reference types="../../../../../node_modules/monaco-editor/monaco" />
 import { el, defaultConfig, getColorBasedOnBackground } from "./types.js";
 import { Schema } from "./schema.js";
 import { Explorer } from "./explorer.js";
