@@ -1,4 +1,4 @@
-import { ErrorResponse, SyncRequest, SyncResponse, ProtocolMessage_Union, EventMessage } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
+import { ErrorResponse, SyncRequest, SyncResponse, ProtocolMessage_Union, EventMessage } from "Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 
 
 export class WebSocketResponse {

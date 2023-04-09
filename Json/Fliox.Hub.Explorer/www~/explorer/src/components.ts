@@ -1,4 +1,4 @@
-import { DbContainers, DbMessages } from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { DbContainers, DbMessages } from "Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 import { createEl } from "./types.js";
 
 

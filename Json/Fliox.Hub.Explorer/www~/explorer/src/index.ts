@@ -1,18 +1,18 @@
 /// <reference types="../../../../../node_modules/monaco-editor/monaco" />
 
 import { el, Resource, Method, ConfigKey, Config, defaultConfig, getColorBasedOnBackground, MessageCategory } from "./types.js";
-import { Schema, MonacoSchema }                                 from "./schema.js";
-import { Explorer }                                             from "./explorer.js";
-import { EntityEditor }                                         from "./entity-editor.js";
-import { Playground }                                           from "./playground.js";
-import { Events, eventsInfo }                                               from "./events.js";
-import { ClusterTree }                                          from "./components.js";
+import { Schema, MonacoSchema }                                     from "./schema.js";
+import { Explorer }                                                 from "./explorer.js";
+import { EntityEditor }                                             from "./entity-editor.js";
+import { Playground }                                               from "./playground.js";
+import { Events, eventsInfo }                                       from "./events.js";
+import { ClusterTree }                                              from "./components.js";
 
-import { FieldType, JSONSchema, JsonType }                          from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbSchema, DbContainers, DbMessages, HostInfo, ModelFiles } from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { FieldType, JSONSchema, JsonType }                          from "Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
+import { DbSchema, DbContainers, DbMessages, HostInfo, ModelFiles } from "Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 import { SyncRequest, SyncResponse, ProtocolResponse_Union,
-         ContainerEntities }                                        from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
-import { SyncRequestTask_Union, SendCommandResult }                 from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
+         ContainerEntities }                                        from "Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
+import { SyncRequestTask_Union, SendCommandResult }                 from "Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 declare global {
     interface Window {

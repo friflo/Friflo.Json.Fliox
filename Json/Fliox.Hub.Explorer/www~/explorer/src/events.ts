@@ -1,6 +1,6 @@
-import { DbContainers, DbMessages } from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster.js";
-import { SyncEvent, SyncRequest } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.js";
-import { EntityChange, SubscribeChanges, SubscribeMessage } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks.js";
+import { DbContainers, DbMessages }                         from "Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { SyncEvent, SyncRequest }                           from "Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
+import { EntityChange, SubscribeChanges, SubscribeMessage } from "Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { ClusterTree }  from "./components.js";
 import { el }           from "./types.js";
 import { app }          from "./index.js";

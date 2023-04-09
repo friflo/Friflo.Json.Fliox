@@ -21,6 +21,9 @@
         "noImplicitOverride": true,                  /* Ensure overriding members in derived classes are marked with an 'override' modifier. */
         "noPropertyAccessFromIndexSignature": true,  /* Require undeclared properties from index signatures to use element accesses. */
         "newLine": "lf",
+        // "typeRoots": ["../../../../../Json.Tests/assets~/Schema/Typescript/"],
+        "baseUrl": ".",                              /* This must be specified if "paths" is. */
+        "paths": { "Typescript/*": ["../../../../../Json.Tests/assets~/Schema/Typescript/*" ] }
     },
     "include": ["**/*"],
     "exclude": []

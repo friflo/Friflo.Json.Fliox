@@ -1,9 +1,9 @@
 
-import { FieldType, JsonType }  from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
-import { Resource, Config, el, createEl, Entity, parseAst }     from "./types.js";
-import { App, app, isCtrlKey, setClass }                        from "./index.js";
-import { EntityEditor }                                         from "./entity-editor.js";
-import { filterSource }                                         from "./filter.js";
+import { FieldType, JsonType }                              from "Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
+import { Resource, Config, el, createEl, Entity, parseAst } from "./types.js";
+import { App, app, isCtrlKey, setClass }                    from "./index.js";
+import { EntityEditor }                                     from "./entity-editor.js";
+import { filterSource }                                     from "./filter.js";
 
 function createMeasureTextWidth(width: number) : HTMLElement {
     const div = document.createElement("div");

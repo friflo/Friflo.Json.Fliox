@@ -1,7 +1,7 @@
 import { el, createEl }     from "./types.js";
 import { App, app }         from "./index.js";
 import { WebSocketClient, WebSocketResponse } from "./websocket.js";
-import { SyncRequest } from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.js";
+import { SyncRequest }      from "Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 
 
 const responseState     = el("response-state");

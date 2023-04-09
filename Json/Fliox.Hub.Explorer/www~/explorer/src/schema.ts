@@ -1,14 +1,14 @@
-import { FieldType, JsonType, JSONSchema }  from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbSchema }                         from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { FieldType, JsonType, JSONSchema }  from "Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
+import { DbSchema }                         from "Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
-declare module "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster" {
+declare module "Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster" {
     interface DbSchema {
         _rootSchema:        JsonType;
         _containerSchemas : { [key: string] : JsonType };        
     }
 }
 
-declare module "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON" {
+declare module "Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON" {
     interface JsonType {
         _typeName:      string;
         _namespace:     string;
