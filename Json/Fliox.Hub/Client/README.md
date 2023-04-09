@@ -60,8 +60,8 @@ These container operations are:
 - **Read** entities by id - primary key
 - **Upsert** entities
 - **Delete** entities
-- **Patch** entities - update only specific entity fields (columns)
-- **Query** entities using a LINQ filter - optionally using a cursor to iterate large datasets
+- **Patch** entities - update only specific entity fields. See [RFC 7386: JSON Merge Patch](https://www.rfc-editor.org/rfc/rfc7386).
+- **Query** entities using a LINQ filter - optionally using a cursor to iterate large datasets. See [Query filter](#query-filter).
 - **Read relations** - read entities referenced by entities returned by a **Read** or **Query** task.  
   This is the analog method to a **JOIN** in **SQL**.
 - **Aggregate** / **Count** entities using a **LINQ filter**
