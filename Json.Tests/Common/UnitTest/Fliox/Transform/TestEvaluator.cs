@@ -314,6 +314,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
+        public static void TestEvalCount() {
+            using (var eval = new JsonEvaluator()) {
+                string  error;
+                // --- error
+                {
+                    Eval ("o => o.array.Count(i => i) == 3", Json, eval, out error);
+                    AreEqual("cannot use lambda parameter i as operand (only its fields) at pos 24", error);
+                }
+                // --- success
+                {
+                    var result = Eval ("o => o.unknown.Count() == 0", Json, eval, out error);
+                    IsTrue((bool)result);
+                } {
+                    var result = Eval ("o => o.array.Count() == 3", Json, eval, out error);
+                    IsTrue((bool)result);
+                }
+            }
+        }
+        
+        [Test]
         public static void TestEvalCompare() {
             using (var eval = new JsonEvaluator()) {
                 string  error;

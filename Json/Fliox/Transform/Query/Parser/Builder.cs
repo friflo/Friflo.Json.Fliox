@@ -254,7 +254,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 // --- quantify  operations
                 case "Any":     q = Quantify(field, node, cx, out error);   return new Any       (q.field, q.arg, q.filter);
                 case "All":     q = Quantify(field, node, cx, out error);   return new All       (q.field, q.arg, q.filter);
-                case "Count":   q = Quantify(field, node, cx, out error);   return new CountWhere(q.field, q.arg, q.filter);
+                case "Count":
+                    if (node.OperandCount == 0)                             return new Count(field);
+                                q = Quantify(field, node, cx, out error);   return new CountWhere(q.field, q.arg, q.filter);
                 
                 // --- string operations
                 case "Contains":    b = StringOp(field, node, cx, out error); return new Contains  (b.left, b.right);

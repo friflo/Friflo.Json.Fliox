@@ -183,7 +183,8 @@ When using a filter for a container query it is converted into an expression tre
 |               | items.Max(i =>     i.Property) | maximum value of a collection                                                        |
 |               | items.Sum(i =>     i.Property) | sum of a values within a collection                                                  |
 |               | items.Average(i => i.Property) | average of values within a collection                                                |
-|               | items.Count(i => condition)    | count of elements satisfying a condition within collection                           |
+|               | items.Count()                  | count of elements within a collection                                                |
+|               | items.Count(i => condition)    | count of elements satisfying a condition within a collection                         |
 | **quantify**  | items.All(i => condition)      | determines whether all elements of a collection satisfy a condition                  |
 |               | items.Any(i => condition )     | determines whether any element of a collection satisfy a condition                   |
 

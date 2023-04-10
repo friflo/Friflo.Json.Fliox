@@ -61,6 +61,8 @@ type List<T> = {
     /** return the average of all values. */
     Average (filter: (o: T) => Property) : Number;
 
+    /** count the elements in an array. */
+    Count   ()                           : Number;
     /** count the elements in an array which satisfy the filter condition. */
     Count   (filter: (o: T) => boolean)  : Number;
 }

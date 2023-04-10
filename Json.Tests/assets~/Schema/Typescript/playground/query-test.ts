@@ -73,6 +73,7 @@ query<Order>    (o => o.items.Sum     (o => o.amount)           == 6);
 query<Order>    (o => o.items.Average (o => o.amount)           == 3);
 
 query<Order>    (o => o.items.Count   (o => o.name == "Camera") == 2);
+query<Order>    (o => o.items.Count   () == 2);
 
 
 // ------------ Math
