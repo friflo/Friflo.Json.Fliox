@@ -18,6 +18,8 @@
   ],
   "info": [
     "query articles with filter: o => o.name == 'Smartphone'",
+    "filter documentation",
+    "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox.Hub/Client#query-filter",
 
     "the expressions 'filter' and 'filterTree' are equal",
     " 'filter':     infix notation  - easy to read by humans",

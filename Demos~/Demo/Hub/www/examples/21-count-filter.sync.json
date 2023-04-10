@@ -9,6 +9,8 @@
     }
   ],
   "info": [
-    "count articles with filter: o => o.name == 'Smartphone'"
+    "count articles with filter: o => o.name == 'Smartphone'",
+    "filter documentation",
+    "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox.Hub/Client#query-filter"
   ]
 }
