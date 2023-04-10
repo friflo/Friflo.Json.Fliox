@@ -343,3 +343,9 @@ data class EndsWith (
     override  val right : Operation,
 ) : BinaryBoolOp()
 
+@Serializable
+@SerialName("length")
+data class Length (
+              val value : Operation,
+) : Operation()
+

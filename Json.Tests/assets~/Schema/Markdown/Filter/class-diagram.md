@@ -319,5 +319,12 @@ class EndsWith {
     op     : "endsWith"
 }
 
+Operation <|-- Length
+class Length {
+    op     : "length"
+    value  : Operation
+}
+Length *-- "1" Operation : value
+
 
 ```

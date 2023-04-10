@@ -77,10 +77,11 @@
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/CountWhere" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Contains" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/StartsWith" },
-                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/EndsWith" }
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/EndsWith" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Length" }
             ],
             "properties": {
-                "op": { "enum": ["field", "string", "double", "int64", "null", "PI", "E", "Tau", "abs", "ceiling", "floor", "exp", "log", "sqrt", "negate", "add", "subtract", "multiply", "divide", "modulo", "min", "max", "sum", "average", "count", "equal", "notEqual", "less", "lessOrEqual", "greater", "greaterOrEqual", "and", "or", "true", "false", "not", "lambda", "filter", "any", "all", "countWhere", "contains", "startsWith", "endsWith"], "description": "operation type" }
+                "op": { "enum": ["field", "string", "double", "int64", "null", "PI", "E", "Tau", "abs", "ceiling", "floor", "exp", "log", "sqrt", "negate", "add", "subtract", "multiply", "divide", "modulo", "min", "max", "sum", "average", "count", "equal", "notEqual", "less", "lessOrEqual", "greater", "greaterOrEqual", "and", "or", "true", "false", "not", "lambda", "filter", "any", "all", "countWhere", "contains", "startsWith", "endsWith", "length"], "description": "operation type" }
             },
             "required": [
                 "op"

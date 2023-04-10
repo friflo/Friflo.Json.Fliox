@@ -1,7 +1,7 @@
 // ------------- query Filter<T> -----------------
 type StringFilter = {
     /** return the length of the string. */
-    readonly Length : Number,
+    Length() : Number,
     
     /** return **true** if the value matches the beginning of the string. */
     StartsWith  (value: string) : boolean,

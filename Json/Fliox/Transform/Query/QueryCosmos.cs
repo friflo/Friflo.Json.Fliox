@@ -87,6 +87,10 @@ namespace Friflo.Json.Fliox.Transform.Query
                     operands = GetOperands(and.operands);
                     return string.Join(" && ", operands);
                 
+                case Length length:
+                    var value = Traverse(length.value);
+                    return $"LENGTH({value})";
+                
                 case Filter filterOp:
                     var cx              = new ConvertContext (collection, this.filterOp);
                     operand             = cx.Traverse(filterOp.body);

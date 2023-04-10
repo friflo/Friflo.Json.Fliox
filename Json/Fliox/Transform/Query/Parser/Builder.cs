@@ -262,6 +262,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case "Contains":    b = StringOp(field, node, cx, out error); return new Contains  (b.left, b.right);
                 case "StartsWith":  b = StringOp(field, node, cx, out error); return new StartsWith(b.left, b.right);
                 case "EndsWith":    b = StringOp(field, node, cx, out error); return new EndsWith  (b.left, b.right);
+                case "Length":                                                return new Length    (field);
                 default:
                     error = $"unknown method: {method}() used by {fieldName} {At} {node.Pos}";
                     return null;

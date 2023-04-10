@@ -633,6 +633,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                           "12345".EndsWith("345"));
                 AreEqual("'12345'.EndsWith('345')", endsWith.Linq);
             }
+            // --- unary string operations
+            {
+                var isEqual = (Equal)  FromFilter((object p) =>
+                          "12345".Length == 5);
+                AreEqual("'12345'.Length() == 5",   isEqual.Linq);
+                Cosmos  ("LENGTH('12345') = 5",      isEqual.query.Cosmos);
+            } {
+                var isEqual =     (Equal)   FromFilter((Person p) =>
+                          p.name.Length == 5);
+                AreEqual("p.name.Length() == 5",    isEqual.Linq);
+                Cosmos  ("LENGTH(p.name) = 5",      isEqual.query.Cosmos);
+                AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'length','value':{'op':'field','name':'p.name'}},'right':{'op':'int64','value':5}}");
+            }
           } 
         }
         

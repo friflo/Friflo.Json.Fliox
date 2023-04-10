@@ -63,8 +63,17 @@ namespace Friflo.Json.Fliox.Transform.Query
                         var field = (Field) GetMember(parentMember, cx);
                         return new Count(field);
                     }
+                    if (name == "Length" && IsEnumerable(parentMember.Type)) {
+                        var field = (Field) GetMember(parentMember, cx);
+                        return new Length(field);
+                    }
                     break;
                 case ConstantExpression constant:
+                    name = GetMemberName(member, cx);
+                    if (name == "Length" && constant.Type == typeof(string)) {
+                        var literal = new StringLiteral(constant.Value.ToString());
+                        return new Length(literal);
+                    }
                     return OperationFromConstant(constant, cx);
                 default:
                     throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 

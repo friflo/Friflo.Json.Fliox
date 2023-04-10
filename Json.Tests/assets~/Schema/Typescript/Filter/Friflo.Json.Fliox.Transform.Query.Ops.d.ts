@@ -278,3 +278,9 @@ export class EndsWith extends BinaryBoolOp {
     op     : "endsWith";
 }
 
+export class Length extends Operation {
+    /** operation type */
+    op     : "length";
+    value  : Operation_Union;
+}
+

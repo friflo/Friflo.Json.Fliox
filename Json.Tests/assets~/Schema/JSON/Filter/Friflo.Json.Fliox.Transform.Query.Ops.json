@@ -738,6 +738,19 @@
                 "right"
             ],
             "additionalProperties": false
+        },
+        "Length": {
+            "type": "object",
+            "extends": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" },
+            "properties": {
+                "op":    { "enum": ["length"] },
+                "value": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" }
+            },
+            "required": [
+                "op",
+                "value"
+            ],
+            "additionalProperties": false
         }
     }
 }

@@ -188,6 +188,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     // missing member o.foo => o.foo = null
                     var result = Filter ("o => o.strVal.EndsWith(o.foo)", Json, eval, out _);
                     IsFalse(result);
+                } {
+                    var result = Eval ("o => o.strVal.Length()", Json, eval, out _);
+                    AreEqual(3, result);
                 }
                 // --- null left & string methods
                 {
@@ -198,6 +201,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     IsNull(result);
                 } {
                     var result = Eval ("o => o.nullVal.StartsWith('abc')", Json, eval, out _);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => o.nullVal.Length()", Json, eval, out _);
                     IsNull(result);
                 }
                 // --- null right & string methods

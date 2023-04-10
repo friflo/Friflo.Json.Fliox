@@ -43,6 +43,7 @@ import { CountWhere }     from "./Friflo.Json.Fliox.Transform.Query.Ops";
 import { Contains }       from "./Friflo.Json.Fliox.Transform.Query.Ops";
 import { StartsWith }     from "./Friflo.Json.Fliox.Transform.Query.Ops";
 import { EndsWith }       from "./Friflo.Json.Fliox.Transform.Query.Ops";
+import { Length }         from "./Friflo.Json.Fliox.Transform.Query.Ops";
 
 export type Operation_Union =
     | Field
@@ -89,6 +90,7 @@ export type Operation_Union =
     | Contains
     | StartsWith
     | EndsWith
+    | Length
 ;
 
 export abstract class Operation {
@@ -138,6 +140,7 @@ export abstract class Operation {
         | "contains"
         | "startsWith"
         | "endsWith"
+        | "length"
     ;
 }
 

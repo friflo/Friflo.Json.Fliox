@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Transform.Query.Arity;
 
 namespace Friflo.Json.Fliox.Transform.Query.Ops
@@ -57,6 +59,37 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             foreach (var pair in eval) {
                 var endsWith = pair.left.EndsWith(pair.right, this);
                 evalResult.Add(endsWith);
+            }
+            return evalResult;
+        }
+    }
+    
+    public sealed class Length : Operation
+    {
+        [Required]  public              Operation   value;
+        [Ignore]    private  readonly   EvalResult  evalResult = new EvalResult(new List<Scalar>());
+                    internal override   bool        IsNumeric => true;
+        
+                    public   override   string      OperationName => "Length";
+                    public   override   void        AppendLinq(AppendCx cx) => AppendLinqMethod("Length", value, cx);
+
+        /// Could Extend <see cref="UnaryArithmeticOp"/> but Length() is not an arithmetic function  
+        internal override void Init(OperationContext cx, InitFlags flags) {
+            cx.ValidateReuse(this); // results are reused
+            value.Init(cx, 0);
+        }
+
+        public Length() { }
+        public Length(Operation value) {
+            this.value = value;
+        }
+        
+        internal override EvalResult Eval(EvalCx cx) {
+            evalResult.Clear();
+            var eval = value.Eval(cx);
+            foreach (var val in eval.values) {
+                var result = val.Length(this);
+                evalResult.Add(result);
             }
             return evalResult;
         }

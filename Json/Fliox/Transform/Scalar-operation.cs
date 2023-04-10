@@ -64,10 +64,30 @@ namespace Friflo.Json.Fliox.Transform
             }
             return ExpectNumber(operation);
         }
+        
+        public Scalar Length(Operation operation) {
+            switch (type) {
+                case ScalarType.Null:   return Null;
+                case ScalarType.String: return new Scalar(stringValue.Length);
+            }
+            return ExpectString(operation);
+        }
 
         private Scalar ExpectNumber(Operation operation) {
             var sb = new StringBuilder();
             sb.Append("expect numeric operand. was: ");
+            AppendTo(sb);
+            if (operation != null) {
+                var appendCx = new AppendCx(sb);
+                sb.Append(" in ");
+                operation.AppendLinq(appendCx);
+            }
+            return Error(sb.ToString());
+        }
+        
+        private Scalar ExpectString(Operation operation) {
+            var sb = new StringBuilder();
+            sb.Append("expect string operand. was: ");
             AppendTo(sb);
             if (operation != null) {
                 var appendCx = new AppendCx(sb);

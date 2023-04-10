@@ -42,7 +42,7 @@ query<IntClass> (o => o.num  == "3");
 // --- ensure presence string filter methods
 query<Article>  (o => o.id  == "abc");
 query<Article>  (o => o.id  == null);
-query<Article>  (o => o.id.Length == 3);
+query<Article>  (o => o.id.Length() == 3);
 query<Article>  (o => o.id.StartsWith("abc"));
 query<Article>  (o => o.id.EndsWith  ("abc"));
 query<Article>  (o => o.id.Contains  ("abc"));

@@ -623,6 +623,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var op = Parse("o.foo.EndsWith(a)", out _, TestEnv);
                 AreEqual("o.foo.EndsWith(a)", op.Linq);
+            } {
+                var op = Parse("o.name.Length()", out _, TestEnv);
+                AreEqual("o.name.Length()", op.Linq);
             }
         }
         

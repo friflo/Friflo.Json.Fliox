@@ -69,6 +69,7 @@ namespace Friflo.Json.Fliox.Transform
     [PolymorphType(typeof(Contains),            "contains")]
     [PolymorphType(typeof(StartsWith),          "startsWith")]
     [PolymorphType(typeof(EndsWith),            "endsWith")]
+    [PolymorphType(typeof(Length),              "length")]
     
     // ----------------------------- Operation --------------------------
 #if !UNITY_5_3_OR_NEWER
@@ -162,6 +163,14 @@ namespace Friflo.Json.Fliox.Transform
             sb.Append('(');
             operand.AppendLinq(cx);
             sb.Append(')');
+        }
+        
+        protected static void AppendLinqMethod(string name, Operation symbol, AppendCx cx) {
+            var sb = cx.sb;
+            symbol.AppendLinq(cx);
+            sb.Append('.');
+            sb.Append(name);
+            sb.Append("()");
         }
         
         protected static void AppendLinqFunction(string name, Operation operand, AppendCx cx) {
