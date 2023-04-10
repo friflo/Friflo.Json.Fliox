@@ -162,9 +162,10 @@ When using a filter for a container query it is converted into an expression tre
 | **logical**   | &&                             | and                                                                                  |
 |               | &#124;&#124;                   | or                                                                                   |
 |               | !                              | not                                                                                  |
-| **wildcard**  | value.StartsWith(string)       | determine if value starts with the given string.  Equivalent to LIKE to 'string%'    |
+| **string**    | value.StartsWith(string)       | determine if value starts with the given string.  Equivalent to LIKE to 'string%'    |
 |               | value.EndsWith(string)         | determine if value ends with the given string.    Equivalent to LIKE to '%string'    |
 |               | value.Contains(string)         | determine if value contains the given string.     Equivalent to LIKE to '%string%'   |
+|               | value.Length()                 | determine if value contains the given string.     Equivalent to SQL LEN()            |
 | **arithmetic**| +                              | add                                                                                  |
 |               | -                              | subtract                                                                             |
 |               | *                              | multiply                                                                             |
