@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                     var value = Traverse(length.value);
                     return $"LENGTH({value})";
                 
-                // --- arithmetic ---
+                // --- arithmetic: operators ---
                 case Add add:
                     left    = Traverse(add.left);
                     right   = Traverse(add.right);
@@ -132,6 +132,26 @@ namespace Friflo.Json.Fliox.Transform.Query
                     left    = Traverse(modulo.left);
                     right   = Traverse(modulo.right);
                     return $"{left} % {right}";
+                
+                // --- arithmetic: methods ---
+                case Abs abs:
+                    value = Traverse(abs.value);
+                    return $"ABS({value})";
+                case Ceiling ceiling:
+                    value = Traverse(ceiling.value);
+                    return $"CEILING({value})";
+                case Floor floor:
+                    value = Traverse(floor.value);
+                    return $"FLOOR({value})";
+                case Exp exp:
+                    value = Traverse(exp.value);
+                    return $"EXP({value})";
+                case Log log:
+                    value = Traverse(log.value);
+                    return $"LOG({value})";
+                case Sqrt sqrt:
+                    value = Traverse(sqrt.value);
+                    return $"SQRT({value})";
                 
                 // --- constants ---
                 

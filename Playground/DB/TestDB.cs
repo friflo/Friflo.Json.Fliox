@@ -6,7 +6,9 @@ using Friflo.Playground.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Playground.DB.Env;
+using static System.Math;
 
+// ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Playground.DB
 {
     public class TestDB
@@ -176,7 +178,7 @@ namespace Friflo.Playground.DB
             AreEqual(2, query.Result.Count);
         }
         
-        // --- query filter: arithmetic
+        // --- query filter: arithmetic operator
         [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
         public static async Task TestQuery_Add(string db) {
             var store = GetClient(db);
@@ -223,6 +225,62 @@ namespace Friflo.Playground.DB
             int one = 1;
             var query = store.articles.Query(a => one % one == 0);
             AreEqual("a => 1 % 1 == 0", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        // --- query filter: arithmetic methods
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Abs(string db) {
+            var store = GetClient(db);
+            int one = 1;
+            var query = store.articles.Query(a => Abs(-1) == one);
+            AreEqual("a => Abs(-1) == 1", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Ceiling(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => Ceiling(1.5) == 2);
+            AreEqual("a => Ceiling(1.5) == 2", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Floor(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => Floor(1.5) == 1);
+            AreEqual("a => Floor(1.5) == 1", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Exp(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => Exp(1) == 2.718281828459045);
+            AreEqual("a => Exp(1) == 2.718281828459045", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Log(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => Log(2.718281828459045) == 1);
+            AreEqual("a => Log(2.718281828459045) == 1", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Sqrt(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => Sqrt(4) == 2);
+            AreEqual("a => Sqrt(4) == 2", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
         }
