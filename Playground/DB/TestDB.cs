@@ -21,14 +21,95 @@ namespace Friflo.Playground.DB
             return new TestClient(hub);
         }
 
+        private const int ArticleCount = 2;
+
+        // --- query all
         [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
         public static async Task TestQuery_All(string db) {
             var store = GetClient(db);
             var query = store.articles.QueryAll();
             await store.SyncTasks();
-            AreEqual(2, query.Result.Count);
+            AreEqual(ArticleCount, query.Result.Count);
         }
         
+        // --- query filter: compare
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Equals(string db) {
+            var store = GetClient(db);
+            // ReSharper disable once EqualExpressionComparison
+            var query = store.articles.Query(a => 1 == 1);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_NotEquals(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => 1 != 0);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Less(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => 0 < 1);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_LessOrEquals(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => 0 <= 1);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Greater(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => 1 > 0);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_GreaterOrEquals(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => 1 > 0);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        // --- query filter: logical
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_And(string db) {
+            var store = GetClient(db);
+            // ReSharper disable once RedundantLogicalConditionalExpressionOperand
+            var query = store.articles.Query(a => true && true);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Or(string db) {
+            var store = GetClient(db);
+            // ReSharper disable once RedundantLogicalConditionalExpressionOperand
+            var query = store.articles.Query(a => false || true);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Not(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => !false);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        // --- query filter: string
         [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
         public static async Task TestQuery_StartsWith(string db) {
             var store = GetClient(db);
@@ -69,6 +150,7 @@ namespace Friflo.Playground.DB
             AreEqual(2, query.Result.Count);
         }
         
+        // --- read by id
         [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
         public static async Task TestRead_One(string db) {
             var store = GetClient(db);
@@ -87,7 +169,6 @@ namespace Friflo.Playground.DB
             NotNull(find1.Result);
             NotNull(find2.Result);
         }
-
     }
 }
 
