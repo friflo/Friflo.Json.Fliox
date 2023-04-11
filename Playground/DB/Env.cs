@@ -1,10 +1,13 @@
 using System;
-using Friflo.Json.Fliox.Hub.Cosmos;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Playground.Client;
+
+#if !UNITY_5_3_OR_NEWER
+using Friflo.Json.Fliox.Hub.Cosmos;
 using Friflo.Playground.CosmosDB;
+#endif
 
 namespace Friflo.Playground.DB
 {
@@ -27,12 +30,16 @@ namespace Friflo.Playground.DB
         }
         
         internal static EntityDatabase CreateCosmosDatabase(EntityDatabase sourceDB) {
+#if !UNITY_5_3_OR_NEWER
             var client              = TestCosmosDB.CreateCosmosClient();
             var createDatabase      = client.CreateDatabaseIfNotExistsAsync("cosmos_db").Result;
             var cosmosDatabase      = new CosmosDatabase("cosmos_db", createDatabase)
                 { Throughput = 400, Schema = sourceDB.Schema };
             cosmosDatabase.SeedDatabase(sourceDB).Wait();
             return cosmosDatabase;
+#else
+            return null;
+#endif
         }
                 
         internal static EntityDatabase CreateFileDatabase(DatabaseSchema schema) {

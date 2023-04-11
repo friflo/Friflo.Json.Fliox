@@ -1,6 +1,3 @@
-
-#if !UNITY_5_3_OR_NEWER
-
 using System.Threading.Tasks;
 using Friflo.Playground.Client;
 using NUnit.Framework;
@@ -229,6 +226,39 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
+        // --- query filter: constants
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Constant_E(string db) {
+            var store = GetClient(db);
+            double e = 2.718281828459045;
+            var query = store.articles.Query(a => E == e);
+            AreEqual("a => 2.718281828459045 == 2.718281828459045", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Constant_Pi(string db) {
+            var store = GetClient(db);
+            double pi = 3.141592653589793;
+            var query = store.articles.Query(a => PI == pi);
+            AreEqual("a => 3.141592653589793 == 3.141592653589793", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+#if !UNITY_5_3_OR_NEWER
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Constant_Tau(string db) {
+            var store = GetClient(db);
+            double tau = 6.283185307179586;
+            var query = store.articles.Query(a => Tau == tau);
+            AreEqual("a => 6.283185307179586 == 6.283185307179586", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+#endif
+        
         // --- query filter: arithmetic methods
         [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
         public static async Task TestQuery_Abs(string db) {
@@ -306,5 +336,3 @@ namespace Friflo.Playground.DB
         }
     }
 }
-
-#endif
