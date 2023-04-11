@@ -293,6 +293,8 @@ namespace Friflo.Json.Fliox.Transform
             var collection = "c";
             return QueryCosmos.ToCosmos(collection, filter);
         } }
+        
+        public              string              Linq => filter.Linq;
 
         internal QueryFormat (FilterOperation filter) {
             this.filter = filter;

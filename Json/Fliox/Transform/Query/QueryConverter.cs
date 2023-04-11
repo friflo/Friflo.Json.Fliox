@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.Mapper.Map.Val;
 using Friflo.Json.Fliox.Mapper.Utils;
 using Friflo.Json.Fliox.Transform.Query.Ops;
@@ -43,7 +42,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case BinaryExpression binary:
                     return OperationFromBinaryExpression(binary, cx);
                 case ConstantExpression constant:
-                    return OperationFromConstant(constant, cx);
+                    return OperationFromConstant(null, constant, cx);
                 default:
                     throw NotSupported($"Body not supported: {expression}", cx);
             }
@@ -74,7 +73,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                         var literal = new StringLiteral(constant.Value.ToString());
                         return new Length(literal);
                     }
-                    return OperationFromConstant(constant, cx);
+                    return OperationFromConstant(member, constant, cx);
                 default:
                     throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
             }
@@ -299,17 +298,32 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
         
-        private static Operation OperationFromConstant(ConstantExpression constant, QueryCx cx) {
+        private static Operation OperationFromConstant(MemberExpression member, ConstantExpression constant, QueryCx cx) {
             object  value       = constant.Value;
             Type    type        = constant.Type;
             
             // is local variable used in expression? A DisplayClass is generated for them
-            if (type.IsDefined (typeof (CompilerGeneratedAttribute), false)) {
+            if (member != null) {
+                var memberInfo = member.Member;
+                switch (memberInfo) {
+                    case FieldInfo      field:
+                        type    = field.FieldType;
+                        value   = field.GetValue(value);
+                        break;
+                    case PropertyInfo   property:
+                        type    = property.PropertyType;
+                        value   = property.GetValue(value);
+                        break;
+                    default:
+                        throw new InvalidOperationException($"unexpected member type: {memberInfo}");
+                }
+            }
+            /* if (type.IsDefined (typeof (CompilerGeneratedAttribute), false)) {
                 var fields  = type.GetFields();
                 var field   = fields[0];
                 value       = field.GetValue(value);
                 type        = field.FieldType;
-            }
+            }*/
             var operation   =  OperationFromValue(value, type);    
             
             if (operation == null)
