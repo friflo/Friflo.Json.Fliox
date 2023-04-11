@@ -184,7 +184,47 @@ namespace Friflo.Playground.DB
             var query = store.articles.Query(a => one + one == 2);
             AreEqual("a => 1 + 1 == 2", query.DebugQuery.Linq);
             await store.SyncTasks();
-            AreEqual(2, query.Result.Count);
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Subtract(string db) {
+            var store = GetClient(db);
+            int one = 1;
+            var query = store.articles.Query(a => one - one == 0);
+            AreEqual("a => 1 - 1 == 0", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Multiply(string db) {
+            var store = GetClient(db);
+            int one = 1;
+            var query = store.articles.Query(a => one * one == 1);
+            AreEqual("a => 1 * 1 == 1", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Divide(string db) {
+            var store = GetClient(db);
+            int one = 1;
+            var query = store.articles.Query(a => one / one == 1);
+            AreEqual("a => 1 / 1 == 1", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Modulo(string db) {
+            var store = GetClient(db);
+            int one = 1;
+            var query = store.articles.Query(a => one % one == 0);
+            AreEqual("a => 1 % 1 == 0", query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(ArticleCount, query.Result.Count);
         }
         
         // --- read by id

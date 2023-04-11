@@ -112,6 +112,26 @@ namespace Friflo.Json.Fliox.Transform.Query
                     return $"LENGTH({value})";
                 
                 // --- arithmetic ---
+                case Add add:
+                    left    = Traverse(add.left);
+                    right   = Traverse(add.right);
+                    return $"{left} + {right}";
+                case Subtract subtract:
+                    left    = Traverse(subtract.left);
+                    right   = Traverse(subtract.right);
+                    return $"{left} - {right}";
+                case Multiply multiply:
+                    left    = Traverse(multiply.left);
+                    right   = Traverse(multiply.right);
+                    return $"{left} * {right}";
+                case Divide divide:
+                    left    = Traverse(divide.left);
+                    right   = Traverse(divide.right);
+                    return $"{left} / {right}";
+                case Modulo modulo:
+                    left    = Traverse(modulo.left);
+                    right   = Traverse(modulo.right);
+                    return $"{left} % {right}";
                 
                 // --- constants ---
                 
