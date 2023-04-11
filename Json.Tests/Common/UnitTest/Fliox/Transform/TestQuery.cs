@@ -463,31 +463,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var or =    (Or)        FromFilter((Person p) =>
                           p.age >= 20 || p.name == "Peter");
                 AreEqual("p.age >= 20 || p.name == 'Peter'",    or.Linq);
-                Cosmos  ("p.age >= 20 || p.name = 'Peter'",     or.query.Cosmos);
+                Cosmos  ("p.age >= 20 OR p.name = 'Peter'",     or.query.Cosmos);
                 AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}]}");
             } {            
                 var and =   (And)       FromFilter((Person p) =>
                           p.age >= 20 && p.name == "Peter");
                 AreEqual("p.age >= 20 && p.name == 'Peter'",    and.Linq);
-                Cosmos  ("p.age >= 20 && p.name = 'Peter'",     and.query.Cosmos);
+                Cosmos  ("p.age >= 20 AND p.name = 'Peter'",    and.query.Cosmos);
                 AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}]}");
             } {            
                 var or2 =   (Or)        FromLambda((Person p) =>
                           p.age == 1 || p.age == 2 );
                 AreEqual("p.age == 1 || p.age == 2",            or2.Linq);
-                Cosmos  ("p.age = 1 || p.age = 2",              or2.query.Cosmos);
+                Cosmos  ("p.age = 1 OR p.age = 2",              or2.query.Cosmos);
                 AssertJson(mapper, or2, "{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':2}}]}");
             } {            
                 var and2 =  (And)       FromLambda((Person p) =>
                           p.age == 1 && p.age == 2 );
                 AreEqual("p.age == 1 && p.age == 2",            and2.Linq);
-                Cosmos  ("p.age = 1 && p.age = 2",              and2.query.Cosmos);
+                Cosmos  ("p.age = 1 AND p.age = 2",             and2.query.Cosmos);
                 AssertJson(mapper, and2, "{'op':'and','operands':[{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':2}}]}");
             } { 
                 var or3 =   (Or)        FromLambda((Person p) =>
                           p.age == 1 || p.age == 2 || p.age == 3);
                 AreEqual("p.age == 1 || p.age == 2 || p.age == 3",  or3.Linq);
-                Cosmos  ("p.age = 1 || p.age = 2 || p.age = 3",     or3.query.Cosmos);
+                Cosmos  ("p.age = 1 OR p.age = 2 OR p.age = 3",     or3.query.Cosmos);
                 AssertJson(mapper, or3, "{'op':'or','operands':[{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':2}}]},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':3}}]}");
             }
             
@@ -496,7 +496,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var isNot = (Not)       FromFilter((Person p) =>
                           !(p.age >= 20));
                 AreEqual("!(p.age >= 20)",      isNot.Linq);
-                Cosmos  ("!(p.age >= 20)",      isNot.query.Cosmos);
+                Cosmos  ("NOT(p.age >= 20)",    isNot.query.Cosmos);
                 AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}}");
             }
             

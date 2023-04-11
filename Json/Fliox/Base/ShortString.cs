@@ -275,7 +275,10 @@ namespace Friflo.Json.Fliox
         }
         
         public void AppendTo(StringBuilder sb) {
-            if (IsNull()) throw new InvalidOperationException("ShortString is null");
+            if (IsNull()) {
+                sb.Append("null");
+                return;
+            }
             if (str != null) {
                 sb.Append(str);
                 return;

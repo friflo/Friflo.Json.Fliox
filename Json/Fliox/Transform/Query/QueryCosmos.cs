@@ -86,13 +86,13 @@ namespace Friflo.Json.Fliox.Transform.Query
                 // --- logical ---
                 case Not @not:
                     var operand = Traverse(@not.operand);
-                    return $"!({operand})";
+                    return $"NOT({operand})";
                 case Or or:
                     var operands = GetOperands(or.operands);
-                    return string.Join(" || ", operands);
+                    return string.Join(" OR ", operands);
                 case And and:
                     operands = GetOperands(and.operands);
-                    return string.Join(" && ", operands);
+                    return string.Join(" AND ", operands);
                 
                 // --- string ---
                 case StartsWith startsWith:

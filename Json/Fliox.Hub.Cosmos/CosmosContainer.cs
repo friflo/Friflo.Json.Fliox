@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -156,6 +157,10 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             using (var pooled               = syncContext.ObjectMapper.Get()) {
                 while (iterator.HasMoreResults) {
                     using(ResponseMessage response = await iterator.ReadNextAsync().ConfigureAwait(false)) {
+                        if (response.StatusCode != HttpStatusCode.OK) {
+                            var error = new TaskExecuteError(TaskErrorType.ValidationError, response.ErrorMessage);
+                            return new QueryEntitiesResult { Error = error };
+                        }
                         var reader  = pooled.instance.reader;
                         var docs    = await CosmosUtils.ReadDocuments(reader, response.Content, buffer).ConfigureAwait(false);
                         if (docs == null)
