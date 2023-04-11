@@ -42,12 +42,14 @@ namespace Friflo.Playground
             var databaseSchema      = new DatabaseSchema(typeSchema);
             var fileDb              = Env.CreateFileDatabase(databaseSchema);
             var memoryDb            = Env.CreateMemoryDatabase(fileDb);
+            var cosmosDb            = Env.CreateCosmosDatabase(fileDb);
             
             var hub                 = new FlioxHub(memoryDb, env) { HostName = "test-server" };
             hub.Info.projectName    = "Test DB";                                                                // optional
             hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Main";  // optional
             hub.Info.envName        = "test"; hub.Info.envColor = "rgb(0 140 255)";                              // optional
-            hub.AddExtensionDB (fileDb);            
+            hub.AddExtensionDB (fileDb);
+            hub.AddExtensionDB (cosmosDb);
             hub.AddExtensionDB (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
             hub.AddExtensionDB (new MonitorDB("monitor", hub));         // optional - expose monitor stats as extension database
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)

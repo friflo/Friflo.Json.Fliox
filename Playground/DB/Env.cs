@@ -1,8 +1,10 @@
 using System;
+using Friflo.Json.Fliox.Hub.Cosmos;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Playground.Client;
+using Friflo.Playground.CosmosDB;
 
 namespace Friflo.Playground.DB
 {
@@ -14,6 +16,7 @@ namespace Friflo.Playground.DB
             
         private static  FlioxHub _memoryHub;
         private static  FlioxHub _fileHub;
+        private static  FlioxHub _cosmosHub;
         
         private static readonly string TestDbFolder = CommonUtils.GetBasePath() + "assets~/DB/test_db";
             
@@ -21,6 +24,15 @@ namespace Friflo.Playground.DB
             var memoryDB = new MemoryDatabase("memory_db") { Schema = sourceDB.Schema};
             memoryDB.SeedDatabase(sourceDB).Wait();
             return memoryDB;
+        }
+        
+        internal static EntityDatabase CreateCosmosDatabase(EntityDatabase sourceDB) {
+            var client              = TestCosmosDB.CreateCosmosClient();
+            var createDatabase      = client.CreateDatabaseIfNotExistsAsync("cosmos_db").Result;
+            var cosmosDatabase      = new CosmosDatabase("cosmos_db", createDatabase) { Throughput = 400 };
+            cosmosDatabase.Schema   = sourceDB.Schema;
+            cosmosDatabase.SeedDatabase(sourceDB).Wait();
+            return cosmosDatabase;
         }
                 
         internal static EntityDatabase CreateFileDatabase(DatabaseSchema schema) {
@@ -32,12 +44,14 @@ namespace Friflo.Playground.DB
             var databaseSchema      = new DatabaseSchema(typeSchema);
             _fileHub    = new FlioxHub(CreateFileDatabase(databaseSchema));
             _memoryHub  = new FlioxHub(CreateMemoryDatabase(_fileHub.database));
+            _cosmosHub  = new FlioxHub(CreateCosmosDatabase(_fileHub.database));
         }
 
         internal static FlioxHub GetDatabaseHub(string db) {
             switch (db) {
                 case Memory:    return _memoryHub;
                 case File:      return _fileHub;
+                case Cosmos:    return _cosmosHub;
             }
             throw new InvalidOperationException($"invalid database Env: {db}");
         }

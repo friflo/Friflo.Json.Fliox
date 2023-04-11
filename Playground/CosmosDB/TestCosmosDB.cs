@@ -28,7 +28,7 @@ namespace Friflo.Playground.CosmosDB
         
         private static CosmosClient _client;
         
-        private static CosmosClient CreateCosmosClient() {
+        internal static CosmosClient CreateCosmosClient() {
             if (_client != null)
                 return _client;
             var config      = InitConfiguration();

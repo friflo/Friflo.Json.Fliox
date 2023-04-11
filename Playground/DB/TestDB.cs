@@ -22,6 +22,7 @@ namespace Friflo.Playground.DB
 
         [TestCase(Env.File,   Category = Env.File)]
         [TestCase(Env.Memory, Category = Env.Memory)]
+        [TestCase(Env.Cosmos, Category = Env.Cosmos)]
         public static async Task TestQuery(string db) {
             var store = GetClient(db);
             var query = store.articles.QueryAll();
