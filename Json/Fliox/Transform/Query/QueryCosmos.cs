@@ -30,6 +30,10 @@ namespace Friflo.Json.Fliox.Transform.Query
             this.filterOp     = filterOp;
         }
         
+        /// <summary>
+        /// Create CosmosDB query filter specified at: 
+        /// https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox.Hub/Client#query-filter
+        /// </summary>
         internal string Traverse(Operation operation) {
             switch (operation) {
                 case Field field: {
@@ -38,6 +42,8 @@ namespace Friflo.Json.Fliox.Transform.Query
                     }
                     return field.name;
                 }
+                
+                // --- literal --- 
                 case StringLiteral stringLiteral:
                     return $"'{stringLiteral.value}'";
                 case DoubleLiteral doubleLiteral:
@@ -51,6 +57,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case NullLiteral    _:
                     return "null";
                 
+                // --- compare ---
                 case Equal equal:
                     var left    = Traverse(equal.left);
                     var right   = Traverse(equal.right);
@@ -76,10 +83,10 @@ namespace Friflo.Json.Fliox.Transform.Query
                     right   = Traverse(greaterThanOrEqual.right);
                     return $"{left} >= {right}";
                 
+                // --- logical ---
                 case Not @not:
                     var operand = Traverse(@not.operand);
                     return $"!({operand})";
-                
                 case Or or:
                     var operands = GetOperands(or.operands);
                     return string.Join(" || ", operands);
@@ -87,19 +94,41 @@ namespace Friflo.Json.Fliox.Transform.Query
                     operands = GetOperands(and.operands);
                     return string.Join(" && ", operands);
                 
+                // --- string ---
+                case StartsWith startsWith:
+                    left    = Traverse(startsWith.left);
+                    right   = Traverse(startsWith.right);
+                    return $"STARTSWITH({left},{right})";
+                case EndsWith endsWith:
+                    left    = Traverse(endsWith.left);
+                    right   = Traverse(endsWith.right);
+                    return $"ENDSWITH({left},{right})";
+                case Contains contains:
+                    left    = Traverse(contains.left);
+                    right   = Traverse(contains.right);
+                    return $"CONTAINS({left},{right})";
                 case Length length:
                     var value = Traverse(length.value);
                     return $"LENGTH({value})";
                 
-                case Filter filterOp:
-                    var cx              = new ConvertContext (collection, this.filterOp);
-                    operand             = cx.Traverse(filterOp.body);
-                    return $"{operand}";
+                // --- arithmetic ---
+                
+                // --- constants ---
+                
+                // --- aggregate ---
+                case CountWhere countWhere:
+                    var cx              = new ConvertContext ("", filterOp);
+                    operand             = cx.Traverse(countWhere.predicate);
+                    string fieldName    = Traverse(countWhere.field);
+                    string arg          = countWhere.arg;
+                    return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
+
+                // --- quantify ---
                 case Any any:
                     cx                  = new ConvertContext ("", filterOp);
                     operand             = cx.Traverse(any.predicate);
-                    string fieldName    = Traverse(any.field);
-                    string arg          = any.arg;
+                    fieldName           = Traverse(any.field);
+                    arg                 = any.arg;
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
                 case All all:
                     cx                  = new ConvertContext ("", filterOp);
@@ -107,12 +136,12 @@ namespace Friflo.Json.Fliox.Transform.Query
                     fieldName           = Traverse(all.field);
                     arg                 = all.arg;
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
-                case CountWhere countWhere:
-                    cx                  = new ConvertContext ("", filterOp);
-                    operand             = cx.Traverse(countWhere.predicate);
-                    fieldName           = Traverse(countWhere.field);
-                    arg                 = countWhere.arg;
-                    return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
+                
+                // --- query filter expression
+                case Filter filter:
+                    cx                  = new ConvertContext (collection, filterOp);
+                    operand             = cx.Traverse(filter.body);
+                    return $"{operand}";
                 
                 default:
                     throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filterOp}");

@@ -22,9 +22,49 @@ namespace Friflo.Playground.DB
         }
 
         [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
-        public static async Task TestQueryAll(string db) {
+        public static async Task TestQuery_All(string db) {
             var store = GetClient(db);
             var query = store.articles.QueryAll();
+            await store.SyncTasks();
+            AreEqual(2, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_StartsWith(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => a.id.StartsWith("a-"));
+            await store.SyncTasks();
+            AreEqual(2, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_EndsWith(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => a.id.EndsWith("-1"));
+            await store.SyncTasks();
+            AreEqual(1, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Contains(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => a.id.Contains("-"));
+            await store.SyncTasks();
+            AreEqual(2, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Contains2(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => a.id.Contains("XXX"));
+            await store.SyncTasks();
+            AreEqual(0, query.Result.Count);
+        }
+        
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Length(string db) {
+            var store = GetClient(db);
+            var query = store.articles.Query(a => a.id.Length == 3);
             await store.SyncTasks();
             AreEqual(2, query.Result.Count);
         }
