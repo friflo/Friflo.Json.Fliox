@@ -1,12 +1,13 @@
 using System;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Playground.Client;
 
 #if !UNITY_5_3_OR_NEWER
-using Friflo.Json.Fliox.Hub.Cosmos;
-using Friflo.Playground.CosmosDB;
+    using Friflo.Json.Fliox.Hub.Cosmos;
+    using Friflo.Playground.CosmosDB;
 #endif
 
 namespace Friflo.Playground.DB
@@ -23,19 +24,19 @@ namespace Friflo.Playground.DB
         
         private static readonly string TestDbFolder = CommonUtils.GetBasePath() + "assets~/DB/test_db";
             
-        internal static EntityDatabase CreateMemoryDatabase(EntityDatabase sourceDB) {
+        internal static async Task<EntityDatabase> CreateMemoryDatabase(EntityDatabase sourceDB) {
             var memoryDB = new MemoryDatabase("memory_db") { Schema = sourceDB.Schema };
-            memoryDB.SeedDatabase(sourceDB).Wait();
+            await memoryDB.SeedDatabase(sourceDB);
             return memoryDB;
         }
         
-        internal static EntityDatabase CreateCosmosDatabase(EntityDatabase sourceDB) {
+        internal static async Task<EntityDatabase> CreateCosmosDatabase(EntityDatabase sourceDB) {
 #if !UNITY_5_3_OR_NEWER
             var client              = TestCosmosDB.CreateCosmosClient();
-            var createDatabase      = client.CreateDatabaseIfNotExistsAsync("cosmos_db").Result;
+            var createDatabase      = await client.CreateDatabaseIfNotExistsAsync("cosmos_db");
             var cosmosDatabase      = new CosmosDatabase("cosmos_db", createDatabase)
                 { Throughput = 400, Schema = sourceDB.Schema };
-            cosmosDatabase.SeedDatabase(sourceDB).Wait();
+            await cosmosDatabase.SeedDatabase(sourceDB);
             return cosmosDatabase;
 #else
             return null;
@@ -52,11 +53,11 @@ namespace Friflo.Playground.DB
             _fileHub            = new FlioxHub(CreateFileDatabase(databaseSchema));
         }
 
-        internal static FlioxHub GetDatabaseHub(string db) {
+        internal static async Task<FlioxHub> GetDatabaseHub(string db) {
             switch (db) {
-                case Memory:    return _memoryHub   ??= new FlioxHub(CreateMemoryDatabase(_fileHub.database));
+                case Memory:    return _memoryHub   ??= new FlioxHub(await CreateMemoryDatabase(_fileHub.database));
                 case File:      return _fileHub;
-                case Cosmos:    return _cosmosHub   ??= new FlioxHub(CreateCosmosDatabase(_fileHub.database));
+                case Cosmos:    return _cosmosHub   ??= new FlioxHub(await CreateCosmosDatabase(_fileHub.database));
             }
             throw new InvalidOperationException($"invalid database Env: {db}");
         }

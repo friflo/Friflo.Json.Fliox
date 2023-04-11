@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case BinaryExpression binary:
                     return OperationFromBinaryExpression(binary, cx);
                 case ConstantExpression constant:
-                    return OperationFromConstant(null, constant, cx);
+                    return OperationFromConstant(null, constant.Value, constant.Type, cx);
                 default:
                     throw NotSupported($"Body not supported: {expression}", cx);
             }
@@ -54,6 +54,9 @@ namespace Friflo.Json.Fliox.Transform.Query
         
         private static Operation GetMember(MemberExpression member, QueryCx cx) {
             switch (member.Expression) {
+                case null:
+                    // get value from static class field / property 
+                    return OperationFromConstant(member, null, member.Type, cx);
                 case ParameterExpression _:
                     break;
                 case MemberExpression parentMember:
@@ -73,7 +76,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                         var literal = new StringLiteral(constant.Value.ToString());
                         return new Length(literal);
                     }
-                    return OperationFromConstant(member, constant, cx);
+                    return OperationFromConstant(member, constant.Value, constant.Type, cx);
                 default:
                     throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
             }
@@ -298,10 +301,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
         
-        private static Operation OperationFromConstant(MemberExpression member, ConstantExpression constant, QueryCx cx) {
-            object  value       = constant.Value;
-            Type    type        = constant.Type;
-            
+        private static Operation OperationFromConstant(MemberExpression member, object value, Type type, QueryCx cx) {
             // is local variable used in expression? A DisplayClass is generated for them
             if (member != null) {
                 var memberInfo = member.Member;
@@ -327,7 +327,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             var operation   =  OperationFromValue(value, type);    
             
             if (operation == null)
-                throw NotSupported($"Constant not supported: {constant}, type: {type.FullName}", cx);
+                throw NotSupported($"Constant not supported: type: {type.FullName}, value: {value}", cx);
             return operation;
         }
 

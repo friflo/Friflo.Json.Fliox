@@ -41,8 +41,8 @@ namespace Friflo.Playground
             var typeSchema          = NativeTypeSchema.Create(typeof(TestClient)); // optional - create TypeSchema from Type 
             var databaseSchema      = new DatabaseSchema(typeSchema);
             var fileDb              = Env.CreateFileDatabase(databaseSchema);
-            var memoryDb            = Env.CreateMemoryDatabase(fileDb);
-            var cosmosDb            = Env.CreateCosmosDatabase(fileDb);
+            var memoryDb            = await Env.CreateMemoryDatabase(fileDb);
+            var cosmosDb            = await Env.CreateCosmosDatabase(fileDb);
             
             var hub                 = new FlioxHub(memoryDb, env) { HostName = "test-server" };
             hub.Info.projectName    = "Test DB";                                                                // optional
