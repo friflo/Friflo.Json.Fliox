@@ -230,18 +230,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // --- Any
                 // var  hasChildHobbySurfing = new Any (new Field (".children"), "child", new Equal (new Field ("child.hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
                 var hasHobbySurfing      = new Any (new Field("child.hobbies"), "hobby", new Equal(new Field("hobby.name"), new StringLiteral ("Surfing")));
-                var hasChildHobbySurfing = new Any (new Field ("p.children"), "child", hasHobbySurfing);
-                var hasChildHobbySurfingExp = Filter((Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing")), out string body);
-                AreEqual("p.children.Any(child => child.hobbies.Any(hobby => (hobby.name == 'Surfing')))", body);
-                AreEqual ("p.children.Any(child => child.hobbies.Any(hobby => hobby.name == 'Surfing'))", hasChildHobbySurfing.Linq);
+                var hasChildHobbySurfing = new Any (new Field ("p.children"), "child", hasHobbySurfing).Filter("p");
+                var hasChildHobbySurfingExp = Filter((Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing")), out string exp);
+                AreEqual("p => p.children.Any(child => child.hobbies.Any(hobby => (hobby.name == 'Surfing')))", exp);
+                AreEqual("p => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == 'Surfing'))", hasChildHobbySurfing.Linq);
                 IsTrue (hasChildHobbySurfingExp(Peter));
-            //  IsTrue (eval.Filter(peter, hasChildHobbySurfing)); todo
-            //  IsFalse(eval.Filter(john,  hasChildHobbySurfing)); todo
+                IsFalse(hasChildHobbySurfingExp(John));
+                // IsTrue (eval.Filter(peter, hasChildHobbySurfing)); todo
+                IsFalse(eval.Filter(john,  hasChildHobbySurfing));
             }
         }
 
         private static Func<T, bool> Filter<T>(Expression<Func<T, bool>> filter, out string name) {
-            name = filter.Body.ToString();
+            name = filter.ToString();
             name = name.Replace('"', '\'');
             return filter.Compile();
         }
