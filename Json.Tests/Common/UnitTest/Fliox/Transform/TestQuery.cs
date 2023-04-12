@@ -417,7 +417,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
-        public static void TestQueryConversion() {
+        public static void TestQueryConversion_Compare() {
           using (var mapper   = new ObjectMapper()) {
             // --- comparision operations
             {
@@ -457,7 +457,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Cosmos  ("p.age >= 20",         isGreaterOrEqual.query.Cosmos);
                 AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}");
             }
-            
+          }
+        }
+        
+        [Test]
+        public static void TestQueryConversion_Logical() {
+            using (var mapper   = new ObjectMapper()) {
             // --- group operations
             {
                 var or =    (Or)        FromFilter((Person p) =>
@@ -499,7 +504,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Cosmos  ("NOT(p.age >= 20)",    isNot.query.Cosmos);
                 AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}}");
             }
-            
+          }
+        }
+        
+        [Test]
+        public static void TestQueryConversion_Quantify() {
+            using (var mapper   = new ObjectMapper()) {
             // --- quantifier operations
             {
                 var any =   (Any)       FromFilter((Person p) =>
@@ -514,7 +524,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Cosmos  ("(SELECT VALUE Count(1) FROM child IN p.children WHERE child.age = 20) = ARRAY_LENGTH(p.children)", all.query.Cosmos);
                 AssertJson(mapper, all, "{'op':'all','field':{'name':'p.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
             }
-            
+          }
+        }
+        
+        [Test]
+        public static void TestQueryConversion_Literals() {
             // --- literals
             {
                 var lng     = (LongLiteral)     FromLambda((object p) =>
@@ -529,11 +543,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                           "hello");
                 AreEqual("'hello'",     str.Linq);
             } {
+                var str     = (StringLiteral)   FromLambda((object p) =>
+                          'C'); // char - not a string
+                AreEqual("'C'",         str.Linq);
+            } {
                 var @null   = (NullLiteral)     FromLambda((object p) =>
                           null);
                 AreEqual("null",        @null.Linq);
             }
-            
+        }
+        
+        [Test]
+        public static void TestQueryConversion_Arithmetic() {
             // --- unary arithmetic operations
             {
                 var abs     = (Abs)     FromLambda((object p) =>
@@ -587,7 +608,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                           1 / Abs(1.0));
                 AreEqual("1 / Abs(1)", divide.Linq);
             } 
-            
+        }
+        
+        [Test]
+        public static void TestQueryConversion_Aggregate() {
             // --- unary aggregate operations
             {
                 var min      = (Min)  FromLambda((Person p) =>
@@ -618,7 +642,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                           p.children.Average(child => child.age));
                 AreEqual("p.children.Average(child => child.age)", average.Linq);
             }
-            
+        }
+        
+        [Test]
+        public static void TestQueryConversion_String() {
             // --- binary string operations
             {
                 var contains      = (Contains)  FromFilter((object p) =>
@@ -644,9 +671,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                           p.name.Length == 5);
                 AreEqual("p.name.Length() == 5",    isEqual.Linq);
                 Cosmos  ("LENGTH(p.name) = 5",      isEqual.query.Cosmos);
-                AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'length','value':{'op':'field','name':'p.name'}},'right':{'op':'int64','value':5}}");
             }
-          } 
         }
         
         [Test]

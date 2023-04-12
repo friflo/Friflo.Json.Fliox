@@ -351,7 +351,10 @@ namespace Friflo.Json.Fliox.Transform.Query
                     return Operation.FilterTrue;
                 return Operation.FilterFalse;
             }
-            
+            if (type == typeof(char)) {
+                var c = (char)value;
+                return new StringLiteral(c.ToString());
+            }
             // --- null
             if (type == typeof(object) && value == null)
                 return new NullLiteral();

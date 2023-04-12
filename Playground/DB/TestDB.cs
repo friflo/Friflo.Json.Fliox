@@ -94,7 +94,6 @@ namespace Friflo.Playground.DB
         public static async Task TestQuery_And(string db) {
             var store = await GetClient(db);
             bool t = true;
-            // ReSharper disable once RedundantLogicalConditionalExpressionOperand
             var query = store.articles.Query(a => t && true);
             AreEqual("a => true && true", query.DebugQuery.Linq);
             await store.SyncTasks();
@@ -105,7 +104,6 @@ namespace Friflo.Playground.DB
         public static async Task TestQuery_Or(string db) {
             var store = await GetClient(db);
             bool t = true;
-            // ReSharper disable once RedundantLogicalConditionalExpressionOperand
             var query = store.articles.Query(a => false || t);
             AreEqual("a => false || true", query.DebugQuery.Linq);
             await store.SyncTasks();
@@ -144,7 +142,7 @@ namespace Friflo.Playground.DB
         [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
         public static async Task TestQuery_Contains(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => a.id.Contains("-"));
+            var query = store.articles.Query(a => a.id.Contains('-'));
             AreEqual("a => a.id.Contains('-')", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(2, query.Result.Count);
