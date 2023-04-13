@@ -12,8 +12,66 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
     public class TestJsonAstPath
     {
         [Test]
-        public void TestJsonAstPathScalar() {
+        public void TestJsonAstPathScalarRoot() {
+            const string root = "";
             var astReader   = new JsonAstReader();
+            {
+                var ast         = CreateAst(astReader, "1");
+                var found   = ast.GetPathScalar(root, out var value);
+                IsTrue(found);
+                AreEqual(1, value.AsLong());
+             } {
+                var ast         = CreateAst(astReader, "1.5");
+                var found   = ast.GetPathScalar(root, out var value);
+                IsTrue(found);
+                AreEqual(1.5, value.AsDouble());
+            } {
+                var ast         = CreateAst(astReader, "true");
+                var found   = ast.GetPathScalar(root, out var value);
+                IsTrue(found);
+                AreEqual(true, value.AsBool());
+            } {
+                var ast         = CreateAst(astReader, "false");
+                var found   = ast.GetPathScalar(root, out var value);
+                IsTrue(found);
+                AreEqual(false, value.AsBool());
+            } {
+                var ast         = CreateAst(astReader, "null");
+                var found   = ast.GetPathScalar(root, out var value);
+                IsTrue(found);
+                IsTrue(value.IsNull);
+            } {
+                var ast         = CreateAst(astReader, "\"xyz\"");
+                var found   = ast.GetPathScalar(root, out var value);
+                IsTrue(found);
+                AreEqual("xyz", value.AsString());
+            } {
+                var ast         = CreateAst(astReader, "[11]");
+                var found   = ast.GetPathScalar(root, out var value);
+                IsTrue(found);
+                AreEqual(ScalarType.Array, value.type);
+                
+                var firstChild = value.GetFirstAstChild();
+                AreEqual(1, firstChild);
+                var nodeScalar = ast.GetNodeScalar(firstChild);
+                AreEqual(11, nodeScalar.AsLong());
+            } {
+                var ast         = CreateAst(astReader, "{\"a\":12}");
+                var found   = ast.GetPathScalar(root, out var value);
+                IsTrue(found);
+                AreEqual(ScalarType.Object, value.type);
+                
+                var firstChild = value.GetFirstAstChild();
+                AreEqual(1, firstChild);
+                var nodeScalar = ast.GetNodeScalar(firstChild);
+                AreEqual(12, nodeScalar.AsLong());
+            }
+        }
+        
+        [Test]
+        public void TestJsonAstPathScalarObject() {
+            var astReader   = new JsonAstReader();
+            // nodes:          0 1        2          3              4           5            6           7      8           9     10            
             var json        = "{\"a\":1, \"b\":2.5, \"c\":\"abc\", \"d\":true, \"e\":false, \"f\":null, \"g\":{\"g1\":11}, \"h\":[12]}";
             var ast         = CreateAst(astReader, json);
             {
@@ -46,7 +104,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(ScalarType.Object, value.type);
 
                 var firstChild = value.GetFirstAstChild();
-                AreEqual(firstChild, firstChild);
+                AreEqual(8, firstChild);
                 var nodeScalar = ast.GetNodeScalar(firstChild);
                 AreEqual(11, nodeScalar.AsLong());
             } {

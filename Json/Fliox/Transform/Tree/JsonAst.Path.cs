@@ -11,6 +11,10 @@ namespace Friflo.Json.Fliox.Transform.Tree
     public partial class JsonAst
     {
         public bool GetPathScalar(string path, out Scalar value) {
+            if (path.Length == 0) {
+                value = NodeToScalar(intern.nodes[0]);
+                return true;
+            }
             var pathItems = GetPathItems(path);
             if (GetPathNode(pathItems, out var node)) {
                 value = NodeToScalar(node);
