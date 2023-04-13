@@ -3,6 +3,7 @@
 
 using System;
 using System.Text;
+using Friflo.Json.Fliox.Transform.Tree;
 
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 namespace Friflo.Json.Fliox.Transform
@@ -150,6 +151,10 @@ namespace Friflo.Json.Fliox.Transform
             throw new InvalidOperationException($"Scalar cannot be returned as bool. type: {type}, value: {this}");
         }
         
+        /// <summary>
+        /// Return the index of an <see cref="ScalarType.Array"/> or <see cref="ScalarType.Object"/> node in a <see cref="JsonAst"/>.<br/>
+        /// To access node data use <see cref="JsonAst.Nodes"/> or <see cref="JsonAst.GetNodeScalar"/> 
+        /// </summary>
         public int GetFirstAstChild() {
             if (type == ScalarType.Array || type == ScalarType.Object)
                 return (int)primitiveValue;
