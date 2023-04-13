@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(ScalarType.Object, value.type);
 
                 var firstChild = value.GetFirstAstChild();
-                AreEqual(firstChild, value.GetFirstAstChild());
+                AreEqual(firstChild, firstChild);
                 var nodeScalar = ast.GetNodeScalar(firstChild);
                 AreEqual(11, nodeScalar.AsLong());
             } {

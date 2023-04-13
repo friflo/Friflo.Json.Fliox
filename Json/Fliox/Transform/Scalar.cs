@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Transform
         public static readonly  Scalar          Null    = new Scalar(ScalarType.Null, null);
 
 
-        internal Scalar(ScalarType type, string value) {
+        private Scalar(ScalarType type, string value) {
             this.type       = type;
             stringValue     = value;
             //

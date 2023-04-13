@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
             throw new InvalidOperationException($"invalid node type: {node.type}");
         } 
         
-        public bool GetPathNode(List<JsonValue> pathItems, out JsonAstNode node) {
+        private bool GetPathNode(List<JsonValue> pathItems, out JsonAstNode node) {
             var nodes       = intern.nodes;
             node            = nodes[0];
             var itemCount   = pathItems.Count;

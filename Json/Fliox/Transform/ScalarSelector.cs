@@ -59,10 +59,10 @@ namespace Friflo.Json.Fliox.Transform
             var selectors = node.selectors;
             switch (targetParser.Event) {
                 case JsonEvent.ObjectStart:
-                    ScalarSelectResult.Add(new Scalar(ScalarType.Object, "(object)"), selectors);
+                    ScalarSelectResult.Add(new Scalar(ScalarType.Object, "(object)", -1), selectors); // -1 as no Ast available
                     return;
                 case JsonEvent.ArrayStart:
-                    ScalarSelectResult.Add(new Scalar(ScalarType.Array, "(array)"), selectors);
+                    ScalarSelectResult.Add(new Scalar(ScalarType.Array, "(array)", -1), selectors);   // -1 as no Ast available
                     return;
                 case JsonEvent.ValueString:
                     var str = targetParser.value.AsString();
