@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 
+// ReSharper disable SuggestBaseTypeForParameter
 namespace Friflo.Json.Fliox.Transform.Tree
 {
     public partial class JsonAst
@@ -64,10 +64,10 @@ namespace Friflo.Json.Fliox.Transform.Tree
             throw new InvalidOperationException($"invalid node type: {node.type}");
         } 
         
-        private bool GetPathNode(List<JsonValue> pathItems, out JsonAstNode node) {
+        private bool GetPathNode(ReadOnlySpan<JsonValue> pathItems, out JsonAstNode node) {
             var nodes       = intern.nodes;
             node            = nodes[0];
-            var itemCount   = pathItems.Count;
+            var itemCount   = pathItems.Length;
             int pathPos     = 0;
             for (; pathPos < itemCount; pathPos++) {
                 if (node.type != JsonEvent.ObjectStart) {
@@ -101,27 +101,29 @@ namespace Friflo.Json.Fliox.Transform.Tree
             return pathPos == itemCount;
         }
         
-        private static List<JsonValue> GetPathItems(string path) {
-            var utf8Path    = new JsonValue(path);
+        private static JsonValue[] GetPathItems(string path) {
+            var utf8Path    = new JsonValue(path);  // todo optimize - avoid allocation
             var pathSpan    = utf8Path.MutableArray;
             var len         = pathSpan.Length;
-            var pathItems   = new List<JsonValue>();
-            var itemStart   = 0;
-            int itemLen;
+            int count       = 1;
             for (int n = 0; n < len; n++) {
-                if (pathSpan[n] != '.') {
+                count += pathSpan[n] == '.' ? 1 : 0;
+            }
+            int itemLen;
+            var itemStart   = 0;
+            var pathItems   = new JsonValue[count];
+            count = 0;
+            for (int n = 0; n < len; n++) {
+                if (pathSpan[n] != '.')
                     continue;
-                }
                 itemLen = n - itemStart;
                 if (itemLen == 0) throw new InvalidOperationException($"Invalid path: {path}");
-                var pathItem = new JsonValue(pathSpan, itemStart, itemLen);
-                pathItems.Add(pathItem);
+                pathItems[count++] = new JsonValue(pathSpan, itemStart, itemLen);
                 itemStart = n + 1;
             }
             itemLen = len - itemStart;
             if (itemLen == 0) throw new InvalidOperationException($"Invalid path: {path}");
-            var lastItem = new JsonValue(pathSpan, itemStart, itemLen);
-            pathItems.Add(lastItem);
+            pathItems[count] = new JsonValue(pathSpan, itemStart, itemLen);
             return pathItems;
         } 
     }

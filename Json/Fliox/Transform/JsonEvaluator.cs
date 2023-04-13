@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Transform
     {
         private readonly    ScalarSelector  scalarSelector  = new ScalarSelector(); // todo remove
         private readonly    JsonAstReader   astReader       = new JsonAstReader();
-        private             JsonAst         jsonAst;
+    //  private             JsonAst         jsonAst;        // AST_PATH
 
         public void Dispose() {
             scalarSelector.Dispose();
