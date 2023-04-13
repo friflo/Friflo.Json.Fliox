@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Transform
     public readonly partial struct Scalar
     {
         public      readonly    ScalarType      type;           // 1 byte - underlying type set to byte
-        private     readonly    long            primitiveValue; // 8 bytes
+        private     readonly    long            primitiveValue; // 8 bytes: union: long | double | bool | firstAstChild
         private     readonly    string          stringValue;    // 8 bytes
 
         private                 double          DoubleValue => BitConverter.Int64BitsToDouble(primitiveValue);
@@ -64,6 +64,13 @@ namespace Friflo.Json.Fliox.Transform
             stringValue     = value;
             //
             primitiveValue  = 0;
+        }
+        
+        internal Scalar(ScalarType type, string value, int firstAstChild) {
+            this.type       = type;
+            stringValue     = value;
+            //
+            primitiveValue  = firstAstChild;
         }
         
         private static Scalar Error(string message) {
@@ -141,6 +148,12 @@ namespace Friflo.Json.Fliox.Transform
             if (type == ScalarType.Bool)
                 return BoolValue;
             throw new InvalidOperationException($"Scalar cannot be returned as bool. type: {type}, value: {this}");
+        }
+        
+        public int GetFirstAstChild() {
+            if (type == ScalarType.Array || type == ScalarType.Object)
+                return (int)primitiveValue;
+            throw new InvalidOperationException($"ast child expect type Array or Object. was: {type}, value: {this}");
         }
 
         public object AsObject() {

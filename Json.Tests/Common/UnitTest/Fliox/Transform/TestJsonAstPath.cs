@@ -14,58 +14,75 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public void TestJsonAstPathScalar() {
             var astReader   = new JsonAstReader();
+            var json        = "{\"a\":1, \"b\":2.5, \"c\":\"abc\", \"d\":true, \"e\":false, \"f\":null, \"g\":{\"g1\":11}, \"h\":[12]}";
+            var ast         = CreateAst(astReader, json);
             {
-                var json    = "{\"a\":1, \"b\":2.5, \"c\":\"abc\", \"d\":true, \"e\":false, \"f\":null, \"g\":{}, \"h\":[]}";
-                var ast     = CreateAst(astReader, json);
                 var found   = ast.GetPathScalar("a", out var value);
                 IsTrue(found);
                 AreEqual(1, value.AsLong());
-                
-                found   = ast.GetPathScalar("b", out value);
+            } {
+                var found   = ast.GetPathScalar("b", out var value);
                 IsTrue(found);
                 AreEqual(2.5, value.AsDouble());
-                
-                found   = ast.GetPathScalar("c", out value);
+            } {
+                var found   = ast.GetPathScalar("c", out var value);
                 IsTrue(found);
                 AreEqual("abc", value.AsString());
-                
-                found   = ast.GetPathScalar("d", out value);
+            } {
+                var found   = ast.GetPathScalar("d", out var value);
                 IsTrue(found);
                 AreEqual(true, value.AsBool());
-                
-                found   = ast.GetPathScalar("e", out value);
+            } {
+                var found   = ast.GetPathScalar("e", out var value);
                 IsTrue(found);
                 AreEqual(false, value.AsBool());
-
-                found   = ast.GetPathScalar("f", out value);
+            } {
+                var found   = ast.GetPathScalar("f", out var value);
                 IsTrue(found);
                 IsTrue(value.IsNull);
-                
-                found   = ast.GetPathScalar("g", out value);
+            } { 
+                var found   = ast.GetPathScalar("g", out var value);
                 IsTrue(found);
                 AreEqual(ScalarType.Object, value.type);
-                
-                found   = ast.GetPathScalar("h", out value);
+
+                var firstChild = value.GetFirstAstChild();
+                AreEqual(firstChild, value.GetFirstAstChild());
+                var nodeScalar = ast.GetNodeScalar(firstChild);
+                AreEqual(11, nodeScalar.AsLong());
+            } {
+                var found   = ast.GetPathScalar("h", out var value);
                 IsTrue(found);
                 AreEqual(ScalarType.Array, value.type);
 
+                var firstChild = value.GetFirstAstChild();
+                AreEqual(10, firstChild);
+                var nodeScalar = ast.GetNodeScalar(firstChild);
+                AreEqual(12, nodeScalar.AsLong());
+
                 found   = ast.GetPathScalar("x", out value);
                 IsFalse(found);
-            } {
-                var ast     = CreateAst(astReader, "{\"a\": {\"a1\": 11, \"a2\": 12}}");
+            }
+        }
+        
+        [Test]
+        public void TestJsonAstPathScalarNested() {
+            var astReader   = new JsonAstReader();
+            var json        = "{\"a\": {\"a1\": 11, \"a2\": 12}}";
+            var ast         = CreateAst(astReader, json);
+            {
                 var found   = ast.GetPathScalar("a.a1", out var value);
                 IsTrue(found);
                 AreEqual(11, value.AsLong());
-                
-                found   = ast.GetPathScalar("a.a2", out value);
+            } {
+                var found   = ast.GetPathScalar("a.a2", out var value);
                 IsTrue(found);
                 AreEqual(12, value.AsLong());
-                
-                found   = ast.GetPathScalar("a", out value);
+            } {
+                var found   = ast.GetPathScalar("a", out var value);
                 IsTrue(found);
                 AreEqual(ScalarType.Object, value.type);
-                
-                found   = ast.GetPathScalar("a.x", out value);
+            } {
+                var found   = ast.GetPathScalar("a.x", out _);
                 IsFalse(found);
             }
         }

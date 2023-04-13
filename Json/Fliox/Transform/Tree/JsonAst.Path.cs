@@ -20,6 +20,11 @@ namespace Friflo.Json.Fliox.Transform.Tree
             return false;
         }
         
+        public Scalar GetNodeScalar(int index) {
+            var node = intern.nodes[index];
+            return NodeToScalar(node);
+        }
+
         private Scalar NodeToScalar(in JsonAstNode node) {
             switch (node.type) {
                 case JsonEvent.ValueNull:
@@ -48,9 +53,9 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     return new Scalar(lng);
                 }
                 case JsonEvent.ArrayStart:
-                    return new Scalar(ScalarType.Array, "(array)");
+                    return new Scalar(ScalarType.Array, "(array)", node.child);
                 case JsonEvent.ObjectStart:
-                    return new Scalar(ScalarType.Object, "(object)");
+                    return new Scalar(ScalarType.Object, "(object)", node.child);
             }
             throw new InvalidOperationException($"invalid node type: {node.type}");
         } 
@@ -92,7 +97,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
             return pathPos == itemCount;
         }
         
-        internal static List<JsonValue> GetPathItems(string path) {
+        private static List<JsonValue> GetPathItems(string path) {
             var utf8Path    = new JsonValue(path);
             var pathSpan    = utf8Path.MutableArray;
             var len         = pathSpan.Length;
