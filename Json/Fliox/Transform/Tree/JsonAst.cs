@@ -9,7 +9,8 @@ using Friflo.Json.Burst;
 namespace Friflo.Json.Fliox.Transform.Tree
 {
     /// <summary>
-    /// Representation of a <see cref="JsonValue"/> as a tree.<br/>
+    /// Representation of a <see cref="JsonValue"/> as a tree of <see cref="JsonAstNode"/>'s.<br/>
+    /// The <see cref="JsonAstNode"/>'s are enumerated and can be accessed by index using <see cref="Nodes"/>. Root node has index [0]<br/>
     /// Its <see cref="Nodes"/> are reused to avoid heap allocations when creating trees from multiple JSON values.<br/>
     /// <br/>
     /// A <see cref="JsonAst"/> enables iteration of JSON object members without reading the entire JSON value. <br/>
@@ -17,6 +18,21 @@ namespace Friflo.Json.Fliox.Transform.Tree
     /// Two <see cref="JsonAst"/> instances are used by <see cref="JsonMerger"/> for efficient patching
     /// of a given JSON value with a second JSON patch value. 
     /// </summary>
+    /// <remarks>
+    /// JSON example of the indices used at <see cref="Nodes"/> 
+    /// <code>
+    /// {                   // 0 - root
+    ///     "a": 1          // 1
+    ///     "b": [          // 2
+    ///         null        // 3
+    ///         42          // 4
+    ///     ],
+    ///     "c": {          // 5
+    ///         "c1": true  // 6
+    ///     }
+    /// } 
+    /// </code>
+    /// </remarks>
     public sealed partial class JsonAst
     {
         internal    JsonAstIntern       intern; // ast state / result
