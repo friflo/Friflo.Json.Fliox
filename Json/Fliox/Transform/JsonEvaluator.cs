@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Transform.Query;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+using Friflo.Json.Fliox.Transform.Tree;
 
 namespace Friflo.Json.Fliox.Transform
 {
@@ -14,10 +15,13 @@ namespace Friflo.Json.Fliox.Transform
 #endif
     public sealed class JsonEvaluator : IDisposable
     {
-        private readonly ScalarSelector   scalarSelector    = new ScalarSelector();
+        private readonly    ScalarSelector  scalarSelector  = new ScalarSelector(); // todo remove
+        private readonly    JsonAstReader   astReader       = new JsonAstReader();
+        private             JsonAst         jsonAst;
 
         public void Dispose() {
             scalarSelector.Dispose();
+            astReader.Dispose();
         }
 
         // --- Filter
@@ -83,7 +87,8 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         private void ReadJsonFields(in JsonValue json, JsonLambda lambda) {
-            var query = lambda.scalarSelect;
+            // jsonAst     = astReader.CreateAst(json); // AST_PATH
+            var query   = lambda.scalarSelect;
             scalarSelector.Select(json, query);
             var fields = lambda.fields;
             for (int n = 0; n < fields.Count; n++) {
