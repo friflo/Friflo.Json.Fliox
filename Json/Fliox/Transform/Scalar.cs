@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Transform
         
         /// <summary>
         /// Return the index of an <see cref="ScalarType.Array"/> or <see cref="ScalarType.Object"/> node in a <see cref="JsonAst"/>.<br/>
-        /// To access node data use <see cref="JsonAst.Nodes"/> or <see cref="JsonAst.GetNodeScalar"/> 
+        /// To access node data use <see cref="JsonAst.Nodes"/> or <see cref="JsonAst.GetNodeValue"/> 
         /// </summary>
         public int GetFirstAstChild() {
             if (type == ScalarType.Array || type == ScalarType.Object)

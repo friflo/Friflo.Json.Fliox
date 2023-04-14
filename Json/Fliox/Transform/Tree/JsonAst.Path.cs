@@ -11,30 +11,30 @@ namespace Friflo.Json.Fliox.Transform.Tree
 {
     public partial class JsonAst
     {
-        public bool GetPathScalar(string path, out Scalar value) {
+        public bool GetPathValue(string path, out Scalar value) {
             var pathItems = GetPathItems(path);
-            return GetPathScalar(pathItems, out value);
+            return GetPathValue(pathItems, out value);
         }
         
-        public bool GetPathScalar(in ReadOnlySpan<Utf8Bytes> path, out Scalar value) {
+        public bool GetPathValue(in ReadOnlySpan<Utf8Bytes> path, out Scalar value) {
             if (path.Length == 0) {
-                value = NodeToScalar(intern.nodes[0]);
+                value = GetNodeValue(intern.nodes[0]);
                 return true;
             }
             if (GetPathNode(path, out var node)) {
-                value = NodeToScalar(node);
+                value = GetNodeValue(node);
                 return true;
             }
             value = default;
             return false;
         }
         
-        public Scalar GetNodeScalar(int index) {
+        public Scalar GetNodeValue(int index) {
             var node = intern.nodes[index];
-            return NodeToScalar(node);
+            return GetNodeValue(node);
         }
 
-        private Scalar NodeToScalar(in JsonAstNode node) {
+        private Scalar GetNodeValue(in JsonAstNode node) {
             switch (node.type) {
                 case ValueNull:
                     return Scalar.Null;
