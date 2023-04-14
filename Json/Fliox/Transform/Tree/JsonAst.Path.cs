@@ -12,12 +12,16 @@ namespace Friflo.Json.Fliox.Transform.Tree
     public partial class JsonAst
     {
         public bool GetPathScalar(string path, out Scalar value) {
+            var pathItems = GetPathItems(path);
+            return GetPathScalar(pathItems, out value);
+        }
+        
+        public bool GetPathScalar(in ReadOnlySpan<Utf8Bytes> path, out Scalar value) {
             if (path.Length == 0) {
                 value = NodeToScalar(intern.nodes[0]);
                 return true;
             }
-            var pathItems = GetPathItems(path);
-            if (GetPathNode(pathItems, out var node)) {
+            if (GetPathNode(path, out var node)) {
                 value = NodeToScalar(node);
                 return true;
             }
@@ -65,11 +69,13 @@ namespace Friflo.Json.Fliox.Transform.Tree
             throw new InvalidOperationException($"invalid node type: {node.type}");
         } 
         
-        private bool GetPathNode(ReadOnlySpan<JsonValue> pathItems, out JsonAstNode node) {
+        private bool GetPathNode(in ReadOnlySpan<Utf8Bytes> path, out JsonAstNode node) {
             var nodes       = intern.nodes;
             node            = nodes[0];
-            var itemCount   = pathItems.Length;
+            var itemCount   = path.Length;
             int pathPos     = 0;
+            var buf         = intern.Buf;
+            
             for (; pathPos < itemCount; pathPos++) {
                 if (node.type != ObjectStart) {
                     return false;
@@ -88,8 +94,8 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         default:
                             return false;
                     }
-                    var key = new JsonValue(intern.Buf, childNode.key.start, childNode.key.len);
-                    if (key.IsEqual(pathItems[pathPos])) {
+                    var keyName = new Utf8Bytes(buf, childNode.key.start, childNode.key.len);
+                    if (keyName.IsEqual(path[pathPos])) {
                         node = childNode;
                         break;
                     }
@@ -102,9 +108,12 @@ namespace Friflo.Json.Fliox.Transform.Tree
             return pathPos == itemCount;
         }
         
-        private static JsonValue[] GetPathItems(string path) {
-            var utf8Path    = new JsonValue(path);  // todo optimize - avoid allocation
-            var pathSpan    = utf8Path.MutableArray;
+        private static Utf8Bytes[] GetPathItems(string path) {
+            if (path.Length == 0) {
+                return Array.Empty<Utf8Bytes>();
+            }
+            var utf8Path    = new Utf8Bytes(path);
+            var pathSpan    = utf8Path.ReadOnlySpan;
             var len         = pathSpan.Length;
             int count       = 1;
             for (int n = 0; n < len; n++) {
@@ -112,19 +121,19 @@ namespace Friflo.Json.Fliox.Transform.Tree
             }
             int itemLen;
             var itemStart   = 0;
-            var pathItems   = new JsonValue[count];
+            var pathItems   = new Utf8Bytes[count];
             count = 0;
             for (int n = 0; n < len; n++) {
                 if (pathSpan[n] != '.')
                     continue;
                 itemLen = n - itemStart;
                 if (itemLen == 0) throw new InvalidOperationException($"Invalid path: {path}");
-                pathItems[count++] = new JsonValue(pathSpan, itemStart, itemLen);
+                pathItems[count++] = new Utf8Bytes(utf8Path, itemStart, itemLen);
                 itemStart = n + 1;
             }
             itemLen = len - itemStart;
             if (itemLen == 0) throw new InvalidOperationException($"Invalid path: {path}");
-            pathItems[count] = new JsonValue(pathSpan, itemStart, itemLen);
+            pathItems[count] = new Utf8Bytes(utf8Path, itemStart, itemLen);
             return pathItems;
         } 
     }
