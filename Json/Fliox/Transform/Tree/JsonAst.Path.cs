@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using static Friflo.Json.Burst.JsonEvent;
 
 // ReSharper disable SuggestBaseTypeForParameter
 namespace Friflo.Json.Fliox.Transform.Tree
@@ -31,17 +32,17 @@ namespace Friflo.Json.Fliox.Transform.Tree
 
         private Scalar NodeToScalar(in JsonAstNode node) {
             switch (node.type) {
-                case JsonEvent.ValueNull:
+                case ValueNull:
                     return Scalar.Null;
-                case JsonEvent.ValueBool: {
+                case ValueBool: {
                     var isTrue      = intern.Buf[node.value.start] == (byte)'t'; // true
                     return new Scalar(isTrue);
                 }
-                case JsonEvent.ValueString: {
+                case ValueString: {
                     var nodeValue   = new JsonValue(intern.Buf, node.value.start, node.value.len);
                     return          new Scalar(nodeValue.AsString());
                 }
-                case JsonEvent.ValueNumber: {
+                case ValueNumber: {
                     var b       = intern.Buf;
                     var start   = node.value.start;
                     var end     = start + node.value.len;
@@ -56,9 +57,9 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     var lng = ValueParser.ParseLong(ref bytes, ref error, out _);
                     return new Scalar(lng);
                 }
-                case JsonEvent.ArrayStart:
+                case ArrayStart:
                     return new Scalar(ScalarType.Array, "(array)", node.child);
-                case JsonEvent.ObjectStart:
+                case ObjectStart:
                     return new Scalar(ScalarType.Object, "(object)", node.child);
             }
             throw new InvalidOperationException($"invalid node type: {node.type}");
@@ -70,19 +71,19 @@ namespace Friflo.Json.Fliox.Transform.Tree
             var itemCount   = pathItems.Length;
             int pathPos     = 0;
             for (; pathPos < itemCount; pathPos++) {
-                if (node.type != JsonEvent.ObjectStart) {
+                if (node.type != ObjectStart) {
                     return false;
                 }
                 var childIndex = node.child;
                 while (childIndex != -1) {
                     var childNode   = nodes[childIndex];
                     switch (childNode.type) {
-                        case JsonEvent.ArrayStart:
-                        case JsonEvent.ObjectStart:
-                        case JsonEvent.ValueNull:
-                        case JsonEvent.ValueBool:
-                        case JsonEvent.ValueNumber:
-                        case JsonEvent.ValueString:
+                        case ValueString:
+                        case ValueNumber:
+                        case ValueBool:
+                        case ArrayStart:
+                        case ObjectStart:
+                        case ValueNull:
                             break;
                         default:
                             return false;
