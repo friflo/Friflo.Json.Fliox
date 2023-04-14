@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
             return pathPos == itemCount;
         }
         
-        private static Utf8Bytes[] GetPathItems(string path) {
+        public static Utf8Bytes[] GetPathItems(string path) {
             if (path.Length == 0) {
                 return Array.Empty<Utf8Bytes>();
             }

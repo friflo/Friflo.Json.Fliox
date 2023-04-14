@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Tree;
@@ -142,6 +143,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var found   = ast.GetPathValue("a.x", out _);
                 IsFalse(found);
+            }
+        }
+        [Test]
+        public void TestJsonAstPathPerf() {
+            var astReader   = new JsonAstReader();
+            var json        = "{\"a\":1, \"b\":2, \"c\":3, \"d\":4, \"e\":5, \"f\":6, \"g\":{\"g1\":8}}";
+            CreateAst(astReader, json);
+            var ast         = CreateAst(astReader, json);
+            var path        = JsonAst.GetPathItems("g.g1");
+            var count       = 10; // 10_000_000;
+            for (int n = 0; n < count; n++) {
+                bool found = ast.GetPathValue(path, out _);
+                if (!found) throw new InvalidOperationException();
             }
         }
         
