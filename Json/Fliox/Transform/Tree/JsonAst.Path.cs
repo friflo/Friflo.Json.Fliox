@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
     public partial class JsonAst
     {
         public bool GetPathValue(string path, out Scalar value) {
-            var pathItems = GetPathItems(path);
+            var pathItems = GetPathItems(path.AsSpan());
             return GetPathValue(0, pathItems, out value);
         }
         
