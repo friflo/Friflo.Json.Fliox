@@ -24,9 +24,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         internal ArgScope AddArrayArg(string arg, Field field, out ArgValue item) {
             var argValue    = opContext.GetArgValue(field.arg);
             var ast         = argValue.ast;
-            int arrayIndex  = ast.GetPathNodeIndex(argValue.AstIndex, field.pathItems);
-            var nodes       = ast.Nodes;
-            var array       = nodes[arrayIndex];
+            int arrayIndex  = ast.GetPathNodeIndex(argValue.ChildIndex, field.pathItems);
+            var array       = argValue.nodes[arrayIndex];
             item            = new ArgValue(arg, ast, array.child);
             opContext.AddArgValue(item);
             return new ArgScope(opContext);
@@ -34,12 +33,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
         internal int CountArray(Field field) {
             var argValue    = opContext.GetArgValue(field.arg);
-            var ast         = argValue.ast;
-            int arrayIndex  = ast.GetPathNodeIndex(argValue.AstIndex, field.pathItems);
+            int arrayIndex  = argValue.ast.GetPathNodeIndex(argValue.ChildIndex, field.pathItems);
             if (arrayIndex == -1) {
                 return 0;
             }
-            var nodes       = ast.Nodes;
+            var nodes       = argValue.nodes;
             var array       = nodes[arrayIndex];
             int count       = 0;
             int childIndex  = array.child;
@@ -99,29 +97,31 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
         internal override Scalar Eval(EvalCx cx) {
             var argValue = cx.opContext.GetArgValue(arg);
-            argValue.ast.GetPathValue(argValue.AstIndex, pathItems, out var value);
+            argValue.ast.GetPathValue(argValue.ChildIndex, pathItems, out var value);
             return value;
         }
     }
     
     internal class ArgValue
     {
-        internal readonly    string     arg;
-        internal readonly    JsonAst    ast;
-        private              int        astIndex;
-        internal             int        AstIndex    => astIndex;
-        internal             bool       HasNext()   => astIndex != -1;
+        internal readonly    string         arg;
+        internal readonly    JsonAst        ast;
+        internal readonly    JsonAstNode[]  nodes;
+        private              int            childIndex;
+        internal             int            ChildIndex  => childIndex;
+        internal             bool           HasNext()   => childIndex != -1;
 
-        public   override   string      ToString()  => arg;
+        public   override   string          ToString()  => arg;
 
-        internal ArgValue(string arg, JsonAst ast, int astIndex) {
+        internal ArgValue(string arg, JsonAst ast, int childIndex) {
             this.arg        = arg;
             this.ast        = ast;
-            this.astIndex   = astIndex;
+            this.nodes      = ast.intern.nodes;
+            this.childIndex = childIndex;
         }
         
         internal void MoveNext() {
-            astIndex = ast.intern.nodes[astIndex].next;
+            childIndex = nodes[childIndex].next;
         }
     }
 
