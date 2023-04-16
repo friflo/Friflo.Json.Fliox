@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    internal class ArgValue
+    internal sealed class ArgValue
     {
         internal readonly    string         arg;
         internal readonly    JsonAst        ast;
