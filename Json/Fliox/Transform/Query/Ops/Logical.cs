@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Friflo.Json.Fliox.Transform.Query.Arity;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
@@ -16,9 +15,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         protected UnaryLogicalOp() { }
         protected UnaryLogicalOp(FilterOperation operand) { this.operand = operand; }
         
-        internal override void Init(OperationContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx) {
             cx.ValidateReuse(this); // results are reused
-            operand.Init(cx, 0);
+            operand.Init(cx);
         }
     }
     
@@ -30,16 +29,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Not() { }
         public Not(FilterOperation operand) : base(operand) { }
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.Clear();
-            var eval = operand.Eval(cx);
-            foreach (var val in eval.values) {
-                var result = val.EqualsTo(True, this);
-                if (result.IsError)
-                    return evalResult.SetError(result);
-                evalResult.Add(result.IsTrue ? False : True);
+        internal override Scalar Eval(EvalCx cx) {
+            var val     = operand.Eval(cx);
+            var isTrue  = val.EqualsTo(True, this);
+            if (isTrue.IsError) {
+                return isTrue;
             }
-            return evalResult;
+            return isTrue.IsTrue ? False : True;
         }
     }
     
@@ -49,16 +45,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     public abstract class BinaryLogicalOp : FilterOperation
     {
         [Required]  public              List<FilterOperation>   operands;
-        [Ignore]    internal readonly   List<EvalResult>        evalList        = new List<EvalResult>();
-        [Ignore]    internal            N_aryResultEnumerator   resultIterator  = new N_aryResultEnumerator(true); // reused iterator
 
         protected BinaryLogicalOp() { }
         protected BinaryLogicalOp(List<FilterOperation> operands) { this.operands = operands; }
         
-        internal override void Init(OperationContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx) {
             cx.ValidateReuse(this); // results are reused
             foreach (var operand in operands) {
-                operand.Init(cx, 0);
+                operand.Init(cx);
             }
         }
     }
@@ -71,31 +65,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public And() { }
         public And(List<FilterOperation> operands) : base(operands) { }
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalList.Clear();
+        internal override Scalar Eval(EvalCx cx) {
             foreach (var operand in operands) {
-                var eval = operand.Eval(cx);
-                evalList.Add(eval);
-            }
-            
-            evalResult.Clear();
-            var nAryResult = new N_aryResult(evalList);
-            resultIterator.Init(nAryResult);
-            while (resultIterator.MoveNext()) {
-                var result = resultIterator.Current;
-                var itemResult = True;
-                for (int n = 0; n < operands.Count; n++) {
-                    var isTrue = result.evalResult.values[n].EqualsTo(True, this);
-                    if (isTrue.IsError)
-                        return evalResult.SetError(isTrue);
-                    if (isTrue.IsFalse) {
-                        itemResult = False;
-                        break;
-                    }
+                var eval    = operand.Eval(cx);
+                var isTrue  = eval.EqualsTo(True, this);
+                if (isTrue.IsError) {
+                    return isTrue;
                 }
-                evalResult.Add(itemResult);
+                if (isTrue.IsFalse) {
+                    return False;
+                }
             }
-            return evalResult;
+            return True;
         }
     }
     
@@ -107,31 +88,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Or() { }
         public Or(List<FilterOperation> operands) : base(operands) { }
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalList.Clear();
+        internal override Scalar Eval(EvalCx cx) {
             foreach (var operand in operands) {
-                var eval = operand.Eval(cx);
-                evalList.Add(eval);
-            }
-            
-            evalResult.Clear();
-            var nAryResult = new N_aryResult(evalList);
-            resultIterator.Init(nAryResult);
-            while (resultIterator.MoveNext()) {
-                var result = resultIterator.Current;
-                var itemResult = False;
-                for (int n = 0; n < operands.Count; n++) {
-                    var isTrue = result.evalResult.values[n].EqualsTo(True, this);
-                    if (isTrue.IsError)
-                        return evalResult.SetError(isTrue);
-                    if (isTrue.IsTrue) {
-                        itemResult = True;
-                        break;
-                    }
+                var eval    = operand.Eval(cx);
+                var isTrue  = eval.EqualsTo(True, this);
+                if (isTrue.IsError) {
+                    return isTrue;
                 }
-                evalResult.Add(itemResult);
+                if (isTrue.IsTrue) {
+                    return True;
+                }
             }
-            return evalResult;
+            return False;
         }
     }
 }

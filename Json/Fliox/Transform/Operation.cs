@@ -79,9 +79,11 @@ namespace Friflo.Json.Fliox.Transform
     {
         public    abstract  string      OperationName   { get; }
         public    abstract  void        AppendLinq      (AppendCx cx);
-        internal  abstract  void        Init            (OperationContext cx, InitFlags flags);
-        internal  abstract  EvalResult  Eval            (EvalCx cx);
+        internal  abstract  void        Init            (OperationContext cx);
+        internal  abstract  Scalar      Eval            (EvalCx cx);    // todo - use in modifier
         internal  virtual   bool        IsNumeric       => false;
+        internal  virtual   string      Arg             => null;
+        
         public              string      Linq            { get {
             var cs = new AppendCx(new StringBuilder());
             AppendLinq(cs);
@@ -94,9 +96,6 @@ namespace Friflo.Json.Fliox.Transform
         internal static readonly Scalar         False = Scalar.False;
         internal static readonly Scalar         Null  = Scalar.Null;
 
-        internal static readonly EvalResult     SingleTrue  = new EvalResult(True);
-        internal static readonly EvalResult     SingleFalse = new EvalResult(False);
-        
         public   static readonly TrueLiteral    FilterTrue  = new TrueLiteral();
         public   static readonly FalseLiteral   FilterFalse = new FalseLiteral();
 
@@ -268,7 +267,6 @@ namespace Friflo.Json.Fliox.Transform
     public abstract class FilterOperation : Operation
     {
         [Ignore]    public   readonly  QueryFormat query;
-        [Ignore]    internal readonly  EvalResult  evalResult = new EvalResult(new List<Scalar>());
                     public             bool        IsTrue => this is TrueLiteral || (this as Filter)?.body is TrueLiteral;
                      
         protected FilterOperation() {

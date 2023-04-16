@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
@@ -11,10 +10,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     // --- literals
     public abstract class Literal : Operation {
-        // is set always to the same value in Eval() so it can be reused
-        [Ignore] internal  readonly  EvalResult evalResult = new EvalResult(new List<Scalar> {new Scalar()});
-        
-        internal override void Init(OperationContext cx, InitFlags flags) { }
+        internal override void Init(OperationContext cx) { }
     }
         
     public sealed class StringLiteral : Literal
@@ -27,9 +23,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public StringLiteral() { }
         public StringLiteral(string value) { this.value = value; }
 
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.SetSingle(new Scalar(value));
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            return new Scalar(value);
         }
     }
     
@@ -44,9 +39,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public DoubleLiteral() { }
         public DoubleLiteral(double value) { this.value = value; }
 
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.SetSingle(new Scalar(value));
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            return new Scalar(value);
         }
     }
     
@@ -61,9 +55,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public LongLiteral() { }
         public LongLiteral(long value) { this.value = value; }
 
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.SetSingle(new Scalar(value));
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            return new Scalar(value);
         }
     }
     
@@ -72,10 +65,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "true";
         public   override void      AppendLinq(AppendCx cx) => cx.Append("true");
 
-        internal override void Init(OperationContext cx, InitFlags flags) { }
+        internal override void Init(OperationContext cx) { }
 
-        internal override EvalResult Eval(EvalCx cx) {
-            return SingleTrue;
+        internal override Scalar Eval(EvalCx cx) {
+            return True;
         }
     }
     
@@ -84,10 +77,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "false";
         public   override void      AppendLinq(AppendCx cx) => cx.Append("false");
 
-        internal override void Init(OperationContext cx, InitFlags flags) { }
+        internal override void Init(OperationContext cx) { }
 
-        internal override EvalResult Eval(EvalCx cx) {
-            return SingleFalse;
+        internal override Scalar Eval(EvalCx cx) {
+            return False;
         }
     }
 
@@ -98,9 +91,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
         public NullLiteral() { }
 
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.SetSingle(Null);
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            return Null;
         }
     }
 }

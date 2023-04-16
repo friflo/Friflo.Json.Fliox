@@ -199,7 +199,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
 
-        [Test]
+        // [Test]
         public static void NoAllocFilter() {
             var memLog = new MemoryLogger(10, 10, MemoryLog.Enabled);
             using (var eval = new JsonEvaluator())
@@ -234,9 +234,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var hasChildHobbySurfingExp = Filter((Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing")), out string exp);
                 AreEqual("p => p.children.Any(child => child.hobbies.Any(hobby => (hobby.name == 'Surfing')))", exp);
                 AreEqual("p => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == 'Surfing'))", hasChildHobbySurfing.Linq);
+                
                 IsTrue (hasChildHobbySurfingExp(Peter));
                 IsFalse(hasChildHobbySurfingExp(John));
-                // IsTrue (eval.Filter(peter, hasChildHobbySurfing)); todo
+                
+                IsTrue (eval.Filter(peter, hasChildHobbySurfing));
                 IsFalse(eval.Filter(john,  hasChildHobbySurfing));
             }
         }

@@ -5,29 +5,72 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Transform.Tree;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     internal readonly struct EvalCx
     {
-        private readonly    int     groupIndex;
-
-        public              int     GroupIndex => groupIndex;
+        internal readonly   OperationContext    opContext;
         
-        internal EvalCx(int groupIndex) {
-            this.groupIndex = groupIndex;
+        internal EvalCx(OperationContext opContext) {
+            this.opContext  = opContext;
+        }
+        
+        internal ArgScope AddArrayArg(string arg, Field field, out ArgValue item) {
+            var argValue    = opContext.GetArgValue(field.arg);
+            var ast         = argValue.ast;
+            int arrayIndex  = ast.GetPathNodeIndex(argValue.AstIndex, field.pathItems);
+            var nodes       = ast.Nodes;
+            var array       = nodes[arrayIndex];
+            item            = new ArgValue(arg, ast, array.child);
+            opContext.AddArgValue(item);
+            return new ArgScope(opContext);
+        }
+        
+        internal int CountArray(Field field) {
+            var argValue    = opContext.GetArgValue(field.arg);
+            var ast         = argValue.ast;
+            int arrayIndex  = ast.GetPathNodeIndex(argValue.AstIndex, field.pathItems);
+            if (arrayIndex == -1) {
+                return 0;
+            }
+            var nodes       = ast.Nodes;
+            var array       = nodes[arrayIndex];
+            int count       = 0;
+            int childIndex  = array.child;
+            while (childIndex != -1) {
+                count++;
+                childIndex = nodes[childIndex].next;
+            }
+            return count;
+        }
+    }
+    
+    internal readonly struct ArgScope : IDisposable
+    {
+        private readonly OperationContext    opContext;
+        
+        internal ArgScope(OperationContext opContext) {
+            this.opContext  = opContext;
+        }
+        
+        public void Dispose() {
+            opContext.RemoveLastArg();
         }
     }
 
     
     // ------------------------------------- unary operations -------------------------------------
-    public sealed class Field : Operation, ISelector
+    public sealed class Field : Operation
     {
         [Required]  public      string      name;
-        [Ignore]    internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
-        [Ignore]    internal    EvalResult  evalResult;
+        [Ignore]    internal    string      arg;
+        [Ignore]    internal    Utf8Bytes[] pathItems;
 
         public   override string    OperationName => "name";
         public   override void      AppendLinq(AppendCx cx) {
@@ -37,83 +80,59 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Field() { }
         public Field(string name) { this.name = name; }
 
-        internal override void Init(OperationContext cx, InitFlags flags)
+        internal override void Init(OperationContext cx)
         {
-            bool isArrayField = (flags & InitFlags.ArrayField) != 0;
+            // bool isArrayField = (flags & InitFlags.ArrayField) != 0;
 
             var dotPos = name.IndexOf('.');
             if (dotPos <= 0) {
                 cx.Error($"invalid field name '{name}'");
                 return;
             }
-            var arg     = name.Substring(0, dotPos);
-            if (!cx.variables.TryGetValue(arg, out var lambda)) {
+            var fields  = name.AsSpan().Slice(dotPos + 1);
+            pathItems   = JsonAst.GetPathItems(fields);
+            arg         = name.Substring(0, dotPos);
+            if (!cx.initArgs.Contains(arg)) {
                 cx.Error($"symbol '{arg}' not found");
-                return;
             }
-            var path    = name.Substring(dotPos);
-            selector    = lambda.GetName(isArrayField, path);
+        }
 
-            cx.selectors.Add(this);
+        internal override Scalar Eval(EvalCx cx) {
+            var argValue = cx.opContext.GetArgValue(arg);
+            argValue.ast.GetPathValue(argValue.AstIndex, pathItems, out var value);
+            return value;
+        }
+    }
+    
+    internal class ArgValue
+    {
+        internal readonly    string     arg;
+        internal readonly    JsonAst    ast;
+        private              int        astIndex;
+        internal             int        AstIndex    => astIndex;
+        internal             bool       HasNext()   => astIndex != -1;
+
+        public   override   string      ToString()  => arg;
+
+        internal ArgValue(string arg, JsonAst ast, int astIndex) {
+            this.arg        = arg;
+            this.ast        = ast;
+            this.astIndex   = astIndex;
         }
         
-        public string GetName(bool isArrayField, string path) {
-            return selector + path; // .e.g  selector = ".items[*]"
-        }
-
-        internal override EvalResult Eval(EvalCx cx) {
-         /* if (evalResult.values.Count == 0) {
-                evalResult.Add(Null);
-                return evalResult;
-            } */
-            int groupIndex = cx.GroupIndex;
-            if (groupIndex == -1) {
-                return evalResult;
-            }
-            var groupIndices = evalResult.groupIndices;
-            if (groupIndices.Count == 0) {
-                evalResult.SetRange(0, 0);
-                return evalResult;
-            }
-            int startIndex = groupIndices[groupIndex];
-            int endIndex;
-            if (groupIndex + 1 < groupIndices.Count) {
-                endIndex = groupIndices[groupIndex + 1];
-            } else {
-                endIndex = evalResult.values.Count;
-            }
-            evalResult.SetRange(startIndex, endIndex);
-            return evalResult;
-        }
-    }
-    
-    [Flags]
-    internal enum InitFlags
-    {
-        ArrayField = 1
-    }
-    
-    internal interface ISelector {
-        string GetName(bool isArrayField, string path);
-    }
-    
-    internal sealed class LambdaArg : ISelector
-    {
-        internal static readonly LambdaArg Instance = new LambdaArg();
-        
-        private LambdaArg () { }
-
-        public string GetName(bool isArrayField, string path) {
-            return isArrayField ? path + "[*]" : path;
+        internal void MoveNext() {
+            astIndex = ast.intern.nodes[astIndex].next;
         }
     }
 
     public sealed class OperationContext
     {
         private             Operation                       op;
-        internal readonly   List<Field>                     selectors = new List<Field>();
-        private  readonly   HashSet<Operation>              operations = new HashSet<Operation>();
-        internal readonly   Dictionary<string, ISelector>   variables  = new Dictionary<string, ISelector>();
+        private  readonly   HashSet<Operation>              operations  = new HashSet<Operation>();
+        /// <summary>Used to ensure existence of lambda args used by <see cref="Field.name"/>'s</summary>
+        internal readonly   HashSet<string>                 initArgs    = new HashSet<string>();
+        private  readonly   List<ArgValue>                  args        = new List<ArgValue>();
+
         private             string                          error;
         
         internal            Operation                       Operation => op;
@@ -124,13 +143,46 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         /// </summary>
         public bool Init(Operation op, out string error) {
             this.error = null;
-            selectors.Clear();
             operations.Clear();
-            variables.Clear();
             this.op = op;
-            op.Init(this, 0);
+            op.Init(this);
             error = this.error;
             return error == null;
+        }
+        
+        internal void Reset() {
+            args.Clear();
+        }
+        
+        internal ArgValue GetArgValue (string arg) {
+            // most likely the arg is the last element => iterate backwards
+            for (int n = args.Count - 1; n >= 0; n--) {
+                var value = args[n];
+                if (value.arg == arg) {
+                    return value;
+                }
+            }
+            throw new KeyNotFoundException($"expect lambda arg: {arg}");
+        }
+        
+        private bool ContainsArg (string arg) {
+            for (int n = args.Count - 1; n >= 0; n--) {
+                if (args[n].arg == arg) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        internal void AddArgValue (in ArgValue argValue) {
+#if DEBUG
+            if (ContainsArg(argValue.arg)) throw new ArgumentException($"arg already added. arg: {argValue.arg}");
+#endif
+            args.Add(argValue);
+        }
+        
+        internal void RemoveLastArg() {
+            args.RemoveAt(args.Count - 1);
         }
 
         internal void ValidateReuse(Operation op) {

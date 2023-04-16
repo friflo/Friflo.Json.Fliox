@@ -13,20 +13,17 @@ namespace Friflo.Json.Fliox.Transform.Tree
     {
         public bool GetPathValue(string path, out Scalar value) {
             var pathItems = GetPathItems(path);
-            return GetPathValue(pathItems, out value);
+            return GetPathValue(0, pathItems, out value);
         }
         
-        public bool GetPathValue(in ReadOnlySpan<Utf8Bytes> path, out Scalar value) {
-            if (path.Length == 0) {
-                value = GetNodeValue(intern.nodes[0]);
+        public bool GetPathValue(int objectIndex, in ReadOnlySpan<Utf8Bytes> path, out Scalar value) {
+            var index = GetPathNodeIndex(objectIndex, path);
+            if (index != -1) {
+                value = GetNodeValue(index);
                 return true;
             }
-            if (GetPathNode(path, out var node)) {
-                value = GetNodeValue(node);
-                return true;
-            }
-            value = default;
-            return false;
+            value = Scalar.Null;
+            return true;
         }
         
         public Scalar GetNodeValue(int index) {
@@ -69,32 +66,25 @@ namespace Friflo.Json.Fliox.Transform.Tree
             throw new InvalidOperationException($"invalid node type: {node.type}");
         } 
         
-        private bool GetPathNode(in ReadOnlySpan<Utf8Bytes> path, out JsonAstNode node) {
+        internal int GetPathNodeIndex(int objectIndex, in ReadOnlySpan<Utf8Bytes> path) {
+            if (path.Length == 0) {
+                return 0;
+            }
             var nodes       = intern.nodes;
-            node            = nodes[0];
+            var node        = nodes[objectIndex];
             var itemCount   = path.Length;
             int pathPos     = 0;
             var buf         = intern.Buf;
+            int childIndex  = -1;
             
             for (; pathPos < itemCount; pathPos++) {
                 if (node.type != ObjectStart) {
-                    return false;
+                    return -1;
                 }
-                var childIndex = node.child;
+                childIndex = node.child;
                 while (childIndex != -1) {
                     var childNode   = nodes[childIndex];
-                    switch (childNode.type) {
-                        case ValueString:
-                        case ValueNumber:
-                        case ValueBool:
-                        case ArrayStart:
-                        case ObjectStart:
-                        case ValueNull:
-                            break;
-                        default:
-                            return false;
-                    }
-                    var keyName = new Utf8Bytes(buf, childNode.key.start, childNode.key.len);
+                    var keyName     = new Utf8Bytes(buf, childNode.key.start, childNode.key.len);
                     if (keyName.IsEqual(path[pathPos])) {
                         node = childNode;
                         break;
@@ -102,13 +92,13 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     childIndex = childNode.next;
                 }
                 if (childIndex == -1) {
-                    return false;
+                    return -1;
                 }
             }
-            return pathPos == itemCount;
+            return pathPos == itemCount ? childIndex : -1;
         }
         
-        public static Utf8Bytes[] GetPathItems(string path) {
+        public static Utf8Bytes[] GetPathItems(in ReadOnlySpan<char> path) {
             if (path.Length == 0) {
                 return Array.Empty<Utf8Bytes>();
             }
@@ -127,12 +117,12 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 if (pathSpan[n] != '.')
                     continue;
                 itemLen = n - itemStart;
-                if (itemLen == 0) throw new InvalidOperationException($"Invalid path: {path}");
+                if (itemLen == 0) throw new InvalidOperationException("Invalid path: " + path.ToString());
                 pathItems[count++] = new Utf8Bytes(utf8Path, itemStart, itemLen);
                 itemStart = n + 1;
             }
             itemLen = len - itemStart;
-            if (itemLen == 0) throw new InvalidOperationException($"Invalid path: {path}");
+            if (itemLen == 0) throw new InvalidOperationException("Invalid path: " + path.ToString());
             pathItems[count] = new Utf8Bytes(utf8Path, itemStart, itemLen);
             return pathItems;
         } 

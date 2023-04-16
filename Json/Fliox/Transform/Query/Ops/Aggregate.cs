@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -12,7 +11,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     public abstract class UnaryAggregateOp : Operation
     {
         [Required]  public              Field       field;
-        [Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected UnaryAggregateOp() { }
         protected UnaryAggregateOp(Field field) {
@@ -20,9 +18,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
         }
         
-        internal override void Init(OperationContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx) {
             cx.ValidateReuse(this); // results are reused
-            field.Init(cx, InitFlags.ArrayField);
+            field.Init(cx);
         }
     }
     
@@ -34,11 +32,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "Count";
         public   override void      AppendLinq(AppendCx cx) { field.AppendLinq(cx); cx.sb.Append(".Count()"); }
 
-        internal override EvalResult Eval(EvalCx cx) {
-            var eval = field.Eval(cx);
-            int count = eval.values.Count;
-            evalResult.SetSingle(new Scalar(count));
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            int count = cx.CountArray(field);
+            return new Scalar (count);
         }
     }
     
@@ -48,7 +44,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Required]  public              Field       field;
         [Required]  public              string      arg;
         [Required]  public              Operation   array;
-        [Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected BinaryAggregateOp() { }
         protected BinaryAggregateOp(Field field, string arg, Operation array) {
@@ -57,11 +52,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             this.array      = array;
         }
         
-        internal override void Init(OperationContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx) {
             cx.ValidateReuse(this); // results are reused
-            cx.variables.Add(arg, field);
-            field.Init(cx, InitFlags.ArrayField);
-            array.Init(cx, flags);
+            cx.initArgs.Add(arg);
+            field.Init(cx);
+            array.Init(cx);
         }
     }
     
@@ -73,21 +68,23 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "Min";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Min", field, arg, array, cx);
 
-        internal override EvalResult Eval(EvalCx cx) {
-            Scalar currentMin = Null;
-            var eval = array.Eval(cx);
-            foreach (var val in eval.values) {
-                if (!currentMin.IsNull) {
-                    if (val.CompareTo(currentMin, array, out Scalar result) < 0)
-                        currentMin = val;
-                    if (result.IsError)
-                        return evalResult.SetError(result);
-                } else {
-                    currentMin = val;
+        internal override Scalar Eval(EvalCx cx) {
+            using (cx.AddArrayArg(arg, field, out var item)) {
+                var currentMin  = Null;
+                while (item.HasNext()) {
+                    var value = array.Eval(cx);
+                    if (!currentMin.IsNull) {
+                        if (value.CompareTo(currentMin, array, out Scalar result) < 0)
+                            currentMin = value;
+                        if (result.IsError)
+                            return result;
+                    } else {
+                        currentMin = value;
+                    }
+                    item.MoveNext();
                 }
+                return currentMin;
             }
-            evalResult.SetSingle(currentMin);
-            return evalResult;
         }
     }
     
@@ -99,21 +96,23 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "Max";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Max", field, arg, array, cx);
 
-        internal override EvalResult Eval(EvalCx cx) {
-            Scalar currentMin = Null;
-            var eval = array.Eval(cx);
-            foreach (var val in eval.values) {
-                if (!currentMin.IsNull) {
-                    if (val.CompareTo(currentMin, array, out Scalar result) > 0)
-                        currentMin = val;
-                    if (result.IsError)
-                        return evalResult.SetError(result);
-                } else {
-                    currentMin = val;
+        internal override Scalar Eval(EvalCx cx) {
+            using (cx.AddArrayArg(arg, field, out var item)) {
+                Scalar currentMax = Null;
+                while (item.HasNext()) {
+                    var value = array.Eval(cx);
+                    if (!currentMax.IsNull) {
+                        if (value.CompareTo(currentMax, array, out Scalar result) > 0)
+                            currentMax = value;
+                        if (result.IsError)
+                            return result;
+                    } else {
+                        currentMax = value;
+                    }
+                    item.MoveNext();
                 }
+                return currentMax;
             }
-            evalResult.SetSingle(currentMin);
-            return evalResult;
         }
     }
     
@@ -125,14 +124,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "Sum";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Sum", field, arg, array, cx);
         
-        internal override EvalResult Eval(EvalCx cx) {
-            Scalar sum = Scalar.Zero;
-            var eval = array.Eval(cx);
-            foreach (var val in eval.values) {
-                sum = sum.Add(val, this);
+        internal override Scalar Eval(EvalCx cx) {
+            using (cx.AddArrayArg(arg, field, out var item)) {
+                Scalar sum = Scalar.Zero;
+                while (item.HasNext()) {
+                    var value = array.Eval(cx);
+                    sum = sum.Add(value, this);
+                    item.MoveNext();
+                }
+                return sum;
             }
-            evalResult.SetSingle(sum);
-            return evalResult;
         }
     }
     
@@ -144,17 +145,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "Average";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Average", field, arg, array, cx);
 
-        internal override EvalResult Eval(EvalCx cx) {
-            Scalar sum = Scalar.Zero;
-            var eval = array.Eval(cx);
-            int count = 0;
-            foreach (var val in eval.values) {
-                sum = sum.Add(val, this);
-                count++;
+        internal override Scalar Eval(EvalCx cx) {
+            using (cx.AddArrayArg(arg, field, out var item)) {
+                Scalar sum = Scalar.Zero;
+                int count = 0;
+                while (item.HasNext()) {
+                    var value = array.Eval(cx);
+                    sum = sum.Add(value, this);
+                    count++;
+                    item.MoveNext();
+                }
+                return sum.Divide(new Scalar((double)count), this); 
             }
-            var average = sum.Divide(new Scalar((double)count), this); 
-            evalResult.SetSingle(average);
-            return evalResult;
         }
     }
 }

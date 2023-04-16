@@ -26,10 +26,11 @@ namespace Friflo.Json.Burst
             this.len    = len;
         }
         
-        public Utf8Bytes(string value) {
-            buffer  = Encoding.UTF8.GetBytes(value);
-            len     = buffer.Length;
-            start   = 0;
+        public Utf8Bytes(in ReadOnlySpan<char> value) {
+            len         = Encoding.UTF8.GetByteCount(value);
+            buffer      = new byte[len];
+            Encoding.UTF8.GetBytes(value, buffer);
+            start       = 0;
         }
         
         public bool IsEqual (in Utf8Bytes value) {

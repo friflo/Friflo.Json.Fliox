@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Friflo.Json.Fliox.Transform.Query.Arity;
 
 namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
@@ -15,14 +13,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Contains() { }
         public Contains(Operation left, Operation right) : base(left, right) { }
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
-            foreach (var pair in eval) {
-                var contains = pair.left.Contains(pair.right, this);
-                evalResult.Add(contains);
-            }
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            var leftValue   = left.Eval(cx);
+            var rightValue  = right.Eval(cx);
+            return leftValue.Contains(rightValue, this);
         }
     }
     
@@ -34,14 +28,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public StartsWith() { }
         public StartsWith(Operation left, Operation right) : base(left, right) { }
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
-            foreach (var pair in eval) {
-                var startsWith = pair.left.StartsWith(pair.right, this);
-                evalResult.Add(startsWith);
-            }
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            var leftValue   = left.Eval(cx);
+            var rightValue  = right.Eval(cx);
+            return leftValue.StartsWith(rightValue, this);
         }
     }
     
@@ -53,30 +43,25 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public EndsWith() { }
         public EndsWith(Operation left, Operation right) : base(left, right) { }
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
-            foreach (var pair in eval) {
-                var endsWith = pair.left.EndsWith(pair.right, this);
-                evalResult.Add(endsWith);
-            }
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            var leftValue   = left.Eval(cx);
+            var rightValue  = right.Eval(cx);
+            return leftValue.EndsWith(rightValue, this);
         }
     }
     
     public sealed class Length : Operation
     {
         [Required]  public              Operation   value;
-        [Ignore]    private  readonly   EvalResult  evalResult = new EvalResult(new List<Scalar>());
                     internal override   bool        IsNumeric => true;
         
                     public   override   string      OperationName => "Length";
                     public   override   void        AppendLinq(AppendCx cx) => AppendLinqMethod("Length", value, cx);
 
         /// Could Extend <see cref="UnaryArithmeticOp"/> but Length() is not an arithmetic function  
-        internal override void Init(OperationContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx) {
             cx.ValidateReuse(this); // results are reused
-            value.Init(cx, 0);
+            value.Init(cx);
         }
 
         public Length() { }
@@ -84,14 +69,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             this.value = value;
         }
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.Clear();
+        internal override Scalar Eval(EvalCx cx) {
             var eval = value.Eval(cx);
-            foreach (var val in eval.values) {
-                var result = val.Length(this);
-                evalResult.Add(result);
-            }
-            return evalResult;
+            return eval.Length(this);
         }
     }
 }

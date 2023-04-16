@@ -11,9 +11,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
         public PiLiteral() { }
 
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.SetSingle(Scalar.PI);
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            return Scalar.PI;
         }
     }
     
@@ -25,9 +24,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
         public EulerLiteral() { }
 
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.SetSingle(Scalar.E);
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            return Scalar.E;
         }
     }
     
@@ -39,9 +37,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
         public TauLiteral() { }
 
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.SetSingle(Scalar.Tau);
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            return Scalar.Tau;
         }
     }
 }

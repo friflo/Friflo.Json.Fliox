@@ -10,7 +10,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Required]  public          string          arg;
         [Required]  public          Operation       body;
         
-        public   override string    OperationName => "(o): any";
+        internal override string    Arg             => arg;
+        public   override string    OperationName   => "(o): any";
         public   override void      AppendLinq(AppendCx cx) {
             cx.lambdaArg = arg;
             cx.Append(arg);
@@ -25,17 +26,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
         
         internal static  void InitBody (Operation body, string arg, OperationContext cx) {
-            cx.variables.Add(arg, LambdaArg.Instance);
-            body.Init(cx, 0);
+            cx.initArgs.Add(arg);
+            body.Init(cx);
         }
         
-        internal override void Init(OperationContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx) {
             InitBody(body, arg, cx);
         }
         
-        internal override EvalResult Eval(EvalCx cx) {
-            var eval = body.Eval(cx);
-            return eval;
+        internal override Scalar Eval(EvalCx cx) {
+            return body.Eval(cx);
         }
     }
     
@@ -44,7 +44,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Required]  public          string          arg;
         [Required]  public          FilterOperation body;
         
-        public   override string    OperationName => "(o): bool";
+        internal override string    Arg             => arg;
+        public   override string    OperationName   => "(o): bool";
         public   override void      AppendLinq(AppendCx cx) {
             cx.lambdaArg = arg;
             cx.Append(arg);
@@ -58,13 +59,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             this.body   = body;
         }
         
-        internal override void Init(OperationContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx) {
             Ops.Lambda.InitBody(body, arg, cx);
         }
         
-        internal override EvalResult Eval(EvalCx cx) {
-            var eval = body.Eval(cx);
-            return eval;
+        internal override Scalar Eval(EvalCx cx) {
+            return body.Eval(cx);
         }
     }
 }

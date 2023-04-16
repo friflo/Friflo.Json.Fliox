@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Friflo.Json.Fliox.Transform.Query.Arity;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable MemberCanBeProtected.Global
@@ -15,7 +13,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Required]  public  Operation   left;
         [Required]  public  Operation   right;
         
-        internal readonly   EvalResult  evalResult = new EvalResult(new List<Scalar>());
         internal override   bool        IsNumeric => true;
 
         protected BinaryArithmeticOp() { }
@@ -24,10 +21,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             this.right = right;
         }
         
-        internal override void Init(OperationContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx) {
             cx.ValidateReuse(this); // results are reused
-            left.Init(cx, 0);
-            right.Init(cx, 0);
+            left.Init(cx);
+            right.Init(cx);
         }
     }
     
@@ -39,14 +36,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "+";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "+", left, right);
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
-            foreach (var pair in eval) {
-                var result = pair.left.Add(pair.right, this);
-                evalResult.Add(result);
-            }
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            var leftValue   = left.Eval(cx);
+            var rightValue  = right.Eval(cx);
+            return leftValue.Add(rightValue, this);
         }
     }
     
@@ -58,14 +51,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "-";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "-", left, right);
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
-            foreach (var pair in eval) {
-                var result = pair.left.Subtract(pair.right, this);
-                evalResult.Add(result);
-            }
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            var leftValue   = left.Eval(cx);
+            var rightValue  = right.Eval(cx);
+            return leftValue.Subtract(rightValue, this);
         }
     }
     
@@ -77,14 +66,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "*";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "*", left, right);
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
-            foreach (var pair in eval) {
-                var result = pair.left.Multiply(pair.right, this);
-                evalResult.Add(result);
-            }
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            var leftValue   = left.Eval(cx);
+            var rightValue  = right.Eval(cx);
+            return leftValue.Multiply(rightValue, this);
         }
     }
     
@@ -96,14 +81,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "/";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "/", left, right);
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
-            foreach (var pair in eval) {
-                var result = pair.left.Divide(pair.right, this);
-                evalResult.Add(result);
-            }
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            var leftValue   = left.Eval(cx);
+            var rightValue  = right.Eval(cx);
+            return leftValue.Divide(rightValue, this);
         }
     }
     
@@ -115,14 +96,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override string    OperationName => "%";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "%", left, right);
         
-        internal override EvalResult Eval(EvalCx cx) {
-            evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
-            foreach (var pair in eval) {
-                var result = pair.left.Modulo(pair.right, this);
-                evalResult.Add(result);
-            }
-            return evalResult;
+        internal override Scalar Eval(EvalCx cx) {
+            var leftValue   = left.Eval(cx);
+            var rightValue  = right.Eval(cx);
+            return leftValue.Modulo(rightValue, this);
         }
     }
 }

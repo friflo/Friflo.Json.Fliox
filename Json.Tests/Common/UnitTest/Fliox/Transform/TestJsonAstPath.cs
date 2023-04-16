@@ -117,16 +117,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(10, firstChild);
                 var nodeScalar = ast.GetNodeValue(firstChild);
                 AreEqual(12, nodeScalar.AsLong());
-
-                found   = ast.GetPathValue("x", out value);
-                IsFalse(found);
+            } {
+                var found   = ast.GetPathValue("x", out var value);
+                IsTrue (found);
+                IsTrue(value.IsNull);
             }
         }
         
         [Test]
         public void TestJsonAstPathScalarNested() {
             var astReader   = new JsonAstReader();
-            var json        = "{\"a\": {\"a1\": 11, \"a2\": 12}}";
+            var json        = "{\"a\": {\"a1\": 11, \"a2\": 12}, \"b\":1}";
             var ast         = CreateAst(astReader, json);
             {
                 var found   = ast.GetPathValue("a.a1", out var value);
@@ -141,10 +142,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 IsTrue(found);
                 AreEqual(ScalarType.Object, value.type);
             } {
-                var found   = ast.GetPathValue("a.x", out _);
-                IsFalse(found);
+                var found   = ast.GetPathValue("a.x", out var value);
+                IsTrue(found);
+                IsTrue(value.IsNull);
+            } {
+                var found   = ast.GetPathValue("b.b1", out var value);
+                IsTrue(found);
+                IsTrue(value.IsNull);
             }
         }
+        
         [Test]
         public void TestJsonAstPathPerf() {
             var astReader   = new JsonAstReader();
@@ -154,7 +161,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var path        = JsonAst.GetPathItems("g.g1");
             var count       = 10; // 10_000_000;
             for (int n = 0; n < count; n++) {
-                bool found = ast.GetPathValue(path, out _);
+                bool found = ast.GetPathValue(0, path, out _);
                 if (!found) throw new InvalidOperationException();
             }
         }

@@ -2,9 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using Friflo.Json.Fliox.Transform.Query;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Tree;
 
@@ -15,12 +13,9 @@ namespace Friflo.Json.Fliox.Transform
 #endif
     public sealed class JsonEvaluator : IDisposable
     {
-        private readonly    ScalarSelector  scalarSelector  = new ScalarSelector(); // todo remove
         private readonly    JsonAstReader   astReader       = new JsonAstReader();
-    //  private             JsonAst         jsonAst;        // AST_PATH
 
         public void Dispose() {
-            scalarSelector.Dispose();
             astReader.Dispose();
         }
 
@@ -34,68 +29,38 @@ namespace Friflo.Json.Fliox.Transform
                 error = null;
                 return false; // result is independent fom given json
             }
-            ReadJsonFields(json, filter);
-            var cx = new EvalCx(-1);
-            var evalResult = filter.op.Eval(cx);
-
-            if (evalResult.values.Count == 0) {
-                error = null;
-                return false;
-            }
-            foreach (var result in evalResult.values) {
-                if (!result.IsError)
-                    continue;
-                error = result.ErrorMessage;
+            AddLambdaValue(json, filter);
+            var cx      = new EvalCx(filter.operationContext);
+            var value   = filter.op.Eval(cx);
+            if (value.IsError) {
+                error = value.ErrorMessage;
                 return false;
             }
             error = null;
-            foreach (var result in evalResult.values) {
-                var isTrue = result.EqualsTo(Operation.True, null);  
-                if (!isTrue.IsTrue)
-                    return false;
-            }
-            return true;
+            var isTrue = value.EqualsTo(Operation.True, null);  
+            return isTrue.IsTrue;
         }
 
         // --- Eval
         public object Eval(in JsonValue json, JsonLambda lambda, out string error) {
-            ReadJsonFields(json, lambda);
-            var cx = new EvalCx(-1);
-            var evalResult = lambda.op.Eval(cx);
-            
-            if (evalResult.values.Count == 1) {
-                var value = evalResult.values[0];    
-                if (value.IsError) {
-                    error = value.ErrorMessage;
-                    return null;
-                }
-                error = null;
-                return value.AsObject();
-            }
-            
-            object[] evalResults = new object[evalResult.values.Count];
-            for (int n = 0; n < evalResult.values.Count; n++) {
-                var result = evalResult.values[n];
-                if (result.IsError) {
-                    error = result.ErrorMessage;
-                    return null;
-                }
-                evalResults[n] = result.AsObject();
+            AddLambdaValue(json, lambda);
+            var cx      = new EvalCx(lambda.operationContext);
+            var value   = lambda.op.Eval(cx);
+            if (value.IsError) {
+                error = value.ErrorMessage;
+                return null;
             }
             error = null;
-            return evalResults;
+            return value.AsObject();
         }
-
-        private void ReadJsonFields(in JsonValue json, JsonLambda lambda) {
-            // jsonAst     = astReader.CreateAst(json); // AST_PATH
-            var query   = lambda.scalarSelect;
-            scalarSelector.Select(json, query);
-            var fields = lambda.fields;
-            for (int n = 0; n < fields.Count; n++) {
-                Field field = fields[n];
-                var evalResult = lambda.resultBuffer[n];
-                evalResult.SetRange(0, evalResult.values.Count);
-                field.evalResult = evalResult;
+        
+        private void AddLambdaValue(in JsonValue json, JsonLambda lambda) {
+            lambda.operationContext.Reset();
+            var arg = lambda.op.Arg;
+            if (arg != null) {
+                if (arg.Contains('.')) throw new InvalidOperationException("lambda arg must not contain '.'");
+                var ast = astReader.CreateAst(json); // AST_PATH
+                lambda.operationContext.AddArgValue(new ArgValue(arg, ast, 0));
             }
         }
     }
@@ -103,12 +68,8 @@ namespace Friflo.Json.Fliox.Transform
     // --------------------------------------- JsonLambda ---------------------------------------
     public class JsonLambda
     {
-        private  readonly   List<string>        selectors       = new List<string>();        
-        internal readonly   List<Field>         fields          = new List<Field>();        // Count == selectors.Count
-        internal readonly   List<EvalResult>    resultBuffer    = new List<EvalResult>();   // Count == selectors.Count
-        internal readonly   ScalarSelect        scalarSelect    = new ScalarSelect();
         internal            Operation           op;
-        private  readonly   OperationContext    operationContext;
+        internal readonly   OperationContext    operationContext;
 
         public              string              Linq        => op != null ? op.Linq : "not initialized";
         public   override   string              ToString()  => Linq;
@@ -136,21 +97,6 @@ namespace Friflo.Json.Fliox.Transform
 
         private void InitLambda(OperationContext opCx) {
             op = opCx.Operation;
-            selectors.Clear();
-            fields.Clear();
-            foreach (var selector in operationContext.selectors) {
-                selectors.Add(selector.selector);
-                fields.Add(selector);
-            }
-            scalarSelect.CreateNodeTree(selectors);
-
-            var pathSelectors = scalarSelect.nodeTree.selectors;
-            resultBuffer.Clear();
-            for (int n = 0; n < pathSelectors.Count; n++) {
-                var result = pathSelectors[n].result;
-                var evalResult = new EvalResult(result.values, result.groupIndices);
-                resultBuffer.Add(evalResult);
-            }
         }
     }
 
