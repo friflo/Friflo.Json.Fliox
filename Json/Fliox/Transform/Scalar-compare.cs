@@ -40,6 +40,8 @@ namespace Friflo.Json.Fliox.Transform {
                     return False;
                 case ScalarType.Object:
                 case ScalarType.Array:
+                    if (other.IsNull)
+                        return False;
                     return CompareError("invalid operand", other, operation);
                 case ScalarType.Error:
                     return this;
