@@ -79,6 +79,8 @@ query<Order>    (o => o.items.Count   (o => o.name == "Camera") == 2);
 query<Order>    (o => o.items.Count   (o => o.name.Contains("X")) == 1);
 query<Order>    (o => o.items.Count   () == 2);
 
+query<Producer> (p => p.employees.Any(e => e.StartsWith("apple")));
+
 
 // ------------ Math
 // --- ensure presence of Math methods

@@ -66,13 +66,40 @@ type List<T> = {
     Count   (filter: (o: Filter<T>) => boolean)  : Number;
 }
 
+type Array<T> = {
+    /** return the length of the array. */
+    readonly Length : Number,
+    /** return **true** if *all* the elements in a sequence satisfy the filter condition or if the sequence is *empty*. */
+    All     (filter: (o: T) => boolean) : boolean;
+    /** return **true** if *any* element in a sequence satisfy the filter condition. */
+    Any     (filter: (o: T) => boolean) : boolean;
 
+    /** return the minimum value of an array. */
+    Min     (filter: (o: T) => Property) : Number;
+    /** return the maximum value of an array. */
+    Max     (filter: (o: T) => Property) : Number;
+    /** return the sum of all values. */
+    Sum     (filter: (o: T) => Property) : Number;
+    /** return the average of all values. */
+    Average (filter: (o: T) => Property) : Number;
+
+    /** count the elements in an array. */
+    Count   ()                           : Number;
+    /** count the elements in an array which satisfy the filter condition. */
+    Count   (filter: (o: T) => boolean)  : Number;
+}
+
+
+// Used 'Conditional Types' to provide type safe query types
+// See [TypeScript: Documentation - Conditional Types] https://www.typescriptlang.org/docs/handbook/2/conditional-types.html
 type FilterTypes<T> =
-    T extends string         ? String   :
-    T extends number         ? Number   :
-//  T extends Array<infer U> ? List<U>
-    T extends (infer U)[]    ? List<U>  // alternative for: Array<infer U>
-    : Filter<T & { }>                   // type NonNullable<T> = T & {};
+    T extends string         ? String           :
+    T extends number         ? Number           :
+    T extends string[]       ? Array<String>    :
+    T extends number[]       ? Array<Number>    :
+//  T extends Array<infer U> ? List<U>          :
+    T extends (infer U)[]    ? List<U>          :   // alternative for: Array<infer U>
+    /* else */                 Filter<T & { }>      // type NonNullable<T> = T & {};
 
 export type Filter<T> = {
     readonly [K in keyof T]-? : FilterTypes<T[K]>
