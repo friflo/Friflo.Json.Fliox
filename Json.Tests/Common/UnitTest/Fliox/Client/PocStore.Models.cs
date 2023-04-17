@@ -89,6 +89,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public override     string          ToString() => JsonSerializer.Serialize(this);
     }
     
+    public enum TestEnum
+    {
+        NONE    = 0,
+        e1      = 10,
+        e2      = 11
+    }
+    
     public class TestType : PocEntity {
                     public  DateTime        dateTime;
                     public  DateTime?       dateTimeNull;
@@ -127,6 +134,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         [Required]  public  DerivedClass    derivedClass;
                     public  DerivedClass    derivedClassNull;
+                    
+                    public  TestEnum        testEnum;
+                    public  TestEnum?       testEnumNull;
     }
     
     public struct PocStruct {

@@ -33,7 +33,9 @@
                 "intNullArray":     { "type": ["array", "null"], "items": { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, { "type": "null"}]} },
                 "jsonValue":        {  },
                 "derivedClass":     { "$ref": "./UnitTest.Fliox.Client.json#/definitions/DerivedClass" },
-                "derivedClassNull": { "oneOf": [{ "$ref": "./UnitTest.Fliox.Client.json#/definitions/DerivedClass" }, {"type": "null"}] }
+                "derivedClassNull": { "oneOf": [{ "$ref": "./UnitTest.Fliox.Client.json#/definitions/DerivedClass" }, {"type": "null"}] },
+                "testEnum":         { "$ref": "./UnitTest.Fliox.Client.json#/definitions/TestEnum" },
+                "testEnumNull":     { "oneOf": [{ "$ref": "./UnitTest.Fliox.Client.json#/definitions/TestEnum" }, {"type": "null"}] }
             },
             "required": [
                 "id",
@@ -48,7 +50,8 @@
                 "float64",
                 "pocStruct",
                 "intArray",
-                "derivedClass"
+                "derivedClass",
+                "testEnum"
             ],
             "additionalProperties": false
         }

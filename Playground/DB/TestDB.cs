@@ -300,6 +300,23 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
+        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        public static async Task TestQuery_Enum(string db) {
+            var store = await GetClient(db);
+            var query1 = store.testEnum.Query(t => t.enumVal == TestEnum.e1);
+            var query2 = store.testEnum.Query(t => t.enumValNull == TestEnum.e2);
+            var query3 = store.testEnum.Query(t => t.enumValNull == null);
+            
+            AreEqual("t => t.enumVal == 'e1'", query1.DebugQuery.Linq);
+            AreEqual("t => t.enumValNull == 'e2'", query2.DebugQuery.Linq);
+            AreEqual("t => t.enumValNull == null", query3.DebugQuery.Linq);
+            
+            await store.SyncTasks();
+            AreEqual(2, query1.Result.Count);
+            AreEqual(1, query2.Result.Count);
+            AreEqual(1, query3.Result.Count);
+        }
+        
         // --- read by id
         [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
         public static async Task TestRead_One(string db) {

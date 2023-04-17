@@ -28,6 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var customers   = store.customers;
             var producers   = store.producers;
             var employees   = store.employees;
+            var types       = store.types;
 
             var readOrders              = orders.Read()                                             .TaskName("readOrders");
             var order1                  = readOrders.Find("order-1")                                .TaskName("order1");
@@ -46,6 +47,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var ordersAnyAmountLower2   = orders.QueryByFilter(ordersAnyAmountLowerFilter)          .TaskName("ordersAnyAmountLower2");
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
             
+            var testEnumNullQuery       = types.Query(t => t.testEnumNull == TestEnum.e1);
+            AreEqual("t => t.testEnumNull == 'e1'", testEnumNullQuery.DebugQuery.Linq);
+            var testTEnumQuery           = types.Query(t => t.testEnum == TestEnum.e2);
+            AreEqual("t => t.testEnum == 'e2'", testTEnumQuery.DebugQuery.Linq);
+
             // ensure API available
             AreEqual($"c.customer = 'customer-1'",                                        ordersWithCustomer1.DebugQuery.Cosmos);
             AreEqual($"EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", hasOrderCamera.DebugQuery.Cosmos); 

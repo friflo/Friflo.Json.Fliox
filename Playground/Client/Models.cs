@@ -56,4 +56,15 @@ namespace Friflo.Playground.Client
                     public  List<string>    employees;
                     public  DateTime?       created;
     }
+    
+    public enum TestEnum {
+        e1 = 101,
+        e2 = 102
+    }
+    
+    public class TestEnumEntity {
+        [Key]       public  string          id { get; set; }
+                    public  TestEnum        enumVal;
+                    public  TestEnum?       enumValNull;
+    }
 }

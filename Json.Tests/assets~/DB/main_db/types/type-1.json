@@ -33,5 +33,7 @@
         "name": null,
         "derivedVal": 0
     },
-    "derivedClassNull": null
+    "derivedClassNull": null,
+    "testEnum": "NONE",
+    "testEnumNull": null
 }

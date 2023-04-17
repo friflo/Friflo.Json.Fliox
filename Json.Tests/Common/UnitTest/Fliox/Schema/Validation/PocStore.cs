@@ -149,7 +149,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         'derivedVal': 0,
         'article': 'article-1',
         'amount': 0
-    }
+    },
+    'testEnum': 'e1'
 }");
             
             internal    readonly string testTypeValidNull = AsJson(
@@ -188,7 +189,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         'amount': 0,
         'name': null
     },
-    'derivedClassNull': null
+    'derivedClassNull': null,
+    'testEnum': 'e1',
+    'testEnumNull': null
 }");
         }
 

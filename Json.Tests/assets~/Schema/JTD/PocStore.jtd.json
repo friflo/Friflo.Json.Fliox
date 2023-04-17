@@ -75,7 +75,9 @@
                 "intNullArray":     { "elements": { "type": "int32" }, "nullable": true },
                 "jsonValue":        { "nullable": true },
                 "derivedClass":     { "ref":  "DerivedClass" },
-                "derivedClassNull": { "ref":  "DerivedClass", "nullable": true }
+                "derivedClassNull": { "ref":  "DerivedClass", "nullable": true },
+                "testEnum":         { "ref":  "TestEnum" },
+                "testEnumNull":     { "ref":  "TestEnum", "nullable": true }
             }
         },
         "OrderItem": {
@@ -103,6 +105,13 @@
                 "name":       { "type": "string", "nullable": true },
                 "derivedVal": { "type": "int32" }
             }
+        },
+        "TestEnum": {
+            "enum": [
+                "NONE",
+                "e1",
+                "e2"
+            ]
         },
         "TestCommand": {
             "properties": {

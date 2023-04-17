@@ -94,6 +94,8 @@ public class TestType : PocEntity {
     [Required]
     DerivedClass  derivedClass;
     DerivedClass  derivedClassNull;
+    TestEnum      testEnum;
+    TestEnum?     testEnumNull;
 }
 
 public class OrderItem {
@@ -114,6 +116,12 @@ public struct PocStruct {
 
 public class DerivedClass : OrderItem {
     int  derivedVal;
+}
+
+public enum TestEnum {
+    NONE,
+    e1,
+    e2,
 }
 
 public class TestCommand {

@@ -236,6 +236,8 @@ type TestType {
     jsonValue        : Any
     derivedClass     : DerivedClass!
     derivedClassNull : DerivedClass
+    testEnum         : TestEnum!
+    testEnumNull     : TestEnum
 }
 
 input TestTypeInput {
@@ -266,6 +268,8 @@ input TestTypeInput {
     jsonValue        : Any
     derivedClass     : DerivedClassInput!
     derivedClassNull : DerivedClassInput
+    testEnum         : TestEnum!
+    testEnumNull     : TestEnum
 }
 
 type OrderItem {
@@ -308,6 +312,12 @@ input DerivedClassInput {
     amount     : Int!
     name       : String
     derivedVal : Int!
+}
+
+enum TestEnum {
+    NONE
+    e1
+    e2
 }
 
 type TestCommand {

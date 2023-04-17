@@ -119,6 +119,13 @@
             ],
             "additionalProperties": false
         },
+        "TestEnum": {
+            "enum": [
+                "NONE",
+                "e1",
+                "e2"
+            ]
+        },
         "TestCommand": {
             "type": "object",
             "properties": {

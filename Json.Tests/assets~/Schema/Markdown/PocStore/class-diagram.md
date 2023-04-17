@@ -96,11 +96,15 @@ class TestType:::cssEntity {
     jsonValue?        : any
     derivedClass      : DerivedClass
     derivedClassNull? : DerivedClass
+    testEnum          : TestEnum
+    testEnumNull?     : TestEnum
 }
 TestType *-- "1" PocStruct : pocStruct
 TestType *-- "0..1" PocStruct : pocStructNull
 TestType *-- "1" DerivedClass : derivedClass
 TestType *-- "0..1" DerivedClass : derivedClassNull
+TestType *-- "1" TestEnum : testEnum
+TestType *-- "0..1" TestEnum : testEnumNull
 
 class OrderItem {
     article  : string
@@ -117,6 +121,14 @@ OrderItem <|-- DerivedClass
 class DerivedClass {
     derivedVal  : int32
 }
+
+class TestEnum:::cssEnum {
+    <<enumeration>>
+    NONE
+    e1
+    e2
+}
+
 
 
 ```

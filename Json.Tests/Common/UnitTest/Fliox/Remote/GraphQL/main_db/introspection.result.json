@@ -3154,6 +3154,29 @@
                         "kind":"SCALAR",
                         "name": "DerivedClass"
                     }
+                },
+                {
+                    "name": "testEnum",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "TestEnum"
+                        }
+                    }
+                },
+                {
+                    "name": "testEnumNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "TestEnum"
+                    }
                 }
             ],
             "interfaces": [
@@ -3487,6 +3510,29 @@
                         "kind":"SCALAR",
                         "name": "DerivedClassInput"
                     }
+                },
+                {
+                    "name": "testEnum",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "TestEnum"
+                        }
+                    }
+                },
+                {
+                    "name": "testEnumNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "TestEnum"
+                    }
                 }
             ]
         },
@@ -3773,6 +3819,25 @@
                             "name": "Int"
                         }
                     }
+                }
+            ]
+        },
+        {
+            "kind":"ENUM",
+            "name": "TestEnum",
+            "description": "",
+            "enumValues": [
+                {
+                    "name": "NONE",
+                    "description": ""
+                },
+                {
+                    "name": "e1",
+                    "description": ""
+                },
+                {
+                    "name": "e2",
+                    "description": ""
                 }
             ]
         },

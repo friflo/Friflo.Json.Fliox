@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             throw NotSupported($"query not supported: {query}", cx);
         }
         
-        private static Operation TraceExpression(Expression expression, QueryCx cx) {
+        private static Operation TraceExpression(Expression expression, QueryCx cx, BinaryExpression binBase = null) {
             switch (expression) {
                 case MemberExpression member:
                     return GetMember(member, cx);
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case BinaryExpression binary:
                     return OperationFromBinaryExpression(binary, cx);
                 case ConstantExpression constant:
-                    return OperationFromConstant(null, constant.Value, constant.Type, cx);
+                    return OperationFromConstant(null, constant.Value, constant.Type, binBase, cx);
                 default:
                     throw NotSupported($"Body not supported: {expression}", cx);
             }
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             switch (member.Expression) {
                 case null:
                     // get value from static class field / property 
-                    return OperationFromConstant(member, null, member.Type, cx);
+                    return OperationFromConstant(member, null, member.Type, null, cx);
                 case ParameterExpression _:
                     break;
                 case MemberExpression parentMember:
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                         var literal = new StringLiteral(constant.Value.ToString());
                         return new Length(literal);
                     }
-                    return OperationFromConstant(member, constant.Value, constant.Type, cx);
+                    return OperationFromConstant(member, constant.Value, constant.Type, null, cx);
                 default:
                     throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
             }
@@ -274,8 +274,8 @@ namespace Friflo.Json.Fliox.Transform.Query
         }
 
         private static Operation OperationFromBinaryExpression(BinaryExpression binary, QueryCx cx) {
-            var leftOp  = TraceExpression(binary.Left,  cx);
-            var rightOp = TraceExpression(binary.Right, cx);
+            var leftOp  = TraceExpression(binary.Left,  cx, binary);
+            var rightOp = TraceExpression(binary.Right, cx, binary);
             switch (binary.NodeType) {
                 // --- binary comparison operations
                 case ExpressionType.Equal:              return new Equal            (leftOp, rightOp);
@@ -301,7 +301,27 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
         
-        private static Operation OperationFromConstant(MemberExpression member, object value, Type type, QueryCx cx) {
+        private static bool GetBinaryConvertType(BinaryExpression binary, out Type convertType) {
+            var left = binary.Left;
+            if (left.NodeType == ExpressionType.Convert && left is UnaryExpression unaryLeft) {
+                convertType = unaryLeft.Operand.Type;
+                return true;
+            }
+            var right = binary.Right;
+            if (right.NodeType == ExpressionType.Convert && right is UnaryExpression unaryRight) {
+                convertType = unaryRight.Operand.Type;
+                return true;
+            }
+            convertType = null;
+            return false;
+        }
+        
+        private static Operation OperationFromConstant(MemberExpression member, object value, Type type, BinaryExpression binBase, QueryCx cx) {
+            if (binBase != null) {
+                if (GetBinaryConvertType(binBase, out var convertType)) {
+                    type = convertType;
+                }
+            }
             // is local variable used in expression? A DisplayClass is generated for them
             if (member != null) {
                 var memberInfo = member.Member;
@@ -333,6 +353,10 @@ namespace Friflo.Json.Fliox.Transform.Query
 
         private static Operation OperationFromValue(object value, Type type)
         {
+            // --- null
+            if (value == null) {
+                return new NullLiteral();
+            }
             if (type == typeof(string))     return new StringLiteral((string)   value);
             
             // --- floating point
@@ -355,13 +379,13 @@ namespace Friflo.Json.Fliox.Transform.Query
                 var c = (char)value;
                 return new StringLiteral(c.ToString());
             }
-            // --- null
-            if (type == typeof(object) && value == null)
-                return new NullLiteral();
-            
             if (type == typeof(DateTime)) {
                 var str = DateTimeMapper.ToRFC_3339((DateTime)value);
                 return new StringLiteral(str);
+            }
+            if (type.IsEnum) {
+                var valueName = Enum.GetName(type, value);
+                return new StringLiteral(valueName);
             }
             return null;
         }

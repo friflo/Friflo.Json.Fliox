@@ -114,6 +114,12 @@ export class DerivedClass extends OrderItem {
     derivedVal  : int32;
 }
 
+export type TestEnum =
+    | "NONE"
+    | "e1"
+    | "e2"
+;
+
 export class TestCommand {
     text? : string | null;
 }
@@ -173,5 +179,7 @@ export class TestType extends PocEntity {
     jsonValue?        : any | null;
     derivedClass      : DerivedClass;
     derivedClassNull? : DerivedClass | null;
+    testEnum          : TestEnum;
+    testEnumNull?     : TestEnum | null;
 }
 

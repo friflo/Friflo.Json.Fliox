@@ -34,6 +34,8 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         private const int Gen_jsonValue = 24;
         private const int Gen_derivedClass = 25;
         private const int Gen_derivedClassNull = 26;
+        private const int Gen_testEnum = 27;
+        private const int Gen_testEnumNull = 28;
 
         private static bool ReadField (ref TestType obj, PropField field, ref Reader reader) {
             bool success;
@@ -65,6 +67,8 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 case Gen_jsonValue:        obj.jsonValue        = reader.ReadJsonValue   (field, out success);  return success;
                 case Gen_derivedClass:     obj.derivedClass     = reader.ReadClass       (field, obj.derivedClass,     out success);  return success;
                 case Gen_derivedClassNull: obj.derivedClassNull = reader.ReadClass       (field, obj.derivedClassNull, out success);  return success;
+                case Gen_testEnum:         obj.testEnum         = reader.ReadEnum        (field, obj.testEnum,         out success);  return success;
+                case Gen_testEnumNull:     obj.testEnumNull     = reader.ReadEnumNull    (field, obj.testEnumNull,     out success);  return success;
             }
             return false;
         }
@@ -97,6 +101,8 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             writer.WriteJsonValue   (fields[Gen_jsonValue],        obj.jsonValue,        ref firstMember);
             writer.WriteClass       (fields[Gen_derivedClass],     obj.derivedClass,     ref firstMember);
             writer.WriteClass       (fields[Gen_derivedClassNull], obj.derivedClassNull, ref firstMember);
+            writer.WriteEnum        (fields[Gen_testEnum],         obj.testEnum,         ref firstMember);
+            writer.WriteEnumNull    (fields[Gen_testEnumNull],     obj.testEnumNull,     ref firstMember);
         }
     }
 }

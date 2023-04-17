@@ -84,6 +84,8 @@ data class TestType (
               val jsonValue        : JsonElement? = null,
               val derivedClass     : DerivedClass,
               val derivedClassNull : DerivedClass? = null,
+              val testEnum         : TestEnum,
+              val testEnumNull     : TestEnum? = null,
 ) : PocEntity()
 
 @Serializable
@@ -110,6 +112,12 @@ data class DerivedClass (
               val name       : String? = null,
               val derivedVal : Int,
 )
+
+enum class TestEnum {
+    NONE,
+    e1,
+    e2,
+}
 
 @Serializable
 data class TestCommand (
