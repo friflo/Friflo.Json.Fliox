@@ -301,6 +301,9 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
         
+        /// <summary>
+        /// Required to determine the type of enums as LINQ convert enums to their underlying enum type like int32, ...  
+        /// </summary>
         private static bool GetBinaryConvertType(BinaryExpression binary, out Type convertType) {
             var left = binary.Left;
             if (left.NodeType == ExpressionType.Convert && left is UnaryExpression unaryLeft) {

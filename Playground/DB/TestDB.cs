@@ -307,14 +307,27 @@ namespace Friflo.Playground.DB
             var query2 = store.testEnum.Query(t => t.enumValNull == TestEnum.e2);
             var query3 = store.testEnum.Query(t => t.enumValNull == null);
             
-            AreEqual("t => t.enumVal == 'e1'", query1.DebugQuery.Linq);
-            AreEqual("t => t.enumValNull == 'e2'", query2.DebugQuery.Linq);
-            AreEqual("t => t.enumValNull == null", query3.DebugQuery.Linq);
+            var query4 = store.testEnum.Query(t => TestEnum.e1 == t.enumVal);
+            var query5 = store.testEnum.Query(t => TestEnum.e2 == t.enumValNull);
+            var query6 = store.testEnum.Query(t => null == t.enumValNull);
             
+            AreEqual("t => t.enumVal == 'e1'",      query1.DebugQuery.Linq);
+            AreEqual("t => t.enumValNull == 'e2'",  query2.DebugQuery.Linq);
+            AreEqual("t => t.enumValNull == null",  query3.DebugQuery.Linq);
+            
+            AreEqual("t => 'e1' == t.enumVal",      query4.DebugQuery.Linq);
+            AreEqual("t => 'e2' == t.enumValNull",  query5.DebugQuery.Linq);
+            AreEqual("t => null == t.enumValNull",  query6.DebugQuery.Linq);
+
             await store.SyncTasks();
+            
             AreEqual(2, query1.Result.Count);
             AreEqual(1, query2.Result.Count);
             AreEqual(1, query3.Result.Count);
+            
+            AreEqual(2, query4.Result.Count);
+            AreEqual(1, query5.Result.Count);
+            AreEqual(1, query6.Result.Count);
         }
         
         // --- read by id
