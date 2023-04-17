@@ -168,10 +168,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     error = $"variable not found: {symbol} {At} {node.Pos}";
                     return null;
                 case VariableType.Parameter:
-                    error = $"cannot use lambda parameter {symbol} as operand (only its fields) {At} {node.Pos}";
-                    return null;
+                    CreateField(symbol, node, cx, out Field field, out error);
+                    return field;
+                case VariableType.Variable:
+                    return Success(findResult.value, out error);
             }
-            return Success(findResult.value, out error);
+            throw new InvalidOperationException($"unexpected VariableType: {findResult.type}");
         }
         
         private static bool CreateField(string symbol, QueryNode node, Context cx, out Field field, out string error) {
@@ -183,12 +185,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             if (firstDot == -1) {
                 var findSymbol = cx.FindVariable(symbol); 
-                if (findSymbol.type == VariableType.Parameter)
-                    error = $"missing field name after '{symbol}.' {At} {node.Pos}";
-                else
+                if (findSymbol.type == VariableType.NotFound) {
                     error = $"variable not found: {symbol} {At} {node.Pos}";
-                field = null;
-                return false;
+                    field = null;
+                    return false;
+                }
+                field = new Field(symbol);
+                return Success(true, out error);
             }
             var param           = symbol.Substring(0, firstDot);
             var findVariable    = cx.FindVariable(param); 

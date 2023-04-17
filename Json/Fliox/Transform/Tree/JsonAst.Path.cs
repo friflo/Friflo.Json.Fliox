@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
         
         internal int GetPathNodeIndex(int objectIndex, in ReadOnlySpan<Utf8Bytes> path) {
             if (path.Length == 0) {
-                return 0;
+                return objectIndex;
             }
             var nodes       = intern.nodes;
             var node        = nodes[objectIndex];

@@ -25,8 +25,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             var argValue    = opContext.GetArgValue(field.arg);
             var ast         = argValue.ast;
             int arrayIndex  = ast.GetPathNodeIndex(argValue.ChildIndex, field.pathItems);
-            var array       = argValue.nodes[arrayIndex];
-            item            = new ArgValue(arg, ast, array.child);
+            if (arrayIndex == -1) {
+                item            = new ArgValue(arg, ast, -1);
+            } else {
+                var array       = argValue.nodes[arrayIndex];
+                item            = new ArgValue(arg, ast, array.child);
+            }
             opContext.AddArgValue(item);
             return new ArgScope(opContext);
         }
@@ -83,13 +87,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             // bool isArrayField = (flags & InitFlags.ArrayField) != 0;
 
             var dotPos = name.IndexOf('.');
-            if (dotPos <= 0) {
+            if (dotPos == 0) {
                 cx.Error($"invalid field name '{name}'");
                 return;
             }
-            var fields  = name.AsSpan().Slice(dotPos + 1);
-            pathItems   = JsonAst.GetPathItems(fields);
-            arg         = name.Substring(0, dotPos);
+            if (dotPos == -1) {
+                pathItems   = Array.Empty<Utf8Bytes>();
+                arg         = name;
+            } else {
+                var fields  = name.AsSpan().Slice(dotPos + 1);
+                pathItems   = JsonAst.GetPathItems(fields);
+                arg         = name.Substring(0, dotPos);
+            }
             if (!cx.initArgs.Contains(arg)) {
                 cx.Error($"symbol '{arg}' not found");
             }

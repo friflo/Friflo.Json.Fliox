@@ -377,9 +377,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("true o", out error);
                 AreEqual("unexpected operand o on true at pos 5", error);
-            } {
-                Parse("o == 1", out error, TestEnv);
-                AreEqual("cannot use lambda parameter o as operand (only its fields) at pos 0", error);
             }
         }
         
@@ -436,7 +433,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("variable not found: x at pos 0", error);
             } {
                 Parse("o.Any(a => true)", out error, TestEnv);
-                AreEqual("missing field name after 'o.' at pos 0", error);
+                AreEqual("parameter already used: a at pos 6", error);
             } {
                 Parse("o.children.Any(o => true)", out error, TestEnv);
                 AreEqual("parameter already used: o at pos 15", error);

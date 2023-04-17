@@ -320,16 +320,68 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
+        public static void TestEvalAll() {
+            using (var eval = new JsonEvaluator()) {
+                string  error;
+                // --- error
+                {
+                    Eval ("o => o.array.All(i => i)", Json, eval, out error);
+                    AreEqual("quantify operation o.array.All() expect boolean lambda body. Was: i at pos 22", error);
+                }
+                // --- success
+                {
+                    var result = Eval ("o => o.array.All(i => i > 0)", Json, eval, out error);
+                    IsTrue((bool)result);
+                } {
+                    var result = Eval ("o => o.array.All(i => i == 1)", Json, eval, out error);
+                    IsFalse((bool)result);
+                } {
+                    var result = Eval ("o => o.unknown.All(i => i == 1)", Json, eval, out error);
+                    IsTrue((bool)result);
+                }
+            }
+        }
+        
+        [Test]
+        public static void TestEvalAny() {
+            using (var eval = new JsonEvaluator()) {
+                string  error;
+                // --- error
+                {
+                    Eval ("o => o.array.Any(i => i)", Json, eval, out error);
+                    AreEqual("quantify operation o.array.Any() expect boolean lambda body. Was: i at pos 22", error);
+                }
+                // --- success
+                {
+                    var result = Eval ("o => o.array.Any(i => i == 1)", Json, eval, out error);
+                    IsTrue((bool)result);
+                } {
+                    var result = Eval ("o => o.array.Any(i => i == 99)", Json, eval, out error);
+                    IsFalse((bool)result);
+                } {
+                    var result = Eval ("o => o.unknown.Any(i => i == 1)", Json, eval, out error);
+                    IsFalse((bool)result);
+                }
+            }
+        }
+        
+        [Test]
         public static void TestEvalCount() {
             using (var eval = new JsonEvaluator()) {
                 string  error;
                 // --- error
                 {
                     Eval ("o => o.array.Count(i => i) == 3", Json, eval, out error);
-                    AreEqual("cannot use lambda parameter i as operand (only its fields) at pos 24", error);
+                    AreEqual("quantify operation o.array.Count() expect boolean lambda body. Was: i at pos 24", error);
                 }
                 // --- success
                 {
+                    var result = Eval ("o => o.array.Count(i => i == 2) == 1", Json, eval, out error);
+                    IsTrue((bool)result);
+                } {
+                    var result = Eval ("o => o.array.Count(i => i == -99) == 66", Json, eval, out error);
+                    IsFalse((bool)result);
+                } {
                     var result = Eval ("o => o.unknown.Count() == 0", Json, eval, out error);
                     IsTrue((bool)result);
                 } {
