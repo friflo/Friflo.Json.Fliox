@@ -46,9 +46,9 @@ type List<T> = {
     /** return the length of the array. */
     readonly Length : Number,
     /** return **true** if *all* the elements in a sequence satisfy the filter condition or if the sequence is *empty*. */
-    All     (filter: (o: T) => boolean) : boolean;
+    All     (filter: (o: Filter<T>) => boolean) : boolean;
     /** return **true** if *any* element in a sequence satisfy the filter condition. */
-    Any     (filter: (o: T) => boolean) : boolean;
+    Any     (filter: (o: Filter<T>) => boolean) : boolean;
 
     /** return the minimum value of an array. */
     Min     (filter: (o: T) => Property) : Number;
@@ -62,7 +62,7 @@ type List<T> = {
     /** count the elements in an array. */
     Count   ()                           : Number;
     /** count the elements in an array which satisfy the filter condition. */
-    Count   (filter: (o: T) => boolean)  : Number;
+    Count   (filter: (o: Filter<T>) => boolean)  : Number;
 }
 
 

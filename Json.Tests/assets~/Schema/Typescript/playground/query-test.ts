@@ -65,7 +65,10 @@ query<TestType> (o => o.int32 == 1);
 query<Order>    (o => o.items.Length == 1);
 
 query<Order>    (o => o.items.Any(o => o.amount == 1));
+query<Order>    (o => o.items.Any(o => o.name.EndsWith("X")));
+
 query<Order>    (o => o.items.All(o => o.amount == 1));
+query<Order>    (o => o.items.All(o => o.name.StartsWith("X")));
 
 query<Order>    (o => o.items.Min     (o => o.amount)           == 1);
 query<Order>    (o => o.items.Max     (o => o.amount)           == 2);
@@ -73,6 +76,7 @@ query<Order>    (o => o.items.Sum     (o => o.amount)           == 6);
 query<Order>    (o => o.items.Average (o => o.amount)           == 3);
 
 query<Order>    (o => o.items.Count   (o => o.name == "Camera") == 2);
+query<Order>    (o => o.items.Count   (o => o.name.Contains("X")) == 1);
 query<Order>    (o => o.items.Count   () == 2);
 
 
