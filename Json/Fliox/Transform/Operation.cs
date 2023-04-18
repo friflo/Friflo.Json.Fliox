@@ -81,8 +81,8 @@ namespace Friflo.Json.Fliox.Transform
         public    abstract  void        AppendLinq      (AppendCx cx);
         internal  abstract  void        Init            (OperationContext cx);
         internal  abstract  Scalar      Eval            (EvalCx cx);    // todo - use in modifier
-        internal  virtual   bool        IsNumeric       => false;
-        internal  virtual   string      Arg             => null;
+        internal  virtual   bool        IsNumeric()     => false;
+        internal  virtual   string      GetArg()        => null;
         
         public              string      Linq            { get {
             var cs = new AppendCx(new StringBuilder());

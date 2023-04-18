@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Transform
         
         private void AddLambdaValue(in JsonValue json, JsonLambda lambda) {
             lambda.operationContext.Reset();
-            var arg = lambda.op.Arg;
+            var arg = lambda.op.GetArg();
             if (arg != null) {
                 if (arg.Contains("'")) throw new InvalidOperationException("lambda arg must not contain '.'");
                 var ast = astReader.CreateAst(json); // AST_PATH

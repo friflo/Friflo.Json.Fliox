@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     public abstract class UnaryArithmeticOp : Operation
     {
         [Required]  public              Operation   value;
-        internal override               bool        IsNumeric => true;
+        internal override               bool        IsNumeric() => true;
 
         protected UnaryArithmeticOp() { }
 
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Abs() { }
         public Abs(Operation value) : base(value) { }
 
-        public   override string    OperationName => "Abs";
+        public   override string    OperationName           => "Abs";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqFunction("Abs", value, cx);
         
         internal override Scalar Eval(EvalCx cx) {
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Ceiling() { }
         public Ceiling(Operation value) : base(value) { }
 
-        public   override string    OperationName => "Ceiling";
+        public   override string    OperationName           => "Ceiling";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqFunction("Ceiling", value, cx);
         
         internal override Scalar Eval(EvalCx cx) {
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Floor() { }
         public Floor(Operation value) : base(value) { }
 
-        public   override string    OperationName => "Floor";
+        public   override string    OperationName           => "Floor";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqFunction("Floor", value, cx);
         
         internal override Scalar Eval(EvalCx cx) {
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Exp() { }
         public Exp(Operation value) : base(value) { }
 
-        public   override string    OperationName => "Exp";
+        public   override string    OperationName           => "Exp";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqFunction("Exp", value, cx);
         
         internal override Scalar Eval(EvalCx cx) {
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Log() { }
         public Log(Operation value) : base(value) { }
 
-        public   override string    OperationName => "Log";
+        public   override string    OperationName           => "Log";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqFunction("Log", value, cx);
         
         internal override Scalar Eval(EvalCx cx) {
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Sqrt() { }
         public Sqrt(Operation value) : base(value) { }
 
-        public   override string    OperationName => "Sqrt";
+        public   override string    OperationName           => "Sqrt";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqFunction("Sqrt", value, cx);
         
         internal override Scalar Eval(EvalCx cx) {
@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Negate() { }
         public Negate(Operation value) : base(value) { }
 
-        public   override string    OperationName => "-";
+        public   override string    OperationName           => "-";
         public   override void      AppendLinq(AppendCx cx) { cx.Append("-("); value.AppendLinq(cx); cx.Append(")"); }
 
         internal override Scalar Eval(EvalCx cx) {

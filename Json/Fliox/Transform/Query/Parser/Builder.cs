@@ -228,7 +228,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var operand = node.GetOperand(0);
             if (!GetOp(operand, cx, out var op, out error))
                 return null;
-            if (op.IsNumeric || op is Field)
+            if (op.IsNumeric() || op is Field)
                 return Success(op, out error);
             error = $"{node.Label} expect field or numeric operand. was: {operand.Label} {At} {operand.Pos}";
             return null;
@@ -350,7 +350,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (!GetOp(operand_1, cx, out var right, out error))
                 return default;
             if (type == Num) {
-                if ((left.IsNumeric || left is Field) && (right.IsNumeric || right is Field))
+                if ((left.IsNumeric() || left is Field) && (right.IsNumeric() || right is Field))
                     return new BinaryOperands (left, right); 
                 error = $"operator {node.Label} must use numeric operands {At} {node.Pos}";
                 return default;

@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Required]  public          string          arg;
         [Required]  public          Operation       body;
         
-        internal override string    Arg             => arg;
+        internal override string    GetArg()        => arg;
         public   override string    OperationName   => "(o): any";
         public   override void      AppendLinq(AppendCx cx) {
             cx.Append(arg);
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Required]  public          string          arg;
         [Required]  public          FilterOperation body;
         
-        internal override string    Arg             => arg;
+        internal override string    GetArg()        => arg;
         public   override string    OperationName   => "(o): bool";
         public   override void      AppendLinq(AppendCx cx) {
             cx.Append(arg);

@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class Not : UnaryLogicalOp
     {
-        public   override string    OperationName => "!";
+        public   override string    OperationName           => "!";
         public   override void      AppendLinq(AppendCx cx) { cx.Append("!("); operand.AppendLinq(cx); cx.Append(")"); }
 
         public Not() { }
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class And : BinaryLogicalOp
     {
-        public   override string    OperationName => "&&";
+        public   override string    OperationName           => "&&";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqNAry(cx, "&&", operands);
 
         public And() { }
@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class Or : BinaryLogicalOp
     {
-        public   override string    OperationName => "||";
+        public   override string    OperationName           => "||";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqNAry(cx, "||", operands);
         
         public Or() { }

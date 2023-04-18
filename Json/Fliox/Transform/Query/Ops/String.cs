@@ -7,7 +7,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     public sealed class Contains : BinaryBoolOp
     {
-        public   override string    OperationName => "Contains";
+        public   override string    OperationName           => "Contains";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqMethod("Contains", left, right, cx);
 
         public Contains() { }
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class StartsWith : BinaryBoolOp
     {
-        public   override string    OperationName => "StartsWith";
+        public   override string    OperationName           => "StartsWith";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqMethod("StartsWith", left, right, cx);
 
         public StartsWith() { }
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class EndsWith : BinaryBoolOp
     {
-        public   override string    OperationName => "EndsWith";
+        public   override string    OperationName           => "EndsWith";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqMethod("EndsWith", left, right, cx);
 
         public EndsWith() { }
@@ -53,9 +53,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     public sealed class Length : Operation
     {
         [Required]  public              Operation   value;
-                    internal override   bool        IsNumeric => true;
-        
-                    public   override   string      OperationName => "Length";
+                    internal override   bool        IsNumeric()             => true;
+                    public   override   string      OperationName           => "Length";
                     public   override   void        AppendLinq(AppendCx cx) => AppendLinqMethod("Length", value, cx);
 
         /// Could Extend <see cref="UnaryArithmeticOp"/> but Length() is not an arithmetic function  

@@ -17,10 +17,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Ignore]    internal    string      arg;
         [Ignore]    internal    Utf8Bytes[] pathItems;
 
-        public   override string    OperationName => "name";
-        public   override void      AppendLinq(AppendCx cx) {
-            cx.Append(name);
-        }
+        public   override string    OperationName           => "name";
+        public   override void      AppendLinq(AppendCx cx) { cx.Append(name); }
 
         public Field() { }
         public Field(string name) { this.name = name; }
