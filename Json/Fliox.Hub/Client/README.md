@@ -151,43 +151,43 @@ When using a filter for a container query it is converted into an expression tre
 [Supported operations](../../../Json.Tests/assets~/Schema/Markdown/Filter/class-diagram.md)
 
 ### Query filter operators and methods
-| type          | operator / method              |                                                                                      |
-| -----------   | ------------------------------ | ------------------------------------------------------------------------------------ |
-| **compare**   | ==                             | equals                                                                               |
-|               | !=                             | not equals                                                                           |
-|               | <                              | less than                                                                            |
-|               | <=                             | less than or equals                                                                  |
-|               | >                              | greater than                                                                         |
-|               | >=                             | greater than or equals                                                               |
-| **logical**   | &&                             | and                                                                                  |
-|               | &#124;&#124;                   | or                                                                                   |
-|               | !                              | not                                                                                  |
-| **string**    | value.StartsWith(string)       | determine if value starts with the given string.  Equivalent to LIKE to 'string%'    |
-|               | value.EndsWith(string)         | determine if value ends with the given string.    Equivalent to LIKE to '%string'    |
-|               | value.Contains(string)         | determine if value contains the given string.     Equivalent to LIKE to '%string%'   |
-|               | value.Length()                 | determine if value contains the given string.     Equivalent to SQL LEN()            |
-| **arithmetic**| +                              | add                                                                                  |
-|               | -                              | subtract                                                                             |
-|               | *                              | multiply                                                                             |
-|               | /                              | divide                                                                               |
-|               | %                              | modulo                                                                               |
-|               | Abs(number)                    | absolute value of the specified number                                               |
-|               | Ceiling(number)                | smallest integral value greater or equal to the specified number                     |
-|               | Floor(number)                  | largest integral value less or equal to the specified number                         |
-|               | Exp(number)                    | e raised to the specified power                                                      |
-|               | Log(number)                    | logarithm of a specified number                                                      |
-|               | Sqrt(number)                   | square root of a specified number                                                    |
-| **constants** | PI                             | ratio of the circumference of a circle to its diameter, specified by the constant, π |
-|               | E                              | natural logarithmic base, specified by the constant, e                               |
-|               | Tau                            | number of radians in one turn, specified by the constant, τ                          |
-| **aggregate** | items.Min(i =>     i.Property) | minimum value of a collection                                                        |
-|               | items.Max(i =>     i.Property) | maximum value of a collection                                                        |
-|               | items.Sum(i =>     i.Property) | sum of a values within a collection                                                  |
-|               | items.Average(i => i.Property) | average of values within a collection                                                |
-|               | items.Count()                  | count of elements within a collection                                                |
-|               | items.Count(i => condition)    | count of elements satisfying a condition within a collection                         |
-| **quantify**  | items.All(i => condition)      | determines whether all elements of a collection satisfy a condition                  |
-|               | items.Any(i => condition )     | determines whether any element of a collection satisfy a condition                   |
+| type          | operator / method              |                                                                                                     |
+| -----------   | ------------------------------ | --------------------------------------------------------------------------------------------------- |
+| **compare**   | ==                             | equals                                                                                              |
+|               | !=                             | not equals                                                                                          |
+|               | <                              | less than                                                                                           |
+|               | <=                             | less than or equals                                                                                 |
+|               | >                              | greater than                                                                                        |
+|               | >=                             | greater than or equals                                                                              |
+| **logical**   | &&                             | and                                                                                                 |
+|               | &#124;&#124;                   | or                                                                                                  |
+|               | !                              | not                                                                                                 |
+| **string**    | value.StartsWith(string)       | determine if value starts with the given string.  Equivalent to LIKE to 'string%'                   |
+|               | value.EndsWith(string)         | determine if value ends with the given string.    Equivalent to LIKE to '%string'                   |
+|               | value.Contains(string)         | determine if value contains the given string.     Equivalent to LIKE to '%string%'                  |
+|               | value.Length()                 | determine if value contains the given string.     Equivalent to SQL LEN()                           |
+| **arithmetic**| +                              | add                                                                                                 |
+|               | -                              | subtract                                                                                            |
+|               | *                              | multiply                                                                                            |
+|               | /                              | divide                                                                                              |
+|               | %                              | modulo                                                                                              |
+|               | Abs(number)                    | absolute value of the specified number                                                              |
+|               | Ceiling(number)                | smallest integral value greater or equal to the specified number                                    |
+|               | Floor(number)                  | largest integral value less or equal to the specified number                                        |
+|               | Exp(number)                    | e raised to the specified power                                                                     |
+|               | Log(number)                    | logarithm of a specified number                                                                     |
+|               | Sqrt(number)                   | square root of a specified number                                                                   |
+| **constants** | PI                             | ratio of the circumference of a circle to its diameter, specified by the constant, π                |
+|               | E                              | natural logarithmic base, specified by the constant, e                                              |
+|               | Tau                            | number of radians in one turn, specified by the constant, τ                                         |
+| **aggregate** | items.Min(i =>     i.Property) | minimum value of a collection                                                                       |
+|               | items.Max(i =>     i.Property) | maximum value of a collection                                                                       |
+|               | items.Sum(i =>     i.Property) | sum of a values within a collection                                                                 |
+|               | items.Average(i => i.Property) | average of values within a collection                                                               |
+|               | items.Count()                  | count of elements within a collection                                                               |
+|               | items.Count(i => condition)    | count of elements satisfying a condition within a collection                                        |
+| **quantify**  | items.All(i => condition)      | determines whether all elements of a collection satisfy a condition or if the collection is *empty* |
+|               | items.Any(i => condition )     | determines whether any element of a collection satisfy a condition                                  |
 
 
 
