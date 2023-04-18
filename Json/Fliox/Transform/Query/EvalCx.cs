@@ -2,8 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Fliox.Transform.Query.Ops;
 
-namespace Friflo.Json.Fliox.Transform.Query.Ops
+namespace Friflo.Json.Fliox.Transform.Query
 {
     internal readonly struct EvalCx
     {

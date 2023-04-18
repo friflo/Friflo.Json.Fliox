@@ -5,13 +5,13 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Transform.Tree;
 
-namespace Friflo.Json.Fliox.Transform.Query.Ops
+namespace Friflo.Json.Fliox.Transform.Query
 {
     public sealed class OperationContext
     {
         private             Operation                       op;
         private  readonly   HashSet<Operation>              operations  = new HashSet<Operation>();
-        /// <summary>Used to ensure existence of lambda args used by <see cref="Field.name"/>'s</summary>
+        /// <summary>Used to ensure existence of lambda args used by <see cref="Ops.Field.name"/>'s</summary>
         internal readonly   HashSet<string>                 initArgs    = new HashSet<string>();
         private  readonly   List<ArgValue>                  args        = new List<ArgValue>();
 

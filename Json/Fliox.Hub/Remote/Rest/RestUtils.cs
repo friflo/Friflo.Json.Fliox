@@ -13,7 +13,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Transform;
-using Friflo.Json.Fliox.Transform.Query.Ops;
+using Friflo.Json.Fliox.Transform.Query;
 using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)

@@ -3,7 +3,7 @@
 
 using System.Text;
 
-namespace Friflo.Json.Fliox.Transform.Query.Ops
+namespace Friflo.Json.Fliox.Transform.Query
 {
     public readonly struct AppendCx {
         public readonly StringBuilder   sb;

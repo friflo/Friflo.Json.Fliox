@@ -3,7 +3,8 @@
 
 using System;
 using System.Text;
-using Friflo.Json.Fliox.Transform.Query.Ops;
+using Friflo.Json.Fliox.Transform.Query;
+
 
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 // ReSharper disable CompareOfFloatsByEqualityOperator

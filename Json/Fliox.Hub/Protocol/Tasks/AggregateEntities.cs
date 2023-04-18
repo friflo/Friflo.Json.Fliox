@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
-using Friflo.Json.Fliox.Transform.Query.Ops;
+using Friflo.Json.Fliox.Transform.Query;
 
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks

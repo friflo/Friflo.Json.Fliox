@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq.Expressions;
+using Friflo.Json.Fliox.Transform.Query;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Tree;
 
