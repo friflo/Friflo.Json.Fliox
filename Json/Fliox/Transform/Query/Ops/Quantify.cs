@@ -37,9 +37,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
         internal override Scalar Eval(EvalCx cx) {
             using (cx.AddArrayArg(arg, field, out var item)) {
-                var groupCx = new EvalCx(cx.opContext);
                 while (item.HasNext()) {
-                    var val     = predicate.Eval(groupCx);
+                    var val     = predicate.Eval(cx);
                     var result  = val.EqualsTo(True, this);
                     if (result.IsError)
                         return result;
@@ -62,9 +61,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
         internal override Scalar Eval(EvalCx cx) {
             using (cx.AddArrayArg(arg, field, out var item)) {
-                var groupCx = new EvalCx(cx.opContext);
                 while (item.HasNext()) {
-                    var value   = predicate.Eval(groupCx);
+                    var value   = predicate.Eval(cx);
                     var result  = value.EqualsTo(True, this);
                     if (result.IsError)
                         return result;
@@ -103,9 +101,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         internal override Scalar Eval(EvalCx cx) {
             using (cx.AddArrayArg(arg, field, out var item)) {
                 int count = 0;
-                var groupCx = new EvalCx(cx.opContext);
                 while (item.HasNext()) {
-                    var value   = predicate.Eval(groupCx);
+                    var value   = predicate.Eval(cx);
                     var result  = value.EqualsTo(True, this);
                     if (result.IsError)
                         return result;
