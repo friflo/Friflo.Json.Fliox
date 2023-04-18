@@ -44,8 +44,6 @@ export declare function Ceiling(value: number | Number) : Number;
 type Property = string | number | boolean;
 
 type List<T> = {
-    /** return the length of the array. */
-    readonly Length : Number,
     /** return **true** if *all* the elements in a sequence satisfy the filter condition or if the sequence is *empty*. */
     All     (filter: (o: Filter<T>) => boolean) : boolean;
     /** return **true** if *any* element in a sequence satisfy the filter condition. */
@@ -67,8 +65,6 @@ type List<T> = {
 }
 
 type Array<T> = {
-    /** return the length of the array. */
-    readonly Length : Number,
     /** return **true** if *all* the elements in a sequence satisfy the filter condition or if the sequence is *empty*. */
     All     (filter: (o: T) => boolean) : boolean;
     /** return **true** if *any* element in a sequence satisfy the filter condition. */

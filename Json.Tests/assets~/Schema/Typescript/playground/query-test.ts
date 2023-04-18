@@ -62,8 +62,6 @@ query<TestType> (o => o.int32 == 1);
 
 // ------------ List<>
 // --- ensure presence List<> / array filter methods
-query<Order>    (o => o.items.Length == 1);
-
 query<Order>    (o => o.items.Any(o => o.amount == 1));
 query<Order>    (o => o.items.Any(o => o.name.EndsWith("X")));
 
