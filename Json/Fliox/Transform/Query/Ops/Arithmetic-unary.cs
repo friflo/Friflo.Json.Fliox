@@ -118,9 +118,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override void      AppendLinq(AppendCx cx) { cx.Append("-("); value.AppendLinq(cx); cx.Append(")"); }
 
         internal override Scalar Eval(EvalCx cx) {
-            var zero = new Scalar(0);
             var eval = value.Eval(cx);
-            return zero.Subtract(eval, this);
+            return Scalar.Zero.Subtract(eval, this);
         }
     }
 }
