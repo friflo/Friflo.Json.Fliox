@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Utils;
@@ -82,11 +83,22 @@ namespace Friflo.Json.Tests.Common.Utils
 #if UNITY_5_3_OR_NEWER
             string baseDir = UnityUtils.GetProjectFolder();
 #else
-            string baseDir = Directory.GetCurrentDirectory() + "/../../../";
+            // remove folder like ".bin/Debug/net6.0" which is added when running unit tests
+            var projectFolder   = IsInUnitTest ?  "/../../../" : "/";
+            string baseDir      = Directory.GetCurrentDirectory() + projectFolder;
 #endif
             baseDir = Path.GetFullPath(baseDir + folder);
             return baseDir;
         }
+        
+        static CommonUtils()
+        {
+            var testAssemblyName    = "nunit.framework";
+            var assemblies          = AppDomain.CurrentDomain.GetAssemblies();
+            IsInUnitTest            = assemblies.Any(a => a.FullName.StartsWith(testAssemblyName));
+        }
+
+        private static bool IsInUnitTest { get; }
         
 #if UNITY_EDITOR
         public static bool  IsUnityEditor () { return true; }
