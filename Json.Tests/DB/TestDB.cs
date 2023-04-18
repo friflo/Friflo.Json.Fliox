@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
-using Friflo.Playground.Client;
+using Friflo.Json.Tests.DB.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
-using static Friflo.Playground.DB.Env;
+using static Friflo.Json.Tests.DB.Env;
 using static System.Math;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
-namespace Friflo.Playground.DB
+namespace Friflo.Json.Tests.DB
 {
     public class TestDB
     {
@@ -26,7 +26,7 @@ namespace Friflo.Playground.DB
         private const int ArticleCount = 2;
 
         // --- query all
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_All(string db) {
             var store = await GetClient(db);
             var query = store.articles.QueryAll();
@@ -35,7 +35,7 @@ namespace Friflo.Playground.DB
         }
         
         // --- query filter: compare
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public async Task TestQuery_Equals(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => One == 1);
@@ -44,7 +44,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_NotEquals(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => One != Zero);
@@ -53,7 +53,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Less(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => Zero < One);
@@ -62,7 +62,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_LessOrEquals(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => Zero <= One);
@@ -71,7 +71,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Greater(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => One > Zero);
@@ -80,7 +80,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_GreaterOrEquals(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => One >= Zero);
@@ -90,7 +90,7 @@ namespace Friflo.Playground.DB
         }
         
         // --- query filter: logical
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_And(string db) {
             var store = await GetClient(db);
             bool t = true;
@@ -100,7 +100,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Or(string db) {
             var store = await GetClient(db);
             bool t = true;
@@ -110,7 +110,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Not(string db) {
             var store = await GetClient(db);
             bool f = false;
@@ -121,7 +121,7 @@ namespace Friflo.Playground.DB
         }
         
         // --- query filter: string
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_StartsWith(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => a.id.StartsWith("a-"));
@@ -130,7 +130,7 @@ namespace Friflo.Playground.DB
             AreEqual(2, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_EndsWith(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => a.id.EndsWith("-1"));
@@ -139,7 +139,7 @@ namespace Friflo.Playground.DB
             AreEqual(1, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Contains(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => a.id.Contains('-'));
@@ -148,7 +148,7 @@ namespace Friflo.Playground.DB
             AreEqual(2, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Contains2(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => a.id.Contains("XXX"));
@@ -157,7 +157,7 @@ namespace Friflo.Playground.DB
             AreEqual(0, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Length(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => a.id.Length == 3);
@@ -167,7 +167,7 @@ namespace Friflo.Playground.DB
         }
         
         // --- query filter: arithmetic operator
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Add(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => One + One == 2);
@@ -176,7 +176,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Subtract(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => One - One == 0);
@@ -185,7 +185,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Multiply(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => One * One == 1);
@@ -194,7 +194,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Divide(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => One / One == 1);
@@ -203,7 +203,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Modulo(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => One % One == 0);
@@ -213,7 +213,7 @@ namespace Friflo.Playground.DB
         }
         
         // --- query filter: constants
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Constant_E(string db) {
             var store = await GetClient(db);
             double e = 2.718281828459045;
@@ -223,7 +223,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Constant_Pi(string db) {
             var store = await GetClient(db);
             double pi = 3.141592653589793;
@@ -234,7 +234,7 @@ namespace Friflo.Playground.DB
         }
         
 #if !UNITY_5_3_OR_NEWER
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Constant_Tau(string db) {
             var store = await GetClient(db);
             double tau = 6.283185307179586;
@@ -246,7 +246,7 @@ namespace Friflo.Playground.DB
 #endif
         
         // --- query filter: arithmetic methods
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Abs(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => Abs(-1) == One);
@@ -255,7 +255,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Ceiling(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => Ceiling(1.5) == 2);
@@ -264,7 +264,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Floor(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => Floor(1.5) == 1);
@@ -273,7 +273,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Exp(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => Exp(1) == 2.718281828459045);
@@ -282,7 +282,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Log(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => Log(2.718281828459045) == 1);
@@ -291,7 +291,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
 
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Sqrt(string db) {
             var store = await GetClient(db);
             var query = store.articles.Query(a => Sqrt(4) == 2);
@@ -300,7 +300,7 @@ namespace Friflo.Playground.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Enum(string db) {
             var store = await GetClient(db);
             var query1 = store.testEnum.Query(t => t.enumVal == TestEnum.e1);
@@ -331,7 +331,7 @@ namespace Friflo.Playground.DB
         }
         
         // --- read by id
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestRead_One(string db) {
             var store = await GetClient(db);
             var find  = store.articles.Read().Find("a-1");
@@ -339,7 +339,7 @@ namespace Friflo.Playground.DB
             NotNull(find.Result);
         }
         
-        [TestCase(File, Category = File)] [TestCase(Memory, Category = Memory)] [TestCase(Cosmos, Category = Cosmos)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestRead_Many(string db) {
             var store = await GetClient(db);
             var read  = store.articles.Read();

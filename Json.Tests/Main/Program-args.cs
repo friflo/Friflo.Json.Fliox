@@ -12,6 +12,7 @@ namespace Friflo.Json.Tests.Main
         private enum Module
         {
             TestServer,
+            TestDB,
             FlioxServerAspNetCore,
             ListenEvents,
             //
@@ -51,6 +52,9 @@ namespace Friflo.Json.Tests.Main
                 switch (module) {
                     case Module.TestServer:
                         TestServer(endpoint);
+                        break;
+                    case Module.TestDB:
+                        await DB.Program.Run();
                         break;
 #if NET6_0_OR_GREATER
                     case Module.FlioxServerAspNetCore:

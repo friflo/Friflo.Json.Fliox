@@ -1,7 +1,7 @@
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
-namespace Friflo.Playground.Client
+namespace Friflo.Json.Tests.DB.Client
 {
     public class TestClient : FlioxClient
     {

@@ -42,7 +42,7 @@ The Console application is used:
 - to run a Test server
 ```
 cd Json.Tests
-dotnet run --module TestServer -c Release
+dotnet run --module TestServer -c Release --framework net6.0
 ```
 - to run performance checks.  
   The performance checks are used to measure the throughput of `SyncTasks()` calls in various scenarios.  
@@ -52,19 +52,19 @@ dotnet run --module TestServer -c Release
 
 each run show a representative sample [requests / sec]
 ```
-dotnet run --module MemoryDbThroughput    -c Release
+dotnet run --module MemoryDbThroughput    -c Release --framework net6.0
 ⏩ requests: 680796 / sec  # CPU-bound
 
-dotnet run --module FileDbThroughput      -c Release
+dotnet run --module FileDbThroughput      -c Release --framework net6.0
 ⏩ requests: 6251 / sec    # disc-bound
 
-dotnet run --module WebsocketDbThroughput -c Release
+dotnet run --module WebsocketDbThroughput -c Release --framework net6.0
 ⏩ requests: 27221 / sec   # network-bound
 
-dotnet run --module HttpDbThroughput      -c Release
+dotnet run --module HttpDbThroughput      -c Release --framework net6.0
 ⏩ requests: 12753 / sec   # network-bound
 
-dotnet run --module LoopbackDbThroughput  -c Release
+dotnet run --module LoopbackDbThroughput  -c Release --framework net6.0
 ⏩ requests: 172433 / sec  # CPU-bound
 ```
 
