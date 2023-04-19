@@ -10,8 +10,8 @@ Every test method is attributed with two `[TestCase]` attributes to enabled comp
 reference behavior with a specific database implementation.
 
 ```csharp
-[TestCase(memory,  Category = memory)]
-[TestCase(test_db, Category = test_db)]
+[TestCase(memory_db, Category = memory_db)]
+[TestCase(test_db,   Category = test_db)]
 public static async Task TestDatabaseBehavior(string db) {
     ...
 }
