@@ -2,5 +2,20 @@
     "id": "q-1",
     "intArray": [
         1
+    ],
+    "intList": [
+        1
+    ],
+    "objectArray": [
+        {
+            "int32": 10,
+            "str": "str-10"
+        }
+    ],
+    "objectList": [
+        {
+            "int32": 10,
+            "str": "str-10"
+        }
     ]
 }

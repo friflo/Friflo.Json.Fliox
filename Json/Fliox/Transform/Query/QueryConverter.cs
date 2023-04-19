@@ -43,6 +43,8 @@ namespace Friflo.Json.Fliox.Transform.Query
                     return OperationFromBinaryExpression(binary, cx);
                 case ConstantExpression constant:
                     return OperationFromConstant(null, constant.Value, constant.Type, binBase, cx);
+                case ParameterExpression parameter:
+                    return new Field(parameter.Name);
                 default:
                     throw NotSupported($"Body not supported: {expression}", cx);
             }

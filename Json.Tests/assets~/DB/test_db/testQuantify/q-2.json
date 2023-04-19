@@ -3,5 +3,25 @@
     "intArray": [
         1,
         2
+    ],
+    "intList": [
+        1,
+        2
+    ],
+    "objectArray": [
+        {
+            "int32": 20,
+            "str": "str-20"
+        },
+        {
+            "int32": 21,
+            "str": "str-21"
+        }
+    ],
+    "objectList": [
+        {
+            "int32": 20,
+            "str": "str-20"
+        }
     ]
 }

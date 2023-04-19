@@ -12,12 +12,21 @@ namespace Friflo.Json.Tests.DB.Client
 
     // ---------------------------------- entity models ----------------------------------
     public class TestOps {
-        [Key]       public  string          id { get; set; }
+        [Key]       public  string              id { get; set; }
     }
     
     public class TestQuantify {
-        [Key]       public  string          id { get; set; }
-                    public  int[]           intArray;
+        [Key]       public  string              id { get; set; }
+                    public  int[]               intArray;
+                    public  List<int>           intList;
+                    public  TestObject[]        objectArray;
+                    public  List<TestObject>    objectList;
+    }
+    
+    public class TestObject
+    {
+                    public  int                 int32;
+                    public  string              str;
     }
     
     public enum TestEnum {

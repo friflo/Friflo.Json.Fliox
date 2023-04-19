@@ -332,13 +332,78 @@ namespace Friflo.Json.Tests.DB
             AreEqual(1, query6.Result.Count);
         }
         
-        // --- query filter: quantify
-        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Any(string db) {
+        // --- query filter: quantify Any
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_AnyIntArray(string db) {
             var store   = await GetClient(db);
             var query   = store.testQuantify.Query(t => t.intArray.Any(i => i == 1));
+            AreEqual("t => t.intArray.Any(i => i == 1)",      query.DebugQuery.Linq);
             await store.SyncTasks();
-            AreEqual(0, query.Result.Count);
+            AreEqual(2, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_AnyIntList(string db) {
+            var store   = await GetClient(db);
+            var query   = store.testQuantify.Query(t => t.intList.Any(i => i == 1));
+            AreEqual("t => t.intList.Any(i => i == 1)",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(2, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_AnyObjectArray(string db) {
+            var store   = await GetClient(db);
+            var query   = store.testQuantify.Query(t => t.objectArray.Any(o => o.int32 == 10));
+            AreEqual("t => t.objectArray.Any(o => o.int32 == 10)",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(1, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_AnyObjectList(string db) {
+            var store   = await GetClient(db);
+            var query   = store.testQuantify.Query(t => t.objectList.Any(o => o.str == "str-10"));
+            AreEqual("t => t.objectList.Any(o => o.str == 'str-10')",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(1, query.Result.Count);
+        }
+        
+        // --- query filter: quantify All
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_AllIntArray(string db) {
+            var store   = await GetClient(db);
+            var query   = store.testQuantify.Query(t => t.intArray.All(i => i == 1));
+            AreEqual("t => t.intArray.All(i => i == 1)",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(2, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_AllIntList(string db) {
+            var store   = await GetClient(db);
+            var query   = store.testQuantify.Query(t => t.intList.All(i => i == 1));
+            AreEqual("t => t.intList.All(i => i == 1)",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(2, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_AllObjectArray(string db) {
+            var store   = await GetClient(db);
+            var query   = store.testQuantify.Query(t => t.objectArray.All(o => o.int32 == 10));
+            AreEqual("t => t.objectArray.All(o => o.int32 == 10)",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(2, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_AllObjectList(string db) {
+            var store   = await GetClient(db);
+            var query   = store.testQuantify.Query(t => t.objectList.All(o => o.str == "str-10"));
+            AreEqual("t => t.objectList.All(o => o.str == 'str-10')",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(2, query.Result.Count);
         }
         
         // --- read by id
