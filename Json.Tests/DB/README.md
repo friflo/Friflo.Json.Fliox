@@ -32,8 +32,8 @@ Run unit tests for a specific database implementation add an entry at
 **File | Settings | Build, Execution, Deployment | Unit Testing | Test Runner**  
 - Environment Variables
     - TEST_DB=cosmos
-## Console
 
+## Unit test
 ```
 dotnet test -c Release -l "console;verbosity=detailed" --filter TestCategory=test_db --environment TEST_DB=cosmos
 ```

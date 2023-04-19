@@ -23,9 +23,10 @@ namespace Friflo.Json.Tests.DB
         /// </summary>
         public const string  test_db    = "test_db";
             
-        private static  FlioxHub        _memoryHub;
-        private static  FlioxHub        _fileHub;
-        private static  FlioxHub        _cosmosHub;
+        private  static             FlioxHub    _memoryHub;
+        private  static             FlioxHub    _fileHub;
+        private  static             FlioxHub    _testHub;
+        internal static  readonly   string      TEST_DB = Environment.GetEnvironmentVariable("TEST_DB");
         
         private static readonly string TestDbFolder = CommonUtils.GetBasePath() + "assets~/DB/test_db";
             
@@ -38,8 +39,8 @@ namespace Friflo.Json.Tests.DB
         public static async Task<EntityDatabase> CreateCosmosDatabase(EntityDatabase sourceDB) {
 #if !UNITY_5_3_OR_NEWER
             var client              = EnvCosmosDB.CreateCosmosClient();
-            var createDatabase      = await client.CreateDatabaseIfNotExistsAsync("cosmos_db");
-            var cosmosDatabase      = new CosmosDatabase("cosmos_db", createDatabase)
+            var createDatabase      = await client.CreateDatabaseIfNotExistsAsync("test_db");
+            var cosmosDatabase      = new CosmosDatabase("test_db", createDatabase)
                 { Throughput = 400, Schema = sourceDB.Schema };
             await cosmosDatabase.SeedDatabase(sourceDB);
             return cosmosDatabase;
@@ -63,14 +64,13 @@ namespace Friflo.Json.Tests.DB
                 case memory_db:
                     return _memoryHub   ??= new FlioxHub(await CreateMemoryDatabase(_fileHub.database));
                 case test_db:
-                    var testDb = Environment.GetEnvironmentVariable("TEST_DB");
-                    if (testDb is null or "file") {
+                    if (TEST_DB is null or "file") {
                         return _fileHub;
                     }
-                    if (testDb == "cosmos") {
-                        return _cosmosHub   ??= new FlioxHub(await CreateCosmosDatabase(_fileHub.database));
+                    if (TEST_DB == "cosmos") {
+                        return _testHub   ??= new FlioxHub(await CreateCosmosDatabase(_fileHub.database));
                     }
-                    throw new InvalidOperationException($"invalid TEST_DB: {testDb}");
+                    throw new InvalidOperationException($"invalid TEST_DB: {TEST_DB}");
             }
             throw new InvalidOperationException($"invalid database Env: {db}");
         }
