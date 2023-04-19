@@ -406,6 +406,42 @@ namespace Friflo.Json.Tests.DB
             AreEqual(4, query.Result.Count);
         }
         
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_Compare_Equals(string db) {
+            var store   = await GetClient(db);
+            var query   = store.compare.Query(c => c.int32 == 1);
+            // AreEqual("t => t.objectList.All(o => o.str == 'str-10')",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(1, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_Compare_Equals_null(string db) {
+            var store   = await GetClient(db);
+            var query   = store.compare.Query(c => c.int32 == null);
+            AreEqual("c => c.int32 == null",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(2, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_Compare_Equals_null2(string db) {
+            var store   = await GetClient(db);
+            var query   = store.compare.Query(c => null ==  c.int32);
+            AreEqual("c => null == c.int32",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(2, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_Compare_NotEquals_null(string db) {
+            var store   = await GetClient(db);
+            var query   = store.compare.Query(c => c.int32 != null);
+            AreEqual("c => c.int32 != null",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(1, query.Result.Count);
+        }
+        
         // --- read by id
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestRead_One(string db) {

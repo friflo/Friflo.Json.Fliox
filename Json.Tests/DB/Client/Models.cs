@@ -29,6 +29,13 @@ namespace Friflo.Json.Tests.DB.Client
                     public  string              str;
     }
     
+    public class CompareScalar {
+        [Key]       public  string              id { get; set; }
+                    public  int?                int32;
+                    public  string              str;
+                    public  bool?               boolean;
+    }
+    
     public enum TestEnum {
         e1 = 101,
         e2 = 102

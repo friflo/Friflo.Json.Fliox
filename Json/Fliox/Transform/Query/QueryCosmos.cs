@@ -61,6 +61,8 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case Equal equal:
                     var left    = Traverse(equal.left);
                     var right   = Traverse(equal.right);
+                    if (left  == "null") return $"(IS_NULL({right}) OR NOT IS_DEFINED({right}))";
+                    if (right == "null") return $"(IS_NULL({left}) OR NOT IS_DEFINED({left}))";
                     return $"{left} = {right}";
                 case NotEqual notEqual:
                     left    = Traverse(notEqual.left);
