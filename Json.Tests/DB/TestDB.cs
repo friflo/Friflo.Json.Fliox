@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Tests.DB.Client;
 using NUnit.Framework;
@@ -300,6 +301,7 @@ namespace Friflo.Json.Tests.DB
             AreEqual(ArticleCount, query.Result.Count);
         }
         
+        // --- query filter: enum
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Enum(string db) {
             var store = await GetClient(db);
@@ -328,6 +330,15 @@ namespace Friflo.Json.Tests.DB
             AreEqual(2, query4.Result.Count);
             AreEqual(1, query5.Result.Count);
             AreEqual(1, query6.Result.Count);
+        }
+        
+        // --- query filter: quantify
+        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_Any(string db) {
+            var store   = await GetClient(db);
+            var query   = store.testQuantify.Query(t => t.intArray.Any(i => i == 1));
+            await store.SyncTasks();
+            AreEqual(0, query.Result.Count);
         }
         
         // --- read by id

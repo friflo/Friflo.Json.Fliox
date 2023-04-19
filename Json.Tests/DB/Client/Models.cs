@@ -15,6 +15,11 @@ namespace Friflo.Json.Tests.DB.Client
         [Key]       public  string          id { get; set; }
     }
     
+    public class TestQuantify {
+        [Key]       public  string          id { get; set; }
+                    public  int[]           intArray;
+    }
+    
     public enum TestEnum {
         e1 = 101,
         e2 = 102
