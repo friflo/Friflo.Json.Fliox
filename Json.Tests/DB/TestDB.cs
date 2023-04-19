@@ -323,13 +323,13 @@ namespace Friflo.Json.Tests.DB
 
             await store.SyncTasks();
             
-            AreEqual(2, query1.Result.Count);
+            AreEqual(3, query1.Result.Count);
             AreEqual(1, query2.Result.Count);
-            AreEqual(1, query3.Result.Count);
+            AreEqual(2, query3.Result.Count);
             
-            AreEqual(2, query4.Result.Count);
+            AreEqual(3, query4.Result.Count);
             AreEqual(1, query5.Result.Count);
-            AreEqual(1, query6.Result.Count);
+            AreEqual(2, query6.Result.Count);
         }
         
         // --- query filter: quantify Any
