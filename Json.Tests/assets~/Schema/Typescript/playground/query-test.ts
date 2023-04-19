@@ -38,6 +38,9 @@ query<TestType> (o => o.int32.toFixed() == 1);
 // @ts-expect-error :  This comparison appears to be unintentional because the types 'Number' and 'string' have no overlap
 query<IntClass> (o => o.num  == "3");
 
+query<TestType> (o => o.int32.valueOf() == 2); // should error
+
+
 // ------------ string
 // --- ensure presence string filter methods
 query<Article>  (o => o.id  == "abc");
@@ -59,6 +62,7 @@ query<TestType> (o => o.derivedClass.amount == 1);
 query<Order>    (o => o.customer == "dddd");
 query<Order>    (o => o.customer != "dddd");
 query<TestType> (o => o.int32 == 1);
+query<TestType> (o => o.int32 + 1 == 2);
 
 // ------------ List<>
 // --- ensure presence List<> / array filter methods

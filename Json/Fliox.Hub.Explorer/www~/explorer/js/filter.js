@@ -15,7 +15,8 @@ type StringFilter = {
 type String = StringFilter & (string | { }); // remove string methods: at(), length, ...
 
 // type Number = {} & (number | { })    // remove number methods: toFixed(), toString(), ...
-type Number = Pick<number, "valueOf">   // remove number methods: toFixed(), toString(), ... picked most useless method
+// type Number = Pick<number, "valueOf">   // remove number methods: toFixed(), toString(), ... picked most useless method
+type Number = number;
 
 
 // todo - should export math constants with namespace Math
