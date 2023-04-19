@@ -410,7 +410,7 @@ namespace Friflo.Json.Tests.DB
         public static async Task TestQuery_Compare_Equals(string db) {
             var store   = await GetClient(db);
             var query   = store.compare.Query(c => c.int32 == 1);
-            // AreEqual("t => t.objectList.All(o => o.str == 'str-10')",      query.DebugQuery.Linq);
+            AreEqual("c => c.int32 == 1",      query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(1, query.Result.Count);
         }
@@ -438,6 +438,42 @@ namespace Friflo.Json.Tests.DB
             var store   = await GetClient(db);
             var query   = store.compare.Query(c => c.int32 != null);
             AreEqual("c => c.int32 != null",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(1, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_Compare_Less_Int(string db) {
+            var store   = await GetClient(db);
+            var query   = store.compare.Query(c => c.int32 < 2);
+            AreEqual("c => c.int32 < 2",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(1, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_Compare_LessEqual_Int(string db) {
+            var store   = await GetClient(db);
+            var query   = store.compare.Query(c => c.int32 <= 1);
+            AreEqual("c => c.int32 <= 1",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(1, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_Compare_Greater_Int(string db) {
+            var store   = await GetClient(db);
+            var query   = store.compare.Query(c => c.int32 > 0);
+            AreEqual("c => c.int32 > 0",      query.DebugQuery.Linq);
+            await store.SyncTasks();
+            AreEqual(1, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        public static async Task TestQuery_Compare_GreaterEqual_Int(string db) {
+            var store   = await GetClient(db);
+            var query   = store.compare.Query(c => c.int32 >= 0);
+            AreEqual("c => c.int32 >= 0",      query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(1, query.Result.Count);
         }
