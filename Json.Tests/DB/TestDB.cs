@@ -376,7 +376,7 @@ namespace Friflo.Json.Tests.DB
             var query   = store.testQuantify.Query(t => t.intArray.All(i => i == 1));
             AreEqual("t => t.intArray.All(i => i == 1)",      query.DebugQuery.Linq);
             await store.SyncTasks();
-            AreEqual(3, query.Result.Count);
+            AreEqual(4, query.Result.Count);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
@@ -385,7 +385,7 @@ namespace Friflo.Json.Tests.DB
             var query   = store.testQuantify.Query(t => t.intList.All(i => i == 1));
             AreEqual("t => t.intList.All(i => i == 1)",      query.DebugQuery.Linq);
             await store.SyncTasks();
-            AreEqual(3, query.Result.Count);
+            AreEqual(4, query.Result.Count);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
@@ -394,7 +394,7 @@ namespace Friflo.Json.Tests.DB
             var query   = store.testQuantify.Query(t => t.objectArray.All(o => o.int32 == 10));
             AreEqual("t => t.objectArray.All(o => o.int32 == 10)",      query.DebugQuery.Linq);
             await store.SyncTasks();
-            AreEqual(3, query.Result.Count);
+            AreEqual(4, query.Result.Count);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
@@ -403,7 +403,7 @@ namespace Friflo.Json.Tests.DB
             var query   = store.testQuantify.Query(t => t.objectList.All(o => o.str == "str-10"));
             AreEqual("t => t.objectList.All(o => o.str == 'str-10')",      query.DebugQuery.Linq);
             await store.SyncTasks();
-            AreEqual(3, query.Result.Count);
+            AreEqual(4, query.Result.Count);
         }
         
         // --- read by id

@@ -524,7 +524,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var all =   (All)       FromFilter((Person p) =>
                           p.children.All(child => child.age == 20));
                 AreEqual("p.children.All(child => child.age == 20)", all.Linq);
-                Cosmos  ("(SELECT VALUE Count(1) FROM child IN p.children WHERE child.age = 20) = ARRAY_LENGTH(p.children)", all.query.Cosmos);
+                Cosmos  ("IS_NULL(p.children) OR NOT IS_DEFINED(p.children) OR (SELECT VALUE Count(1) FROM child IN p.children WHERE child.age = 20) = ARRAY_LENGTH(p.children)", all.query.Cosmos);
                 AssertJson(mapper, all, "{'op':'all','field':{'name':'p.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
             }
           }

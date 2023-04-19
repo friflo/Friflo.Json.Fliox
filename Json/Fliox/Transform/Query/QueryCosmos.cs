@@ -175,7 +175,8 @@ namespace Friflo.Json.Fliox.Transform.Query
                     operand             = cx.Traverse(all.predicate);
                     fieldName           = Traverse(all.field);
                     arg                 = all.arg;
-                    return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
+                    // treat array == null and missing array as empty array <=> array[]
+                    return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
                 
                 // --- query filter expression
                 case Filter filter:
