@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_All(string db) {
             var store = await GetClient(db);
-            var query = store.articles.QueryAll();
+            var query = store.testOps.QueryAll();
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
         }
@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public async Task TestQuery_Equals(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => One == 1);
+            var query = store.testOps.Query(a => One == 1);
             AreEqual("a => 1 == 1", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_NotEquals(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => One != Zero);
+            var query = store.testOps.Query(a => One != Zero);
             AreEqual("a => 1 != 0", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Less(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => Zero < One);
+            var query = store.testOps.Query(a => Zero < One);
             AreEqual("a => 0 < 1", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_LessOrEquals(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => Zero <= One);
+            var query = store.testOps.Query(a => Zero <= One);
             AreEqual("a => 0 <= 1", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Greater(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => One > Zero);
+            var query = store.testOps.Query(a => One > Zero);
             AreEqual("a => 1 > 0", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_GreaterOrEquals(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => One >= Zero);
+            var query = store.testOps.Query(a => One >= Zero);
             AreEqual("a => 1 >= 0", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.DB
         public static async Task TestQuery_And(string db) {
             var store = await GetClient(db);
             bool t = true;
-            var query = store.articles.Query(a => t && true);
+            var query = store.testOps.Query(a => t && true);
             AreEqual("a => true && true", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -104,7 +104,7 @@ namespace Friflo.Json.Tests.DB
         public static async Task TestQuery_Or(string db) {
             var store = await GetClient(db);
             bool t = true;
-            var query = store.articles.Query(a => false || t);
+            var query = store.testOps.Query(a => false || t);
             AreEqual("a => false || true", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -114,7 +114,7 @@ namespace Friflo.Json.Tests.DB
         public static async Task TestQuery_Not(string db) {
             var store = await GetClient(db);
             bool f = false;
-            var query = store.articles.Query(a => !f);
+            var query = store.testOps.Query(a => !f);
             AreEqual("a => !(false)", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -124,7 +124,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_StartsWith(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => a.id.StartsWith("a-"));
+            var query = store.testOps.Query(a => a.id.StartsWith("a-"));
             AreEqual("a => a.id.StartsWith('a-')", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(2, query.Result.Count);
@@ -133,7 +133,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_EndsWith(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => a.id.EndsWith("-1"));
+            var query = store.testOps.Query(a => a.id.EndsWith("-1"));
             AreEqual("a => a.id.EndsWith('-1')", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(1, query.Result.Count);
@@ -142,7 +142,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Contains(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => a.id.Contains('-'));
+            var query = store.testOps.Query(a => a.id.Contains('-'));
             AreEqual("a => a.id.Contains('-')", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(2, query.Result.Count);
@@ -151,7 +151,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Contains2(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => a.id.Contains("XXX"));
+            var query = store.testOps.Query(a => a.id.Contains("XXX"));
             AreEqual("a => a.id.Contains('XXX')", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(0, query.Result.Count);
@@ -160,7 +160,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Length(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => a.id.Length == 3);
+            var query = store.testOps.Query(a => a.id.Length == 3);
             AreEqual("a => a.id.Length() == 3", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(2, query.Result.Count);
@@ -170,7 +170,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Add(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => One + One == 2);
+            var query = store.testOps.Query(a => One + One == 2);
             AreEqual("a => 1 + 1 == 2", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -179,7 +179,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Subtract(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => One - One == 0);
+            var query = store.testOps.Query(a => One - One == 0);
             AreEqual("a => 1 - 1 == 0", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -188,7 +188,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Multiply(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => One * One == 1);
+            var query = store.testOps.Query(a => One * One == 1);
             AreEqual("a => 1 * 1 == 1", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -197,7 +197,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Divide(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => One / One == 1);
+            var query = store.testOps.Query(a => One / One == 1);
             AreEqual("a => 1 / 1 == 1", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -206,7 +206,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Modulo(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => One % One == 0);
+            var query = store.testOps.Query(a => One % One == 0);
             AreEqual("a => 1 % 1 == 0", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -217,7 +217,7 @@ namespace Friflo.Json.Tests.DB
         public static async Task TestQuery_Constant_E(string db) {
             var store = await GetClient(db);
             double e = 2.718281828459045;
-            var query = store.articles.Query(a => E == e);
+            var query = store.testOps.Query(a => E == e);
             AreEqual("a => 2.718281828459045 == 2.718281828459045", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.DB
         public static async Task TestQuery_Constant_Pi(string db) {
             var store = await GetClient(db);
             double pi = 3.141592653589793;
-            var query = store.articles.Query(a => PI == pi);
+            var query = store.testOps.Query(a => PI == pi);
             AreEqual("a => 3.141592653589793 == 3.141592653589793", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -238,7 +238,7 @@ namespace Friflo.Json.Tests.DB
         public static async Task TestQuery_Constant_Tau(string db) {
             var store = await GetClient(db);
             double tau = 6.283185307179586;
-            var query = store.articles.Query(a => Tau == tau);
+            var query = store.testOps.Query(a => Tau == tau);
             AreEqual("a => 6.283185307179586 == 6.283185307179586", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -249,7 +249,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Abs(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => Abs(-1) == One);
+            var query = store.testOps.Query(a => Abs(-1) == One);
             AreEqual("a => Abs(-1) == 1", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -258,7 +258,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Ceiling(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => Ceiling(1.5) == 2);
+            var query = store.testOps.Query(a => Ceiling(1.5) == 2);
             AreEqual("a => Ceiling(1.5) == 2", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -267,7 +267,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Floor(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => Floor(1.5) == 1);
+            var query = store.testOps.Query(a => Floor(1.5) == 1);
             AreEqual("a => Floor(1.5) == 1", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -276,7 +276,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Exp(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => Exp(1) == 2.718281828459045);
+            var query = store.testOps.Query(a => Exp(1) == 2.718281828459045);
             AreEqual("a => Exp(1) == 2.718281828459045", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -285,7 +285,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Log(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => Log(2.718281828459045) == 1);
+            var query = store.testOps.Query(a => Log(2.718281828459045) == 1);
             AreEqual("a => Log(2.718281828459045) == 1", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -294,7 +294,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Sqrt(string db) {
             var store = await GetClient(db);
-            var query = store.articles.Query(a => Sqrt(4) == 2);
+            var query = store.testOps.Query(a => Sqrt(4) == 2);
             AreEqual("a => Sqrt(4) == 2", query.DebugQuery.Linq);
             await store.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
@@ -334,7 +334,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestRead_One(string db) {
             var store = await GetClient(db);
-            var find  = store.articles.Read().Find("a-1");
+            var find  = store.testOps.Read().Find("a-1");
             await store.SyncTasks();
             NotNull(find.Result);
         }
@@ -342,7 +342,7 @@ namespace Friflo.Json.Tests.DB
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestRead_Many(string db) {
             var store = await GetClient(db);
-            var read  = store.articles.Read();
+            var read  = store.testOps.Read();
             var find1  = read.Find("a-1");
             var find2  = read.Find("a-2");
             await store.SyncTasks();
