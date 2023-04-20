@@ -1,7 +1,7 @@
 
-# Tests DB
+# Provider Tests
 
-Unit tests in this folder / namespace are intended to validate specific database implementations.
+Unit tests in this folder / namespace are intended to validate specific database implementations aka Providers.
 
 The reference implementation for all unit tests is a `MemoryDatabase`.
 
@@ -17,7 +17,20 @@ public static async Task TestDatabaseBehavior(string db) {
 }
 ```
 
-## Test environment
+# Test structure
+
+The unit test structure aims to support a complete implementation for a specific database.  
+The intended order of a database provider:
+
+1. Create / Open a database
+2. Create new table / container in the database
+3. Upsert entities to a container
+4. Query container entities without access to entities fields. Pure query operator tests.
+5. Query container entities including access to entities fields. Test query operators on data.
+6. Delete entities
+
+
+# Test environment
 
 By default - environment variable `TEST_DB` not present - a `FileDatabase` is used for methods attributed with
 ```csharp
