@@ -53,22 +53,29 @@ namespace Friflo.Json.Tests.DB
             return new FileDatabase("file_db", TestDbFolder) { Schema = schema };
         }
         
-        internal static void Setup() {
-            var typeSchema      = NativeTypeSchema.Create(typeof(TestClient)); // optional - create TypeSchema from Type 
-            var databaseSchema  = new DatabaseSchema(typeSchema);
-            _fileHub            = new FlioxHub(CreateFileDatabase(databaseSchema));
+        private static FlioxHub FileHub { get {
+            if (_fileHub != null) {
+                return _fileHub;
+            }
+            var databaseSchema  = new DatabaseSchema(typeof(TestClient));
+            return _fileHub     = new FlioxHub(CreateFileDatabase(databaseSchema));
+        } }
+        
+        internal static async Task<TestClient> GetClient(string db) {
+            var hub    = await GetDatabaseHub(db);
+            return new TestClient(hub);
         }
 
-        internal static async Task<FlioxHub> GetDatabaseHub(string db) {
+        private static async Task<FlioxHub> GetDatabaseHub(string db) {
             switch (db) {
                 case memory_db:
-                    return _memoryHub   ??= new FlioxHub(await CreateMemoryDatabase(_fileHub.database));
+                    return _memoryHub   ??= new FlioxHub(await CreateMemoryDatabase(FileHub.database));
                 case test_db:
                     if (TEST_DB is null or "file") {
-                        return _fileHub;
+                        return FileHub;
                     }
                     if (TEST_DB == "cosmos") {
-                        return _testHub   ??= new FlioxHub(await CreateCosmosDatabase(_fileHub.database));
+                        return _testHub   ??= new FlioxHub(await CreateCosmosDatabase(FileHub.database));
                     }
                     throw new InvalidOperationException($"invalid TEST_DB: {TEST_DB}");
             }
