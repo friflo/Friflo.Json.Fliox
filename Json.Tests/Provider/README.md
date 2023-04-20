@@ -20,14 +20,17 @@ public static async Task TestDatabaseBehavior(string db) {
 # Test structure
 
 The unit test structure aims to support a complete implementation for a specific database.  
-The intended order of a database provider:
+The intended order to implement a database provider:
 
-1. Create / Open a database
-2. Create new table / container in the database
-3. Upsert entities to a container
-4. Query container entities without access to entities fields. Pure query operator tests.
-5. Query container entities including access to entities fields. Test query operators on data.
-6. Delete entities
+| database command                                                                              | unit test class                               |
+|-----------------------------------------------------------------------------------------------|---------------------------------------------- |
+| 1. Create / open database                                                                     |                                               |
+| 2. Create table / container in the database                                                   |                                               |
+| 3. Upsert entities to a container                                                             |                                               |
+| 4. Read entities from a container.                                                            | [TestRead](Test/TestRead.cs)                  |
+| 5. Query container entities without access to entities fields. Pure query operator tests.     | [TestQueryOps](Test/TestQueryOps.cs)          |
+| 6. Query container entities including access to entities fields. Test query operators on data.| [TestQueryFields](Test/TestQueryFields.cs)    |
+| 7. Delete container entities                                                                  |                                               |
 
 
 # Test environment
