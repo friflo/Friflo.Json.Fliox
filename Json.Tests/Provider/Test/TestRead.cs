@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
-using static Friflo.Json.Tests.DB.Env;
+using static Friflo.Json.Tests.Provider.Env;
 
-namespace Friflo.Json.Tests.DB.Test
+namespace Friflo.Json.Tests.Provider.Test
 {
     public static class TestRead
     {

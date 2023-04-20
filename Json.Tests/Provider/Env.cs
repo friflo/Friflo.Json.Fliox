@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.Utils;
-using Friflo.Json.Tests.DB.Client;
+using Friflo.Json.Tests.Provider.Client;
 
 #if !UNITY_5_3_OR_NEWER
     using Friflo.Json.Fliox.Hub.Cosmos;
 #endif
 
 // ReSharper disable InconsistentNaming
-namespace Friflo.Json.Tests.DB
+namespace Friflo.Json.Tests.Provider
 {
     public static class Env
     {
@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.DB
         
         public static async Task<EntityDatabase> CreateCosmosDatabase(EntityDatabase sourceDB) {
 #if !UNITY_5_3_OR_NEWER
-            var client              = EnvCosmosDB.CreateCosmosClient();
+            var client              = CosmosEnv.CreateCosmosClient();
             var createDatabase      = await client.CreateDatabaseIfNotExistsAsync("test_db");
             var cosmosDatabase      = new CosmosDatabase("test_db", createDatabase)
                 { Throughput = 400, Schema = sourceDB.Schema };

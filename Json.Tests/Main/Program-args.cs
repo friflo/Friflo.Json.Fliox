@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Main
                         TestServer(endpoint);
                         break;
                     case Module.TestDB:
-                        await DB.Program.Run();
+                        await Provider.Program.Run();
                         break;
 #if NET6_0_OR_GREATER
                     case Module.FlioxServerAspNetCore:

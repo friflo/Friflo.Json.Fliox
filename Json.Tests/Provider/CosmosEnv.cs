@@ -4,9 +4,9 @@ using Friflo.Json.Tests.Common.Utils;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 
-namespace Friflo.Json.Tests.DB
+namespace Friflo.Json.Tests.Provider
 {
-    public static class EnvCosmosDB
+    public static class CosmosEnv
     {
         private static IConfiguration InitConfiguration() {
             var basePath        = CommonUtils.GetBasePath();

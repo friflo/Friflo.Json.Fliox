@@ -6,9 +6,9 @@ using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Tests.DB.Client;
+using Friflo.Json.Tests.Provider.Client;
 
-namespace Friflo.Json.Tests.DB
+namespace Friflo.Json.Tests.Provider
 {
     public class Program
     {
