@@ -272,15 +272,6 @@ namespace Friflo.Json.Fliox.Transform
         protected FilterOperation() {
             query    = new QueryFormat(this);
         }
-
-        public JsonFilter Filter() {
-            return new JsonFilter(this);
-        }
-
-        public JsonFilter Filter(string arg) {
-            var filterOp = new Filter(arg, this);
-            return new JsonFilter(filterOp);
-        }
     }
     
     public readonly struct QueryFormat {

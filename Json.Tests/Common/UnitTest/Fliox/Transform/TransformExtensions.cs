@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
@@ -15,9 +16,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             return evaluator.Eval(jsonValue, lambda, out _);
         }
         
-        public static bool Filter(this JsonEvaluator evaluator, string json, JsonFilter filter) {
-            var jsonValue = new JsonValue(json);
-            return evaluator.Filter(jsonValue, filter, out _);
+        public static bool Filter(this JsonEvaluator evaluator, string json, FilterOperation filterBody) {
+            var filter      = new Filter("p", filterBody);
+            var jsonFilter  = new JsonFilter(filter);
+            var jsonValue   = new JsonValue(json);
+            return evaluator.Filter(jsonValue, jsonFilter, out _);
         }
         
         public static IReadOnlyList<ScalarSelectResult> Select(this ScalarSelector selector, string json, ScalarSelect scalarSelect) {

@@ -116,14 +116,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 bool IsPeter(Person p) => p.name == "Peter";
 
                 var  isAgeGreater35Op = new Greater(new Field("p.age"), new LongLiteral(35));
-                var  isAgeGreater35  = isAgeGreater35Op.Filter("p");
+                var  isAgeGreater35  = isAgeGreater35Op;
                 bool IsAgeGreater35(Person p) => p.age > 35;
                 
-                var isNotAgeGreater35  = new Not(isAgeGreater35Op).Filter("p");
+                var isNotAgeGreater35  = new Not(isAgeGreater35Op);
             
                 IsTrue  (IsPeter(Peter));
-                IsTrue  (eval.Filter(peter, isPeter.Filter()));
-                IsFalse (eval.Filter(john,  isPeter.Filter()));
+                IsTrue  (eval.Filter(peter, isPeter));
+                IsFalse (eval.Filter(john,  isPeter));
                 
                 IsTrue  (IsAgeGreater35(Peter));
                 IsTrue  (eval.Filter(peter, isAgeGreater35));
@@ -132,14 +132,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 IsFalse (eval.Filter(peter, isNotAgeGreater35));
                 IsTrue  (eval.Filter(john,  isNotAgeGreater35));
                 
-                var  equalUnknownField         = new Equal(new Field ("p.unknown"), new StringLiteral ("SomeString")).Filter("p");
+                var  equalUnknownField         = new Equal(new Field ("p.unknown"), new StringLiteral ("SomeString"));
                 IsFalse(eval.Filter(john, equalUnknownField));
 
                 // --- Any
-                var hasChildPaul = new Any (new Field ("p.children"), "child", new Equal (new Field ("child.name"), new StringLiteral ("Paul"))).Filter("p");
+                var hasChildPaul = new Any (new Field ("p.children"), "child", new Equal (new Field ("child.name"), new StringLiteral ("Paul")));
                 bool HasChildPaul(Person p) => p.children.Any(child => child.name == "Paul");
                 
-                var hasChildAgeLess12 = new Any (new Field ("p.children"), "child", new Less (new Field ("child.age"), new LongLiteral (12))).Filter("p");
+                var hasChildAgeLess12 = new Any (new Field ("p.children"), "child", new Less (new Field ("child.age"), new LongLiteral (12)));
                 
                 IsTrue (HasChildPaul(Peter));
                 IsTrue (eval.Filter(peter, hasChildPaul));
@@ -148,15 +148,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 IsFalse(eval.Filter(peter, hasChildAgeLess12));
                 IsTrue (eval.Filter(john,  hasChildAgeLess12));
 
-                var  anyEqualUnknownField  = new Any (new Field ("p.children"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString"))).Filter("p");
+                var  anyEqualUnknownField  = new Any (new Field ("p.children"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString")));
                 IsFalse(eval.Filter(john, anyEqualUnknownField));
 
                 // --- All
-                var allChildAgeEquals20 = new All (new Field ("p.children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20))).Filter("p");
+                var allChildAgeEquals20 = new All (new Field ("p.children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20)));
                 IsTrue (eval.Filter(peter, allChildAgeEquals20));
                 IsFalse(eval.Filter(john,  allChildAgeEquals20));
                 
-                var  allEqualUnknownField  = new All (new Field ("p.children"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString"))).Filter("p");
+                var  allEqualUnknownField  = new All (new Field ("p.children"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString")));
                 IsFalse(eval.Filter(john, allEqualUnknownField));
                 
                 // --- Count() with lambda parameter -> is not a Filter
@@ -165,11 +165,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(0, eval.Eval(john,  countChildAgeEquals20));
 
                 // --- test with arithmetic operations
-                var  isAge40  = new Equal(new Field ("p.age"), new Add(new LongLiteral (35), new LongLiteral(5))).Filter("p");
+                var  isAge40  = new Equal(new Field ("p.age"), new Add(new LongLiteral (35), new LongLiteral(5)));
                 IsTrue  (eval.Filter(peter, isAge40));
                 
                 // var  isChildAge20  = new Equal(new Field (".children[*].age"), new Add(new LongLiteral (15), new LongLiteral(5))).Filter();
-                var isChildAge20 = new Filter("p", new All(new Field ("p.children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20)))).Filter();
+                var isChildAge20 = new Filter("p", new All(new Field ("p.children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20))));
                 var isChildAge20Expect = Operation.FromFilter((Person p) => p.children.All(child => child.age == 20));
                 AreEqual(isChildAge20Expect.Linq, isChildAge20.Linq);
                 IsTrue  (eval.Filter(peter, isChildAge20));
@@ -179,23 +179,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // ------------------------------ Test runtime assertions ------------------------------
                 Exception e;
                 // --- compare operations must not be reused
-                e = Throws<InvalidOperationException>(() => _ = new Equal(isAgeGreater35Op, isAgeGreater35Op).Filter("p"));
+                e = Throws<InvalidOperationException>(() => _ = new JsonFilter(new Filter("p", new Equal(isAgeGreater35Op, isAgeGreater35Op))));
                 NotNull(e);
                 AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: Greater, instance: p.age > 35", e.Message);
                 
                 // --- group operations must not be reused
                 var testGroupOp = new And(new List<FilterOperation> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
-                e = Throws<InvalidOperationException>(() => _ = new Equal(testGroupOp, testGroupOp).Filter());
+                e = Throws<InvalidOperationException>(() => _ = new JsonFilter(new Equal(testGroupOp, testGroupOp)));
                 NotNull(e);
                 AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: And, instance: 'A' == 'B'", e.Message);
 
                 // --- literal and field operations are applicable for reuse
                 var testLiteral = new StringLiteral("Test");
-                var reuseLiterals = new Equal(testLiteral, testLiteral).Filter();
+                var reuseLiterals = new Equal(testLiteral, testLiteral);
                 eval.Filter(peter, reuseLiterals);
                 
                 var testField = new Field ("p.name");
-                var reuseField = new Equal(testField, testField).Filter("p");
+                var reuseField = new Equal(testField, testField);
                 eval.Filter(peter, reuseField);
             }
         }
@@ -231,7 +231,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // --- Any
                 // var  hasChildHobbySurfing = new Any (new Field (".children"), "child", new Equal (new Field ("child.hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
                 var hasHobbySurfing      = new Any (new Field("child.hobbies"), "hobby", new Equal(new Field("hobby.name"), new StringLiteral ("Surfing")));
-                var hasChildHobbySurfing = new Any (new Field ("p.children"), "child", hasHobbySurfing).Filter("p");
+                var hasChildHobbySurfing = new Filter("p", new Any (new Field ("p.children"), "child", hasHobbySurfing));
                 var hasChildHobbySurfingExp = Filter((Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing")), out string exp);
                 AreEqual("p => p.children.Any(child => child.hobbies.Any(hobby => (hobby.name == 'Surfing')))", exp);
                 AreEqual("p => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == 'Surfing'))", hasChildHobbySurfing.Linq);
