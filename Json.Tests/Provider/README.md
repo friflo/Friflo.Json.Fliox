@@ -1,10 +1,9 @@
 
 # Provider Tests
 
-Unit tests in this folder / namespace are intended to validate specific database implementations aka Providers.
+Unit tests in this folder / namespace are intended to implement and validate specific database providers.
 
 The reference implementation for all unit tests is a `MemoryDatabase`.
-
 
 Every test method is attributed with two `[TestCase]` attributes to enabled comparing
 reference behavior with a specific database implementation.
@@ -19,7 +18,7 @@ public static async Task TestDatabaseBehavior(string db) {
 
 # Test structure
 
-The unit test structure aims to support a complete implementation for a specific database.  
+The unit test structure aims to guide implementation and validation of full functional provider for a specific database.  
 The intended order to implement a database provider:
 
 | database command                                                                              | unit test class                               |
@@ -31,6 +30,18 @@ The intended order to implement a database provider:
 | 5. Query container entities without access to entities fields. Pure query operator tests.     | [TestQueryOps](Test/TestQueryOps.cs)          |
 | 6. Query container entities including access to entities fields. Test query operators on data.| [TestQueryFields](Test/TestQueryFields.cs)    |
 | 7. Delete container entities                                                                  |                                               |
+
+
+## Query filter implementation
+
+In case of query filter a provider has two implementation options:
+
+1. Implement a filter conversion method which converts the given `FilterOperation` into a database specific filter.  
+   This is typically a filter predicate used in a `WHERE` clause.  
+   This is recommended as the database has the opportunity to utilize in table indices.
+
+2. Use the query (list) command of the database driver and filter all entities with an `EntityFilterContext`.  
+   This is not recommended for large datasets as all records of a container need to be processed by the provider.
 
 
 # Test environment
