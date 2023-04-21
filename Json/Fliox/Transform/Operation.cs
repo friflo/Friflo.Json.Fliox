@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
 using Friflo.Json.Fliox.Transform.Query;
@@ -266,22 +265,8 @@ namespace Friflo.Json.Fliox.Transform
     // ----------------------------- FilterOperation --------------------------
     public abstract class FilterOperation : Operation
     {
-        [Ignore]    public   readonly  QueryFormat query;
                     public             bool        IsTrue => this is TrueLiteral || (this as Filter)?.body is TrueLiteral;
                      
-        protected FilterOperation() {
-            query    = new QueryFormat(this);
-        }
-    }
-    
-    public readonly struct QueryFormat {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly    FilterOperation     filter;
-        
-        public              string              Linq => filter.Linq;
-
-        internal QueryFormat (FilterOperation filter) {
-            this.filter = filter;
-        }
+        protected FilterOperation() { }
     }
 }

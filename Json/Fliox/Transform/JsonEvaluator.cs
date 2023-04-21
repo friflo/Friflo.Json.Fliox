@@ -111,10 +111,5 @@ namespace Friflo.Json.Fliox.Transform
             var jsonLambda = new JsonFilter(op);
             return jsonLambda;
         }
-        
-        public QueryFormat Query { get {
-            var filter = (FilterOperation)op;
-            return filter.query;
-        } }
     }
 }

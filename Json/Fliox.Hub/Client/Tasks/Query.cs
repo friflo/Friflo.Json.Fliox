@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            TaskState       state;
         internal            Relations       relations;
         public   readonly   FilterOperation filter;
-        internal readonly   string          filterLinq; // use as string identifier of a filter 
+        public   readonly   string          filterLinq; // use as string identifier of a filter 
         internal            List<T>         result;
         internal            Dictionary<JsonKey, EntityValue>    entities;
         internal            string          resultCursor;
@@ -53,8 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskState       State           => state;
         public   override   string          Details         => $"QueryTask<{typeof(T).Name}> (filter: {filterLinq})";
         internal override   TaskType        TaskType        => TaskType.query;
-        public              QueryFormat     DebugQuery      => filter.query;
-        
+      
 
         internal QueryTask(FilterOperation filter, FlioxClient store, SyncSet<TKey,T> syncSet) {
             relations       = new Relations(this);

@@ -49,12 +49,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
             
             var testEnumNullQuery       = types.Query(t => t.testEnumNull == TestEnum.e1);
-            AreEqual("t => t.testEnumNull == 'e1'", testEnumNullQuery.DebugQuery.Linq);
+            AreEqual("t => t.testEnumNull == 'e1'", testEnumNullQuery.filterLinq);
             var testTEnumQuery          = types.Query(t => t.testEnum == TestEnum.e2);
-            AreEqual("t => t.testEnum == 'e2'", testTEnumQuery.DebugQuery.Linq);
+            AreEqual("t => t.testEnum == 'e2'", testTEnumQuery.filterLinq);
             
             var producersEmployees      = producers.Query(p => p.employeeList == null);
-            AreEqual("p => p.employees == null", producersEmployees.DebugQuery.Linq);
+            AreEqual("p => p.employees == null", producersEmployees.filterLinq);
 
             // ensure API available
             AreEqual($"c.customer = 'customer-1'",                                        CosmosFilter.Create(ordersWithCustomer1.filter));
