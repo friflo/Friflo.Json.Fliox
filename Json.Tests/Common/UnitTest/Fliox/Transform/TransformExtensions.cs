@@ -23,9 +23,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             return evaluator.Filter(jsonValue, jsonFilter, out _);
         }
         
+        public static JsonLambda Lambda(this Operation operation) {
+            return new JsonLambda(operation);
+        }
+        
         public static IReadOnlyList<ScalarSelectResult> Select(this ScalarSelector selector, string json, ScalarSelect scalarSelect) {
             var jsonValue = new JsonValue(json);
             return selector.Select(jsonValue, scalarSelect);
         }
+        
     }
 }

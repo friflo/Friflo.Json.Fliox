@@ -98,11 +98,6 @@ namespace Friflo.Json.Fliox.Transform
         public   static readonly TrueLiteral    FilterTrue  = new TrueLiteral();
         public   static readonly FalseLiteral   FilterFalse = new FalseLiteral();
 
-       
-        public JsonLambda Lambda() {
-            return new JsonLambda(this);
-        }
-        
         /// <summary>
         /// Parse the given <see cref="Operation"/> string and return an <see cref="Operation"/>.
         /// <returns>An <see cref="Operation"/> is successful.
