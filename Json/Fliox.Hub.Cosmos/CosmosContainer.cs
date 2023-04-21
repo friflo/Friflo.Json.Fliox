@@ -144,7 +144,8 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             await EnsureContainerExists().ConfigureAwait(false);
             var buffer      = new StreamBuffer();
             var documents   = new List<JsonValue>();
-            var sql         = filterByClient ? null : "SELECT * FROM c WHERE " + command.GetFilter().query.Cosmos;
+            var filter      = CosmosFilter.Create(command.GetFilter());
+            var sql         = filterByClient ? null : "SELECT * FROM c WHERE " + filter;
             if (command.limit != null) {
                 sql += $" OFFSET 0 LIMIT {command.limit}";
             }
@@ -186,7 +187,8 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             var sql     = "SELECT  VALUE COUNT(0) FROM c";
             var filter  = command.GetFilter();
             if (!filter.IsTrue) {
-                sql += $" WHERE {filter.query.Cosmos}";
+                var where = CosmosFilter.Create(filter);
+                sql += $" WHERE {where}";
             }
             var query           = new QueryDefinition (sql);
             var queryIterator   = cosmosContainer.GetItemQueryIterator<int>(query);

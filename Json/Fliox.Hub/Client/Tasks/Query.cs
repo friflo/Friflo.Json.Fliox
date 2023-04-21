@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         internal            TaskState       state;
         internal            Relations       relations;
-        internal readonly   FilterOperation filter;
+        public   readonly   FilterOperation filter;
         internal readonly   string          filterLinq; // use as string identifier of a filter 
         internal            List<T>         result;
         internal            Dictionary<JsonKey, EntityValue>    entities;

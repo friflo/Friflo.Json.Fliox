@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Cosmos;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
@@ -56,8 +57,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("p => p.employees == null", producersEmployees.DebugQuery.Linq);
 
             // ensure API available
-            AreEqual($"c.customer = 'customer-1'",                                        ordersWithCustomer1.DebugQuery.Cosmos);
-            AreEqual($"EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", hasOrderCamera.DebugQuery.Cosmos); 
+            AreEqual($"c.customer = 'customer-1'",                                        CosmosFilter.Create(ordersWithCustomer1.filter));
+            AreEqual($"EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", CosmosFilter.Create(hasOrderCamera.filter)); 
 
             var orderCustomer           = orders.RelationPath(customers, o => o.customer);
             var customer                = readOrders.ReadRelation(customers, orderCustomer);

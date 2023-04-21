@@ -4,15 +4,16 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
-namespace Friflo.Json.Fliox.Transform.Query
+namespace Friflo.Json.Fliox.Hub.Cosmos
 {
-    internal static class QueryCosmos
+    public static class CosmosFilter
     {
-        internal static string ToCosmos(string collection, FilterOperation filterOperation) {
-            var cx      = new ConvertContext(collection, filterOperation);
-            var result  = cx.Traverse(filterOperation);
+        public static string Create(FilterOperation op) {
+            var cx      = new ConvertContext("c", op);
+            var result  = cx.Traverse(op);
             return result;
         }
     }

@@ -287,11 +287,6 @@ namespace Friflo.Json.Fliox.Transform
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    FilterOperation     filter;
         
-        public              string              Cosmos { get {
-            var collection = "c";
-            return QueryCosmos.ToCosmos(collection, filter);
-        } }
-        
         public              string              Linq => filter.Linq;
 
         internal QueryFormat (FilterOperation filter) {
