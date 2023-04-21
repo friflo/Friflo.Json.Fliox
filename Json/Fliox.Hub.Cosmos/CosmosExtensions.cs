@@ -9,9 +9,9 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Hub.Cosmos
 {
-    public static class CosmosFilter
+    public static class CosmosExtensions
     {
-        public static string Create(FilterOperation op) {
+        public static string CosmosFilter(this FilterOperation op) {
             var cx      = new ConvertContext("c", op);
             var result  = cx.Traverse(op);
             return result;

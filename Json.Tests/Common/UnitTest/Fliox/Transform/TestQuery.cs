@@ -14,7 +14,6 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static System.Math;
 
-using static Friflo.Json.Tests.Common.UnitTest.Fliox.Transform.AssertEqual;
 using Contains = Friflo.Json.Fliox.Transform.Query.Ops.Contains;
 
 // ReSharper disable CollectionNeverQueried.Global
@@ -109,7 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // ---
                 var  isPeter         = new Filter("p", new Equal(new Field ("p.name"), new StringLiteral ("Peter")));
                 AreEqual("p => p.name == 'Peter'",  isPeter.Linq);
-                Cosmos  ("c.name = 'Peter'",        CosmosFilter.Create(isPeter));
+                AreEqual("c.name = 'Peter'",        isPeter.CosmosFilter());
                 var  isPeter2        = JsonFilter.Create<Person>(p => p.name == "Peter");
                 AreEqual("p => p.name == 'Peter'", isPeter2.Linq);
                 
@@ -428,37 +427,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var isEqual =           (Equal)             FromFilter((Person p) =>
                           p.name == "Peter");
                 AreEqual("p.name == 'Peter'",  isEqual.Linq);
-                Cosmos  ("p.name = 'Peter'",  CosmosFilter.Create(isEqual));
+                AreEqual("p.name = 'Peter'",   isEqual.CosmosFilter());
                 AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}");
             } {
                 var isNotEqual =        (NotEqual)          FromFilter((Person p) =>
                           p.name != "Peter");
                 AreEqual("p.name != 'Peter'",   isNotEqual.Linq);
-                Cosmos  ("p.name != 'Peter'",   CosmosFilter.Create(isNotEqual));
+                AreEqual("p.name != 'Peter'",   isNotEqual.CosmosFilter());
                 AssertJson(mapper, isNotEqual, "{'op':'notEqual','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}");
             } {
                 var isLess =            (Less)          FromFilter((Person p) =>
                           p.age < 20);
                 AreEqual("p.age < 20",          isLess.Linq);
-                Cosmos  ("p.age < 20",          CosmosFilter.Create(isLess));
+                AreEqual("p.age < 20",          isLess.CosmosFilter());
                 AssertJson(mapper, isLess, "{'op':'less','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}");
             } {            
                 var isLessOrEqual =     (LessOrEqual)   FromFilter((Person p) =>
                           p.age <= 20);
                 AreEqual("p.age <= 20",         isLessOrEqual.Linq);
-                Cosmos  ("p.age <= 20",         CosmosFilter.Create(isLessOrEqual));
+                AreEqual("p.age <= 20",         isLessOrEqual.CosmosFilter());
                 AssertJson(mapper, isLessOrEqual, "{'op':'lessOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}");
             } {
                 var isGreater =         (Greater)       FromFilter((Person p) =>
                           p.age > 20);
                 AreEqual("p.age > 20",          isGreater.Linq);
-                Cosmos  ("p.age > 20",          CosmosFilter.Create(isGreater));
+                AreEqual("p.age > 20",          isGreater.CosmosFilter());
                 AssertJson(mapper, isGreater, "{'op':'greater','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}");
             } {            
                 var isGreaterOrEqual =  (GreaterOrEqual)FromFilter((Person p) =>
                           p.age >= 20);
                 AreEqual("p.age >= 20",         isGreaterOrEqual.Linq);
-                Cosmos  ("p.age >= 20",         CosmosFilter.Create(isGreaterOrEqual));
+                AreEqual("p.age >= 20",         isGreaterOrEqual.CosmosFilter());
                 AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}");
             }
           }
@@ -472,31 +471,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var or =    (Or)        FromFilter((Person p) =>
                           p.age >= 20 || p.name == "Peter");
                 AreEqual("p.age >= 20 || p.name == 'Peter'",    or.Linq);
-                Cosmos  ("p.age >= 20 OR p.name = 'Peter'",     CosmosFilter.Create(or));
+                AreEqual("p.age >= 20 OR p.name = 'Peter'",     or.CosmosFilter());
                 AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}]}");
             } {            
                 var and =   (And)       FromFilter((Person p) =>
                           p.age >= 20 && p.name == "Peter");
                 AreEqual("p.age >= 20 && p.name == 'Peter'",    and.Linq);
-                Cosmos  ("p.age >= 20 AND p.name = 'Peter'",    CosmosFilter.Create(and));
+                AreEqual("p.age >= 20 AND p.name = 'Peter'",    and.CosmosFilter());
                 AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}]}");
             } {            
                 var or2 =   (Or)        FromLambda((Person p) =>
                           p.age == 1 || p.age == 2 );
                 AreEqual("p.age == 1 || p.age == 2",            or2.Linq);
-                Cosmos  ("p.age = 1 OR p.age = 2",              CosmosFilter.Create(or2));
+                AreEqual("p.age = 1 OR p.age = 2",              or2.CosmosFilter());
                 AssertJson(mapper, or2, "{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':2}}]}");
             } {            
                 var and2 =  (And)       FromLambda((Person p) =>
                           p.age == 1 && p.age == 2 );
                 AreEqual("p.age == 1 && p.age == 2",            and2.Linq);
-                Cosmos  ("p.age = 1 AND p.age = 2",             CosmosFilter.Create(and2));
+                AreEqual("p.age = 1 AND p.age = 2",             and2.CosmosFilter());
                 AssertJson(mapper, and2, "{'op':'and','operands':[{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':2}}]}");
             } { 
                 var or3 =   (Or)        FromLambda((Person p) =>
                           p.age == 1 || p.age == 2 || p.age == 3);
                 AreEqual("p.age == 1 || p.age == 2 || p.age == 3",  or3.Linq);
-                Cosmos  ("p.age = 1 OR p.age = 2 OR p.age = 3",     CosmosFilter.Create(or3));
+                AreEqual("p.age = 1 OR p.age = 2 OR p.age = 3",     or3.CosmosFilter());
                 AssertJson(mapper, or3, "{'op':'or','operands':[{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':2}}]},{'op':'equal','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':3}}]}");
             }
             
@@ -505,7 +504,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var isNot = (Not)       FromFilter((Person p) =>
                           !(p.age >= 20));
                 AreEqual("!(p.age >= 20)",      isNot.Linq);
-                Cosmos  ("NOT(p.age >= 20)",    CosmosFilter.Create(isNot));
+                AreEqual("NOT(p.age >= 20)",    isNot.CosmosFilter());
                 AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}}}");
             }
           }
@@ -519,13 +518,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var any =   (Any)       FromFilter((Person p) =>
                           p.children.Any(child => child.age == 20));
                 AreEqual("p.children.Any(child => child.age == 20)",                                    any.Linq);
-                Cosmos  ("EXISTS(SELECT VALUE child FROM child IN p.children WHERE child.age = 20)",    CosmosFilter.Create(any));
+                AreEqual("EXISTS(SELECT VALUE child FROM child IN p.children WHERE child.age = 20)",    any.CosmosFilter());
                 AssertJson(mapper, any, "{'op':'any','field':{'name':'p.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
             } { 
                 var all =   (All)       FromFilter((Person p) =>
                           p.children.All(child => child.age == 20));
                 AreEqual("p.children.All(child => child.age == 20)", all.Linq);
-                Cosmos  ("IS_NULL(p.children) OR NOT IS_DEFINED(p.children) OR (SELECT VALUE Count(1) FROM child IN p.children WHERE child.age = 20) = ARRAY_LENGTH(p.children)", CosmosFilter.Create(all));
+                AreEqual("IS_NULL(p.children) OR NOT IS_DEFINED(p.children) OR (SELECT VALUE Count(1) FROM child IN p.children WHERE child.age = 20) = ARRAY_LENGTH(p.children)", all.CosmosFilter());
                 AssertJson(mapper, all, "{'op':'all','field':{'name':'p.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
             }
           }
@@ -669,12 +668,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var isEqual = (Equal)  FromFilter((object p) =>
                           "12345".Length == 5);
                 AreEqual("'12345'.Length() == 5",   isEqual.Linq);
-                Cosmos  ("LENGTH('12345') = 5",     CosmosFilter.Create(isEqual));
+                AreEqual("LENGTH('12345') = 5",     isEqual.CosmosFilter());
             } {
                 var isEqual =     (Equal)   FromFilter((Person p) =>
                           p.name.Length == 5);
                 AreEqual("p.name.Length() == 5",    isEqual.Linq);
-                Cosmos  ("LENGTH(p.name) = 5",      CosmosFilter.Create(isEqual));
+                AreEqual("LENGTH(p.name) = 5",      isEqual.CosmosFilter());
             }
         }
         
@@ -695,12 +694,4 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
     }
-    
-    internal static class AssertEqual {
-        internal static void Cosmos (string expect, string was) {
-            AreEqual(expect, was);
-        }
-        
-    }
-        
 }
