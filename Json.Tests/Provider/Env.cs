@@ -53,8 +53,8 @@ namespace Friflo.Json.Tests.Provider
             switch (db) {
                 case memory_db:
                     if (_memoryHub == null) {
-                        var memoryDB = new MemoryDatabase("memory_db");
-                        _memoryHub   ??= new FlioxHub(memoryDB);
+                        var memoryDB    = new MemoryDatabase("memory_db");
+                        _memoryHub      = new FlioxHub(memoryDB);
                         await Seed(memoryDB, FileHub.database);
                     }
                     return _memoryHub;
