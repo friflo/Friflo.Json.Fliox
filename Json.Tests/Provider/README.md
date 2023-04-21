@@ -35,21 +35,21 @@ The intended order to implement a database provider:
 
 # Test environment
 
-By default - environment variable `TEST_DB` not present - a `FileDatabase` is used for methods attributed with
+By default - environment variable `TEST_DB_PROVIDER` not present - a `FileDatabase` is used for methods attributed with
 ```csharp
 [TestCase(test_db, Category = test_db)]
 ```
 
-To run tests using a specific database implementation set the environment variable `TEST_DB`. E.g.  
-`TEST_DB=cosmos`.
+To run tests using a specific database implementation set the environment variable `TEST_DB_PROVIDER`. E.g.  
+`TEST_DB_PROVIDER=cosmos`.
 
 ## Rider
 Run unit tests for a specific database implementation add an entry at  
 **File | Settings | Build, Execution, Deployment | Unit Testing | Test Runner**  
 - Environment Variables
-    - TEST_DB=cosmos
+    - TEST_DB_PROVIDER=cosmos
 
 ## Unit test
 ```
-dotnet test -c Release -l "console;verbosity=detailed" --filter TestCategory=test_db --environment TEST_DB=cosmos
+dotnet test -c Release -l "console;verbosity=detailed" --filter TestCategory=test_db --environment TEST_DB_PROVIDER=cosmos
 ```

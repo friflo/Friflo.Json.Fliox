@@ -27,16 +27,18 @@ namespace Friflo.Json.Tests.Provider
             var env                 = new SharedEnv();
             string      cache       = null;
             var databaseSchema      = new DatabaseSchema(typeof(TestClient));
-            var fileDb              = Env.CreateFileDatabase(databaseSchema);
-            var memoryDb            = await Env.CreateMemoryDatabase(fileDb);
+            var fileDb              = new FileDatabase("file_db", Env.TestDbFolder) { Schema = databaseSchema };
+            var memoryDb            = new MemoryDatabase("memory_db");
+            await Env.Seed(memoryDb, fileDb);
             
             var hub                 = new FlioxHub(memoryDb, env);
             hub.Info.projectName    = "Test DB";
             hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/DB";
             hub.Info.envName        = "test"; hub.Info.envColor = "rgb(0 140 255)";
             hub.AddExtensionDB (fileDb);
-            if (Env.TEST_DB == "cosmos") {
-                var testDb              = await Env.CreateCosmosDatabase(fileDb);
+            var testDb              = await Env.CreateTestDatabase("test_db", Env.TEST_DB_PROVIDER);
+            if (testDb != null) {
+                await Env.Seed(testDb, fileDb);
                 hub.AddExtensionDB (testDb);
             }
             hub.AddExtensionDB (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer

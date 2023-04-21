@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Provider.Client;
 
@@ -18,39 +17,22 @@ namespace Friflo.Json.Tests.Provider
         public const string  memory_db  = "memory_db";
         /// <summary>
         /// Used for unit tests to check behavior a specific database implementation.<br/>
-        /// The specific database implementation is set by the environment variable: <c>TEST_DB</c><br/>
+        /// The specific database implementation is set by the environment variable: <c>TEST_DB_PROVIDER</c><br/>
         /// See README.md
         /// </summary>
         public const string  test_db    = "test_db";
+        
             
         private  static             FlioxHub    _memoryHub;
         private  static             FlioxHub    _fileHub;
         private  static             FlioxHub    _testHub;
-        internal static  readonly   string      TEST_DB = Environment.GetEnvironmentVariable("TEST_DB");
+        internal static  readonly   string      TEST_DB_PROVIDER = Environment.GetEnvironmentVariable("TEST_DB_PROVIDER");
         
-        private static readonly string TestDbFolder = CommonUtils.GetBasePath() + "assets~/DB/test_db";
+        internal static readonly string TestDbFolder = CommonUtils.GetBasePath() + "assets~/DB/test_db";
             
-        public static async Task<EntityDatabase> CreateMemoryDatabase(EntityDatabase sourceDB) {
-            var memoryDB = new MemoryDatabase("memory_db") { Schema = sourceDB.Schema };
-            await memoryDB.SeedDatabase(sourceDB);
-            return memoryDB;
-        }
-        
-        public static async Task<EntityDatabase> CreateCosmosDatabase(EntityDatabase sourceDB) {
-#if !UNITY_5_3_OR_NEWER
-            var client              = CosmosEnv.CreateCosmosClient();
-            var createDatabase      = await client.CreateDatabaseIfNotExistsAsync("test_db");
-            var cosmosDatabase      = new CosmosDatabase("test_db", createDatabase)
-                { Throughput = 400, Schema = sourceDB.Schema };
-            await cosmosDatabase.SeedDatabase(sourceDB);
-            return cosmosDatabase;
-#else
-            return null;
-#endif
-        }
-                
-        public static EntityDatabase CreateFileDatabase(DatabaseSchema schema) {
-            return new FileDatabase("file_db", TestDbFolder) { Schema = schema };
+        public static async Task Seed(EntityDatabase target, EntityDatabase source) {
+            target.Schema = source.Schema;
+            await target.SeedDatabase(source);
         }
         
         private static FlioxHub FileHub { get {
@@ -58,7 +40,8 @@ namespace Friflo.Json.Tests.Provider
                 return _fileHub;
             }
             var databaseSchema  = new DatabaseSchema(typeof(TestClient));
-            return _fileHub     = new FlioxHub(CreateFileDatabase(databaseSchema));
+            var database        = new FileDatabase("file_db", TestDbFolder) { Schema = databaseSchema };
+            return _fileHub     = new FlioxHub(database);
         } }
         
         internal static async Task<TestClient> GetClient(string db) {
@@ -69,17 +52,44 @@ namespace Friflo.Json.Tests.Provider
         private static async Task<FlioxHub> GetDatabaseHub(string db) {
             switch (db) {
                 case memory_db:
-                    return _memoryHub   ??= new FlioxHub(await CreateMemoryDatabase(FileHub.database));
+                    if (_memoryHub == null) {
+                        var memoryDB = new MemoryDatabase("memory_db");
+                        _memoryHub   ??= new FlioxHub(memoryDB);
+                        await Seed(memoryDB, FileHub.database);
+                    }
+                    return _memoryHub;
                 case test_db:
-                    if (TEST_DB is null or "file") {
+                    if (TEST_DB_PROVIDER is null or "file") {
                         return FileHub;
                     }
-                    if (TEST_DB == "cosmos") {
-                        return _testHub   ??= new FlioxHub(await CreateCosmosDatabase(FileHub.database));
+                    if (_testHub == null) {
+                        var testDB = await CreateTestDatabase("test_db", TEST_DB_PROVIDER);
+                        if (testDB == null) {
+                            throw new InvalidOperationException($"invalid TEST_DB_PROVIDER: {TEST_DB_PROVIDER}");
+                        }
+                        _testHub = new FlioxHub(testDB);
+                        await Seed(testDB, FileHub.database);
                     }
-                    throw new InvalidOperationException($"invalid TEST_DB: {TEST_DB}");
+                    return _testHub;
             }
             throw new InvalidOperationException($"invalid database Env: {db}");
+        }
+        
+        public static async Task<EntityDatabase> CreateTestDatabase(string db, string provider) {
+            switch (provider) {
+                case "cosmos": return await CreateCosmosDatabase(db);
+            }
+            return null;
+        }
+        
+        public static async Task<EntityDatabase> CreateCosmosDatabase(string db) {
+#if !UNITY_5_3_OR_NEWER
+            var client          = CosmosEnv.CreateCosmosClient();
+            var createDatabase  = await client.CreateDatabaseIfNotExistsAsync(db);
+            return new CosmosDatabase(db, createDatabase) { Throughput = 400 };
+#else
+            return null;
+#endif
         }
     }
 }
