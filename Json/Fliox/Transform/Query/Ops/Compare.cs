@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Equal(Operation left, Operation right) : base(left, right) { }
 
         public   override string    OperationName           => "==";
-        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "==", left, right);
+        internal override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "==", left, right);
         
         internal override Scalar Eval(EvalCx cx) {
             var leftValue   = left.Eval(cx);
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public NotEqual(Operation left, Operation right) : base(left, right) { }
 
         public   override string    OperationName           => "!=";
-        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "!=", left, right);
+        internal override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "!=", left, right);
         
         internal override Scalar Eval(EvalCx cx) {
             var leftValue   = left.Eval(cx);
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Less(Operation left, Operation right) : base(left, right) { }
         
         public   override string    OperationName           => "<";
-        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "<", left, right);
+        internal override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "<", left, right);
         
         internal override Scalar Eval(EvalCx cx) {
             var leftValue   = left.Eval(cx);
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public LessOrEqual(Operation left, Operation right) : base(left, right) { }
         
         public   override string    OperationName           => "<=";
-        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "<=", left, right);
+        internal override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "<=", left, right);
         
         internal override Scalar Eval(EvalCx cx) {
             var leftValue   = left.Eval(cx);
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Greater(Operation left, Operation right) : base(left, right) { }
         
         public   override string    OperationName           => ">";
-        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, ">", left, right);
+        internal override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, ">", left, right);
         
         internal override Scalar Eval(EvalCx cx) {
             var leftValue   = left.Eval(cx);
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public GreaterOrEqual(Operation left, Operation right) : base(left, right) { }
         
         public   override string    OperationName           => ">=";
-        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, ">=", left, right);
+        internal override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, ">=", left, right);
         
         internal override Scalar Eval(EvalCx cx) {
             var leftValue   = left.Eval(cx);

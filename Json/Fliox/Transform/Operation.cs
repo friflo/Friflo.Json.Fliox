@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Transform
     public abstract class Operation
     {
         public    abstract  string      OperationName   { get; }
-        public    abstract  void        AppendLinq      (AppendCx cx);
+        internal  abstract  void        AppendLinq      (AppendCx cx);
         internal  abstract  void        Init            (OperationContext cx);
         internal  abstract  Scalar      Eval            (EvalCx cx);    // todo - use in modifier
         internal  virtual   bool        IsNumeric()     => false;
@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.Transform
             return field.name;
         }
         
-        protected static void AppendLinqArrow(string name, Field field, string arg, Operation op, AppendCx cx) {
+        internal static void AppendLinqArrow(string name, Field field, string arg, Operation op, AppendCx cx) {
             var sb = cx.sb;
             field.AppendLinq(cx);
             sb.Append('.');
@@ -148,7 +148,7 @@ namespace Friflo.Json.Fliox.Transform
             sb.Append(')');
         }
         
-        protected static void AppendLinqMethod(string name, Operation symbol, Operation operand, AppendCx cx) {
+        internal static void AppendLinqMethod(string name, Operation symbol, Operation operand, AppendCx cx) {
             var sb = cx.sb;
             symbol.AppendLinq(cx);
             sb.Append('.');
@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.Transform
             sb.Append(')');
         }
         
-        protected static void AppendLinqMethod(string name, Operation symbol, AppendCx cx) {
+        internal static void AppendLinqMethod(string name, Operation symbol, AppendCx cx) {
             var sb = cx.sb;
             symbol.AppendLinq(cx);
             sb.Append('.');
@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.Transform
             sb.Append("()");
         }
         
-        protected static void AppendLinqFunction(string name, Operation operand, AppendCx cx) {
+        internal static void AppendLinqFunction(string name, Operation operand, AppendCx cx) {
             var sb = cx.sb;
             sb.Append(name);
             sb.Append('(');
@@ -174,7 +174,7 @@ namespace Friflo.Json.Fliox.Transform
             sb.Append(')');
         }
         
-        protected void AppendLinqBinary(AppendCx cx, string token, Operation left, Operation right) {
+        internal void AppendLinqBinary(AppendCx cx, string token, Operation left, Operation right) {
             var sb = cx.sb;
             AppendOperation (cx, left);
             sb.Append(' ');
@@ -196,7 +196,7 @@ namespace Friflo.Json.Fliox.Transform
             sb.Append(')');
         }
         
-        protected void AppendLinqNAry(AppendCx cx, string token, List<FilterOperation> operands) {
+        internal void AppendLinqNAry(AppendCx cx, string token, List<FilterOperation> operands) {
             var sb = cx.sb;
             var operand     = operands[0];
             AppendOperation(cx, operand);
