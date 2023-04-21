@@ -62,17 +62,23 @@ namespace Friflo.Json.Tests.Provider
                     if (TEST_DB_PROVIDER is null or "file") {
                         return FileHub;
                     }
-                    if (_testHub == null) {
-                        var testDB = await CreateTestDatabase("test_db", TEST_DB_PROVIDER);
-                        if (testDB == null) {
-                            throw new InvalidOperationException($"invalid TEST_DB_PROVIDER: {TEST_DB_PROVIDER}");
-                        }
-                        _testHub = new FlioxHub(testDB);
-                        await Seed(testDB, FileHub.database);
-                    }
-                    return _testHub;
+                    return await CreateTestHub("test_db", TEST_DB_PROVIDER);
             }
             throw new InvalidOperationException($"invalid database Env: {db}");
+        }
+        
+        private static async Task<FlioxHub> CreateTestHub(string db, string provider) {
+            if (_testHub != null) {
+                return _testHub;
+            }
+            var testDB = await CreateTestDatabase(db, provider);
+            if (testDB == null) {
+                throw new InvalidOperationException($"invalid TEST_DB_PROVIDER: {provider}");
+            }
+            _testHub = new FlioxHub(testDB);
+            await Seed(testDB, FileHub.database);
+            
+            return _testHub;
         }
         
         public static async Task<EntityDatabase> CreateTestDatabase(string db, string provider) {
@@ -82,7 +88,7 @@ namespace Friflo.Json.Tests.Provider
             return null;
         }
         
-        public static async Task<EntityDatabase> CreateCosmosDatabase(string db) {
+        private static async Task<EntityDatabase> CreateCosmosDatabase(string db) {
 #if !UNITY_5_3_OR_NEWER
             var client          = CosmosEnv.CreateCosmosClient();
             var createDatabase  = await client.CreateDatabaseIfNotExistsAsync(db);
