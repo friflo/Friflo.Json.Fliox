@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Provider.Client;
+using NUnit.Framework;
 
 #if !UNITY_5_3_OR_NEWER
     using Friflo.Json.Fliox.Hub.Cosmos;
@@ -26,7 +28,12 @@ namespace Friflo.Json.Tests.Provider
         private  static             FlioxHub    _memoryHub;
         private  static             FlioxHub    _fileHub;
         private  static             FlioxHub    _testHub;
-        internal static  readonly   string      TEST_DB_PROVIDER = Environment.GetEnvironmentVariable("TEST_DB_PROVIDER");
+        internal static  readonly   string      TEST_DB_PROVIDER;
+            
+        static Env() {
+            TEST_DB_PROVIDER = Environment.GetEnvironmentVariable("TEST_DB_PROVIDER");
+            Console.WriteLine($"------------------- TEST_DB_PROVIDER={TEST_DB_PROVIDER} -------------------");
+        }
         
         internal static readonly string TestDbFolder = CommonUtils.GetBasePath() + "assets~/DB/test_db";
             
