@@ -39,9 +39,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             switch (operation) {
                 case Field field: {
                     if (collectionStart != null && field.name.StartsWith(collectionStart)) {
-                        return $"{collection}.{field.name.Substring(collectionStart.Length)}";
+                        var fieldName = field.name.Substring(collectionStart.Length);
+                        return $"json_extract(data,'$.{fieldName}')";
                     }
-                    return field.name;
+                    throw new InvalidOperationException($"expect field {field.name} starts with {collectionStart}");
                 }
                 
                 // --- literal --- 
@@ -62,8 +63,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case Equal equal:
                     var left    = Traverse(equal.left);
                     var right   = Traverse(equal.right);
-                    if (left  == "null") return $"(IS_NULL({right}) OR NOT IS_DEFINED({right}))";
-                    if (right == "null") return $"(IS_NULL({left}) OR NOT IS_DEFINED({left}))";
+                    if (left  == "null") return $"({right} IS null)";
+                    if (right == "null") return $"({left} IS null)";
                     return $"{left} = {right}";
                 case NotEqual notEqual:
                     left    = Traverse(notEqual.left);
@@ -159,34 +160,35 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 // --- constants ---
                 
                 // --- aggregate ---
-                case CountWhere countWhere:
+                case CountWhere countWhere: {
                     var cx              = new ConvertContext ("", filterOp);
                     operand             = cx.Traverse(countWhere.predicate);
                     string fieldName    = Traverse(countWhere.field);
                     string arg          = countWhere.arg;
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
-
+                }
                 // --- quantify ---
-                case Any any:
-                    cx                  = new ConvertContext ("", filterOp);
+                case Any any: {
+                    var cx              = new ConvertContext ("", filterOp);
                     operand             = cx.Traverse(any.predicate);
-                    fieldName           = Traverse(any.field);
-                    arg                 = any.arg;
+                    string fieldName    = Traverse(any.field);
+                    var arg             = any.arg;
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
-                case All all:
-                    cx                  = new ConvertContext ("", filterOp);
+                }
+                case All all: {
+                    var cx              = new ConvertContext ("", filterOp);
                     operand             = cx.Traverse(all.predicate);
-                    fieldName           = Traverse(all.field);
-                    arg                 = all.arg;
+                    var fieldName       = Traverse(all.field);
+                    var arg             = all.arg;
                     // treat array == null and missing array as empty array <=> array[]
                     return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
-                
+                }
                 // --- query filter expression
-                case Filter filter:
-                    cx                  = new ConvertContext (collection, filterOp);
+                case Filter filter: {
+                    var cx              = new ConvertContext (collection, filterOp);
                     operand             = cx.Traverse(filter.body);
                     return $"{operand}";
-                
+                }
                 default:
                     throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filterOp}");
             }
