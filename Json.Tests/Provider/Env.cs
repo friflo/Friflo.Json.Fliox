@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.SQLite;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
@@ -91,6 +92,7 @@ namespace Friflo.Json.Tests.Provider
         public static async Task<EntityDatabase> CreateTestDatabase(string db, string provider) {
             switch (provider) {
                 case "cosmos": return await CreateCosmosDatabase(db);
+                case "sqlite": return new SQLiteDatabase(db, CommonUtils.GetBasePath() + db + ".sqlite3");
             }
             return null;
         }
