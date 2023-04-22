@@ -50,6 +50,7 @@ namespace Friflo.Json.Fliox
                                          internal   Guid    Guid            => GuidUtils.LongLongToGuid(lng, lng2);
         [MethodImpl(AggressiveInlining)] public     bool    IsNull()        => keyObj == null;
         [MethodImpl(AggressiveInlining)] internal   int     GetShortLength()=> (int)(lng2 >> ShortStringUtils.ShiftLength) - 1;
+                                         public     bool    IsLong()        => keyObj == LONG;
         
         public      override    string  ToString()  => GetString(); 
 

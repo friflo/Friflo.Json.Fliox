@@ -57,9 +57,18 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return Task.FromResult(new UpsertEntitiesResult());
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
+        public override Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             EnsureContainerExists();
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+            SQLiteUtils.AppendIds(sb, command.ids);
+            var ids = sb.ToString();
+            var sql = $"SELECT id, data FROM {name} WHERE id in ({ids})";
+            var rc  = raw.sqlite3_prepare_v3(sqliteDB.sqliteDB, sql, 0, out var stmt);
+            if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"SELECT - prepare error: {rc}");
+            var values = new List<EntityValue>();
+            SQLiteUtils.ReadValues(stmt, values);
+            var result = new ReadEntitiesResult { entities = values.ToArray() };
+            return Task.FromResult(result);
         }
         
         public override Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
@@ -70,21 +79,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"SELECT - prepare error: {rc}");
             
             var values = new List<EntityValue>();
-            while (true) {
-                rc = raw.sqlite3_step(stmt);
-                if (rc == raw.SQLITE_ROW) {
-                    var id      = raw.sqlite3_column_text(stmt, 0);
-                    var data    = raw.sqlite3_column_text(stmt, 1);
-                    var idStr   = id.utf8_to_string();
-                    var dataStr = data.utf8_to_string();
-                    var entity = new EntityValue(new JsonKey(idStr), new JsonValue(dataStr));
-                    values.Add(entity);
-                } else if (rc == raw.SQLITE_DONE) {
-                    break;
-                } else {
-                    throw new InvalidOperationException($"SELECT - step error: {rc}");
-                }
-            }
+            SQLiteUtils.ReadValues(stmt, values);
             var result = new QueryEntitiesResult { entities = values.ToArray() }; 
             return Task.FromResult(result);
         }

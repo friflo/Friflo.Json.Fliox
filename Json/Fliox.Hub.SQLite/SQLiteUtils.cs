@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using SQLitePCL;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
@@ -16,6 +17,42 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             rc = raw.sqlite3_step(stmt);
             if (rc != raw.SQLITE_DONE) throw new InvalidOperationException($"{description} - step error: {rc}");
             raw.sqlite3_finalize(stmt);
+        }
+        
+        internal static void AppendIds(StringBuilder sb, List<JsonKey> ids) {
+            bool isFirst = true;
+            foreach (var id in ids) {
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    sb.Append(',');
+                }
+                if (id.IsLong()) {
+                    id.AppendTo(sb);
+                } else {
+                    sb.Append('\'');
+                    id.AppendTo(sb);
+                    sb.Append('\'');
+                }
+            }
+        }
+        
+        internal static void ReadValues(sqlite3_stmt stmt, List<EntityValue> values) {
+            while (true) {
+                var rc = raw.sqlite3_step(stmt);
+                if (rc == raw.SQLITE_ROW) {
+                    var id      = raw.sqlite3_column_text(stmt, 0);
+                    var data    = raw.sqlite3_column_text(stmt, 1);
+                    var idStr   = id.utf8_to_string();
+                    var dataStr = data.utf8_to_string();
+                    var entity = new EntityValue(new JsonKey(idStr), new JsonValue(dataStr));
+                    values.Add(entity);
+                } else if (rc == raw.SQLITE_DONE) {
+                    break;
+                } else {
+                    throw new InvalidOperationException($"SELECT - step error: {rc}");
+                }
+            }
         }
         
         internal static void AppendEntities(StringBuilder sb, List<JsonEntity> entities) {

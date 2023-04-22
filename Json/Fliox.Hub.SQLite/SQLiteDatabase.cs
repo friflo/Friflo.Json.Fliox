@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         static SQLiteDatabase() {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());            
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
         }
         
         internal void CreateSchema() {
