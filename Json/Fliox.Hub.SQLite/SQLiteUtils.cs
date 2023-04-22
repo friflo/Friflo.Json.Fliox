@@ -11,6 +11,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 {
     internal static class SQLiteUtils
     {
+        internal static string GetVersion(sqlite3 db) {
+            var sql = "select sqlite_version()";
+            var rc  = raw.sqlite3_prepare_v3(db, sql, 0, out var stmt);
+            if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"sqlite_version() - prepare error: {rc}");
+            var values = new List<EntityValue>();
+            ReadValues(stmt, values);
+            var version = values[0].key.AsString();
+            return version;
+        }
+        
         internal static void Execute(sqlite3 db, string sql, string description) {
             var rc = raw.sqlite3_prepare_v3(db, sql, 0, out var stmt);
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"{description} - prepare error: {rc}");

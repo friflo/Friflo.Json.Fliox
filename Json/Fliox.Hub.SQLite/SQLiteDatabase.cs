@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         internal readonly   sqlite3                                 sqliteDB;
         private             Dictionary<string, SQLitePrimaryKey>    keys;
         
-        public   override   string      StorageType => "SQLite";
+        public   override   string      StorageType => "SQLite " + SQLiteUtils.GetVersion(sqliteDB);
         
         public SQLiteDatabase(string dbName, string databasePath, DatabaseService service = null)
             : base(dbName, service)
