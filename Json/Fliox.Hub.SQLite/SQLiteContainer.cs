@@ -64,7 +64,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         public override Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             EnsureContainerExists();
-            var sql = $"SELECT id, data FROM {name}";
+            var filter = command.GetFilter().SQLiteFilter();
+            var sql = $"SELECT id, data FROM {name} WHERE {filter}";
             var rc = raw.sqlite3_prepare_v3(sqliteDB.sqliteDB, sql, 0, out var stmt);
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"SELECT - prepare error: {rc}");
             

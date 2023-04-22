@@ -104,8 +104,8 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_StartsWith(string db) {
             var store = await GetClient(db);
-            var query = store.testOps.Query(a => a.id.StartsWith("a-"));
-            AreEqual("a => a.id.StartsWith('a-')", query.filterLinq);
+            var query = store.testOps.Query(a => "start-xxx".StartsWith("start-"));
+            AreEqual("a => 'start-xxx'.StartsWith('start-')", query.filterLinq);
             await store.SyncTasks();
             AreEqual(2, query.Result.Count);
         }
@@ -113,17 +113,17 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_EndsWith(string db) {
             var store = await GetClient(db);
-            var query = store.testOps.Query(a => a.id.EndsWith("-1"));
-            AreEqual("a => a.id.EndsWith('-1')", query.filterLinq);
+            var query = store.testOps.Query(a => "xxx-end".EndsWith("-end"));
+            AreEqual("a => 'xxx-end'.EndsWith('-end')", query.filterLinq);
             await store.SyncTasks();
-            AreEqual(1, query.Result.Count);
+            AreEqual(2, query.Result.Count);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Contains(string db) {
             var store = await GetClient(db);
-            var query = store.testOps.Query(a => a.id.Contains('-'));
-            AreEqual("a => a.id.Contains('-')", query.filterLinq);
+            var query = store.testOps.Query(a => "xxx-yyy".Contains('-'));
+            AreEqual("a => 'xxx-yyy'.Contains('-')", query.filterLinq);
             await store.SyncTasks();
             AreEqual(2, query.Result.Count);
         }
@@ -131,8 +131,8 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Contains2(string db) {
             var store = await GetClient(db);
-            var query = store.testOps.Query(a => a.id.Contains("XXX"));
-            AreEqual("a => a.id.Contains('XXX')", query.filterLinq);
+            var query = store.testOps.Query(a => "yyy".Contains("-"));
+            AreEqual("a => 'yyy'.Contains('-')", query.filterLinq);
             await store.SyncTasks();
             AreEqual(0, query.Result.Count);
         }
@@ -140,8 +140,8 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
         public static async Task TestQuery_Length(string db) {
             var store = await GetClient(db);
-            var query = store.testOps.Query(a => a.id.Length == 3);
-            AreEqual("a => a.id.Length() == 3", query.filterLinq);
+            var query = store.testOps.Query(a => "abc".Length == 3);
+            AreEqual("a => 'abc'.Length() == 3", query.filterLinq);
             await store.SyncTasks();
             AreEqual(2, query.Result.Count);
         }

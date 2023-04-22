@@ -101,15 +101,15 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case StartsWith startsWith:
                     left    = Traverse(startsWith.left);
                     right   = Traverse(startsWith.right);
-                    return $"STARTSWITH({left},{right})";
+                    return $"{left} LIKE '{UnString(right)}%'";
                 case EndsWith endsWith:
                     left    = Traverse(endsWith.left);
                     right   = Traverse(endsWith.right);
-                    return $"ENDSWITH({left},{right})";
+                    return $"{left} LIKE '%{UnString(right)}'";
                 case Contains contains:
                     left    = Traverse(contains.left);
                     right   = Traverse(contains.right);
-                    return $"CONTAINS({left},{right})";
+                    return $"{left} LIKE '%{UnString(right)}%'";
                 case Length length:
                     var value = Traverse(length.value);
                     return $"LENGTH({value})";
@@ -142,10 +142,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return $"ABS({value})";
                 case Ceiling ceiling:
                     value = Traverse(ceiling.value);
-                    return $"CEILING({value})";
+                    return $"ROUND({value}+0.5)";
                 case Floor floor:
                     value = Traverse(floor.value);
-                    return $"FLOOR({value})";
+                    return $"ROUND({value}-0.5)";
                 case Exp exp:
                     value = Traverse(exp.value);
                     return $"EXP({value})";
@@ -198,6 +198,13 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 result[n] = Traverse(operands[n]);
             }
             return result;
+        }
+        
+        private static string UnString(string value) {
+            if (value[0] == '\'') {
+                return value.Substring(1, value.Length - 2);
+            }
+            return value;
         }
     }
 }
