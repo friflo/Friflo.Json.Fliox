@@ -121,17 +121,17 @@ public static async Task AccessDatabase() {
 ## Query filter
 
 Query filters are lambda expressions used to extract only the entities from a container that fullfil the specified filter condition.  
-They are used as the counterpart of the **WHERE** clause in **SQL** statements.  
+The are specified as [**LINQ**](https://en.wikipedia.org/wiki/Language_Integrated_Query) expressions
+and used as the counterpart of the **WHERE** clause in **SQL** statements.  
 The filter expression is a lambda function which is evaluated for each **`entity`** of a container and return a **`boolean`** result.  
 If **`true`** the `entity` is added to the query result set.
 
 General syntax.
 ```csharp
-entity => <boolean>
+entity => condition
 ```
 
-In **C#** they are implemented with [LINQ](https://en.wikipedia.org/wiki/Language_Integrated_Query) expressions. 
-In contrast to SQL statements LINQ has compiler support and enable code navigation, searching and refactoring.
+In contrast to **SQL** statements **LINQ** has compiler support and enable code navigation, searching and refactoring in C#.
 
 A **C#** example query filter for the `ShopStore` client above
 ```csharp
@@ -150,7 +150,7 @@ The syntax of lambda expressions / LINQ filters is an [infix notation](https://e
 When using a filter for a container query it is converted into an expression tree. Each node in the tree is an operation.
 [Supported operations](../../../Json.Tests/assets~/Schema/Markdown/Filter/class-diagram.md)
 
-### Query filter operators and methods
+### Supported **LINQ** query filter operators and methods
 | type          | operator / method              |                                                                                                     |
 | -----------   | ------------------------------ | --------------------------------------------------------------------------------------------------- |
 | **compare**   | ==                             | equals                                                                                              |
