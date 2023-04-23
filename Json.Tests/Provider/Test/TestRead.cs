@@ -8,7 +8,7 @@ namespace Friflo.Json.Tests.Provider.Test
     public static class TestRead
     {
         // --- read by id
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestRead_One(string db) {
             var store = await GetClient(db);
             var find  = store.testOps.Read().Find("a-1");
@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Provider.Test
             NotNull(find.Result);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestRead_Many(string db) {
             var store = await GetClient(db);
             var read  = store.testOps.Read();

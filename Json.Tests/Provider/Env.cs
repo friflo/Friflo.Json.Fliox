@@ -1,11 +1,9 @@
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.SQLite;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Provider.Client;
-using NUnit.Framework;
 
 #if !UNITY_5_3_OR_NEWER
     using Friflo.Json.Fliox.Hub.Cosmos;
@@ -25,8 +23,11 @@ namespace Friflo.Json.Tests.Provider
         /// </summary>
         public const string  test_db    = "test_db";
         
+        public const string  sqlite_db  = "sqlite_db";
+        
             
         private  static             FlioxHub    _memoryHub;
+        private  static             FlioxHub    _sqliteHub;
         private  static             FlioxHub    _fileHub;
         private  static             FlioxHub    _testHub;
         internal static  readonly   string      TEST_DB_PROVIDER;
@@ -66,6 +67,13 @@ namespace Friflo.Json.Tests.Provider
                         await Seed(memoryDB, FileHub.database);
                     }
                     return _memoryHub;
+                case sqlite_db:
+                    if (_sqliteHub == null) {
+                        var sqliteDB    = new SQLiteDatabase(db, CommonUtils.GetBasePath() + db + ".sqlite3");
+                        _sqliteHub      = new FlioxHub(sqliteDB);
+                        await Seed(sqliteDB, FileHub.database);
+                    }
+                    return _sqliteHub;
                 case test_db:
                     if (TEST_DB_PROVIDER is null or "file") {
                         return FileHub;

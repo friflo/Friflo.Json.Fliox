@@ -15,8 +15,8 @@ namespace Friflo.Json.Tests.Provider.Test
         private const int ArticleCount = 2;
 
         // --- query filter: compare
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Equals(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpEquals(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => One == 1);
             AreEqual("a => 1 == 1", query.filterLinq);
@@ -24,8 +24,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_NotEquals(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpNotEquals(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => One != Zero);
             AreEqual("a => 1 != 0", query.filterLinq);
@@ -33,8 +33,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Less(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpLess(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => Zero < One);
             AreEqual("a => 0 < 1", query.filterLinq);
@@ -42,8 +42,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_LessOrEquals(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpLessOrEquals(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => Zero <= One);
             AreEqual("a => 0 <= 1", query.filterLinq);
@@ -51,8 +51,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Greater(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpGreater(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => One > Zero);
             AreEqual("a => 1 > 0", query.filterLinq);
@@ -60,8 +60,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_GreaterOrEquals(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpGreaterOrEquals(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => One >= Zero);
             AreEqual("a => 1 >= 0", query.filterLinq);
@@ -70,8 +70,8 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         // --- query filter: logical
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_And(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpAnd(string db) {
             var store = await GetClient(db);
             bool t = true;
             var query = store.testOps.Query(a => t && true);
@@ -80,8 +80,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Or(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpOr(string db) {
             var store = await GetClient(db);
             bool t = true;
             var query = store.testOps.Query(a => false || t);
@@ -90,8 +90,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Not(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpNot(string db) {
             var store = await GetClient(db);
             bool f = false;
             var query = store.testOps.Query(a => !f);
@@ -101,8 +101,8 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         // --- query filter: string
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_StartsWith(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_StringStartsWith(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => "start-xxx".StartsWith("start-"));
             AreEqual("a => 'start-xxx'.StartsWith('start-')", query.filterLinq);
@@ -110,8 +110,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(2, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_EndsWith(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_StringEndsWith(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => "xxx-end".EndsWith("-end"));
             AreEqual("a => 'xxx-end'.EndsWith('-end')", query.filterLinq);
@@ -119,8 +119,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(2, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Contains(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_StringContains(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => "xxx-yyy".Contains('-'));
             AreEqual("a => 'xxx-yyy'.Contains('-')", query.filterLinq);
@@ -128,8 +128,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(2, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Contains2(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_StringContains2(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => "yyy".Contains("-"));
             AreEqual("a => 'yyy'.Contains('-')", query.filterLinq);
@@ -137,8 +137,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(0, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Length(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_StringLength(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => "abc".Length == 3);
             AreEqual("a => 'abc'.Length() == 3", query.filterLinq);
@@ -147,8 +147,8 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         // --- query filter: arithmetic operator
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Add(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpAdd(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => One + One == 2);
             AreEqual("a => 1 + 1 == 2", query.filterLinq);
@@ -156,8 +156,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Subtract(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpSubtract(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => One - One == 0);
             AreEqual("a => 1 - 1 == 0", query.filterLinq);
@@ -165,8 +165,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Multiply(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpMultiply(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => One * One == 1);
             AreEqual("a => 1 * 1 == 1", query.filterLinq);
@@ -174,8 +174,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Divide(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpDivide(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => One / One == 1);
             AreEqual("a => 1 / 1 == 1", query.filterLinq);
@@ -183,8 +183,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Modulo(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_OpModulo(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => One % One == 0);
             AreEqual("a => 1 % 1 == 0", query.filterLinq);
@@ -193,7 +193,7 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         // --- query filter: constants
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Constant_E(string db) {
             var store = await GetClient(db);
             double e = 2.718281828459045;
@@ -203,7 +203,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Constant_Pi(string db) {
             var store = await GetClient(db);
             double pi = 3.141592653589793;
@@ -214,7 +214,7 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
 #if !UNITY_5_3_OR_NEWER
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Constant_Tau(string db) {
             var store = await GetClient(db);
             double tau = 6.283185307179586;
@@ -226,8 +226,8 @@ namespace Friflo.Json.Tests.Provider.Test
 #endif
         
         // --- query filter: arithmetic methods
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Abs(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_MathAbs(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => Abs(-1) == One);
             AreEqual("a => Abs(-1) == 1", query.filterLinq);
@@ -235,8 +235,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Ceiling(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_MathCeiling(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => Ceiling(1.5) == 2);
             AreEqual("a => Ceiling(1.5) == 2", query.filterLinq);
@@ -244,8 +244,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Floor(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_MathFloor(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => Floor(1.5) == 1);
             AreEqual("a => Floor(1.5) == 1", query.filterLinq);
@@ -253,8 +253,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Exp(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] // [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_MathExp(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => Exp(1) == 2.718281828459045);
             AreEqual("a => Exp(1) == 2.718281828459045", query.filterLinq);
@@ -262,8 +262,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Log(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] // [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_MathLog(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => Log(2.718281828459045) == 1);
             AreEqual("a => Log(2.718281828459045) == 1", query.filterLinq);
@@ -271,8 +271,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
 
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)]
-        public static async Task TestQuery_Sqrt(string db) {
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] // [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_MathSqrt(string db) {
             var store = await GetClient(db);
             var query = store.testOps.Query(a => Sqrt(4) == 2);
             AreEqual("a => Sqrt(4) == 2", query.filterLinq);
