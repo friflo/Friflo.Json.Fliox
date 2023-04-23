@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Provider
                     return _memoryHub;
                 case sqlite_db:
                     if (_sqliteHub == null) {
-                        var sqliteDB    = new SQLiteDatabase(db, CommonUtils.GetBasePath() + db + ".sqlite3");
+                        var sqliteDB    = new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3");
                         _sqliteHub      = new FlioxHub(sqliteDB);
                         await Seed(sqliteDB, FileHub.database);
                     }
