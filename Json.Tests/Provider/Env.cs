@@ -100,7 +100,7 @@ namespace Friflo.Json.Tests.Provider
         public static async Task<EntityDatabase> CreateTestDatabase(string db, string provider) {
             switch (provider) {
                 case "cosmos": return await CreateCosmosDatabase(db);
-                case "sqlite": return new SQLiteDatabase(db, CommonUtils.GetBasePath() + db + ".sqlite3");
+                case "sqlite": return new SQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
             }
             return null;
         }
