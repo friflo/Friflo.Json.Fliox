@@ -1,13 +1,11 @@
 using System;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Cosmos;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.SQLite;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Provider.Client;
 
-#if !UNITY_5_3_OR_NEWER
-    using Friflo.Json.Fliox.Hub.Cosmos;
-#endif
 
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Tests.Provider
@@ -69,7 +67,7 @@ namespace Friflo.Json.Tests.Provider
                     return _memoryHub;
                 case sqlite_db:
                     if (_sqliteHub == null) {
-                        var sqliteDB    = new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3");
+                        var sqliteDB    = CreateSQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3");
                         _sqliteHub      = new FlioxHub(sqliteDB);
                         await Seed(sqliteDB, FileHub.database);
                     }
@@ -100,7 +98,7 @@ namespace Friflo.Json.Tests.Provider
         public static async Task<EntityDatabase> CreateTestDatabase(string db, string provider) {
             switch (provider) {
                 case "cosmos": return await CreateCosmosDatabase(db);
-                case "sqlite": return new SQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
+                case "sqlite": return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
             }
             return null;
         }
@@ -110,6 +108,14 @@ namespace Friflo.Json.Tests.Provider
             var client          = CosmosEnv.CreateCosmosClient();
             var createDatabase  = await client.CreateDatabaseIfNotExistsAsync(db);
             return new CosmosDatabase(db, createDatabase) { Throughput = 400 };
+#else
+            return null;
+#endif
+        }
+        
+        private static EntityDatabase CreateSQLiteDatabase(string db, string path) {
+#if !UNITY_5_3_OR_NEWER || SQLITE
+            return new SQLiteDatabase(db, path);
 #else
             return null;
 #endif

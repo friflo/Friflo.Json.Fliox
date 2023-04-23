@@ -8,6 +8,19 @@ This package is part of the project described below.
 Contains the database provider for [SQLite](https://sqlite.org/)
 
 
+## Unity
+
+* Add **`SQLITE`** to  
+  **Unity > Edit > Player | Other Settings | Script Compilation | Scripting Define Symbols**
+
+* Add SQLite dependencies to Plugins folder:
+
+|  dependency                           | nuget                                                             |
+|-------------------------------------- | ----------------------------------------------------------------- |
+| `SQLitePCLRaw.core.dll`               | https://www.nuget.org/packages/SQLitePCLRaw.core                  |
+| `SQLitePCLRaw.provider.e_sqlite3.dll` | https://www.nuget.org/packages/SQLitePCLRaw.provider.e_sqlite3    |
+| `e_sqlite3.dll`                       | https://www.nuget.org/packages/SQLitePCLRaw.lib.e_sqlite3         |
+
 ## Project
 
 **JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
