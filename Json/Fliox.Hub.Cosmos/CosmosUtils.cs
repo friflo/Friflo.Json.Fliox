@@ -15,11 +15,6 @@ using Friflo.Json.Fliox.Utils;
 // ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.Hub.Cosmos
 {
-    internal sealed class ResponseFeed {
-        public  int             _count;
-        public  List<JsonValue> Documents;
-    }
-
     internal sealed class ReusedMemoryStream : MemoryStream {
         protected override void Dispose(bool disposing) { }
     }
@@ -38,6 +33,12 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             memory.Flush();
             memory.Seek(0, SeekOrigin.Begin);
         }
+    }
+    
+#pragma warning disable CS0649
+    internal sealed class ResponseFeed {
+        public    int             _count;
+        public    List<JsonValue> Documents;
     }
 }
 
