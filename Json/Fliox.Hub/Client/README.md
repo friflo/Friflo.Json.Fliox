@@ -121,9 +121,9 @@ public static async Task AccessDatabase() {
 ## Query filter
 
 Query filters are lambda expressions used to extract only the entities from a container that fullfil the specified filter condition.  
-The are specified as [**LINQ**](https://en.wikipedia.org/wiki/Language_Integrated_Query) expressions
+They are specified as [**LINQ**](https://en.wikipedia.org/wiki/Language_Integrated_Query) expressions
 and used as the counterpart of the **WHERE** clause in **SQL** statements.  
-The filter expression is a lambda function which is evaluated for each **`entity`** of a container and return a **`boolean`** result.  
+A filter expression is a lambda function which is evaluated for each **`entity`** of a container and return a **`boolean`** result.  
 If **`true`** the `entity` is added to the query result set.
 
 General syntax.
@@ -133,7 +133,7 @@ entity => condition
 
 In contrast to **SQL** statements **LINQ** has compiler support and enable code navigation, searching and refactoring in C#.
 
-A **C#** example query filter for the `ShopStore` client above
+**C#** example query filter for the `ShopStore` client above
 ```csharp
 store.articles.Query(o => o.name == "Bread")
 ```
@@ -148,7 +148,6 @@ o => o.name == "Bread"
 
 The syntax of lambda expressions / LINQ filters is an [infix notation](https://en.wikipedia.org/wiki/Infix_notation). Its intention is to be compact and easy to read by humans.  
 When using a filter for a container query it is converted into an expression tree. Each node in the tree is an operation.
-[Supported operations](../../../Json.Tests/assets~/Schema/Markdown/Filter/class-diagram.md)
 
 ### Supported **LINQ** query filter operators and methods
 | type          | operator / method              |                                                                                                     |
@@ -189,6 +188,7 @@ When using a filter for a container query it is converted into an expression tre
 | **quantify**  | items.All(i => condition)      | determines whether all elements of a collection satisfy a condition or if the collection is *empty* |
 |               | items.Any(i => condition )     | determines whether any element of a collection satisfy a condition                                  |
 
+[Supported operations diagram](../../../Json.Tests/assets~/Schema/Markdown/Filter/class-diagram.md)
 
 
 
