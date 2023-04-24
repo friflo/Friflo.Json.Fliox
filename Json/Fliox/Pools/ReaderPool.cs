@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Pools
         }
 
         
-        internal JsonValue CreateJsonValue(ref Bytes value) {
+        internal JsonValue CreateJsonValue(in Bytes value) {
             var len         = value.end - value.start;
             if (len > BufferMax) {
                 return new JsonValue(value.AsArray());

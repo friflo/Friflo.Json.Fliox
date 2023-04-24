@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     return Return(typeDef, success, out error);
                 }
                 case JsonEvent.ValueString:{
-                    var success = ValidateString(ref parser.value, typeDef, null);
+                    var success = ValidateString(parser.value, typeDef, null);
                     return Return(typeDef, success, out error);
                 }
                 case JsonEvent.ObjectStart: {
@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 if (!unionType.discriminator.IsEqual(parser.key)) {
                     return ErrorType("Invalid discriminator.", parser.key.AsString(), true, unionType.discriminatorStr, null, typeDef);
                 }
-                if (!ValidationUnion.FindUnion(unionType, ref parser.value, out var newType)) {
+                if (!ValidationUnion.FindUnion(unionType, parser.value, out var newType)) {
                     var expect = unionType.TypesAsString;
                     return ErrorType("Invalid discriminant.", parser.value.AsString(), true, expect, null, typeDef);
                 }
@@ -178,7 +178,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     case JsonEvent.ValueString:
                         if (!ValidationTypeDef.FindField(typeDef, this, out fieldType, foundFields))
                             return false;
-                        if (ValidateString (ref parser.value, fieldType.typeDef, typeDef))
+                        if (ValidateString (parser.value, fieldType.typeDef, typeDef))
                             continue;
                         return false;
                         
@@ -248,7 +248,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 var     ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (ValidateString(ref parser.value, typeDef, parent))
+                        if (ValidateString(parser.value, typeDef, parent))
                             continue;
                         return false;
                         
@@ -349,7 +349,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
         
         // --- helper methods
-        private bool ValidateString (ref Bytes value, ValidationTypeDef typeDef, ValidationTypeDef parent) {
+        private bool ValidateString (in Bytes value, ValidationTypeDef typeDef, ValidationTypeDef parent) {
             switch (typeDef.typeId) {
                 case TypeId.String:
                 case TypeId.JsonValue:
@@ -378,14 +378,14 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     return ErrorValue("Invalid Guid:", str, true, parent);
                 
                 case TypeId.Enum:
-                    return ValidationTypeDef.FindEnum(typeDef, ref value, this, parent);
+                    return ValidationTypeDef.FindEnum(typeDef, value, this, parent);
                 
                 default:
-                    return ErrorType("Incorrect type.", Truncate(ref value), true, typeDef.name, typeDef.@namespace, parent);
+                    return ErrorType("Incorrect type.", Truncate(value), true, typeDef.name, typeDef.@namespace, parent);
             }
         }
         
-        private static string Truncate (ref Bytes value) {
+        private static string Truncate (in Bytes value) {
             var str = value.AsString();
             if (str.Length < 20)
                 return str;

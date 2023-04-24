@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
-        internal static bool FindEnum (ValidationTypeDef typeDef, ref Bytes value, TypeValidator validator, ValidationTypeDef parent) {
+        internal static bool FindEnum (ValidationTypeDef typeDef, in Bytes value, TypeValidator validator, ValidationTypeDef parent) {
             var enumValues = typeDef.enumValues;
             for (int n = 0; n < enumValues.Length; n++) {
                 if (enumValues[n].IsEqual(value)) {

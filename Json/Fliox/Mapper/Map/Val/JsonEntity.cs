@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             success     = true;
             var pool    = reader.readerPool;
             if (pool != null) {
-                return new JsonEntity(pool.CreateJsonValue(ref serializer.json));
+                return new JsonEntity(pool.CreateJsonValue(serializer.json));
             }
             var json = serializer.json.AsArray();
             return new JsonEntity (new JsonValue(json));

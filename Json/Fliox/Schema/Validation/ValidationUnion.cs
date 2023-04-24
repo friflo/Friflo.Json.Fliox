@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             TypesAsString       = GetTypesAsString();
         }
         
-        internal static bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationTypeDef typeDef) {
+        internal static bool FindUnion (ValidationUnion union, in Bytes discriminant, out ValidationTypeDef typeDef) {
             var types = union.types;
             for (int n = 0; n < types.Length; n++) {
                 if (types[n].discriminant.IsEqual(discriminant)) {
