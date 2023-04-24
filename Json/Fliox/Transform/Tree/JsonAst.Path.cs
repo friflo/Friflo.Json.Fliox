@@ -51,11 +51,11 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     var error   = new Bytes();
                     for (int n = start; n < end; n++) {
                         if (b[n] == '.') {
-                            var dbl = ValueParser.ParseDoubleStd(ref bytes, ref error, out _);
+                            var dbl = ValueParser.ParseDoubleStd(bytes.AsSpan(), ref error, out _);
                             return new Scalar(dbl);
                         }
                     }
-                    var lng = ValueParser.ParseLong(ref bytes, ref error, out _);
+                    var lng = ValueParser.ParseLong(bytes.AsSpan(), ref error, out _);
                     return new Scalar(lng);
                 }
                 case ArrayStart:

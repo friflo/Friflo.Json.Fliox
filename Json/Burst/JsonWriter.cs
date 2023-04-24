@@ -388,7 +388,7 @@ namespace Friflo.Json.Burst
             else
                 MemberLong(ref key, ValueAsLong(out _));
             */
-            json.AppendBytes(ref value);
+            json.AppendBytes(value);
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
@@ -472,7 +472,7 @@ namespace Friflo.Json.Burst
         
         public void ElementBytes(ref Bytes value) {
             AddSeparator();
-            json.AppendBytes(ref value);
+            json.AppendBytes(value);
         }
         
         /// <summary>Write an array element of type <see cref="bool"/></summary>

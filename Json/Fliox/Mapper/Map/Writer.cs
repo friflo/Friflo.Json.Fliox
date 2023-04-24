@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendNull() {
-            bytes.AppendBytes(ref @null);
+            bytes.AppendBytes(@null);
             FlushFilledBuffer();
         }
         
@@ -202,14 +202,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public void WriteFieldKey(PropField field, ref bool firstMember) {
             if (!pretty) {
                 if (firstMember)
-                    bytes.AppendBytes(ref field.firstMember);
+                    bytes.AppendBytes(field.firstMember);
                 else
-                    bytes.AppendBytes(ref field.subSeqMember);
+                    bytes.AppendBytes(field.subSeqMember);
             } else {
                 bytes.AppendChar(firstMember ? '{' : ',');
                 IndentBegin();
                 bytes.AppendChar('"');
-                bytes.AppendBytes(ref field.nameBytes);
+                bytes.AppendBytes(field.nameBytes);
                 bytes.AppendChar('"');
                 bytes.AppendChar2(':', ' ');
             } 

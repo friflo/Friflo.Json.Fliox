@@ -96,14 +96,14 @@ namespace Friflo.Json.Fliox.Mapper
             var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
             WriteStart(value, mapper);
             bytes.Clear();
-            bytes.AppendBytes(ref intern.bytes);
+            bytes.AppendBytes(intern.bytes);
         }
 
         public void WriteObject(object value, ref Bytes bytes) {
             InitJsonWriterBytes();
             WriteStartObject(value);
             bytes.Clear();
-            bytes.AppendBytes(ref intern.bytes);
+            bytes.AppendBytes(intern.bytes);
         }
         
         // --------------- Stream ---------------

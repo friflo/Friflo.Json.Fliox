@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         private void SetKey(ref Bytes dst, string value) {
             dst.Clear();
             if (value == null) {
-                dst.AppendBytes(ref defaultKey);
+                dst.AppendBytes(defaultKey);
             } else {
                 dst.AppendStringUtf8(value);   
             }
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 sb.AppendChar(',');
             }
             sb.AppendChar('\"');
-            sb.AppendBytes(ref idKey);
+            sb.AppendBytes(idKey);
             sb.AppendString("\":");
             if (asIntKey) {
                 keyValue.AppendTo(ref sb, ref parser.format);
@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                             break;
                         foundKey = true;
                         if (ev == JsonEvent.ValueNumber && !parser.isFloat) {
-                            ValueParser.ParseLong(ref parser.value, ref sb, out bool success);
+                            ValueParser.ParseLong(parser.value.AsSpan(), ref sb, out bool success);
                             if (!success) {
                                 error = "invalid integer key: " + sb.AsString();
                                 return false;

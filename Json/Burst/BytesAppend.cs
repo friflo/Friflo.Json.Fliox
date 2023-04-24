@@ -10,9 +10,36 @@ namespace Friflo.Json.Burst
 {
     public partial struct Bytes
     {
+        /// <summary>
+        /// <b>Obsolete</b> - as <see cref="AppendBytesOld"/> is obsolete
+        /// </summary>
         public const int CopyRemainder = 8;
         
-        public unsafe void AppendBytes(ref Bytes src)
+        public ReadOnlySpan<byte> AsSpan() {
+            return new ReadOnlySpan<byte>(buffer, start, end - start);
+        }
+
+        public void AppendBytesSpan(in ReadOnlySpan<byte> bytes) {
+            int srcLen  = bytes.Length;
+            int dstEnd  = end;
+            int newEnd  = dstEnd + srcLen;
+            if (newEnd > buffer.Length) {
+                DoubleSize(newEnd);
+            }
+            var target = new Span<byte>(buffer, dstEnd, srcLen);
+            bytes.CopyTo(target);
+            end = newEnd;
+        }
+        
+        public void AppendBytes(in Bytes src) {
+            AppendBytesSpan(src.AsSpan());
+        }
+        
+        /// <summary>
+        /// <b>Obsolete</b> - use <see cref="AppendBytesSpan"/><br/>
+        /// Method not removed to remember crazy pointer arithmetic
+        /// </summary>
+        public unsafe void AppendBytesOld(ref Bytes src)
         {
 /*
             int     curEnd = end;

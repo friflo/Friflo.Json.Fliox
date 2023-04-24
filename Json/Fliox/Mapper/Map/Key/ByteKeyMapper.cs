@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
         
         public override byte ReadKey (ref Reader reader, out bool success) {
             ref var parser = ref reader.parser;
-            return (byte)ValueParser.ParseInt(ref parser.key, ref parser.errVal, out success);
+            return (byte)ValueParser.ParseInt(parser.key.AsSpan(), ref parser.errVal, out success);
         }
         
         public override JsonKey     ToJsonKey      (in byte key) {

@@ -210,7 +210,7 @@ namespace Friflo.Json.Burst
 
             error.msgBodyStart = errMsg.Len; 
             errMsg.AppendStr128(in msg);
-            errMsg.AppendBytes(ref value);
+            errMsg.AppendBytes(value);
             error.msgBodyEnd = errMsg.Len;
             
             errMsg.AppendStr32 (" path: '");
@@ -470,7 +470,7 @@ namespace Friflo.Json.Burst
                     return JsonEvent.Error;
                 // update current path
                 path.end = pathPos.array[stateLevel-1];  // "Clear"
-                path.AppendBytes(ref key);
+                path.AppendBytes(key);
                 pathPos.array[stateLevel] = path.end;
                 //
                 c = ReadWhiteSpace();
@@ -979,7 +979,7 @@ namespace Friflo.Json.Burst
         /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is true
         /// </summary>
         public double ValueAsDoubleStd(out bool success) {
-            double result = ValueParser.ParseDoubleStd(ref value, ref errVal, out success);
+            double result = ValueParser.ParseDoubleStd(value.AsSpan(), ref errVal, out success);
             if (!success)
                 SetErrorValue("", ref errVal);
             return result;
@@ -990,7 +990,7 @@ namespace Friflo.Json.Burst
         /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is true
         /// </summary>
         public float ValueAsFloatStd(out bool success) {
-            float result = ValueParser.ParseFloatStd(ref value, ref errVal, out success);
+            float result = ValueParser.ParseFloatStd(value.AsSpan(), ref errVal, out success);
             if (!success)
                 SetErrorValue("", ref errVal);
             return result;
@@ -1001,7 +1001,7 @@ namespace Friflo.Json.Burst
         /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is true
         /// </summary>
         public double ValueAsDouble(out bool success) {
-            double result = ValueParser.ParseDouble(ref value, ref errVal, out success);
+            double result = ValueParser.ParseDouble(value.AsSpan(), ref errVal, out success);
             if (!success) 
                 SetErrorValue("", ref errVal);
             return result;
@@ -1012,7 +1012,7 @@ namespace Friflo.Json.Burst
         /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is true
         /// </summary>
         public float ValueAsFloat(out bool success) {
-            double result = ValueParser.ParseDouble(ref value, ref errVal, out success);
+            double result = ValueParser.ParseDouble(value.AsSpan(), ref errVal, out success);
             if (!success) 
                 SetErrorValue("", ref errVal);
             if (result < float.MinValue) {
@@ -1031,7 +1031,7 @@ namespace Friflo.Json.Burst
         /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is false
         /// </summary>
         public long ValueAsLong(out bool success) {
-            long result = ValueParser.ParseLong(ref value, ref errVal, out success);
+            long result = ValueParser.ParseLong(value.AsSpan(), ref errVal, out success);
             if ( !success)
                 SetErrorValue("", ref errVal);
             return result;
@@ -1042,14 +1042,14 @@ namespace Friflo.Json.Burst
         /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is false
         /// </summary>
         public int ValueAsInt(out bool success) {
-            int result = ValueParser.ParseInt(ref value, ref errVal, out success);
+            int result = ValueParser.ParseInt(value.AsSpan(), ref errVal, out success);
             if (!success)
                 SetErrorValue("", ref errVal);
             return result;
         }
         
         public short ValueAsShort(out bool success) {
-            long result = ValueParser.ParseInt(ref value, ref errVal, out success);
+            long result = ValueParser.ParseInt(value.AsSpan(), ref errVal, out success);
             if (!success)
                 SetErrorValue("", ref errVal);
             if (result < short.MinValue) {
@@ -1064,7 +1064,7 @@ namespace Friflo.Json.Burst
         }
         
         public byte ValueAsByte(out bool success) {
-            long result = ValueParser.ParseInt(ref value, ref errVal, out success);
+            long result = ValueParser.ParseInt(value.AsSpan(), ref errVal, out success);
             if (!success)
                 SetErrorValue("", ref errVal);
             if (result < byte.MinValue) {

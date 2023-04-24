@@ -244,6 +244,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 left.IsEqual(right);
             }
         }
+        
+        private const string TestStr        = "abc";
+        private const int    AppendCount    = 10; // 100_000_000;
+        
+        [Test]
+        public void TestBytesAppendOldPerf() {
+
+            var bytes   = new Bytes (TestStr);
+            var target  = new Bytes (128);
+            for (int n = 0; n < AppendCount; n++) {
+                target.end = 0;
+                target.AppendBytesOld(ref bytes);
+            }
+            AreEqual(TestStr, target.AsString());
+        }
+        
+        [Test]
+        public void TestBytesAppendSpanPerf() {
+            var bytes   = new Bytes (TestStr).AsSpan();
+            var target  = new Bytes (128);
+            for (int n = 0; n < AppendCount; n++) {
+                target.end = 0;
+                target.AppendBytesSpan(bytes);
+            }
+            AreEqual(TestStr, target.AsString());
+        }
     }
     
     struct StructAssign

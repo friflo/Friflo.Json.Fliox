@@ -112,7 +112,7 @@ namespace Friflo.Json.Burst
             start   = 0;
             end     = 0;
             buffer  = AllocateBuffer(src.Len);
-            AppendBytes(ref src);
+            AppendBytes(src);
         }
         
         /// was previous in <see cref="ByteList"/> constructor

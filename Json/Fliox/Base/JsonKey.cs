@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox
             if (bytes.IsIntegral()) {
                 keyObj  = LONG;
                 var error = new Bytes();
-                lng     = ValueParser.ParseLong(ref bytes, ref error, out bool success);
+                lng     = ValueParser.ParseLong(bytes.AsSpan(), ref error, out bool success);
                 if (!success)
                     throw new InvalidOperationException("expect a valid integral type");
                 lng2    = 0;

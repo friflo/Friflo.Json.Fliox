@@ -49,8 +49,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             switch (parser.Event) {
                 case JsonEvent.ValueBool:   strBuf.AppendString(parser.boolValue ? "true" : "false");       break;
                 case JsonEvent.ValueString:
-                    strBuf.AppendChar('\'');strBuf.AppendBytes(ref parser.value); strBuf.AppendChar('\'');  break;
-                case JsonEvent.ValueNumber: strBuf.AppendBytes(ref parser.value);                           break;
+                    strBuf.AppendChar('\'');strBuf.AppendBytes(parser.value); strBuf.AppendChar('\'');      break;
+                case JsonEvent.ValueNumber: strBuf.AppendBytes(parser.value);                               break;
                 case JsonEvent.ValueNull:   strBuf.AppendString("null");                                    break;
                 case JsonEvent.ArrayStart:  strBuf.AppendString("[...]");                                   break;
                 case JsonEvent.ObjectStart: strBuf.AppendString("{...}");                                   break;

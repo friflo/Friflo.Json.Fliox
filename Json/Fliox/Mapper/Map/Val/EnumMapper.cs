@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         internal void Write(ref Writer writer, T slot) {
             if (enumToString.TryGetValue(slot, out var enumName)) {
                 writer.bytes.AppendChar('\"');
-                writer.bytes.AppendBytes(ref enumName);
+                writer.bytes.AppendBytes(enumName);
                 writer.bytes.AppendChar('\"');
             }
         }
