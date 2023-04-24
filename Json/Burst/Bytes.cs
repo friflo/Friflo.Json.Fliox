@@ -215,8 +215,13 @@ namespace Friflo.Json.Burst
                 return false;
             }
 #if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
-            var str = Encoding.UTF8.GetString(bytes);
-            return Guid.TryParse(str, out guid);
+            unsafe {
+                fixed (byte* ptr = bytes) {
+                    // GetString(ReadOnlySpan<byte> bytes)
+                    var str = Encoding.UTF8.GetString(ptr, bytes.Length);
+                    return Guid.TryParse(str, out guid);
+                }
+            }
 #else
             Span<char> span = stackalloc char[len];
             for (int n = 0; n < len; n++)
