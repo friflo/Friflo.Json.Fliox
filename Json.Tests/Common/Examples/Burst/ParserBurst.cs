@@ -5,14 +5,9 @@ using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
-// ReSharper disable InconsistentNaming
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-    using Str128 = Unity.Collections.FixedString128;
-#else
-    using Str32 = System.String;
-    using Str128 = System.String;
-#endif
+// JSON_BURST_TAG
+using Str32 = System.String;
+using Str128 = System.String;
 
 namespace Friflo.Json.Tests.Common.Examples.Burst
 {

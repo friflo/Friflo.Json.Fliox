@@ -2,10 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using System;
 
-#if JSON_BURST
-    using Unity.Collections.LowLevel.Unsafe;
-#endif
-
 namespace Friflo.Json.Burst
 {
     public partial struct Bytes
@@ -67,13 +63,9 @@ namespace Friflo.Json.Burst
             }
            
             end += len;
-#if JSON_BURST
-            byte*  srcPtr =  &((byte*)src.buffer.array.GetUnsafeList()->Ptr) [src.start];
-            byte*  destPtr = &((byte*)buffer.array.GetUnsafeList()->Ptr)     [curEnd];
-#else
-            fixed (byte* srcPtr =     &src.buffer                            [src.start])
-            fixed (byte* destPtr =    &buffer                                [curEnd])
-#endif
+            
+            fixed (byte* srcPtr =     &src.buffer   [src.start])
+            fixed (byte* destPtr =    &buffer       [curEnd])
             {
                 if (len <= 8) {
                     *(long*)(destPtr +  0) = *(long*)(srcPtr +  0);
@@ -135,12 +127,8 @@ namespace Friflo.Json.Burst
                     *(long*)(destPtr + 56) = *(long*)(srcPtr + 56);
                     return;
                 }
-#if JSON_BURST
-                UnsafeUtility.MemCpy(destPtr, srcPtr, len);
-#else
                 Buffer.MemoryCopy(srcPtr, destPtr, buffer.Length - curEnd, len);
                 // Buffer.BlockCopy(src.buffer.array, src.start, buffer.array, curEnd, len);
-#endif
             }
         }
     }

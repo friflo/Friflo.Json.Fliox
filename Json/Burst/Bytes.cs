@@ -5,15 +5,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Friflo.Json.Burst.Utils;
 
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-    using Str128 = Unity.Collections.FixedString128;
-#else
-    using Str32 = System.String;
-    using Str128 = System.String;
-    // ReSharper disable InconsistentNaming
-    [assembly: CLSCompliant(true)]
-#endif
+// JSON_BURST_TAG
+using Str32 = System.String;
+using Str128 = System.String;
+
+// ReSharper disable InconsistentNaming
+[assembly: CLSCompliant(true)]
 
 namespace Friflo.Json.Burst
 {
@@ -87,23 +84,13 @@ namespace Friflo.Json.Burst
             AppendStringUtf8(str);
         }
         
+        // JSON_BURST_TAG
         /// <summary> <see cref="Bytes32.FromBytes"/> expect capacity + 32</summary>
         public Bytes (string str, Untracked _) {
             int byteLen =  utf8.GetByteCount(str);
            
             buffer = new byte[byteLen + 32];
-#if JSON_BURST
-            int byteLen = 0;
-            unsafe {
-                byte* arrPtr = (byte*)Unity.Collections.LowLevel.Unsafe.NativeListUnsafeUtility.GetUnsafePtr(buffer.array);
-                fixed (char* strPtr = str) {
-                    if (arrPtr != null)
-                        Encoding.UTF8.GetBytes(strPtr, str.Length, arrPtr, buffer.array.Length);
-                }
-            }
-#else
             utf8.GetBytes(str, 0, str.Length, buffer, 0);
-#endif
             start = 0;
             end     = byteLen;
         }
@@ -210,7 +197,7 @@ namespace Friflo.Json.Burst
                 guid = new Guid();
                 return false;
             }
-#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
+#if NETSTANDARD2_0
             unsafe {
                 fixed (byte* ptr = bytes) {
                     // GetString(ReadOnlySpan<byte> bytes) not available in netstandard2.0
@@ -220,8 +207,9 @@ namespace Friflo.Json.Burst
             }
 #else
             Span<char> span = stackalloc char[len];
-            for (int n = 0; n < len; n++)
+            for (int n = 0; n < len; n++) {
                 span[n] = (char)bytes[n];
+            }
             return Guid.TryParse(span, out guid);
 #endif
         }
@@ -242,26 +230,11 @@ namespace Friflo.Json.Burst
 #endif
         }
 
-#if JSON_BURST
-        public bool IsEqual32(in Str32 value) {
-            int len = Len;
-            if (len != value.Length)
-                return false;
-            ref var str = ref buffer.array;
-            int valEnd  = start + len;
-            int i2 = 0;
-            // ref ByteList str2 = ref fix;
-            for (int i = start; i < valEnd; i++) {
-                if (str[i] != value[i2++])
-                    return false;
-            }
-            return true;
-        }
-#else
-        public bool IsEqual32 (in string cs) {
+
+        public bool IsEqual32 (string cs) {
             return IsEqualString (cs);
         }
-#endif
+        
         public bool IsEqual(in Bytes value)
         {
             /*   perf notes: 500_000_000 "abc" == "123"  SequenceEqual: 2.5 sec,  for loop: 1.3 sec
@@ -314,31 +287,15 @@ namespace Friflo.Json.Burst
             throw new NotImplementedException("not implemented by intention to avoid boxing. Use BytesHash and its Equality comparer");
         }
 
-#if JSON_BURST
-        public Str32 ToStr32() {
-            var ret = new Unity.Collections.FixedString32();
-            ref var buf = ref buffer.array;
-            for (int i = start; i < end; i++)
-                ret.Add(buf[i]);
-            return ret;
-        }
-        
-        public Str128 ToStr128() {
-            var ret = new Unity.Collections.FixedString128();
-            ref var buf = ref buffer.array;
-            for (int i = start; i < end; i++)
-                ret.Add(buf[i]);
-            return ret;
-        }
-#else
+        // JSON_BURST_TAG
         public Str32 ToStr32() {
             return AsString();
         }
         
+        // JSON_BURST_TAG
         public Str128 ToStr128() {
             return AsString();
         }
-#endif
         
         public string AsString() {
             return ToString(buffer, start, end - start);
@@ -364,27 +321,11 @@ namespace Friflo.Json.Burst
          */
         public static string ToString (byte[] data, int pos, int size)
         {
-#if JSON_BURST
-            unsafe {
-                sbyte* sbytePtr = (sbyte*)Unity.Collections.LowLevel.Unsafe.NativeListUnsafeUtility.GetUnsafePtr(data.array);
-                return new string(sbytePtr, pos, size, Encoding.UTF8);
-            }
-#else
-            /*
-            sbyte[] sbyteData = (sbyte[]) (Array)data.array;
-            unsafe {
-                fixed (sbyte* sbytePtr = sbyteData)
-                    return new string(sbytePtr, pos, size, Encoding.UTF8);
-            } */
             return Encoding.UTF8.GetString(data, pos, size);
-#endif
         }
         
         public char[] GetChars (ref char[] dst, out int length)
         {
-#if JSON_BURST
-            return ToString();
-#else
             int len             = end - start;
             int maxCharCount    = utf8.GetMaxCharCount(len);
             if (maxCharCount > dst.Length)
@@ -392,15 +333,6 @@ namespace Friflo.Json.Burst
 
             length = utf8.GetChars(buffer, start, len, dst, 0);
             return dst;
-            /* unsafe {
-                fixed (char* chars = dst) {
-                    return new string(chars, 0, writtenChars);
-                }
-            } */
-            /* ReadOnlySpan<char> span = new ReadOnlySpan<char>(dst, 0, writtenChars);
-               return new string(span); */
-            // return new string(dst, 0, writtenChars);
-#endif
         }
         
         private static readonly UTF8Encoding utf8 = new UTF8Encoding(false);
@@ -415,18 +347,7 @@ namespace Friflo.Json.Burst
             if (maxByteLen > buffer.Length) {
                 DoubleSize(maxByteLen);
             }
-#if JSON_BURST
-            int byteLen = 0;
-            unsafe {
-                byte* arrPtr = (byte*)Unity.Collections.LowLevel.Unsafe.NativeListUnsafeUtility.GetUnsafePtr(buffer.array);
-                fixed (char* strPtr = str) {
-                    if (arrPtr != null)
-                        byteLen = Encoding.UTF8.GetBytes(strPtr, str.Length, arrPtr, buffer.array.Length);
-                }
-            }
-#else
             int byteLen = utf8.GetBytes(str, 0, str.Length, buffer, start);
-#endif
             end += byteLen;
         }
 
@@ -490,40 +411,17 @@ namespace Friflo.Json.Burst
         {
             AppendStringUtf8(val);
         }
-        
-#if JSON_BURST
-        public void AppendStr128 (in Str128 str) {
-            int strLen = str.Length;
-            EnsureCapacity(Len + strLen);
-            int curEnd = end;
-            ref var buf = ref buffer.array;
-            for (int n = 0; n < strLen; n++)
-                buf[curEnd + n] = str[n];
-            end += strLen;
-            hc = BytesConst.notHashed;
-        }
 
-        public void AppendStr32 (in Str32 str) {
-            int strLen = str.Length;
-            EnsureCapacity(Len + strLen);
-            int curEnd = end;
-            ref var buf = ref buffer.array;
-            for (int n = 0; n < strLen; n++)
-                buf[curEnd + n] = str[n];
-            end += strLen;
-            hc = BytesConst.notHashed;
-        }
-
-#else
-        public void AppendStr128 (in string str) {
+        // JSON_BURST_TAG
+        public void AppendStr128 (string str) {
             AppendString(str);
         }
         
         // Note: Prefer using AppendStr32 (ref string str)
-        public void AppendStr32 (in string str) {
+        // JSON_BURST_TAG
+        public void AppendStr32 (string str) {
             AppendString(str);
         }
-#endif
 
         public void AppendArray(byte[] str, int start, int end)
         {

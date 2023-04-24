@@ -7,12 +7,8 @@ using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-#else
-    using Str32 = System.String;
-#endif
-
+// JSON_BURST_TAG
+using Str32 = System.String;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
@@ -211,19 +207,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             public void RootManualSkip(ref Utf8JsonParser p) {
                 ref var key = ref p.key;
                 while (NextObjectMember(ref p)) {
-                    if      (key.IsEqual32(in nm.map)      && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
-                    else if (key.IsEqual32(in nm.map2)     && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
-                    else if (key.IsEqual32(in nm.listStr)  && p.Event == JsonEvent.ArrayStart)    { ReadListStrManual(ref p); }
-                    else if (key.IsEqual32(in nm.arr)      && p.Event == JsonEvent.ArrayStart)    { ReadArrManual(ref p); }
-                    else if (key.IsEqual32(in nm.boolArr)  && p.Event == JsonEvent.ArrayStart)    { ReadBoolArrManual(ref p); }
-                    else if (key.IsEqual32(in nm.i64Arr)   && p.Event == JsonEvent.ArrayStart)    { int3.ReadManual(ref p); }
-                    else if (key.IsEqual32(in nm.i64)      && p.Event == JsonEvent.ValueNumber)   { i64 = p.ValueAsLong(out _); }
-                    else if (key.IsEqual32(in nm.i64Neg)   && p.Event == JsonEvent.ValueNumber)   { i64Neg = p.ValueAsLong(out _); }
-                    else if (key.IsEqual32(in nm.str)      && p.Event == JsonEvent.ValueString)   { str.Set(p.value); }
-                    else if (key.IsEqual32(in nm.t)        && p.Event == JsonEvent.ValueBool)     { t = p.boolValue; }
-                    else if (key.IsEqual32(in nm.n)        && p.Event == JsonEvent.ValueNull)     { foundNull = true; }
-                    else if (key.IsEqual32(in nm.dbl)      && p.Event == JsonEvent.ValueNumber)   { dbl = p.ValueAsDouble(out _); }
-                    else if (key.IsEqual32(in nm.flt)      && p.Event == JsonEvent.ValueNumber)   { flt = p.ValueAsFloat(out _); }
+                    if      (key.IsEqual32(nm.map)      && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
+                    else if (key.IsEqual32(nm.map2)     && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
+                    else if (key.IsEqual32(nm.listStr)  && p.Event == JsonEvent.ArrayStart)    { ReadListStrManual(ref p); }
+                    else if (key.IsEqual32(nm.arr)      && p.Event == JsonEvent.ArrayStart)    { ReadArrManual(ref p); }
+                    else if (key.IsEqual32(nm.boolArr)  && p.Event == JsonEvent.ArrayStart)    { ReadBoolArrManual(ref p); }
+                    else if (key.IsEqual32(nm.i64Arr)   && p.Event == JsonEvent.ArrayStart)    { int3.ReadManual(ref p); }
+                    else if (key.IsEqual32(nm.i64)      && p.Event == JsonEvent.ValueNumber)   { i64 = p.ValueAsLong(out _); }
+                    else if (key.IsEqual32(nm.i64Neg)   && p.Event == JsonEvent.ValueNumber)   { i64Neg = p.ValueAsLong(out _); }
+                    else if (key.IsEqual32(nm.str)      && p.Event == JsonEvent.ValueString)   { str.Set(p.value); }
+                    else if (key.IsEqual32(nm.t)        && p.Event == JsonEvent.ValueBool)     { t = p.boolValue; }
+                    else if (key.IsEqual32(nm.n)        && p.Event == JsonEvent.ValueNull)     { foundNull = true; }
+                    else if (key.IsEqual32(nm.dbl)      && p.Event == JsonEvent.ValueNumber)   { dbl = p.ValueAsDouble(out _); }
+                    else if (key.IsEqual32(nm.flt)      && p.Event == JsonEvent.ValueNumber)   { flt = p.ValueAsFloat(out _); }
                     else                                                                           { p.SkipEvent(); }
                 }
             }

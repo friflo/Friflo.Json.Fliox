@@ -45,7 +45,7 @@ namespace Friflo.Json.Burst
         Persistent
     }
 #if JSON_BURST
-    public struct AllocUtils
+    internal struct AllocUtils
     {
         public static Unity.Collections.Allocator AsAllocator(AllocType allocType) {
             switch (allocType) {

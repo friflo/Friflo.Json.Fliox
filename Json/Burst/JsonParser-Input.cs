@@ -5,10 +5,6 @@ using System.IO;
 using System.Text;
 using Friflo.Json.Burst.Utils;
 
-#if JSON_BURST
-    using Unity.Collections.LowLevel.Unsafe;
-#endif
-
 namespace Friflo.Json.Burst
 {
     enum InputType {
@@ -82,7 +78,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        public void InitParser(StreamBytesReader reader) {
+/*      public void InitParser(StreamBytesReader reader) {
             inputType       = InputType.ByteReader;
 #if JSON_BURST
             readerHandle    = NonBurstReader.AddReader(reader);
@@ -91,7 +87,8 @@ namespace Friflo.Json.Burst
 #endif
             Start();
         }
-        
+*/
+
         public void InitParser(Stream stream) {
             inputType           = InputType.ByteReader;
             IBytesReader reader  = new StreamBytesReader(stream);
@@ -103,7 +100,8 @@ namespace Friflo.Json.Burst
             Start();
         }
         
-        /* public void InitParser(byte[] array, int start, int count) {
+        /*
+        public void InitParser(byte[] array, int start, int count) {
             inputType           = InputType.ByteReader;
             IBytesReader reader  = new ByteArrayReader(array, start, count);
 #if JSON_BURST
@@ -130,15 +128,10 @@ namespace Friflo.Json.Burst
                 inputArrayPos = inputArrayEnd;
             
             int len = inputArrayPos - curPos;
-            if (len == 0)
+            if (len == 0) {
                 return 0;
-#if JSON_BURST
-            byte*  srcPtr =  &((byte*)inputByteList.array.GetUnsafeList()->Ptr) [curPos];
-            byte*  destPtr = &((byte*)buf.buffer.array.GetUnsafeList()->Ptr)    [0];
-            UnsafeUtility.MemCpy(destPtr, srcPtr, len);
-#else
+            }
             Buffer.BlockCopy(inputArray, curPos, buf.buffer, 0, len);
-#endif
             return len;
         }
     }

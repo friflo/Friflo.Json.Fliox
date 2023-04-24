@@ -4,10 +4,8 @@ using System;
 
 namespace Friflo.Json.Burst.Utils
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public struct ByteList : IDisposable
+    [Obsolete("was used for JSON_BURST. Source kept for history", true)]
+    internal struct ByteList : IDisposable
     {
 #if JSON_BURST
         public Unity.Collections.NativeList<byte> array;

@@ -8,12 +8,8 @@ using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-#else
-    using Str32 = System.String;
-#endif
-
+// JSON_BURST_TAG
+using Str32 = System.String;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
@@ -89,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
                 Str32 src = "a©€😎🌍";
                 dst.Clear();
-                Utf8JsonWriter.AppendEscString(ref dst, in src);
+                Utf8JsonWriter.AppendEscString(ref dst, src);
                 AreEqual("\"" + src + "\"", dst.AsString());
             } finally {
                 dst.Dispose();
@@ -154,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             for (int codePoint = from; codePoint < to; codePoint++) {
                 dst.Clear();
                 string str = char.ConvertFromUtf32 (codePoint);
-                Utf8JsonWriter.AppendEscString(ref dst, in str);
+                Utf8JsonWriter.AppendEscString(ref dst, str);
                 AreEqual($"\"{str}\"", dst.AsString());
             }
         }
@@ -162,7 +158,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         private void AssertAppendEscStringChar(ref Bytes dst, char escChar, string expect) {
             dst.Clear();
             string str = char.ConvertFromUtf32 (escChar);
-            Utf8JsonWriter.AppendEscString(ref dst, in str);
+            Utf8JsonWriter.AppendEscString(ref dst, str);
             AreEqual($"\"\\{expect}\"", dst.AsString());
         }
 

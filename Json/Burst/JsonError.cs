@@ -2,13 +2,8 @@
 // See LICENSE file in the project root for full license information.
 using System;
 
-#if JSON_BURST
-    using Str128 = Unity.Collections.FixedString128;
-#else
-    using Str128 = System.String;
-    // ReSharper disable InconsistentNaming
-#endif
-
+// JSON_BURST_TAG
+using Str128 = System.String;
 
 namespace Friflo.Json.Burst
 {
@@ -24,10 +19,9 @@ namespace Friflo.Json.Burst
         
         internal    int             msgBodyStart;
         internal    int             msgBodyEnd;
-        
-#if !JSON_BURST
+        // JSON_BURST_TAG - was not available with JSON_BURST
         public      IErrorHandler   errorHandler;
-#endif
+
         public void InitJsonError(int capacity) {
             msg.InitBytes(capacity);
         }
@@ -39,10 +33,9 @@ namespace Friflo.Json.Burst
         public bool Error (int pos) {
             ErrSet = true;
             Pos = pos;
-#if !JSON_BURST
-            if (errorHandler != null)
+            if (errorHandler != null) {
                 errorHandler.HandleError(pos, msg);
-#endif
+            }
             return false;
         }
 

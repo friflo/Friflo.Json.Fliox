@@ -5,12 +5,8 @@ using System.Diagnostics;
 using System.Text;
 using Friflo.Json.Burst.Utils;
 
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-#else
-    using Str32 = System.String;
-    // ReSharper disable InconsistentNaming
-#endif
+// JSON_BURST_TAG
+using Str32 = System.String;
 
 namespace Friflo.Json.Burst
 {
@@ -179,7 +175,7 @@ namespace Friflo.Json.Burst
 
         //         Tight loop! Avoid calling any trivial method
         // --- comment to enable source alignment in WinMerge
-        public static void AppendEscString(ref Bytes dst, in string src) {
+        public static void AppendEscString(ref Bytes dst, string src) {
             int maxByteLen = Utf8.GetMaxByteCount(src.Length) + 2; // + 2 * '"'
             dst.EnsureCapacityAbs(dst.end + maxByteLen);
 #if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
@@ -266,8 +262,8 @@ namespace Friflo.Json.Burst
             }
         }
 
-        private void AppendKeyString(ref Bytes dst, in Str32 key) {
-            AppendEscString(ref dst, in key);
+        private void AppendKeyString(ref Bytes dst, Str32 key) {
+            AppendEscString(ref dst, key);
             if (!pretty) {
                 dst.AppendChar(':');
             } else {
@@ -319,61 +315,54 @@ namespace Friflo.Json.Burst
 
         // --- comment to enable source alignment in WinMerge
         /// <summary>Writes the key of key/value pair where the value will be an array</summary>
-        public void MemberArrayStart(in Str32 key, bool wrapItems) {
+        public void MemberArrayStart(Str32 key, bool wrapItems) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref json, in key);
+            AppendKeyString(ref json, key);
             SetStartGuard();
             ArrayStart(wrapItems);
         }
         
         /// <summary>Writes the key of key/value pair where the value will be an object</summary>
-        public void MemberObjectStart(in Str32 key) {
+        public void MemberObjectStart(Str32 key) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref json, in key);
+            AppendKeyString(ref json, key);
             SetStartGuard();
             ObjectStart();
         }
 
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
-        public void MemberStr(in Str32 key, in Bytes value) {
+        public void MemberStr(Str32 key, in Bytes value) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref json, in key);
+            AppendKeyString(ref json, key);
             AppendEscStringBytes(ref json, in value);
         }
 
         /// <summary>
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// </summary>
-#if JSON_BURST
-        public void MemberStr(in Str32 key, in Unity.Collections.FixedString128 value) {
-            strBuf.Clear();
-            strBuf.AppendStr128(in value);
-            MemberStr(in key, in strBuf);
-        }
-#else
-        public void MemberStr(in string key, in string value) {
+        public void MemberStr(string key, string value) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref json, in key);
-            AppendEscString(ref json, in value);
+            AppendKeyString(ref json, key);
+            AppendEscString(ref json, value);
         }
-#endif
+        
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
-        public void MemberDbl(in Str32 key, double value) {
+        public void MemberDbl(Str32 key, double value) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref json, in key);
+            AppendKeyString(ref json,  key);
             format.AppendDbl(ref json, value);
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
-        public void MemberLng(in Str32 key, long value) {
+        public void MemberLng(Str32 key, long value) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref json, in key);
+            AppendKeyString(ref json,   key);
             format.AppendLong(ref json, value);
         }
         
@@ -392,19 +381,19 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
-        public void MemberBln(in Str32 key, bool value) {
+        public void MemberBln(Str32 key, bool value) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref json, in key);
+            AppendKeyString(ref json,   key);
             format.AppendBool(ref json, value);
         }
         
         /// <summary>Writes a key/value pair where the value is null</summary>
-        public void MemberNul(in Str32 key) {
+        public void MemberNul(Str32 key) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref json, in key);
-            json.AppendStr32(in @null);
+            AppendKeyString(ref json, key);
+            json.AppendStr32(@null);
         }
         
         // ----------------------------- array with elements -----------------------------
@@ -439,23 +428,14 @@ namespace Friflo.Json.Burst
             AddSeparator();
             AppendEscStringBytes(ref json, in value);
         }
-        
-#if JSON_BURST
-        public void ElementStr(in Unity.Collections.FixedString128 value) {
-            strBuf.Clear();
-            strBuf.AppendStr128(in value);
-            AssertElement();
-            AddSeparator();
-            AppendEscStringBytes(ref json, in strBuf);
-        }
-#else
+
         /// <summary>Write an array element of type <see cref="string"/></summary>
-        public void ElementStr(in string value) {
+        public void ElementStr(string value) {
             AssertElement();
             AddSeparator();
-            AppendEscString(ref json, in value);
+            AppendEscString(ref json, value);
         }
-#endif
+
         /// <summary>Write an array element of type <see cref="double"/></summary>
         public void ElementDbl(double value) {
             AssertElement();
@@ -486,7 +466,7 @@ namespace Friflo.Json.Burst
         public void ElementNul() {
             AssertElement();
             AddSeparator();
-            json.AppendStr32(in @null);
+            json.AppendStr32(@null);
         }
         
         // ----------------- utilities

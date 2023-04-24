@@ -46,9 +46,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             jsonWriterStub  = null;
             setMissingFields= false;
             readerPool      = null;
-#if !JSON_BURST
             parser.error.errorHandler = DefaultErrorHandler;
-#endif
         }
         
         public void Dispose() {

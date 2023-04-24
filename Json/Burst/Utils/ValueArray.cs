@@ -7,6 +7,7 @@ namespace Friflo.Json.Burst.Utils
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
+    // JSON_BURST_TAG
     public struct ValueArray<T> : IDisposable where T : struct
     {
 #if JSON_BURST

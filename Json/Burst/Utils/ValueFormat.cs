@@ -3,11 +3,8 @@
 using System;
 using System.Globalization;
 
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-#else
-    using Str32 = System.String;
-#endif
+// JSON_BURST_TAG
+using Str32 = System.String;
 
 namespace Friflo.Json.Burst.Utils
 {
@@ -45,9 +42,9 @@ namespace Friflo.Json.Burst.Utils
         public void AppendBool (ref Bytes dst, bool val)
         {
             if (val)
-                dst.AppendStr32(in @true);
+                dst.AppendStr32(@true);
             else
-                dst.AppendStr32(in @false);
+                dst.AppendStr32(@false);
         }
 
         public void AppendInt (ref Bytes dst, int val)
@@ -137,24 +134,24 @@ namespace Friflo.Json.Burst.Utils
         public void AppendFlt (ref Bytes dst, float val)
         {
             if (val == 0.0f) {
-                dst.AppendStr32(in zero);
+                dst.AppendStr32(zero);
                 return;
             }
 
             // if (val == 1.0f / 0.0f) {
             if (float.IsPositiveInfinity(val)) {
-                dst.AppendStr32(in infinity);
+                dst.AppendStr32(infinity);
                 return;
             }
 
             // if (val == -1.0f / 0.0f) {
             if (float.IsNegativeInfinity(val)) {
-                dst.AppendStr32(in negInfinity);
+                dst.AppendStr32(negInfinity);
                 return;
             }
 
             if (Single.IsNaN(val)) {
-                dst.AppendStr32(in nan);
+                dst.AppendStr32(nan);
                 return;
             }
 
@@ -181,24 +178,24 @@ namespace Friflo.Json.Burst.Utils
         public void AppendDbl (ref Bytes dst, double val)
         {
             if (val == 0.0) {
-                dst.AppendStr32(in zero);
+                dst.AppendStr32(zero);
                 return;
             }
 
             // if (val == 1.0 / 0.0) {
             if (double.IsPositiveInfinity(val)) {
-                dst.AppendStr32(in infinity);
+                dst.AppendStr32(infinity);
                 return;
             }
 
             // if (val == -1.0 / 0.0) {
             if (double.IsNegativeInfinity(val)) {
-                dst.AppendStr32(in negInfinity);
+                dst.AppendStr32(negInfinity);
                 return;
             }
 
             if (Double.IsNaN(val)) {
-                dst.AppendStr32(in nan);
+                dst.AppendStr32(nan);
                 return;
             }
 

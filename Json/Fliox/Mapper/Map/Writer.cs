@@ -31,11 +31,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public              bool                writeNullMembers;
 
         internal            OutputType          outputType;
-#if JSON_BURST
-        public              int                 writerHandle;
-#else
         public              IBytesWriter        bytesWriter;
-#endif
         // public           int                 GetLevel() => level;
 
         public Writer(TypeStore typeStore) {
@@ -50,11 +46,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             outputType      = OutputType.ByteList;
             pretty          = false;
             writeNullMembers= true;
-#if JSON_BURST
-            writerHandle    = -1;
-#else
             bytesWriter     = null;
-#endif
         }
         
         public void Dispose() {
@@ -67,7 +59,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         // --- WriteUtils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteString(string str) {
-            Utf8JsonWriter.AppendEscString(ref bytes, in str);
+            Utf8JsonWriter.AppendEscString(ref bytes, str);
         }
         
         public void WriteJsonKey(in JsonKey value) {
@@ -87,7 +79,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public void WriteShortString(in ShortString value) {
             var str = value.str;
             if (str != null) {
-                Utf8JsonWriter.AppendEscString(ref bytes, in str);
+                Utf8JsonWriter.AppendEscString(ref bytes, str);
                 return;
             }
             int valueLength = value.GetShortLength() + 2; // <value> + 2 * "

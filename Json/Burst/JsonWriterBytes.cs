@@ -25,33 +25,6 @@ namespace Friflo.Json.Burst
         
         
         
-#if JSON_BURST
-        public static void AppendEscString(ref Bytes dst, in Unity.Collections.FixedString32 src) {
-            dst.EnsureCapacityAbs(dst.end + 2 * src.Length);
-            int end = src.Length;
-            ref var dstArr = ref dst.buffer.array;
-            var srcArr = src;
-            
-            dstArr[dst.end++] = (byte)'"';
-            for (int n = 0; n < end; n++) {
-                byte c =  srcArr[n];
-
-                switch (c) {
-                    case (byte) '"':  dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) '\"'; break;
-                    case (byte) '\\': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) '\\'; break;
-                    case (byte) '\b': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'b'; break;
-                    case (byte) '\f': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'f'; break;
-                    case (byte) '\r': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'r'; break;
-                    case (byte) '\n': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'n'; break;
-                    case (byte) '\t': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 't'; break;
-                    default:
-                        dstArr[dst.end++] = c;
-                        break;
-                }
-            }
-            dstArr[dst.end++] = (byte)'"';
-        }
-#endif
         // --- comment to enable source alignment in WinMerge
         public static void AppendEscStringBytes(ref Bytes dst, in Bytes src) {
             int srcLen      = src.end - src.start;
@@ -131,21 +104,13 @@ namespace Friflo.Json.Burst
         /// <summary>
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// </summary>
-#if JSON_BURST
-        public void MemberStr(in Bytes key, in Unity.Collections.FixedString32 value) {
+        public void MemberStr(in Bytes key, string value) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref json, in key);
-            AppendEscString(ref json, in value);
+            AppendEscString(ref json, value);
         }
-#else
-        public void MemberStr(in Bytes key, in string value) {
-            AssertMember();
-            AddSeparator();
-            AppendKeyBytes(ref json, in key);
-            AppendEscString(ref json, in value);
-        }
-#endif
+
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
         public void MemberDbl(in Bytes key, double value) {
             AssertMember();
@@ -175,7 +140,7 @@ namespace Friflo.Json.Burst
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref json, in key);
-            json.AppendStr32(in @null);
+            json.AppendStr32(@null);
         }
         
  

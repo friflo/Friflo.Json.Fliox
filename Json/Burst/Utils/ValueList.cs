@@ -7,50 +7,8 @@ namespace Friflo.Json.Burst.Utils
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-#if JSON_BURST
-    public struct ValueList<T> : IDisposable where T : struct
-    {
-        public Unity.Collections.NativeList<T> array;
-
-        public ValueList(int size,  AllocType allocType) {
-            var allocator = AllocUtils.AsAllocator(allocType);
-            array = new Unity.Collections.NativeList<T>(size, allocator);
-        }
-
-        // public int Length => array.Length;
-        public int Count => array.Length;
-
-        public void Clear() {
-            array.Clear();
-        }
-
-        public ref T ElementAt(int index) {
-            return ref array.ElementAt(index);
-        }
-
-        public void Resize(int size) {
-            array.Resize(size, Unity.Collections.NativeArrayOptions.ClearMemory);
-        }
-
-        public void Add(T value) {
-            array.Add(value);
-        }
-
-        public void RemoveAt(int index) {
-            array.RemoveAt(index);
-        }
-        
-        public void Dispose() {
-            array.Dispose();
-        }
-
-        public bool IsCreated() {
-            return array.IsCreated;
-        }
-    }
-        
-#else // MANAGED
     // managed version does not have the constraint: where T : struct
+    // JSON_BURST_TAG - was used for JSON_BURST to implement a ValueList<> with a Unity.Collections.NativeList<T>
     public struct ValueList<T> : IDisposable 
     {
         public T[] array;
@@ -116,5 +74,4 @@ namespace Friflo.Json.Burst.Utils
             return array != null;
         }
     }
-#endif
 }

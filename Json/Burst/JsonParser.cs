@@ -4,14 +4,9 @@ using System;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Burst.Utils;
 
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-    using Str128 = Unity.Collections.FixedString128;
-    // ReSharper disable InconsistentNaming
-#else
-    using Str32 = System.String;
-    using Str128 = System.String;
-#endif
+// JSON_BURST_TAG
+using Str32 = System.String;
+using Str128 = System.String;
 
 namespace Friflo.Json.Burst
 {
@@ -149,11 +144,7 @@ namespace Friflo.Json.Burst
         private     const int           BufSize = 4096; // Test with 1 to find edge cases
         private     InputType           inputType;
         private     bool                inputStreamOpen;
-#if JSON_BURST
-        private     int                 readerHandle;
-#else
         private     IBytesReader        bytesReader;
-#endif
         private     byte[]              inputArray;
         private     int                 inputArrayPos;
         private     int                 inputArrayEnd;
@@ -201,7 +192,7 @@ namespace Friflo.Json.Burst
             // Pseudo format: $"{module} error - {msg}{value} path: {path} at position: {position}";
             ref Bytes errMsg = ref error.msg;
             errMsg.Clear();
-            errMsg.AppendStr32(in module);
+            errMsg.AppendStr32(module);
             switch (errorType) {
                 case ErrorType.JsonError:           errMsg.AppendStr32 ("/JSON error: ");    break;
                 case ErrorType.Assertion:           errMsg.AppendStr32 ("/assertion: ");     break;
@@ -209,7 +200,7 @@ namespace Friflo.Json.Burst
             }
 
             error.msgBodyStart = errMsg.Len; 
-            errMsg.AppendStr128(in msg);
+            errMsg.AppendStr128(msg);
             errMsg.AppendBytes(value);
             error.msgBodyEnd = errMsg.Len;
             
@@ -344,7 +335,7 @@ namespace Friflo.Json.Burst
                             str.AppendChar(']');
                         }
                         else
-                            str.AppendStr32(in emptyArray);
+                            str.AppendStr32(emptyArray);
                         break;
                 }
                 // Limit path "string" to reasonable size. Otherwise DDoS may abuse unlimited error messages.

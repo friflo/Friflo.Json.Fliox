@@ -11,7 +11,7 @@ namespace Friflo.Json.Burst.Utils
         private static void SetErrorFalse (string msg, in ReadOnlySpan<byte> value, ref Bytes dst) {
             if (dst.IsCreated()) {
                 dst.Clear();
-                dst.AppendStr128(in msg);
+                dst.AppendStr128(msg);
                 dst.AppendBytesSpan(value);
             }
         }

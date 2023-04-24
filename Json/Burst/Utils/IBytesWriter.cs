@@ -2,14 +2,9 @@
 // See LICENSE file in the project root for full license information.
 using System.IO;
 
-#if JSON_BURST
-    using Unity.Burst;
-    using System.Collections.Generic;
-    using Unity.Collections.LowLevel.Unsafe;
-#endif
-
 namespace Friflo.Json.Burst.Utils
 {
+    // JSON_BURST_TAG
     public interface IBytesWriter
     {
         void Write(byte[] src, int count);
@@ -17,31 +12,16 @@ namespace Friflo.Json.Burst.Utils
     
     public sealed class StreamBytesWriter: IBytesWriter {
         private readonly Stream stream;
-#if JSON_BURST
-        private byte[] buffer = new byte[4096];
-#endif
         
         public StreamBytesWriter(Stream stream) {
             this.stream = stream;
         }
         
         public  void Write(byte[] src, int count) {
-#if JSON_BURST
-            if (buffer.Length < count)
-                buffer = new byte[2 * count];
-            unsafe {
-                byte* srcPtr = &((byte*) src.array.GetUnsafeList()->Ptr)[0];
-                fixed (byte* destPtr = &buffer[0]) {
-                    UnsafeUtility.MemCpy(destPtr, srcPtr, count);
-                }
-            }
-            stream.Write(buffer, 0, count);
-#else
             stream.Write(src, 0, count);
-#endif
         }
     }
-    
+
 #if JSON_BURST
     // Enables IBytesWriter (and by this Stream's) support when compiling with JSON_BURST. 
     static class NonBurstWriter
@@ -61,6 +41,6 @@ namespace Friflo.Json.Burst.Utils
         }
     }
 #endif
-    
+
 
 }

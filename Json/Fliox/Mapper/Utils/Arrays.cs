@@ -19,28 +19,12 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             dst.EnsureCapacityAbs(src.Length);
             dst.start = 0;
             dst.end = src.Length;
-#if JSON_BURST
-            /* unsafe {
-                void* dstPtr = Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(array.array);
-                fixed (byte* srcPtr = src) {
-                    Buffer.MemoryCopy(srcPtr, dstPtr, array.Length, src.Length);
-                }
-            } */
-            dst.buffer.array.CopyFrom(src);
-#else
             Buffer.BlockCopy (src, 0, dst.buffer, 0, src.Length);
-#endif
         }
         
         public static void ToManagedArray(byte[] dst, Bytes src) {
-            if (dst.Length < src.Len)
-                throw new IndexOutOfRangeException();
-#if JSON_BURST
-            for (int i = 0; i < src.Len; i++)
-                dst[i] = src.buffer.array[src.start + i];
-#else
+            if (dst.Length < src.Len) throw new IndexOutOfRangeException();
             Buffer.BlockCopy (src.buffer, src.start, dst, 0, src.Len);
-#endif
         }
     }
 }

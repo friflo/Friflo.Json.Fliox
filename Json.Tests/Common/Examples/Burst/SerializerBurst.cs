@@ -7,13 +7,10 @@ using static NUnit.Framework.Assert;
 
 // ReSharper disable InconsistentNaming
 
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-    using Str128 = Unity.Collections.FixedString128;
-#else
-    using Str32 = System.String;
-    using Str128 = System.String;
-#endif
+// JSON_BURST_TAG
+using Str32 = System.String;
+using Str128 = System.String;
+
 
 namespace Friflo.Json.Tests.Common.Examples.Burst
 {
@@ -75,9 +72,9 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
 
         private static void WriteBuddy(ref Utf8JsonWriter s, in Keys k, in Buddy buddy) {
             s.ObjectStart();
-            s.MemberStr (in k.firstName,   in buddy.firstName);
-            s.MemberLng (in k.age,         buddy.age);
-            s.MemberArrayStart(in k.hobbies, true);
+            s.MemberStr (k.firstName,   buddy.firstName);
+            s.MemberLng (k.age,         buddy.age);
+            s.MemberArrayStart(k.hobbies, true);
             for (int n = 0; n < buddy.hobbies.Count; n++) 
                 WriteHobby(ref s, in k, in buddy.hobbies.ElementAt(n));
             s.ArrayEnd();
@@ -86,7 +83,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         
         private static void WriteHobby(ref Utf8JsonWriter s, in Keys k, in Hobby buddy) {
             s.ObjectStart();
-            s.MemberStr(in k.name, in buddy.name);
+            s.MemberStr(k.name, buddy.name);
             s.ObjectEnd();
         }
     }

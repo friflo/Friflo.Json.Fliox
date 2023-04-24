@@ -4,17 +4,7 @@ using System;
 
 namespace Friflo.Json.Burst.Utils
 {
-#if JSON_BURST
-    public struct String32 {
-        public Unity.Collections.FixedString32 value;
-        
-        public String32 (in Unity.Collections.FixedString32 src) {
-            value = src;
-        }
-        
-        public override String ToString() { return value.ToString(); }
-    }
-#else
+    // JSON_BURST_TAG
     public struct String32
     {
         public String value;
@@ -25,5 +15,4 @@ namespace Friflo.Json.Burst.Utils
 
         public override String ToString() { return value; }
     }
-#endif
 }
