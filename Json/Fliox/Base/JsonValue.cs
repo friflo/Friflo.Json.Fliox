@@ -135,9 +135,9 @@ namespace Friflo.Json.Fliox
             return span1.SequenceEqual(span2);
         }
         
-        public bool IsEqual (ref Bytes value) {
+        public bool IsEqual (in Bytes value) {
             var val1 = new Span<byte>(array, start, count);
-            var val2 = new Span<byte>(value.buffer, value.start, value.Len);
+            var val2 = value.AsSpan();
             return val1.SequenceEqual(val2);
         }
         

@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         internal static bool FindEnum (ValidationTypeDef typeDef, ref Bytes value, TypeValidator validator, ValidationTypeDef parent) {
             var enumValues = typeDef.enumValues;
             for (int n = 0; n < enumValues.Length; n++) {
-                if (enumValues[n].IsEqual(ref value)) {
+                if (enumValues[n].IsEqual(value)) {
                     return true;
                 }
             }
@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         {
             ref var parser = ref validator.parser;
             foreach (var field in typeDef.fields) {
-                if (!field.name.IsEqual(ref parser.key))
+                if (!field.name.IsEqual(parser.key))
                     continue;
                 fieldType   = field;
                 var reqPos  = fieldType.requiredPos;

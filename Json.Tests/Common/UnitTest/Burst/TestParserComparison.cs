@@ -219,7 +219,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     else if (key.IsEqual32(in nm.i64Arr)   && p.Event == JsonEvent.ArrayStart)    { int3.ReadManual(ref p); }
                     else if (key.IsEqual32(in nm.i64)      && p.Event == JsonEvent.ValueNumber)   { i64 = p.ValueAsLong(out _); }
                     else if (key.IsEqual32(in nm.i64Neg)   && p.Event == JsonEvent.ValueNumber)   { i64Neg = p.ValueAsLong(out _); }
-                    else if (key.IsEqual32(in nm.str)      && p.Event == JsonEvent.ValueString)   { str.Set(ref p.value); }
+                    else if (key.IsEqual32(in nm.str)      && p.Event == JsonEvent.ValueString)   { str.Set(p.value); }
                     else if (key.IsEqual32(in nm.t)        && p.Event == JsonEvent.ValueBool)     { t = p.boolValue; }
                     else if (key.IsEqual32(in nm.n)        && p.Event == JsonEvent.ValueNull)     { foundNull = true; }
                     else if (key.IsEqual32(in nm.dbl)      && p.Event == JsonEvent.ValueNumber)   { dbl = p.ValueAsDouble(out _); }
@@ -238,7 +238,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     else if (i.UseMemberArr(ref p, in nm.i64Arr,  out JArr arr4))   { int3.ReadAuto(ref p, ref arr4); }
                     else if (i.UseMemberNum(ref p, in nm.i64))       { i64 = p.ValueAsLong(out _); }
                     else if (i.UseMemberNum(ref p, in nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
-                    else if (i.UseMemberStr(ref p, in nm.str))       { str.Set(ref p.value); }
+                    else if (i.UseMemberStr(ref p, in nm.str))       { str.Set(p.value); }
                     else if (i.UseMemberBln(ref p, in nm.t))         { t = p.boolValue; }
                     else if (i.UseMemberNul(ref p, in nm.n))         { foundNull = true; }
                     else if (i.UseMemberNum(ref p, in nm.dbl))       { dbl = p.ValueAsDouble(out _); }
@@ -248,14 +248,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             
             void ReadListStrManual(ref Utf8JsonParser p) {
                 while (NextArrayElement(ref p)) {
-                    if      (p.Event == JsonEvent.ValueString) { strElement.Set( ref p.value); }
+                    if      (p.Event == JsonEvent.ValueString) { strElement.Set(p.value); }
                     else                                       { p.SkipEvent(); }
                 }
             }
             
             void ReadListStrAuto(ref Utf8JsonParser p, ref JArr i) {
                 while (i.NextArrayElement(ref p)) {
-                    if      (i.UseElementStr(ref p))                { strElement.Set( ref p.value); }
+                    if      (i.UseElementStr(ref p))           { strElement.Set(p.value); }
                 }
             }
             
@@ -268,7 +268,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             
             void ReadArrAuto(ref Utf8JsonParser p, ref JArr i) {
                 while (i.NextArrayElement(ref p)) {
-                    if      (i.UseElementNul(ref p))                { foundNullElement = true; }
+                    if      (i.UseElementNul(ref p))           { foundNullElement = true; }
                 }
             }
 

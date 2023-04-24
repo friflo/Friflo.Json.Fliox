@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Transform
                         case PatchType.Add:
                             patchParser.InitParser(patch.json);
                             patchParser.NextEvent();
-                            serializer.WriteMember(ref p.key, ref patchParser);
+                            serializer.WriteMember(p.key, ref patchParser);
                             targetParser.SkipEvent();
                             node.children.Remove(key);
                             continue;
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Transform
                         serializer.MemberStr(in p.key, in p.value);
                         break;
                     case JsonEvent.ValueNumber:
-                        serializer.MemberBytes(in p.key, ref p.value);
+                        serializer.MemberBytes(in p.key, p.value);
                         break;
                     case JsonEvent.ValueBool:
                         serializer.MemberBln(in p.key, p.boolValue);
@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Transform
                                 // keyBytes.AppendString(key);
                                 patchParser.InitParser(patch.json);
                                 patchParser.NextEvent();
-                                serializer.WriteMember(ref keyBytes, ref patchParser);
+                                serializer.WriteMember(keyBytes, ref patchParser);
                                 continue;
                             case PatchType.Remove:
                             case null:
@@ -182,7 +182,7 @@ namespace Friflo.Json.Fliox.Transform
                         serializer.ElementStr(in p.value);
                         break;
                     case JsonEvent.ValueNumber:
-                        serializer.ElementBytes (ref p.value);
+                        serializer.ElementBytes (p.value);
                         break;
                     case JsonEvent.ValueBool:
                         serializer.ElementBln(p.boolValue);
@@ -233,7 +233,7 @@ namespace Friflo.Json.Fliox.Transform
                     serializer.ElementStr(in p.value);
                     return true;
                 case JsonEvent.ValueNumber:
-                    serializer.ElementBytes(ref p.value);
+                    serializer.ElementBytes(p.value);
                     return true;
                 case JsonEvent.ValueBool:
                     serializer.ElementBln(p.boolValue);

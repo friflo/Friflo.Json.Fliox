@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             return readerPool.CreateObject(instanceMapper);
         }
         
-        internal object CreatePolymorph(ReaderPool readerPool, ref Bytes name, object obj, out TypeMapper mapper) {
+        internal object CreatePolymorph(ReaderPool readerPool, in Bytes name, object obj, out TypeMapper mapper) {
             var key = new BytesHash (name);
             if (!mapperByName.TryGetValue(key, out mapper))
                 return null;

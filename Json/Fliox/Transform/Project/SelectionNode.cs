@@ -39,10 +39,10 @@ namespace Friflo.Json.Fliox.Transform.Project
             return $"{selectionName} - nodes: {nodes.Length}";
         }
         
-        public bool FindField(ref Bytes key, out SelectionNode result) {
+        public bool FindField(in Bytes key, out SelectionNode result) {
             for (int n = 0; n < nodes.Length; n++) {
                 var node  = nodes[n];
-                if (!node.fieldName.IsEqual(ref key))
+                if (!node.fieldName.IsEqual(key))
                     continue;
                 result = node;
                 return true;
@@ -51,10 +51,10 @@ namespace Friflo.Json.Fliox.Transform.Project
             return false;
         }
         
-        public static bool FindFragment(SelectionNode[] fragmentNodes, ref Bytes key, out SelectionNode result) {
+        public static bool FindFragment(SelectionNode[] fragmentNodes, in Bytes key, out SelectionNode result) {
             for (int n = 0; n < fragmentNodes.Length; n++) {
                 var node  = fragmentNodes[n];
-                if (!node.fieldName.IsEqual(ref key))
+                if (!node.fieldName.IsEqual(key))
                     continue;
                 result = node;
                 return true;
@@ -63,12 +63,12 @@ namespace Friflo.Json.Fliox.Transform.Project
             return false;
         }
 
-        public Utf8String FindUnionType (ref Bytes discriminant) {
+        public Utf8String FindUnionType (in Bytes discriminant) {
             if (unions == null) {
                 return default;
             }
             foreach (var union in unions) {
-                if (!union.discriminant.IsEqual(ref discriminant))
+                if (!union.discriminant.IsEqual(discriminant))
                     continue;
                 return union.typenameUtf8;
             }

@@ -108,7 +108,7 @@ namespace Friflo.Json.Burst
             end     = byteLen;
         }
         
-        public Bytes (ref Bytes src) {
+        public Bytes (in Bytes src) {
             start   = 0;
             end     = 0;
             buffer  = AllocateBuffer(src.Len);
@@ -141,7 +141,8 @@ namespace Friflo.Json.Burst
             this.end    = 0;
         }
 
-        public void Set(ref Bytes source, int start, int end) {
+        public void Set(in Bytes source)
+        {
             int l = source.Len;
             EnsureCapacityAbs(l);
             this.start = 0;
@@ -150,11 +151,6 @@ namespace Friflo.Json.Burst
             var src = source.buffer;
             for (int n = 0; n < Len; n++)
                 dst[n] = src[n];
-        }
-
-        public void Set(ref Bytes src)
-        {
-            Set (ref src, src.start, src.end);
         }
         
         public int IndexOf (Bytes subStr, int start)

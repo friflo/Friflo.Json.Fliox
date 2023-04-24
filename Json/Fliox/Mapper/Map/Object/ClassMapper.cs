@@ -304,7 +304,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 }
                 if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualArray(factory.discriminatorBytes)) {
                     ref Bytes discriminant = ref reader.parser.value;
-                    obj = (T) factory.CreatePolymorph(reader.readerPool, ref discriminant, obj, out var mapper);
+                    obj = (T) factory.CreatePolymorph(reader.readerPool, discriminant, obj, out var mapper);
                     if (obj == null)
                         return reader.ErrorMsg<TypeMapper<T>>($"No [PolymorphType] type declared for discriminant: '{discriminant}' on type: ", classType.type.Name, out success);
                     parser.NextEvent();

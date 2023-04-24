@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 switch (ev) {
                     case ValueNull:     writer.ElementNul   ();                 break;
                     case ValueBool:     writer.ElementBln   (parser.boolValue); break;
-                    case ValueNumber:   writer.ElementBytes (ref parser.value); break;
+                    case ValueNumber:   writer.ElementBytes (parser.value);     break;
                     case ValueString:   writer.ElementStr   (parser.value);     break;
                     case ObjectStart:
                         writer.ObjectStart  ();
@@ -161,7 +161,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                         if (!ReplaceNode (index, members, out _)) { writer.MemberBln  (parser.key, parser.boolValue); }
                         break;
                     case ValueNumber:
-                        if (!ReplaceNode (index, members, out _)) { writer.MemberBytes(parser.key, ref parser.value); }
+                        if (!ReplaceNode (index, members, out _)) { writer.MemberBytes(parser.key, parser.value); }
                         break;
                     case ValueString:
                         if (!ReplaceNode (index, members, out _)) { writer.MemberStr  (parser.key, parser.value); }

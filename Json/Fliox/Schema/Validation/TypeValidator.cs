@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 if (ev != JsonEvent.ValueString) {
                     return ErrorType("Expect discriminator as first member.", ev.ToString(), false, unionType.discriminatorStr, null, typeDef);
                 }
-                if (!unionType.discriminator.IsEqual(ref parser.key)) {
+                if (!unionType.discriminator.IsEqual(parser.key)) {
                     return ErrorType("Invalid discriminator.", parser.key.AsString(), true, unionType.discriminatorStr, null, typeDef);
                 }
                 if (!ValidationUnion.FindUnion(unionType, ref parser.value, out var newType)) {

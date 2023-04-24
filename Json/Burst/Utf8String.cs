@@ -53,11 +53,11 @@ namespace Friflo.Json.Burst
             return ReadOnlySpan.SequenceEqual(value.ReadOnlySpan);
         }
 
-        public bool IsEqual (ref Bytes value) {
+        public bool IsEqual (in Bytes value) {
             if (len != value.Len)
                 return false;
             var left   = ReadOnlySpan;
-            var right  = new ReadOnlySpan<byte> (value.buffer, value.start, value.Len);
+            var right  = value.AsSpan();
             return left.SequenceEqual(right);
         }
         

@@ -378,7 +378,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
-        public void MemberBytes(in Bytes key, ref Bytes value) {
+        public void MemberBytes(in Bytes key, in Bytes value) {
             AddSeparator();
             AppendKeyBytes(ref json, in key);
             /*
@@ -470,7 +470,7 @@ namespace Friflo.Json.Burst
             format.AppendLong(ref json, value);
         }
         
-        public void ElementBytes(ref Bytes value) {
+        public void ElementBytes(in Bytes value) {
             AddSeparator();
             json.AppendBytes(value);
         }
@@ -505,7 +505,7 @@ namespace Friflo.Json.Burst
                         MemberStr(in p.key, in p.value);
                         break;
                     case JsonEvent.ValueNumber:
-                        MemberBytes(in p.key, ref p.value);
+                        MemberBytes(in p.key, p.value);
                         break;
                     case JsonEvent.ValueBool:
                         MemberBln(in p.key, p.boolValue);
@@ -547,7 +547,7 @@ namespace Friflo.Json.Burst
                         ElementStr(in p.value);
                         break;
                     case JsonEvent.ValueNumber:
-                        ElementBytes(ref p.value);
+                        ElementBytes(p.value);
                         break;
                     case JsonEvent.ValueBool:
                         ElementBln(p.boolValue);
@@ -585,7 +585,7 @@ namespace Friflo.Json.Burst
                     ElementStr(in p.value);
                     return true;
                 case JsonEvent.ValueNumber:
-                    ElementBytes(ref p.value);
+                    ElementBytes(p.value);
                     return true;
                 case JsonEvent.ValueBool:
                     ElementBln(p.boolValue);
@@ -597,7 +597,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        public bool WriteMember(ref Bytes key, ref Utf8JsonParser p) {
+        public bool WriteMember(in Bytes key, ref Utf8JsonParser p) {
             switch (p.Event) {
                 case JsonEvent.ArrayStart:
                     MemberArrayStart(key);
@@ -611,7 +611,7 @@ namespace Friflo.Json.Burst
                     MemberStr(key, in p.value);
                     break;
                 case JsonEvent.ValueNumber:
-                    MemberBytes(key, ref p.value);
+                    MemberBytes(key, p.value);
                     break;
                 case JsonEvent.ValueBool:
                     MemberBln(key, p.boolValue);

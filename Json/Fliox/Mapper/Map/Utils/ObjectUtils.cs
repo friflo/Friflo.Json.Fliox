@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
       
         public PropField<T> GetField<T>(PropertyFields<T> propFields) {
-            PropField<T> field = propFields.GetField(ref this.parser.key);
+            PropField<T> field = propFields.GetField(this.parser.key);
             if (field != null)
                 return field;
             parser.SkipEvent();

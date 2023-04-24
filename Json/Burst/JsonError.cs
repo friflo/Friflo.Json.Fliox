@@ -41,7 +41,7 @@ namespace Friflo.Json.Burst
             Pos = pos;
 #if !JSON_BURST
             if (errorHandler != null)
-                errorHandler.HandleError(pos, ref msg);
+                errorHandler.HandleError(pos, msg);
 #endif
             return false;
         }
@@ -72,7 +72,7 @@ namespace Friflo.Json.Burst
     }
 
     public interface IErrorHandler {
-        void HandleError(int pos, ref Bytes message);
+        void HandleError(int pos, in Bytes message);
     }
 
 }

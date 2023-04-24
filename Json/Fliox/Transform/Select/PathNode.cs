@@ -38,9 +38,9 @@ namespace Friflo.Json.Fliox.Transform.Select
         public      string                          GetName()       => selectorNode.name;
         public      IEnumerable<PathNode<TResult>>  GetChildren()   => children;
 
-        internal bool FindByBytes(ref Bytes key, out PathNode<TResult> node) {
+        internal bool FindByBytes(in Bytes key, out PathNode<TResult> node) {
             for (int n = 0; n < keys.Count; n++) {
-                if (keys[n].IsEqual(ref key)) {
+                if (keys[n].IsEqual(key)) {
                     node = children[n];
                     return true;
                 }

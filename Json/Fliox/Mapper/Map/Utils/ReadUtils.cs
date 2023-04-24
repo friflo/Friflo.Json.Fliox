@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 case JsonEvent.ArrayStart:  strBuf.AppendString("[...]");                                   break;
                 case JsonEvent.ObjectStart: strBuf.AppendString("{...}");                                   break;
             }
-            parser.ErrorMsg("JsonReader", ref strBuf);
+            parser.ErrorMsg("JsonReader", strBuf);
             success = false;
             return default;
         }
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             strBuf.Clear();
             strBuf.AppendString(msg);
             strBuf.AppendString(value);
-            parser.ErrorMsg("JsonReader", ref strBuf);
+            parser.ErrorMsg("JsonReader", strBuf);
             success = false;
             return default;
         }
@@ -73,13 +73,13 @@ namespace Friflo.Json.Fliox.Mapper.Map
             strBuf.Clear();
             strBuf.AppendString(msg);
             JsonEventUtils.AppendEvent(ev, ref strBuf);
-            parser.ErrorMsg("JsonReader", ref strBuf);
+            parser.ErrorMsg("JsonReader", strBuf);
             success = false;
             return default;
         }
 
-        public TVal ErrorMsg<TVal>(string msg, ref Bytes value, out bool success) {
-            parser.ErrorMsgParam("JsonReader", msg, ref value);
+        public TVal ErrorMsg<TVal>(string msg, in Bytes value, out bool success) {
+            parser.ErrorMsgParam("JsonReader", msg, value);
             success = false;
             return default;
         }

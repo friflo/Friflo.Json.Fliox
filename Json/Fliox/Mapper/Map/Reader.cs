@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
     
     public sealed class DefaultErrorHandler : IErrorHandler
     {
-        public void HandleError(int pos, ref Bytes message) {
+        public void HandleError(int pos, in Bytes message) {
             throw new JsonReaderException(message.AsString(), pos);
         }
     }

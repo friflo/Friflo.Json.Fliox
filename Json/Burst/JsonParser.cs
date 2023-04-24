@@ -185,7 +185,7 @@ namespace Friflo.Json.Burst
         }
 
         // ---------------------- error message creation - begin
-        void Error (in Str32 module, ErrorType errorType, in Str128 msg, ref Bytes value) {
+        void Error (in Str32 module, ErrorType errorType, in Str128 msg, in Bytes value) {
             if (lastEvent == JsonEvent.Error)
                 return; // Skip storing error, if already in error state.
             
@@ -228,52 +228,52 @@ namespace Friflo.Json.Burst
         /// <param name="msg">The message info of the error. Should be a sting literal to enable searching it the the source code</param>
         public void ErrorMsg (in Str32 module, in Str128 msg) {
             errVal.Clear();
-            Error(module, ErrorType.ExternalError, in msg, ref errVal);
+            Error(module, ErrorType.ExternalError, in msg, errVal);
         }
         
-        public void ErrorMsg(in Str32 module, ref Bytes msg) {
-            Error(module, ErrorType.ExternalError, in emptyString, ref msg);
+        public void ErrorMsg(in Str32 module, Bytes msg) {
+            Error(module, ErrorType.ExternalError, in emptyString, msg);
         }
         
-        public void ErrorMsgParam(in Str32 module, in Str128 msg, ref Bytes value) {
-            Error(module, ErrorType.ExternalError, in msg, ref value);
+        public void ErrorMsgParam(in Str32 module, in Str128 msg, in Bytes value) {
+            Error(module, ErrorType.ExternalError, in msg, value);
         }
         
         private JsonEvent SetError (in Str128 msg) {
             errVal.Clear();
-            Error("JsonParser", ErrorType.JsonError, in msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, in msg, errVal);
             return JsonEvent.Error;
         }
         
         private JsonEvent SetErrorChar (in Str128 msg, char c) {
             errVal.Clear();
             errVal.AppendChar(c);
-            Error("JsonParser", ErrorType.JsonError, in msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, in msg, errVal);
             return JsonEvent.Error;
         }
         
         private JsonEvent SetErrorInt (in Str128 msg, int value) {
             errVal.Clear();
             format.AppendInt(ref errVal, value);
-            Error("JsonParser", ErrorType.JsonError, in msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, in msg, errVal);
             return JsonEvent.Error;
         }
         
-        private bool SetErrorValue (in Str128 msg, ref Bytes value) {
-            Error("JsonParser", ErrorType.JsonError, in msg, ref value);
+        private bool SetErrorValue (in Str128 msg, Bytes value) {
+            Error("JsonParser", ErrorType.JsonError, in msg, value);
             return false;
         }
 
         private bool SetErrorFalse (in Str128 msg) {
             errVal.Clear();
-            Error("JsonParser", ErrorType.JsonError, in msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, in msg, errVal);
             return false;
         }
         
         // ReSharper disable once UnusedMember.Local
         private bool SetApplicationError (in Str128 msg) {
             errVal.Clear();
-            Error("JsonParser", ErrorType.Assertion, in msg, ref errVal);
+            Error("JsonParser", ErrorType.Assertion, in msg, errVal);
             return false;
         }
         
@@ -281,7 +281,7 @@ namespace Friflo.Json.Burst
         {
             errVal.Clear();
             JsonEventUtils.AppendEvent(ev, ref errVal);
-            Error("JsonParser", ErrorType.JsonError, in msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, in msg, errVal);
             return false;
         }
         // ---------------------- error message creation - end
@@ -819,7 +819,7 @@ namespace Friflo.Json.Burst
                         return true;
                     }
                     pos++;
-                    return SetErrorValue("invalid value: ", ref value);
+                    return SetErrorValue("invalid value: ", value);
                 }
                 if (Read())
                     continue;
@@ -981,7 +981,7 @@ namespace Friflo.Json.Burst
         public double ValueAsDoubleStd(out bool success) {
             double result = ValueParser.ParseDoubleStd(value.AsSpan(), ref errVal, out success);
             if (!success)
-                SetErrorValue("", ref errVal);
+                SetErrorValue("", errVal);
             return result;
         }
         
@@ -992,7 +992,7 @@ namespace Friflo.Json.Burst
         public float ValueAsFloatStd(out bool success) {
             float result = ValueParser.ParseFloatStd(value.AsSpan(), ref errVal, out success);
             if (!success)
-                SetErrorValue("", ref errVal);
+                SetErrorValue("", errVal);
             return result;
         }
         
@@ -1003,7 +1003,7 @@ namespace Friflo.Json.Burst
         public double ValueAsDouble(out bool success) {
             double result = ValueParser.ParseDouble(value.AsSpan(), ref errVal, out success);
             if (!success) 
-                SetErrorValue("", ref errVal);
+                SetErrorValue("", errVal);
             return result;
         }
         
@@ -1014,13 +1014,13 @@ namespace Friflo.Json.Burst
         public float ValueAsFloat(out bool success) {
             double result = ValueParser.ParseDouble(value.AsSpan(), ref errVal, out success);
             if (!success) 
-                SetErrorValue("", ref errVal);
+                SetErrorValue("", errVal);
             if (result < float.MinValue) {
-                SetErrorValue("value is less than float.MinValue. ", ref value);
+                SetErrorValue("value is less than float.MinValue. ", value);
                 return 0;
             }
             if (result > float.MaxValue) {
-                SetErrorValue("value is greater than float.MaxValue. ", ref value);
+                SetErrorValue("value is greater than float.MaxValue. ", value);
                 return 0;
             }
             return (float)result;
@@ -1033,7 +1033,7 @@ namespace Friflo.Json.Burst
         public long ValueAsLong(out bool success) {
             long result = ValueParser.ParseLong(value.AsSpan(), ref errVal, out success);
             if ( !success)
-                SetErrorValue("", ref errVal);
+                SetErrorValue("", errVal);
             return result;
         }
         
@@ -1044,20 +1044,20 @@ namespace Friflo.Json.Burst
         public int ValueAsInt(out bool success) {
             int result = ValueParser.ParseInt(value.AsSpan(), ref errVal, out success);
             if (!success)
-                SetErrorValue("", ref errVal);
+                SetErrorValue("", errVal);
             return result;
         }
         
         public short ValueAsShort(out bool success) {
             long result = ValueParser.ParseInt(value.AsSpan(), ref errVal, out success);
             if (!success)
-                SetErrorValue("", ref errVal);
+                SetErrorValue("", errVal);
             if (result < short.MinValue) {
-                SetErrorValue("value is less than short.MinValue. ", ref value);
+                SetErrorValue("value is less than short.MinValue. ", value);
                 return 0;
             }
             if (result > short.MaxValue) {
-                SetErrorValue("value is greater than short.MaxValue. ", ref value);
+                SetErrorValue("value is greater than short.MaxValue. ", value);
                 return 0;
             }
             return (short)result;
@@ -1066,13 +1066,13 @@ namespace Friflo.Json.Burst
         public byte ValueAsByte(out bool success) {
             long result = ValueParser.ParseInt(value.AsSpan(), ref errVal, out success);
             if (!success)
-                SetErrorValue("", ref errVal);
+                SetErrorValue("",  errVal);
             if (result < byte.MinValue) {
-                SetErrorValue("value is less than byte.MinValue. ", ref value);
+                SetErrorValue("value is less than byte.MinValue. ", value);
                 return 0;
             }
             if (result > byte.MaxValue) {
-                SetErrorValue("value is greater than byte.MaxValue. ", ref value);
+                SetErrorValue("value is greater than byte.MaxValue. ", value);
                 return 0;
             }
             return (byte)result;

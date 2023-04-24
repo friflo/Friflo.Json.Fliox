@@ -50,16 +50,16 @@ namespace Friflo.Json.Fliox.Transform.Project
             while (Utf8JsonWriter.NextObjectMember(ref parser)) {
                 // Expect discriminator as first property
                 if (setUnionType && parser.Event == JsonEvent.ValueString) {
-                    unionType       = node.FindUnionType(ref parser.value);
+                    unionType       = node.FindUnionType(parser.value);
                     fragmentNodes   = node.FindFragmentNodes(unionType);
                 }
                 setUnionType = false;
-                if (!node.FindField(ref parser.key, out var subNode)) {
+                if (!node.FindField(parser.key, out var subNode)) {
                     if (fragmentNodes == null) {
                         parser.SkipEvent();
                         continue;
                     }
-                    if (!SelectionNode.FindFragment(fragmentNodes, ref parser.key, out subNode)) {
+                    if (!SelectionNode.FindFragment(fragmentNodes, parser.key, out subNode)) {
                         parser.SkipEvent();
                         continue;
                     }
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Transform.Project
                         serializer.MemberStr(in parser.key, in parser.value);
                         break;
                     case JsonEvent.ValueNumber:
-                        serializer.MemberBytes(in parser.key, ref parser.value);
+                        serializer.MemberBytes(in parser.key, parser.value);
                         break;
                     case JsonEvent.ValueBool:
                         serializer.MemberBln(in parser.key, parser.boolValue);
@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Transform.Project
                         serializer.ElementStr(in parser.value);
                         break;
                     case JsonEvent.ValueNumber:
-                        serializer.ElementBytes (ref parser.value);
+                        serializer.ElementBytes (parser.value);
                         break;
                     case JsonEvent.ValueBool:
                         serializer.ElementBln(parser.boolValue);
@@ -150,7 +150,7 @@ namespace Friflo.Json.Fliox.Transform.Project
                     serializer.ElementStr(in parser.value);
                     return true;
                 case JsonEvent.ValueNumber:
-                    serializer.ElementBytes(ref parser.value);
+                    serializer.ElementBytes(parser.value);
                     return true;
                 case JsonEvent.ValueBool:
                     serializer.ElementBln(parser.boolValue);

@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Transform
         private bool TraceObject(ref Utf8JsonParser p) {
             while (Utf8JsonWriter.NextObjectMember(ref p)) {
                 var node = nodeStack[nodeStack.Count - 1];
-                if (!node.FindByBytes(ref p.key, out PathNode<JsonSelectResult> path)) {
+                if (!node.FindByBytes(p.key, out PathNode<JsonSelectResult> path)) {
                     targetParser.SkipEvent();
                     continue;
                 }

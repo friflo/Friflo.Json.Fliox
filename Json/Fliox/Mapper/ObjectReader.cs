@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Mapper
             intern.setMissingFields = setMissingFields;
         }
 
-        private void InitJsonReaderBytes(ref Bytes bytes, bool setMissingFields) {
+        private void InitJsonReaderBytes(in Bytes bytes, bool setMissingFields) {
             intern.parser.InitParser(bytes.buffer, bytes.start, bytes.Len);
             intern.parser.SetMaxDepth(maxDepth);
             intern.setMissingFields = setMissingFields;
@@ -119,14 +119,14 @@ namespace Friflo.Json.Fliox.Mapper
         [Conditional("JSON_BURST")]
         private void JsonBurstError() {
             if (intern.parser.error.ErrSet) {
-                intern.ErrorHandler?.HandleError(intern.parser.error.Pos, ref intern.parser.error.msg);
+                intern.ErrorHandler?.HandleError(intern.parser.error.Pos, intern.parser.error.msg);
             }
         }
         
         // --------------- Bytes ---------------
         // --- Read()
         public T Read<T>(Bytes utf8Bytes) {
-            InitJsonReaderBytes(ref utf8Bytes, ReaderPool != null);
+            InitJsonReaderBytes(utf8Bytes, ReaderPool != null);
             var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
             T   result = ReadStart(default, mapper);
             JsonBurstError();
@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         public object ReadObject(Bytes utf8Bytes, Type type) {
-            InitJsonReaderBytes(ref utf8Bytes, ReaderPool != null);
+            InitJsonReaderBytes(utf8Bytes, ReaderPool != null);
             Var result = ReadStartObject(type);
             JsonBurstError();
             return result.ToObject();
@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox.Mapper
 
         // --- ReadTo()
         public T ReadTo<T>(Bytes utf8Bytes, T obj, bool setMissingFields)  {
-            InitJsonReaderBytes(ref utf8Bytes, setMissingFields);
+            InitJsonReaderBytes(utf8Bytes, setMissingFields);
             var mapper  = (TypeMapper<T>) intern.typeCache.GetTypeMapper(typeof(T));
             T   result  = ReadToStart(obj, mapper);
             JsonBurstError();
@@ -150,7 +150,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
 
         public object ReadToObject(Bytes utf8Bytes, object obj, bool setMissingFields)  {
-            InitJsonReaderBytes(ref utf8Bytes, setMissingFields);
+            InitJsonReaderBytes(utf8Bytes, setMissingFields);
             object result = ReadToStartObject(obj);
             JsonBurstError();
             return result;
@@ -394,7 +394,7 @@ namespace Friflo.Json.Fliox.Mapper
     
     public sealed class NoThrowHandler : IErrorHandler
     {
-        public void HandleError(int pos, ref Bytes message) { }
+        public void HandleError(int pos, in Bytes message) { }
     }
     
     public sealed class JsonReaderException : Exception {

@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 case ValueBool:
                 case ValueNumber:
                     value. Set(node.value);
-                    writer.ElementBytes(ref value);
+                    writer.ElementBytes(value);
                     break;
                 case ValueString:
                     value. Set(node.value);
@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 case ValueNumber:
                     key.   Set(node.key);
                     value. Set(node.value);
-                    writer.MemberBytes(key, ref value);
+                    writer.MemberBytes(key, value);
                     break;
                 case ValueString:
                     key.   Set(node.key);
