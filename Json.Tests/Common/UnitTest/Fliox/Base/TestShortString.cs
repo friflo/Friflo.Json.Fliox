@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         [Test]
         public static void TestShortString_Bytes() {
             {
-                var input = new Bytes("");
+                var input = new Bytes("").AsSpan();
                 ShortStringUtils.BytesToLongLong(input, out long lng, out long lng2);
                 AreEqual(0x_00_00_00_00_00_00_00_00, lng);
                 AreEqual(0x_01_00_00_00_00_00_00_00, lng2);
@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 ShortStringUtils.LongLongToString(lng, lng2, out string result);
                 AreEqual("", result);
             } {
-                var input = new Bytes("a");
+                var input = new Bytes("a").AsSpan();
                 ShortStringUtils.BytesToLongLong(input, out long lng, out long lng2);
                 AreEqual(0x_00_00_00_00_00_00_00_61, lng);
                 AreEqual(0x_02_00_00_00_00_00_00_00, lng2);
@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 ShortStringUtils.LongLongToString(lng, lng2, out string result);
                 AreEqual("a", result);
             } {
-                var input = new Bytes("012345678901234");
+                var input = new Bytes("012345678901234").AsSpan();
                 ShortStringUtils.BytesToLongLong(input, out long lng, out long lng2);
                 AreEqual(0x_37_36_35_34_33_32_31_30, lng);
                 AreEqual(0x_10_34_33_32_31_30_39_38, lng2);

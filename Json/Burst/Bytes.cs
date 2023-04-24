@@ -181,25 +181,24 @@ namespace Friflo.Json.Burst
             return -1;
         }
         
-        public bool IsIntegral() {
-            int len = end - start;
+        public static bool IsIntegral(in ReadOnlySpan<byte> bytes) {
+            int len = bytes.Length;
             if (len == 0)
                 return false;
-            var str = buffer;
-            byte c = str[0];
+            byte c = bytes[0];
             if (len == 1) {
                 return '0' <= c && c <= '9'; 
             }
-            var begin = start;
+            var begin = 0;
             if (c == '-') {
-                c = str[1];
+                c = bytes[1];
                 begin++;
             }
             // no leading 0
             if (c < '1' || c > '9')
                 return false;
-            for (int i = begin + 1; i < end; i++) {
-                c = str[i];
+            for (int i = begin + 1; i < len; i++) {
+                c = bytes[i];
                 if ('0' <= c && c <= '9')
                     continue;
                 return false;
@@ -209,20 +208,19 @@ namespace Friflo.Json.Burst
         
         public const int GuidLength = 36; // 12345678-1234-1234-1234-123456789abc
 
-        public bool TryParseGuid(out Guid guid) {
-            int len = end - start;
+        public static bool TryParseGuid(in ReadOnlySpan<byte> bytes, out Guid guid) {
+            int len = bytes.Length;
             if (len != GuidLength) {
                 guid = new Guid();
                 return false;
             }
 #if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
-            var str = AsString();
+            var str = Encoding.UTF8.GetString(bytes);
             return Guid.TryParse(str, out guid);
 #else
             Span<char> span = stackalloc char[len];
-            var array   = buffer;
             for (int n = 0; n < len; n++)
-                span[n] = (char)array[start + n];
+                span[n] = (char)bytes[n];
             return Guid.TryParse(span, out guid);
 #endif
         }

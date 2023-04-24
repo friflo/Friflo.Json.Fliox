@@ -111,19 +111,16 @@ namespace Friflo.Json.Burst.Utils
         /// If <paramref name="value"/> contains control characters => use string instance.<br/>
         /// Same behavior as in <see cref="StringToLongLong"/>
         /// </summary>
-        public static unsafe bool BytesToLongLong (in Bytes value, out long lng, out long lng2) {
-            var byteCount = value.end - value.start;
-            if (byteCount > MaxLength) {
+        public static unsafe bool BytesToLongLong (in ReadOnlySpan<byte> value, out long lng, out long lng2) {
+            var len = value.Length;
+            if (len > MaxLength) {
                 lng     = 0;
                 lng2    = 0;
                 return false;
             }
             // --- use string instance if JSON control characters included
-            var end     = value.end;
-            var start   = value.start;
-            var src     = value.buffer;
-            for (int i = start; i < end; i++) {
-                switch (src[i]) {
+            for (int i = 0; i < len; i++) {
+                switch (value[i]) {
                     case (int)'"':
                     case (int)'\\':
                         lng     = 0;
@@ -132,12 +129,8 @@ namespace Friflo.Json.Burst.Utils
                 }
             }
             Span<byte> dst  = stackalloc byte[ByteCount];
-            // Span<byte> srcSpan  = new Span<byte>(src, start, byteCount);
-            // srcSpan.CopyTo(dst);  // copy byteCount bytes to dst 
-            for (int n = 0; n < byteCount; n++) {
-                dst[n] = src[start + n];
-            }
-            dst[LengthPos] = (byte)(byteCount + 1); // set highest byte to length
+            value.CopyTo(dst);
+            dst[LengthPos] = (byte)(len + 1); // set highest byte to length
             
             fixed (byte*  bytesPtr  = dst) 
             fixed (long*  lngPtr    = &lng)

@@ -182,7 +182,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                             continue;
                         }
                         if (parser.key.IsEqual(clt)) {
-                            result.dstClientId  = new ShortString(ref parser.value, null);
+                            result.dstClientId  = new ShortString(parser.value, null);
                             return result;
                         }
                         continue;
@@ -192,7 +192,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                             return result;
                         }
                         if (parser.key.IsEqual(clt)) {
-                            result.dstClientId  = new ShortString(ref parser.value, null);
+                            result.dstClientId  = new ShortString(parser.value, null);
                             return result;
                         }
                         continue;

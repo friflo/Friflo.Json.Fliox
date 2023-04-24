@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                                 return false;
                             }
                         }
-                        keyValue = new JsonKey(ref parser.value, default);
+                        keyValue = new JsonKey(parser.value, default);
                         switch (processingType) {
                             case ProcessingType.Validate:
                                 continue;

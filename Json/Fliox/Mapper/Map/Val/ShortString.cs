@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     return new ShortString();
                 case JsonEvent.ValueString:
                     success = true;
-                    return new ShortString(ref parser.value, value.str);
+                    return new ShortString(parser.value, value.str);
                 default:
                     return reader.ErrorMsg<ShortString>("Expect string as ShortString. ", ev, out success);
             }

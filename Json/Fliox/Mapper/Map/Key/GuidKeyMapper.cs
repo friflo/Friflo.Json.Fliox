@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Key
 {
@@ -12,7 +13,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
         }
         
         public override Guid ReadKey (ref Reader reader, out bool success) {
-            if (reader.parser.key.TryParseGuid(out var result)) {
+            if (Bytes.TryParseGuid(reader.parser.key.AsSpan(), out var result)) {
                 success = true;
                 return result;
             }

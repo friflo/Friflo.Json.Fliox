@@ -87,10 +87,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             int count       = 10; // 20_000_000;
             var value       = new Bytes("0---------1----"); // 15 characters. 
             var list        = new List<JsonKey>(count);
-            var _           = new JsonKey (ref value, default); // force one time allocations
+            var _           = new JsonKey (value, default); // force one time allocations
             var start       = Mem.GetAllocatedBytes();
             for (int n = 0; n < count; n++) {
-                var key = new JsonKey (ref value, default);
+                var key = new JsonKey (value, default);
                 list.Add(key);
             }
             var dif = Mem.GetAllocationDiff(start);

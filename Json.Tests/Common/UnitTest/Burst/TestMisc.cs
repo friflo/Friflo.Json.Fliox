@@ -216,7 +216,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         
         private static bool IsIntegral(string str) {
             using (var bytes = new Bytes(str)) {
-                return bytes.IsIntegral();
+                return Bytes.IsIntegral(bytes.AsSpan());
             }
         }
         
@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             using (var bytes = new Bytes(str))
             using (var dest  = new Bytes(0))
             {
-                IsTrue(bytes.TryParseGuid(out Guid result));
+                IsTrue(Bytes.TryParseGuid(bytes.AsSpan(), out Guid result));
                 AreEqual(guid, result);
                 
                 dest.AppendGuid(guid);

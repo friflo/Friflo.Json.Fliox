@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 case JsonEvent.ValueString:
                 case JsonEvent.ValueNumber:
                     success = true;
-                    return new JsonKey(ref parser.value, value);
+                    return new JsonKey(parser.value, value);
                 default:
                     return reader.ErrorMsg<JsonKey>("Expect string as JsonKey. ", ev, out success);
             }

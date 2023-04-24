@@ -91,18 +91,22 @@ namespace Friflo.Json.Fliox
             keyObj = str ?? STRING_SHORT;
         }
         
-        public JsonKey (ref Bytes bytes, in JsonKey oldKey) {
-            if (bytes.IsIntegral()) {
+        public JsonKey (in Bytes bytes, in JsonKey oldKey)
+            : this (bytes.AsSpan(), oldKey)
+        { }
+        
+        public JsonKey (in ReadOnlySpan<byte> bytes, in JsonKey oldKey) {
+            if (Bytes.IsIntegral(bytes)) {
                 keyObj  = LONG;
                 var error = new Bytes();
-                lng     = ValueParser.ParseLong(bytes.AsSpan(), ref error, out bool success);
+                lng     = ValueParser.ParseLong(bytes, ref error, out bool success);
                 if (!success)
                     throw new InvalidOperationException("expect a valid integral type");
                 lng2    = 0;
                 return;
             }
-            var bytesLen = bytes.end - bytes.start;
-            if (bytesLen == Bytes.GuidLength && bytes.TryParseGuid(out var guid)) {
+            var bytesLen = bytes.Length;
+            if (bytesLen == Bytes.GuidLength && Bytes.TryParseGuid(bytes, out var guid)) {
                 keyObj  = GUID;
                 GuidUtils.GuidToLongLong(guid, out lng, out lng2);
                 return;

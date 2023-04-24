@@ -34,10 +34,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         // ReSharper disable once RedundantAssignment
         public override Guid Read(ref Reader reader, Guid slot, out bool success) {
-            ref var value = ref reader.parser.value;
             if (reader.parser.Event != JsonEvent.ValueString)
                 return reader.HandleEvent(this, out success);
-            if (!value.TryParseGuid(out slot))
+            var value = reader.parser.value;
+            if (!Bytes.TryParseGuid(value.AsSpan(), out slot))
                 return reader.ErrorMsg<Guid>("Failed parsing Guid. value: ", value.AsString(), out success);
             success = true;
             return slot;
@@ -63,8 +63,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override Guid? Read(ref Reader reader, Guid? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueString)
                 return reader.HandleEvent(this, out success);
-            ref var value = ref reader.parser.value;
-            if (!value.TryParseGuid(out var result))
+            var value = reader.parser.value;
+            if (!Bytes.TryParseGuid(value.AsSpan(), out var result))
                 return reader.ErrorMsg<Guid?>("Failed parsing Guid. value: ", value.AsString(), out success);
             success = true;
             return result;
