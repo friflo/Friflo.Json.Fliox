@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             var rc  = raw.sqlite3_prepare_v3(sqliteDB.sqliteDB, sql, 0, out var stmt);
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"SELECT - prepare error: {rc}");
             var values = new List<EntityValue>();
-            SQLiteUtils.ReadValues(stmt, values);
+            SQLiteUtils.ReadValues(stmt, values, syncContext.MemoryBuffer);
             var result = new ReadEntitiesResult { entities = values.ToArray() };
             return Task.FromResult(result);
         }
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"SELECT - prepare error: {rc}");
             
             var values = new List<EntityValue>();
-            SQLiteUtils.ReadValues(stmt, values);
+            SQLiteUtils.ReadValues(stmt, values, syncContext.MemoryBuffer);
             var result = new QueryEntitiesResult { entities = values.ToArray() }; 
             return Task.FromResult(result);
         }

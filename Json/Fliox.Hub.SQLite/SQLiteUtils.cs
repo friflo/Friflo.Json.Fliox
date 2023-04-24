@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Utils;
 using SQLitePCL;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
@@ -17,9 +18,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             var sql = "select sqlite_version()";
             var rc  = raw.sqlite3_prepare_v3(db, sql, 0, out var stmt);
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"sqlite_version() - prepare error: {rc}");
-            var values = new List<EntityValue>();
-            ReadValues(stmt, values);
-            var version = values[0].key.AsString();
+            rc = raw.sqlite3_step(stmt);
+            if (rc != raw.SQLITE_ROW) throw new InvalidOperationException($"sqlite_version() - step error: {rc}");
+            var text    = raw.sqlite3_column_text(stmt, 0);
+            var version = text.utf8_to_string();
             return version;
         }
         
@@ -49,16 +51,15 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
         }
         
-        internal static void ReadValues(sqlite3_stmt stmt, List<EntityValue> values) {
+        internal static void ReadValues(sqlite3_stmt stmt, List<EntityValue> values, MemoryBuffer buffer) {
             while (true) {
                 var rc = raw.sqlite3_step(stmt);
                 if (rc == raw.SQLITE_ROW) {
-                    var id      = raw.sqlite3_column_text(stmt, 0);
-                    var data    = raw.sqlite3_column_text(stmt, 1);
-                    var idStr   = id.utf8_to_string();
-                    var dataStr = data.utf8_to_string();
-                    var entity = new EntityValue(new JsonKey(idStr), new JsonValue(dataStr));
-                    values.Add(entity);
+                    var id      = raw.sqlite3_column_blob(stmt, 0);
+                    var data    = raw.sqlite3_column_blob(stmt, 1);
+                    var key     = new JsonKey(id, default);
+                    var value   = buffer.Add(data);
+                    values.Add(new EntityValue(key, value));
                 } else if (rc == raw.SQLITE_DONE) {
                     break;
                 } else {

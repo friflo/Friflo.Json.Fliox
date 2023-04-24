@@ -217,7 +217,7 @@ namespace Friflo.Json.Burst
 #if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
             unsafe {
                 fixed (byte* ptr = bytes) {
-                    // GetString(ReadOnlySpan<byte> bytes)
+                    // GetString(ReadOnlySpan<byte> bytes) not available in netstandard2.0
                     var str = Encoding.UTF8.GetString(ptr, bytes.Length);
                     return Guid.TryParse(str, out guid);
                 }

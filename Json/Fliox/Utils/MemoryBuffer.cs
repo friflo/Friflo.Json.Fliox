@@ -57,24 +57,43 @@ namespace Friflo.Json.Fliox.Utils
             if (len >= BigValueLength) {
                 return new JsonValue(value);
             }
+            return AddInternal(value.AsReadOnlySpan());
+        }
+        
+        /// <summary> add the <paramref name="value"/> to the <see cref="MemoryBuffer"/> </summary>
+        public JsonValue Add(in ReadOnlySpan<byte> value) {
+            int len         = value.Length;
+            allocatedSize  += len;
+            allocatedCount ++;            // value size beyond limits => create an individual copy
+            if (len >= BigValueLength) {
+                return new JsonValue(value.ToArray());
+            }
+            return AddInternal(value);
+        }
+        
+        private JsonValue AddInternal(in ReadOnlySpan<byte> value) {
             int start   = position;
+            var len     = value.Length;
             if (start + len <= capacity) {
                 // buffer == null  =>  MemoryBuffer was Reset()  =>  capacity == startCapacity
                 if (buffer == null) {
-                    buffer = startBuffer = new byte[startCapacity];
+                    buffer  = startBuffer = new byte[startCapacity];
                 }
                 // add value to current buffer
-                Buffer.BlockCopy(value.Array, value.start, buffer, start, len);
+                var target  = new Span<byte> (buffer, start, len);
+                value.CopyTo(target);
                 position += len;
                 return new JsonValue(buffer, start, len);
+            } else {
+                capacity    = 4 * Math.Max(len, capacity);              // quadruple current len / capacity to avoid allocation of too many unused remaining bytes
+                capacity    = Math.Min(capacity, LargeHeapObjectSize);  // cap array size to LargeHeapObjectSize
+                // create a new buffer and add value
+                buffer      = new byte[capacity];
+                var target  = new Span<byte> (buffer, 0, len);
+                value.CopyTo(target);
+                position    = len;
+                return new JsonValue(buffer, 0, len);
             }
-            capacity    = 4 * Math.Max(len, capacity);              // quadruple current len / capacity to avoid allocation of too many unused remaining bytes
-            capacity    = Math.Min(capacity, LargeHeapObjectSize);  // cap array size to LargeHeapObjectSize
-            // create a new buffer and add value
-            buffer      = new byte[capacity];
-            Buffer.BlockCopy(value.Array, value.start, buffer, 0, len);
-            position    = len;
-            return new JsonValue(buffer, 0, len);
         }
         
         public JsonValue GetValue(int position, int count) {
