@@ -257,10 +257,10 @@ namespace Friflo.Json.Burst.Utils
         private static bool TryParseDouble(in ReadOnlySpan<byte> bytes, out double result) {
             var len             = bytes.Length;
             Span<char> charBuf  = stackalloc char[len];
-            for (int n = 0; n < len; n++)
+            for (int n = 0; n < len; n++) {
                 charBuf[n] = (char)bytes[n];
-            var span = charBuf.Slice(0, len);
-            return MathExt.TryParseDouble(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
+            }
+            return MathExt.TryParseDouble(charBuf, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
         }
 
         public static double ParseDoubleStd(in ReadOnlySpan<byte> bytes, ref Bytes valueError, out bool success) {
@@ -282,10 +282,10 @@ namespace Friflo.Json.Burst.Utils
         private static bool TryParseFloat(in ReadOnlySpan<byte> bytes, out float result) {
             int len             = bytes.Length;
             Span<char> charBuf  = stackalloc char[len];
-            for (int n = 0; n < len; n++)
+            for (int n = 0; n < len; n++) {
                 charBuf[n] = (char)bytes[n];
-            var span = charBuf.Slice(0 , len);
-            return MathExt.TryParseFloat(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
+            }
+            return MathExt.TryParseFloat(charBuf, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
         }
 
         public static float ParseFloatStd(in ReadOnlySpan<byte> bytes, ref Bytes valueError, out bool success) {
