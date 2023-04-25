@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Tests.Common.Utils;
@@ -241,13 +242,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             }
         }
         
-        private const string TestStr        = "abc";
+        private const string TestStr        = "0123";
         private const int    AppendCount    = 10; // 100_000_000;
         
         [Test]
-        public void TestBytesAppendOldPerf() {
+        public void TestBytesAppendBytesOldPerf() {
 
-            var bytes   = new Bytes (TestStr);
+            var bytes   = new Bytes (128);
+            bytes.Set(TestStr);
             var target  = new Bytes (128);
             for (int n = 0; n < AppendCount; n++) {
                 target.end = 0;
@@ -257,14 +259,40 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         }
         
         [Test]
-        public void TestBytesAppendSpanPerf() {
-            var bytes   = new Bytes (TestStr).AsSpan();
+        public void TestBytesAppendBytesPerf() {
+            var bytes   = new Bytes (TestStr);
             var target  = new Bytes (128);
             for (int n = 0; n < AppendCount; n++) {
                 target.end = 0;
-                target.AppendBytesSpan(bytes);
+                target.AppendBytes(bytes);
             }
+            
             AreEqual(TestStr, target.AsString());
+        }
+        
+        [Test]
+        public void TestBytesAppendBytes() {
+            const int max = 64 + 8;
+            var target  = new Bytes (max);
+            var sb      = new StringBuilder();
+            
+            for (int n = 0; n < max; n++) {
+                var str     = sb.ToString();
+                var bytes   = new Bytes (str);
+                target.end = 0;
+                for (int o = 0; o < max; o++) { target.buffer[o] = 0; }
+                target.AppendBytes(bytes);
+                
+                AreEqual(str, target.AsString(), $"n: {n}");
+                int i = 0;
+                for (; i < n; i ++) {
+                    IsTrue(target.buffer[i] > 0);
+                }
+                for (; i < max; i ++) {
+                    IsTrue(target.buffer[i] == 0);
+                }
+                sb.Append((char) (n + 48));
+            }
         }
     }
     

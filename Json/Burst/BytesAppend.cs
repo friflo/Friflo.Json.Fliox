@@ -15,22 +15,105 @@ namespace Friflo.Json.Burst
             return new ReadOnlySpan<byte>(buffer, start, end - start);
         }
 
-        public void AppendBytesSpan(in ReadOnlySpan<byte> bytes) {
-            int srcLen  = bytes.Length;
-            int dstEnd  = end;
-            int newEnd  = dstEnd + srcLen;
+        public void AppendBytesSpan(in ReadOnlySpan<byte> source) {
+            int count   = source.Length;
+            int curEnd  = end;
+            int newEnd  = curEnd + count;
             if (newEnd > buffer.Length) {
                 DoubleSize(newEnd);
             }
-            var target = new Span<byte>(buffer, dstEnd, srcLen);
-            bytes.CopyTo(target);
             end = newEnd;
+            var target = new Span<byte>(buffer, curEnd, count);
+            source.CopyTo(target);
         }
         
-        public void AppendBytes(in Bytes src) {
-            AppendBytesSpan(src.AsSpan());
+        public unsafe void AppendBytes(in Bytes source) {
+            int count   = source.end - source.start;
+            int curEnd  = end;
+            int newEnd  = curEnd + count;
+            if (newEnd > buffer.Length) {
+                DoubleSize(newEnd);
+            }
+            end = newEnd;
+#if SPAN_IMPLEMENTATION
+            // 4.6 x slower in Unity 2021.3.9f1 with "0123"
+            // 1.2 x slower in net6.0           with "0123"
+            var srcSpan = new ReadOnlySpan<byte>(source.buffer, source.start, count);   
+            var dstSpan = new Span<byte>(buffer, curEnd, count);
+            srcSpan.CopyTo(dstSpan);
+#else
+            fixed (byte* src    = &source.buffer [source.start])
+            fixed (byte* dst    = &buffer        [curEnd]) {
+                if (count <= 8) {
+                    switch (count) {
+                        case 0: return;
+                        case 1: *(byte*) (dst)              = *(byte*) (src);        return;
+                        case 2: *(short*)(dst)              = *(short*)(src);        return;
+                        case 3: *(short*)(dst)              = *(short*)(src);
+                                *(byte*) (dst + 2)          = *(byte*) (src + 2);    return;
+                        default:
+                                *(int*)  (dst)              = *(int*)  (src);
+                                // copy last 4 bytes                
+                                *(int*)  (dst + count - 4)  = *(int*)  (src + count - 4);  return;
+                    }
+                }
+                // copy last 8 bytes
+                *(long*)(dst +  count - 8)  = *(long*)(src +  count - 8);
+                
+                if (count < 16) {
+                    *(long*)(dst +  0)      = *(long*)(src +  0);
+                    return;
+                }
+                if (count < 24) {
+                    *(long*)(dst +  0)      = *(long*)(src +  0);
+                    *(long*)(dst +  8)      = *(long*)(src +  8);
+                    return;
+                }
+                if (count < 32) {
+                    *(long*)(dst +  0)      = *(long*)(src +  0);
+                    *(long*)(dst +  8)      = *(long*)(src +  8);
+                    *(long*)(dst +  16)     = *(long*)(src +  16);
+                    return;
+                }
+                if (count < 40) {
+                    *(long*)(dst +  0)      = *(long*)(src +  0);
+                    *(long*)(dst +  8)      = *(long*)(src +  8);
+                    *(long*)(dst +  16)     = *(long*)(src +  16);
+                    *(long*)(dst +  24)     = *(long*)(src +  24);
+                    return;
+                }
+                if (count < 48) {
+                    *(long*)(dst +  0)      = *(long*)(src +  0);
+                    *(long*)(dst +  8)      = *(long*)(src +  8);
+                    *(long*)(dst +  16)     = *(long*)(src +  16);
+                    *(long*)(dst +  24)     = *(long*)(src +  24);
+                    *(long*)(dst +  32)     = *(long*)(src +  32);
+                    return;
+                }
+                if (count < 56) {
+                    *(long*)(dst +  0)      = *(long*)(src +  0);
+                    *(long*)(dst +  8)      = *(long*)(src +  8);
+                    *(long*)(dst +  16)     = *(long*)(src +  16);
+                    *(long*)(dst +  24)     = *(long*)(src +  24);
+                    *(long*)(dst +  32)     = *(long*)(src +  32);
+                    *(long*)(dst +  40)     = *(long*)(src +  40);
+                    return;
+                }
+                if (count < 64) {
+                    *(long*)(dst +  0)      = *(long*)(src +  0);
+                    *(long*)(dst +  8)      = *(long*)(src +  8);
+                    *(long*)(dst +  16)     = *(long*)(src +  16);
+                    *(long*)(dst +  24)     = *(long*)(src +  24);
+                    *(long*)(dst +  32)     = *(long*)(src +  32);
+                    *(long*)(dst +  40)     = *(long*)(src +  40);
+                    *(long*)(dst +  48)     = *(long*)(src +  48);
+                    return;
+                }
+                Buffer.MemoryCopy(src, dst, buffer.Length - curEnd, count);
+            }
+#endif
         }
-        
+
         /// <summary>
         /// <b>Obsolete</b> - use <see cref="AppendBytesSpan"/><br/>
         /// Method not removed to remember crazy pointer arithmetic
