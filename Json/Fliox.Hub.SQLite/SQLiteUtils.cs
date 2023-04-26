@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     default:
                         throw new InvalidOperationException("unhandled case");
                 }
-                raw.sqlite3_bind_blob(stmt, 2, entity.value.AsReadOnlySpan());
+                raw.sqlite3_bind_text(stmt, 2, entity.value.AsReadOnlySpan());
                 
                 var rc = raw.sqlite3_step(stmt);
                 if (rc != raw.SQLITE_DONE) throw new InvalidOperationException($"AppendValues - step error: {rc}");
