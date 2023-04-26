@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Provider.Client
                     public  TestEnum?       enumValNull;
     }
     
-    public class TestWrite {
+    public class TestMutate {
         [Key]       public  string          id { get; set; }
                     public  int             val1;
                     public  int             val2;
