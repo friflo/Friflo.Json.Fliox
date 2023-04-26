@@ -6,6 +6,8 @@ using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.SQLite;
+using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Provider.Client;
 
 namespace Friflo.Json.Tests.Provider
@@ -41,8 +43,10 @@ namespace Friflo.Json.Tests.Provider
                 await Env.Seed(testDb, fileDb);
                 hub.AddExtensionDB (testDb);
             }
+            var sqliteDb           = new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3") { Schema = databaseSchema };
+            hub.AddExtensionDB (sqliteDb);
+            
             hub.AddExtensionDB (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
-            hub.AddExtensionDB (new MonitorDB("monitor", hub));         // optional - expose monitor stats as extension database
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)
             
             var httpHost            = new HttpHost(hub, "/fliox/", env)       { CacheControl = cache };
