@@ -48,11 +48,19 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 
         public override Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
             EnsureContainerExists();
+            var begin = raw.sqlite3_exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", null, 0, out var error);
+            if (begin != raw.SQLITE_OK) throw new InvalidOperationException($"BEGIN TRANSACTION error: {error}");
+
             var sql = $@"INSERT INTO {name} VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data";
             var rc = raw.sqlite3_prepare_v2(sqliteDB.sqliteDB, sql, out var stmt);
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"UPSERT - prepare error: {rc}");
+            
             SQLiteUtils.AppendValues(stmt, command.entities);
             raw.sqlite3_finalize(stmt);
+            
+            var end = raw.sqlite3_exec(sqliteDB.sqliteDB, "END TRANSACTION", null, 0, out error);
+            if (end != raw.SQLITE_OK) throw new InvalidOperationException($"END TRANSACTION error: {error}");
+            
             return Task.FromResult(new UpsertEntitiesResult());
         }
 
