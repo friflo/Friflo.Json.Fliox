@@ -9,6 +9,7 @@ namespace Friflo.Json.Tests.Provider.Test
 {
     public static class TestMutation
     {
+        // --- delete all
         [Order(1)]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_DeleteAll(string db) {
@@ -27,6 +28,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(0, count.Result);
         }
         
+        // --- upsert
         [Order(3)]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_Upsert(string db) {
@@ -50,6 +52,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(3, count.Result);
         }
         
+        // --- delete by id
         [Order(5)]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_DeleteById(string db) {
@@ -59,8 +62,8 @@ namespace Friflo.Json.Tests.Provider.Test
             IsTrue(upsert.Success);
         }
         
-        // [Order(6)]
-        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        [Order(6)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_DeleteById_Check(string db) {
             var client      = await GetClient(db);
             var find        = client.testMutate.Read().Find("w-1");

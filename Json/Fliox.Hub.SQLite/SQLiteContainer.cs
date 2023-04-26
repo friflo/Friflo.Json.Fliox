@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER || SQLITE
 
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -100,16 +99,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!EnsureContainerExists(out var error)) {
                 return new ReadEntitiesResult { Error = error };
             }
-            var sb = new StringBuilder();
-            SQLiteUtils.AppendIds(sb, command.ids);
-            var ids = sb.ToString();
-            var sql = $"SELECT id, data FROM {name} WHERE id in ({ids})";
+            var sql = $"SELECT id, data FROM {name} WHERE id in (?)";
             if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
                 return new ReadEntitiesResult { Error = error };
             }
-            // var entities    = new EntityValue [keys.Count];
             var values = new List<EntityValue>();
-            if (!SQLiteUtils.ReadValues(stmt, values, syncContext.MemoryBuffer, out error)) {
+            if (!SQLiteUtils.ReadById(stmt, command.ids, values, syncContext.MemoryBuffer, out error)) {
                 return new ReadEntitiesResult { Error = error };
             }
             return new ReadEntitiesResult { entities = values.ToArray() };

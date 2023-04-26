@@ -26,5 +26,14 @@ namespace Friflo.Json.Tests.Provider.Test
             NotNull(find1.Result);
             NotNull(find2.Result);
         }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_Missing(string db) {
+            var client  = await GetClient(db);
+            var read    = client.testOps.Read();
+            var find    = read.Find("unknown");
+            await client.SyncTasks();
+            IsNull(find.Result);
+        }
     }
 }
