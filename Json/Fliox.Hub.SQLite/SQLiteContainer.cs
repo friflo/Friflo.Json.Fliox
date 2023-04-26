@@ -108,6 +108,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
                 return new ReadEntitiesResult { Error = error };
             }
+            // var entities    = new EntityValue [keys.Count];
             var values = new List<EntityValue>();
             if (!SQLiteUtils.ReadValues(stmt, values, syncContext.MemoryBuffer, out error)) {
                 return new ReadEntitiesResult { Error = error };
@@ -184,11 +185,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }
-                var sql = $"DELETE from {name} VALUES(?)";
+                var sql = $"DELETE from {name} WHERE id in (?)";
                 if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }
-                
+                if (!SQLiteUtils.AppendKeys(stmt, command.ids, out error)) {
+                    return new DeleteEntitiesResult { Error = error };
+                }
+                raw.sqlite3_finalize(stmt);
                 if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "END TRANSACTION", out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }

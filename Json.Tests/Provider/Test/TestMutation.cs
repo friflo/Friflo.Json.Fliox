@@ -50,9 +50,9 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(3, count.Result);
         }
         
-        // [Order(5)]
-        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_Delete(string db) {
+        [Order(5)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestMutation_DeleteById(string db) {
             var client      = await GetClient(db);
             var upsert      = client.testMutate.Delete("w-1");
             await client.SyncTasks();
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         // [Order(6)]
         // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_Delete_Check(string db) {
+        public static async Task TestMutation_DeleteById_Check(string db) {
             var client      = await GetClient(db);
             var find        = client.testMutate.Read().Find("w-1");
             await client.SyncTasks();

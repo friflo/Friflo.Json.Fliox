@@ -102,7 +102,6 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
         }
         
-        
         private static int BindKey(sqlite3_stmt stmt, in JsonKey key, ref Bytes bytes) {
             var encoding = key.GetEncoding();
             switch (encoding) {
