@@ -3,7 +3,6 @@
 
 #if !UNITY_5_3_OR_NEWER || SQLITE
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,14 +15,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 {
     public sealed class SQLiteContainer : EntityContainer
     {
-        private  readonly   SQLiteDatabase      sqliteDB;
-        private             bool                tableExists;
-        public   override   bool                Pretty      { get; }
+        private  readonly   sqlite3     sqliteDB;
+        private             bool        tableExists;
+        public   override   bool        Pretty      { get; }
         
         internal SQLiteContainer(string name, SQLiteDatabase database, bool pretty)
             : base(name, database)
         {
-            sqliteDB    = database;
+            sqliteDB    = database.sqliteDB;
             Pretty      = pretty;
         }
 
@@ -33,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 return true;
             }
             var sql = $"CREATE TABLE IF NOT EXISTS {name} (id TEXT PRIMARY KEY, data TEXT NOT NULL)";
-            var success = SQLiteUtils.Execute(sqliteDB.sqliteDB, sql, out error);
+            var success = SQLiteUtils.Execute(sqliteDB, sql, out error);
             if (success) {
                 tableExists = true;
             }
@@ -49,18 +48,18 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!EnsureContainerExists(out var error)) {
                 return new CreateEntitiesResult { Error = error };
             }
-            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", out  error)) {
+            if (!SQLiteUtils.Exec(sqliteDB, "BEGIN TRANSACTION", out  error)) {
                 return new CreateEntitiesResult { Error = error };
             }
             var sql = $@"INSERT INTO {name} VALUES(?,?)";
-            if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+            if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
                 return new CreateEntitiesResult { Error = error };
             }
             if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
                 return new CreateEntitiesResult { Error = error };
             }
             raw.sqlite3_finalize(stmt);
-            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "END TRANSACTION", out error)) {
+            if (!SQLiteUtils.Exec(sqliteDB, "END TRANSACTION", out error)) {
                 return new CreateEntitiesResult { Error = error };
             }
             return new CreateEntitiesResult();
@@ -75,18 +74,18 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!EnsureContainerExists(out var error)) {
                 return new UpsertEntitiesResult { Error = error };
             }
-            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", out error)) {
+            if (!SQLiteUtils.Exec(sqliteDB, "BEGIN TRANSACTION", out error)) {
                 return new UpsertEntitiesResult { Error = error };
             }
             var sql = $@"INSERT INTO {name} VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data";
-            if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+            if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
                 return new UpsertEntitiesResult { Error = error };
             }
             if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
                 return new UpsertEntitiesResult { Error = error };
             }
             raw.sqlite3_finalize(stmt);
-            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "END TRANSACTION", out error)) {
+            if (!SQLiteUtils.Exec(sqliteDB, "END TRANSACTION", out error)) {
                 return new UpsertEntitiesResult { Error = error };
             }
             return new UpsertEntitiesResult();
@@ -105,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             SQLiteUtils.AppendIds(sb, command.ids);
             var ids = sb.ToString();
             var sql = $"SELECT id, data FROM {name} WHERE id in ({ids})";
-            if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+            if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
                 return new ReadEntitiesResult { Error = error };
             }
             // var entities    = new EntityValue [keys.Count];
@@ -127,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             var filter = command.GetFilter().SQLiteFilter();
             var sql = $"SELECT id, data FROM {name} WHERE {filter}";
-            if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+            if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
                 return new QueryEntitiesResult { Error = error };
             }
             var values = new List<EntityValue>();
@@ -150,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
-                if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+                if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
                     return new AggregateEntitiesResult { Error = error };
                 }
                 var rc      = raw.sqlite3_step(stmt);
@@ -177,23 +176,23 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
-                if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, sql, out error)) {
+                if (!SQLiteUtils.Exec(sqliteDB, sql, out error)) {
                     return new DeleteEntitiesResult { Error = error };    
                 }
                 return new DeleteEntitiesResult();
             } else {
-                if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", out error)) {
+                if (!SQLiteUtils.Exec(sqliteDB, "BEGIN TRANSACTION", out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }
                 var sql = $"DELETE from {name} WHERE id in (?)";
-                if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+                if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }
                 if (!SQLiteUtils.AppendKeys(stmt, command.ids, out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }
                 raw.sqlite3_finalize(stmt);
-                if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "END TRANSACTION", out error)) {
+                if (!SQLiteUtils.Exec(sqliteDB, "END TRANSACTION", out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }
                 return new DeleteEntitiesResult();
