@@ -25,11 +25,10 @@ The intended order to implement a database provider:
 |-----------------------------------------------------------------------------------------------|---------------------------------------------- |
 | 1. Create / open database                                                                     |                                               |
 | 2. Create table / container in the database                                                   |                                               |
-| 3. Upsert entities to a container                                                             |                                               |
+| 3. Upsert, Create and Delete and entities in a container                                      | [TestMutation](Test/TestMutation.cs)          |
 | 4. Read entities from a container.                                                            | [TestRead](Test/TestRead.cs)                  |
 | 5. Query container entities without access to entities fields. Pure query operator tests.     | [TestQueryOps](Test/TestQueryOps.cs)          |
 | 6. Query container entities including access to entities fields. Test query operators on data.| [TestQueryFields](Test/TestQueryFields.cs)    |
-| 7. Delete container entities                                                                  |                                               |
 
 
 ## Query filter implementation
