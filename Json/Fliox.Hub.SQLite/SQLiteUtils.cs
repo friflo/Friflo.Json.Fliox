@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
         }
         
-        internal static void ReadValues(sqlite3_stmt stmt, List<EntityValue> values, MemoryBuffer buffer)
+        internal static bool ReadValues(sqlite3_stmt stmt, List<EntityValue> values, MemoryBuffer buffer, out TaskExecuteError error)
         {
             while (true) {
                 var rc = raw.sqlite3_step(stmt);
@@ -76,9 +76,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 } else if (rc == raw.SQLITE_DONE) {
                     break;
                 } else {
-                    throw new InvalidOperationException($"SELECT - step error: {rc}");
+                    error = new TaskExecuteError("step failed");
+                    return false;
                 }
             }
+            error = null;
+            return true;
         }
         
         // requires insert statement like: "INSERT INTO <table> (id, data) VALUES"
@@ -101,33 +104,46 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 
         // [c - Improve INSERT-per-second performance of SQLite - Stack Overflow]
         // https://stackoverflow.com/questions/1711631/improve-insert-per-second-performance-of-sqlite
-        internal static void AppendValues(sqlite3_stmt stmt, List<JsonEntity> entities)
+        internal static bool AppendValues(sqlite3_stmt stmt, List<JsonEntity> entities, out TaskExecuteError error)
         {
             var bytes = new Bytes(36);
             foreach (var entity in entities) {
                 var key         = entity.key;
                 var encoding    = key.GetEncoding();
+                int rc;
                 switch (encoding) {
                     case JsonKeyEncoding.LONG:
-                        raw.sqlite3_bind_int64(stmt, 1, key.AsLong());
+                        rc = raw.sqlite3_bind_int64(stmt, 1, key.AsLong());
                         break;
                     case JsonKeyEncoding.STRING:
-                        raw.sqlite3_bind_text (stmt, 1, key.AsString());
+                        rc = raw.sqlite3_bind_text (stmt, 1, key.AsString());
                         break;
                     case JsonKeyEncoding.STRING_SHORT:
                     case JsonKeyEncoding.GUID:
                         key.ToBytes(ref bytes);
-                        raw.sqlite3_bind_text (stmt, 1, bytes.AsSpan());
+                        rc = raw.sqlite3_bind_text (stmt, 1, bytes.AsSpan());
                         break;
                     default:
                         throw new InvalidOperationException("unhandled case");
                 }
-                raw.sqlite3_bind_text(stmt, 2, entity.value.AsReadOnlySpan());
-                
-                var rc = raw.sqlite3_step(stmt);
-                if (rc != raw.SQLITE_DONE) throw new InvalidOperationException($"AppendValues - step error: {rc}");
+                if (rc != raw.SQLITE_OK) {
+                    error = new TaskExecuteError($"bind key failed. error: {rc}, key: {key}");
+                    return false;
+                }
+                rc = raw.sqlite3_bind_text(stmt, 2, entity.value.AsReadOnlySpan());
+                if (rc != raw.SQLITE_OK) {
+                    error = new TaskExecuteError($"bind value failed. error: {rc}, key: {key}");
+                    return false;
+                }
+                rc = raw.sqlite3_step(stmt);
+                if (rc != raw.SQLITE_DONE) {
+                    error = new TaskExecuteError($"step failed. error: {rc}, key: {key}");
+                    return false;
+                }
                 raw.sqlite3_reset(stmt);
             }
+            error = null;
+            return true;
         }
         
         internal static bool Prepare(sqlite3 db, string sql, out sqlite3_stmt stmt, out TaskExecuteError error) {
