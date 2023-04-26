@@ -37,20 +37,36 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
+            var result = CreateEntities(command, syncContext);
+            return Task.FromResult(result);
+        }
+        
+        public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
             EnsureContainerExists();
+            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", out var error)) {
+                return new CreateEntitiesResult { Error = error };
+            }
             var sql = $@"INSERT INTO {name} VALUES(?,?)";
             var rc = raw.sqlite3_prepare_v2(sqliteDB.sqliteDB, sql, out var stmt);
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"UPSERT - prepare error: {rc}");
             SQLiteUtils.AppendValues(stmt, command.entities);
             raw.sqlite3_finalize(stmt);
-            return Task.FromResult(new CreateEntitiesResult());
+            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "END TRANSACTION", out error)) {
+                return new CreateEntitiesResult { Error = error };
+            }
+            return new CreateEntitiesResult();
+        }
+        
+        public override Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
+            var result = UpsertEntities(command, syncContext);
+            return Task.FromResult(result);
         }
 
-        public override Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
+        public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
             EnsureContainerExists();
-            var begin = raw.sqlite3_exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", null, 0, out var error);
-            if (begin != raw.SQLITE_OK) throw new InvalidOperationException($"BEGIN TRANSACTION error: {error}");
-
+            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", out var error)) {
+                return new UpsertEntitiesResult { Error = error };
+            }
             var sql = $@"INSERT INTO {name} VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data";
             var rc = raw.sqlite3_prepare_v2(sqliteDB.sqliteDB, sql, out var stmt);
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"UPSERT - prepare error: {rc}");
@@ -58,13 +74,18 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             SQLiteUtils.AppendValues(stmt, command.entities);
             raw.sqlite3_finalize(stmt);
             
-            var end = raw.sqlite3_exec(sqliteDB.sqliteDB, "END TRANSACTION", null, 0, out error);
-            if (end != raw.SQLITE_OK) throw new InvalidOperationException($"END TRANSACTION error: {error}");
-            
-            return Task.FromResult(new UpsertEntitiesResult());
+            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "END TRANSACTION", out error)) {
+                return new UpsertEntitiesResult { Error = error };
+            }
+            return new UpsertEntitiesResult();
+        }
+        
+        public override Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
+            var result = ReadEntities(command, syncContext);
+            return Task.FromResult(result);
         }
 
-        public override Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
+        public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
             EnsureContainerExists();
             var sb = new StringBuilder();
             SQLiteUtils.AppendIds(sb, command.ids);
@@ -74,11 +95,15 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"SELECT - prepare error: {rc}");
             var values = new List<EntityValue>();
             SQLiteUtils.ReadValues(stmt, values, syncContext.MemoryBuffer);
-            var result = new ReadEntitiesResult { entities = values.ToArray() };
-            return Task.FromResult(result);
+            return new ReadEntitiesResult { entities = values.ToArray() };
         }
         
         public override Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
+            var result = QueryEntities(command, syncContext);
+            return Task.FromResult(result);
+        }
+        
+        public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext) {
             EnsureContainerExists();
             var filter = command.GetFilter().SQLiteFilter();
             var sql = $"SELECT id, data FROM {name} WHERE {filter}";
@@ -87,15 +112,24 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             
             var values = new List<EntityValue>();
             SQLiteUtils.ReadValues(stmt, values, syncContext.MemoryBuffer);
-            var result = new QueryEntitiesResult { entities = values.ToArray() }; 
-            return Task.FromResult(result);
+            return new QueryEntitiesResult { entities = values.ToArray() }; 
         }
         
         public override Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
+            var result = AggregateEntities(command, syncContext);
+            return Task.FromResult(result);
+        }
+        
+        private AggregateEntitiesResult AggregateEntities (AggregateEntities command, SyncContext syncContext) {
             throw new NotImplementedException();
         }
         
         public override Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
+            var result = DeleteEntities(command, syncContext);
+            return Task.FromResult(result);
+        }
+        
+        public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {
             EnsureContainerExists();
             throw new NotImplementedException();
         }

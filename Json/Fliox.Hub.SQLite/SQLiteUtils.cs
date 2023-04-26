@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Utils;
 using SQLitePCL;
 
@@ -117,6 +118,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (rc != raw.SQLITE_DONE) throw new InvalidOperationException($"AppendValues - step error: {rc}");
                 raw.sqlite3_reset(stmt);
             }
+        }
+        
+        internal static bool Exec(sqlite3 db, string sql, out TaskExecuteError error) {
+            var rc = raw.sqlite3_exec(db, sql, null, 0, out var msg);
+            if (rc == raw.SQLITE_OK) {
+                error = null;
+                return true;
+            }
+            error = new TaskExecuteError(TaskErrorType.DatabaseError, msg);
+            return false;
         }
     }
 }
