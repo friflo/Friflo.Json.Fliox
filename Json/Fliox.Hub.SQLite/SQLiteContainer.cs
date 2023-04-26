@@ -38,22 +38,21 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         public override Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
             EnsureContainerExists();
-            var sb = new StringBuilder();
-            sb.Append("INSERT INTO "); sb.Append(name); sb.Append(" (id, data) VALUES");
-            SQLiteUtils.AppendEntities(sb, command.entities);
-            var sql = sb.ToString();
-            SQLiteUtils.Execute(sqliteDB.sqliteDB, sql, "INSERT or UPDATE");
+            var sql = $@"INSERT INTO {name} VALUES(?,?)";
+            var rc = raw.sqlite3_prepare_v2(sqliteDB.sqliteDB, sql, out var stmt);
+            if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"UPSERT - prepare error: {rc}");
+            SQLiteUtils.AppendValues(stmt, command.entities);
+            raw.sqlite3_finalize(stmt);
             return Task.FromResult(new CreateEntitiesResult());
         }
 
         public override Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
             EnsureContainerExists();
-            var sb = new StringBuilder();
-            sb.Append("INSERT INTO "); sb.Append(name); sb.Append(" (id, data) VALUES\n");
-            SQLiteUtils.AppendEntities(sb, command.entities);
-            sb.Append("\nON CONFLICT(id) DO UPDATE SET data=excluded.data");
-            var sql = sb.ToString();
-            SQLiteUtils.Execute(sqliteDB.sqliteDB, sql, "INSERT or UPDATE");
+            var sql = $@"INSERT INTO {name} VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data";
+            var rc = raw.sqlite3_prepare_v2(sqliteDB.sqliteDB, sql, out var stmt);
+            if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"UPSERT - prepare error: {rc}");
+            SQLiteUtils.AppendValues(stmt, command.entities);
+            raw.sqlite3_finalize(stmt);
             return Task.FromResult(new UpsertEntitiesResult());
         }
 

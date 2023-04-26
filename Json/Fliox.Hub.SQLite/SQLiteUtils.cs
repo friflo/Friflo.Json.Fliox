@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Utils;
 using SQLitePCL;
@@ -51,7 +52,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
         }
         
-        internal static void ReadValues(sqlite3_stmt stmt, List<EntityValue> values, MemoryBuffer buffer) {
+        internal static void ReadValues(sqlite3_stmt stmt, List<EntityValue> values, MemoryBuffer buffer)
+        {
             while (true) {
                 var rc = raw.sqlite3_step(stmt);
                 if (rc == raw.SQLITE_ROW) {
@@ -68,7 +70,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
         }
         
-        internal static void AppendEntities(StringBuilder sb, List<JsonEntity> entities) {
+        // requires insert statement like: "INSERT INTO <table> (id, data) VALUES"
+        internal static void AppendEntities(StringBuilder sb, List<JsonEntity> entities)
+        {
             bool isFirst = true; 
             foreach (var entity in entities) {
                 if (isFirst) {
@@ -81,6 +85,37 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 sb.Append("','");
                 sb.Append(entity.value.AsString());
                 sb.Append("')");
+            }
+        }
+
+        // [c - Improve INSERT-per-second performance of SQLite - Stack Overflow]
+        // https://stackoverflow.com/questions/1711631/improve-insert-per-second-performance-of-sqlite
+        internal static void AppendValues(sqlite3_stmt stmt, List<JsonEntity> entities)
+        {
+            var bytes = new Bytes(36);
+            foreach (var entity in entities) {
+                var key         = entity.key;
+                var encoding    = key.GetEncoding();
+                switch (encoding) {
+                    case JsonKeyEncoding.LONG:
+                        raw.sqlite3_bind_int64(stmt, 1, key.AsLong());
+                        break;
+                    case JsonKeyEncoding.STRING:
+                        raw.sqlite3_bind_text (stmt, 1, key.AsString());
+                        break;
+                    case JsonKeyEncoding.STRING_SHORT:
+                    case JsonKeyEncoding.GUID:
+                        key.ToBytes(ref bytes);
+                        raw.sqlite3_bind_text (stmt, 1, bytes.AsSpan());
+                        break;
+                    default:
+                        throw new InvalidOperationException("unhandled case");
+                }
+                raw.sqlite3_bind_blob(stmt, 2, entity.value.AsReadOnlySpan());
+                
+                var rc = raw.sqlite3_step(stmt);
+                if (rc != raw.SQLITE_DONE) throw new InvalidOperationException($"AppendValues - step error: {rc}");
+                raw.sqlite3_reset(stmt);
             }
         }
     }

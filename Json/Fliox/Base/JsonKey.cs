@@ -288,6 +288,25 @@ namespace Friflo.Json.Fliox
             throw new InvalidOperationException("unexpected type in JsonKey.AppendTo()");
         }
         
+        public JsonKeyEncoding GetEncoding() {
+            var obj = keyObj;
+            if (obj == null)            return JsonKeyEncoding.NULL;
+            if (obj == LONG)            return JsonKeyEncoding.LONG;
+            if (obj == STRING_SHORT)    return JsonKeyEncoding.STRING_SHORT;
+            if (obj is string)          return JsonKeyEncoding.STRING;
+            if (obj == GUID)            return JsonKeyEncoding.GUID;
+            throw new InvalidOperationException("unexpected type in JsonKey.GetEncoding()");
+        }
+        
+        public void ToBytes(ref Bytes dest) {
+            dest.start  = 0;
+            dest.end    = 0;
+            var obj = keyObj;
+            if (obj == STRING_SHORT)    { dest.AppendShortString(lng, lng2);        return; }
+            if (obj == GUID)            { dest.AppendGuid(Guid);                    return; }
+            throw new InvalidOperationException("unexpected type in JsonKey.ToBytes()");
+        }
+        
         public void AppendTo(StringBuilder sb) {
             var obj = keyObj;
             if (obj == LONG) {
@@ -338,5 +357,17 @@ namespace Friflo.Json.Fliox
         LONG    = 1,
         STRING  = 2,
         GUID    = 3,
+    }
+    
+    public enum JsonKeyEncoding {
+        NULL            = 0,
+        /// <summary>Get value with <see cref="JsonKey.AsLong"/></summary>
+        LONG            = 1,
+        /// <summary>Get value with <see cref="JsonKey.AsString"/></summary>
+        STRING          = 2,
+        /// <summary>Get value with <see cref="JsonKey.AsString"/> or <see cref="JsonKey.ToBytes"/></summary>
+        STRING_SHORT    = 3,
+        /// <summary>Get value with <see cref="JsonKey.AsGuid"/> or <see cref="JsonKey.ToBytes"/></summary>
+        GUID            = 4,
     }
 }
