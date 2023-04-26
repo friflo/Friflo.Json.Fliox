@@ -11,7 +11,7 @@ namespace Friflo.Json.Tests.Provider.Test
     {
         private const int ArticleCount = 5;
 
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] // todo [TestCase(sqlite_db, Category = sqlite_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Limit(string db) {
             var client  = await GetClient(db);
             var query   = client.testQuantify.QueryAll();

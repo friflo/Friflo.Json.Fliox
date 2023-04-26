@@ -119,8 +119,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!EnsureContainerExists(out var error)) {
                 return new QueryEntitiesResult { Error = error };
             }
-            var filter = command.GetFilter().SQLiteFilter();
-            var sql = $"SELECT id, data FROM {name} WHERE {filter}";
+            var filter  = command.GetFilter();
+            var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
+            var limit   = command.limit == null ? "" : $" LIMIT {command.limit}";
+            var sql     = $"SELECT id, data FROM {name}{where}{limit}";
             if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
                 return new QueryEntitiesResult { Error = error };
             }
