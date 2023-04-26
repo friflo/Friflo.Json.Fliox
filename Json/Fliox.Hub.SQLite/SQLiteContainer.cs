@@ -23,17 +23,21 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         internal SQLiteContainer(string name, SQLiteDatabase database, bool pretty)
             : base(name, database)
         {
-            sqliteDB  = database;
+            sqliteDB    = database;
             Pretty      = pretty;
         }
 
-        private void EnsureContainerExists() {
+        private bool EnsureContainerExists(out TaskExecuteError error) {
             if (tableExists) {
-                return;
+                error = null;
+                return true;
             }
-            tableExists = true;
             var sql = $"CREATE TABLE IF NOT EXISTS {name} (id TEXT PRIMARY KEY, data TEXT NOT NULL)";
-            SQLiteUtils.Execute(sqliteDB.sqliteDB, sql, "CREATE TABLE");
+            var success = SQLiteUtils.Execute(sqliteDB.sqliteDB, sql, out error);
+            if (success) {
+                tableExists = true;
+            }
+            return success;
         }
         
         public override Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
@@ -42,13 +46,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
-            EnsureContainerExists();
-            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", out var error)) {
+            if (!EnsureContainerExists(out var error)) {
+                return new CreateEntitiesResult { Error = error };
+            }
+            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", out  error)) {
                 return new CreateEntitiesResult { Error = error };
             }
             var sql = $@"INSERT INTO {name} VALUES(?,?)";
-            var rc = raw.sqlite3_prepare_v2(sqliteDB.sqliteDB, sql, out var stmt);
-            if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"UPSERT - prepare error: {rc}");
+            if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+                return new CreateEntitiesResult { Error = error };    
+            }
             SQLiteUtils.AppendValues(stmt, command.entities);
             raw.sqlite3_finalize(stmt);
             if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "END TRANSACTION", out error)) {
@@ -63,14 +70,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
 
         public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
-            EnsureContainerExists();
-            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", out var error)) {
+            if (!EnsureContainerExists(out var error)) {
+                return new UpsertEntitiesResult { Error = error };
+            }
+            if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", out error)) {
                 return new UpsertEntitiesResult { Error = error };
             }
             var sql = $@"INSERT INTO {name} VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data";
-            var rc = raw.sqlite3_prepare_v2(sqliteDB.sqliteDB, sql, out var stmt);
-            if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"UPSERT - prepare error: {rc}");
-            
+            if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+                return new UpsertEntitiesResult { Error = error };    
+            }
             SQLiteUtils.AppendValues(stmt, command.entities);
             raw.sqlite3_finalize(stmt);
             
@@ -86,13 +95,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
 
         public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
-            EnsureContainerExists();
+            if (!EnsureContainerExists(out var error)) {
+                return new ReadEntitiesResult { Error = error };
+            }
             var sb = new StringBuilder();
             SQLiteUtils.AppendIds(sb, command.ids);
             var ids = sb.ToString();
             var sql = $"SELECT id, data FROM {name} WHERE id in ({ids})";
-            var rc  = raw.sqlite3_prepare_v3(sqliteDB.sqliteDB, sql, 0, out var stmt);
-            if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"SELECT - prepare error: {rc}");
+            if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+                return new ReadEntitiesResult { Error = error };    
+            }
             var values = new List<EntityValue>();
             SQLiteUtils.ReadValues(stmt, values, syncContext.MemoryBuffer);
             return new ReadEntitiesResult { entities = values.ToArray() };
@@ -104,12 +116,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext) {
-            EnsureContainerExists();
+            if (!EnsureContainerExists(out var error)) {
+                return new QueryEntitiesResult { Error = error };
+            }
             var filter = command.GetFilter().SQLiteFilter();
             var sql = $"SELECT id, data FROM {name} WHERE {filter}";
-            var rc = raw.sqlite3_prepare_v3(sqliteDB.sqliteDB, sql, 0, out var stmt);
-            if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"SELECT - prepare error: {rc}");
-            
+            if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+                return new QueryEntitiesResult { Error = error };    
+            }
             var values = new List<EntityValue>();
             SQLiteUtils.ReadValues(stmt, values, syncContext.MemoryBuffer);
             return new QueryEntitiesResult { entities = values.ToArray() }; 
@@ -121,6 +135,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         private AggregateEntitiesResult AggregateEntities (AggregateEntities command, SyncContext syncContext) {
+            if (!EnsureContainerExists(out var error)) {
+                return new AggregateEntitiesResult { Error = error };
+            }
             throw new NotImplementedException();
         }
         
@@ -130,7 +147,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {
-            EnsureContainerExists();
+            if (!EnsureContainerExists(out var error)) {
+                return new DeleteEntitiesResult { Error = error };
+            }
             throw new NotImplementedException();
         }
     }

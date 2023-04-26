@@ -27,12 +27,22 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return version;
         }
         
-        internal static void Execute(sqlite3 db, string sql, string description) {
+        internal static bool Execute(sqlite3 db, string sql, out TaskExecuteError error) {
             var rc = raw.sqlite3_prepare_v3(db, sql, 0, out var stmt);
-            if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"{description} - prepare error: {rc}");
+            if (rc != raw.SQLITE_OK) {
+                var msg = $"prepare failed. sql: ${sql}, error: {rc}";
+                error = new TaskExecuteError(TaskErrorType.DatabaseError, msg);
+                return false;
+            }
             rc = raw.sqlite3_step(stmt);
-            if (rc != raw.SQLITE_DONE) throw new InvalidOperationException($"{description} - step error: {rc}");
+            if (rc != raw.SQLITE_DONE) {
+                var msg = $"step failed. sql: ${sql}, error: {rc}";
+                error = new TaskExecuteError(TaskErrorType.DatabaseError, msg);
+                return false;
+            }
             raw.sqlite3_finalize(stmt);
+            error = null;
+            return true;
         }
         
         internal static void AppendIds(StringBuilder sb, List<JsonKey> ids) {
@@ -118,6 +128,17 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (rc != raw.SQLITE_DONE) throw new InvalidOperationException($"AppendValues - step error: {rc}");
                 raw.sqlite3_reset(stmt);
             }
+        }
+        
+        internal static bool Prepare(sqlite3 db, string sql, out sqlite3_stmt stmt, out TaskExecuteError error) {
+            var rc  = raw.sqlite3_prepare_v3(db, sql, 0, out stmt);
+            if (rc == raw.SQLITE_OK) {
+                error = null;
+                return true;
+            }
+            var msg = $"prepare failed. sql: {sql}, error: {rc}";
+            error   = new TaskExecuteError(TaskErrorType.DatabaseError, msg);
+            return false;
         }
         
         internal static bool Exec(sqlite3 db, string sql, out TaskExecuteError error) {
