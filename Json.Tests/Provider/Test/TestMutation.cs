@@ -12,7 +12,7 @@ namespace Friflo.Json.Tests.Provider.Test
         // --- delete all
         [Order(1)]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_DeleteAll(string db) {
+        public static async Task TestMutation_1_DeleteAll(string db) {
             var client      = await GetClient(db);
             var upsert = client.testMutate.DeleteAll();
             await client.SyncTasks();
@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [Order(2)]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_DeleteAll_Check(string db) {
+        public static async Task TestMutation_2_DeleteAll_Check(string db) {
             var client      = await GetClient(db);
             var count       = client.testMutate.CountAll();
             await client.SyncTasks();
@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Provider.Test
         // --- upsert
         [Order(3)]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_Upsert(string db) {
+        public static async Task TestMutation_3_Upsert(string db) {
             var client      = await GetClient(db);
             var entities    = new List<TestMutate>();
             for (int n = 0; n < 3; n++) {
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [Order(4)]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_Upsert_Check(string db) {
+        public static async Task TestMutation_4_Upsert_Check(string db) {
             var client      = await GetClient(db);
             var count       = client.testMutate.CountAll();
             await client.SyncTasks();
@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Provider.Test
         // --- delete by id
         [Order(5)]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_DeleteById(string db) {
+        public static async Task TestMutation_5_DeleteById(string db) {
             var client      = await GetClient(db);
             var upsert      = client.testMutate.Delete("w-1");
             await client.SyncTasks();
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [Order(6)]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_DeleteById_Check(string db) {
+        public static async Task TestMutation_6_DeleteById_Check(string db) {
             var client      = await GetClient(db);
             var find        = client.testMutate.Read().Find("w-1");
             await client.SyncTasks();

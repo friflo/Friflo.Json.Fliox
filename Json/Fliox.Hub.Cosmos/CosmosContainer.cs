@@ -201,6 +201,14 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
+            if (command.all == true) {
+                var container = cosmosContainer;
+                cosmosContainer = null;
+                await container.DeleteContainerAsync().ConfigureAwait(false);
+                var db          = options.database;
+                cosmosContainer = await db.CreateContainerAsync(instanceName, "/id", options.throughput).ConfigureAwait(false);
+                return new DeleteEntitiesResult();
+            }
             var keys = command.ids;
             foreach (var key in keys) {
                 var id              = key.AsString();
