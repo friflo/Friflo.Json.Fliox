@@ -145,7 +145,24 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!EnsureContainerExists(out var error)) {
                 return new AggregateEntitiesResult { Error = error };
             }
-            throw new NotImplementedException();
+            if (command.type == AggregateType.count) {
+                var filter  = command.GetFilter();
+                var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
+                var sql     = $"SELECT COUNT(*) from {name}{where}";
+                if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+                    return new AggregateEntitiesResult { Error = error };
+                }
+                var rc      = raw.sqlite3_step(stmt);
+                if (rc != raw.SQLITE_ROW) {
+                    var msg = $"step failed. sql: {sql}. error: {rc}";
+                    return new AggregateEntitiesResult { Error = new TaskExecuteError(TaskErrorType.DatabaseError, msg) };
+                }
+                var count   = raw.sqlite3_column_int64(stmt, 0);
+                raw.sqlite3_finalize(stmt);
+                return new AggregateEntitiesResult { value = count };
+            }
+            var typeErr = $"command.type: {command.type}";
+            return new AggregateEntitiesResult { Error = new TaskExecuteError(TaskErrorType.NotImplemented, typeErr) };
         }
         
         public override Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
@@ -157,7 +174,26 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!EnsureContainerExists(out var error)) {
                 return new DeleteEntitiesResult { Error = error };
             }
-            throw new NotImplementedException();
+            if (command.all == true) {
+                var sql = $"DELETE from {name}";
+                if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, sql, out error)) {
+                    return new DeleteEntitiesResult { Error = error };    
+                }
+                return new DeleteEntitiesResult();
+            } else {
+                if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "BEGIN TRANSACTION", out error)) {
+                    return new DeleteEntitiesResult { Error = error };
+                }
+                var sql = $"DELETE from {name} VALUES(?)";
+                if (!SQLiteUtils.Prepare(sqliteDB.sqliteDB, sql, out var stmt, out error)) {
+                    return new DeleteEntitiesResult { Error = error };
+                }
+                
+                if (!SQLiteUtils.Exec(sqliteDB.sqliteDB, "END TRANSACTION", out error)) {
+                    return new DeleteEntitiesResult { Error = error };
+                }
+                return new DeleteEntitiesResult();
+            }
         }
     }
 }

@@ -9,8 +9,27 @@ namespace Friflo.Json.Tests.Provider.Test
 {
     public static class TestMutation
     {
+        [Order(1)]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutationUpsert(string db) {
+        public static async Task TestMutation_DeleteAll(string db) {
+            var client      = await GetClient(db);
+            var upsert = client.testMutate.DeleteAll();
+            await client.SyncTasks();
+            IsTrue(upsert.Success);
+        }
+        
+        [Order(2)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestMutation_DeleteAll_Check(string db) {
+            var client      = await GetClient(db);
+            var count       = client.testMutate.CountAll();
+            await client.SyncTasks();
+            AreEqual(0, count.Result);
+        }
+        
+        [Order(3)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestMutation_Upsert(string db) {
             var client      = await GetClient(db);
             var entities    = new List<TestMutate>();
             for (int n = 0; n < 3; n++) {
@@ -22,6 +41,36 @@ namespace Friflo.Json.Tests.Provider.Test
             IsTrue(upsert.Success);
         }
         
+        [Order(4)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestMutation_Upsert_Check(string db) {
+            var client      = await GetClient(db);
+            var count       = client.testMutate.CountAll();
+            await client.SyncTasks();
+            AreEqual(3, count.Result);
+        }
+        
+        // [Order(5)]
+        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestMutation_Delete(string db) {
+            var client      = await GetClient(db);
+            var upsert      = client.testMutate.Delete("w-1");
+            await client.SyncTasks();
+            IsTrue(upsert.Success);
+        }
+        
+        // [Order(6)]
+        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestMutation_Delete_Check(string db) {
+            var client      = await GetClient(db);
+            var find        = client.testMutate.Read().Find("w-1");
+            await client.SyncTasks();
+            IsNull(find.Result);
+        }
+    }
+    
+    public static class TestMutationPerf
+    {
         [TestCase(memory_db, Category = memory_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutationUpsertPerf(string db) {
             var client      = await GetClient(db);

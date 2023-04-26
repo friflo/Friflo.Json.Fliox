@@ -101,6 +101,23 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 sb.Append("')");
             }
         }
+        
+        
+        private static int BindKey(sqlite3_stmt stmt, in JsonKey key, ref Bytes bytes) {
+            var encoding = key.GetEncoding();
+            switch (encoding) {
+                case JsonKeyEncoding.LONG:
+                    return raw.sqlite3_bind_int64(stmt, 1, key.AsLong());
+                case JsonKeyEncoding.STRING:
+                    return raw.sqlite3_bind_text (stmt, 1, key.AsString());
+                case JsonKeyEncoding.STRING_SHORT:
+                case JsonKeyEncoding.GUID:
+                    key.ToBytes(ref bytes);
+                    return raw.sqlite3_bind_text (stmt, 1, bytes.AsSpan());
+                default:
+                    throw new InvalidOperationException("unhandled case");
+            }
+        }
 
         // [c - Improve INSERT-per-second performance of SQLite - Stack Overflow]
         // https://stackoverflow.com/questions/1711631/improve-insert-per-second-performance-of-sqlite
@@ -108,24 +125,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         {
             var bytes = new Bytes(36);
             foreach (var entity in entities) {
-                var key         = entity.key;
-                var encoding    = key.GetEncoding();
-                int rc;
-                switch (encoding) {
-                    case JsonKeyEncoding.LONG:
-                        rc = raw.sqlite3_bind_int64(stmt, 1, key.AsLong());
-                        break;
-                    case JsonKeyEncoding.STRING:
-                        rc = raw.sqlite3_bind_text (stmt, 1, key.AsString());
-                        break;
-                    case JsonKeyEncoding.STRING_SHORT:
-                    case JsonKeyEncoding.GUID:
-                        key.ToBytes(ref bytes);
-                        rc = raw.sqlite3_bind_text (stmt, 1, bytes.AsSpan());
-                        break;
-                    default:
-                        throw new InvalidOperationException("unhandled case");
-                }
+                var key = entity.key;
+                var rc  = BindKey(stmt, key, ref bytes);
                 if (rc != raw.SQLITE_OK) {
                     error = new TaskExecuteError($"bind key failed. error: {rc}, key: {key}");
                     return false;
@@ -133,6 +134,26 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 rc = raw.sqlite3_bind_text(stmt, 2, entity.value.AsReadOnlySpan());
                 if (rc != raw.SQLITE_OK) {
                     error = new TaskExecuteError($"bind value failed. error: {rc}, key: {key}");
+                    return false;
+                }
+                rc = raw.sqlite3_step(stmt);
+                if (rc != raw.SQLITE_DONE) {
+                    error = new TaskExecuteError($"step failed. error: {rc}, key: {key}");
+                    return false;
+                }
+                raw.sqlite3_reset(stmt);
+            }
+            error = null;
+            return true;
+        }
+        
+        internal static bool AppendKeys(sqlite3_stmt stmt, List<JsonKey> keys, out TaskExecuteError error)
+        {
+            var bytes = new Bytes(36);
+            foreach (var key in keys) {
+                var rc  = BindKey(stmt, key, ref bytes);
+                if (rc != raw.SQLITE_OK) {
+                    error = new TaskExecuteError($"bind key failed. error: {rc}, key: {key}");
                     return false;
                 }
                 rc = raw.sqlite3_step(stmt);
@@ -158,12 +179,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         internal static bool Exec(sqlite3 db, string sql, out TaskExecuteError error) {
-            var rc = raw.sqlite3_exec(db, sql, null, 0, out var msg);
+            var rc = raw.sqlite3_exec(db, sql, null, 0, out var errMsg);
             if (rc == raw.SQLITE_OK) {
                 error = null;
                 return true;
             }
-            error = new TaskExecuteError(TaskErrorType.DatabaseError, msg);
+            error = new TaskExecuteError(TaskErrorType.DatabaseError, $"exec failed. sql: {sql}, error: {errMsg}");
             return false;
         }
     }
