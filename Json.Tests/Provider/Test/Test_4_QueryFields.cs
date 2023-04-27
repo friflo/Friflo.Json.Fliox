@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Cosmos;
 using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -8,7 +9,8 @@ using static Friflo.Json.Tests.Provider.Env;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Json.Tests.Provider.Test
 {
-    public static class TestQueryFields
+    // ReSharper disable once InconsistentNaming
+    public static class Test_4_QueryFields
     {
         private const int ArticleCount = 2;
 
@@ -193,7 +195,8 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestQuery_Compare_GreaterEqual_Int(string db) {
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.int32 >= 0);
-            AreEqual("c => c.int32 >= 0",      query.filterLinq);
+            AreEqual("c => c.int32 >= 0",       query.filterLinq);
+            AreEqual("c['int32'] >= 0",         query.filter.CosmosFilter());
             await client.SyncTasks();
             AreEqual(1, query.Result.Count);
         }

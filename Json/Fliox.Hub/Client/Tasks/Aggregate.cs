@@ -19,8 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         [DebuggerBrowsable(Never)]
         internal            TaskState       state;
-        internal readonly   FilterOperation filter;
-        internal readonly   string          filterLinq; // use as string identifier of a filter 
+        public   readonly   FilterOperation filter;
+        public   readonly   string          filterLinq; // use as string identifier of a filter 
         internal            double?         result;
         [DebuggerBrowsable(Never)]
         private readonly    SyncSet         syncSet;

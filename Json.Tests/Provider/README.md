@@ -23,12 +23,14 @@ The intended order to implement a database provider:
 
 | database command                                                                              | unit test class                               |
 |-----------------------------------------------------------------------------------------------|---------------------------------------------- |
-| 1. Create / open database                                                                     |                                               |
-| 2. Create table / container in the database                                                   |                                               |
-| 3. Upsert, Create and Delete and entities in a container                                      | [TestMutation](Test/TestMutation.cs)          |
-| 4. Read entities from a container.                                                            | [TestRead](Test/TestRead.cs)                  |
-| 5. Query container entities without access to entities fields. Pure query operator tests.     | [TestQueryOps](Test/TestQueryOps.cs)          |
-| 6. Query container entities including access to entities fields. Test query operators on data.| [TestQueryFields](Test/TestQueryFields.cs)    |
+|    Create / open database                                                                     |                                               |
+|    Create table / container in the database                                                   |                                               |
+| 1. Mutation > Upsert, Create and Delete and entities in a container                           | [TestMutation](Test/Test_1_Mutation.cs)        |
+| 2. Read entities from a container.                                                            | [TestRead](Test/Test_2_Read.cs)                |
+| 3. Query container entities without access to entities fields. Pure query operator tests.     | [TestQueryOps](Test/Test_3_QueryOps.cs)        |
+| 4. Query container entities including access to entities fields. Test query operators on data.| [TestQueryFields](Test/Test_4_QueryFields.cs)  |
+| 5. Query cursor                                                                               | [TestQueryCursor](Test/Test_5_QueryCursor.cs)  |
+| 6. Aggregate entities > Count                                                                 | [TestAggregate](Test/Test_6_Aggregate.cs)      |
 
 
 ## Query filter implementation

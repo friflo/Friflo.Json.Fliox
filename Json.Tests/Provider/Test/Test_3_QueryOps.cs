@@ -7,7 +7,8 @@ using static System.Math;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Json.Tests.Provider.Test
 {
-    public static class TestQueryOps
+    // ReSharper disable once InconsistentNaming
+    public static class Test_3_QueryOps
     {
         private static readonly     int Zero    = 0;
         private static readonly     int One     = 1;

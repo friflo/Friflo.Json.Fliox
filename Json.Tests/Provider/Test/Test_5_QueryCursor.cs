@@ -1,4 +1,3 @@
-
 using System.Threading.Tasks;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -6,7 +5,8 @@ using static Friflo.Json.Tests.Provider.Env;
 
 namespace Friflo.Json.Tests.Provider.Test
 {
-    public static class TestQueryCursor
+    // ReSharper disable once InconsistentNaming
+    public static class Test_5_QueryCursor
     {
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Limit(string db) {
@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Provider.Test
             IsNull(query.ResultCursor);
         }
         
-        // Using maxCount greater than available entities. So a single query return all entities.
+        // Using maxCount less than available entities matching the filter.
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Cursor_Filter(string db) {
             var client      = await GetClient(db);

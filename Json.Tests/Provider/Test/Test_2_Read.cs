@@ -5,7 +5,8 @@ using static Friflo.Json.Tests.Provider.Env;
 
 namespace Friflo.Json.Tests.Provider.Test
 {
-    public static class TestRead
+    // ReSharper disable once InconsistentNaming
+    public static class Test_2_Read
     {
         // --- read by id
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]

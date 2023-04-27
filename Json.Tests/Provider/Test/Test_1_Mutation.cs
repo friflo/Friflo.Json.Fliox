@@ -7,7 +7,8 @@ using static Friflo.Json.Tests.Provider.Env;
 
 namespace Friflo.Json.Tests.Provider.Test
 {
-    public static class TestMutation
+    // ReSharper disable once InconsistentNaming
+    public static class Test_1_Mutation
     {
         // --- delete all
         [Order(1)]
