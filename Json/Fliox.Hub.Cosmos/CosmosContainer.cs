@@ -40,40 +40,55 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var entities = command.entities;
+            List<EntityError> createErrors = null;
             using(var memory   = new ReusedMemoryStream()) {
                 for (int n = 0; n < entities.Count; n++) {
                     var entity  = entities[n];
                     var key     = entity.key;
                     CosmosUtils.WriteJson(memory, entity.value);
                     var partitionKey = new PartitionKey(key.AsString());
-                    // consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog] https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
-                    // todo handle error;
-                    using (var _ = await cosmosContainer.CreateItemStreamAsync(memory, partitionKey).ConfigureAwait(false)) {
+                    // todo consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog]
+                    //      https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
+                    using (var response = await cosmosContainer.CreateItemStreamAsync(memory, partitionKey).ConfigureAwait(false)) {
+                        if (response.StatusCode != HttpStatusCode.Created) {
+                            createErrors ??= new List<EntityError>();
+                            createErrors.Add(new EntityError(EntityErrorType.WriteError, nameShort, key, response.ErrorMessage));
+                        }
                     }
                 }
             }
-            return new CreateEntitiesResult();
+            return new CreateEntitiesResult { errors = createErrors };
         }
 
         public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var entities = command.entities;
+            List<EntityError> upsertErrors = null;
             using (var memory           = new ReusedMemoryStream())
             using (var pooled  = syncContext.EntityProcessor.Get()) {
                 var processor = pooled.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity  = entities[n];
                     var key     = entity.key;
-                    var json = processor.ReplaceKey(entity.value, command.keyName, false, "id", out _, out string error);
+                    var json = processor.ReplaceKey(entity.value, command.keyName, false, "id", out _, out string errorMsg);
                     CosmosUtils.WriteJson(memory, json);
                     var partitionKey = new PartitionKey(key.AsString());
-                    // consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog] https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
-                    // todo handle error;
-                    using (var _ = await cosmosContainer.UpsertItemStreamAsync(memory, partitionKey).ConfigureAwait(false)) {
+                    // todo consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog]
+                    //      https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
+                    using (var response = await cosmosContainer.UpsertItemStreamAsync(memory, partitionKey).ConfigureAwait(false)) {
+                        switch (response.StatusCode) {
+                            case HttpStatusCode.OK:         // updated existing entity
+                            case HttpStatusCode.Created:    // created new entity
+                                break;
+                            default:
+                                upsertErrors ??= new List<EntityError>();
+                                upsertErrors.Add(new EntityError(EntityErrorType.WriteError, nameShort, key, response.ErrorMessage));
+                                break;
+                        }
                     }
                 }
             }
-            return UpsertEntitiesResult.Create(syncContext, null);
+            return UpsertEntitiesResult.Create(syncContext, upsertErrors);
         }
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
