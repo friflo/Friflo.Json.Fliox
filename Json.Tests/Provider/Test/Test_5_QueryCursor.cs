@@ -74,5 +74,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(2, iterations);
             AreEqual(3, count);
         }
+        
+        // todo add remove cursor tests
     }
 }

@@ -43,9 +43,10 @@ namespace Friflo.Json.Tests.Provider
                 await Env.Seed(testDb, fileDb);
                 hub.AddExtensionDB (testDb);
             }
+#if !UNITY_5_3_OR_NEWER
             var sqliteDb           = new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3") { Schema = databaseSchema };
             hub.AddExtensionDB (sqliteDb);
-            
+#endif
             hub.AddExtensionDB (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)
             
