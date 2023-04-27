@@ -226,7 +226,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
     
     #region - internal methods
+        /// <summary>
+        /// Create and return a unique cursor id and store the given <paramref name="enumerator"/> with this id.<br/>
+        /// The cursor id created by a previous call for the given <paramref name="enumerator"/> will be removed.
+        /// </summary>
         protected string StoreCursor(QueryEnumerator enumerator, in ShortString userId) {
+            if (enumerator == null) throw new ArgumentNullException(nameof(enumerator));
             var cursor      = enumerator.Cursor;
             if (cursor != null) {
                 cursors.Remove(cursor);
@@ -237,13 +242,24 @@ namespace Friflo.Json.Fliox.Hub.Host
             return nextCursor;
         }
         
+        /// <summary>
+        /// Remove the given <paramref name="enumerator"/> from stored cursors.<br/>
+        /// The given <paramref name="enumerator"/> can be null.
+        /// </summary>
         protected void RemoveCursor(QueryEnumerator enumerator) {
+            if (enumerator == null) {
+                return;
+            }
             var cursor      = enumerator.Cursor;
             if (cursor != null) {
                 cursors.Remove(cursor);
             }
         }
         
+        /// <summary>
+        /// Find the <paramref name="enumerator"/> for the given <see cref="cursor"/> id.<br/>
+        /// Return true if the <see cref="cursor"/> was found. Otherwise false.
+        /// </summary>
         protected bool FindCursor(string cursor, SyncContext syncContext, out QueryEnumerator enumerator, out TaskExecuteError error) {
             if (cursor == null) {
                 enumerator  = null;

@@ -4,13 +4,10 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Provider.Env;
 
-// ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Json.Tests.Provider.Test
 {
     public static class TestQueryCursor
     {
-        private const int ArticleCount = 5;
-
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Limit(string db) {
             var client  = await GetClient(db);
@@ -20,8 +17,9 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(2, query.Result.Count);
         }
         
+        // Using maxCount less than available entities. So multiple query are required to return all entities.
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestQuery_Cursor(string db) {
+        public static async Task TestQuery_Cursor_MultiStep(string db) {
             var client      = await GetClient(db);
             var query       = client.testQuantify.QueryAll();
             int count       = 0;
@@ -41,6 +39,17 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(3, iterations);
             AreEqual(5, count);
         }
-
+        
+        // Using maxCount greater than available entities. So a single query return all entities.
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_Cursor_SingleStep(string db) {
+            var client      = await GetClient(db);
+            var query       = client.testQuantify.QueryAll();
+            query.maxCount  = 100;
+            await client.SyncTasks();
+                
+            AreEqual(5, query.Result.Count);
+            IsNull(query.ResultCursor);
+        }
     }
 }
