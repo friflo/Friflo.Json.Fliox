@@ -106,7 +106,7 @@
                 "filter":     { "type": ["string", "null"], "description": "query filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a>\nreturning a boolean value. E.g.<br/><code>o => o.name == 'Smartphone'</code>\nif <b>filterTree</b> is assigned it has priority" },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" }, "description": "used to request the entities referenced by properties of the query task result" },
                 "limit":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "limit the result set to the given number" },
-                "maxCount":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "execute a cursor request with the specified <b>maxCount</b> number of entities in the result." },
+                "maxCount":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "If set the query uses or creates a <b>cursor</b> and return <b>maxCount</b> number of entities." },
                 "cursor":     { "type": ["string", "null"], "description": "specify the <b>cursor</b> of a previous cursor request" }
             },
             "required": [

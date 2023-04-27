@@ -125,7 +125,7 @@ export class QueryEntities extends SyncRequestTask {
     references? : References[] | null;
     /** limit the result set to the given number */
     limit?      : int32 | null;
-    /** execute a cursor request with the specified **maxCount** number of entities in the result. */
+    /** If set the query uses or creates a **cursor** and return **maxCount** number of entities. */
     maxCount?   : int32 | null;
     /** specify the **cursor** of a previous cursor request */
     cursor?     : string | null;

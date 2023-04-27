@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public  List<References>    references;
         /// <summary>limit the result set to the given number</summary>
                     public  int?                limit;
-        /// <summary>execute a cursor request with the specified <see cref="maxCount"/> number of entities in the result.</summary>
+        /// <summary>If set the query uses or creates a <see cref="cursor"/> and return <see cref="maxCount"/> number of entities.</summary>
                     public  int?                maxCount;
         /// <summary>specify the <see cref="cursor"/> of a previous cursor request</summary>
                     public  string              cursor;
