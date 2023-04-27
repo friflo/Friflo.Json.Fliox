@@ -11,7 +11,8 @@ namespace Friflo.Json.Tests.Provider.Client
         public readonly EntitySet <string, CompareScalar>   compare;
         public readonly EntitySet <string, TestEnumEntity>  testEnum;
         public readonly EntitySet <string, TestMutate>      testMutate;
-        
+        public readonly EntitySet <string, CursorEntity>    testCursor;
+
         public TestClient(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
     }
 }

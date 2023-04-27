@@ -11,7 +11,7 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Limit(string db) {
             var client  = await GetClient(db);
-            var query   = client.testQuantify.QueryAll();
+            var query   = client.testCursor.QueryAll();
             query.limit = 2;
             await client.SyncTasks();
             AreEqual(2, query.Result.Count);
@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Cursor_MultiStep(string db) {
             var client      = await GetClient(db);
-            var query       = client.testQuantify.QueryAll();
+            var query       = client.testCursor.QueryAll();
             int count       = 0;
             int iterations  = 0;
             while (true) {
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Provider.Test
                 var cursor      = query.ResultCursor;
                 if (cursor == null)
                     break;
-                query           = client.testQuantify.QueryAll();
+                query           = client.testCursor.QueryAll();
                 query.cursor    = cursor;
             }
             AreEqual(3, iterations);
@@ -44,12 +44,35 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Cursor_SingleStep(string db) {
             var client      = await GetClient(db);
-            var query       = client.testQuantify.QueryAll();
+            var query       = client.testCursor.QueryAll();
             query.maxCount  = 100;
             await client.SyncTasks();
                 
             AreEqual(5, query.Result.Count);
             IsNull(query.ResultCursor);
+        }
+        
+        // Using maxCount greater than available entities. So a single query return all entities.
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_Cursor_Filter(string db) {
+            var client      = await GetClient(db);
+            var query       = client.testCursor.Query(c => c.value == 100);
+            int count       = 0;
+            int iterations  = 0;
+            while (true) {
+                query.maxCount  = 2;
+                iterations++;
+                await client.SyncTasks();
+                
+                count          += query.Result.Count;
+                var cursor      = query.ResultCursor;
+                if (cursor == null)
+                    break;
+                query           = client.testCursor.Query(c => c.value == 100); // todo add QueryNext()
+                query.cursor    = cursor;
+            }
+            AreEqual(2, iterations);
+            AreEqual(3, count);
         }
     }
 }

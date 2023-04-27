@@ -52,4 +52,9 @@ namespace Friflo.Json.Tests.Provider.Client
                     public  int             val1;
                     public  int             val2;
     }
+    
+    public class CursorEntity {
+        [Key]       public  string          id { get; set; }
+                    public  int             value;
+    }
 }
