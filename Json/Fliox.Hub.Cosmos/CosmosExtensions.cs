@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
@@ -39,7 +40,9 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             switch (operation) {
                 case Field field: {
                     if (collectionStart != null && field.name.StartsWith(collectionStart)) {
-                        return $"{collection}.{field.name.Substring(collectionStart.Length)}";
+                        var fieldName   = field.name.Substring(collectionStart.Length);
+                        var path        = ConvertPath(fieldName);
+                        return $"{collection}{path}";
                     }
                     return field.name;
                 }
@@ -159,34 +162,35 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 // --- constants ---
                 
                 // --- aggregate ---
-                case CountWhere countWhere:
+                case CountWhere countWhere: {
                     var cx              = new ConvertContext ("", filterOp);
                     operand             = cx.Traverse(countWhere.predicate);
                     string fieldName    = Traverse(countWhere.field);
                     string arg          = countWhere.arg;
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
-
+                }
                 // --- quantify ---
-                case Any any:
-                    cx                  = new ConvertContext ("", filterOp);
+                case Any any: {
+                    var cx              = new ConvertContext ("", filterOp);
                     operand             = cx.Traverse(any.predicate);
-                    fieldName           = Traverse(any.field);
-                    arg                 = any.arg;
+                    var fieldName       = Traverse(any.field);
+                    var arg             = any.arg;
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
-                case All all:
-                    cx                  = new ConvertContext ("", filterOp);
+                }
+                case All all: {
+                    var cx              = new ConvertContext ("", filterOp);
                     operand             = cx.Traverse(all.predicate);
-                    fieldName           = Traverse(all.field);
-                    arg                 = all.arg;
+                    var fieldName       = Traverse(all.field);
+                    var arg            = all.arg;
                     // treat array == null and missing array as empty array <=> array[]
                     return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
-                
+                }
                 // --- query filter expression
-                case Filter filter:
-                    cx                  = new ConvertContext (collection, filterOp);
+                case Filter filter: {
+                    var cx              = new ConvertContext (collection, filterOp);
                     operand             = cx.Traverse(filter.body);
                     return $"{operand}";
-                
+                }
                 default:
                     throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filterOp}");
             }
@@ -198,6 +202,15 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 result[n] = Traverse(operands[n]);
             }
             return result;
+        }
+        
+        // SQL statements in CosmosDB must not used reserved SQL keywords to access fields in the WHERE clause. E.g.
+        // SELECT * FROM c WHERE c.value = 0
+        // errors because value (VALUE, Value, ...) is a reserved SQL keyword 
+        private static string ConvertPath (string path) {
+            var names = path.Split();
+            var cosmosNames = names.Select(name => $"['{name}']");
+            return string.Join(null, cosmosNames);
         }
     }
 }
