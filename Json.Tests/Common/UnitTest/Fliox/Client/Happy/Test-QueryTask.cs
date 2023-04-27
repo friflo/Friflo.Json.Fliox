@@ -57,8 +57,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("p => p.employees == null", producersEmployees.filterLinq);
 
             // ensure API available
-            AreEqual($"c.customer = 'customer-1'",                                        ordersWithCustomer1.filter.CosmosFilter());
-            AreEqual($"EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", hasOrderCamera.filter.CosmosFilter()); 
+            AreEqual($"c['customer'] = 'customer-1'",                                           ordersWithCustomer1.filter.CosmosFilter());
+            AreEqual($"EXISTS(SELECT VALUE i FROM i IN c['items'] WHERE i['name'] = 'Camera')", hasOrderCamera.filter.CosmosFilter()); 
 
             var orderCustomer           = orders.RelationPath(customers, o => o.customer);
             var customer                = readOrders.ReadRelation(customers, orderCustomer);
