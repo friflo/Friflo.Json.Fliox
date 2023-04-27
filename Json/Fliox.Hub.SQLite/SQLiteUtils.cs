@@ -49,8 +49,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return Success(out error);
         }
         
-        internal static bool ReadValues(sqlite3_stmt stmt, List<EntityValue> values, MemoryBuffer buffer, out TaskExecuteError error)
+        internal static bool ReadValues(
+            sqlite3_stmt            stmt,
+            int?                    maxCount,                     
+            List<EntityValue>       values,
+            MemoryBuffer            buffer,
+            out TaskExecuteError    error)
         {
+            int count = 0;
             while (true) {
                 var rc = raw.sqlite3_step(stmt);
                 if (rc == raw.SQLITE_ROW) {
@@ -59,6 +65,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     var key     = new JsonKey(id, default);
                     var value   = buffer.Add(data);
                     values.Add(new EntityValue(key, value));
+                    count++;
+                    if (maxCount != null && count >= maxCount) {
+                        return Success(out error);
+                    }
                 } else if (rc == raw.SQLITE_DONE) {
                     break;
                 } else {
@@ -108,7 +118,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return Success(out error);
         }
         
-        internal static bool ReadById(sqlite3_stmt stmt, List<JsonKey> keys,  List<EntityValue> values, MemoryBuffer buffer, out TaskExecuteError error)
+        internal static bool ReadById(
+            sqlite3_stmt            stmt,
+            List<JsonKey>           keys,
+            List<EntityValue>       values,
+            MemoryBuffer            buffer,
+            out TaskExecuteError    error)
         {
             var bytes = new Bytes(36);
             foreach (var key in keys) {

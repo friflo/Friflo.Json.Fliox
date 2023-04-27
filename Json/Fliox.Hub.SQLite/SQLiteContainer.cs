@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using SQLitePCL;
@@ -119,18 +120,37 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!EnsureContainerExists(out var error)) {
                 return new QueryEntitiesResult { Error = error };
             }
-            var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
-            var limit   = command.limit == null ? "" : $" LIMIT {command.limit}";
-            var sql     = $"SELECT id, data FROM {name}{where}{limit}";
-            if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
-                return new QueryEntitiesResult { Error = error };
+            sqlite3_stmt    stmt;
+            QueryEnumerator enumerator = null;
+            var             maxCount   = command.maxCount;
+            if (command.cursor != null) {
+                if (!FindCursor(command.cursor, syncContext, out enumerator, out error)) {
+                    return new QueryEntitiesResult { Error = error };
+                }
+                stmt = ((SQLiteQueryEnumerator)enumerator).stmt;
+            } else {
+                var filter  = command.GetFilter();
+                var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
+                var limit   = command.limit == null ? "" : $" LIMIT {command.limit}";
+                var sql     = $"SELECT id, data FROM {name}{where}{limit}";
+                if (!SQLiteUtils.Prepare(sqliteDB, sql, out stmt, out error)) {
+                    return new QueryEntitiesResult { Error = error };
+                }
             }
             var values = new List<EntityValue>();
-            if (!SQLiteUtils.ReadValues(stmt, values, syncContext.MemoryBuffer, out error)) {
+            if (!SQLiteUtils.ReadValues(stmt, maxCount, values, syncContext.MemoryBuffer, out error)) {
                 return new QueryEntitiesResult { Error = error };
             }
-            return new QueryEntitiesResult { entities = values.ToArray() };
+            var result = new QueryEntitiesResult { entities = values.ToArray() };
+            if (maxCount != null) {
+                if (values.Count == maxCount) {
+                    enumerator ??= new SQLiteQueryEnumerator(stmt);
+                    result.cursor = StoreCursor(enumerator, syncContext.User.userId);
+                } else {
+                    RemoveCursor(enumerator);
+                }
+            }
+            return result;
         }
         
         public override Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {

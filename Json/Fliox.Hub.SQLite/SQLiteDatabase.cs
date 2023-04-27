@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using SQLitePCL;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
@@ -61,6 +62,22 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     
     internal sealed class SQLitePrimaryKey {
         
+    }
+    
+    internal sealed class SQLiteQueryEnumerator : QueryEnumerator
+    {
+        internal readonly   sqlite3_stmt    stmt;
+        
+        public   override   JsonKey         Current     => throw new NotImplementedException("not applicable");
+        public   override   bool            MoveNext()  => throw new NotImplementedException("not applicable");
+        
+        internal SQLiteQueryEnumerator(sqlite3_stmt stmt) {
+            this.stmt = stmt;
+        }
+        
+        protected override void DisposeEnumerator() {
+            raw.sqlite3_finalize(stmt);
+        }
     }
 }
 

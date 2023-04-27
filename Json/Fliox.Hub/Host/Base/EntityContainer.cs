@@ -226,7 +226,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
     
     #region - internal methods
-        internal string StoreCursor(QueryEnumerator enumerator, in ShortString userId) {
+        protected string StoreCursor(QueryEnumerator enumerator, in ShortString userId) {
             var cursor      = enumerator.Cursor;
             if (cursor != null) {
                 cursors.Remove(cursor);
@@ -235,6 +235,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             enumerator.Detach(nextCursor, this, userId);
             cursors.Add(nextCursor, enumerator);
             return nextCursor;
+        }
+        
+        protected void RemoveCursor(QueryEnumerator enumerator) {
+            var cursor      = enumerator.Cursor;
+            if (cursor != null) {
+                cursors.Remove(cursor);
+            }
         }
         
         protected bool FindCursor(string cursor, SyncContext syncContext, out QueryEnumerator enumerator, out TaskExecuteError error) {
