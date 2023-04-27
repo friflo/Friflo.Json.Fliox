@@ -48,21 +48,21 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!EnsureContainerExists(out var error)) {
                 return new CreateEntitiesResult { Error = error };
             }
-            if (!SQLiteUtils.Exec(sqliteDB, "BEGIN TRANSACTION", out  error)) {
-                return new CreateEntitiesResult { Error = error };
+            using (SQLiteUtils.Transaction(sqliteDB, out error))
+            {
+                if (error != null) {
+                    return new CreateEntitiesResult { Error = error };
+                }
+                var sql = $@"INSERT INTO {name} VALUES(?,?)";
+                if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
+                    return new CreateEntitiesResult { Error = error };
+                }
+                if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
+                    return new CreateEntitiesResult { Error = error };
+                }
+                raw.sqlite3_finalize(stmt);
+                return new CreateEntitiesResult();
             }
-            var sql = $@"INSERT INTO {name} VALUES(?,?)";
-            if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
-                return new CreateEntitiesResult { Error = error };
-            }
-            if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
-                return new CreateEntitiesResult { Error = error };
-            }
-            raw.sqlite3_finalize(stmt);
-            if (!SQLiteUtils.Exec(sqliteDB, "END TRANSACTION", out error)) {
-                return new CreateEntitiesResult { Error = error };
-            }
-            return new CreateEntitiesResult();
         }
         
         public override Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
@@ -74,21 +74,24 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!EnsureContainerExists(out var error)) {
                 return new UpsertEntitiesResult { Error = error };
             }
-            if (!SQLiteUtils.Exec(sqliteDB, "BEGIN TRANSACTION", out error)) {
-                return new UpsertEntitiesResult { Error = error };
+            using (SQLiteUtils.Transaction(sqliteDB, out error))
+            {
+                if (error != null) {
+                    return new UpsertEntitiesResult { Error = error };
+                }
+                var sql = $@"INSERT INTO {name} VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data";
+                if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
+                    return new UpsertEntitiesResult { Error = error };
+                }
+                if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
+                    return new UpsertEntitiesResult { Error = error };
+                }
+                raw.sqlite3_finalize(stmt);
+                if (!SQLiteUtils.Exec(sqliteDB, "END TRANSACTION", out error)) {
+                    return new UpsertEntitiesResult { Error = error };
+                }
+                return new UpsertEntitiesResult();
             }
-            var sql = $@"INSERT INTO {name} VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data";
-            if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
-                return new UpsertEntitiesResult { Error = error };
-            }
-            if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
-                return new UpsertEntitiesResult { Error = error };
-            }
-            raw.sqlite3_finalize(stmt);
-            if (!SQLiteUtils.Exec(sqliteDB, "END TRANSACTION", out error)) {
-                return new UpsertEntitiesResult { Error = error };
-            }
-            return new UpsertEntitiesResult();
         }
         
         public override Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
@@ -197,8 +200,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return new DeleteEntitiesResult { Error = error };    
                 }
                 return new DeleteEntitiesResult();
-            } else {
-                if (!SQLiteUtils.Exec(sqliteDB, "BEGIN TRANSACTION", out error)) {
+            }
+            using (SQLiteUtils.Transaction(sqliteDB, out error))
+            {
+                if (error != null) {
                     return new DeleteEntitiesResult { Error = error };
                 }
                 var sql = $"DELETE from {name} WHERE id in (?)";

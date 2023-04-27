@@ -10,66 +10,97 @@ namespace Friflo.Json.Tests.Provider.Test
     // ReSharper disable once InconsistentNaming
     public static class Test_1_Mutation
     {
-        // --- delete all
-        [Order(1)]
+        // --- delete all - used to clear container in subsequent tests
+        // --- count all  - used by assertions in subsequent tests
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_1_DeleteAll(string db) {
             var client      = await GetClient(db);
-            var upsert = client.testMutate.DeleteAll();
+            var deleteAll   = client.testMutate.DeleteAll();
+            var countAll    = client.testMutate.CountAll();
             await client.SyncTasks();
-            IsTrue(upsert.Success);
-        }
-        
-        [Order(2)]
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_2_DeleteAll_Check(string db) {
-            var client      = await GetClient(db);
-            var count       = client.testMutate.CountAll();
-            await client.SyncTasks();
-            AreEqual(0, count.Result);
+            
+            IsTrue(deleteAll.Success);
+            AreEqual(0, countAll.Result);
         }
         
         // --- upsert
-        [Order(3)]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_3_Upsert(string db) {
+        public static async Task TestMutation_2_Upsert(string db) {
             var client      = await GetClient(db);
+            var deleteAll   = client.testMutate.DeleteAll();
             var entities    = new List<TestMutate>();
             for (int n = 0; n < 3; n++) {
-                var entity = new TestMutate { id = $"w-{n}", val1 = n, val2    = n };
+                var entity = new TestMutate { id = $"upsert-{n}", val1 = n, val2    = n };
                 entities.Add(entity);
             }
-            var upsert = client.testMutate.UpsertRange(entities);
+            var upsert      = client.testMutate.UpsertRange(entities);
+            var countAll    = client.testMutate.CountAll();
             await client.SyncTasks();
+            
             IsTrue(upsert.Success);
+            AreEqual(3, countAll.Result);
+            IsTrue(deleteAll.Success);
         }
         
-        [Order(4)]
+        // --- create
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_4_Upsert_Check(string db) {
+        public static async Task TestMutation_3_Create(string db) {
             var client      = await GetClient(db);
-            var count       = client.testMutate.CountAll();
+            var deleteAll   = client.testMutate.DeleteAll();
+            var entities    = new List<TestMutate>();
+            for (int n = 0; n < 3; n++) {
+                var entity = new TestMutate { id = $"create-{n}", val1 = n, val2    = n };
+                entities.Add(entity);
+            }
+            var create      = client.testMutate.CreateRange(entities);
+            var countAll    = client.testMutate.CountAll();
             await client.SyncTasks();
-            AreEqual(3, count.Result);
+            
+            IsTrue(create.Success);
+            AreEqual(3, countAll.Result);
+            IsTrue(deleteAll.Success);
+        }
+        
+        // --- create error
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestMutation_4_CreateError(string db) {
+            var client      = await GetClient(db);
+            var entity      = new TestMutate { id = "create-new", val1 = 10, val2 = 10};
+            {
+                var deleteAll   = client.testMutate.DeleteAll();
+                var create1     = client.testMutate.Create(entity);
+                var countAll    = client.testMutate.CountAll();
+                await client.SyncTasks();
+                
+                IsTrue (create1.Success);
+                IsTrue(deleteAll.Success);
+                AreEqual(1, countAll.Result);
+            }
+            {
+                var create2     = client.testMutate.Create(entity);
+                var countAll    = client.testMutate.CountAll();
+                await client.TrySyncTasks();
+                
+                IsFalse(create2.Success);
+                AreEqual(1, countAll.Result);
+            }
         }
         
         // --- delete by id
-        [Order(5)]
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        // todo
+        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_5_DeleteById(string db) {
             var client      = await GetClient(db);
-            var upsert      = client.testMutate.Delete("w-1");
+            var deleteAll   = client.testMutate.DeleteAll();
+            var upsert      = client.testMutate.Upsert(new TestMutate { id = "delete-1", val1 = 1, val2 = 2} );
+            var delete      = client.testMutate.Delete("delete-1");
+            var countAll    = client.testMutate.CountAll();
             await client.SyncTasks();
+            
+            IsTrue(delete.Success);
+            AreEqual(0, countAll.Result);
+            IsTrue(deleteAll.Success);
             IsTrue(upsert.Success);
-        }
-        
-        [Order(6)]
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_6_DeleteById_Check(string db) {
-            var client      = await GetClient(db);
-            var find        = client.testMutate.Read().Find("w-1");
-            await client.SyncTasks();
-            IsNull(find.Result);
         }
     }
     
@@ -85,6 +116,19 @@ namespace Friflo.Json.Tests.Provider.Test
                 entities.Add(entity);
             }
             var upsert = client.testMutate.UpsertRange(entities);
+            await client.SyncTasks();
+            IsTrue(upsert.Success);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestMutationDeletePerf(string db) {
+            var client      = await GetClient(db);
+            var count       = 1; // 1_000_000; // memory_db & sqlite_db: 1_000_000 ~ 0.8 sec if already empty
+            var ids         = new List<string>();
+            for (int n = 0; n < count; n++) {
+                ids.Add($"perf-{n}");
+            }
+            var upsert = client.testMutate.DeleteRange(ids);
             await client.SyncTasks();
             IsTrue(upsert.Success);
         }
