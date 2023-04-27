@@ -257,8 +257,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// <summary>
-        /// Find the <paramref name="enumerator"/> for the given <see cref="cursor"/> id.<br/>
-        /// Return true if the <see cref="cursor"/> was found. Otherwise false.
+        /// Find the <paramref name="enumerator"/> for the given <paramref name="cursor"/> id.<br/>
+        /// Return true if the <paramref name="cursor"/> was found. Otherwise false.
         /// </summary>
         protected bool FindCursor(string cursor, SyncContext syncContext, out QueryEnumerator enumerator, out TaskExecuteError error) {
             if (cursor == null) {
