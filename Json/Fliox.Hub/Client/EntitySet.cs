@@ -75,6 +75,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)] public   override   bool                        WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
         [Browse(Never)] public   override   bool                        WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
+        /// <summary>
+        /// Utility methods for type safe key conversion and generic <see cref="TKey"/> access for entities of type <see cref="T"/>.
+        /// </summary>
+        [Browse(Never)] public              SetUtils<TKey,T>            Utils           => Static.SetUtils;
+        
         
         internal    InstanceBuffer<DeleteTask<TKey,T>>                  deleteBuffer;
         internal    InstanceBuffer<ReadTask<TKey, T>>                   readBuffer;
@@ -85,6 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private static class Static  {
             internal static  readonly       EntityKeyT<TKey, T>         EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
             internal static  readonly       KeyConverter<TKey>          KeyConvert      = KeyConverter.GetConverter<TKey>();
+            internal static  readonly       SetUtils<TKey, T>           SetUtils        = new SetUtils<TKey, T>();
         }
         #endregion
 
