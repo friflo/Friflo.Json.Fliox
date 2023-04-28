@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Cosmos;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.MySQL;
 using Friflo.Json.Fliox.Hub.SQLite;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Provider.Client;
@@ -88,6 +89,7 @@ namespace Friflo.Json.Tests.Provider
             switch (provider) {
                 case "cosmos": return await CreateCosmosDatabase(db);
                 case "sqlite": return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
+                case "mysql":  return CreateMySQLDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
             }
             return null;
         }
@@ -109,5 +111,14 @@ namespace Friflo.Json.Tests.Provider
             return null;
 #endif
         }
+        
+        private static EntityDatabase CreateMySQLDatabase(string db, string path) {
+#if !UNITY_5_3_OR_NEWER || SQLITE
+            return new MySQLDatabase(db, path);
+#else
+            return null;
+#endif
+        }
+
     }
 }
