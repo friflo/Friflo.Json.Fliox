@@ -24,7 +24,8 @@ namespace Friflo.Json.Tests.Provider
         
         public const string  sqlite_db  = "sqlite_db";
 
-        private  static             FlioxHub                        _fileHub;
+        /// <summary>The source database used to seed test databases</summary>
+        private  static             EntityDatabase                  _seedSource;
         /// <summary>
         /// A cache of hubs - one for each database type: <see cref="memory_db"/>, <see cref="sqlite_db"/> and <see cref="test_db"/>
         /// </summary>
@@ -46,13 +47,12 @@ namespace Friflo.Json.Tests.Provider
             await target.SeedDatabase(source);
         }
         
-        private static FlioxHub FileHub { get {
-            if (_fileHub != null) {
-                return _fileHub;
+        private static EntityDatabase SeedSource { get {
+            if (_seedSource != null) {
+                return _seedSource;
             }
             var databaseSchema  = new DatabaseSchema(typeof(TestClient));
-            var database        = new FileDatabase("file_db", TestDbFolder) { Schema = databaseSchema };
-            return _fileHub     = new FlioxHub(database);
+            return _seedSource = new FileDatabase("file_db", TestDbFolder) { Schema = databaseSchema };
         } }
         
         internal static async Task<TestClient> GetClient(string db, bool seed = true) {
@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Provider
             }
             if (seed && !seededDatabases.Contains(db)) {
                 seededDatabases.Add(db);
-                await Seed(hub.database, FileHub.database);
+                await Seed(hub.database, SeedSource);
             }
             return new TestClient(hub);
         }
@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Provider
                     return CreateSQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3");
                 case test_db:
                     if (TEST_DB_PROVIDER is null or "file") {
-                        return FileHub.database;
+                        return SeedSource;
                     }
                     return await CreateTestDatabase("test_db", TEST_DB_PROVIDER);
             }
