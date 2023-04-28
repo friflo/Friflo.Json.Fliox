@@ -76,9 +76,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
         [Browse(Never)] public   override   bool                        WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
         /// <summary>
-        /// Utility methods for type safe key conversion and generic <see cref="TKey"/> access for entities of type <see cref="T"/>.
+        /// Utility methods for type safe key conversion and generic <typeparamref name="TKey"/> access for entities of type <typeparamref name="T"/>
         /// </summary>
-        [Browse(Never)] public              SetUtils<TKey,T>            Utils           => Static.SetUtils;
+        [Browse(Never)] public              SetUtils<TKey,T>            Utils           = Static.SetUtils;
         
         
         internal    InstanceBuffer<DeleteTask<TKey,T>>                  deleteBuffer;

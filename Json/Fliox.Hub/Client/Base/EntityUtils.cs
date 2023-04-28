@@ -8,11 +8,11 @@ using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// Utility methods for type safe key conversion and generic <see cref="TKey"/> access for entities of type <see cref="T"/>.
+    /// Utility methods for type safe key conversion and generic <typeparamref name="TKey"/> access for entities of type <typeparamref name="T"/>.
     /// </summary>
     /// <remarks>
     /// Use <see cref="EntitySet{TKey,T}.Utils"/> for more convenience.
-    /// The Utils property provide the same feature set without passing generic types <see cref="TKey"/> and <see cref="T"/>.  
+    /// The Utils property provide the same feature set without passing generic types <typeparamref name="TKey"/> and <typeparamref name="T"/>.  
     /// </remarks>
     public static class EntityUtils<TKey,T> where T : class
     {
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// Utility methods for type safe key conversion and generic <see cref="TKey"/> access for entities of type <see cref="T"/>.
+    /// Utility methods for type safe key conversion and generic <typeparamref name="TKey"/> access for entities of type <typeparamref name="T"/>.
     /// </summary>
     /// <remarks>
     /// Same feature set as <see cref="EntityUtils{TKey,T}"/> but more convenient.
