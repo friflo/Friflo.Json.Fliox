@@ -1,6 +1,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Cosmos;
+using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -9,6 +11,10 @@ using static Friflo.Json.Tests.Provider.Env;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Json.Tests.Provider.Test
 {
+    /// <summary>
+    /// Requires implementation of the filter conversion required in <see cref="EntityContainer.QueryEntitiesAsync"/>.<br/>
+    /// This filter is available in the <c>command</c> parameter with <see cref="QueryEntities.GetFilter"/>.  
+    /// </summary>
     // ReSharper disable once InconsistentNaming
     public static class Test_4_QueryFields
     {

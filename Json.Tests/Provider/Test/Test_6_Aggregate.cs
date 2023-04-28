@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Cosmos;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -9,6 +10,9 @@ using static Friflo.Json.Tests.Provider.Env;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Json.Tests.Provider.Test
 {
+    /// <summary>
+    /// Requires implementation of cursors used in <see cref="EntityContainer.AggregateEntitiesAsync"/>.  
+    /// </summary>
     // ReSharper disable once InconsistentNaming
     public static class Test_6_Aggregate
     {

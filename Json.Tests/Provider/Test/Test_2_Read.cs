@@ -1,10 +1,14 @@
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Provider.Env;
 
 namespace Friflo.Json.Tests.Provider.Test
 {
+    /// <summary>
+    /// Requires implementation of <see cref="EntityContainer.ReadEntitiesAsync"/>
+    /// </summary>
     // ReSharper disable once InconsistentNaming
     public static class Test_2_Read
     {

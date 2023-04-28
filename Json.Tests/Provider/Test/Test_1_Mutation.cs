@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -7,11 +8,26 @@ using static Friflo.Json.Tests.Provider.Env;
 
 namespace Friflo.Json.Tests.Provider.Test
 {
+    /// <summary>
+    /// Used to implement and test <see cref="EntityContainer"/> methods required by subsequent test classes:
+    /// <see cref="Test_2_Read"/>, <see cref="Test_3_QueryOps"/>, ...<br/>
+    /// Methods to implement:
+    /// <list type="bullet">
+    ///   <item><see cref="EntityContainer.DeleteEntitiesAsync"/> to delete all container entities before executing mutations.</item>
+    ///   <item><see cref="EntityContainer.AggregateEntitiesAsync"/> to count container entities after executing mutations.</item>
+    ///   <item><see cref="EntityContainer.UpsertEntitiesAsync"/> to setup test records for subsequent test classes: <see cref="Test_2_Read"/>, ... .</item>
+    /// </list>
+    /// </summary>
     // ReSharper disable once InconsistentNaming
     public static class Test_1_Mutation
     {
-        // --- delete all - used to clear container in subsequent tests
-        // --- count all  - used by assertions in subsequent tests
+        // --- delete all
+        // --- count all
+        /// <summary>
+        /// Requires basic implementation of:<br/>
+        /// <see cref="EntityContainer.DeleteEntitiesAsync"/> reduced to delete all entities in a container.<br/> 
+        /// <see cref="EntityContainer.AggregateEntitiesAsync"/> reduced to count all entities in a container.<br/>
+        /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_1_DeleteAll(string db) {
             var client      = await GetClient(db);
@@ -24,6 +40,9 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         // --- upsert
+        /// <summary>
+        /// Requires implementation of <see cref="EntityContainer.UpsertEntitiesAsync"/>
+        /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_2_Upsert(string db) {
             var client      = await GetClient(db);
@@ -43,6 +62,9 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         // --- create
+        /// <summary>
+        /// Requires implementation of <see cref="EntityContainer.CreateEntitiesAsync"/>
+        /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_3_Create(string db) {
             var client      = await GetClient(db);
@@ -62,6 +84,9 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         // --- create error
+        /// <summary>
+        /// Error handling in of <see cref="EntityContainer.CreateEntitiesAsync"/>
+        /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_4_CreateError(string db) {
             var client      = await GetClient(db);
@@ -87,6 +112,9 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         // --- delete by id
+        /// <summary>
+        /// Requires implementation of <see cref="EntityContainer.DeleteEntitiesAsync"/>
+        /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_5_DeleteById(string db) {
             var client      = await GetClient(db);

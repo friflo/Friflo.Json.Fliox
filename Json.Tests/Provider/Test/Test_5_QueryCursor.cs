@@ -1,11 +1,17 @@
 using System;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Provider.Env;
 
 namespace Friflo.Json.Tests.Provider.Test
 {
+    /// <summary>
+    /// Requires implementation of cursors used in <see cref="EntityContainer.QueryEntitiesAsync"/>.<br/>
+    /// The cursor is available in the <c>command</c> parameter with <see cref="QueryEntities.cursor"/>.  
+    /// </summary>
     // ReSharper disable once InconsistentNaming
     public static class Test_5_QueryCursor
     {
