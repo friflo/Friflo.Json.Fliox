@@ -17,6 +17,7 @@ namespace Friflo.Json.Tests.Main
             ListenEvents,
             //
             MemoryDbThroughput,
+            SQLiteThroughput,
             FileDbThroughput,
             WebsocketDbThroughput,
             UdpDbThroughput,
@@ -66,6 +67,9 @@ namespace Friflo.Json.Tests.Main
                         break;
                     case Module.MemoryDbThroughput:
                         await Throughput.MemoryDbThroughput();
+                        break;
+                    case Module.SQLiteThroughput:
+                        await Throughput.SQLiteThroughput();
                         break;
                     case Module.FileDbThroughput:
                         await Throughput.FileDbThroughput();

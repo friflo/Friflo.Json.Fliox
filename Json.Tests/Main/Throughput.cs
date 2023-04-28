@@ -2,8 +2,10 @@
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Remote.Transport.Udp;
+using Friflo.Json.Fliox.Hub.SQLite;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
+using Friflo.Json.Tests.Common.Utils;
 
 
 namespace Friflo.Json.Tests.Main
@@ -16,6 +18,12 @@ namespace Friflo.Json.Tests.Main
             var database    = new MemoryDatabase(TestDB);
             var hub         = new FlioxHub(database);
             await TestHappy.ConcurrentAccess(hub, 4, 0, 10_000_000, false);
+        }
+        
+        public static async Task SQLiteThroughput() {
+            var database    = new SQLiteDatabase(TestDB, CommonUtils.GetBasePath() + "test_concurrency_db.sqlite3");
+            var hub         = new FlioxHub(database);
+            await TestHappy.ConcurrentAccess(hub, 4, 0, 1_000_000, false);
         }
         
         public static async Task FileDbThroughput() {
