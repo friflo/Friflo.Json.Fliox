@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Friflo.Json.Fliox;
 
 // ReSharper disable All
 namespace Friflo.Json.Tests.Provider.Client
@@ -11,6 +9,12 @@ namespace Friflo.Json.Tests.Provider.Client
     // As a result integration of these classes in other modules or libraries is comparatively easy.
 
     // ---------------------------------- entity models ----------------------------------
+    public class TestMutate {
+        [Key]       public  string          id { get; set; }
+                    public  int             val1;
+                    public  int             val2;
+    }
+    
     public class TestOps {
         [Key]       public  string              id { get; set; }
     }
@@ -45,12 +49,6 @@ namespace Friflo.Json.Tests.Provider.Client
         [Key]       public  string          id { get; set; }
                     public  TestEnum        enumVal;
                     public  TestEnum?       enumValNull;
-    }
-    
-    public class TestMutate {
-        [Key]       public  string          id { get; set; }
-                    public  int             val1;
-                    public  int             val2;
     }
     
     public class CursorEntity {

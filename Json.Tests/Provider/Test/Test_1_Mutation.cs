@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Provider.Test
     /// <list type="bullet">
     ///   <item><see cref="EntityContainer.DeleteEntitiesAsync"/> to delete all container entities before executing mutations.</item>
     ///   <item><see cref="EntityContainer.AggregateEntitiesAsync"/> to count container entities after executing mutations.</item>
-    ///   <item><see cref="EntityContainer.UpsertEntitiesAsync"/> to setup test records for subsequent test classes: <see cref="Test_2_Read"/>, ... .</item>
+    ///   <item><see cref="EntityContainer.UpsertEntitiesAsync"/> to seed test records for subsequent test classes: <see cref="Test_2_Read"/>, ... .</item>
     /// </list>
     /// </summary>
     // ReSharper disable once InconsistentNaming
@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Provider.Test
         /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_1_DeleteAll(string db) {
-            var client      = await GetClient(db);
+            var client      = await GetClient(db, false);
             var deleteAll   = client.testMutate.DeleteAll();
             var countAll    = client.testMutate.CountAll();
             await client.SyncTasks();
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Provider.Test
         /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_2_Upsert(string db) {
-            var client      = await GetClient(db);
+            var client      = await GetClient(db, false);
             var deleteAll   = client.testMutate.DeleteAll();
             var entities    = new List<TestMutate>();
             for (int n = 0; n < 3; n++) {
@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Provider.Test
         /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_3_Create(string db) {
-            var client      = await GetClient(db);
+            var client      = await GetClient(db, false);
             var deleteAll   = client.testMutate.DeleteAll();
             var entities    = new List<TestMutate>();
             for (int n = 0; n < 3; n++) {
@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Provider.Test
         /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_4_CreateError(string db) {
-            var client      = await GetClient(db);
+            var client      = await GetClient(db, false);
             var entity      = new TestMutate { id = "create-new", val1 = 10, val2 = 10};
             {
                 var deleteAll   = client.testMutate.DeleteAll();
@@ -117,7 +117,7 @@ namespace Friflo.Json.Tests.Provider.Test
         /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutation_5_DeleteById(string db) {
-            var client      = await GetClient(db);
+            var client      = await GetClient(db, false);
             var deleteAll   = client.testMutate.DeleteAll();
             var upsert      = client.testMutate.Upsert(new TestMutate { id = "delete-1", val1 = 1, val2 = 2} );
             var delete      = client.testMutate.Delete("delete-1");
@@ -135,7 +135,7 @@ namespace Friflo.Json.Tests.Provider.Test
     {
         [TestCase(memory_db, Category = memory_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutationUpsertPerf(string db) {
-            var client      = await GetClient(db);
+            var client      = await GetClient(db, false);
             var count       = 1; // 1_000_000; // memory_db & sqlite_db: 1_000_000 ~ 4 sec
             var entities    = new List<TestMutate>();
             for (int n = 0; n < count; n++) {
@@ -149,7 +149,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutationDeletePerf(string db) {
-            var client      = await GetClient(db);
+            var client      = await GetClient(db, false);
             var count       = 1; // 1_000_000; // memory_db & sqlite_db: 1_000_000 ~ 0.8 sec if already empty
             var ids         = new List<string>();
             for (int n = 0; n < count; n++) {
