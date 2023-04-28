@@ -59,7 +59,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
-      <PackageReference Include="GraphQL-Parser" Version="8.2.0" />
+      <PackageReference Include="GraphQL-Parser" Version="9.1.0" />
       <None Include="..\package-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 
