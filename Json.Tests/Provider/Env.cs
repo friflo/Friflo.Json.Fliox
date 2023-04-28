@@ -11,18 +11,18 @@ using Friflo.Json.Tests.Provider.Client;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Tests.Provider
 {
-    public static class Env
+    internal static class Env
     {
         /// <summary>Used for unit tests to check reference behavior</summary>
-        public const string  memory_db  = "memory_db";
+        internal const string       memory_db  = "memory_db";
         /// <summary>
         /// Used for unit tests to check behavior a specific database implementation.<br/>
         /// The specific database implementation is set by the environment variable: <c>TEST_DB_PROVIDER</c><br/>
         /// See README.md
         /// </summary>
-        public const string  test_db    = "test_db";
+        internal const string       test_db    = "test_db";
         
-        public const string  sqlite_db  = "sqlite_db";
+        internal const string       sqlite_db  = "sqlite_db";
 
         /// <summary>The source database used to seed test databases</summary>
         private  static             EntityDatabase                  _seedSource;
@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Provider
         
         internal static readonly string TestDbFolder = CommonUtils.GetBasePath() + "assets~/DB/test_db";
             
-        public static async Task Seed(EntityDatabase target, EntityDatabase source) {
+        internal static async Task Seed(EntityDatabase target, EntityDatabase source) {
             target.Schema = source.Schema;
             await target.SeedDatabase(source);
         }
@@ -84,7 +84,7 @@ namespace Friflo.Json.Tests.Provider
             throw new InvalidOperationException($"invalid database Env: {db}");
         }
         
-        public static async Task<EntityDatabase> CreateTestDatabase(string db, string provider) {
+        internal static async Task<EntityDatabase> CreateTestDatabase(string db, string provider) {
             switch (provider) {
                 case "cosmos": return await CreateCosmosDatabase(db);
                 case "sqlite": return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
