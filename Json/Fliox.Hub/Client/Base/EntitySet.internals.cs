@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- internal generic entity utility methods - there public counterparts are at EntityUtils<TKey,T>
         private  static     void    SetEntityId (T entity, in JsonKey id)   => Static.EntityKeyTMap.SetId(entity, id);
         internal override   JsonKey GetEntityId (T entity)                  => Static.EntityKeyTMap.GetId(entity);
-        internal static     TKey    GetEntityKey(T entity)                  => Static.EntityKeyTMap.GetKey(entity);
+        private  static     TKey    GetEntityKey(T entity)                  => Static.EntityKeyTMap.GetKey(entity);
 
         internal override void DetectSetPatchesInternal(DetectAllPatches allPatches, ObjectMapper mapper) {
             var set     = GetSyncSet();

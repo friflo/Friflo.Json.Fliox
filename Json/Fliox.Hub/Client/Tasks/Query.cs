@@ -44,7 +44,6 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public              List<T>         Result          => IsOk("QueryTask.Result",   out Exception e) ? result : throw e;
         public              List<JsonValue> RawResult       => IsOk("QueryTask.RawResult",out Exception e) ? GetRawValues() : throw e;
-        public List<KeyValuePair<TKey, T>>  ResultKeyValuePairs => IsOk("QueryTask.ResultKeyValuePairs",out Exception e) ? GetResultKeyValuePairs() : throw e;
         
         /// <summary> Is not null after task execution if more entities available.
         /// To access them create a new query and assign <see cref="ResultCursor"/> to its <see cref="cursor"/>. </summary>
@@ -69,15 +68,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 jsonResult.Add(pair.Value.Json);
             }
             return jsonResult;
-        }
-        
-        private List<KeyValuePair<TKey, T>>  GetResultKeyValuePairs() {
-            var pairs = new List<KeyValuePair<TKey, T>>(result.Count);
-            foreach (var entity in result) {
-                var key = EntitySet<TKey, T>.GetEntityKey(entity);
-                pairs.Add(new KeyValuePair<TKey, T>(key, entity));
-            }
-            return pairs;
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
