@@ -24,16 +24,15 @@ namespace Friflo.Json.Tests.Provider
         
         public const string  sqlite_db  = "sqlite_db";
 
-        //
-        private  static             FlioxHub        _fileHub;
-        // 
-        private  static             FlioxHub        _memoryHub;
-        private  static             FlioxHub        _sqliteHub;
-        private  static             FlioxHub        _testHub;
+        private  static             FlioxHub                        _fileHub;
+        /// <summary>
+        /// A cache of hubs - one for each database type: <see cref="memory_db"/>, <see cref="sqlite_db"/> and <see cref="test_db"/>
+        /// </summary>
+        private  static  readonly   Dictionary<string, FlioxHub>    hubs = new Dictionary<string, FlioxHub>();
         /// <summary> contains seeded databases </summary>
-        private  static  readonly   HashSet<string> seededDatabases = new HashSet<string>();
+        private  static  readonly   HashSet<string>                 seededDatabases = new HashSet<string>();
         
-        internal static  readonly   string          TEST_DB_PROVIDER;
+        internal static  readonly   string                          TEST_DB_PROVIDER;
             
         static Env() {
             TEST_DB_PROVIDER = Environment.GetEnvironmentVariable("TEST_DB_PROVIDER");
@@ -57,7 +56,11 @@ namespace Friflo.Json.Tests.Provider
         } }
         
         internal static async Task<TestClient> GetClient(string db, bool seed = true) {
-            var hub    = await GetDatabaseHub(db);
+            if (!hubs.TryGetValue(db, out var hub)) {
+                var database =  await CreateDatabase(db);
+                hub = new FlioxHub(database);
+                hubs.Add(db, hub);
+            }
             if (seed && !seededDatabases.Contains(db)) {
                 seededDatabases.Add(db);
                 await Seed(hub.database, FileHub.database);
@@ -65,39 +68,20 @@ namespace Friflo.Json.Tests.Provider
             return new TestClient(hub);
         }
 
-        private static async Task<FlioxHub> GetDatabaseHub(string db) {
-
+        private static async Task<EntityDatabase> CreateDatabase(string db)
+        {
             switch (db) {
                 case memory_db:
-                    if (_memoryHub == null) {
-                        var memoryDB    = new MemoryDatabase("memory_db");
-                        _memoryHub      = new FlioxHub(memoryDB);
-                    }
-                    return _memoryHub;
+                    return new MemoryDatabase("memory_db");
                 case sqlite_db:
-                    if (_sqliteHub == null) {
-                        var sqliteDB    = CreateSQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3");
-                        _sqliteHub      = new FlioxHub(sqliteDB);
-                    }
-                    return _sqliteHub;
+                    return CreateSQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3");
                 case test_db:
                     if (TEST_DB_PROVIDER is null or "file") {
-                        return FileHub;
+                        return FileHub.database;
                     }
-                    if (_testHub == null) {
-                        _testHub = await CreateTestHub("test_db", TEST_DB_PROVIDER);
-                    }
-                    return _testHub;
+                    return await CreateTestDatabase("test_db", TEST_DB_PROVIDER);
             }
             throw new InvalidOperationException($"invalid database Env: {db}");
-        }
-        
-        private static async Task<FlioxHub> CreateTestHub(string db, string provider) {
-            var testDB = await CreateTestDatabase(db, provider);
-            if (testDB == null) {
-                throw new InvalidOperationException($"invalid TEST_DB_PROVIDER: {provider}");
-            }
-            return new FlioxHub(testDB);
         }
         
         public static async Task<EntityDatabase> CreateTestDatabase(string db, string provider) {
