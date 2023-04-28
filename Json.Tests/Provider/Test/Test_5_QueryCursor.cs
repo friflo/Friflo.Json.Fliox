@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -25,7 +26,7 @@ namespace Friflo.Json.Tests.Provider.Test
             int count       = 0;
             int iterations  = 0;
             while (true) {
-                query.maxCount  = 2;
+                query.maxCount  = 2;    // query with cursor
                 iterations++;
                 await client.SyncTasks();
                 
@@ -45,7 +46,7 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestQuery_Cursor_SingleStep(string db) {
             var client      = await GetClient(db);
             var query       = client.testCursor.QueryAll();
-            query.maxCount  = 100;
+            query.maxCount  = 100;      // query with cursor
             await client.SyncTasks();
                 
             AreEqual(5, query.Result.Count);
@@ -60,7 +61,7 @@ namespace Friflo.Json.Tests.Provider.Test
             int count       = 0;
             int iterations  = 0;
             while (true) {
-                query.maxCount  = 2;
+                query.maxCount  = 2;    // query with cursor
                 iterations++;
                 await client.SyncTasks();
                 
@@ -75,6 +76,57 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(3, count);
         }
         
-        // todo add remove cursor tests
+        // Using maxCount less than available entities matching the filter.
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_Cursor_Close(string db) {
+            var client          = await GetClient(db);
+            var query1          = client.testCursor.QueryAll();
+            query1.maxCount     = 2;    // query with cursor
+            var closeCursors1   = client.testCursor.CloseCursors(Array.Empty<string>());
+            await client.SyncTasks();
+            
+            AreEqual(2, query1.Result.Count);
+            AreEqual(1, closeCursors1.Count);
+            
+            var closeCursors2   = client.testCursor.CloseCursors(new[] { query1.ResultCursor });
+            var query2          = client.testCursor.QueryAll(); // todo add QueryNext()
+            query2.cursor       = query1.ResultCursor;
+            await client.TrySyncTasks();
+            
+            IsFalse(query2.Success);    // cursor was closed
+            AreEqual(0, closeCursors2.Count);
+        }
+        
+        // Using maxCount less than available entities matching the filter.
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_Cursor_CloseAll(string db) {
+            var client          = await GetClient(db);
+            var query1          = client.testCursor.QueryAll();
+            query1.maxCount     = 2;    // query with cursor
+            var closeCursors1   = client.testCursor.CloseCursors(Array.Empty<string>());
+            await client.SyncTasks();
+            
+            AreEqual(2, query1.Result.Count);
+            AreEqual(1, closeCursors1.Count);
+
+            var closeCursors2   = client.testCursor.CloseCursors(null);
+            var query2          = client.testCursor.QueryAll(); // todo add QueryNext()
+            query2.cursor       = query1.ResultCursor;
+            await client.TrySyncTasks();
+            
+            IsFalse(query2.Success);    // cursor was closed
+            AreEqual(0, closeCursors2.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_Cursor_CloseNullUnknown(string db) {
+            var client          = await GetClient(db);
+            var closeCursors    = client.testCursor.CloseCursors(new[] { null, "unknown-cursor" });
+            await client.SyncTasks();
+            
+            IsTrue(closeCursors.Success);
+            AreEqual(0, closeCursors.Count);
+        }
+        
     }
 }

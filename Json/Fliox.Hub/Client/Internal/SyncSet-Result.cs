@@ -304,7 +304,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal override void AggregateEntitiesResult (AggregateEntities task, SyncTaskResult result) {
             var aggregate   = (AggregateTask)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
-                // todo set error
+                aggregate.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
             var aggregateResult         = (AggregateEntitiesResult) result;
@@ -315,7 +315,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal override void CloseCursorsResult (CloseCursors task, SyncTaskResult result) {
             var closeCursor   = (CloseCursorsTask)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
-                // todo set error
+                closeCursor.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
             var closeResult             = (CloseCursorsResult) result;

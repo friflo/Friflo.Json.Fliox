@@ -50,6 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return;
             }
             foreach (var cursor in cursors) {
+                if (cursor == null)
+                    continue;
                 if (!containerCursors.TryGetValue(cursor, out var containerCursor))
                     continue;
                 if (!containerCursor.UserId.IsEqual(user.userId))
