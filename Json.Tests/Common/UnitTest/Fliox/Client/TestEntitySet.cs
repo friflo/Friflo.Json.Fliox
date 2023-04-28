@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -29,6 +30,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             AreEqual("abc", utils.IdToKey(new JsonKey("abc")));
             AreEqual("xyz", utils.KeyToId("xyz").AsString());
+            
+            unsafe {
+                var size = sizeof(SetUtils<string,Article>);
+                AreEqual(1, size);
+            }
         }
     }
 }

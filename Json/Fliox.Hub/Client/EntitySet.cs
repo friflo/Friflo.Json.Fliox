@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Utility methods for type safe key conversion and generic <typeparamref name="TKey"/> access for entities of type <typeparamref name="T"/>
         /// </summary>
-        [Browse(Never)] public   readonly   SetUtils<TKey,T>            Utils           = Static.SetUtils;
+        [Browse(Never)] public              SetUtils<TKey,T>            Utils           => Static.SetUtils;
         
         
         internal    InstanceBuffer<DeleteTask<TKey,T>>                  deleteBuffer;
