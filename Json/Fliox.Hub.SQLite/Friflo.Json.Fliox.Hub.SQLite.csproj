@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <IsPackable>false</IsPackable>
         <TargetFrameworks>netcoreapp3.1;$(StandardFrameworks)</TargetFrameworks>
         <PackageVersion>0.0.0</PackageVersion>
         <AssemblyVersion>0.0.0.0</AssemblyVersion>
