@@ -40,6 +40,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaValidation", "Demos~\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.SQLite", "Json\Fliox.Hub.SQLite\Friflo.Json.Fliox.Hub.SQLite.csproj", "{53B28D4F-9CDD-4929-A9AB-5B85A4C118E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.MySQL", "Json\Fliox.Hub.MySQL\Friflo.Json.Fliox.Hub.MySQL.csproj", "{287863B2-7688-41A5-984F-E9FDB91F3608}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -126,5 +128,9 @@ Global
 		{53B28D4F-9CDD-4929-A9AB-5B85A4C118E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53B28D4F-9CDD-4929-A9AB-5B85A4C118E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53B28D4F-9CDD-4929-A9AB-5B85A4C118E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{287863B2-7688-41A5-984F-E9FDB91F3608}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{287863B2-7688-41A5-984F-E9FDB91F3608}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{287863B2-7688-41A5-984F-E9FDB91F3608}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{287863B2-7688-41A5-984F-E9FDB91F3608}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
