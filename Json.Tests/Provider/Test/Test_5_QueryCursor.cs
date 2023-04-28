@@ -85,6 +85,10 @@ namespace Friflo.Json.Tests.Provider.Test
         // Using maxCount less than available entities matching the filter.
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Cursor_Close(string db) {
+            // cursors (Continuation tokens) in CosmosDB are stateless => no support for closing implemented / required.
+            // See [Pagination in Azure Cosmos DB | Microsoft Learn | Continuation tokens]
+            //     https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/query/pagination#continuation-tokens
+            if (IsCosmosDB) return;
             var client          = await GetClient(db);
             var query1          = client.testCursor.QueryAll();
             query1.maxCount     = 2;    // query with cursor
@@ -106,6 +110,7 @@ namespace Friflo.Json.Tests.Provider.Test
         // Using maxCount less than available entities matching the filter.
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Cursor_CloseAll(string db) {
+            if (IsCosmosDB) return; // cursors in CosmosDB 
             var client          = await GetClient(db);
             var query1          = client.testCursor.QueryAll();
             query1.maxCount     = 2;    // query with cursor
