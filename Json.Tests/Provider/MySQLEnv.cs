@@ -1,5 +1,6 @@
 #if !UNITY_5_3_OR_NEWER
 
+using System;
 using Friflo.Json.Tests.Common.Utils;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
@@ -10,18 +11,23 @@ namespace Friflo.Json.Tests.Provider
     {
         private static IConfiguration InitConfiguration() {
             var basePath        = CommonUtils.GetBasePath();
-            var appSettings     = basePath + "mysql.test.json";
-            var privateSettings = basePath + "mysql.private.json";
+            var appSettings     = basePath + "appsettings.test.json";
+            var privateSettings = basePath + "appsettings.private.json";
             return new ConfigurationBuilder().AddJsonFile(appSettings).AddJsonFile(privateSettings).Build();
         }
         
         private static MySqlConnection _connection;
         
-        public static MySqlConnection CreateMySQLConnection() {
+        public static MySqlConnection CreateMySQLConnection(string provider) {
             if (_connection != null)
                 return _connection;
             var config              = InitConfiguration();
-            var connectionString    = config["MySQLConnection"];
+            string connectionString;
+            switch (provider) {
+                case "mysql":   connectionString    = config["MySQLConnection"];    break;
+                case "mariadb": connectionString    = config["MariaDBConnection"];  break;
+                default: throw new ArgumentException($"invalid provider: {provider}");
+            }
             return _connection = new MySqlConnection(connectionString);
         }   
     }

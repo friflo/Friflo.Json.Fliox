@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (tableExists) {
                 return null;
             }
-            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data TEXT);";
+            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSON);";
             var result = await MySQLUtils.Execute(database.connection, sql).ConfigureAwait(false);
             if (result.error != null) {
                 return result.error;
