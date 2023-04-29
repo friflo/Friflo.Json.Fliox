@@ -119,8 +119,7 @@ namespace Friflo.Json.Tests.Provider
         
         private static async Task<EntityDatabase> CreateMySQLDatabase(string db, string provider) {
 #if !UNITY_5_3_OR_NEWER || SQLITE
-            var connection = MySQLEnv.CreateMySQLConnection(provider);
-            await connection.OpenAsync().ConfigureAwait(false);
+            var connection = await MySQLEnv.OpenMySQLConnection(provider).ConfigureAwait(false);
             /* using var command = new MySqlCommand("SHOW VARIABLES LIKE 'version';", connection);
             using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
             while (await reader.ReadAsync().ConfigureAwait(false)) {
