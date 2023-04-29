@@ -1,6 +1,7 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System;
+using System.Threading.Tasks;
 using Friflo.Json.Tests.Common.Utils;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
@@ -16,17 +17,15 @@ namespace Friflo.Json.Tests.Provider
             return new ConfigurationBuilder().AddJsonFile(appSettings).AddJsonFile(privateSettings).Build();
         }
         
-        private static MySqlConnection _connection;
-        
-        public static MySqlConnection CreateMySQLConnection(string provider) {
-            if (_connection != null)
-                return _connection;
+        public static async Task<MySqlConnection> OpenMySQLConnection(string provider) {
             var config              = InitConfiguration();
             string connectionString =  config[provider];
             if (connectionString == null) {
                 throw new ArgumentException($"provider not found in appsettings. provider: {provider}");
             }
-            return _connection = new MySqlConnection(connectionString);
+            var connection = new MySqlConnection(connectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+            return connection;
         }   
     }
 }
