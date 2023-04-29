@@ -13,6 +13,12 @@ namespace Friflo.Json.Fliox.Hub.MySQL
 {
     public static class MySQLUtils
     {
+        internal static async Task<string> GetVersion(MySqlConnection connection) {
+            var result  = await Execute(connection, "select version()").ConfigureAwait(false);
+            var version = result.error != null ? "" : result.value;
+            return  $"MySQL {version}";
+        }
+        
         public static async Task OpenOrCreateDatabase(MySqlConnection connection, string db) {
             var sql = $"CREATE DATABASE IF NOT EXISTS {db}";
             using var command = new MySqlCommand(sql, connection);
