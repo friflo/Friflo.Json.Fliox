@@ -4,6 +4,7 @@
 #if !UNITY_5_3_OR_NEWER || MYSQL
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -45,6 +46,9 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (error != null) {
                 return new CreateEntitiesResult { Error = error };
             }
+            if (command.entities.Count == 0) {
+                return new CreateEntitiesResult();
+            }
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
             MySQLUtils.AppendValues(sql, command.entities);
@@ -62,6 +66,9 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (error != null) {
                 return new UpsertEntitiesResult { Error = error };
             }
+            if (command.entities.Count == 0) {
+                return new UpsertEntitiesResult();
+            }
             var sql = new StringBuilder();
             sql.Append($"REPLACE INTO {name} (id,data) VALUES\n");
             MySQLUtils.AppendValues(sql, command.entities);
@@ -71,15 +78,49 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return new UpsertEntitiesResult();
         }
 
-        public override Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
-            var result = ReadEntities(command, syncContext);
-            return Task.FromResult(result);
+        public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
+            var error = await EnsureContainerExists().ConfigureAwait(false);
+            if (error != null) {
+                return new ReadEntitiesResult { Error = error };
+            }
+            var ids = command.ids;
+            var sql = new StringBuilder();
+            sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
+            MySQLUtils.AppendKeys(sql, ids);
+            using var cmd   = new MySqlCommand(sql.ToString(), database.connection);
+            var reader      = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            var entities    = new List<EntityValue>(ids.Count);
+            while (await reader.ReadAsync()) {
+                var id      = reader.GetString(0);
+                var data    = reader.GetString(1);
+                var key     = new JsonKey(id);
+                var value   = new JsonValue(data);
+                entities.Add(new EntityValue(key, value));
+            }
+            return new ReadEntitiesResult { entities = entities.ToArray() };
         }
 
        
-        public override Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
-            var result = QueryEntities(command, syncContext);
-            return Task.FromResult(result);
+        public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
+            var error = await EnsureContainerExists().ConfigureAwait(false);
+            if (error != null) {
+                return new QueryEntitiesResult { Error = error };
+            }
+            var filter  = command.GetFilter();
+            var where   = filter.IsTrue ? "" : $" WHERE {filter.MySQLFilter()}";
+            var limit   = command.limit == null ? "" : $" LIMIT {command.limit}";
+            var sql     = $"SELECT id, data FROM {name}{where}{limit}";
+            using var cmd = new MySqlCommand(sql, database.connection);
+            var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            var entities = new List<EntityValue>();
+            while (await reader.ReadAsync()) {
+                var id      = reader.GetString(0);
+                var data    = reader.GetString(1);
+                var key     = new JsonKey(id);
+                var value   = new JsonValue(data);
+                entities.Add(new EntityValue(key, value));
+            }
+            return new QueryEntitiesResult { entities = entities.ToArray() };
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {

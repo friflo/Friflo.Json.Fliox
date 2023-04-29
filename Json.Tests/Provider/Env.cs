@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Provider
             
         internal static async Task Seed(EntityDatabase target, EntityDatabase source) {
             target.Schema = source.Schema;
-            await target.SeedDatabase(source);
+            await target.SeedDatabase(source).ConfigureAwait(false);
         }
         
         private static EntityDatabase SeedSource { get {
@@ -60,13 +60,14 @@ namespace Friflo.Json.Tests.Provider
         
         internal static async Task<TestClient> GetClient(string db, bool seed = true) {
             if (!hubs.TryGetValue(db, out var hub)) {
-                var database =  await CreateDatabase(db);
+                var database =  await CreateDatabase(db).ConfigureAwait(false);
                 hub = new FlioxHub(database);
                 hubs.Add(db, hub);
             }
             if (seed && !seededDatabases.Contains(db)) {
                 seededDatabases.Add(db);
-                await Seed(hub.database, SeedSource);
+                var source = SeedSource;
+                await Seed(hub.database, source).ConfigureAwait(false);
             }
             return new TestClient(hub);
         }
@@ -82,16 +83,16 @@ namespace Friflo.Json.Tests.Provider
                     if (TEST_DB_PROVIDER is null or "file") {
                         return SeedSource;
                     }
-                    return await CreateTestDatabase("test_db", TEST_DB_PROVIDER);
+                    return await CreateTestDatabase("test_db", TEST_DB_PROVIDER).ConfigureAwait(false);
             }
             throw new InvalidOperationException($"invalid database Env: {db}");
         }
         
         internal static async Task<EntityDatabase> CreateTestDatabase(string db, string provider) {
             switch (provider) {
-                case "cosmos": return await CreateCosmosDatabase(db);
+                case "cosmos": return await CreateCosmosDatabase(db).ConfigureAwait(false);
                 case "sqlite": return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
-                case "mysql":  return await CreateMySQLDatabase(db);
+                case "mysql":  return await CreateMySQLDatabase(db).ConfigureAwait(false);
             }
             return null;
         }
@@ -99,7 +100,7 @@ namespace Friflo.Json.Tests.Provider
         private static async Task<EntityDatabase> CreateCosmosDatabase(string db) {
 #if !UNITY_5_3_OR_NEWER
             var client          = CosmosEnv.CreateCosmosClient();
-            var createDatabase  = await client.CreateDatabaseIfNotExistsAsync(db);
+            var createDatabase  = await client.CreateDatabaseIfNotExistsAsync(db).ConfigureAwait(false);
             return new CosmosDatabase(db, createDatabase) { Throughput = 400 };
 #else
             return null;
