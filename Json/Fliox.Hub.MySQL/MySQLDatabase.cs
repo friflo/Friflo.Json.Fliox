@@ -6,26 +6,23 @@
 using System;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using MySqlConnector;
 
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
     public sealed class MySQLDatabase : EntityDatabase
     {
-        public              bool        Pretty      { get; init; } = false;
-        public              int?        Throughput  { get; init; } = null;
+        public              bool            Pretty      { get; init; } = false;
+        public              int?            Throughput  { get; init; } = null;
         
+        internal readonly   MySqlConnection connection;
         
-        public   override   string      StorageType => "MySQL";
+        public   override   string          StorageType => "MySQL";
         
-        /// <summary>
-        /// Open or create a database with the given <paramref name="path"/>.<br/>
-        /// Create an Im-Memory <paramref name="path"/> is <c>":memory:"</c><br/>
-        /// See: <a href="https://www.sqlite.org/inmemorydb.html">MySQL - In-Memory Databases</a>
-        /// </summary>
-        /// <returns></returns>
-        public MySQLDatabase(string dbName, string path, DatabaseService service = null)
+        public MySQLDatabase(string dbName, MySqlConnection connection, DatabaseService service = null)
             : base(dbName, service)
         {
+            this.connection = connection;
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {

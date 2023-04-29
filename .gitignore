@@ -1,5 +1,5 @@
 
-appsettings.private.json
+*.private.json
 /Playground/.idea
 
 bin/

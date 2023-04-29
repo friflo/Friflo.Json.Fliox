@@ -1,0 +1,3 @@
+﻿{
+    "MySQLConnection": "Server=YOURSERVER;User ID=YOURUSERID;Password=YOURPASSWORD;Database=YOURDATABASE"
+}

@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Provider
             switch (provider) {
                 case "cosmos": return await CreateCosmosDatabase(db);
                 case "sqlite": return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
-                case "mysql":  return CreateMySQLDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
+                case "mysql":  return await CreateMySQLDatabase(db);
             }
             return null;
         }
@@ -114,9 +114,18 @@ namespace Friflo.Json.Tests.Provider
 #endif
         }
         
-        private static EntityDatabase CreateMySQLDatabase(string db, string path) {
+        private static async Task<EntityDatabase> CreateMySQLDatabase(string db) {
 #if !UNITY_5_3_OR_NEWER || SQLITE
-            return new MySQLDatabase(db, path);
+            var connection = MySQLEnv.CreateMySQLConnection();
+            await connection.OpenAsync().ConfigureAwait(false);
+            /* using var command = new MySqlCommand("SHOW VARIABLES LIKE 'version';", connection);
+            using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync()) {
+                var value = reader.GetValue(0);
+                Console.WriteLine($"MySQL version: {value}");
+            }*/
+            // await MySQLUtils.OpenOrCreateDatabase(connection, db);
+            return new MySQLDatabase(db, connection);
 #else
             return null;
 #endif
