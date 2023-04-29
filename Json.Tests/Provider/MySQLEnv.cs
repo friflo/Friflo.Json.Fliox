@@ -22,11 +22,9 @@ namespace Friflo.Json.Tests.Provider
             if (_connection != null)
                 return _connection;
             var config              = InitConfiguration();
-            string connectionString;
-            switch (provider) {
-                case "mysql":   connectionString    = config["MySQLConnection"];    break;
-                case "mariadb": connectionString    = config["MariaDBConnection"];  break;
-                default: throw new ArgumentException($"invalid provider: {provider}");
+            string connectionString =  config[provider];
+            if (connectionString == null) {
+                throw new ArgumentException($"provider not found in appsettings. provider: {provider}");
             }
             return _connection = new MySqlConnection(connectionString);
         }   

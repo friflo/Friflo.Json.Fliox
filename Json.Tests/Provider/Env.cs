@@ -92,10 +92,10 @@ namespace Friflo.Json.Tests.Provider
             switch (provider) {
                 case "cosmos":  return await CreateCosmosDatabase(db).ConfigureAwait(false);
                 case "sqlite":  return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
-                case "mysql":   return await CreateMySQLDatabase(db, provider).ConfigureAwait(false);
+                case "mysql":
                 case "mariadb": return await CreateMySQLDatabase(db, provider).ConfigureAwait(false);
             }
-            return null;
+            throw new ArgumentException($"invalid provider: {provider}");
         }
         
         private static async Task<EntityDatabase> CreateCosmosDatabase(string db) {
