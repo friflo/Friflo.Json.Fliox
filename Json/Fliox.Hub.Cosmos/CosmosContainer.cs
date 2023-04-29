@@ -123,7 +123,6 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         
         private async Task<ReadEntitiesResult> ReadManyEntities(ReadEntities command, SyncContext syncContext) {
             var keys            = command.ids;
-            var entities        = new EntityValue[keys.Count];
             var destEntities    = new List<EntityValue>(keys.Count);
             var list            = new List<(string, PartitionKey)>(keys.Count);
             foreach (var key in keys) {
@@ -137,20 +136,9 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 var reader      = pooled.instance.reader;
                 var documents   = await CosmosUtils.ReadDocuments(reader, response.Content, buffer).ConfigureAwait(false);
                 EntityUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, destEntities, syncContext);
-                var entitiesMap = new Dictionary<JsonKey, EntityValue>(destEntities.Count, JsonKey.Equality);
-                foreach (var entityValue in destEntities) {
-                    entitiesMap.Add(entityValue.key, entityValue);
-                }
-                for (int n = 0; n < keys.Count; n++) {
-                    var key = keys[n];
-                    if (entitiesMap.TryGetValue(key, out var value)) {
-                        entities[n] = value;
-                    } else {
-                        entities[n] = new EntityValue(key);
-                    }
-                }
+                var entities    = EntityUtils.EntityListToArray(destEntities, keys);
+                return new ReadEntitiesResult { entities = entities };
             }
-            return new ReadEntitiesResult{ entities = entities };
         }
 
         private readonly bool filterByClient = false; // true: used for development => query all and filter thereafter

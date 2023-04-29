@@ -38,6 +38,33 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             }
         }
         
+        /// <summary>
+        /// Returns an array of <see cref="EntityValue"/>'s with the same Length of <paramref name="keys"/>.<br/>
+        /// Each element in the returned array contains a key/value with:
+        /// <code>
+        ///     array[index].key == keys[index]
+        ///     array[index].value can be null is no entry was found in the source list
+        /// </code>
+        /// </summary>
+        public static EntityValue[] EntityListToArray(List<EntityValue> source, List<JsonKey> keys)
+        {
+            int keyCount    = keys.Count;
+            var result      = new EntityValue[keyCount];
+            var entitiesMap = new Dictionary<JsonKey, EntityValue>(source.Count, JsonKey.Equality);
+            foreach (var entityValue in source) {
+                entitiesMap.Add(entityValue.key, entityValue);
+            }
+            for (int n = 0; n < keyCount; n++) {
+                var key = keys[n];
+                if (entitiesMap.TryGetValue(key, out var value)) {
+                    result[n] = value;
+                } else {
+                    result[n] = new EntityValue(key);
+                }
+            }
+            return result;
+        }
+        
         public static async Task<JsonValue> ReadToEndAsync(Stream input, StreamBuffer buffer) {
             buffer.Position = 0;
             int read;

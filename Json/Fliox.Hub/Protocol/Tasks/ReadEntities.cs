@@ -114,6 +114,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
                     public  List<ReferencesResult>  references;
+        /// <summary>
+        /// Note! The order and count of elements in this array must match <see cref="ReadEntities.ids"/>.<br/>
+        /// Use <see cref="EntityUtils.EntityListToArray"/> converts a list of unordered and / or missing value to an array.   
+        /// </summary>
         [Ignore]    public  EntityValue[]           entities;
         
         [Ignore]    public  TaskExecuteError        Error { get; set; }

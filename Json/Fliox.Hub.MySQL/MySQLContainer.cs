@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using MySqlConnector;
@@ -89,15 +90,16 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             MySQLUtils.AppendKeys(sql, ids);
             using var cmd   = new MySqlCommand(sql.ToString(), database.connection);
             var reader      = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
-            var entities    = new List<EntityValue>(ids.Count);
+            var rows        = new List<EntityValue>(ids.Count);
             while (await reader.ReadAsync()) {
                 var id      = reader.GetString(0);
                 var data    = reader.GetString(1);
                 var key     = new JsonKey(id);
                 var value   = new JsonValue(data);
-                entities.Add(new EntityValue(key, value));
+                rows.Add(new EntityValue(key, value));
             }
-            return new ReadEntitiesResult { entities = entities.ToArray() };
+            var entities = EntityUtils.EntityListToArray(rows, ids);
+            return new ReadEntitiesResult { entities = entities };
         }
 
        
