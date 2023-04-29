@@ -115,8 +115,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
                     public  List<ReferencesResult>  references;
         /// <summary>
-        /// Note! The order and count of elements in this array must match <see cref="ReadEntities.ids"/>.<br/>
-        /// Use <see cref="EntityUtils.EntityListToArray"/> converts a list of unordered and / or missing value to an array.   
+        /// <b>Note!</b> The order and count of elements in this array must match <see cref="ReadEntities.ids"/>.
+        /// <code>         entities[index].key == ids[index]         </code>
+        /// Use <see cref="EntityUtils.EntityListToArray"/> create an array from a list of unordered or missing key/values.   
         /// </summary>
         [Ignore]    public  EntityValue[]           entities;
         

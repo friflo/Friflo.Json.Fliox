@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
             MySQLUtils.AppendKeys(sql, ids);
             using var cmd   = new MySqlCommand(sql.ToString(), database.connection);
-            var reader      = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            using var reader   = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var rows        = new List<EntityValue>(ids.Count);
             while (await reader.ReadAsync()) {
                 var id      = reader.GetString(0);
@@ -102,7 +102,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return new ReadEntitiesResult { entities = entities };
         }
 
-       
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             var error = await EnsureContainerExists().ConfigureAwait(false);
             if (error != null) {
@@ -113,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var limit   = command.limit == null ? "" : $" LIMIT {command.limit}";
             var sql     = $"SELECT id, data FROM {name}{where}{limit}";
             using var cmd = new MySqlCommand(sql, database.connection);
-            var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var entities = new List<EntityValue>();
             while (await reader.ReadAsync()) {
                 var id      = reader.GetString(0);
