@@ -16,8 +16,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public static async Task OpenOrCreateDatabase(MySqlConnection connection, string db) {
             var sql = $"CREATE DATABASE IF NOT EXISTS {db}";
             using var command = new MySqlCommand(sql, connection);
-            using var reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
+            using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+            while (await reader.ReadAsync().ConfigureAwait(false)) {
                 var value = reader.GetValue(0);
                 // Console.WriteLine($"MySQL version: {value}");
             }
@@ -25,8 +25,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         
         internal static async Task<MySQLResult> Execute(MySqlConnection connection, string sql) {
             using var command = new MySqlCommand(sql, connection);
-            using var reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
+            using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+            while (await reader.ReadAsync().ConfigureAwait(false)) {
                 var value = reader.GetValue(0);
                 return new MySQLResult(value); 
                 // Console.WriteLine($"MySQL version: {value}");

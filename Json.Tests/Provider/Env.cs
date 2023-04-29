@@ -121,12 +121,12 @@ namespace Friflo.Json.Tests.Provider
             var connection = MySQLEnv.CreateMySQLConnection(provider);
             await connection.OpenAsync().ConfigureAwait(false);
             /* using var command = new MySqlCommand("SHOW VARIABLES LIKE 'version';", connection);
-            using var reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
+            using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+            while (await reader.ReadAsync().ConfigureAwait(false)) {
                 var value = reader.GetValue(0);
                 Console.WriteLine($"MySQL version: {value}");
             }*/
-            // await MySQLUtils.OpenOrCreateDatabase(connection, db);
+            // await MySQLUtils.OpenOrCreateDatabase(connection, db).ConfigureAwait(false);
             return new MySQLDatabase(db, connection);
 #else
             return null;

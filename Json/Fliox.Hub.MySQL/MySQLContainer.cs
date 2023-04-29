@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             using var cmd   = new MySqlCommand(sql.ToString(), database.connection);
             using var reader   = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var rows        = new List<EntityValue>(ids.Count);
-            while (await reader.ReadAsync()) {
+            while (await reader.ReadAsync().ConfigureAwait(false)) {
                 var id      = reader.GetString(0);
                 var data    = reader.GetString(1);
                 var key     = new JsonKey(id);
@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             using var cmd = new MySqlCommand(sql, database.connection);
             using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var entities = new List<EntityValue>();
-            while (await reader.ReadAsync()) {
+            while (await reader.ReadAsync().ConfigureAwait(false)) {
                 var id      = reader.GetString(0);
                 var data    = reader.GetString(1);
                 var key     = new JsonKey(id);
