@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(3, count);
         }
         
-        // Using maxCount less than available entities matching the filter.
+        // Close a specific cursor manually
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Cursor_Close(string db) {
             // cursors (Continuation tokens) in CosmosDB are stateless => no support for closing implemented / required.
@@ -107,10 +107,10 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(0, closeCursors2.Count);
         }
         
-        // Using maxCount less than available entities matching the filter.
+        // Close all cursors manually
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Cursor_CloseAll(string db) {
-            if (IsCosmosDB) return; // cursors in CosmosDB 
+            if (IsCosmosDB) return; // see comment above
             var client          = await GetClient(db);
             var query1          = client.testCursor.QueryAll();
             query1.maxCount     = 2;    // query with cursor
@@ -129,6 +129,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(0, closeCursors2.Count);
         }
         
+        // Close unknown cursors manually
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Cursor_CloseNullUnknown(string db) {
             var client          = await GetClient(db);
