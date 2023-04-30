@@ -32,8 +32,6 @@ namespace Friflo.Json.Tests.Provider.Test
         // --- query filter: enum
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Enum(string db) {
-            if (IsMySQL || IsMariaDB) return;
-            
             var client  = await GetClient(db);
             var query1  = client.testEnum.Query(t => t.enumVal == TestEnum.e1);
             var query2  = client.testEnum.Query(t => t.enumValNull == TestEnum.e2);
@@ -154,8 +152,6 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Compare_Equals(string db) {
-            if (IsMySQL || IsMariaDB) return;
-            
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.int32 == 1);
             AreEqual("c => c.int32 == 1",      query.filterLinq);
@@ -165,8 +161,6 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Compare_Equals_null(string db) {
-            if (IsMySQL || IsMariaDB) return;
-            
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.int32 == null);
             AreEqual("c => c.int32 == null",      query.filterLinq);
@@ -176,8 +170,6 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Compare_Equals_null2(string db) {
-            if (IsMySQL || IsMariaDB) return;
-            
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => null ==  c.int32);
             AreEqual("c => null == c.int32",      query.filterLinq);
@@ -187,8 +179,6 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Compare_NotEquals_null(string db) {
-            if (IsMySQL || IsMariaDB) return;
-            
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.int32 != null);
             AreEqual("c => c.int32 != null",      query.filterLinq);

@@ -63,14 +63,16 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case Equal equal:
                     var left    = Traverse(equal.left);
                     var right   = Traverse(equal.right);
-                    if (left  == "null") return $"({right} IS null)";
-                    if (right == "null") return $"({left} IS null)";
+                    // e.g. WHERE json_extract(data,'$.int32') is null || JSON_TYPE(json_extract(data,'$.int32')) = 'NULL'
+                    if (left  == "null") return $"({right} is null || JSON_TYPE({right}) = 'NULL')";
+                    if (right == "null") return $"({left} is null || JSON_TYPE({left}) = 'NULL')";
                     return $"{left} = {right}";
                 case NotEqual notEqual:
                     left    = Traverse(notEqual.left);
                     right   = Traverse(notEqual.right);
-                    if (left  == "null") return $"({right} IS NOT null)";
-                    if (right == "null") return $"({left} IS NOT null)";
+                    // e.g WHERE json_extract(data,'$.int32') is not null && JSON_TYPE(json_extract(data,'$.int32')) != 'NULL'
+                    if (left  == "null") return $"({right} is not null && JSON_TYPE({right}) != 'NULL')";
+                    if (right == "null") return $"({left} is not null && JSON_TYPE({left}) != 'NULL')";
                     return $"{left} != {right}";
                 case Less lessThan:
                     left    = Traverse(lessThan.left);
