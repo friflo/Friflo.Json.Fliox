@@ -326,6 +326,7 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
 | [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  | C#          | unit testing of the library                                          |
 | [SQLitePCL.raw](https://github.com/ericsink/SQLitePCL.raw)                | C#          | used by DB Provider for SQLite                                       |
 | [MySqlConnector](https://github.com/mysql-net/MySqlConnector)             | C#          | used by DB Provider for MySQL, MariaDB and MySQL compatible DBMS     |
+| [Npgsql](https://github.com/npgsql/npgsql)                                | C#          | used by DB Provider for PostgreSQL                                   |
 | [Microsoft.Azure.Cosmos](https://github.com/Azure/azure-cosmos-dotnet-v3) | C#          | used by DB Provider for CosmosDB                                     |
 | [SIPSorcery](https://github.com/sipsorcery-org/sipsorcery)                | C#          | WebRTC - Real-time communication between Web clients without server  |
 | [GraphQL.NET Parser](https://github.com/graphql-dotnet/parser)            | C#          | used by package: Friflo.Json.Fliox.Hub.GraphQL                       |
