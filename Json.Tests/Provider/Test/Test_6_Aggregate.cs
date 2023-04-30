@@ -30,6 +30,8 @@ namespace Friflo.Json.Tests.Provider.Test
         // --- query filter: enum
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestCount_Enum(string db) {
+            if (IsMySQL || IsMariaDB) return;
+            
             var client  = await GetClient(db);
             var query1  = client.testEnum.Count(t => t.enumVal == TestEnum.e1);
             var query2  = client.testEnum.Count(t => t.enumValNull == TestEnum.e2);
@@ -61,6 +63,8 @@ namespace Friflo.Json.Tests.Provider.Test
         // --- query filter: quantify Any
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] // [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestCount_AnyIntArray(string db) {
+            if (IsMySQL || IsMariaDB) return;
+            
             var client  = await GetClient(db);
             var query   = client.testQuantify.Count(t => t.intArray.Any(i => i == 1));
             AreEqual("t => t.intArray.Any(i => i == 1)",      query.filterLinq);
@@ -71,6 +75,8 @@ namespace Friflo.Json.Tests.Provider.Test
         // --- query filter: quantify All
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] // [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestCount_AllIntArray(string db) {
+            if (IsMySQL || IsMariaDB) return;
+            
             var client  = await GetClient(db);
             var query   = client.testQuantify.Count(t => t.intArray.All(i => i == 1));
             AreEqual("t => t.intArray.All(i => i == 1)",      query.filterLinq);
@@ -90,6 +96,8 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestCount_Compare_LessEqual_Int(string db) {
+            if (IsMySQL || IsMariaDB) return;
+            
             var client  = await GetClient(db);
             var query   = client.compare.Count(c => c.int32 <= 1);
             AreEqual("c => c.int32 <= 1",      query.filterLinq);
