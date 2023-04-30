@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (entities == null) {
                 return MissingField(nameof(entities));
             }
-            if (!EntityUtils.GetKeysFromEntities(keyName, entities, env, out string errorMsg)) {
+            if (!KeyValueUtils.GetKeysFromEntities(keyName, entities, env, out string errorMsg)) {
                 return InvalidTask(errorMsg);
             }
             errorMsg = database.Schema?.ValidateEntities (container, entities, env, EntityErrorType.WriteError, ref validationErrors);

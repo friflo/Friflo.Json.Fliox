@@ -20,13 +20,13 @@ namespace Friflo.Json.Tests.Main
             await TestHappy.ConcurrentAccess(hub, 4, 0, 10_000_000, false);
         }
         
-        public static async Task SQLiteThroughput() {
 #if !UNITY_5_3_OR_NEWER || SQLITE
+        public static async Task SQLiteThroughput() {
             var database    = new SQLiteDatabase(TestDB, CommonUtils.GetBasePath() + "test_concurrency_db.sqlite3");
             var hub         = new FlioxHub(database);
             await TestHappy.ConcurrentAccess(hub, 4, 0, 1_000_000, false);
-#endif
         }
+#endif
         
         public static async Task FileDbThroughput() {
             var database    = new FileDatabase(TestDB, "./Json.Tests/assets~/DB/test_concurrency_db");

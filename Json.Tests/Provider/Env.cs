@@ -74,6 +74,9 @@ namespace Friflo.Json.Tests.Provider
             return new TestClient(hub);
         }
 
+#if UNITY_5_3_OR_NEWER
+        private static Task<EntityDatabase> CreateDatabase(string db) => null;
+#else
         private static async Task<EntityDatabase> CreateDatabase(string db)
         {
             switch (db) {
@@ -102,25 +105,17 @@ namespace Friflo.Json.Tests.Provider
         }
         
         private static async Task<EntityDatabase> CreateCosmosDatabase(string db) {
-#if !UNITY_5_3_OR_NEWER
             var client          = CosmosEnv.CreateCosmosClient();
             var createDatabase  = await client.CreateDatabaseIfNotExistsAsync(db).ConfigureAwait(false);
             return new CosmosDatabase(db, createDatabase) { Throughput = 400 };
-#else
-            return null;
-#endif
         }
         
         private static EntityDatabase CreateSQLiteDatabase(string db, string path) {
-#if !UNITY_5_3_OR_NEWER || SQLITE
             return new SQLiteDatabase(db, path);
-#else
-            return null;
-#endif
         }
         
         private static async Task<EntityDatabase> CreateMySQLDatabase(string db, string provider) {
-#if !UNITY_5_3_OR_NEWER || SQLITE
+
             var connection = await MySQLEnv.OpenMySQLConnection(provider).ConfigureAwait(false);
             /* using var command = new MySqlCommand("SHOW VARIABLES LIKE 'version';", connection);
             using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
@@ -130,10 +125,8 @@ namespace Friflo.Json.Tests.Provider
             }*/
             // await MySQLUtils.OpenOrCreateDatabase(connection, db).ConfigureAwait(false);
             return new MySQLDatabase(db, connection);
-#else
-            return null;
-#endif
         }
-
+#endif
     }
 }
+

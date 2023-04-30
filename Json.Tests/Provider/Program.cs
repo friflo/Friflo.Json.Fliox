@@ -39,12 +39,12 @@ namespace Friflo.Json.Tests.Provider
             hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/DB";
             hub.Info.envName        = "test"; hub.Info.envColor = "rgb(0 140 255)";
             hub.AddExtensionDB (fileDb);
+#if !UNITY_5_3_OR_NEWER
             var testDb              = await Env.CreateTestDatabase("test_db", Env.TEST_DB_PROVIDER);
             if (testDb != null) {
                 await Env.Seed(testDb, fileDb);
                 hub.AddExtensionDB (testDb);
             }
-#if !UNITY_5_3_OR_NEWER
             var sqliteDb           = new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3") { Schema = schema };
             hub.AddExtensionDB (sqliteDb);
             

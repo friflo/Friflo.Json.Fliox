@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             foreach (var entity in entities) {
                 ids.Add(entity.key);
             }
-            EntityUtils.OrderKeys(ids, orderByKey);
+            KeyValueUtils.OrderKeys(ids, orderByKey);
             result.ids          = ids;
             if (ids.Count > 0) {
                 result.len          = ids.Count;

@@ -88,8 +88,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         internal static async Task<JsonValue> ReadText(string filePath, StreamBuffer buffer, MemoryBuffer memoryBuffer) {
             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
-                var value = await EntityUtils.ReadToEndAsync(sourceStream, buffer).ConfigureAwait(false);
-                return EntityUtils.CreateCopy(value, memoryBuffer);
+                var value = await KeyValueUtils.ReadToEndAsync(sourceStream, buffer).ConfigureAwait(false);
+                return KeyValueUtils.CreateCopy(value, memoryBuffer);
             }
         }
         

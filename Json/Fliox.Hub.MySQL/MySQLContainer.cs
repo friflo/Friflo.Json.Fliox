@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 var value   = new JsonValue(data);
                 rows.Add(new EntityValue(key, value));
             }
-            var entities = EntityUtils.EntityListToArray(rows, ids);
+            var entities = KeyValueUtils.EntityListToArray(rows, ids);
             return new ReadEntitiesResult { entities = entities };
         }
 

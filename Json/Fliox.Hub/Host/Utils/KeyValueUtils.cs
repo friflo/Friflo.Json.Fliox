@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
-    public static class EntityUtils
+    public static class KeyValueUtils
     {
         /// <summary>
         /// Copy the given <paramref name="entities"/> to the given <paramref name="destEntities"/>.

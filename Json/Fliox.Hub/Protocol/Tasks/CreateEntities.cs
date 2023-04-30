@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (entities == null) {
                 return MissingField(nameof(entities));
             }
-            if (!EntityUtils.GetKeysFromEntities(keyName, entities, env, out string errorMsg)) {
+            if (!KeyValueUtils.GetKeysFromEntities(keyName, entities, env, out string errorMsg)) {
                 return InvalidTask(errorMsg);
             }
             entityContainer = database.GetOrCreateContainer(container);

@@ -111,8 +111,8 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     entities[0] = new EntityValue(key);
                 } else {
                     var     buffer      = new StreamBuffer();
-                    var     payload     = await EntityUtils.ReadToEndAsync(content, buffer).ConfigureAwait(false);
-                    payload             = EntityUtils.CreateCopy(payload, syncContext.MemoryBuffer);
+                    var     payload     = await KeyValueUtils.ReadToEndAsync(content, buffer).ConfigureAwait(false);
+                    payload             = KeyValueUtils.CreateCopy(payload, syncContext.MemoryBuffer);
                     bool    asIntKey    = command.isIntKey == true; 
                     var     json        = processor.ReplaceKey(payload, "id", asIntKey, command.keyName, out _, out _);
                     entities[0]         = new EntityValue(key, json);
@@ -135,8 +135,8 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 var buffer      = new StreamBuffer();
                 var reader      = pooled.instance.reader;
                 var documents   = await CosmosUtils.ReadDocuments(reader, response.Content, buffer).ConfigureAwait(false);
-                EntityUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, destEntities, syncContext);
-                var entities    = EntityUtils.EntityListToArray(destEntities, keys);
+                KeyValueUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, destEntities, syncContext);
+                var entities    = KeyValueUtils.EntityListToArray(destEntities, keys);
                 return new ReadEntitiesResult { entities = entities };
             }
         }
@@ -178,7 +178,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 }
             }
             var entities    = new List<EntityValue>(documents.Count);
-            EntityUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
+            KeyValueUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
             if (filterByClient) {
                 throw new NotImplementedException();
                 // return FilterEntities(command, entities, syncContext);
