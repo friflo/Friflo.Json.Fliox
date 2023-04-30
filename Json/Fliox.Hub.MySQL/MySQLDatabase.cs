@@ -13,7 +13,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
     public sealed class MySQLDatabase : EntityDatabase
     {
         public              bool            Pretty      { get; init; } = false;
-        public              int?            Throughput  { get; init; } = null;
         
         internal readonly   MySqlConnection connection;
         

@@ -14,7 +14,6 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
     public sealed class PostgreSQLDatabase : EntityDatabase
     {
         public              bool                Pretty      { get; init; } = false;
-        public              int?                Throughput  { get; init; } = null;
         
         internal readonly   NpgsqlConnection    connection;
         

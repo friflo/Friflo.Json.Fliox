@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new UpsertEntitiesResult();
             }
             var sql = new StringBuilder();
-            sql.Append($"REPLACE INTO {name} (id,data) VALUES\n");
+            sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
             PostgreSQLUtils.AppendValues(sql, command.entities);
             using var cmd = new NpgsqlCommand(sql.ToString(), database.connection);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);

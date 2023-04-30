@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Cosmos;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.MySQL;
+using Friflo.Json.Fliox.Hub.PostgreSQL;
 using Friflo.Json.Fliox.Hub.SQLite;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Provider.Client;
@@ -99,6 +100,7 @@ namespace Friflo.Json.Tests.Provider
                 case "sqlite":  return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
                 case "mysql":
                 case "mariadb": return await CreateMySQLDatabase(db, provider).ConfigureAwait(false);
+                case "postgres":return await CreatePostgresDatabase(db).ConfigureAwait(false);
             }
             return null;
             // throw new ArgumentException($"invalid provider: {provider}");
@@ -125,6 +127,12 @@ namespace Friflo.Json.Tests.Provider
             }*/
             // await MySQLUtils.OpenOrCreateDatabase(connection, db).ConfigureAwait(false);
             return new MySQLDatabase(db, connection);
+        }
+        
+        private static async Task<EntityDatabase> CreatePostgresDatabase(string db) {
+
+            var connection = await PostgreSQLEnv.OpenPostgresConnection().ConfigureAwait(false);
+            return new PostgreSQLDatabase(db, connection);
         }
 #endif
     }
