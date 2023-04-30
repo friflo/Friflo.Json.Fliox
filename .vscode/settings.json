@@ -66,6 +66,7 @@
         "Newtonsoft",
         "noopener",
         "noreferrer",
+        "Npgsql",
         "nullary",
         "nulltruefalse",
         "nupkg",
