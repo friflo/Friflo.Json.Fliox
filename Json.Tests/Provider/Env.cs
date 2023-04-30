@@ -37,13 +37,15 @@ namespace Friflo.Json.Tests.Provider
         
         internal static  readonly   string  TEST_DB_PROVIDER;
         
-        internal static             bool    IsCosmosDB  => TEST_DB_PROVIDER == "cosmos";
-        internal static             bool    IsMySQL     => TEST_DB_PROVIDER == "mysql";
-        internal static             bool    IsMariaDB   => TEST_DB_PROVIDER == "mariadb";
+        internal static             bool    IsCosmosDB      => TEST_DB_PROVIDER == "cosmos";
+        internal static             bool    IsMySQL         => TEST_DB_PROVIDER == "mysql";
+        internal static             bool    IsMariaDB       => TEST_DB_PROVIDER == "mariadb";
+        internal static             bool    IsPostgres      => TEST_DB_PROVIDER == "postgres";
+        private  static             bool    IsFileSystem    => TEST_DB_PROVIDER == "file";
 
         static Env() {
-            TEST_DB_PROVIDER = Environment.GetEnvironmentVariable("TEST_DB_PROVIDER");
-            Console.WriteLine($"------------------- TEST_DB_PROVIDER={TEST_DB_PROVIDER} -------------------");
+            TEST_DB_PROVIDER = Environment.GetEnvironmentVariable(nameof(TEST_DB_PROVIDER));
+            Console.WriteLine($"------------------- {nameof(TEST_DB_PROVIDER)}={TEST_DB_PROVIDER} -------------------");
         }
         
         internal static readonly string TestDbFolder = CommonUtils.GetBasePath() + "assets~/DB/test_db";
@@ -86,7 +88,7 @@ namespace Friflo.Json.Tests.Provider
                 case sqlite_db:
                     return CreateSQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3");
                 case test_db:
-                    if (TEST_DB_PROVIDER is null or "file") {
+                    if (TEST_DB_PROVIDER is null || IsFileSystem) {
                         return SeedSource;
                     }
                     return await CreateTestDatabase("test_db", TEST_DB_PROVIDER).ConfigureAwait(false);
