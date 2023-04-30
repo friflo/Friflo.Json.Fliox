@@ -34,9 +34,11 @@ namespace Friflo.Json.Tests.Provider
         /// <summary> contains seeded databases </summary>
         private  static  readonly   HashSet<string>                 seededDatabases = new HashSet<string>();
         
-        internal static  readonly   string                          TEST_DB_PROVIDER;
+        internal static  readonly   string  TEST_DB_PROVIDER;
         
-        internal static             bool                            IsCosmosDB => TEST_DB_PROVIDER == "cosmos";
+        internal static             bool    IsCosmosDB  => TEST_DB_PROVIDER == "cosmos";
+        internal static             bool    IsMySQL     => TEST_DB_PROVIDER == "mysql";
+        internal static             bool    IsMariaDB   => TEST_DB_PROVIDER == "mariadb";
 
         static Env() {
             TEST_DB_PROVIDER = Environment.GetEnvironmentVariable("TEST_DB_PROVIDER");

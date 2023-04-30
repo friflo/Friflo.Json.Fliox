@@ -108,9 +108,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new QueryEntitiesResult { Error = error };
             }
             var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "" : $" WHERE {filter.MySQLFilter()}";
-            var limit   = command.limit == null ? "" : $" LIMIT {command.limit}";
-            var sql     = $"SELECT id, data FROM {name}{where}{limit}";
+            var where   = filter.IsTrue ? "TRUE" : filter.MySQLFilter();
+            var sql     = SQLUtils.QueryEntities(command, name, where);
             using var cmd = new MySqlCommand(sql, database.connection);
             using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var entities = new List<EntityValue>();
@@ -121,7 +120,11 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 var value   = new JsonValue(data);
                 entities.Add(new EntityValue(key, value));
             }
-            return new QueryEntitiesResult { entities = entities.ToArray() };
+            var result = new QueryEntitiesResult { entities = entities.ToArray() };
+            if (entities.Count >= command.maxCount) {
+                result.cursor = entities[entities.Count - 1].key.AsString();
+            }
+            return result;
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
