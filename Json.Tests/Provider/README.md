@@ -47,13 +47,22 @@ In case of query filter a provider has two implementation options:
 
 # Test environment
 
-By default - environment variable `TEST_DB_PROVIDER` not present - a `FileDatabase` is used for methods attributed with
+By default - environment variable **`TEST_DB_PROVIDER`** not present - a `FileDatabase` is used for methods attributed with
 ```csharp
 [TestCase(test_db, Category = test_db)]
 ```
 
-To run tests using a specific database implementation set the environment variable `TEST_DB_PROVIDER`. E.g.  
-`TEST_DB_PROVIDER=cosmos`.
+To run tests using a specific database implementation set the environment variable `TEST_DB_PROVIDER`.
+
+Valid  **`TEST_DB_PROVIDER`** values:
+```
+file
+postgres
+mysql
+mariadb
+cosmos
+```
+
 
 ## Rider
 Run unit tests for a specific database implementation add an entry at  
@@ -63,5 +72,5 @@ Run unit tests for a specific database implementation add an entry at
 
 ## Unit test
 ```
-dotnet test -c Release -l "console;verbosity=detailed" --filter TestCategory=test_db --environment TEST_DB_PROVIDER=cosmos
+dotnet test -c Release -l "console;verbosity=detailed" --filter TestCategory=test_db --environment TEST_DB_PROVIDER=mysql
 ```
