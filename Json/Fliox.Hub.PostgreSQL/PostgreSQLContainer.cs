@@ -73,6 +73,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
             PostgreSQLUtils.AppendValues(sql, command.entities);
+            sql.Append("\nON CONFLICT(id) DO UPDATE SET data = excluded.data;");
             using var cmd = new NpgsqlCommand(sql.ToString(), database.connection);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 

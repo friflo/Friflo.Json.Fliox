@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Provider.Test
         /// Requires implementation of <see cref="EntityContainer.UpsertEntitiesAsync"/>
         /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_2_Upsert(string db) {
+        public static async Task TestMutation_2_UpsertNew(string db) {
             var client      = await GetClient(db, false);
             var deleteAll   = client.testMutate.DeleteAll();
             var entities    = new List<TestMutate>();
@@ -61,12 +61,37 @@ namespace Friflo.Json.Tests.Provider.Test
             IsTrue(deleteAll.Success);
         }
         
+        /// <summary>
+        /// Requires implementation of <see cref="EntityContainer.UpsertEntitiesAsync"/>
+        /// </summary>
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestMutation_3_UpsertExists(string db) {
+            var client      = await GetClient(db, false);
+            var deleteAll   = client.testMutate.DeleteAll();
+            var entities    = new List<TestMutate>();
+            for (int n = 0; n < 3; n++) {
+                var entity = new TestMutate { id = $"upsert-{n}", val1 = n, val2    = n };
+                entities.Add(entity);
+            }
+            var upsert      = client.testMutate.UpsertRange(entities);
+            await client.SyncTasks();
+            IsTrue(upsert.Success);
+                
+            var upsert2     = client.testMutate.UpsertRange(entities);
+            var countAll    = client.testMutate.CountAll();
+            await client.SyncTasks();
+            
+            IsTrue(upsert2.Success);
+            AreEqual(3, countAll.Result);
+            IsTrue(deleteAll.Success);
+        }
+        
         // --- create
         /// <summary>
         /// Requires implementation of <see cref="EntityContainer.CreateEntitiesAsync"/>
         /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_3_Create(string db) {
+        public static async Task TestMutation_4_CreateNew(string db) {
             var client      = await GetClient(db, false);
             var deleteAll   = client.testMutate.DeleteAll();
             var entities    = new List<TestMutate>();
@@ -83,12 +108,11 @@ namespace Friflo.Json.Tests.Provider.Test
             IsTrue(deleteAll.Success);
         }
         
-        // --- create error
         /// <summary>
         /// Error handling in of <see cref="EntityContainer.CreateEntitiesAsync"/>
         /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_4_CreateError(string db) {
+        public static async Task TestMutation_5_CreateExists(string db) {
             var client      = await GetClient(db, false);
             var entity      = new TestMutate { id = "create-new", val1 = 10, val2 = 10};
             {
@@ -116,7 +140,7 @@ namespace Friflo.Json.Tests.Provider.Test
         /// Requires implementation of <see cref="EntityContainer.DeleteEntitiesAsync"/>
         /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestMutation_5_DeleteById(string db) {
+        public static async Task TestMutation_6_DeleteById(string db) {
             var client      = await GetClient(db, false);
             var deleteAll   = client.testMutate.DeleteAll();
             var upsert      = client.testMutate.Upsert(new TestMutate { id = "delete-1", val1 = 1, val2 = 2} );
