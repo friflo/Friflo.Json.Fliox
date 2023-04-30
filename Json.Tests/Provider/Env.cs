@@ -107,7 +107,7 @@ namespace Friflo.Json.Tests.Provider
         }
         
         private static async Task<EntityDatabase> CreateCosmosDatabase(string db) {
-            var client          = CosmosEnv.CreateCosmosClient();
+            var client          = EnvConfig.CreateCosmosClient();
             var createDatabase  = await client.CreateDatabaseIfNotExistsAsync(db).ConfigureAwait(false);
             return new CosmosDatabase(db, createDatabase) { Throughput = 400 };
         }
@@ -118,7 +118,7 @@ namespace Friflo.Json.Tests.Provider
         
         private static async Task<EntityDatabase> CreateMySQLDatabase(string db, string provider) {
 
-            var connection = await MySQLEnv.OpenMySQLConnection(provider).ConfigureAwait(false);
+            var connection = await EnvConfig.OpenMySQLConnection(provider).ConfigureAwait(false);
             /* using var command = new MySqlCommand("SHOW VARIABLES LIKE 'version';", connection);
             using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
             while (await reader.ReadAsync().ConfigureAwait(false)) {
@@ -131,7 +131,7 @@ namespace Friflo.Json.Tests.Provider
         
         private static async Task<EntityDatabase> CreatePostgresDatabase(string db) {
 
-            var connection = await PostgreSQLEnv.OpenPostgresConnection().ConfigureAwait(false);
+            var connection = await EnvConfig.OpenPostgresConnection().ConfigureAwait(false);
             return new PostgreSQLDatabase(db, connection);
         }
 #endif
