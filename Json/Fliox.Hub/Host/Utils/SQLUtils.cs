@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     public static class SQLUtils
     {
         public static string QueryEntities(QueryEntities command, string table, string filter) {
-            var cursorStart = command.cursor == null ? "" : $"id < '{command.cursor}' && ";
+            var cursorStart = command.cursor == null ? "" : $"id < '{command.cursor}' AND ";
             var cursorDesc  = command.maxCount == null ? "" : " ORDER BY id DESC";
             string limit;
             if (command.maxCount != null) {
