@@ -14,20 +14,19 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
 using Npgsql;
 
-
+// ReSharper disable UseIndexFromEndExpression
+// ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public sealed class PostgreSQLContainer : EntityContainer
     {
         private             bool                tableExists;
-        public   override   bool                Pretty      { get; }
         private  readonly   PostgreSQLDatabase  database;
         private  readonly   TypeDef             entityType;
         
-        internal PostgreSQLContainer(string name, PostgreSQLDatabase database, bool pretty)
+        internal PostgreSQLContainer(string name, PostgreSQLDatabase database)
             : base(name, database)
         {
-            Pretty          = pretty;
             this.database   = database;
             var types       = database.Schema.typeSchema.GetEntityTypes();
             entityType      = types[name];
@@ -116,8 +115,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var filter  = command.GetFilter();
             var where   = filter.IsTrue ? "TRUE" : filter.PostgresFilter(entityType);
             var sql     = SQLUtils.QueryEntities(command, name, where);
-            using var cmd    = new NpgsqlCommand(sql, database.connection);
             try {
+                using var cmd    = new NpgsqlCommand(sql, database.connection);
                 using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
                 var entities = new List<EntityValue>();
                 while (await reader.ReadAsync().ConfigureAwait(false)) {

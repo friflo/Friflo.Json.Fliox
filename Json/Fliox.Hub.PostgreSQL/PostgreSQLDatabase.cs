@@ -3,18 +3,13 @@
 
 #if !UNITY_5_3_OR_NEWER || POSTGRESQL
 
-using System;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Npgsql;
-
 
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public sealed class PostgreSQLDatabase : EntityDatabase
     {
-        public              bool                Pretty      { get; init; } = false;
-        
         internal readonly   NpgsqlConnection    connection;
         
         public   override   string              StorageType => "PostgresQL";
@@ -26,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
-            return new PostgreSQLContainer(name.AsString(), this, Pretty);
+            return new PostgreSQLContainer(name.AsString(), this);
         }
     }
 }
