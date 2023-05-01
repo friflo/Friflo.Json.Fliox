@@ -37,11 +37,12 @@ namespace Friflo.Json.Tests.Provider
         
         internal static  readonly   string  TEST_DB_PROVIDER;
         
-        internal static             bool    IsCosmosDB      => TEST_DB_PROVIDER == "cosmos";
-        internal static             bool    IsMySQL         => TEST_DB_PROVIDER == "mysql";
-        internal static             bool    IsMariaDB       => TEST_DB_PROVIDER == "mariadb";
-        internal static             bool    IsPostgres      => TEST_DB_PROVIDER == "postgres";
-        private  static             bool    IsFileSystem    => TEST_DB_PROVIDER == "file";
+        internal static             bool    IsCosmosDB          => TEST_DB_PROVIDER == "cosmos";
+        internal static             bool    IsMySQL             => TEST_DB_PROVIDER == "mysql";
+        internal static             bool    IsMariaDB           => TEST_DB_PROVIDER == "mariadb";
+        internal static             bool    IsPostgres          => TEST_DB_PROVIDER == "postgres";
+        internal static             bool    IsSQLite(string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
+        private  static             bool    IsFileSystem        => TEST_DB_PROVIDER == "file";
 
         static Env() {
             TEST_DB_PROVIDER = Environment.GetEnvironmentVariable(nameof(TEST_DB_PROVIDER));

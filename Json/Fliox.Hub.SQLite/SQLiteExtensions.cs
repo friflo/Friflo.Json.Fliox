@@ -160,6 +160,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return $"SQRT({value})";
                 
                 // --- constants ---
+                case PiLiteral:
+                    return "3.141592653589793"; // return "PI()";
+                case EulerLiteral:
+                    return "2.718281828459045"; // return "EXP(1)";
                 
                 // --- aggregate ---
                 case CountWhere countWhere: {

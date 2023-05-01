@@ -205,7 +205,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             double e = 2.718281828459045;
             var query = client.testOps.Query(a => E == e);
-            AreEqual("a => 2.718281828459045 == 2.718281828459045", query.filterLinq);
+            AreEqual("a => E == E", query.filterLinq);
             await client.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
         }
@@ -215,7 +215,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             double pi   = 3.141592653589793;
             var query   = client.testOps.Query(a => PI == pi);
-            AreEqual("a => 3.141592653589793 == 3.141592653589793", query.filterLinq);
+            AreEqual("a => PI == PI", query.filterLinq);
             await client.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
         }
@@ -260,26 +260,29 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] // [TestCase(sqlite_db, Category = sqlite_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_MathExp(string db) {
+            if (IsSQLite(db)) return; // EXP() no available
             var client  = await GetClient(db);
             var query   = client.testOps.Query(a => Exp(1) == 2.718281828459045);
-            AreEqual("a => Exp(1) == 2.718281828459045", query.filterLinq);
+            AreEqual("a => Exp(1) == E", query.filterLinq);
             await client.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
         }
         
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] // [TestCase(sqlite_db, Category = sqlite_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_MathLog(string db) {
+            if (IsSQLite(db)) return; // LOG() no available
             var client  = await GetClient(db);
-            var query   = client.testOps.Query(a => Log(2.718281828459045) == 1);
-            AreEqual("a => Log(2.718281828459045) == 1", query.filterLinq);
+            var query   = client.testOps.Query(a => Log(E) == 1);
+            AreEqual("a => Log(E) == 1", query.filterLinq);
             await client.SyncTasks();
             AreEqual(ArticleCount, query.Result.Count);
         }
 
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] // [TestCase(sqlite_db, Category = sqlite_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_MathSqrt(string db) {
+            if (IsSQLite(db)) return; // SQRT() no available
             var client  = await GetClient(db);
             var query   = client.testOps.Query(a => Sqrt(4) == 2);
             AreEqual("a => Sqrt(4) == 2", query.filterLinq);

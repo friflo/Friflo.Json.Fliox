@@ -154,12 +154,16 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     return $"EXP({value})";
                 case Log log:
                     value = Traverse(log.value);
-                    return $"LOG({value})";
+                    return $"LN({value})";
                 case Sqrt sqrt:
                     value = Traverse(sqrt.value);
                     return $"SQRT({value})";
                 
                 // --- constants ---
+                case PiLiteral:
+                    return "PI()";
+                case EulerLiteral:
+                    return "EXP(1)";
                 
                 // --- aggregate ---
                 case CountWhere countWhere: {

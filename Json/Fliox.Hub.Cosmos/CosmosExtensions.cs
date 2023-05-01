@@ -167,6 +167,10 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     return $"SQRT({value})";
                 
                 // --- constants ---
+                case PiLiteral:
+                    return "PI()";
+                case EulerLiteral:
+                    return "EXP(1)";
                 
                 // --- aggregate ---
                 case CountWhere countWhere: {

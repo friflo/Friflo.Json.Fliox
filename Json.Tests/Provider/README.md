@@ -57,6 +57,7 @@ To run tests using a specific database implementation set the environment variab
 Valid  **`TEST_DB_PROVIDER`** values:
 ```
 file
+sqlite
 postgres
 mysql
 mariadb

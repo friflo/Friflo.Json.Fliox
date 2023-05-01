@@ -30,8 +30,6 @@ namespace Friflo.Json.Tests.Provider.Test
         // --- query filter: enum
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestCount_Enum(string db) {
-            if (IsMySQL || IsMariaDB) return;
-            
             var client  = await GetClient(db);
             var query1  = client.testEnum.Count(t => t.enumVal == TestEnum.e1);
             var query2  = client.testEnum.Count(t => t.enumValNull == TestEnum.e2);
@@ -61,9 +59,9 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         // --- query filter: quantify Any
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] // [TestCase(sqlite_db, Category = sqlite_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestCount_AnyIntArray(string db) {
-            if (IsMySQL || IsMariaDB) return;
+            if (IsSQLite(db) || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Count(t => t.intArray.Any(i => i == 1));
@@ -73,9 +71,9 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         // --- query filter: quantify All
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] // [TestCase(sqlite_db, Category = sqlite_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestCount_AllIntArray(string db) {
-            if (IsMySQL || IsMariaDB) return;
+            if (IsSQLite(db) || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Count(t => t.intArray.All(i => i == 1));

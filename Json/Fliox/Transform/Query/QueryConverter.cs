@@ -365,7 +365,12 @@ namespace Friflo.Json.Fliox.Transform.Query
             if (type == typeof(string))     return new StringLiteral((string)   value);
             
             // --- floating point
-            if (type == typeof(double))     return new DoubleLiteral((double)   value);
+            if (type == typeof(double)) {
+                var doubleValue = (double)   value;
+                if (doubleValue == Math.E)  return new EulerLiteral();
+                if (doubleValue == Math.PI) return new PiLiteral();
+                                            return new DoubleLiteral(doubleValue);
+            }
             if (type == typeof(float))      return new DoubleLiteral((float)    value);
             
             // --- integral
