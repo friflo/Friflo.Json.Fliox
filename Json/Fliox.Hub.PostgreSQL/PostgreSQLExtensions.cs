@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
@@ -11,8 +13,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public static class PostgreSQLExtensions
     {
-        public static string PostgresFilter(this FilterOperation op) {
-            var cx      = new ConvertContext("c", op);
+        public static string PostgresFilter(this FilterOperation op, TypeDef entityType) {
+            var cx      = new ConvertContext("c", op, entityType);
             var result  = cx.Traverse(op);
             return result;
         }
@@ -22,9 +24,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         private readonly   string           collection;
         private readonly   string           collectionStart;
         private readonly   FilterOperation  filterOp;
+        private readonly   TypeDef          entityType;
         
-        internal ConvertContext (string collection, FilterOperation filterOp) {
+        internal ConvertContext (string collection, FilterOperation filterOp, TypeDef entityType) {
             this.collection = collection;
+            this.entityType = entityType;
             if (filterOp is Filter filter) {
                 collectionStart = $"{filter.arg}.";
             }
@@ -40,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case Field field: {
                     if (collectionStart != null && field.name.StartsWith(collectionStart)) {
                         var fieldName = field.name.Substring(collectionStart.Length);
-                        return $"json_extract(data,'$.{fieldName}')";
+                        return $"(data ->> '{fieldName}')";
                     }
                     throw new InvalidOperationException($"expect field {field.name} starts with {collectionStart}");
                 }
@@ -49,9 +53,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case StringLiteral stringLiteral:
                     return $"'{stringLiteral.value}'";
                 case DoubleLiteral doubleLiteral:
-                    return doubleLiteral.value.ToString(CultureInfo.InvariantCulture);
+                    var dbl = doubleLiteral.value.ToString(CultureInfo.InvariantCulture);
+                    return $"{dbl}";
                 case LongLiteral longLiteral:
-                    return longLiteral.value.ToString();
+                    var lng = longLiteral.value.ToString(); 
+                    return $"{lng}";
                 case TrueLiteral    _:
                     return "true";
                 case FalseLiteral   _:
@@ -60,34 +66,52 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     return "null";
                 
                 // --- compare ---
-                case Equal equal:
+                case Equal equal: {
                     var left    = Traverse(equal.left);
                     var right   = Traverse(equal.right);
+                    var leftCast  = GetCast(equal.left);
+                    var rightCast = GetCast(equal.right);
                     if (left  == "null") return $"({right} IS null)";
                     if (right == "null") return $"({left} IS null)";
-                    return $"{left} = {right}";
-                case NotEqual notEqual:
-                    left    = Traverse(notEqual.left);
-                    right   = Traverse(notEqual.right);
+                    return $"{left}{leftCast} = {right}{rightCast}";
+                }
+                case NotEqual notEqual: {
+                    var left    = Traverse(notEqual.left);
+                    var right   = Traverse(notEqual.right);
                     if (left  == "null") return $"({right} IS NOT null)";
                     if (right == "null") return $"({left} IS NOT null)";
-                    return $"{left} != {right}";
-                case Less lessThan:
-                    left    = Traverse(lessThan.left);
-                    right   = Traverse(lessThan.right);
-                    return $"{left} < {right}";
-                case LessOrEqual lessThanOrEqual:
-                    left    = Traverse(lessThanOrEqual.left);
-                    right   = Traverse(lessThanOrEqual.right);
-                    return $"{left} <= {right}";
-                case Greater greaterThan:
-                    left    = Traverse(greaterThan.left);
-                    right   = Traverse(greaterThan.right);
-                    return $"{left} > {right}";
-                case GreaterOrEqual greaterThanOrEqual:
-                    left    = Traverse(greaterThanOrEqual.left);
-                    right   = Traverse(greaterThanOrEqual.right);
-                    return $"{left} >= {right}";
+                    var leftCast  = GetCast(notEqual.left);
+                    var rightCast = GetCast(notEqual.right);
+                    return $"{left}{leftCast} != {right}{rightCast}";
+                }
+                case Less lessThan: {
+                    var left    = Traverse(lessThan.left);
+                    var right   = Traverse(lessThan.right);
+                    var leftCast  = GetCast(lessThan.left);
+                    var rightCast = GetCast(lessThan.right);
+                    return $"{left}{leftCast} < {right}{rightCast}";
+                }
+                case LessOrEqual lessThanOrEqual: {
+                    var left    = Traverse(lessThanOrEqual.left);
+                    var right   = Traverse(lessThanOrEqual.right);
+                    var leftCast  = GetCast(lessThanOrEqual.left);
+                    var rightCast = GetCast(lessThanOrEqual.right);
+                    return $"{left}{leftCast} <= {right}{rightCast}";
+                }
+                case Greater greaterThan: {
+                    var left    = Traverse(greaterThan.left);
+                    var right   = Traverse(greaterThan.right);
+                    var leftCast  = GetCast(greaterThan.left);
+                    var rightCast = GetCast(greaterThan.right);
+                    return $"{left}{leftCast} > {right}{rightCast}";
+                }
+                case GreaterOrEqual greaterThanOrEqual: {
+                    var left    = Traverse(greaterThanOrEqual.left);
+                    var right   = Traverse(greaterThanOrEqual.right);
+                    var leftCast  = GetCast(greaterThanOrEqual.left);
+                    var rightCast = GetCast(greaterThanOrEqual.right);
+                    return $"{left}{leftCast} >= {right}{rightCast}";
+                }
                 
                 // --- logical ---
                 case Not @not:
@@ -101,63 +125,78 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     return string.Join(" AND ", operands);
                 
                 // --- string ---
-                case StartsWith startsWith:
-                    left    = Traverse(startsWith.left);
-                    right   = Traverse(startsWith.right);
+                case StartsWith startsWith: {
+                    var left    = Traverse(startsWith.left);
+                    var right   = Traverse(startsWith.right);
                     return $"{left} LIKE '{UnString(right)}%'";
-                case EndsWith endsWith:
-                    left    = Traverse(endsWith.left);
-                    right   = Traverse(endsWith.right);
+                }
+                case EndsWith endsWith: {
+                    var left    = Traverse(endsWith.left);
+                    var right   = Traverse(endsWith.right);
                     return $"{left} LIKE '%{UnString(right)}'";
-                case Contains contains:
-                    left    = Traverse(contains.left);
-                    right   = Traverse(contains.right);
+                }
+                case Contains contains: {
+                    var left    = Traverse(contains.left);
+                    var right   = Traverse(contains.right);
                     return $"{left} LIKE '%{UnString(right)}%'";
-                case Length length:
+                }
+                case Length length: {
                     var value = Traverse(length.value);
                     return $"LENGTH({value})";
+                }
                 
                 // --- arithmetic: operators ---
-                case Add add:
-                    left    = Traverse(add.left);
-                    right   = Traverse(add.right);
+                case Add add: {
+                    var left    = Traverse(add.left);
+                    var right   = Traverse(add.right);
                     return $"{left} + {right}";
-                case Subtract subtract:
-                    left    = Traverse(subtract.left);
-                    right   = Traverse(subtract.right);
+                }
+                case Subtract subtract: {
+                    var left    = Traverse(subtract.left);
+                    var right   = Traverse(subtract.right);
                     return $"{left} - {right}";
-                case Multiply multiply:
-                    left    = Traverse(multiply.left);
-                    right   = Traverse(multiply.right);
+                }
+                case Multiply multiply: {
+                    var left    = Traverse(multiply.left);
+                    var right   = Traverse(multiply.right);
                     return $"{left} * {right}";
-                case Divide divide:
-                    left    = Traverse(divide.left);
-                    right   = Traverse(divide.right);
+                }
+                case Divide divide: {
+                    var left    = Traverse(divide.left);
+                    var right   = Traverse(divide.right);
                     return $"{left} / {right}";
-                case Modulo modulo:
-                    left    = Traverse(modulo.left);
-                    right   = Traverse(modulo.right);
+                }
+                case Modulo modulo: {
+                    var left    = Traverse(modulo.left);
+                    var right   = Traverse(modulo.right);
                     return $"{left} % {right}";
+                }
                 
                 // --- arithmetic: methods ---
-                case Abs abs:
-                    value = Traverse(abs.value);
+                case Abs abs: {
+                    var value = Traverse(abs.value);
                     return $"ABS({value})";
-                case Ceiling ceiling:
-                    value = Traverse(ceiling.value);
+                }
+                case Ceiling ceiling: {
+                    var value = Traverse(ceiling.value);
                     return $"ROUND({value}+0.5)";
-                case Floor floor:
-                    value = Traverse(floor.value);
+                }
+                case Floor floor: {
+                    var value = Traverse(floor.value);
                     return $"ROUND({value}-0.5)";
-                case Exp exp:
-                    value = Traverse(exp.value);
+                }
+                case Exp exp: {
+                    var value = Traverse(exp.value);
                     return $"EXP({value})";
-                case Log log:
-                    value = Traverse(log.value);
+                }
+                case Log log: {
+                    var value = Traverse(log.value);
                     return $"LN({value})";
-                case Sqrt sqrt:
-                    value = Traverse(sqrt.value);
+                }
+                case Sqrt sqrt: {
+                    var value = Traverse(sqrt.value);
                     return $"SQRT({value})";
+                }
                 
                 // --- constants ---
                 case PiLiteral:
@@ -167,7 +206,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 
                 // --- aggregate ---
                 case CountWhere countWhere: {
-                    var cx              = new ConvertContext ("", filterOp);
+                    var cx              = new ConvertContext ("", filterOp, null);
                     operand             = cx.Traverse(countWhere.predicate);
                     string fieldName    = Traverse(countWhere.field);
                     string arg          = countWhere.arg;
@@ -175,14 +214,14 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 }
                 // --- quantify ---
                 case Any any: {
-                    var cx              = new ConvertContext ("", filterOp);
+                    var cx              = new ConvertContext ("", filterOp, null);
                     operand             = cx.Traverse(any.predicate);
                     string fieldName    = Traverse(any.field);
                     var arg             = any.arg;
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
                 }
                 case All all: {
-                    var cx              = new ConvertContext ("", filterOp);
+                    var cx              = new ConvertContext ("", filterOp, null);
                     operand             = cx.Traverse(all.predicate);
                     var fieldName       = Traverse(all.field);
                     var arg             = all.arg;
@@ -191,13 +230,24 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 }
                 // --- query filter expression
                 case Filter filter: {
-                    var cx              = new ConvertContext (collection, filterOp);
+                    var cx              = new ConvertContext (collection, filterOp, entityType);
                     operand             = cx.Traverse(filter.body);
                     return $"{operand}";
                 }
                 default:
                     throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filterOp}");
             }
+        }
+        
+        private string GetCast(Operation op) {
+            if (op is Field field) {
+                var path = field.name.Substring(field.arg.Length + 1);
+                var fieldType = entityType.Fields.First(f => f.name == path);
+                if (fieldType.type.Name == "int32") { // TODO make types via enum available
+                    return "::numeric";
+                }
+            }
+            return "";
         }
         
         private string[] GetOperands (List<FilterOperation> operands) {

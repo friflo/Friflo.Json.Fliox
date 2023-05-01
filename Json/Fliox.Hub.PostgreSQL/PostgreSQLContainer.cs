@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Schema.Definition;
 using Npgsql;
 
 
@@ -18,22 +19,25 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public sealed class PostgreSQLContainer : EntityContainer
     {
-        private             bool            tableExists;
-        public   override   bool            Pretty      { get; }
-        private  readonly   PostgreSQLDatabase   database;
+        private             bool                tableExists;
+        public   override   bool                Pretty      { get; }
+        private  readonly   PostgreSQLDatabase  database;
+        private  readonly   TypeDef             entityType;
         
         internal PostgreSQLContainer(string name, PostgreSQLDatabase database, bool pretty)
             : base(name, database)
         {
             Pretty          = pretty;
             this.database   = database;
+            var types       = database.Schema.typeSchema.GetEntityTypes();
+            entityType      = types[name];
         }
 
         private async Task<TaskExecuteError> EnsureContainerExists() {
             if (tableExists) {
                 return null;
             }
-            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSON);";
+            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSONB);";
             var result = await PostgreSQLUtils.Execute(database.connection, sql).ConfigureAwait(false);
             if (result.error != null) {
                 return result.error;
@@ -104,12 +108,13 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
+
             var error = await EnsureContainerExists().ConfigureAwait(false);
             if (error != null) {
                 return new QueryEntitiesResult { Error = error };
             }
             var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "TRUE" : filter.PostgresFilter();
+            var where   = filter.IsTrue ? "TRUE" : filter.PostgresFilter(entityType);
             var sql     = SQLUtils.QueryEntities(command, name, where);
             using var cmd    = new NpgsqlCommand(sql, database.connection);
             try {
@@ -136,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
             if (command.type == AggregateType.count) {
                 var filter  = command.GetFilter();
-                var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter()}";
+                var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter(entityType)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
                 var result  = await PostgreSQLUtils.Execute(database.connection, sql).ConfigureAwait(false);
                 return new AggregateEntitiesResult { value = (long)result.value };

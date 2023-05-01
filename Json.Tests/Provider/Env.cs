@@ -67,6 +67,7 @@ namespace Friflo.Json.Tests.Provider
         internal static async Task<TestClient> GetClient(string db, bool seed = true) {
             if (!hubs.TryGetValue(db, out var hub)) {
                 var database =  await CreateDatabase(db).ConfigureAwait(false);
+                database.Schema = SeedSource.Schema;
                 hub = new FlioxHub(database);
                 hubs.Add(db, hub);
             }

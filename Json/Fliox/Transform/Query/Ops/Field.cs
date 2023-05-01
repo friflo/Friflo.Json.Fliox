@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     public sealed class Field : Operation
     {
         [Required]  public      string      name;
-        [Ignore]    internal    string      arg;
+        [Ignore]    public      string      arg;
         [Ignore]    internal    Utf8Bytes[] pathItems;
 
         public   override string    OperationName           => "name";
