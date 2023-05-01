@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case Field field: {
                     if (collectionStart != null && field.name.StartsWith(collectionStart)) {
                         var fieldName = field.name.Substring(collectionStart.Length);
-                        return $"json_extract(data,'$.{fieldName}')";
+                        return $"JSON_VALUE(data,'$.{fieldName}')";
                     }
                     throw new InvalidOperationException($"expect field {field.name} starts with {collectionStart}");
                 }
@@ -64,15 +64,15 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     var left    = Traverse(equal.left);
                     var right   = Traverse(equal.right);
                     // e.g. WHERE json_extract(data,'$.int32') is null || JSON_TYPE(json_extract(data,'$.int32')) = 'NULL'
-                    if (left  == "null") return $"({right} is null || JSON_TYPE({right}) = 'NULL')";
-                    if (right == "null") return $"({left} is null || JSON_TYPE({left}) = 'NULL')";
+                    if (left  == "null") return $"({right} is null)";
+                    if (right == "null") return $"({left} is null)";
                     return $"{left} = {right}";
                 case NotEqual notEqual:
                     left    = Traverse(notEqual.left);
                     right   = Traverse(notEqual.right);
                     // e.g WHERE json_extract(data,'$.int32') is not null && JSON_TYPE(json_extract(data,'$.int32')) != 'NULL'
-                    if (left  == "null") return $"({right} is not null && JSON_TYPE({right}) != 'NULL')";
-                    if (right == "null") return $"({left} is not null && JSON_TYPE({left}) != 'NULL')";
+                    if (left  == "null") return $"({right} is not null)";
+                    if (right == "null") return $"({left} is not null)";
                     return $"{left} != {right}";
                 case Less lessThan:
                     left    = Traverse(lessThan.left);
