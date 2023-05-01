@@ -13,7 +13,8 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using MySqlConnector;
 
-
+// ReSharper disable UseAwaitUsing
+// ReSharper disable UseIndexFromEndExpression
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
     public sealed class MySQLContainer : EntityContainer

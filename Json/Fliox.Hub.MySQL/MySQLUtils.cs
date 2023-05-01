@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using MySqlConnector;
 
+// ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
     public static class MySQLUtils
@@ -21,11 +22,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         
         public static async Task OpenOrCreateDatabase(MySqlConnection connection, string db) {
             var sql = $"CREATE DATABASE IF NOT EXISTS {db}";
-            using var command = new MySqlCommand(sql, connection);
-            using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
-            while (await reader.ReadAsync().ConfigureAwait(false)) {
-                var value = reader.GetValue(0);
-            }
+            await Execute(connection, sql);
         }
         
         internal static async Task<SQLResult> Execute(MySqlConnection connection, string sql) {

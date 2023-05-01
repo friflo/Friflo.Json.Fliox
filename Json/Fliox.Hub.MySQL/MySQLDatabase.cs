@@ -3,9 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER || MYSQL
 
-using System;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using MySqlConnector;
 
 namespace Friflo.Json.Fliox.Hub.MySQL
