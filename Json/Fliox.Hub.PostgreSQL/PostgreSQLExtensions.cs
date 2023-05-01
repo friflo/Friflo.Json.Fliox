@@ -69,8 +69,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case Equal equal: {
                     var left    = Traverse(equal.left);
                     var right   = Traverse(equal.right);
-                    var leftCast  = GetCast(equal.left);
-                    var rightCast = GetCast(equal.right);
+                    GetCasts(equal, out var leftCast, out var rightCast);
                     if (left  == "null") return $"({right} IS null)";
                     if (right == "null") return $"({left} IS null)";
                     return $"{left}{leftCast} = {right}{rightCast}";
@@ -80,36 +79,31 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     var right   = Traverse(notEqual.right);
                     if (left  == "null") return $"({right} IS NOT null)";
                     if (right == "null") return $"({left} IS NOT null)";
-                    var leftCast  = GetCast(notEqual.left);
-                    var rightCast = GetCast(notEqual.right);
+                    GetCasts(notEqual, out var leftCast, out var rightCast);
                     return $"{left}{leftCast} != {right}{rightCast}";
                 }
                 case Less lessThan: {
                     var left    = Traverse(lessThan.left);
                     var right   = Traverse(lessThan.right);
-                    var leftCast  = GetCast(lessThan.left);
-                    var rightCast = GetCast(lessThan.right);
+                    GetCasts(lessThan, out var leftCast, out var rightCast);
                     return $"{left}{leftCast} < {right}{rightCast}";
                 }
                 case LessOrEqual lessThanOrEqual: {
                     var left    = Traverse(lessThanOrEqual.left);
                     var right   = Traverse(lessThanOrEqual.right);
-                    var leftCast  = GetCast(lessThanOrEqual.left);
-                    var rightCast = GetCast(lessThanOrEqual.right);
+                    GetCasts(lessThanOrEqual, out var leftCast, out var rightCast);
                     return $"{left}{leftCast} <= {right}{rightCast}";
                 }
                 case Greater greaterThan: {
                     var left    = Traverse(greaterThan.left);
                     var right   = Traverse(greaterThan.right);
-                    var leftCast  = GetCast(greaterThan.left);
-                    var rightCast = GetCast(greaterThan.right);
+                    GetCasts(greaterThan, out var leftCast, out var rightCast);
                     return $"{left}{leftCast} > {right}{rightCast}";
                 }
                 case GreaterOrEqual greaterThanOrEqual: {
                     var left    = Traverse(greaterThanOrEqual.left);
                     var right   = Traverse(greaterThanOrEqual.right);
-                    var leftCast  = GetCast(greaterThanOrEqual.left);
-                    var rightCast = GetCast(greaterThanOrEqual.right);
+                    GetCasts(greaterThanOrEqual, out var leftCast, out var rightCast);
                     return $"{left}{leftCast} >= {right}{rightCast}";
                 }
                 
@@ -239,6 +233,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
         }
         
+        private void GetCasts(BinaryBoolOp op, out string leftCast, out string rightCast) {
+            leftCast    = GetCast(op.left);
+            rightCast   = GetCast(op.right);
+        }
+
         private string GetCast(Operation op) {
             if (op is Field field) {
                 var path = field.name.Substring(field.arg.Length + 1);
