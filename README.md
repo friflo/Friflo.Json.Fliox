@@ -325,6 +325,7 @@ This is enabled by supporting Pub-Sub with sub millisecond latency on *localhost
 | [NUnit](https://nunit.org/)                                               | C#          | unit testing of the library in the CLR and Unity                     |
 | [FluentAssertions](https://github.com/fluentassertions/fluentassertions)  | C#          | unit testing of the library                                          |
 | [SQLitePCL.raw](https://github.com/ericsink/SQLitePCL.raw)                | C#          | used by DB Provider for SQLite                                       |
+| [SqlClient](https://github.com/dotnet/SqlClient)                          | C#          | used by DB Provider for Microsoft SQL Server                         |
 | [MySqlConnector](https://github.com/mysql-net/MySqlConnector)             | C#          | used by DB Provider for MySQL, MariaDB and MySQL compatible DBMS     |
 | [Npgsql](https://github.com/npgsql/npgsql)                                | C#          | used by DB Provider for PostgreSQL                                   |
 | [Microsoft.Azure.Cosmos](https://github.com/Azure/azure-cosmos-dotnet-v3) | C#          | used by DB Provider for CosmosDB                                     |
