@@ -53,9 +53,9 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 case LongLiteral longLiteral:
                     return longLiteral.value.ToString();
                 case TrueLiteral    _:
-                    return "true";
+                    return "1=1";
                 case FalseLiteral   _:
-                    return "false";
+                    return "1=0";
                 case NullLiteral    _:
                     return "null";
                 
@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     return $"{left} LIKE '%{UnString(right)}%'";
                 case Length length:
                     var value = Traverse(length.value);
-                    return $"LENGTH({value})";
+                    return $"LEN({value})";
                 
                 // --- arithmetic: operators ---
                 case Add add:
@@ -147,10 +147,10 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     return $"ABS({value})";
                 case Ceiling ceiling:
                     value = Traverse(ceiling.value);
-                    return $"ROUND({value}+0.5)";
+                    return $"CEILING({value})";
                 case Floor floor:
                     value = Traverse(floor.value);
-                    return $"ROUND({value}-0.5)";
+                    return $"FLOOR({value})";
                 case Exp exp:
                     value = Traverse(exp.value);
                     return $"EXP({value})";
