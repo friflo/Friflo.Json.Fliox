@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         
         public static async Task OpenOrCreateDatabase(MySqlConnection connection, string db) {
             var sql = $"CREATE DATABASE IF NOT EXISTS {db}";
-            await Execute(connection, sql);
+            await Execute(connection, sql).ConfigureAwait(false);
         }
         
         internal static async Task<SQLResult> Execute(MySqlConnection connection, string sql) {

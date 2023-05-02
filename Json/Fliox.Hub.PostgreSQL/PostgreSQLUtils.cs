@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         public static async Task OpenOrCreateDatabase(NpgsqlConnection connection, string db) {
             var sql = $"CREATE DATABASE IF NOT EXISTS {db}";
-            await Execute(connection, sql);
+            await Execute(connection, sql).ConfigureAwait(false);
         }
         
         internal static async Task<SQLResult> Execute(NpgsqlConnection connection, string sql) {
