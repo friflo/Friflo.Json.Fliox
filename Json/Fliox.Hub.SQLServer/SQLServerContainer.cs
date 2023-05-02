@@ -76,8 +76,18 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
                 return new UpsertEntitiesResult();
             }
             var sql = new StringBuilder();
-            sql.Append($"REPLACE INTO {name} (id,data) VALUES\n");
+            sql.Append(
+$@"MERGE {name} AS target
+USING (VALUES");
             SQLServerUtils.AppendValues(sql, command.entities);
+            sql.Append(
+@") AS source (id, data)
+ON source.id = target.id
+WHEN MATCHED THEN
+    UPDATE SET target.data = source.data
+WHEN NOT MATCHED THEN
+    INSERT (id, data)
+    VALUES (id, data);");
             using var cmd = new SqlCommand(sql.ToString(), database.connection);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
