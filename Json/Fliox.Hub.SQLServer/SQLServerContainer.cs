@@ -123,8 +123,8 @@ WHEN NOT MATCHED THEN
                 return new QueryEntitiesResult { Error = error };
             }
             var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "TRUE" : filter.SQLServerFilter();
-            var sql     = SQLUtils.QueryEntities(command, name, where);
+            var where   = filter.IsTrue ? "1=1" : filter.SQLServerFilter();
+            var sql     = SQLServerUtils.QueryEntities(command, name, where);
             using var cmd = new SqlCommand(sql, database.connection);
             using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var entities = new List<EntityValue>();

@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Provider.Test
         // --- query filter: quantify Any
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AnyIntArray(string db) {
-            if (IsSQLite(db) || IsPostgres || IsMySQL || IsMariaDB ) return;
+            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB ) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.intArray.Any(i => i == 1));
@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AnyIntList(string db) {
-            if (IsSQLite(db) || IsPostgres || IsMySQL || IsMariaDB) return;
+            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.intList.Any(i => i == 1));
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AnyObjectArray(string db) {
-            if (IsSQLite(db) || IsPostgres || IsMySQL || IsMariaDB) return;
+            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectArray.Any(o => o.int32 == 10));
@@ -96,7 +96,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AnyObjectList(string db) {
-            if (IsSQLite(db) || IsPostgres || IsMySQL || IsMariaDB) return;
+            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectList.Any(o => o.str == "str-10"));
@@ -108,7 +108,7 @@ namespace Friflo.Json.Tests.Provider.Test
         // --- query filter: quantify All
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AllIntArray(string db) {
-            if (IsSQLite(db) || IsPostgres || IsMySQL || IsMariaDB) return;
+            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.intArray.All(i => i == 1));
@@ -119,7 +119,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AllIntList(string db) {
-            if (IsSQLite(db) || IsPostgres || IsMySQL || IsMariaDB) return;
+            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.intList.All(i => i == 1));
@@ -130,7 +130,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AllObjectArray(string db) {
-            if (IsSQLite(db) || IsPostgres || IsMySQL || IsMariaDB) return;
+            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectArray.All(o => o.int32 == 10));
@@ -141,7 +141,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AllObjectList(string db) {
-            if (IsSQLite(db) || IsPostgres || IsMySQL || IsMariaDB) return;
+            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectList.All(o => o.str == "str-10"));

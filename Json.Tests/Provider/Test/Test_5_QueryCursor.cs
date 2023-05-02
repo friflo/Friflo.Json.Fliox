@@ -84,7 +84,7 @@ namespace Friflo.Json.Tests.Provider.Test
             // cursors (Continuation tokens) in CosmosDB are stateless => no support for closing implemented / required.
             // See [Pagination in Azure Cosmos DB | Microsoft Learn | Continuation tokens]
             //     https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/query/pagination#continuation-tokens
-            if (IsCosmosDB || IsPostgres || IsMySQL || IsMariaDB) return;
+            if (IsCosmosDB || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
             var client          = await GetClient(db);
             var query1          = client.testCursor.QueryAll();
             query1.maxCount     = 2;    // query with cursor
@@ -106,7 +106,7 @@ namespace Friflo.Json.Tests.Provider.Test
         // Close all cursors manually
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Cursor_CloseAll(string db) {
-            if (IsCosmosDB || IsPostgres || IsMySQL || IsMariaDB) return; // see comment above
+            if (IsCosmosDB || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return; // see comment above
             var client          = await GetClient(db);
             var query1          = client.testCursor.QueryAll();
             query1.maxCount     = 2;    // query with cursor

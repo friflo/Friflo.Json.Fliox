@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Microsoft.Data.SqlClient;
 
 
@@ -68,6 +69,16 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 sb.Append('\'');
             }
             sb.Append(')');
+        }
+        
+        public static string QueryEntities(QueryEntities command, string table, string filter) {
+            if (command.maxCount == null) {
+                var top = command.limit == null ? "" : $" TOP {command.limit}";
+                return $"SELECT{top} id, data FROM {table} WHERE {filter}";
+            }
+            var cursorStart = command.cursor == null ? "" : $"id < '{command.cursor}' AND ";
+            var cursorDesc  = command.maxCount == null ? "" : " ORDER BY id DESC";
+            return $"SELECT id, data FROM {table} WHERE {cursorStart}{filter}{cursorDesc} OFFSET 0 ROWS FETCH FIRST {command.maxCount} ROWS ONLY";
         }
     }
 }
