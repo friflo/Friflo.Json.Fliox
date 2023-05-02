@@ -35,7 +35,10 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             if (tableExists) {
                 return null;
             }
-            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSON);";
+            var sql = $@"IF NOT EXISTS (
+    SELECT * FROM sys.tables t JOIN sys.schemas s ON (t.schema_id = s.schema_id)
+    WHERE s.name = 'dbo' AND t.name = '{name}')
+CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             var result = await SQLServerUtils.Execute(database.connection, sql).ConfigureAwait(false);
             if (result.error != null) {
                 return result.error;
@@ -135,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLServerFilter()}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
                 var result  = await SQLServerUtils.Execute(database.connection, sql).ConfigureAwait(false);
-                return new AggregateEntitiesResult { value = (long)result.value };
+                return new AggregateEntitiesResult { value = (int)result.value };
             }
             throw new NotImplementedException();
         }

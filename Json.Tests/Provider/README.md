@@ -59,6 +59,7 @@ Valid  **`TEST_DB_PROVIDER`** values:
 file
 sqlite
 postgres
+sqlserver
 mysql
 mariadb
 cosmos

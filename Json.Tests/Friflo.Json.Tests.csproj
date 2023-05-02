@@ -44,6 +44,7 @@
       <ProjectReference Include="..\Json\Fliox.Hub.MySQL\Friflo.Json.Fliox.Hub.MySQL.csproj" />
       <ProjectReference Include="..\Json\Fliox.Hub.PostgreSQL\Friflo.Json.Fliox.Hub.PostgreSQL.csproj" />
       <ProjectReference Include="..\Json\Fliox.Hub.SQLite\Friflo.Json.Fliox.Hub.SQLite.csproj" />
+      <ProjectReference Include="..\Json\Fliox.Hub.SQLServer\Friflo.Json.Fliox.Hub.SQLServer.csproj" />
       <ProjectReference Include="..\Json\Fliox.Hub.WebRTC\Friflo.Json.Fliox.Hub.WebRTC.csproj" />
       <ProjectReference Include="..\Json\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
       <ProjectReference Include="..\Json\Fliox.Hub.Explorer\Friflo.Json.Fliox.Hub.Explorer.csproj" />

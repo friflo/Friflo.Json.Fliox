@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Friflo.Json.Tests.Common.Utils;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using Npgsql;
@@ -31,7 +32,7 @@ namespace Friflo.Json.Tests.Provider
         // --- MySQL / MariaDB
         public static async Task<MySqlConnection> OpenMySQLConnection(string provider) {
             var config              = InitConfiguration();
-            string connectionString =  config[provider];
+            string connectionString = config[provider];
             if (connectionString == null) {
                 throw new ArgumentException($"provider not found in appsettings. provider: {provider}");
             }
@@ -43,8 +44,17 @@ namespace Friflo.Json.Tests.Provider
         // --- PostgreSQL
         public static async Task<NpgsqlConnection> OpenPostgresConnection() {
             var config              = InitConfiguration();
-            string connectionString =  config["postgres"];
+            string connectionString = config["postgres"];
             var connection          = new NpgsqlConnection(connectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+            return connection;
+        }
+        
+        // --- SQL Server
+        public static async Task<SqlConnection> OpenSQLServerConnection() {
+            var config              = InitConfiguration();
+            string connectionString = config["sqlserver"];
+            var connection          = new SqlConnection(connectionString);
             await connection.OpenAsync().ConfigureAwait(false);
             return connection;
         }

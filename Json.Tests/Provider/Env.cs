@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.MySQL;
 using Friflo.Json.Fliox.Hub.PostgreSQL;
 using Friflo.Json.Fliox.Hub.SQLite;
+using Friflo.Json.Fliox.Hub.SQLServer;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Provider.Client;
 
@@ -41,6 +42,7 @@ namespace Friflo.Json.Tests.Provider
         internal static             bool    IsMySQL             => TEST_DB_PROVIDER == "mysql";
         internal static             bool    IsMariaDB           => TEST_DB_PROVIDER == "mariadb";
         internal static             bool    IsPostgres          => TEST_DB_PROVIDER == "postgres";
+        internal static             bool    IsSQLServer         => TEST_DB_PROVIDER == "sqlserver";
         internal static             bool    IsSQLite(string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
         private  static             bool    IsFileSystem        => TEST_DB_PROVIDER == "file";
 
@@ -100,11 +102,12 @@ namespace Friflo.Json.Tests.Provider
         
         internal static async Task<EntityDatabase> CreateTestDatabase(string db, string provider) {
             switch (provider) {
-                case "cosmos":  return await CreateCosmosDatabase(db).ConfigureAwait(false);
-                case "sqlite":  return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
+                case "cosmos":      return await CreateCosmosDatabase(db).ConfigureAwait(false);
+                case "sqlite":      return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
                 case "mysql":
-                case "mariadb": return await CreateMySQLDatabase(db, provider).ConfigureAwait(false);
-                case "postgres":return await CreatePostgresDatabase(db).ConfigureAwait(false);
+                case "mariadb":     return await CreateMySQLDatabase(db, provider).ConfigureAwait(false);
+                case "postgres":    return await CreatePostgresDatabase(db).ConfigureAwait(false);
+                case "sqlserver":   return await CreateSQLServerDatabase(db).ConfigureAwait(false);
             }
             return null;
             // throw new ArgumentException($"invalid provider: {provider}");
@@ -137,6 +140,12 @@ namespace Friflo.Json.Tests.Provider
 
             var connection = await EnvConfig.OpenPostgresConnection().ConfigureAwait(false);
             return new PostgreSQLDatabase(db, connection);
+        }
+        
+        private static async Task<EntityDatabase> CreateSQLServerDatabase(string db) {
+
+            var connection = await EnvConfig.OpenSQLServerConnection().ConfigureAwait(false);
+            return new SQLServerDatabase(db, connection);
         }
 #endif
     }
