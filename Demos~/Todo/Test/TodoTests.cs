@@ -61,18 +61,16 @@ namespace TodoTest {
         {
             var hub         = CreateTodoHub();
             var client      = new TodoClient(hub);
-            string cursor   = null;
+            var query       = client.jobs.QueryAll();
+            query.maxCount  = 1; // query with cursor
             var count       = 0;
             while (true) {
-                var jobs        = client.jobs.QueryAll();
-                jobs.maxCount   = 1;
-                jobs.cursor     = cursor;
                 await client.SyncTasks();
                 
-                count += jobs.Result.Count;
-                cursor = jobs.ResultCursor;
-                if (cursor == null)
+                count += query.Result.Count;
+                if (query.IsFinished)
                     break;
+                query = query.QueryNext();
             }
             AreEqual(2, count);
         }

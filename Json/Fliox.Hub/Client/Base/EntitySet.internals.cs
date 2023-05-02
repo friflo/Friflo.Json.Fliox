@@ -196,6 +196,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             return peers.TryGetValue(key, out value);
         }
         
+        internal void AddTask(SyncTask task) {
+            GetSyncSet().tasks.Add(task);
+        }
+        
         // --- EntitySet
         internal override void SyncPeerEntityMap(Dictionary<JsonKey, EntityValue> entityMap, ObjectMapper mapper) {
             var reader      = mapper.reader;

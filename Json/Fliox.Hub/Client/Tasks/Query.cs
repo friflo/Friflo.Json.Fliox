@@ -44,6 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public              List<T>         Result          => IsOk("QueryTask.Result",   out Exception e) ? result : throw e;
         public              List<JsonValue> RawResult       => IsOk("QueryTask.RawResult",out Exception e) ? GetRawValues() : throw e;
+        public              bool            IsFinished      => GetIsFinished();
         
         /// <summary> Is not null after task execution if more entities available.
         /// To access them create a new query and assign <see cref="ResultCursor"/> to its <see cref="cursor"/>. </summary>
@@ -60,6 +61,35 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.filterLinq = filter.Linq;
             this.store      = store;
             this.syncSet    = syncSet;
+        }
+        
+        private QueryTask(QueryTask<TKey, T> query) {
+            relations   = new Relations(this);
+            filter      = query.filter;
+            filterLinq  = query.filterLinq;
+            store       = query.store;
+            syncSet     = query.syncSet;
+        }
+        
+        private bool GetIsFinished() {
+            if (State.IsExecuted()) {
+                if (!State.Error.HasErrors) {
+                    return resultCursor == null;
+                }
+                throw new TaskResultException(State.Error.TaskError);
+            }
+            return false;
+        }
+
+        public QueryTask<TKey, T> QueryNext() {
+            if (IsOk("QueryTask.QueryNext()", out Exception e)) {
+                if (resultCursor == null) throw new InvalidOperationException("cursor query reached end");
+                var query = new QueryTask<TKey, T>(this) { cursor = resultCursor, maxCount = maxCount };
+                syncSet.set.AddTask(query);
+                store.AddTask(query);
+                return query;
+            }
+            throw e;
         }
 
         private List<JsonValue> GetRawValues() {

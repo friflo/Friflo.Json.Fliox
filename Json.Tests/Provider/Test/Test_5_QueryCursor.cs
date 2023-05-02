@@ -29,19 +29,17 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestQuery_Cursor_MultiStep(string db) {
             var client      = await GetClient(db);
             var query       = client.testCursor.QueryAll();
+            query.maxCount  = 2;    // query with cursor
             int count       = 0;
             int iterations  = 0;
             while (true) {
-                query.maxCount  = 2;    // query with cursor
                 iterations++;
                 await client.SyncTasks();
                 
-                count          += query.Result.Count;
-                var cursor      = query.ResultCursor;
-                if (cursor == null)
+                count += query.Result.Count;
+                if (query.IsFinished)
                     break;
-                query           = client.testCursor.QueryAll();
-                query.cursor    = cursor;
+                query = query.QueryNext();
             }
             AreEqual(3, iterations);
             AreEqual(5, count);
@@ -64,19 +62,17 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestQuery_Cursor_Filter(string db) {
             var client      = await GetClient(db);
             var query       = client.testCursor.Query(c => c.value == 100);
+            query.maxCount  = 2;    // query with cursor
             int count       = 0;
             int iterations  = 0;
             while (true) {
-                query.maxCount  = 2;    // query with cursor
                 iterations++;
                 await client.SyncTasks();
                 
-                count          += query.Result.Count;
-                var cursor      = query.ResultCursor;
-                if (cursor == null)
+                count += query.Result.Count;
+                if (query.IsFinished)
                     break;
-                query           = client.testCursor.Query(c => c.value == 100); // todo add QueryNext()
-                query.cursor    = cursor;
+                query = query.QueryNext();
             }
             AreEqual(2, iterations);
             AreEqual(3, count);
