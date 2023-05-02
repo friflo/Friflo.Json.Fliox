@@ -26,8 +26,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public   override   TypeDef     JsonEntity  { get; }
         
         internal JsonStandardTypes (Dictionary<string, JsonTypeDef> types, IUtf8Buffer buffer) {
-            Boolean     = new JsonTypeDef("boolean", buffer);
-            String      = new JsonTypeDef("string",  buffer);
+            Boolean     = new JsonTypeDef("boolean",    buffer, StandardTypeId.Boolean);
+            String      = new JsonTypeDef("string",     buffer, StandardTypeId.String);
             Uint8       = Find(types, "./Standard.json#/definitions/uint8");
             Int16       = Find(types, "./Standard.json#/definitions/int16");
             Int32       = Find(types, "./Standard.json#/definitions/int32");
@@ -37,10 +37,10 @@ namespace Friflo.Json.Fliox.Schema.JSON
             BigInteger  = Find(types, "./Standard.json#/definitions/BigInteger");
             DateTime    = Find(types, "./Standard.json#/definitions/DateTime");
             Guid        = Find(types, "./Standard.json#/definitions/Guid");
-            JsonValue   = new JsonTypeDef("{ }",    buffer);
+            JsonValue   = new JsonTypeDef("{ }",        buffer, StandardTypeId.JsonValue);
             JsonKey     = Find(types, "./Standard.json#/definitions/JsonKey");
-            ShortString = new JsonTypeDef("string", buffer);
-            JsonEntity  = new JsonTypeDef("{ }",    buffer);
+            ShortString = new JsonTypeDef("string",     buffer, StandardTypeId.String);
+            JsonEntity  = new JsonTypeDef("{ }",        buffer, StandardTypeId.JsonEntity);
         }
         
         private static TypeDef Find (Dictionary<string, JsonTypeDef> types, string type) {

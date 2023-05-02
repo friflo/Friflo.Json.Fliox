@@ -44,33 +44,47 @@ namespace Friflo.Json.Fliox.Schema.Native
             JsonEntity  = Find(types, typeof(JsonEntity));
         }
         
-        private static Dictionary<Type, string> GetTypes() {
-            var map = new Dictionary<Type, string> {
-                { typeof(bool),         "boolean"},
-                { typeof(string),       "string"},
-                { typeof(byte),         "uint8"},
-                { typeof(short),        "int16"},
-                { typeof(int),          "int32"},
-                { typeof(long),         "int64"},
-                { typeof(float),        "float"},
-                { typeof(double),       "double"},
-                { typeof(BigInteger),   "BigInteger"},
-                { typeof(DateTime),     "DateTime"},
-                { typeof(Guid),         "Guid"},
-                { typeof(JsonValue),    "JsonValue"},
-                { typeof(JsonKey),      "JsonKey"},
-                { typeof(ShortString),  "ShortString"},
-                { typeof(JsonEntity),   "JsonEntity"}
+        private static Dictionary<Type, StandardTypeInfo> GetTypes() {
+            var map = new Dictionary<Type, StandardTypeInfo> {
+                { typeof(bool),         Info("boolean",     StandardTypeId.Boolean)},
+                { typeof(string),       Info("string",      StandardTypeId.String)},
+                { typeof(byte),         Info("uint8",       StandardTypeId.Uint8)},
+                { typeof(short),        Info("int16",       StandardTypeId.Int16)},
+                { typeof(int),          Info("int32",       StandardTypeId.Int32)},
+                { typeof(long),         Info("int64",       StandardTypeId.Int64)},
+                { typeof(float),        Info("float",       StandardTypeId.Float)},
+                { typeof(double),       Info("double",      StandardTypeId.Double)},
+                { typeof(BigInteger),   Info("BigInteger",  StandardTypeId.BigInteger)},
+                { typeof(DateTime),     Info("DateTime",    StandardTypeId.DateTime)},
+                { typeof(Guid),         Info("Guid",        StandardTypeId.Guid)},
+                { typeof(JsonValue),    Info("JsonValue",   StandardTypeId.JsonValue)},
+                { typeof(JsonKey),      Info("JsonKey",     StandardTypeId.JsonKey)},
+                { typeof(ShortString),  Info("ShortString", StandardTypeId.String)},
+                { typeof(JsonEntity),   Info("JsonEntity",  StandardTypeId.JsonEntity)}
             };
             return map;
         }
         
-        internal static readonly Dictionary<Type, string> Types = GetTypes();
+        private static StandardTypeInfo Info(string name, StandardTypeId typeId) {
+            return new StandardTypeInfo(name, typeId);
+        }
+        
+        internal static readonly Dictionary<Type, StandardTypeInfo> Types = GetTypes();
 
         private static TypeDef Find (Dictionary<Type, NativeTypeDef> types, Type type) {
             if (types.TryGetValue(type, out var typeDef))
                 return typeDef;
             return null;
+        }
+    }
+
+    internal readonly struct StandardTypeInfo {
+        internal    readonly    string          typeName;
+        internal    readonly    StandardTypeId  typeId;
+        
+        internal StandardTypeInfo(string typeName, StandardTypeId typeId) {
+            this.typeName   = typeName;
+            this.typeId     = typeId;
         }
     }
 }

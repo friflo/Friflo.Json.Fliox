@@ -242,8 +242,14 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (op is Field field) {
                 var path = field.name.Substring(field.arg.Length + 1);
                 var fieldType = entityType.Fields.First(f => f.name == path);
-                if (fieldType.type.Name == "int32") { // TODO make types via enum available
-                    return "::numeric";
+                switch (fieldType.type.TypeId) {
+                    case StandardTypeId.Uint8:
+                    case StandardTypeId.Int16:
+                    case StandardTypeId.Int32:
+                    case StandardTypeId.Int64:
+                    case StandardTypeId.Float:
+                    case StandardTypeId.Double:
+                        return "::numeric";
                 }
             }
             return "";

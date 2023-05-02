@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -42,7 +43,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         internal readonly   JSONSchema          schema;
 
         public JsonTypeDef (JsonType type, string name, string ns, JSONSchema schema, IUtf8Buffer buffer) :
-            base (name, ns, type.description, buffer.Add(name))
+            base (name, ns, GetTypeId(name, ns), type.description, buffer.Add(name))
         {
             this.name   = name;
             this.type   = type;
@@ -50,10 +51,29 @@ namespace Friflo.Json.Fliox.Schema.JSON
             EnumValues  = EnumValue.CreateEnumValues(type.enums, type.descriptions, buffer);
         }
         
-        public JsonTypeDef (string name, IUtf8Buffer buffer) :
-            base (name, null, null, buffer.Add(name))
+        public JsonTypeDef (string name, IUtf8Buffer buffer, StandardTypeId typeId) :
+            base (name, null, typeId, null, buffer.Add(name))
         {
-            this.name = name;
+            this.name   = name;
+        }
+        
+        private static StandardTypeId GetTypeId(string name, string ns) {
+            if (ns != "Standard") {
+                return StandardTypeId.None;
+            }
+            switch (name) {
+               case "uint8":        return StandardTypeId.Uint8;
+               case "int16":        return StandardTypeId.Int16;
+               case "int32":        return StandardTypeId.Int32;
+               case "int64":        return StandardTypeId.Int64;
+               case "float":        return StandardTypeId.Float;
+               case "double":       return StandardTypeId.Double;
+               case "BigInteger":   return StandardTypeId.BigInteger;
+               case "DateTime":     return StandardTypeId.DateTime;
+               case "Guid":         return StandardTypeId.Guid;
+               case "JsonKey":      return StandardTypeId.JsonKey;
+               default:             throw new InvalidOperationException($"unknown Standard type: {name}");
+            }
         }
     }
 }

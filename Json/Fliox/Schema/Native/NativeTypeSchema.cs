@@ -224,10 +224,10 @@ namespace Friflo.Json.Fliox.Schema.Native
             if (nativeTypes.ContainsKey(nonNullableType))
                 return;
             NativeTypeDef typeDef;
-            if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out string name)) {
-                typeDef = new NativeTypeDef(mapper, name, "Standard", Utf8Buffer);
+            if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out var info)) {
+                typeDef = new NativeTypeDef(mapper, info.typeName, "Standard", info.typeId, Utf8Buffer);
             } else {
-                typeDef = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace, Utf8Buffer);
+                typeDef = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace, StandardTypeId.None, Utf8Buffer);
             }
             nativeTypes.Add(nonNullableType, typeDef);
             types.      Add(typeDef);

@@ -40,8 +40,8 @@ namespace Friflo.Json.Fliox.Schema.Native
         
         public   override   string                      ToString()      => $"{Namespace} {Name}";
         
-        public NativeTypeDef (TypeMapper mapper, string name, string @namespace, IUtf8Buffer buffer) :
-            base(name, @namespace, mapper.docs, buffer.Add(name)) 
+        public NativeTypeDef (TypeMapper mapper, string name, string @namespace, StandardTypeId typeId, IUtf8Buffer buffer) :
+            base(name, @namespace, typeId, mapper.docs, buffer.Add(name)) 
         {
             this.native     = mapper.type;
             this.mapper     = mapper;

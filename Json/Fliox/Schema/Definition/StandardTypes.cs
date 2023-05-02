@@ -29,4 +29,27 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public abstract     TypeDef     ShortString { get; }
         public abstract     TypeDef     JsonEntity  { get; }
     }
+    
+    public enum StandardTypeId
+    {
+        None        = 0,
+        //
+        Boolean     = 1,
+        String      = 2,    // used also for ShortString
+        // --- integer
+        Uint8       = 3,
+        Int16       = 4,
+        Int32       = 5,
+        Int64       = 6,
+        // --- floating point
+        Float       = 7,
+        Double      = 8,
+        // --- specialized
+        BigInteger  = 9,
+        DateTime    = 10,
+        Guid        = 11,
+        JsonValue   = 12,
+        JsonKey     = 13,
+        JsonEntity  = 15,
+    }
 }
