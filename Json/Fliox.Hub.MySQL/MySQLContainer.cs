@@ -33,15 +33,11 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return new MySqlCommand(sql, connection.instance as MySqlConnection);
         }
 
-        private async Task<TaskExecuteError> EnsureContainerExists(SyncContext syncContext) {
+        private async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
             if (tableExists) {
                 return null;
             }
             var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSON);";
-            var connection = await syncContext.GetConnection();
-            if (connection.Failed) {
-                return connection.error;
-            }
             var result = await MySQLUtils.Execute(connection.instance as MySqlConnection, sql).ConfigureAwait(false);
             if (!result.Success) {
                 return result.error;
@@ -51,7 +47,11 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
+            var connection = await syncContext.GetConnection();
+            if (connection.Failed) {
+                return new CreateEntitiesResult { Error = connection.error };
+            }
+            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
             if (error != null) {
                 return new CreateEntitiesResult { Error = error };
             }
@@ -61,10 +61,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities);
-            var connection = await syncContext.GetConnection();
-            if (connection.Failed) {
-                return new CreateEntitiesResult { Error = connection.error };
-            }
             try {
                 using var cmd = Command(sql.ToString(), connection);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -75,7 +71,11 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
         
         public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
+            var connection = await syncContext.GetConnection();
+            if (connection.Failed) {
+                return new UpsertEntitiesResult { Error = connection.error };
+            }
+            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
             if (error != null) {
                 return new UpsertEntitiesResult { Error = error };
             }
@@ -85,10 +85,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sql = new StringBuilder();
             sql.Append($"REPLACE INTO {name} (id,data) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities);
-            var connection = await syncContext.GetConnection();
-            if (connection.Failed) {
-                return new UpsertEntitiesResult { Error = connection.error };
-            }
+
             using var cmd = Command(sql.ToString(), connection);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
@@ -96,7 +93,11 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
+            var connection = await syncContext.GetConnection();
+            if (connection.Failed) {
+                return new ReadEntitiesResult { Error = connection.error };
+            }
+            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
             if (error != null) {
                 return new ReadEntitiesResult { Error = error };
             }
@@ -104,26 +105,23 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sql = new StringBuilder();
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
             SQLUtils.AppendKeysSQL(sql, ids);
-            var connection = await syncContext.GetConnection();
-            if (connection.Failed) {
-                return new ReadEntitiesResult { Error = connection.error };
-            }
+
             using var cmd = Command(sql.ToString(), connection);
             return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
+            var connection  = await syncContext.GetConnection();
+            if (connection.Failed) {
+                return new QueryEntitiesResult { Error = connection.error };
+            }
+            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
             if (error != null) {
                 return new QueryEntitiesResult { Error = error };
             }
             var filter      = command.GetFilter();
             var where       = filter.IsTrue ? "TRUE" : filter.MySQLFilter(provider);
             var sql         = SQLUtils.QueryEntitiesSQL(command, name, where);
-            var connection  = await syncContext.GetConnection();
-            if (connection.Failed) {
-                return new QueryEntitiesResult { Error = connection.error };
-            }
             try {
                 using var cmd = Command(sql, connection);
                 return await SQLUtils.QueryEntities(cmd, command, sql).ConfigureAwait(false);
@@ -134,14 +132,15 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
+            var connection = await syncContext.GetConnection();
+            if (connection.Failed) {
+                return new AggregateEntitiesResult { Error = connection.error };
+            }
             if (command.type == AggregateType.count) {
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.MySQLFilter(provider)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
-                var connection = await syncContext.GetConnection();
-                if (connection.Failed) {
-                    return new AggregateEntitiesResult { Error = connection.error };
-                }
+
                 var result  = await MySQLUtils.Execute(connection.instance as MySqlConnection, sql).ConfigureAwait(false);
                 if (!result.Success) { return new AggregateEntitiesResult { Error = result.error }; }
                 return new AggregateEntitiesResult { value = (long)result.value };
@@ -150,13 +149,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
 
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
-            if (error != null) {
-                return new DeleteEntitiesResult { Error = error };
-            }
             var connection = await syncContext.GetConnection();
             if (connection.Failed) {
                 return new DeleteEntitiesResult { Error = connection.error };
+            }
+            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            if (error != null) {
+                return new DeleteEntitiesResult { Error = error };
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";

@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             return new SqlCommand(sql, connection.instance as SqlConnection);
         }
 
-        private async Task<TaskExecuteError> EnsureContainerExists(SyncContext syncContext) {
+        private async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
             if (tableExists) {
                 return null;
             }
@@ -40,10 +40,6 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     SELECT * FROM sys.tables t JOIN sys.schemas s ON (t.schema_id = s.schema_id)
     WHERE s.name = 'dbo' AND t.name = '{name}')
 CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
-            var connection = await syncContext.GetConnection();
-            if (connection.Failed) {
-                return connection.error;
-            }
             var result = await SQLServerUtils.Execute(connection.instance as SqlConnection, sql).ConfigureAwait(false);
             if (!result.Success) {
                 return result.error;
@@ -53,7 +49,11 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
+            var connection = await syncContext.GetConnection();
+            if (connection.Failed) {
+                return new CreateEntitiesResult { Error = connection.error };
+            }
+            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
             if (error != null) {
                 return new CreateEntitiesResult { Error = error };
             }
@@ -63,10 +63,6 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities);
-            var connection = await syncContext.GetConnection();
-            if (connection.Failed) {
-                return new CreateEntitiesResult { Error = connection.error };
-            }
             using var cmd = Command(sql.ToString(), connection);
             try {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -77,7 +73,11 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
         }
         
         public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
+            var connection = await syncContext.GetConnection();
+            if (connection.Failed) {
+                return new UpsertEntitiesResult { Error = connection.error };
+            }
+            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
             if (error != null) {
                 return new UpsertEntitiesResult { Error = error };
             }
@@ -97,10 +97,6 @@ WHEN MATCHED THEN
 WHEN NOT MATCHED THEN
     INSERT (id, data)
     VALUES (id, data);");
-            var connection = await syncContext.GetConnection();
-            if (connection.Failed) {
-                return new UpsertEntitiesResult { Error = connection.error };
-            }
             using var cmd = Command(sql.ToString(), connection);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
@@ -108,7 +104,11 @@ WHEN NOT MATCHED THEN
         }
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
+            var connection = await syncContext.GetConnection();
+            if (connection.Failed) {
+                return new ReadEntitiesResult { Error = connection.error };
+            }
+            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
             if (error != null) {
                 return new ReadEntitiesResult { Error = error };
             }
@@ -116,16 +116,16 @@ WHEN NOT MATCHED THEN
             var sql = new StringBuilder();
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
             SQLUtils.AppendKeysSQL(sql, ids);
-            var connection = await syncContext.GetConnection();
-            if (connection.Failed) {
-                return new ReadEntitiesResult { Error = connection.error };
-            }
             using var cmd   = Command(sql.ToString(), connection);
             return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
+            var connection = await syncContext.GetConnection();
+            if (connection.Failed) {
+                return new QueryEntitiesResult { Error = connection.error };
+            }
+            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
             if (error != null) {
                 return new QueryEntitiesResult { Error = error };
             }
@@ -133,10 +133,6 @@ WHEN NOT MATCHED THEN
             var where   = filter.IsTrue ? "(1=1)" : filter.SQLServerFilter();
             var sql     = SQLServerUtils.QueryEntities(command, name, where);
             try {
-                var connection = await syncContext.GetConnection();
-                if (connection.Failed) {
-                    return new QueryEntitiesResult { Error = connection.error };
-                }
                 using var cmd = Command(sql, connection);
                 return await SQLUtils.QueryEntities(cmd, command, sql).ConfigureAwait(false);
             }
@@ -146,14 +142,14 @@ WHEN NOT MATCHED THEN
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
+            var connection = await syncContext.GetConnection();
+            if (connection.Failed) {
+                return new AggregateEntitiesResult { Error = connection.error };
+            }
             if (command.type == AggregateType.count) {
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLServerFilter()}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
-                var connection = await syncContext.GetConnection();
-                if (connection.Failed) {
-                    return new AggregateEntitiesResult { Error = connection.error };
-                }
                 var result  = await SQLServerUtils.Execute(connection.instance as SqlConnection, sql).ConfigureAwait(false);
                 if (!result.Success) { return new AggregateEntitiesResult { Error = result.error }; }
                 return new AggregateEntitiesResult { value = (int)result.value };
@@ -163,13 +159,13 @@ WHEN NOT MATCHED THEN
         
        
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
-            if (error != null) {
-                return new DeleteEntitiesResult { Error = error };
-            }
             var connection = await syncContext.GetConnection();
             if (connection.Failed) {
                 return new DeleteEntitiesResult { Error = connection.error };
+            }
+            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            if (error != null) {
+                return new DeleteEntitiesResult { Error = error };
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
