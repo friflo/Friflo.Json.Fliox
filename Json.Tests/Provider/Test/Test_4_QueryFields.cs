@@ -256,8 +256,15 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         /// <summary>
-        /// As reference: LINQ Where() and Select() behavior using operator != on null arguments.
-        /// null != 1 evaluates to true
+        /// As reference:<br/>
+        /// Applying LINQ Where() and Select() behavior using operator != on null values.<br/>
+        /// null != 1 evaluates to true<br/>
+        /// <br/>
+        /// It also fits to the expectation of (i => i != 1) and (i => i == 1)<br/>
+        /// 1. Their intersection is an empty set.<br/>
+        /// 2. Their union is the set of all elements.<br/><br/>
+        /// <br/>
+        /// The alternative would be always omitting null elements but this this would violate expectation 2. 
         /// </summary>
         [Test]
         public static void TestQuery_Compare_NotEquals_Reference() {
