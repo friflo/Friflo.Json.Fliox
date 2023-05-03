@@ -111,21 +111,26 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var filter  = command.GetFilter();
             var where   = filter.IsTrue ? "TRUE" : filter.MySQLFilter(database.Provider);
             var sql     = SQLUtils.QueryEntities(command, name, where);
-            using var cmd = new MySqlCommand(sql, database.connection);
-            using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
-            var entities = new List<EntityValue>();
-            while (await reader.ReadAsync().ConfigureAwait(false)) {
-                var id      = reader.GetString(0);
-                var data    = reader.GetString(1);
-                var key     = new JsonKey(id);
-                var value   = new JsonValue(data);
-                entities.Add(new EntityValue(key, value));
+            try {
+                using var cmd = new MySqlCommand(sql, database.connection);
+                using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+                var entities = new List<EntityValue>();
+                while (await reader.ReadAsync().ConfigureAwait(false)) {
+                    var id      = reader.GetString(0);
+                    var data    = reader.GetString(1);
+                    var key     = new JsonKey(id);
+                    var value   = new JsonValue(data);
+                    entities.Add(new EntityValue(key, value));
+                }
+                var result = new QueryEntitiesResult { entities = entities.ToArray(), sql = sql };
+                if (entities.Count >= command.maxCount) {
+                    result.cursor = entities[entities.Count - 1].key.AsString();
+                }
+                return result;
             }
-            var result = new QueryEntitiesResult { entities = entities.ToArray(), sql = sql };
-            if (entities.Count >= command.maxCount) {
-                result.cursor = entities[entities.Count - 1].key.AsString();
+            catch (MySqlException e) {
+                return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message), sql = sql };
             }
-            return result;
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {

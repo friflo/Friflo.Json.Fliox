@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     using(ResponseMessage response = await iterator.ReadNextAsync().ConfigureAwait(false)) {
                         if (response.StatusCode != HttpStatusCode.OK) {
                             var error = new TaskExecuteError(TaskErrorType.ValidationError, response.ErrorMessage);
-                            return new QueryEntitiesResult { Error = error };
+                            return new QueryEntitiesResult { Error = error, sql = sql };
                         }
                         var reader  = pooled.instance.reader;
                         var docs    = await CosmosUtils.ReadDocuments(reader, response.Content, buffer).ConfigureAwait(false);

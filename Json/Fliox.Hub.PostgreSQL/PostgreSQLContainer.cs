@@ -132,8 +132,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 }
                 return result;
             } catch (PostgresException e) {
-                var msg = $"PG error: {e.MessageText}, SQL: \n{sql}";
-                return new QueryEntitiesResult { Error = new TaskExecuteError(msg), sql = sql };
+                return new QueryEntitiesResult { Error = new TaskExecuteError(e.MessageText), sql = sql };
             }
         }
         
