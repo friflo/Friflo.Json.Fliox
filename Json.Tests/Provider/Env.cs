@@ -72,7 +72,8 @@ namespace Friflo.Json.Tests.Provider
             return _seedSource = new FileDatabase("file_db", TestDbFolder) { Schema = databaseSchema };
         } }
         
-        internal static async Task<TestClient> GetClient(string db, bool seed = true) {
+        internal static async Task<TestClient> GetClient(string db, bool seed = true)
+        {
             if (!hubs.TryGetValue(db, out var hub)) {
                 var database =  await CreateDatabase(db).ConfigureAwait(false);
                 database.Schema = SeedSource.Schema;
@@ -106,7 +107,8 @@ namespace Friflo.Json.Tests.Provider
             throw new InvalidOperationException($"invalid database Env: {db}");
         }
         
-        internal static async Task<EntityDatabase> CreateTestDatabase(string db, string provider) {
+        internal static async Task<EntityDatabase> CreateTestDatabase(string db, string provider)
+        {
             switch (provider) {
                 case "cosmos":      return await CreateCosmosDatabase(db).ConfigureAwait(false);
                 case "sqlite":      return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
@@ -119,42 +121,37 @@ namespace Friflo.Json.Tests.Provider
             // throw new ArgumentException($"invalid provider: {provider}");
         }
         
-        private static async Task<EntityDatabase> CreateCosmosDatabase(string db) {
+        private static async Task<EntityDatabase> CreateCosmosDatabase(string db)
+        {
             var client          = EnvConfig.CreateCosmosClient();
             var createDatabase  = await client.CreateDatabaseIfNotExistsAsync(db).ConfigureAwait(false);
             return new CosmosDatabase(db, createDatabase) { Throughput = 400 };
         }
         
-        private static EntityDatabase CreateSQLiteDatabase(string db, string path) {
+        private static EntityDatabase CreateSQLiteDatabase(string db, string path)
+        {
             return new SQLiteDatabase(db, path);
         }
         
-        private static EntityDatabase CreateMySQLDatabase(string db, string provider) {
-
-            var connection = EnvConfig.GetMySQLConnection(provider);
-            /* using var command = new MySqlCommand("SHOW VARIABLES LIKE 'version';", connection);
-            using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
-            while (await reader.ReadAsync().ConfigureAwait(false)) {
-                var value = reader.GetValue(0);
-                Console.WriteLine($"MySQL version: {value}");
-            }*/
-            // await MySQLUtils.OpenOrCreateDatabase(connection, db).ConfigureAwait(false);
+        private static EntityDatabase CreateMySQLDatabase(string db, string provider)
+        {
+            var connection = EnvConfig.GetConnectionString(provider);
             switch (provider) {
-                case "mysql":   return new MySQLDatabase(db, connection);
+                case "mysql":   return new MySQLDatabase  (db, connection);
                 case "mariadb": return new MariaDBDatabase(db, connection);
                 default:        throw new ArgumentException($"invalid MySQL provider: {provider}");
             }
         }
         
-        private static EntityDatabase CreatePostgresDatabase(string db) {
-
-            var connection = EnvConfig.GetPostgresConnection();
+        private static EntityDatabase CreatePostgresDatabase(string db)
+        {
+            var connection = EnvConfig.GetConnectionString("postgres");
             return new PostgreSQLDatabase(db, connection);
         }
         
-        private static EntityDatabase CreateSQLServerDatabase(string db) {
-
-            var connection = EnvConfig.GetSQLServerConnection();
+        private static EntityDatabase CreateSQLServerDatabase(string db)
+        {
+            var connection = EnvConfig.GetConnectionString("sqlserver");
             return new SQLServerDatabase(db, connection);
         }
 #endif

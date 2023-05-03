@@ -49,16 +49,16 @@ namespace Friflo.Json.Tests.Provider
             var sqliteDb           = new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3") { Schema = schema };
             hub.AddExtensionDB (sqliteDb);
             
-            var mysqlConnection     = EnvConfig.GetMySQLConnection("mysql");
+            var mysqlConnection     = EnvConfig.GetConnectionString("mysql");
             hub.AddExtensionDB       (new MySQLDatabase("mysql_db", mysqlConnection)   { Schema = schema });
             
-            var mariadbConnection   = EnvConfig.GetMySQLConnection("mariadb");
+            var mariadbConnection   = EnvConfig.GetConnectionString("mariadb");
             hub.AddExtensionDB       (new MariaDBDatabase("maria_db", mariadbConnection) { Schema = schema });
             
-            var postgresConnection  = EnvConfig.GetPostgresConnection();
+            var postgresConnection  = EnvConfig.GetConnectionString("postgres");
             hub.AddExtensionDB       (new PostgreSQLDatabase("postgres_db", postgresConnection) { Schema = schema });
             
-            var sqlServerConnection = EnvConfig.GetSQLServerConnection();
+            var sqlServerConnection = EnvConfig.GetConnectionString("sqlserver");
             hub.AddExtensionDB       (new SQLServerDatabase("sqlserver_db", sqlServerConnection) { Schema = schema });
 #endif
             hub.AddExtensionDB       (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer

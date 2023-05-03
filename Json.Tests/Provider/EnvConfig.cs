@@ -25,26 +25,13 @@ namespace Friflo.Json.Tests.Provider
             return new CosmosClient(endpointUri, primaryKey, options);
         }
 
-        // --- MySQL / MariaDB
-        public static string GetMySQLConnection(string provider) {
+        public static string GetConnectionString(string provider) {
             var config              = InitConfiguration();
             string connectionString = config[provider];
             if (connectionString == null) {
                 throw new ArgumentException($"provider not found in appsettings. provider: {provider}");
             }
             return connectionString;
-        }
-        
-        // --- PostgreSQL
-        public static string GetPostgresConnection() {
-            var config = InitConfiguration();
-            return config["postgres"];
-        }
-        
-        // --- SQL Server
-        public static string GetSQLServerConnection() {
-            var config = InitConfiguration();
-            return config["sqlserver"];
         }
     }
 }
