@@ -2,10 +2,14 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
+// ReSharper disable UseIndexFromEndExpression
+// ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
     public static class SQLUtils
@@ -54,6 +58,38 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 sb.Append('\'');
             }
             sb.Append(')');
+        }
+        
+        public static async Task<ReadEntitiesResult> ReadEntities(DbCommand cmd, ReadEntities query) {
+            var ids = query.ids;
+            using var reader= await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            var rows        = new List<EntityValue>(ids.Count);
+            while (await reader.ReadAsync().ConfigureAwait(false)) {
+                var id      = reader.GetString(0);
+                var data    = reader.GetString(1);
+                var key     = new JsonKey(id);
+                var value   = new JsonValue(data);
+                rows.Add(new EntityValue(key, value));
+            }
+            var entities = KeyValueUtils.EntityListToArray(rows, ids);
+            return new ReadEntitiesResult { entities = entities };
+        }
+        
+        public static async Task<QueryEntitiesResult> QueryEntities(DbCommand cmd, QueryEntities query, string sql) {
+            using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            var entities = new List<EntityValue>();
+            while (await reader.ReadAsync().ConfigureAwait(false)) {
+                var id      = reader.GetString(0);
+                var data    = reader.GetString(1);
+                var key     = new JsonKey(id);
+                var value   = new JsonValue(data);
+                entities.Add(new EntityValue(key, value));
+            }
+            var result = new QueryEntitiesResult { entities = entities.ToArray(), sql = sql };
+            if (entities.Count >= query.maxCount) {
+                result.cursor = entities[entities.Count - 1].key.AsString();
+            }
+            return result;
         }
     }
     

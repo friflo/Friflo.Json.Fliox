@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -104,17 +103,7 @@ WHEN NOT MATCHED THEN
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
             SQLUtils.AppendKeys(sql, ids);
             using var cmd   = new SqlCommand(sql.ToString(), database.connection);
-            using var reader   = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
-            var rows        = new List<EntityValue>(ids.Count);
-            while (await reader.ReadAsync().ConfigureAwait(false)) {
-                var id      = reader.GetString(0);
-                var data    = reader.GetString(1);
-                var key     = new JsonKey(id);
-                var value   = new JsonValue(data);
-                rows.Add(new EntityValue(key, value));
-            }
-            var entities = KeyValueUtils.EntityListToArray(rows, ids);
-            return new ReadEntitiesResult { entities = entities };
+            return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
@@ -127,20 +116,7 @@ WHEN NOT MATCHED THEN
             var sql     = SQLServerUtils.QueryEntities(command, name, where);
             try {
                 using var cmd = new SqlCommand(sql, database.connection);
-                using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
-                var entities = new List<EntityValue>();
-                while (await reader.ReadAsync().ConfigureAwait(false)) {
-                    var id      = reader.GetString(0);
-                    var data    = reader.GetString(1);
-                    var key     = new JsonKey(id);
-                    var value   = new JsonValue(data);
-                    entities.Add(new EntityValue(key, value));
-                }
-                var result = new QueryEntitiesResult { entities = entities.ToArray(), sql = sql };
-                if (entities.Count >= command.maxCount) {
-                    result.cursor = entities[entities.Count - 1].key.AsString();
-                }
-                return result;
+                return await SQLUtils.QueryEntities(cmd, command, sql).ConfigureAwait(false);
             }
             catch (SqlException e) {
                 return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message), sql = sql };
