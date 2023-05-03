@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
     public static class SQLUtils
     {
-        public static string QueryEntities(QueryEntities command, string table, string filter) {
+        public static string QueryEntitiesSQL(QueryEntities command, string table, string filter) {
             var cursorStart = command.cursor == null ? "" : $"id < '{command.cursor}' AND ";
             var cursorDesc  = command.maxCount == null ? "" : " ORDER BY id DESC";
             string limit;
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             return $"SELECT id, data FROM {table} WHERE {cursorStart}{filter}{cursorDesc}{limit}";
         }
         
-        public static void AppendValues(StringBuilder sb, List<JsonEntity> entities) {
+        public static void AppendValuesSQL(StringBuilder sb, List<JsonEntity> entities) {
             var isFirst = true;
             foreach (var entity in entities)
             {
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             }
         }
         
-        public static void AppendKeys(StringBuilder sb, List<JsonKey> keys) {
+        public static void AppendKeysSQL(StringBuilder sb, List<JsonKey> keys) {
             var isFirst = true;
             sb.Append('(');
             foreach (var key in keys)

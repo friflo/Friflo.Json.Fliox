@@ -56,7 +56,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             }
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
-            SQLUtils.AppendValues(sql, command.entities);
+            SQLUtils.AppendValuesSQL(sql, command.entities);
             using var cmd = new SqlCommand(sql.ToString(), database.connection);
             try {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -78,7 +78,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             sql.Append(
 $@"MERGE {name} AS target
 USING (VALUES");
-            SQLUtils.AppendValues(sql, command.entities);
+            SQLUtils.AppendValuesSQL(sql, command.entities);
             sql.Append(
 @") AS source (id, data)
 ON source.id = target.id
@@ -101,7 +101,7 @@ WHEN NOT MATCHED THEN
             var ids = command.ids;
             var sql = new StringBuilder();
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
-            SQLUtils.AppendKeys(sql, ids);
+            SQLUtils.AppendKeysSQL(sql, ids);
             using var cmd   = new SqlCommand(sql.ToString(), database.connection);
             return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
         }
@@ -150,7 +150,7 @@ WHEN NOT MATCHED THEN
                 var sql = new StringBuilder();
                 sql.Append($"DELETE FROM  {name} WHERE id in\n");
                 
-                SQLUtils.AppendKeys(sql, command.ids);
+                SQLUtils.AppendKeysSQL(sql, command.ids);
                 using var cmd = new SqlCommand(sql.ToString(), database.connection);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 return new DeleteEntitiesResult();

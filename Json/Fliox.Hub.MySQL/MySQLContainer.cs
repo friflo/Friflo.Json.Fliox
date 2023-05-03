@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
-            SQLUtils.AppendValues(sql, command.entities);
+            SQLUtils.AppendValuesSQL(sql, command.entities);
             using var cmd = new MySqlCommand(sql.ToString(), database.connection);
             try {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = new StringBuilder();
             sql.Append($"REPLACE INTO {name} (id,data) VALUES\n");
-            SQLUtils.AppendValues(sql, command.entities);
+            SQLUtils.AppendValuesSQL(sql, command.entities);
             using var cmd = new MySqlCommand(sql.ToString(), database.connection);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var ids = command.ids;
             var sql = new StringBuilder();
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
-            SQLUtils.AppendKeys(sql, ids);
+            SQLUtils.AppendKeysSQL(sql, ids);
             using var cmd   = new MySqlCommand(sql.ToString(), database.connection);
             return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
         }
@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var filter  = command.GetFilter();
             var where   = filter.IsTrue ? "TRUE" : filter.MySQLFilter(database.Provider);
-            var sql     = SQLUtils.QueryEntities(command, name, where);
+            var sql     = SQLUtils.QueryEntitiesSQL(command, name, where);
             try {
                 using var cmd = new MySqlCommand(sql, database.connection);
                 return await SQLUtils.QueryEntities(cmd, command, sql).ConfigureAwait(false);
@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 var sql = new StringBuilder();
                 sql.Append($"DELETE FROM  {name} WHERE id in\n");
                 
-                SQLUtils.AppendKeys(sql, command.ids);
+                SQLUtils.AppendKeysSQL(sql, command.ids);
                 using var cmd = new MySqlCommand(sql.ToString(), database.connection);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 return new DeleteEntitiesResult();
