@@ -49,10 +49,10 @@ namespace Friflo.Json.Tests.Provider
             var sqliteDb           = new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3") { Schema = schema };
             hub.AddExtensionDB (sqliteDb);
             
-            var mysqlConnection     = await EnvConfig.OpenMySQLConnection("mysql");
+            var mysqlConnection     = EnvConfig.GetMySQLConnection("mysql");
             hub.AddExtensionDB       (new MySQLDatabase("mysql_db", mysqlConnection)   { Schema = schema });
             
-            var mariadbConnection   = await EnvConfig.OpenMySQLConnection("mariadb");
+            var mariadbConnection   = EnvConfig.GetMySQLConnection("mariadb");
             hub.AddExtensionDB       (new MariaDBDatabase("maria_db", mariadbConnection) { Schema = schema });
             
             var postgresConnection  = EnvConfig.GetPostgresConnection();

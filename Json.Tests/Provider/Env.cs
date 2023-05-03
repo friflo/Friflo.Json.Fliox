@@ -111,9 +111,9 @@ namespace Friflo.Json.Tests.Provider
                 case "cosmos":      return await CreateCosmosDatabase(db).ConfigureAwait(false);
                 case "sqlite":      return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
                 case "mysql":
-                case "mariadb":     return await CreateMySQLDatabase(db, provider).ConfigureAwait(false);
-                case "postgres":    return CreatePostgresDatabase(db);
-                case "sqlserver":   return CreateSQLServerDatabase(db);
+                case "mariadb":     return CreateMySQLDatabase      (db, provider);
+                case "postgres":    return CreatePostgresDatabase   (db);
+                case "sqlserver":   return CreateSQLServerDatabase  (db);
             }
             return null;
             // throw new ArgumentException($"invalid provider: {provider}");
@@ -129,9 +129,9 @@ namespace Friflo.Json.Tests.Provider
             return new SQLiteDatabase(db, path);
         }
         
-        private static async Task<EntityDatabase> CreateMySQLDatabase(string db, string provider) {
+        private static EntityDatabase CreateMySQLDatabase(string db, string provider) {
 
-            var connection = await EnvConfig.OpenMySQLConnection(provider).ConfigureAwait(false);
+            var connection = EnvConfig.GetMySQLConnection(provider);
             /* using var command = new MySqlCommand("SHOW VARIABLES LIKE 'version';", connection);
             using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
             while (await reader.ReadAsync().ConfigureAwait(false)) {

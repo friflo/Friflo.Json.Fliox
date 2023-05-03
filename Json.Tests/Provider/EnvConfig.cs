@@ -1,11 +1,9 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System;
-using System.Threading.Tasks;
 using Friflo.Json.Tests.Common.Utils;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
-using MySqlConnector;
 
 namespace Friflo.Json.Tests.Provider
 {
@@ -28,15 +26,13 @@ namespace Friflo.Json.Tests.Provider
         }
 
         // --- MySQL / MariaDB
-        public static async Task<MySqlConnection> OpenMySQLConnection(string provider) {
+        public static string GetMySQLConnection(string provider) {
             var config              = InitConfiguration();
             string connectionString = config[provider];
             if (connectionString == null) {
                 throw new ArgumentException($"provider not found in appsettings. provider: {provider}");
             }
-            var connection = new MySqlConnection(connectionString);
-            await connection.OpenAsync().ConfigureAwait(false);
-            return connection;
+            return connectionString;
         }
         
         // --- PostgreSQL

@@ -3,7 +3,11 @@
 
 #if !UNITY_5_3_OR_NEWER || MYSQL
 
+using System;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using MySqlConnector;
 
 namespace Friflo.Json.Fliox.Hub.MySQL
@@ -12,19 +16,29 @@ namespace Friflo.Json.Fliox.Hub.MySQL
     {
         public              bool            Pretty      { get; init; } = false;
         
-        internal readonly   MySqlConnection connection;
+        internal readonly   string          connectionString;
         
         public   override   string          StorageType => "MySQL";
         public   virtual    MySQLProvider   Provider    => MySQLProvider.MySQL;
         
-        public MySQLDatabase(string dbName, MySqlConnection connection, DatabaseService service = null)
+        public MySQLDatabase(string dbName, string connectionString, DatabaseService service = null)
             : base(dbName, service)
         {
-            this.connection = connection;
+            this.connectionString = connectionString;
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new MySQLContainer(name.AsString(), this, Pretty);
+        }
+        
+        public override async Task<SyncConnection> GetConnection()  {
+            try {
+                var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync().ConfigureAwait(false);
+                return new SyncConnection(connection);                
+            } catch (Exception e) {
+                return new SyncConnection(new TaskExecuteError(e.Message));    
+            }
         }
     }
     
@@ -33,8 +47,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public   override   string          StorageType => "MariaDB";
         public   override   MySQLProvider   Provider    => MySQLProvider.MariaDB;
         
-        public MariaDBDatabase(string dbName, MySqlConnection connection, DatabaseService service = null)
-            : base(dbName, connection, service)
+        public MariaDBDatabase(string dbName, string connectionString, DatabaseService service = null)
+            : base(dbName, connectionString, service)
         { }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
