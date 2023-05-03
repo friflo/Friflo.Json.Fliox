@@ -8,13 +8,14 @@ using MySqlConnector;
 
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
-    public sealed class MySQLDatabase : EntityDatabase
+    public class MySQLDatabase : EntityDatabase
     {
         public              bool            Pretty      { get; init; } = false;
         
         internal readonly   MySqlConnection connection;
         
         public   override   string          StorageType => "MySQL";
+        public   virtual    MySQLProvider   Provider    => MySQLProvider.MySQL;
         
         public MySQLDatabase(string dbName, MySqlConnection connection, DatabaseService service = null)
             : base(dbName, service)
@@ -25,7 +26,20 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new MySQLContainer(name.AsString(), this, Pretty);
         }
+    }
+    
+    public sealed class MariaDBDatabase : MySQLDatabase
+    {
+        public   override   string          StorageType => "MariaDB";
+        public   override   MySQLProvider   Provider    => MySQLProvider.MariaDB;
         
+        public MariaDBDatabase(string dbName, MySqlConnection connection, DatabaseService service = null)
+            : base(dbName, connection, service)
+        { }
+        
+        public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
+            return new MySQLContainer(name.AsString(), this, Pretty);
+        }
     }
 }
 

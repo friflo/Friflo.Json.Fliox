@@ -250,6 +250,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     case StandardTypeId.Float:
                     case StandardTypeId.Double:
                         return "::numeric";
+                    case StandardTypeId.Boolean:
+                        return "::boolean";
                 }
             }
             return "";

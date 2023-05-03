@@ -9,10 +9,17 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
+        
+    public enum MySQLProvider
+    {
+        MySQL,
+        MariaDB
+    }
+    
     public static class MySQLExtensions
     {
-        public static string MySQLFilter(this FilterOperation op) {
-            var cx      = new ConvertContext("c", op);
+        public static string MySQLFilter(this FilterOperation op, MySQLProvider provider) {
+            var cx      = new ConvertContext("c", op, provider);
             var result  = cx.Traverse(op);
             return result;
         }
@@ -22,13 +29,15 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         private readonly   string           collection;
         private readonly   string           collectionStart;
         private readonly   FilterOperation  filterOp;
+        private readonly   MySQLProvider    provider;
         
-        internal ConvertContext (string collection, FilterOperation filterOp) {
+        internal ConvertContext (string collection, FilterOperation filterOp, MySQLProvider provider) {
             this.collection = collection;
             if (filterOp is Filter filter) {
                 collectionStart = $"{filter.arg}.";
             }
-            this.filterOp     = filterOp;
+            this.filterOp   = filterOp;
+            this.provider   = provider;
         }
         
         /// <summary>
@@ -53,9 +62,9 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case LongLiteral longLiteral:
                     return longLiteral.value.ToString();
                 case TrueLiteral    _:
-                    return "true";
+                    return provider == MySQLProvider.MySQL ? "'true'" : "true";
                 case FalseLiteral   _:
-                    return "false";
+                    return provider == MySQLProvider.MySQL ? "'false'" : "false";
                 case NullLiteral    _:
                     return "null";
                 
@@ -169,7 +178,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 
                 // --- aggregate ---
                 case CountWhere countWhere: {
-                    var cx              = new ConvertContext ("", filterOp);
+                    var cx              = new ConvertContext ("", filterOp, provider);
                     operand             = cx.Traverse(countWhere.predicate);
                     string fieldName    = Traverse(countWhere.field);
                     string arg          = countWhere.arg;
@@ -177,14 +186,14 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 }
                 // --- quantify ---
                 case Any any: {
-                    var cx              = new ConvertContext ("", filterOp);
+                    var cx              = new ConvertContext ("", filterOp, provider);
                     operand             = cx.Traverse(any.predicate);
                     string fieldName    = Traverse(any.field);
                     var arg             = any.arg;
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
                 }
                 case All all: {
-                    var cx              = new ConvertContext ("", filterOp);
+                    var cx              = new ConvertContext ("", filterOp, provider);
                     operand             = cx.Traverse(all.predicate);
                     var fieldName       = Traverse(all.field);
                     var arg             = all.arg;
@@ -193,7 +202,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 }
                 // --- query filter expression
                 case Filter filter: {
-                    var cx              = new ConvertContext (collection, filterOp);
+                    var cx              = new ConvertContext (collection, filterOp, provider);
                     operand             = cx.Traverse(filter.body);
                     return $"{operand}";
                 }
@@ -202,10 +211,22 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
         }
         
+        private string ToBoolean(string operand) {
+            if (provider == MySQLProvider.MySQL) {
+                switch (operand) {
+                    case "'true'":  return "true";
+                    case "'false'": return "false";
+                }
+            }
+            return operand;
+        }
+        
         private string[] GetOperands (List<FilterOperation> operands) {
             var result = new string[operands.Count];
             for (int n = 0; n < operands.Count; n++) {
-                result[n] = Traverse(operands[n]);
+                var operand = Traverse(operands[n]);
+                operand     = ToBoolean(operand);
+                result[n]   = operand;
             }
             return result;
         }

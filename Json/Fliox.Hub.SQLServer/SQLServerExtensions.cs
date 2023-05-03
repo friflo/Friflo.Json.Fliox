@@ -53,9 +53,9 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 case LongLiteral longLiteral:
                     return longLiteral.value.ToString();
                 case TrueLiteral    _:
-                    return "1=1";
+                    return "'true'";
                 case FalseLiteral   _:
-                    return "1=0";
+                    return "'false'";
                 case NullLiteral    _:
                     return "null";
                 
@@ -92,8 +92,9 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     return $"{left} >= {right}";
                 
                 // --- logical ---
-                case Not @not:
-                    var operand = Traverse(@not.operand);
+                case Not not:
+                    var operand = Traverse(not.operand);
+                    operand     = ToBoolean(operand);
                     return $"NOT({operand})";
                 case Or or:
                     var operands = GetOperands(or.operands);
@@ -202,10 +203,20 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
         }
         
+        private static string ToBoolean(string operand) {
+            switch (operand) {
+                case "'true'":  return "(1=1)";
+                case "'false'": return "(1=0)";
+                default:        return operand;
+            }
+        }
+        
         private string[] GetOperands (List<FilterOperation> operands) {
             var result = new string[operands.Count];
             for (int n = 0; n < operands.Count; n++) {
-                result[n] = Traverse(operands[n]);
+                var operand = Traverse(operands[n]);
+                operand     = ToBoolean(operand);
+                result[n]   = operand;
             }
             return result;
         }

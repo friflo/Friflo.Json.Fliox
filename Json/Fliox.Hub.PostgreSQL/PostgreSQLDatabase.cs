@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
     {
         internal readonly   NpgsqlConnection    connection;
         
-        public   override   string              StorageType => "PostgresQL";
+        public   override   string              StorageType => "PostgreSQL";
         
         public PostgreSQLDatabase(string dbName, NpgsqlConnection connection, DatabaseService service = null)
             : base(dbName, service)

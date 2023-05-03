@@ -133,7 +133,11 @@ namespace Friflo.Json.Tests.Provider
                 Console.WriteLine($"MySQL version: {value}");
             }*/
             // await MySQLUtils.OpenOrCreateDatabase(connection, db).ConfigureAwait(false);
-            return new MySQLDatabase(db, connection);
+            switch (provider) {
+                case "mysql":   return new MySQLDatabase(db, connection);
+                case "mariadb": return new MariaDBDatabase(db, connection);
+                default:        throw new ArgumentException($"invalid MySQL provider: {provider}");
+            }
         }
         
         private static async Task<EntityDatabase> CreatePostgresDatabase(string db) {
