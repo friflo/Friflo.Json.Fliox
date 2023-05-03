@@ -4,10 +4,8 @@ using System;
 using System.Threading.Tasks;
 using Friflo.Json.Tests.Common.Utils;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
-using Npgsql;
 
 namespace Friflo.Json.Tests.Provider
 {
@@ -42,12 +40,9 @@ namespace Friflo.Json.Tests.Provider
         }
         
         // --- PostgreSQL
-        public static async Task<NpgsqlConnection> OpenPostgresConnection() {
-            var config              = InitConfiguration();
-            string connectionString = config["postgres"];
-            var connection          = new NpgsqlConnection(connectionString);
-            await connection.OpenAsync().ConfigureAwait(false);
-            return connection;
+        public static string GetPostgresConnection() {
+            var config = InitConfiguration();
+            return config["postgres"];
         }
         
         // --- SQL Server

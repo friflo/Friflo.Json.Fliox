@@ -1,7 +1,6 @@
 using System.Net;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
-using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
@@ -51,18 +50,18 @@ namespace Friflo.Json.Tests.Provider
             hub.AddExtensionDB (sqliteDb);
             
             var mysqlConnection     = await EnvConfig.OpenMySQLConnection("mysql");
-            hub.AddExtensionDB     (new MySQLDatabase("mysql_db", mysqlConnection)   { Schema = schema });
+            hub.AddExtensionDB       (new MySQLDatabase("mysql_db", mysqlConnection)   { Schema = schema });
             
             var mariadbConnection   = await EnvConfig.OpenMySQLConnection("mariadb");
-            hub.AddExtensionDB     (new MariaDBDatabase("maria_db", mariadbConnection) { Schema = schema });
+            hub.AddExtensionDB       (new MariaDBDatabase("maria_db", mariadbConnection) { Schema = schema });
             
-            var postgresConnection  = await EnvConfig.OpenPostgresConnection();
-            hub.AddExtensionDB     (new PostgreSQLDatabase("postgres_db", postgresConnection) { Schema = schema });
+            var postgresConnection  = EnvConfig.GetPostgresConnection();
+            hub.AddExtensionDB       (new PostgreSQLDatabase("postgres_db", postgresConnection) { Schema = schema });
             
             var sqlServerConnection = EnvConfig.GetSQLServerConnection();
-            hub.AddExtensionDB     (new SQLServerDatabase("sqlserver_db", sqlServerConnection) { Schema = schema });
+            hub.AddExtensionDB       (new SQLServerDatabase("sqlserver_db", sqlServerConnection) { Schema = schema });
 #endif
-            hub.AddExtensionDB (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
+            hub.AddExtensionDB       (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)
             
             var httpHost            = new HttpHost(hub, "/fliox/", env)       { CacheControl = cache };

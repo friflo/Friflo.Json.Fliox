@@ -112,7 +112,7 @@ namespace Friflo.Json.Tests.Provider
                 case "sqlite":      return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
                 case "mysql":
                 case "mariadb":     return await CreateMySQLDatabase(db, provider).ConfigureAwait(false);
-                case "postgres":    return await CreatePostgresDatabase(db).ConfigureAwait(false);
+                case "postgres":    return CreatePostgresDatabase(db);
                 case "sqlserver":   return CreateSQLServerDatabase(db);
             }
             return null;
@@ -146,9 +146,9 @@ namespace Friflo.Json.Tests.Provider
             }
         }
         
-        private static async Task<EntityDatabase> CreatePostgresDatabase(string db) {
+        private static EntityDatabase CreatePostgresDatabase(string db) {
 
-            var connection = await EnvConfig.OpenPostgresConnection().ConfigureAwait(false);
+            var connection = EnvConfig.GetPostgresConnection();
             return new PostgreSQLDatabase(db, connection);
         }
         

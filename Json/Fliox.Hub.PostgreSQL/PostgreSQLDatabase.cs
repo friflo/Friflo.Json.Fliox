@@ -3,25 +3,39 @@
 
 #if !UNITY_5_3_OR_NEWER || POSTGRESQL
 
+using System;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Npgsql;
 
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public sealed class PostgreSQLDatabase : EntityDatabase
     {
-        internal readonly   NpgsqlConnection    connection;
+        internal readonly   string  connectionString;
         
-        public   override   string              StorageType => "PostgreSQL";
+        public   override   string  StorageType => "PostgreSQL";
         
-        public PostgreSQLDatabase(string dbName, NpgsqlConnection connection, DatabaseService service = null)
+        public PostgreSQLDatabase(string dbName, string  connectionString, DatabaseService service = null)
             : base(dbName, service)
         {
-            this.connection = connection;
+            this.connectionString = connectionString;
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new PostgreSQLContainer(name.AsString(), this);
+        }
+        
+        public override async Task<SyncConnection> GetConnection()  {
+            try {
+                var connection = new NpgsqlConnection(connectionString);
+                await connection.OpenAsync().ConfigureAwait(false);
+                return new SyncConnection(connection);                
+            } catch (Exception e) {
+                return new SyncConnection(new TaskExecuteError(e.Message));    
+            }
         }
     }
 }
