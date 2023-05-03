@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.compare.Count(c => c.int32 <= 1);
             AreEqual("c => c.int32 <= 1",      query.filterLinq);
             await client.SyncTasks();
-            AreEqual(1, query.Result);
+            AreEqual(2, query.Result);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
