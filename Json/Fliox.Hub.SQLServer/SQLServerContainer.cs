@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     WHERE s.name = 'dbo' AND t.name = '{name}')
 CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             var result = await SQLServerUtils.Execute(database.connection, sql).ConfigureAwait(false);
-            if (result.error != null) {
+            if (!result.Success) {
                 return result.error;
             }
             tableExists = true;
@@ -57,7 +57,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             }
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
-            SQLServerUtils.AppendValues(sql, command.entities);
+            SQLUtils.AppendValues(sql, command.entities);
             using var cmd = new SqlCommand(sql.ToString(), database.connection);
             try {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -79,7 +79,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             sql.Append(
 $@"MERGE {name} AS target
 USING (VALUES");
-            SQLServerUtils.AppendValues(sql, command.entities);
+            SQLUtils.AppendValues(sql, command.entities);
             sql.Append(
 @") AS source (id, data)
 ON source.id = target.id
@@ -102,7 +102,7 @@ WHEN NOT MATCHED THEN
             var ids = command.ids;
             var sql = new StringBuilder();
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
-            SQLServerUtils.AppendKeys(sql, ids);
+            SQLUtils.AppendKeys(sql, ids);
             using var cmd   = new SqlCommand(sql.ToString(), database.connection);
             using var reader   = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var rows        = new List<EntityValue>(ids.Count);
@@ -153,6 +153,7 @@ WHEN NOT MATCHED THEN
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLServerFilter()}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
                 var result  = await SQLServerUtils.Execute(database.connection, sql).ConfigureAwait(false);
+                if (!result.Success) { return new AggregateEntitiesResult { Error = result.error }; }
                 return new AggregateEntitiesResult { value = (int)result.value };
             }
             throw new NotImplementedException();
@@ -166,13 +167,14 @@ WHEN NOT MATCHED THEN
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
-                await SQLServerUtils.Execute(database.connection, sql).ConfigureAwait(false);
+                var result = await SQLServerUtils.Execute(database.connection, sql).ConfigureAwait(false);
+                if (!result.Success) { return new DeleteEntitiesResult { Error = result.error }; }
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();
                 sql.Append($"DELETE FROM  {name} WHERE id in\n");
                 
-                SQLServerUtils.AppendKeys(sql, command.ids);
+                SQLUtils.AppendKeys(sql, command.ids);
                 using var cmd = new SqlCommand(sql.ToString(), database.connection);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 return new DeleteEntitiesResult();

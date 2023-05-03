@@ -256,7 +256,7 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         /// <summary>
-        /// As reference: LINQ Where() & Select() behavior using operator != on null arguments.
+        /// As reference: LINQ Where() and Select() behavior using operator != on null arguments.
         /// null != 1 evaluates to true
         /// </summary>
         [Test]

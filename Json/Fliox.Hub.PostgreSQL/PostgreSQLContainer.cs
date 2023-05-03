@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSONB);";
             var result = await PostgreSQLUtils.Execute(database.connection, sql).ConfigureAwait(false);
-            if (result.error != null) {
+            if (!result.Success) {
                 return result.error;
             }
             tableExists = true;
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
-            PostgreSQLUtils.AppendValues(sql, command.entities);
+            SQLUtils.AppendValues(sql, command.entities);
             using var cmd = new NpgsqlCommand(sql.ToString(), database.connection);
             try {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
-            PostgreSQLUtils.AppendValues(sql, command.entities);
+            SQLUtils.AppendValues(sql, command.entities);
             sql.Append("\nON CONFLICT(id) DO UPDATE SET data = excluded.data;");
             using var cmd = new NpgsqlCommand(sql.ToString(), database.connection);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var ids = command.ids;
             var sql = new StringBuilder();
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
-            PostgreSQLUtils.AppendKeys(sql, ids);
+            SQLUtils.AppendKeys(sql, ids);
             using var cmd   = new NpgsqlCommand(sql.ToString(), database.connection);
             using var reader= await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var rows        = new List<EntityValue>(ids.Count);
@@ -142,6 +142,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter(entityType)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
                 var result  = await PostgreSQLUtils.Execute(database.connection, sql).ConfigureAwait(false);
+                if (!result.Success) { return new AggregateEntitiesResult { Error = result.error }; }
                 return new AggregateEntitiesResult { value = (long)result.value };
             }
             throw new NotImplementedException();
@@ -155,13 +156,14 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
-                await PostgreSQLUtils.Execute(database.connection, sql).ConfigureAwait(false);
+                var result = await PostgreSQLUtils.Execute(database.connection, sql).ConfigureAwait(false);
+                if (!result.Success) { return new DeleteEntitiesResult { Error = result.error }; }
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();
                 sql.Append($"DELETE FROM  {name} WHERE id in\n");
                 
-                PostgreSQLUtils.AppendKeys(sql, command.ids);
+                SQLUtils.AppendKeys(sql, command.ids);
                 using var cmd = new NpgsqlCommand(sql.ToString(), database.connection);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 return new DeleteEntitiesResult();

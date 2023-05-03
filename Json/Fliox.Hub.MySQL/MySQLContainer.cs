@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSON);";
             var result = await MySQLUtils.Execute(database.connection, sql).ConfigureAwait(false);
-            if (result.error != null) {
+            if (!result.Success) {
                 return result.error;
             }
             tableExists = true;
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
-            MySQLUtils.AppendValues(sql, command.entities);
+            SQLUtils.AppendValues(sql, command.entities);
             using var cmd = new MySqlCommand(sql.ToString(), database.connection);
             try {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = new StringBuilder();
             sql.Append($"REPLACE INTO {name} (id,data) VALUES\n");
-            MySQLUtils.AppendValues(sql, command.entities);
+            SQLUtils.AppendValues(sql, command.entities);
             using var cmd = new MySqlCommand(sql.ToString(), database.connection);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var ids = command.ids;
             var sql = new StringBuilder();
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
-            MySQLUtils.AppendKeys(sql, ids);
+            SQLUtils.AppendKeys(sql, ids);
             using var cmd   = new MySqlCommand(sql.ToString(), database.connection);
             using var reader   = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var rows        = new List<EntityValue>(ids.Count);
@@ -139,6 +139,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.MySQLFilter(database.Provider)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
                 var result  = await MySQLUtils.Execute(database.connection, sql).ConfigureAwait(false);
+                if (!result.Success) { return new AggregateEntitiesResult { Error = result.error }; }
                 return new AggregateEntitiesResult { value = (long)result.value };
             }
             throw new NotImplementedException();
@@ -152,13 +153,14 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
-                await MySQLUtils.Execute(database.connection, sql).ConfigureAwait(false);
+                var result = await MySQLUtils.Execute(database.connection, sql).ConfigureAwait(false);
+                if (!result.Success) { return new DeleteEntitiesResult { Error = result.error }; }
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();
                 sql.Append($"DELETE FROM  {name} WHERE id in\n");
                 
-                MySQLUtils.AppendKeys(sql, command.ids);
+                SQLUtils.AppendKeys(sql, command.ids);
                 using var cmd = new MySqlCommand(sql.ToString(), database.connection);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 return new DeleteEntitiesResult();

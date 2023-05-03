@@ -3,8 +3,6 @@
 
 #if !UNITY_5_3_OR_NEWER || POSTGRESQL
 
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Npgsql;
@@ -17,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         internal static async Task<string> GetVersion(NpgsqlConnection connection) {
             
             var result  = await Execute(connection, "select version()").ConfigureAwait(false);
-            var version = result.error != null ? "" : result.value;
+            var version = !result.Success ? "" : result.value;
             return  $"PostgreSQL {version}";
         }
         
@@ -27,47 +25,18 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         internal static async Task<SQLResult> Execute(NpgsqlConnection connection, string sql) {
-            using var command = new NpgsqlCommand(sql, connection);
-            using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
-            while (await reader.ReadAsync().ConfigureAwait(false)) {
-                var value = reader.GetValue(0);
-                return new SQLResult(value); 
-            }
-            return default;
-        }
-        
-        internal static void AppendValues(StringBuilder sb, List<JsonEntity> entities) {
-            var isFirst = true;
-            foreach (var entity in entities)
-            {
-                if (isFirst) {
-                    isFirst = false;   
-                } else {
-                    sb.Append(',');
+            try {
+                using var command = new NpgsqlCommand(sql, connection);
+                using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+                while (await reader.ReadAsync().ConfigureAwait(false)) {
+                    var value = reader.GetValue(0);
+                    return new SQLResult(value); 
                 }
-                sb.Append("('");
-                entity.key.AppendTo(sb);
-                sb.Append("','");
-                sb.Append(entity.value.AsString());
-                sb.Append("')");
+                return default;
             }
-        }
-        
-        internal static void AppendKeys(StringBuilder sb, List<JsonKey> keys) {
-            var isFirst = true;
-            sb.Append('(');
-            foreach (var key in keys)
-            {
-                if (isFirst) {
-                    isFirst = false;   
-                } else {
-                    sb.Append(',');
-                }
-                sb.Append('\'');
-                key.AppendTo(sb);
-                sb.Append('\'');
+            catch (PostgresException e) {
+                return new SQLResult(e.MessageText);
             }
-            sb.Append(')');
         }
     }
 }
