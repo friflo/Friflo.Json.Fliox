@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -230,13 +231,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// Create and return a unique cursor id and store the given <paramref name="enumerator"/> with this id.<br/>
         /// The cursor id created by a previous call for the given <paramref name="enumerator"/> will be removed.
         /// </summary>
-        protected string StoreCursor(QueryEnumerator enumerator, in ShortString userId) {
+        protected string StoreCursor(QueryEnumerator enumerator, User user) {
             if (enumerator == null) throw new ArgumentNullException(nameof(enumerator));
             var cursor      = enumerator.Cursor;
             if (cursor != null) {
                 cursors.Remove(cursor);
             }
             var nextCursor  = Guid.NewGuid().ToString();
+            var userId      = user?.userId ?? default;
             enumerator.Detach(nextCursor, this, userId);
             cursors.Add(nextCursor, enumerator);
             return nextCursor;
@@ -266,9 +268,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 error       = null;
                 return true;
             }
-            var user = syncContext.User;
-            if (user != null && cursors.TryGetValue(cursor, out enumerator)) {
-                if (enumerator.UserId.IsEqual(user.userId)) {
+            if (cursors.TryGetValue(cursor, out enumerator)) {
+                var userId = syncContext.User?.userId ?? default;
+                if (enumerator.UserId.IsEqual(userId)) {
                     enumerator.Attach();
                     error = null;
                     return true;

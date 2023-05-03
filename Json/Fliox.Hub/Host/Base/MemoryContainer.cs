@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 if (filter == FilterEntityResult.ReachedLimit)
                     break;
                 if (filter == FilterEntityResult.ReachedMaxCount) {
-                    result.cursor = StoreCursor(keyValueEnum, syncContext.User.userId);
+                    result.cursor = StoreCursor(keyValueEnum, syncContext.User);
                     break;
                 }
             }

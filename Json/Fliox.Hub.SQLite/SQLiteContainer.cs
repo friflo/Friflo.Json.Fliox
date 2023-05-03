@@ -148,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (maxCount != null) {
                 if (values.Count == maxCount) {
                     enumerator ??= new SQLiteQueryEnumerator(stmt);
-                    result.cursor = StoreCursor(enumerator, syncContext.User.userId);
+                    result.cursor = StoreCursor(enumerator, syncContext.User);
                 } else {
                     RemoveCursor(enumerator);
                 }

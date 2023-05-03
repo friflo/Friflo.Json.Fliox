@@ -185,7 +185,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <remarks>
         /// If given database has no schema the key name of all entities in all containers need to be "id"
         /// </remarks>
-        public async Task SeedDatabase(EntityDatabase src) {
+        public async Task SeedDatabase(EntityDatabase src, int? maxCount = null) {
             var sharedEnv       = new SharedEnv();
             var memoryBuffer    = new MemoryBuffer(4 * 1024);
             var syncContext     = new SyncContext(sharedEnv, null, memoryBuffer);
@@ -196,27 +196,39 @@ namespace Friflo.Json.Fliox.Hub.Host
                 if (entityTypes != null && entityTypes.TryGetValue(container, out TypeDef entityType)) {
                     keyName = entityType.KeyField;
                 }
-                await SeedContainer(src, container, keyName, syncContext).ConfigureAwait(false);
+                await SeedContainer(src, container, keyName, maxCount, syncContext).ConfigureAwait(false);
             }
         }
         
-        private async Task SeedContainer(EntityDatabase src, string container, string keyName, SyncContext syncContext)
+        private async Task SeedContainer(EntityDatabase src, string container, string keyName, int? maxCount, SyncContext syncContext)
         {
             var containerName   = new ShortString(container);
             var srcContainer    = src.GetOrCreateContainer(containerName);
             var dstContainer    = GetOrCreateContainer(containerName);
             var filterContext   = new OperationContext();
             filterContext.Init(Operation.FilterTrue, out _);
-            var query           = new QueryEntities { container = containerName, filterContext = filterContext, keyName = keyName };
-            var queryResult     = await srcContainer.QueryEntitiesAsync(query, syncContext).ConfigureAwait(false);
-            
-            var entities        = new List<JsonEntity>(queryResult.entities.Length);
-            foreach (var entity in queryResult.entities) {
-                entities.Add(new JsonEntity(entity.Json));
+            var query           = new QueryEntities {
+                container       = containerName,
+                filterContext   = filterContext,
+                keyName         = keyName,
+                maxCount        = maxCount,
+            };
+            while (true) {
+                var queryResult = await srcContainer.QueryEntitiesAsync(query, syncContext).ConfigureAwait(false);
+
+                var entities    = new List<JsonEntity>(queryResult.entities.Length);
+                foreach (var entity in queryResult.entities) {
+                    entities.Add(new JsonEntity(entity.Json));
+                }
+                KeyValueUtils.GetKeysFromEntities (keyName, entities, syncContext.sharedEnv, out _);
+                var upsert = new UpsertEntities { container = containerName, entities = entities };
+                await dstContainer.UpsertEntitiesAsync(upsert, syncContext).ConfigureAwait(false);
+                
+                if (queryResult.cursor == null) {
+                    return;
+                }
+                query.cursor = queryResult.cursor;
             }
-            KeyValueUtils.GetKeysFromEntities (keyName, entities, syncContext.sharedEnv, out _);
-            var upsert          = new UpsertEntities { container = containerName, entities = entities };
-            await dstContainer.UpsertEntitiesAsync(upsert, syncContext).ConfigureAwait(false);
         }
         #endregion
     }
