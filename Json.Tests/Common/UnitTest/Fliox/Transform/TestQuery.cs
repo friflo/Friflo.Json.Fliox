@@ -433,7 +433,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var isNotEqual =        (NotEqual)          FromFilter((Person p) =>
                           p.name != "Peter");
                 AreEqual("p.name != 'Peter'",   isNotEqual.Linq);
-                AreEqual("c['name'] != 'Peter'",isNotEqual.CosmosFilter());
+                AreEqual("(NOT IS_DEFINED(c['name']) or NOT IS_DEFINED('Peter') or c['name'] != 'Peter')",isNotEqual.CosmosFilter());
                 AssertJson(mapper, isNotEqual, "{'op':'notEqual','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}");
             } {
                 var isLess =            (Less)          FromFilter((Person p) =>
