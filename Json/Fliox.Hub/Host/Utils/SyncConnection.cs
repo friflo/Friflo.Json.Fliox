@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         public  readonly    IDisposable         instance;
         public  readonly    TaskExecuteError    error;
         
-        public              bool                Success     => error == null;
+        public              bool                Failed      => error != null;
         public  override    string              ToString()  => GetString();
 
         public SyncConnection(IDisposable instance) {
