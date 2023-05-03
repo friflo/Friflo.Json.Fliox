@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -150,6 +151,20 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal void Cancel() {
             canceler(); // canceler.Invoke();
         }
+        
+        private SyncConnection connection;
+        
+        internal void CloseConnection() {
+            connection?.Dispose();
+            connection = null;
+        }
+
+        public async Task<SyncConnection> GetConnection () {
+            if (connection != null) {
+                return connection;
+            }
+            return connection = await Database.GetConnection();
+        }
     }
     
     public interface IHost { }
@@ -224,4 +239,6 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public override string ToString() => success != null ? success.ToString() : error.ToString();
     }
+    
+
 }

@@ -51,12 +51,9 @@ namespace Friflo.Json.Tests.Provider
         }
         
         // --- SQL Server
-        public static async Task<SqlConnection> OpenSQLServerConnection() {
-            var config              = InitConfiguration();
-            string connectionString = config["sqlserver"];
-            var connection          = new SqlConnection(connectionString);
-            await connection.OpenAsync().ConfigureAwait(false);
-            return connection;
+        public static string GetSQLServerConnection() {
+            var config = InitConfiguration();
+            return config["sqlserver"];
         }
     }
 }

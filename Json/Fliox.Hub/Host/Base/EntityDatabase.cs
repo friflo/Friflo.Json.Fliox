@@ -60,6 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public              DatabaseSchema      Schema          { get; set; }
         
+        public  virtual     Task<SyncConnection> GetConnection()  => throw new NotImplementedException();
         /// <summary>A mapping function used to assign a custom container name.</summary>
         /// <remarks>
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
@@ -189,14 +190,20 @@ namespace Friflo.Json.Fliox.Hub.Host
             var sharedEnv       = new SharedEnv();
             var memoryBuffer    = new MemoryBuffer(4 * 1024);
             var syncContext     = new SyncContext(sharedEnv, null, memoryBuffer);
-            var containerNames  = await src.GetContainers().ConfigureAwait(false);
-            var entityTypes     = src.Schema?.typeSchema.GetEntityTypes();
-            foreach (var container in containerNames) {
-                string keyName = null;
-                if (entityTypes != null && entityTypes.TryGetValue(container, out TypeDef entityType)) {
-                    keyName = entityType.KeyField;
+            try {
+                syncContext.database = this;
+                var containerNames  = await src.GetContainers().ConfigureAwait(false);
+                var entityTypes     = src.Schema?.typeSchema.GetEntityTypes();
+                foreach (var container in containerNames) {
+                    string keyName = null;
+                    if (entityTypes != null && entityTypes.TryGetValue(container, out TypeDef entityType)) {
+                        keyName = entityType.KeyField;
+                    }
+                    await SeedContainer(src, container, keyName, maxCount, syncContext).ConfigureAwait(false);
                 }
-                await SeedContainer(src, container, keyName, maxCount, syncContext).ConfigureAwait(false);
+            }
+            finally {
+                syncContext.CloseConnection();
             }
         }
         

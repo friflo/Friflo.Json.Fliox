@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Provider
                 case "mysql":
                 case "mariadb":     return await CreateMySQLDatabase(db, provider).ConfigureAwait(false);
                 case "postgres":    return await CreatePostgresDatabase(db).ConfigureAwait(false);
-                case "sqlserver":   return await CreateSQLServerDatabase(db).ConfigureAwait(false);
+                case "sqlserver":   return CreateSQLServerDatabase(db);
             }
             return null;
             // throw new ArgumentException($"invalid provider: {provider}");
@@ -152,9 +152,9 @@ namespace Friflo.Json.Tests.Provider
             return new PostgreSQLDatabase(db, connection);
         }
         
-        private static async Task<EntityDatabase> CreateSQLServerDatabase(string db) {
+        private static EntityDatabase CreateSQLServerDatabase(string db) {
 
-            var connection = await EnvConfig.OpenSQLServerConnection().ConfigureAwait(false);
+            var connection = EnvConfig.GetSQLServerConnection();
             return new SQLServerDatabase(db, connection);
         }
 #endif

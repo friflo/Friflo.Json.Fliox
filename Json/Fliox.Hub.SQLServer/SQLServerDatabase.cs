@@ -3,7 +3,11 @@
 
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
+using System;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Microsoft.Data.SqlClient;
 
 
@@ -13,20 +17,29 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     {
         public              bool            Pretty      { get; init; } = false;
         
-        internal readonly   SqlConnection   connection;
+        private  readonly   string          connectionString;
         
         public   override   string          StorageType => "Microsoft SQL Server";
         
-        public SQLServerDatabase(string dbName, SqlConnection connection, DatabaseService service = null)
+        public SQLServerDatabase(string dbName, string connectionString, DatabaseService service = null)
             : base(dbName, service)
         {
-            this.connection = connection;
+            this.connectionString = connectionString;
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new SQLServerContainer(name.AsString(), this, Pretty);
         }
         
+        public override async Task<SyncConnection> GetConnection()  {
+            try {
+                var connection = new SqlConnection(connectionString);
+                await connection.OpenAsync().ConfigureAwait(false);
+                return new SyncConnection(connection);                
+            } catch (Exception e) {
+                return new SyncConnection(new TaskExecuteError(e.Message));    
+            }
+        }
     }
 }
 

@@ -21,16 +21,14 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     {
         private             bool            tableExists;
         public   override   bool            Pretty      { get; }
-        private  readonly   SQLServerDatabase   database;
         
         internal SQLServerContainer(string name, SQLServerDatabase database, bool pretty)
             : base(name, database)
         {
             Pretty          = pretty;
-            this.database   = database;
         }
 
-        private async Task<TaskExecuteError> EnsureContainerExists() {
+        private async Task<TaskExecuteError> EnsureContainerExists(SyncContext syncContext) {
             if (tableExists) {
                 return null;
             }
@@ -38,7 +36,9 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     SELECT * FROM sys.tables t JOIN sys.schemas s ON (t.schema_id = s.schema_id)
     WHERE s.name = 'dbo' AND t.name = '{name}')
 CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
-            var result = await SQLServerUtils.Execute(database.connection, sql).ConfigureAwait(false);
+            var connection = await syncContext.GetConnection();
+            if (!connection.Success) { return connection.error; }
+            var result = await SQLServerUtils.Execute(connection.instance as SqlConnection, sql).ConfigureAwait(false);
             if (!result.Success) {
                 return result.error;
             }
@@ -47,7 +47,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists().ConfigureAwait(false);
+            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
             if (error != null) {
                 return new CreateEntitiesResult { Error = error };
             }
@@ -57,17 +57,19 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities);
-            using var cmd = new SqlCommand(sql.ToString(), database.connection);
+            var connection = await syncContext.GetConnection();
+            if (!connection.Success) { return new CreateEntitiesResult { Error = connection.error }; }
+            using var cmd = new SqlCommand(sql.ToString(), connection.instance as SqlConnection);
             try {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-            } catch (Exception e) {
+            } catch (SqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
             }
             return new CreateEntitiesResult();
         }
         
         public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists().ConfigureAwait(false);
+            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
             if (error != null) {
                 return new UpsertEntitiesResult { Error = error };
             }
@@ -87,14 +89,16 @@ WHEN MATCHED THEN
 WHEN NOT MATCHED THEN
     INSERT (id, data)
     VALUES (id, data);");
-            using var cmd = new SqlCommand(sql.ToString(), database.connection);
+            var connection = await syncContext.GetConnection();
+            if (!connection.Success) { return new UpsertEntitiesResult { Error = connection.error }; }
+            using var cmd = new SqlCommand(sql.ToString(), connection.instance as SqlConnection);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
             return new UpsertEntitiesResult();
         }
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists().ConfigureAwait(false);
+            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
             if (error != null) {
                 return new ReadEntitiesResult { Error = error };
             }
@@ -102,12 +106,14 @@ WHEN NOT MATCHED THEN
             var sql = new StringBuilder();
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
             SQLUtils.AppendKeysSQL(sql, ids);
-            using var cmd   = new SqlCommand(sql.ToString(), database.connection);
+            var connection = await syncContext.GetConnection();
+            if (!connection.Success) { return new ReadEntitiesResult { Error = connection.error }; }
+            using var cmd   = new SqlCommand(sql.ToString(), connection.instance as SqlConnection);
             return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists().ConfigureAwait(false);
+            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
             if (error != null) {
                 return new QueryEntitiesResult { Error = error };
             }
@@ -115,7 +121,9 @@ WHEN NOT MATCHED THEN
             var where   = filter.IsTrue ? "(1=1)" : filter.SQLServerFilter();
             var sql     = SQLServerUtils.QueryEntities(command, name, where);
             try {
-                using var cmd = new SqlCommand(sql, database.connection);
+                var connection = await syncContext.GetConnection();
+                if (!connection.Success) { return new QueryEntitiesResult { Error = connection.error }; }
+                using var cmd = new SqlCommand(sql, connection.instance as SqlConnection);
                 return await SQLUtils.QueryEntities(cmd, command, sql).ConfigureAwait(false);
             }
             catch (SqlException e) {
@@ -128,7 +136,9 @@ WHEN NOT MATCHED THEN
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLServerFilter()}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
-                var result  = await SQLServerUtils.Execute(database.connection, sql).ConfigureAwait(false);
+                var connection = await syncContext.GetConnection();
+                if (!connection.Success) { return new AggregateEntitiesResult { Error = connection.error }; }
+                var result  = await SQLServerUtils.Execute(connection.instance as SqlConnection, sql).ConfigureAwait(false);
                 if (!result.Success) { return new AggregateEntitiesResult { Error = result.error }; }
                 return new AggregateEntitiesResult { value = (int)result.value };
             }
@@ -137,13 +147,15 @@ WHEN NOT MATCHED THEN
         
        
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
-            var error = await EnsureContainerExists().ConfigureAwait(false);
+            var error = await EnsureContainerExists(syncContext).ConfigureAwait(false);
             if (error != null) {
                 return new DeleteEntitiesResult { Error = error };
             }
+            var connection = await syncContext.GetConnection();
+            if (!connection.Success) { return new DeleteEntitiesResult { Error = connection.error }; }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
-                var result = await SQLServerUtils.Execute(database.connection, sql).ConfigureAwait(false);
+                var result = await SQLServerUtils.Execute(connection.instance as SqlConnection, sql).ConfigureAwait(false);
                 if (!result.Success) { return new DeleteEntitiesResult { Error = result.error }; }
                 return new DeleteEntitiesResult();    
             } else {
@@ -151,7 +163,7 @@ WHEN NOT MATCHED THEN
                 sql.Append($"DELETE FROM  {name} WHERE id in\n");
                 
                 SQLUtils.AppendKeysSQL(sql, command.ids);
-                using var cmd = new SqlCommand(sql.ToString(), database.connection);
+                using var cmd = new SqlCommand(sql.ToString(), connection.instance as SqlConnection);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 return new DeleteEntitiesResult();
             }

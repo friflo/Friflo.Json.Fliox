@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Provider
             var postgresConnection  = await EnvConfig.OpenPostgresConnection();
             hub.AddExtensionDB     (new PostgreSQLDatabase("postgres_db", postgresConnection) { Schema = schema });
             
-            var sqlServerConnection = await EnvConfig.OpenSQLServerConnection();
+            var sqlServerConnection = EnvConfig.GetSQLServerConnection();
             hub.AddExtensionDB     (new SQLServerDatabase("sqlserver_db", sqlServerConnection) { Schema = schema });
 #endif
             hub.AddExtensionDB (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
