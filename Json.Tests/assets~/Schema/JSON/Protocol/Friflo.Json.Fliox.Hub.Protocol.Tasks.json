@@ -391,7 +391,8 @@
                 "cursor":     { "type": ["string", "null"] },
                 "len":        { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
                 "ids":        { "type": "array", "items": { "$ref": "./Standard.json#/definitions/JsonKey" } },
-                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } }
+                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } },
+                "sql":        { "type": ["string", "null"] }
             },
             "required": [
                 "task",

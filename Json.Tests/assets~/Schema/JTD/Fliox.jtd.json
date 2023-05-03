@@ -302,7 +302,8 @@
                 "cursor":     { "type": "string", "nullable": true },
                 "len":        { "type": "int32", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
-                "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
+                "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true },
+                "sql":        { "type": "string", "nullable": true }
             }
         },
         "AggregateEntitiesResult": {

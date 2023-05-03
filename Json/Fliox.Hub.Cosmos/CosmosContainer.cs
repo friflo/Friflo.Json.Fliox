@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 throw new NotImplementedException();
                 // return FilterEntities(command, entities, syncContext);
             }
-            return new QueryEntitiesResult{ entities = entities.ToArray(), cursor = continuationToken};
+            return new QueryEntitiesResult{ entities = entities.ToArray(), cursor = continuationToken, sql = sql};
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {

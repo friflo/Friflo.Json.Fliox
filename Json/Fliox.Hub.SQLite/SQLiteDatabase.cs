@@ -67,12 +67,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     internal sealed class SQLiteQueryEnumerator : QueryEnumerator
     {
         internal readonly   sqlite3_stmt    stmt;
+        internal readonly   string          sql;
         
         public   override   JsonKey         Current     => throw new NotImplementedException("not applicable");
         public   override   bool            MoveNext()  => throw new NotImplementedException("not applicable");
         
-        internal SQLiteQueryEnumerator(sqlite3_stmt stmt) {
-            this.stmt = stmt;
+        internal SQLiteQueryEnumerator(sqlite3_stmt stmt, string sql) {
+            this.stmt   = stmt;
+            this.sql    = sql;
         }
         
         protected override void DisposeEnumerator() {

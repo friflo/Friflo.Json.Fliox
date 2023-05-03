@@ -200,6 +200,7 @@ data class QueryEntitiesResult (
               val len        : Int? = null,
               val ids        : List<String>,
               val references : List<ReferencesResult>? = null,
+              val sql        : String? = null,
 ) : SyncTaskResult()
 
 @Serializable

@@ -126,28 +126,31 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             sqlite3_stmt    stmt;
             QueryEnumerator enumerator = null;
             var             maxCount   = command.maxCount;
+            string sql;
             if (command.cursor != null) {
                 if (!FindCursor(command.cursor, syncContext, out enumerator, out error)) {
                     return new QueryEntitiesResult { Error = error };
                 }
-                stmt = ((SQLiteQueryEnumerator)enumerator).stmt;
+                var queryEnumerator = (SQLiteQueryEnumerator)enumerator;
+                stmt    = queryEnumerator.stmt;
+                sql     = queryEnumerator.sql;
             } else {
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
                 var limit   = command.limit == null ? "" : $" LIMIT {command.limit}";
-                var sql     = $"SELECT id, data FROM {name}{where}{limit}";
+                sql         = $"SELECT id, data FROM {name}{where}{limit}";
                 if (!SQLiteUtils.Prepare(sqliteDB, sql, out stmt, out error)) {
-                    return new QueryEntitiesResult { Error = error };
+                    return new QueryEntitiesResult { Error = error, sql = sql };
                 }
             }
             var values = new List<EntityValue>();
             if (!SQLiteUtils.ReadValues(stmt, maxCount, values, syncContext.MemoryBuffer, out error)) {
-                return new QueryEntitiesResult { Error = error };
+                return new QueryEntitiesResult { Error = error, sql = sql };
             }
-            var result = new QueryEntitiesResult { entities = values.ToArray() };
+            var result = new QueryEntitiesResult { entities = values.ToArray(), sql = sql };
             if (maxCount != null) {
                 if (values.Count == maxCount) {
-                    enumerator ??= new SQLiteQueryEnumerator(stmt);
+                    enumerator ??= new SQLiteQueryEnumerator(stmt, sql);
                     result.cursor = StoreCursor(enumerator, syncContext.User);
                 } else {
                     RemoveCursor(enumerator);

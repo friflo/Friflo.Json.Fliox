@@ -160,6 +160,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [DebugInfo] public  int?                    len;
         [Required]  public  List<JsonKey>           ids;
                     public  List<ReferencesResult>  references;
+                    public  string                  sql;
                         
         [Ignore]    public  EntityValue[]           entities;
         [Ignore]    public  TaskExecuteError        Error { get; set; }

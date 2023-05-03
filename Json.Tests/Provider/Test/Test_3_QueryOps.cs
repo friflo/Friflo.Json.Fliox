@@ -28,6 +28,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => One == 1);
             AreEqual("a => 1 == 1", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -37,6 +38,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => One != Zero);
             AreEqual("a => 1 != 0", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -46,6 +48,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => Zero < One);
             AreEqual("a => 0 < 1", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -55,6 +58,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => Zero <= One);
             AreEqual("a => 0 <= 1", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -64,6 +68,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => One > Zero);
             AreEqual("a => 1 > 0", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -73,6 +78,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => One >= Zero);
             AreEqual("a => 1 >= 0", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -84,6 +90,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query = client.testOps.Query(a => t && true);
             AreEqual("a => true && true", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -94,6 +101,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query = client.testOps.Query(a => false || t);
             AreEqual("a => false || true", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -104,6 +112,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query = client.testOps.Query(a => !f);
             AreEqual("a => !(false)", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -114,6 +123,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => "start-xxx".StartsWith("start-"));
             AreEqual("a => 'start-xxx'.StartsWith('start-')", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
         
@@ -123,6 +133,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => "xxx-end".EndsWith("-end"));
             AreEqual("a => 'xxx-end'.EndsWith('-end')", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
         
@@ -132,6 +143,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => "xxx-yyy".Contains('-'));
             AreEqual("a => 'xxx-yyy'.Contains('-')", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
         
@@ -141,6 +153,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => "yyy".Contains("-"));
             AreEqual("a => 'yyy'.Contains('-')", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(0, query.Result.Count);
         }
         
@@ -150,6 +163,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => "abc".Length == 3);
             AreEqual("a => 'abc'.Length() == 3", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
         
@@ -160,6 +174,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => One + One == 2);
             AreEqual("a => 1 + 1 == 2", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -169,6 +184,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => One - One == 0);
             AreEqual("a => 1 - 1 == 0", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -178,6 +194,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => One * One == 1);
             AreEqual("a => 1 * 1 == 1", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -187,6 +204,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => One / One == 1);
             AreEqual("a => 1 / 1 == 1", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -196,6 +214,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => One % One == 0);
             AreEqual("a => 1 % 1 == 0", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -207,6 +226,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query = client.testOps.Query(a => E == e);
             AreEqual("a => E == E", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -217,6 +237,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => PI == pi);
             AreEqual("a => PI == PI", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -228,6 +249,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => Tau == tau);
             AreEqual("a => 6.283185307179586 == 6.283185307179586", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
 #endif
@@ -239,6 +261,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => Abs(-1) == One);
             AreEqual("a => Abs(-1) == 1", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -248,6 +271,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => Ceiling(1.5) == 2);
             AreEqual("a => Ceiling(1.5) == 2", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -257,6 +281,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => Floor(1.5) == 1);
             AreEqual("a => Floor(1.5) == 1", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -267,6 +292,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => Exp(1) == 2.718281828459045);
             AreEqual("a => Exp(1) == E", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
         
@@ -277,6 +303,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => Log(E) == 1);
             AreEqual("a => Log(E) == 1", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
 
@@ -287,6 +314,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.testOps.Query(a => Sqrt(4) == 2);
             AreEqual("a => Sqrt(4) == 2", query.filterLinq);
             await client.SyncTasks();
+            LogSQL(query.SQL);
             AreEqual(ArticleCount, query.Result.Count);
         }
     }

@@ -312,6 +312,7 @@ class QueryEntitiesResult {
     len?        : int32
     ids         : string[]
     references? : ReferencesResult[]
+    sql?        : string
 }
 QueryEntitiesResult *-- "0..*" ReferencesResult : references
 

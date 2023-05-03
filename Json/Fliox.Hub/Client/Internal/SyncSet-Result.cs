@@ -233,6 +233,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             var queryResult     = (QueryEntitiesResult)result;
+            query.sql           = queryResult.sql;
             query.resultCursor  = queryResult.cursor;
             var entityErrorInfo = new TaskErrorInfo();
             var entities        = queryEntities.entityMap;

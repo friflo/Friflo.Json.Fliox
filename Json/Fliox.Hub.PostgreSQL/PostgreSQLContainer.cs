@@ -126,14 +126,14 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     var value   = new JsonValue(data);
                     entities.Add(new EntityValue(key, value));
                 }
-                var result = new QueryEntitiesResult { entities = entities.ToArray() };
+                var result = new QueryEntitiesResult { entities = entities.ToArray(), sql = sql };
                 if (entities.Count >= command.maxCount) {
                     result.cursor = entities[entities.Count - 1].key.AsString();
                 }
                 return result;
             } catch (PostgresException e) {
                 var msg = $"PG error: {e.MessageText}, SQL: \n{sql}";
-                return new QueryEntitiesResult { Error = new TaskExecuteError(msg) };
+                return new QueryEntitiesResult { Error = new TaskExecuteError(msg), sql = sql };
             }
         }
         

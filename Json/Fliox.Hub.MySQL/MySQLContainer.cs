@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 var value   = new JsonValue(data);
                 entities.Add(new EntityValue(key, value));
             }
-            var result = new QueryEntitiesResult { entities = entities.ToArray() };
+            var result = new QueryEntitiesResult { entities = entities.ToArray(), sql = sql };
             if (entities.Count >= command.maxCount) {
                 result.cursor = entities[entities.Count - 1].key.AsString();
             }

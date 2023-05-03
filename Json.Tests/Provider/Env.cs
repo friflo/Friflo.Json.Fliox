@@ -52,6 +52,12 @@ namespace Friflo.Json.Tests.Provider
         }
         
         internal static readonly string TestDbFolder = CommonUtils.GetBasePath() + "assets~/DB/test_db";
+        
+        internal static void LogSQL(string sql) {
+            if (sql != null) {
+                Console.Write($"SQL: {sql}");
+            }
+        }
             
         internal static async Task Seed(EntityDatabase target, EntityDatabase source) {
             target.Schema = source.Schema;

@@ -12,6 +12,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
         private const int Gen_len = 2;
         private const int Gen_ids = 3;
         private const int Gen_references = 4;
+        private const int Gen_sql = 5;
 
         private static bool ReadField (ref QueryEntitiesResult obj, PropField field, ref Reader reader) {
             bool success;
@@ -21,6 +22,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
                 case Gen_len:        obj.len        = reader.ReadInt32Null (field, out success);  return success;
                 case Gen_ids:        obj.ids        = reader.ReadClass     (field, obj.ids,        out success);  return success;
                 case Gen_references: obj.references = reader.ReadClass     (field, obj.references, out success);  return success;
+                case Gen_sql:        obj.sql        = reader.ReadString    (field, obj.sql,        out success);  return success;
             }
             return false;
         }
@@ -31,6 +33,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
             writer.WriteInt32Null (fields[Gen_len],        obj.len,        ref firstMember);
             writer.WriteClass     (fields[Gen_ids],        obj.ids,        ref firstMember);
             writer.WriteClass     (fields[Gen_references], obj.references, ref firstMember);
+            writer.WriteString    (fields[Gen_sql],        obj.sql,        ref firstMember);
         }
     }
 }

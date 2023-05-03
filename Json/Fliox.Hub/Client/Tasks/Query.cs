@@ -37,6 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   readonly   FilterOperation filter;
         public   readonly   string          filterLinq; // use as string identifier of a filter 
         internal            List<T>         result;
+        internal            string          sql;
         internal            Dictionary<JsonKey, EntityValue>    entities;
         internal            string          resultCursor;
         private  readonly   FlioxClient     store;
@@ -45,6 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              List<T>         Result          => IsOk("QueryTask.Result",   out Exception e) ? result : throw e;
         public              List<JsonValue> RawResult       => IsOk("QueryTask.RawResult",out Exception e) ? GetRawValues() : throw e;
         public              bool            IsFinished      => GetIsFinished();
+        public              string          SQL             => IsOk("QueryTask.SQL",      out Exception e) ? sql : throw e;
         
         /// <summary> Is not null after task execution if more entities available.
         /// To access them create a new query and assign <see cref="ResultCursor"/> to its <see cref="cursor"/>. </summary>

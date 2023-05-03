@@ -347,6 +347,7 @@ export class QueryEntitiesResult extends SyncTaskResult {
     len?        : int32 | null;
     ids         : JsonKey[];
     references? : ReferencesResult[] | null;
+    sql?        : string | null;
 }
 
 /** Result of a **AggregateEntities** task */
