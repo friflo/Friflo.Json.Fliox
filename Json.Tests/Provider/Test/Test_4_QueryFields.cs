@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Cosmos;
@@ -211,6 +213,41 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual("c => c.int32 != null",      query.filterLinq);
             await client.SyncTasks();
             AreEqual(2, query.Result.Count);
+        }
+        
+        /// <summary>Apply LINQ behavior. <see cref="TestQuery_Compare_NotEquals_Reference"/></summary>
+        /// <param name="db"></param>
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_Compare_NotEquals_Number(string db) {
+            var client  = await GetClient(db);
+            var query   = client.compare.Query(c => c.int32 != 1);
+            AreEqual("c => c.int32 != 1",      query.filterLinq);
+            await client.SyncTasks();
+            AreEqual(3, query.Result.Count);
+        }
+        
+        /// <summary>Apply LINQ behavior. <see cref="TestQuery_Compare_NotEquals_Reference"/></summary>
+        /// <param name="db"></param>
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_Compare_NotEquals_String(string db) {
+            var client  = await GetClient(db);
+            var query   = client.compare.Query(c => c.str != "str-0");
+            AreEqual("c => c.str != 'str-0'",      query.filterLinq);
+            await client.SyncTasks();
+            AreEqual(3, query.Result.Count);
+        }
+        
+        /// <summary>
+        /// As reference: LINQ Where() & Select() behavior using operator != on null arguments.
+        /// null != 1 evaluates to true
+        /// </summary>
+        [Test]
+        public static void TestQuery_Compare_NotEquals_Reference() {
+            var list = new List<int?> { 1, null, 2 };
+            var result = list.Where(item => item != 1).ToArray();
+            AreEqual(2, result.Length);
+            AreEqual(null, result[0]);
+            AreEqual(2,    result[1]);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]

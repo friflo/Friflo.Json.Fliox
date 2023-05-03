@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     right   = Traverse(notEqual.right);
                     if (left  == "null") return $"({right} IS NOT null)";
                     if (right == "null") return $"({left} IS NOT null)";
-                    return $"{left} != {right}";
+                    return $"({left} is null or {right} is null or {left} != {right})";
                 case Less lessThan:
                     left    = Traverse(lessThan.left);
                     right   = Traverse(lessThan.right);

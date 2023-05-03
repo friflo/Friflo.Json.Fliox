@@ -78,7 +78,9 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 case NotEqual notEqual:
                     left    = Traverse(notEqual.left);
                     right   = Traverse(notEqual.right);
-                    return $"{left} != {right}";
+                    if (left  == "null") return $"(NOT IS_NULL({right}) AND IS_DEFINED({right}))";
+                    if (right == "null") return $"(NOT IS_NULL({left}) AND IS_DEFINED({left}))";
+                    return $"(NOT IS_DEFINED({left}) or NOT IS_DEFINED({right}) or {left} != {right})";
                 case Less lessThan:
                     left    = Traverse(lessThan.left);
                     right   = Traverse(lessThan.right);

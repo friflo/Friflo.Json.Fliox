@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     // e.g WHERE json_extract(data,'$.int32') is not null && JSON_TYPE(json_extract(data,'$.int32')) != 'NULL'
                     if (left  == "null") return $"({right} is not null)";
                     if (right == "null") return $"({left} is not null)";
-                    return $"{left} != {right}";
+                    return $"({left} is null or {right} is null or {left} != {right})";
                 case Less lessThan:
                     left    = Traverse(lessThan.left);
                     right   = Traverse(lessThan.right);

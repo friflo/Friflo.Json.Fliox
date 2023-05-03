@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     if (left  == "null") return $"({right} IS NOT null)";
                     if (right == "null") return $"({left} IS NOT null)";
                     GetCasts(notEqual, out var leftCast, out var rightCast);
-                    return $"{left}{leftCast} != {right}{rightCast}";
+                    return $"({left} is null or {right} is null or {left}{leftCast} != {right}{rightCast})";
                 }
                 case Less lessThan: {
                     var left    = Traverse(lessThan.left);
