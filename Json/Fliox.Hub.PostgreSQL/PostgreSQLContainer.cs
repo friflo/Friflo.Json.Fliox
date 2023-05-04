@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnection();
+            var connection = await syncContext.GetConnection().ConfigureAwait(false);
             if (connection.Failed) {
                 return new CreateEntitiesResult { Error = connection.error };
             }
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnection();
+            var connection = await syncContext.GetConnection().ConfigureAwait(false);
             if (connection.Failed) {
                 return new UpsertEntitiesResult { Error = connection.error };
             }
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnection();
+            var connection = await syncContext.GetConnection().ConfigureAwait(false);
             if (connection.Failed) {
                 return new ReadEntitiesResult { Error = connection.error };
             }
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnection();
+            var connection = await syncContext.GetConnection().ConfigureAwait(false);
             if (connection.Failed) {
                 return new QueryEntitiesResult { Error = connection.error };
             }
@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnection();
+            var connection = await syncContext.GetConnection().ConfigureAwait(false);
             if (connection.Failed) {
                 return new AggregateEntitiesResult { Error = connection.error };
             }
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
        
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnection();
+            var connection = await syncContext.GetConnection().ConfigureAwait(false);
             if (connection.Failed) {
                 return new DeleteEntitiesResult { Error = connection.error };
             }

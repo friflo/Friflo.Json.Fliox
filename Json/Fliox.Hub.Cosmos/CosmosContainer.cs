@@ -195,7 +195,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             }
             var query           = new QueryDefinition (sql);
             var queryIterator   = cosmosContainer.GetItemQueryIterator<int>(query);
-            foreach (int count in await queryIterator.ReadNextAsync()) {
+            foreach (int count in await queryIterator.ReadNextAsync().ConfigureAwait(false)) {
                 var result = new AggregateEntitiesResult { container = command.container, value = count };
                 return result;
             }
