@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     {
         public  readonly    object              value;
         public  readonly    TaskExecuteError    error;
-        public              bool                Success => error == null;
+        public              bool                Failed => error != null;
         
         public SQLResult(object value) {
             this.value  = value;

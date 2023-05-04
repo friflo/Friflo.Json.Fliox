@@ -3,7 +3,6 @@
 
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
-using System;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -11,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Microsoft.Data.SqlClient;
+using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
 
 
 // ReSharper disable UseAwaitUsing
@@ -28,10 +28,6 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             Pretty          = pretty;
         }
         
-        private static SqlCommand Command (string sql, SyncConnection connection) {
-            return new SqlCommand(sql, connection.instance as SqlConnection);
-        }
-
         private async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
             if (tableExists) {
                 return null;
@@ -40,8 +36,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     SELECT * FROM sys.tables t JOIN sys.schemas s ON (t.schema_id = s.schema_id)
     WHERE s.name = 'dbo' AND t.name = '{name}')
 CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
-            var result = await SQLServerUtils.Execute(connection.instance as SqlConnection, sql).ConfigureAwait(false);
-            if (!result.Success) {
+            var result = await Execute(connection, sql).ConfigureAwait(false);
+            if (result.Failed) {
                 return result.error;
             }
             tableExists = true;
@@ -150,11 +146,11 @@ WHEN NOT MATCHED THEN
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLServerFilter()}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
-                var result  = await SQLServerUtils.Execute(connection.instance as SqlConnection, sql).ConfigureAwait(false);
-                if (!result.Success) { return new AggregateEntitiesResult { Error = result.error }; }
+                var result  = await Execute(connection, sql).ConfigureAwait(false);
+                if (result.Failed) { return new AggregateEntitiesResult { Error = result.error }; }
                 return new AggregateEntitiesResult { value = (int)result.value };
             }
-            throw new NotImplementedException();
+            return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
         }
         
        
@@ -169,8 +165,8 @@ WHEN NOT MATCHED THEN
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
-                var result = await SQLServerUtils.Execute(connection.instance as SqlConnection, sql).ConfigureAwait(false);
-                if (!result.Success) { return new DeleteEntitiesResult { Error = result.error }; }
+                var result = await Execute(connection, sql).ConfigureAwait(false);
+                if (result.Failed) { return new DeleteEntitiesResult { Error = result.error }; }
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();

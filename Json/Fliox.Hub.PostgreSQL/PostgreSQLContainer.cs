@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
 using Npgsql;
+using static Friflo.Json.Fliox.Hub.PostgreSQL.PostgreSQLUtils;
 
 // ReSharper disable UseIndexFromEndExpression
 // ReSharper disable UseAwaitUsing
@@ -29,17 +30,13 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             entityType      = types[name];
         }
         
-        private static NpgsqlCommand Command (string sql, SyncConnection connection) {
-            return new NpgsqlCommand(sql, connection.instance as NpgsqlConnection);
-        }
-
         private async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
             if (tableExists) {
                 return null;
             }
             var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSONB);";
-            var result = await PostgreSQLUtils.Execute(connection.instance as NpgsqlConnection, sql).ConfigureAwait(false);
-            if (!result.Success) {
+            var result = await Execute(connection, sql).ConfigureAwait(false);
+            if (result.Failed) {
                 return result.error;
             }
             tableExists = true;
@@ -138,11 +135,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter(entityType)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
-                var result  = await PostgreSQLUtils.Execute(connection.instance as NpgsqlConnection, sql).ConfigureAwait(false);
-                if (!result.Success) { return new AggregateEntitiesResult { Error = result.error }; }
+                var result  = await Execute(connection, sql).ConfigureAwait(false);
+                if (result.Failed) { return new AggregateEntitiesResult { Error = result.error }; }
                 return new AggregateEntitiesResult { value = (long)result.value };
             }
-            throw new NotImplementedException();
+            return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
         }
         
        
@@ -157,8 +154,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
-                var result = await PostgreSQLUtils.Execute(connection.instance as NpgsqlConnection, sql).ConfigureAwait(false);
-                if (!result.Success) { return new DeleteEntitiesResult { Error = result.error }; }
+                var result = await Execute(connection, sql).ConfigureAwait(false);
+                if (result.Failed) { return new DeleteEntitiesResult { Error = result.error }; }
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();

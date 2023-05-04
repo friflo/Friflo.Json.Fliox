@@ -403,6 +403,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             // add with TryAdd(). Only the first entity error is relevant. Subsequent entity errors are consequential failures.
             errors.Add(error);
         }
+        
+        public static TaskExecuteError NotImplemented (string message) {
+            return new TaskExecuteError(TaskErrorType.NotImplemented, message);
+        }
         #endregion
     }
 

@@ -184,8 +184,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 raw.sqlite3_finalize(stmt);
                 return new AggregateEntitiesResult { value = count };
             }
-            var typeErr = $"command.type: {command.type}";
-            return new AggregateEntitiesResult { Error = new TaskExecuteError(TaskErrorType.NotImplemented, typeErr) };
+            return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
         }
         
         public override Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {

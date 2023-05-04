@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using MySqlConnector;
+using static Friflo.Json.Fliox.Hub.MySQL.MySQLUtils;
 
 // ReSharper disable UseAwaitUsing
 // ReSharper disable UseIndexFromEndExpression
@@ -29,17 +30,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             provider    = database.Provider;
         }
         
-        private static MySqlCommand Command (string sql, SyncConnection connection) {
-            return new MySqlCommand(sql, connection.instance as MySqlConnection);
-        }
-
         private async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
             if (tableExists) {
                 return null;
             }
             var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSON);";
-            var result = await MySQLUtils.Execute(connection.instance as MySqlConnection, sql).ConfigureAwait(false);
-            if (!result.Success) {
+            var result = await Execute(connection, sql).ConfigureAwait(false);
+            if (result.Failed) {
                 return result.error;
             }
             tableExists = true;
@@ -119,9 +116,9 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (error != null) {
                 return new QueryEntitiesResult { Error = error };
             }
-            var filter      = command.GetFilter();
-            var where       = filter.IsTrue ? "TRUE" : filter.MySQLFilter(provider);
-            var sql         = SQLUtils.QueryEntitiesSQL(command, name, where);
+            var filter  = command.GetFilter();
+            var where   = filter.IsTrue ? "TRUE" : filter.MySQLFilter(provider);
+            var sql     = SQLUtils.QueryEntitiesSQL(command, name, where);
             try {
                 using var cmd = Command(sql, connection);
                 return await SQLUtils.QueryEntities(cmd, command, sql).ConfigureAwait(false);
@@ -141,11 +138,11 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.MySQLFilter(provider)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
 
-                var result  = await MySQLUtils.Execute(connection.instance as MySqlConnection, sql).ConfigureAwait(false);
-                if (!result.Success) { return new AggregateEntitiesResult { Error = result.error }; }
+                var result  = await Execute(connection, sql).ConfigureAwait(false);
+                if (result.Failed) { return new AggregateEntitiesResult { Error = result.error }; }
                 return new AggregateEntitiesResult { value = (long)result.value };
             }
-            throw new NotImplementedException();
+            return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
         }
 
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
@@ -159,8 +156,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
-                var result = await MySQLUtils.Execute(connection.instance as MySqlConnection, sql).ConfigureAwait(false);
-                if (!result.Success) { return new DeleteEntitiesResult { Error = result.error }; }
+                var result = await Execute(connection, sql).ConfigureAwait(false);
+                if (result.Failed) { return new DeleteEntitiesResult { Error = result.error }; }
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();

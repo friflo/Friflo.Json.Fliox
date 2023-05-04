@@ -14,20 +14,13 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     public static class SQLServerUtils
     {
-        internal static async Task<string> GetVersion(SqlConnection connection) {
-            var result  = await Execute(connection, "select version()").ConfigureAwait(false);
-            var version = !result.Success ? "" : result.value;
-            return  $"Microsoft SQL Server {version}";
+        internal static SqlCommand Command (string sql, SyncConnection connection) {
+            return new SqlCommand(sql, connection.instance as SqlConnection);
         }
         
-        public static async Task OpenOrCreateDatabase(SqlConnection connection, string db) {
-            var sql = $"CREATE DATABASE IF NOT EXISTS {db}";
-            await Execute(connection, sql).ConfigureAwait(false);
-        }
-        
-        internal static async Task<SQLResult> Execute(SqlConnection connection, string sql) {
+        internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
             try {
-                using var command = new SqlCommand(sql, connection);
+                using var command = new SqlCommand(sql, connection.instance as SqlConnection);
                 using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
                     var value = reader.GetValue(0);

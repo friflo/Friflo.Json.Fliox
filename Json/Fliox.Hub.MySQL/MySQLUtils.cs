@@ -12,20 +12,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
 {
     public static class MySQLUtils
     {
-        internal static async Task<string> GetVersion(MySqlConnection connection) {
-            var result  = await Execute(connection, "select version()").ConfigureAwait(false);
-            var version = result.error != null ? "" : result.value;
-            return  $"MySQL {version}";
+        internal static MySqlCommand Command (string sql, SyncConnection connection) {
+            return new MySqlCommand(sql, connection.instance as MySqlConnection);
         }
         
-        public static async Task OpenOrCreateDatabase(MySqlConnection connection, string db) {
-            var sql = $"CREATE DATABASE IF NOT EXISTS {db}";
-            await Execute(connection, sql).ConfigureAwait(false);
-        }
-        
-        internal static async Task<SQLResult> Execute(MySqlConnection connection, string sql) {
+        internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
             try {
-                using var command = new MySqlCommand(sql, connection);
+                using var command = new MySqlCommand(sql, connection.instance as MySqlConnection);
                 using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
                     var value = reader.GetValue(0);

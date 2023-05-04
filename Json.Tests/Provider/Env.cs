@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Provider
         
         internal static void LogSQL(string sql) {
             if (sql != null) {
-                Console.Write($"SQL: {sql}");
+                // Console.Write($"SQL: {sql}");
             }
         }
             
