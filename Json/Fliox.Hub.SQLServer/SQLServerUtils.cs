@@ -36,6 +36,23 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
         }
         
+        internal static async Task CreateDatabaseIfNotExistsAsync(string connectionString) {
+            var dbmsConnectionString = GetDbmsConnectionString(connectionString, out var database);
+            using var connection = new SqlConnection(dbmsConnectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+            
+            var sql = $"IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = '{database}') CREATE DATABASE {database}";
+            using var cmd = new SqlCommand(sql, connection);
+            await cmd.ExecuteNonQueryAsync();
+        }
+        
+        private static string GetDbmsConnectionString(string connectionString, out string database) {
+            var builder  = new SqlConnectionStringBuilder(connectionString);
+            database = builder.InitialCatalog;
+            builder.Remove("Database");
+            return builder.ToString();
+        }
+        
         public static string QueryEntities(QueryEntities command, string table, string filter) {
             if (command.maxCount == null) {
                 var top = command.limit == null ? "" : $" TOP {command.limit}";

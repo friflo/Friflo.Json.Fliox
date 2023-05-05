@@ -33,15 +33,29 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
         
         public override async Task<SyncConnection> GetConnection()  {
+            Exception connectException ;
+            SqlConnection connection= null;
             try {
-                var connection = new SqlConnection(connectionString);
+                connection = new SqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);                
+                return new SyncConnection(connection);   
+            } catch (SqlException e) {
+                connection?.Dispose();
+                connectException = e;
+            }
+            try {
+                await CreateDatabaseIfNotExistsAsync(connectionString);
+                // await Task.Delay(1000);
+                connection = new SqlConnection(connectionString);
+                await connection.OpenAsync().ConfigureAwait(false);
+                return new SyncConnection(connection);   
             } catch (Exception e) {
-                return new SyncConnection(new TaskExecuteError(e.Message));    
+                connection?.Dispose();
+                connectException = e;
+                return new SyncConnection(new TaskExecuteError(connectException.Message));    
             }
         }
-        
+
         internal async Task CreateTableTypes() {
             if (tableTypesCreated) {
                 return;
