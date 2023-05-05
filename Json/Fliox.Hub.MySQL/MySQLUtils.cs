@@ -31,6 +31,23 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new SQLResult(e.Message);
             }
         }
+        
+        internal static async Task CreateDatabaseIfNotExistsAsync(string connectionString) {
+            var dbmsConnectionString = GetDbmsConnectionString(connectionString, out var database);
+            using var connection = new MySqlConnection(dbmsConnectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+            
+            var sql = $"CREATE DATABASE IF NOT EXISTS {database}";
+            using var cmd = new MySqlCommand(sql, connection);
+            await cmd.ExecuteNonQueryAsync();
+        }
+        
+        private static string GetDbmsConnectionString(string connectionString, out string database) {
+            var builder  = new MySqlConnectionStringBuilder(connectionString);
+            database = builder.Database;
+            builder.Remove("Database");
+            return builder.ToString();
+        }
     }
 }
 

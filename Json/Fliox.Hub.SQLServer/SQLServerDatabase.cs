@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
         
         public override async Task<SyncConnection> GetConnection()  {
-            Exception connectException ;
+            Exception openException;
             SqlConnection connection= null;
             try {
                 connection = new SqlConnection(connectionString);
@@ -41,14 +41,14 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 return new SyncConnection(connection);   
             } catch (SqlException e) {
                 connection?.Dispose();
-                connectException = e;
+                openException = e;
             }
             try {
                 await CreateDatabaseIfNotExistsAsync(connectionString);
             } catch (Exception e) {
                 connection?.Dispose();
-                connectException = e;
-                return new SyncConnection(new TaskExecuteError(connectException.Message));
+                openException = e;
+                return new SyncConnection(new TaskExecuteError(openException.Message));
             }
             var end = DateTime.Now + new TimeSpan(0, 0, 0, 10, 0);
             while (DateTime.Now < end) {
