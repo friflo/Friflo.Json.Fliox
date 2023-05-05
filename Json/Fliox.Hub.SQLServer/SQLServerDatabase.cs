@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
         }
         
-        internal async Task CreateTableTables() {
+        internal async Task CreateTableTypes() {
             if (tableTypesCreated) {
                 return;
             }
