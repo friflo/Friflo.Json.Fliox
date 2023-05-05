@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,22 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 limit       = command.limit == null ? "" : $" LIMIT {command.limit}";
             }
             return $"SELECT id, data FROM {table} WHERE {cursorStart}{filter}{cursorDesc}{limit}";
+        }
+        
+        public static DataTable ToDataTable(List<JsonEntity> entities) {
+            var table = new DataTable();
+            table.Columns.Add("id",   typeof(string));
+            table.Columns.Add("data", typeof(string));
+            var rows        = table.Rows;
+            var rowValues   = new object[2]; 
+            foreach (var entity in entities) {
+                var key         = entity.key.AsString();
+                var value       = entity.value.AsString();
+                rowValues[0]    = key;
+                rowValues[1]    = value;
+                rows.Add(rowValues);
+            }
+            return table;
         }
         
         public static void AppendValuesSQL(StringBuilder sb, List<JsonEntity> entities) {

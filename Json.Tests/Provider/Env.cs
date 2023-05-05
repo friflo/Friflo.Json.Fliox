@@ -103,6 +103,8 @@ namespace Friflo.Json.Tests.Provider
                         return SeedSource;
                     }
                     return await CreateTestDatabase("test_db", TEST_DB_PROVIDER).ConfigureAwait(false);
+                default:
+                    return await CreateTestDatabase("test_db", db).ConfigureAwait(false);
             }
             throw new InvalidOperationException($"invalid database Env: {db}");
         }

@@ -56,11 +56,8 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             if (command.entities.Count == 0) {
                 return new CreateEntitiesResult();
             }
-            var sql = new StringBuilder();
-            sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
-            SQLUtils.AppendValuesSQL(sql, command.entities);
-            using var cmd = Command(sql.ToString(), connection);
             try {
+                using var cmd = CreateEntitiesCmd(connection, command.entities, name);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             } catch (SqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
@@ -80,20 +77,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             if (command.entities.Count == 0) {
                 return new UpsertEntitiesResult();
             }
-            var sql = new StringBuilder();
-            sql.Append(
-$@"MERGE {name} AS target
-USING (VALUES");
-            SQLUtils.AppendValuesSQL(sql, command.entities);
-            sql.Append(
-@") AS source (id, data)
-ON source.id = target.id
-WHEN MATCHED THEN
-    UPDATE SET target.data = source.data
-WHEN NOT MATCHED THEN
-    INSERT (id, data)
-    VALUES (id, data);");
-            using var cmd = Command(sql.ToString(), connection);
+            using var cmd = UpsertEntitiesCmd(connection, command.entities, name);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
             return new UpsertEntitiesResult();
@@ -152,8 +136,7 @@ WHEN NOT MATCHED THEN
             }
             return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
         }
-        
-       
+
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
             var connection = await syncContext.GetConnection().ConfigureAwait(false);
             if (connection.Failed) {
