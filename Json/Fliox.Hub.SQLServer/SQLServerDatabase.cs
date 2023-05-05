@@ -45,15 +45,22 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
             try {
                 await CreateDatabaseIfNotExistsAsync(connectionString);
-                // await Task.Delay(1000);
-                connection = new SqlConnection(connectionString);
-                await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);   
             } catch (Exception e) {
                 connection?.Dispose();
                 connectException = e;
-                return new SyncConnection(new TaskExecuteError(connectException.Message));    
+                return new SyncConnection(new TaskExecuteError(connectException.Message));
             }
+            var end = DateTime.Now + new TimeSpan(0, 0, 0, 10, 0);
+            while (DateTime.Now < end) {
+                try {
+                    connection = new SqlConnection(connectionString);
+                    await connection.OpenAsync().ConfigureAwait(false);
+                    return new SyncConnection(connection);
+                } catch (SqlException) {
+                    await Task.Delay(1000);
+                }
+            }
+            return new SyncConnection(new TaskExecuteError("timeout open newly created database"));
         }
 
         internal async Task CreateTableTypes() {
