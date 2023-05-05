@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Npgsql;
+using static Friflo.Json.Fliox.Hub.PostgreSQL.PostgreSQLUtils;
 
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
@@ -29,12 +30,25 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         public override async Task<SyncConnection> GetConnection()  {
+            Exception openException;
             try {
                 var connection = new NpgsqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
                 return new SyncConnection(connection);                
             } catch (Exception e) {
-                return new SyncConnection(new TaskExecuteError(e.Message));    
+                openException = e;
+            }
+            try {
+                await CreateDatabaseIfNotExistsAsync(connectionString);
+            } catch (Exception) {
+                return new SyncConnection(new TaskExecuteError(openException.Message));
+            }
+            try {
+                var connection = new NpgsqlConnection(connectionString);
+                await connection.OpenAsync().ConfigureAwait(false);
+                return new SyncConnection(connection);
+            } catch (Exception e) {
+                return new SyncConnection(new TaskExecuteError(e.Message));
             }
         }
     }
