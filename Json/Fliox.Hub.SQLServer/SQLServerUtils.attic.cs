@@ -53,7 +53,7 @@ WHEN NOT MATCHED THEN
             var bulk = new SqlBulkCopy(sqlConn);
             bulk.DestinationTableName = name;
 
-            await bulk.WriteToServerAsync(rowArray);
+            await bulk.WriteToServerAsync(rowArray).ConfigureAwait(false);
         }
         
         internal static DbCommand DeleteEntitiesCmd_Values (SyncConnection connection, List<JsonKey> ids, string table) {

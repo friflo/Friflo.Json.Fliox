@@ -59,7 +59,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
                 return new CreateEntitiesResult();
             }
             try {
-                await database.CreateTableTypes();
+                await database.CreateTableTypes().ConfigureAwait(false);
                 using var cmd = CreateEntitiesCmd(connection, command.entities, name);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             } catch (SqlException e) {
@@ -80,7 +80,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             if (command.entities.Count == 0) {
                 return new UpsertEntitiesResult();
             }
-            await database.CreateTableTypes();
+            await database.CreateTableTypes().ConfigureAwait(false);
             using var cmd = UpsertEntitiesCmd(connection, command.entities, name);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
@@ -156,7 +156,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
                 if (result.Failed) { return new DeleteEntitiesResult { Error = result.error }; }
                 return new DeleteEntitiesResult();    
             } else {
-                await database.CreateTableTypes();
+                await database.CreateTableTypes().ConfigureAwait(false);
                 using var cmd = DeleteEntitiesCmd(connection, command.ids, name);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 return new DeleteEntitiesResult();

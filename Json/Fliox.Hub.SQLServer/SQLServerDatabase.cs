@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 openException = e;
             }
             try {
-                await CreateDatabaseIfNotExistsAsync(connectionString);
+                await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
             } catch (Exception e) {
                 connection?.Dispose();
                 openException = e;
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     await connection.OpenAsync().ConfigureAwait(false);
                     return new SyncConnection(connection);
                 } catch (SqlException) {
-                    await Task.Delay(1000);
+                    await Task.Delay(1000).ConfigureAwait(false);
                 }
             }
             return new SyncConnection(new TaskExecuteError("timeout open newly created database"));
@@ -67,14 +67,14 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             if (tableTypesCreated) {
                 return;
             }
-            var connection = await GetConnection();
+            var connection = await GetConnection().ConfigureAwait(false);
             var sql = "IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE(id varchar(128), data varchar(max));";
             using (var cmd = Command(sql, connection)) {
-                await cmd.ExecuteNonQueryAsync();
+                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
             sql = "IF TYPE_ID(N'KeyType') IS NULL CREATE TYPE KeyType AS TABLE(id varchar(128));";
             using (var cmd = Command(sql, connection)) {
-                await cmd.ExecuteNonQueryAsync();
+                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
             tableTypesCreated = true;
         }

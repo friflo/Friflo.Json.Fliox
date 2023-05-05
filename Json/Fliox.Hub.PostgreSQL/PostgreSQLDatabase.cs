@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 openException = e;
             }
             try {
-                await CreateDatabaseIfNotExistsAsync(connectionString);
+                await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
             } catch (Exception) {
                 return new SyncConnection(new TaskExecuteError(openException.Message));
             }

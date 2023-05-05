@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             
             var sql = $"IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = '{database}') CREATE DATABASE {database}";
             using var cmd = new SqlCommand(sql, connection);
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
         
         private static string GetDbmsConnectionString(string connectionString, out string database) {

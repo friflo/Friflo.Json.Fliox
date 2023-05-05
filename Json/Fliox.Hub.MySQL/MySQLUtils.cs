@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             
             var sql = $"CREATE DATABASE IF NOT EXISTS {database}";
             using var cmd = new MySqlCommand(sql, connection);
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
         
         private static string GetDbmsConnectionString(string connectionString, out string database) {
