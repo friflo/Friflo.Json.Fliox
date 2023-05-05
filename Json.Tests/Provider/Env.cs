@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Provider
         }
 
 #if UNITY_5_3_OR_NEWER
-        private static Task<EntityDatabase> CreateDatabase(string db) => null;
+        private static EntityDatabase CreateDatabase(string db) => null;
 #else
         private static EntityDatabase CreateDatabase(string db)
         {
