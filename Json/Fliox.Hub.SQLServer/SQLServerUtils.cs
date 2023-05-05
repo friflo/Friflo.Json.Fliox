@@ -48,9 +48,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         
         // --- create / upsert using DataTable in SQL statement
         internal static DbCommand CreateEntitiesCmd (SyncConnection connection, List<JsonEntity> entities, string table) {
-            var sql = @$"
-IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE(id varchar(128), data varchar(max));
-INSERT INTO {table} (id,data) select id, data from @rows;";
+            var sql = $"INSERT INTO {table} (id,data) select id, data from @rows;";
             var cmd = Command(sql, connection);
             AddRows(cmd, entities);
             return cmd;
@@ -58,7 +56,6 @@ INSERT INTO {table} (id,data) select id, data from @rows;";
         
         internal static DbCommand UpsertEntitiesCmd (SyncConnection connection, List<JsonEntity> entities, string table) {
             var sql = $@"
-IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE(id varchar(128), data varchar(max));
 MERGE {table} AS target
 USING @rows as source
 ON source.id = target.id
@@ -78,6 +75,20 @@ WHEN NOT MATCHED THEN
             // DataTable requires registering UDT (User defined type) in database before execution:
             // CREATE TYPE KeyValueType AS TABLE(id varchar(128), data varchar(max));
             p.TypeName = "KeyValueType";
+        }
+        
+        internal static DbCommand DeleteEntitiesCmd (SyncConnection connection, List<JsonKey> ids, string table) {
+            var dataTable = new DataTable();
+            dataTable.Columns.Add("id", typeof(string));
+            foreach(var id in ids) {
+                dataTable.Rows.Add(id.AsString());
+            }
+            var sql     = $"DELETE FROM  {table} WHERE id in (SELECT id FROM @ids);";
+            var cmd     = Command(sql, connection);
+            var p       = cmd.Parameters.Add(new SqlParameter("@ids", SqlDbType.Structured));
+            p.Value     = dataTable;
+            p.TypeName  = "KeyType";
+            return cmd;
         }
     }
 }

@@ -55,6 +55,13 @@ WHEN NOT MATCHED THEN
 
             await bulk.WriteToServerAsync(rowArray);
         }
+        
+        internal static DbCommand DeleteEntitiesCmd_Values (SyncConnection connection, List<JsonKey> ids, string table) {
+            var sql = new StringBuilder();
+            sql.Append($"DELETE FROM  {table} WHERE id in\n");
+            SQLUtils.AppendKeysSQL(sql, ids);
+            return Command(sql.ToString(), connection);
+        }
     }
 }
 

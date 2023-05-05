@@ -19,13 +19,15 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     public sealed class SQLServerContainer : EntityContainer
     {
-        private             bool            tableExists;
-        public   override   bool            Pretty      { get; }
+        private             bool                tableExists;
+        public   override   bool                Pretty      { get; }
+        private   readonly  SQLServerDatabase   database;
         
         internal SQLServerContainer(string name, SQLServerDatabase database, bool pretty)
             : base(name, database)
         {
             Pretty          = pretty;
+            this.database   = database;
         }
         
         private async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
@@ -57,6 +59,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
                 return new CreateEntitiesResult();
             }
             try {
+                await database.CreateTableTables();
                 using var cmd = CreateEntitiesCmd(connection, command.entities, name);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             } catch (SqlException e) {
@@ -77,6 +80,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             if (command.entities.Count == 0) {
                 return new UpsertEntitiesResult();
             }
+            await database.CreateTableTables();
             using var cmd = UpsertEntitiesCmd(connection, command.entities, name);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
@@ -152,11 +156,8 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
                 if (result.Failed) { return new DeleteEntitiesResult { Error = result.error }; }
                 return new DeleteEntitiesResult();    
             } else {
-                var sql = new StringBuilder();
-                sql.Append($"DELETE FROM  {name} WHERE id in\n");
-                
-                SQLUtils.AppendKeysSQL(sql, command.ids);
-                using var cmd = Command(sql.ToString(), connection);
+                await database.CreateTableTables();
+                using var cmd = DeleteEntitiesCmd(connection, command.ids, name);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 return new DeleteEntitiesResult();
             }

@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Microsoft.Data.SqlClient;
-
+using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
 
 namespace Friflo.Json.Fliox.Hub.SQLServer
 {
@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         public              bool            Pretty      { get; init; } = false;
         
         private  readonly   string          connectionString;
+        private             bool            tableTypesCreated;
         
         public   override   string          StorageType => "Microsoft SQL Server";
         
@@ -39,6 +40,22 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             } catch (Exception e) {
                 return new SyncConnection(new TaskExecuteError(e.Message));    
             }
+        }
+        
+        internal async Task CreateTableTables() {
+            if (tableTypesCreated) {
+                return;
+            }
+            var connection = await GetConnection();
+            var sql = "IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE(id varchar(128), data varchar(max));";
+            using (var cmd = Command(sql, connection)) {
+                await cmd.ExecuteNonQueryAsync();
+            }
+            sql = "IF TYPE_ID(N'KeyType') IS NULL CREATE TYPE KeyType AS TABLE(id varchar(128));";
+            using (var cmd = Command(sql, connection)) {
+                await cmd.ExecuteNonQueryAsync();
+            }
+            tableTypesCreated = true;
         }
     }
 }
