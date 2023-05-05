@@ -29,12 +29,14 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             Pretty          = pretty;
         }
 
-        private async Task EnsureContainerExists() {
-            if (cosmosContainer != null)
-                return;
+        private async Task<Container> EnsureContainerExists() {
+            if (cosmosContainer != null) {
+                return cosmosContainer;
+            }
             var db          = options.database;
             var throughput  = options.throughput;
-            cosmosContainer = await db.CreateContainerIfNotExistsAsync(instanceName, "/id", throughput).ConfigureAwait(false);
+            var cosmosDb    = await db.GetCosmosDb();
+            return cosmosContainer = await cosmosDb.CreateContainerIfNotExistsAsync(instanceName, "/id", throughput).ConfigureAwait(false);
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
@@ -208,8 +210,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 var container = cosmosContainer;
                 cosmosContainer = null;
                 await container.DeleteContainerAsync().ConfigureAwait(false);
-                var db          = options.database;
-                cosmosContainer = await db.CreateContainerAsync(instanceName, "/id", options.throughput).ConfigureAwait(false);
+                cosmosContainer = await EnsureContainerExists();
                 return new DeleteEntitiesResult();
             }
             var keys = command.ids;

@@ -3,6 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER
 
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Microsoft.Azure.Cosmos;
 
@@ -10,30 +11,40 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
 {
     public sealed class CosmosDatabase : EntityDatabase
     {
-        public              bool        Pretty      { get; init; } = false;
-        public              int?        Throughput  { get; init; } = null;
+        public              bool            Pretty      { get; init; } = false;
+        public              int?            Throughput  { get; init; } = null;
         
-        private  readonly   Database    cosmosDatabase;
+        private  readonly   CosmosClient    client;
+        private  readonly   string          cosmosDbName;
+        private             Database        cosmosDb;
         
         public   override   string      StorageType => "CosmosDB";
         
-        public CosmosDatabase(string dbName, Database cosmosDatabase, DatabaseService service = null)
+        public CosmosDatabase(string dbName, CosmosClient client, string cosmosDbName = null, DatabaseService service = null)
             : base(dbName, service)
         {
-            this.cosmosDatabase = cosmosDatabase;
+            this.client         = client;
+            this.cosmosDbName   = cosmosDbName ?? dbName;
+        }
+        
+        internal async Task<Database> GetCosmosDb() {
+            if (cosmosDb != null) {
+                return cosmosDb;
+            }
+            return cosmosDb = await client.CreateDatabaseIfNotExistsAsync(cosmosDbName).ConfigureAwait(false);
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
-            var options = new ContainerOptions(cosmosDatabase, Throughput);
+            var options = new ContainerOptions(this, Throughput);
             return new CosmosContainer(name.AsString(), database, options, Pretty);
         }
     }
     
     internal sealed class ContainerOptions {
-        internal readonly   Database    database;
-        internal readonly   int?        throughput;
+        internal readonly   CosmosDatabase  database;
+        internal readonly   int?            throughput;
         
-        internal  ContainerOptions (Database database, int? throughput) {
+        internal  ContainerOptions (CosmosDatabase database, int? throughput) {
             this.database   = database;
             this.throughput = throughput;
         }

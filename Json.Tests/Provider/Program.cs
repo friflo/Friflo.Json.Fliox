@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Provider
             hub.Info.envName        = "test"; hub.Info.envColor = "rgb(0 140 255)";
             hub.AddExtensionDB (fileDb);
 #if !UNITY_5_3_OR_NEWER
-            var testDb              = await Env.CreateTestDatabase("test_db", Env.TEST_DB_PROVIDER);
+            var testDb              = Env.CreateTestDatabase("test_db", Env.TEST_DB_PROVIDER);
             if (testDb != null) {
                 await Env.Seed(testDb, fileDb);
                 hub.AddExtensionDB (testDb);
