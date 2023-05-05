@@ -46,6 +46,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.Postg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.SQLServer", "Json\Fliox.Hub.SQLServer\Friflo.Json.Fliox.Hub.SQLServer.csproj", "{DA182CA2-DD35-423A-9F3D-1EC4AC9067CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.Redis", "Json\Fliox.Hub.Redis\Friflo.Json.Fliox.Hub.Redis.csproj", "{AC56D93E-2A02-4D6D-864C-9ADE9C139BC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -144,5 +146,9 @@ Global
 		{DA182CA2-DD35-423A-9F3D-1EC4AC9067CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA182CA2-DD35-423A-9F3D-1EC4AC9067CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA182CA2-DD35-423A-9F3D-1EC4AC9067CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC56D93E-2A02-4D6D-864C-9ADE9C139BC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC56D93E-2A02-4D6D-864C-9ADE9C139BC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC56D93E-2A02-4D6D-864C-9ADE9C139BC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC56D93E-2A02-4D6D-864C-9ADE9C139BC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

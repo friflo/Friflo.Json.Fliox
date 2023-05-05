@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <TargetFrameworks>netcoreapp3.1;$(StandardFrameworks)</TargetFrameworks>
+        <PackageVersion>0.0.0</PackageVersion>
+        <AssemblyVersion>0.0.0.0</AssemblyVersion>
+        <FileVersion>0.0.0.0</FileVersion>
+        <LangVersion>9.0</LangVersion>
+        <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
+        <PackageLicenseUrl></PackageLicenseUrl>
+        <Copyright>Ullrich Praetz</Copyright>
+        <RepositoryUrl>https://github.com/friflo/Friflo.Json.Fliox</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Title>Fliox Hub database Provider for Redis databases</Title>
+        <Authors>Ullrich Praetz</Authors>
+        <PackageIcon>package-icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EmbedAllSources>true</EmbedAllSources>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="README.md" Pack="true" PackagePath="\" />
+      <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    </ItemGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <OutputPath>.bin\Debug\</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <OutputPath>.bin\Release\</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <NoWarn>1591</NoWarn>
+      <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="**/*.meta" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="9.1.0" />
+      <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
+      <None Include="..\package-icon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+</Project>
