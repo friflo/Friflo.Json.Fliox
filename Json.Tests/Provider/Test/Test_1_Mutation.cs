@@ -157,12 +157,7 @@ namespace Friflo.Json.Tests.Provider.Test
     
     public static class TestMutationPerf
     {
-        [TestCase(memory_db,    Category = memory_db)]
-        [TestCase("sqlite",     Category = "sqlite")]
-        [TestCase("sqlserver",  Category = "sqlserver")]
-        [TestCase("mysql",      Category = "mysql")]
-        [TestCase("mariadb",    Category = "mariadb")]
-        [TestCase("postgres",   Category = "postgres")]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestMutationUpsertPerf(string db) {
             var client      = await GetClient(db, false);
             var count       = 1; // 1_000_000; // memory_db & sqlite_db: 1_000_000 ~ 4 sec

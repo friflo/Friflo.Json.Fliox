@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             var sql = @$"
 IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE(id varchar(128), data varchar(max));
 INSERT INTO {table} (id,data) select id, data from @rows;";
-            using var cmd = Command(sql, connection);
+            var cmd = Command(sql, connection);
             AddRows(cmd, entities);
             return cmd;
         }
@@ -67,7 +67,7 @@ WHEN MATCHED THEN
 WHEN NOT MATCHED THEN
     INSERT (id, data)
     VALUES (id, data);";
-            using var cmd = Command(sql, connection);
+            var cmd = Command(sql, connection);
             AddRows(cmd, entities);
             return cmd;
         }
