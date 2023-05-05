@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.MySQL;
 using Friflo.Json.Fliox.Hub.PostgreSQL;
+using Friflo.Json.Fliox.Hub.Redis;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.SQLite;
 using Friflo.Json.Fliox.Hub.SQLServer;
@@ -50,16 +51,19 @@ namespace Friflo.Json.Tests.Provider
             hub.AddExtensionDB (sqliteDb);
             
             var mysqlConnection     = EnvConfig.GetConnectionString("mysql");
-            hub.AddExtensionDB       (new MySQLDatabase("mysql_db", mysqlConnection)   { Schema = schema });
+            hub.AddExtensionDB       (new MySQLDatabase("mysql_db", mysqlConnection)            { Schema = schema });
             
             var mariadbConnection   = EnvConfig.GetConnectionString("mariadb");
-            hub.AddExtensionDB       (new MariaDBDatabase("maria_db", mariadbConnection) { Schema = schema });
+            hub.AddExtensionDB       (new MariaDBDatabase("maria_db", mariadbConnection)        { Schema = schema });
             
             var postgresConnection  = EnvConfig.GetConnectionString("postgres");
             hub.AddExtensionDB       (new PostgreSQLDatabase("postgres_db", postgresConnection) { Schema = schema });
             
             var sqlServerConnection = EnvConfig.GetConnectionString("sqlserver");
-            hub.AddExtensionDB       (new SQLServerDatabase("sqlserver_db", sqlServerConnection) { Schema = schema });
+            hub.AddExtensionDB       (new SQLServerDatabase("sqlserver_db", sqlServerConnection){ Schema = schema });
+
+            var redisConnection     = EnvConfig.GetConnectionString("redis");
+            hub.AddExtensionDB       (new RedisDatabase("redis_db", redisConnection)            { Schema = schema });
 #endif
             hub.AddExtensionDB       (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)

@@ -5,6 +5,7 @@ using Friflo.Json.Fliox.Hub.Cosmos;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.MySQL;
 using Friflo.Json.Fliox.Hub.PostgreSQL;
+using Friflo.Json.Fliox.Hub.Redis;
 using Friflo.Json.Fliox.Hub.SQLite;
 using Friflo.Json.Fliox.Hub.SQLServer;
 using Friflo.Json.Tests.Common.Utils;
@@ -118,6 +119,7 @@ namespace Friflo.Json.Tests.Provider
                 case "mariadb":     return CreateMySQLDatabase      (db, provider);
                 case "postgres":    return CreatePostgresDatabase   (db);
                 case "sqlserver":   return CreateSQLServerDatabase  (db);
+                case "redis":       return CreateRedisDatabase      (db);
             }
             return null;
             // throw new ArgumentException($"invalid provider: {provider}");
@@ -154,6 +156,12 @@ namespace Friflo.Json.Tests.Provider
         {
             var connection = EnvConfig.GetConnectionString("sqlserver");
             return new SQLServerDatabase(db, connection);
+        }
+        
+        private static EntityDatabase CreateRedisDatabase(string db)
+        {
+            var connection = EnvConfig.GetConnectionString("redis");
+            return new RedisDatabase(db, connection);
         }
 #endif
     }
