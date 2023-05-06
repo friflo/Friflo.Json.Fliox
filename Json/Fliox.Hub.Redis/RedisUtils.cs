@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using StackExchange.Redis;
@@ -68,19 +67,16 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 key.TryParse(out long value);
                 return new JsonKey(value);
             }
-            byte[] array    = key; // uses implicit operator byte[] (RedisValue value)
-            Bytes bytes     = default;
-            bytes.buffer    = array;
-            bytes.end       = array.Length;
-            return new JsonKey(bytes, default);
+            // ReadOnlyMemory<byte> array    = key; // uses RedisValue > implicit operator ReadOnlyMemory<byte>(RedisValue value)
+            return new JsonKey(key.ToString()); // key is already a string -> used its reference
         }
         
         private static JsonValue ValueToJsonValue (in RedisValue value) {
             if (value.IsNull) {
                 return default;
             }
-            byte[] array = value; // uses implicit operator byte[] (RedisValue value)
-            return new JsonValue(array);
+            byte[] array = value; // uses RedisValue > implicit operator byte[] (RedisValue value)
+            return new JsonValue(array); // JsonValue store UTF-8 byte arrays -> use conversion method above
         }
         
         internal static EntityValue[] KeyValuesToEntities(RedisValue[] keys, RedisValue[] values) {
