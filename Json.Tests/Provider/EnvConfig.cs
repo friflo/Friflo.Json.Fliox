@@ -16,15 +16,6 @@ namespace Friflo.Json.Tests.Provider
             return new ConfigurationBuilder().AddJsonFile(appSettings).AddJsonFile(privateSettings).Build();
         }
         
-        // --- CosmosDB
-        public static CosmosClient CreateCosmosClient() {
-            var config      = InitConfiguration();
-            var endpointUri = config["EndPointUri"];    // The Azure Cosmos DB endpoint for running this sample.
-            var primaryKey  = config["PrimaryKey"];     // The primary key for the Azure Cosmos account.
-            var options     = new CosmosClientOptions { ApplicationName = "Friflo.Playground" };
-            return new CosmosClient(endpointUri, primaryKey, options);
-        }
-
         public static string GetConnectionString(string provider) {
             var config              = InitConfiguration();
             string connectionString = config[provider];
@@ -32,6 +23,15 @@ namespace Friflo.Json.Tests.Provider
                 throw new ArgumentException($"provider not found in appsettings. provider: {provider}");
             }
             return connectionString;
+        }
+        
+        // --- CosmosDB
+        public static CosmosClient CreateCosmosClient() {
+            var config      = InitConfiguration();
+            var endpointUri = config["EndPointUri"];    // The Azure Cosmos DB endpoint for running this sample.
+            var primaryKey  = config["PrimaryKey"];     // The primary key for the Azure Cosmos account.
+            var options     = new CosmosClientOptions { ApplicationName = "Friflo.Playground" };
+            return new CosmosClient(endpointUri, primaryKey, options);
         }
     }
 }

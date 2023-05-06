@@ -113,10 +113,10 @@ namespace Friflo.Json.Tests.Provider
         internal static EntityDatabase CreateTestDatabase(string db, string provider)
         {
             switch (provider) {
-                case "cosmos":      return CreateCosmosDatabase(db);
-                case "sqlite":      return CreateSQLiteDatabase(db, CommonUtils.GetBasePath() + "test_db.sqlite3");
-                case "mysql":
-                case "mariadb":     return CreateMySQLDatabase      (db, provider);
+                case "cosmos":      return CreateCosmosDatabase     (db);
+                case "sqlite":      return CreateSQLiteDatabase     (db, CommonUtils.GetBasePath() + "test_db.sqlite3");
+                case "mysql":       return CreateMySQLDatabase      (db);
+                case "mariadb":     return CreateMariaDatabase      (db);
                 case "postgres":    return CreatePostgresDatabase   (db);
                 case "sqlserver":   return CreateSQLServerDatabase  (db);
                 case "redis":       return CreateRedisDatabase      (db);
@@ -136,14 +136,16 @@ namespace Friflo.Json.Tests.Provider
             return new SQLiteDatabase(db, path);
         }
         
-        private static EntityDatabase CreateMySQLDatabase(string db, string provider)
+        private static EntityDatabase CreateMySQLDatabase(string db)
         {
-            var connection = EnvConfig.GetConnectionString(provider);
-            switch (provider) {
-                case "mysql":   return new MySQLDatabase  (db, connection);
-                case "mariadb": return new MariaDBDatabase(db, connection);
-                default:        throw new ArgumentException($"invalid MySQL provider: {provider}");
-            }
+            var connection = EnvConfig.GetConnectionString("mysql");
+            return new MySQLDatabase  (db, connection);
+        }
+        
+        private static EntityDatabase CreateMariaDatabase(string db)
+        {
+            var connection = EnvConfig.GetConnectionString("mariadb");
+            return new MariaDBDatabase(db, connection);
         }
         
         private static EntityDatabase CreatePostgresDatabase(string db)
