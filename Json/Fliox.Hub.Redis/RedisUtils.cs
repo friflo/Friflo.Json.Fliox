@@ -33,11 +33,10 @@ namespace Friflo.Json.Fliox.Hub.Redis
             var count = entities.Count;
             var result = new HashEntry[count];
             for (int n = 0; n < count; n++) {
-                var entity  = entities[n];
-                var key     = entity.key.AsString();
-                var value   = entity.value.AsString();
-                // Note: Would be nice if RedisValue could be created from ReadOnlySpan<byte> 
-                result[n]   = new HashEntry(new RedisValue(key), new RedisValue(value));
+                var entity          = entities[n];
+                RedisValue key      = ToRedisValue(entity.key);
+                RedisValue value    = entity.value.AsReadOnlyMemory(); 
+                result[n]           = new HashEntry(key, value);
             }
             return result;
         }
@@ -46,25 +45,33 @@ namespace Friflo.Json.Fliox.Hub.Redis
             var count = entities.Count;
             var result = new RedisValue[count];
             for (int n = 0; n < count; n++) {
-                var key     = entities[n].key.AsString();
-                // Note: Would be nice if RedisValue could be created from ReadOnlySpan<byte> 
-                result[n]   = new RedisValue(key);
+                var key     = entities[n].key;
+                result[n]   = ToRedisValue(key);
             }
             return result;
+        }
+        
+        private static RedisValue ToRedisValue(in JsonKey key) {
+            var encoding = key.GetEncoding();
+            switch (encoding) {
+                case JsonKeyEncoding.LONG:          return key.AsLong();
+                case JsonKeyEncoding.NULL:          return default;
+                case JsonKeyEncoding.GUID:          return key.AsString();
+                case JsonKeyEncoding.STRING:        return key.AsString();
+                case JsonKeyEncoding.STRING_SHORT:  return key.AsString();
+                default: throw new InvalidOperationException("unexpected");
+            }
         }
         
         internal static RedisValue[] CreateKeys(List<JsonKey> keys) {
             var count = keys.Count;
             var result = new RedisValue[count];
             for (int n = 0; n < count; n++) {
-                var key     = keys[n].AsString();
-                // Note: Would be nice if RedisValue could be created from ReadOnlySpan<byte> 
-                result[n]   = new RedisValue(key);
+                result[n]   = ToRedisValue(keys[n]);
             }
             return result;
         }
-        
-        
+
         private static JsonKey ToJsonKey (in RedisValue key) {
             if (key.IsInteger) {
                 key.TryParse(out long value);
