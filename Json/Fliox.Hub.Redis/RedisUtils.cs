@@ -103,6 +103,18 @@ namespace Friflo.Json.Fliox.Hub.Redis
             }
             return result;
         }
+        
+        internal static EntityValue[] CreateEntities(HashEntry[] entries) {
+            var count = entries.Length;
+            var result = new EntityValue[count];
+            for (int n = 0; n < count; n++) {
+                var entry   = entries[n];
+                var key     = ToJsonKey(entry.Name);
+                var value   = ToJsonValue(entry.Value);
+                result[n]   = new EntityValue(key, value);
+            }
+            return result;
+        }
     }
 }
 

@@ -115,14 +115,18 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 return new QueryEntitiesResult { Error = connection.error };
             }
             var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "TRUE" : filter.RedisFilter();
-            var sql     = SQLUtils.QueryEntitiesSQL(command, name, where);
+            var db      = Database(connection, databaseNumber);
             try {
-                using var cmd = Command(sql, connection);
-                return await SQLUtils.QueryEntities(cmd, command, sql).ConfigureAwait(false);
+                if (filter.IsTrue) {
+                    var entries     = await db.HashGetAllAsync(nameKey).ConfigureAwait(false);
+                    var entities    = RedisUtils.CreateEntities(entries);
+                    return new QueryEntitiesResult { entities = entities };    
+                }
+                var where   = filter.IsTrue ? "TRUE" : filter.RedisFilter();
+                return new QueryEntitiesResult { Error = NotImplemented("todo") };
             }
             catch (RedisException e) {
-                return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message), sql = sql };
+                return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message) };
             }
         }
         
