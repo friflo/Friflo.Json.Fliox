@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using StackExchange.Redis;
@@ -56,9 +57,9 @@ namespace Friflo.Json.Fliox.Hub.Redis
             switch (encoding) {
                 case JsonKeyEncoding.LONG:          return key.AsLong();
                 case JsonKeyEncoding.NULL:          return default;
-                case JsonKeyEncoding.GUID:          return key.AsString();
-                case JsonKeyEncoding.STRING:        return key.AsString();
-                case JsonKeyEncoding.STRING_SHORT:  return key.AsString();
+                case JsonKeyEncoding.GUID:          return key.AsString();  // todo avoid string creation
+                case JsonKeyEncoding.STRING:        return key.AsString();  
+                case JsonKeyEncoding.STRING_SHORT:  return key.AsString();  // todo avoid string creation
                 default: throw new InvalidOperationException("unexpected");
             }
         }
@@ -71,20 +72,25 @@ namespace Friflo.Json.Fliox.Hub.Redis
             }
             return result;
         }
-
+        
         private static JsonKey ToJsonKey (in RedisValue key) {
             if (key.IsInteger) {
                 key.TryParse(out long value);
                 return new JsonKey(value);
             }
-            return new JsonKey(key.ToString()); // found no interface to get raw bytes
+            byte[] array    = key; // uses implicit operator byte[] (RedisValue value)
+            Bytes bytes     = default;
+            bytes.buffer    = array;
+            bytes.end       = array.Length;
+            return new JsonKey(bytes, default);
         }
         
         private static JsonValue ToJsonValue (in RedisValue value) {
             if (value.IsNull) {
                 return default;
             }
-            return new JsonValue(value.ToString()); // found no interface to get raw bytes
+            byte[] array = value; // uses implicit operator byte[] (RedisValue value)
+            return new JsonValue(array);
         }
         
         internal static EntityValue[] CreateEntities(RedisValue[] keys, RedisValue[] values) {

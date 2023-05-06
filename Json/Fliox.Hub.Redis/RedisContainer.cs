@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
     public sealed class RedisContainer : EntityContainer
     {
         private  readonly   int             databaseNumber;
-        private             bool            tableExists;
+    //  private             bool            tableExists;
         public   override   bool            Pretty      { get; }
 
         internal RedisContainer(string name, RedisDatabase database, bool pretty)
