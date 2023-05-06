@@ -3,21 +3,19 @@
 
 #if !UNITY_5_3_OR_NEWER || REDIS
 
-using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using StackExchange.Redis;
-using static Friflo.Json.Fliox.Hub.Redis.RedisUtils;
 
 namespace Friflo.Json.Fliox.Hub.Redis
 {
     public class RedisDatabase : EntityDatabase
     {
-        public              bool            Pretty      { get; init; } = false;
+        public              bool                    Pretty      { get; init; } = false;
         
-        internal readonly   string          connectionString;
+        internal readonly   string                  connectionString;
+        
         
         public   override   string          StorageType => "Redis";
         
@@ -31,8 +29,9 @@ namespace Friflo.Json.Fliox.Hub.Redis
             return new RedisContainer(name.AsString(), this, Pretty);
         }
         
-        public override Task<SyncConnection> GetConnection()  {
-            throw new NotImplementedException(); 
+        public override async Task<SyncConnection> GetConnection()  {
+            var instance = await ConnectionMultiplexer.ConnectAsync(connectionString).ConfigureAwait(false);
+            return new SyncConnection(instance);
         }
     }
 }

@@ -3,7 +3,6 @@
 
 #if !UNITY_5_3_OR_NEWER || REDIS
 
-using System;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -28,16 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Redis
             Pretty      = pretty;
         }
         
+        // todo remove?
         private async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
-            if (tableExists) {
-                return null;
-            }
-            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSON);";
-            var result = await Execute(connection, sql).ConfigureAwait(false);
-            if (result.Failed) {
-                return result.error;
-            }
-            tableExists = true;
             return null;
         }
         
@@ -53,16 +44,26 @@ namespace Friflo.Json.Fliox.Hub.Redis
             if (command.entities.Count == 0) {
                 return new CreateEntitiesResult();
             }
-            var sql = new StringBuilder();
-            sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
-            SQLUtils.AppendValuesSQL(sql, command.entities);
             try {
-                using var cmd = Command(sql.ToString(), connection);
-                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-            } catch (Exception e) {
-                return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
+                var db      = Database(connection);
+                var keys    = CreateKeys(command.entities);
+                // obviously not optimal.
+                var values  = await db.HashGetAsync(new RedisKey(name), keys).ConfigureAwait(false);
+                var count = 0;
+                foreach (var value in values) {
+                    count += value.IsNull ? 0 : 1;
+                }
+                if (count > 0) {
+                    var msg = $"found exiting entities. Count: {values.Length}";
+                    return new CreateEntitiesResult { Error = new TaskExecuteError(msg) };    
+                }
+                var entries = CreateEntries(command.entities);
+                await db.HashSetAsync(new RedisKey(name), entries).ConfigureAwait(false);
+                return new CreateEntitiesResult();
             }
-            return new CreateEntitiesResult();
+            catch (RedisException e) {
+                return new CreateEntitiesResult { Error = DatabaseError(e.Message) };
+            }
         }
         
         public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
@@ -77,14 +78,15 @@ namespace Friflo.Json.Fliox.Hub.Redis
             if (command.entities.Count == 0) {
                 return new UpsertEntitiesResult();
             }
-            var sql = new StringBuilder();
-            sql.Append($"REPLACE INTO {name} (id,data) VALUES\n");
-            SQLUtils.AppendValuesSQL(sql, command.entities);
-
-            using var cmd = Command(sql.ToString(), connection);
-            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-
-            return new UpsertEntitiesResult();
+            try {
+                var db      = Database(connection);
+                var entries = CreateEntries(command.entities);
+                await db.HashSetAsync(new RedisKey(name), entries).ConfigureAwait(false);
+                return new UpsertEntitiesResult();
+            }
+            catch (RedisException e) {
+                return new UpsertEntitiesResult { Error = DatabaseError(e.Message) };
+            }
         }
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
@@ -131,14 +133,25 @@ namespace Friflo.Json.Fliox.Hub.Redis
             if (connection.Failed) {
                 return new AggregateEntitiesResult { Error = connection.error };
             }
+            var db = Database(connection);
             if (command.type == AggregateType.count) {
-                var filter  = command.GetFilter();
-                var where   = filter.IsTrue ? "" : $" WHERE {filter.RedisFilter()}";
-                var sql     = $"SELECT COUNT(*) from {name}{where}";
+                try {
+                    var filter  = command.GetFilter();
+                    if (filter.IsTrue) {
+                        var count = await db.HashLengthAsync(new RedisKey(name)).ConfigureAwait(false);
+                        return new AggregateEntitiesResult { value = count };
+                    } else {
+                        var where   = filter.IsTrue ? "" : $" WHERE {filter.RedisFilter()}";
+                        var sql     = $"SELECT COUNT(*) from {name}{where}";
 
-                var result  = await Execute(connection, sql).ConfigureAwait(false);
-                if (result.Failed) { return new AggregateEntitiesResult { Error = result.error }; }
-                return new AggregateEntitiesResult { value = (long)result.value };
+                        var result  = await Execute(connection, sql).ConfigureAwait(false);
+                        if (result.Failed) { return new AggregateEntitiesResult { Error = result.error }; }
+                        return new AggregateEntitiesResult { value = (long)result.value };
+                    }
+                }
+                catch (RedisException e) {
+                    return new AggregateEntitiesResult { Error = DatabaseError(e.Message) };
+                }
             }
             return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
         }
@@ -152,19 +165,20 @@ namespace Friflo.Json.Fliox.Hub.Redis
             if (error != null) {
                 return new DeleteEntitiesResult { Error = error };
             }
-            if (command.all == true) {
-                var sql = $"DELETE from {name}";
-                var result = await Execute(connection, sql).ConfigureAwait(false);
-                if (result.Failed) { return new DeleteEntitiesResult { Error = result.error }; }
-                return new DeleteEntitiesResult();    
-            } else {
-                var sql = new StringBuilder();
-                sql.Append($"DELETE FROM  {name} WHERE id in\n");
-                
-                SQLUtils.AppendKeysSQL(sql, command.ids);
-                using var cmd = Command(sql.ToString(), connection);
-                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+            try {
+                var db = Database(connection);
+                var nameKey = new RedisKey(name);
+                if (command.all == true) {
+                    var keys = await db.HashKeysAsync(nameKey).ConfigureAwait(false);
+                    await db.HashDeleteAsync(nameKey, keys).ConfigureAwait(false);
+                } else {
+                    var keys = CreateKeys(command.ids);
+                    await db.HashDeleteAsync(new RedisKey(name), keys).ConfigureAwait(false);
+                }
                 return new DeleteEntitiesResult();
+            }
+            catch (RedisException e) {
+                return new DeleteEntitiesResult { Error = DatabaseError(e.Message) };
             }
         }
         
