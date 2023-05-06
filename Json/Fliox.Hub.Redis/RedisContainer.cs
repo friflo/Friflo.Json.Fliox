@@ -5,7 +5,6 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using StackExchange.Redis;
@@ -30,19 +29,13 @@ namespace Friflo.Json.Fliox.Hub.Redis
             Pretty          = pretty;
         }
         
-        // todo remove?
-        private async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
-            return null;
-        }
+        // not applicable to Redis
+        // private async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) => return null;
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
             var connection = await syncContext.GetConnection().ConfigureAwait(false);
             if (connection.Failed) {
                 return new CreateEntitiesResult { Error = connection.error };
-            }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new CreateEntitiesResult { Error = error };
             }
             if (command.entities.Count == 0) {
                 return new CreateEntitiesResult();
@@ -73,10 +66,6 @@ namespace Friflo.Json.Fliox.Hub.Redis
             var connection = await syncContext.GetConnection().ConfigureAwait(false);
             if (connection.Failed) {
                 return new UpsertEntitiesResult { Error = connection.error };
-            }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new UpsertEntitiesResult { Error = error };
             }
             if (command.entities.Count == 0) {
                 return new UpsertEntitiesResult();
@@ -156,10 +145,6 @@ namespace Friflo.Json.Fliox.Hub.Redis
             var connection = await syncContext.GetConnection().ConfigureAwait(false);
             if (connection.Failed) {
                 return new DeleteEntitiesResult { Error = connection.error };
-            }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new DeleteEntitiesResult { Error = error };
             }
             try {
                 var db = Database(connection, databaseNumber);
