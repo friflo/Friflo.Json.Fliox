@@ -96,27 +96,22 @@ namespace Friflo.Json.Fliox.Hub.Redis
             if (connection.Failed) {
                 return new ReadEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new ReadEntitiesResult { Error = error };
+            try {
+                var db      = Database(connection, databaseNumber);
+                var keys    = CreateKeys(command.ids);
+                var values  = await db.HashGetAsync(new RedisKey(name), keys).ConfigureAwait(false);
+                var entities = RedisUtils.CreateEntities(keys, values);
+                return new ReadEntitiesResult { entities = entities };
             }
-            var ids = command.ids;
-            var sql = new StringBuilder();
-            sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
-            SQLUtils.AppendKeysSQL(sql, ids);
-
-            using var cmd = Command(sql.ToString(), connection);
-            return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
+            catch (RedisException e) {
+                return new ReadEntitiesResult { Error = DatabaseError(e.Message) };
+            }
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             var connection  = await syncContext.GetConnection().ConfigureAwait(false);
             if (connection.Failed) {
                 return new QueryEntitiesResult { Error = connection.error };
-            }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new QueryEntitiesResult { Error = error };
             }
             var filter  = command.GetFilter();
             var where   = filter.IsTrue ? "TRUE" : filter.RedisFilter();

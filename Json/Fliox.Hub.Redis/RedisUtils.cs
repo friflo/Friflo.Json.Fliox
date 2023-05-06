@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using StackExchange.Redis;
 
 // ReSharper disable UseAwaitUsing
@@ -59,6 +60,33 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 var key     = keys[n].AsString();
                 // Note: Would be nice if RedisValue could be created from ReadOnlySpan<byte> 
                 result[n]   = new RedisValue(key);
+            }
+            return result;
+        }
+        
+        
+        private static JsonKey ToJsonKey (in RedisValue key) {
+            if (key.IsInteger) {
+                key.TryParse(out long value);
+                return new JsonKey(value);
+            }
+            return new JsonKey(key); // found no interface to get raw bytes
+        }
+        
+        private static JsonValue ToJsonValue (in RedisValue value) {
+            if (value.IsNull) {
+                return default;
+            }
+            return new JsonValue(value.ToString()); // found no interface to get raw bytes
+        }
+        
+        internal static EntityValue[] CreateEntities(RedisValue[] keys, RedisValue[] values) {
+            var count = values.Length;
+            var result = new EntityValue[count];
+            for (int n = 0; n < count; n++) {
+                var key     = ToJsonKey(keys[n]);
+                var value   = ToJsonValue(values[n]);
+                result[n]   = new EntityValue(key, value); // found no interface to get raw bytes
             }
             return result;
         }
