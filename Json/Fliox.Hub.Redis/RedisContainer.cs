@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             }
             try {
                 var db      = Database(connection, databaseNumber);
-                var keys    = CreateKeys(command.entities);
+                var keys    = EntitiesToRedisKeys(command.entities);
                 // obviously not optimal.
                 var values  = await db.HashGetAsync(nameKey, keys).ConfigureAwait(false);
                 var count = 0;
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                     var msg = $"found exiting entities. Count: {values.Length}";
                     return new CreateEntitiesResult { Error = new TaskExecuteError(msg) };    
                 }
-                var entries = CreateEntries(command.entities);
+                var entries = EntitiesToRedisEntries(command.entities);
                 await db.HashSetAsync(nameKey, entries).ConfigureAwait(false);
                 return new CreateEntitiesResult();
             }
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             }
             try {
                 var db      = Database(connection, databaseNumber);
-                var entries = CreateEntries(command.entities);
+                var entries = EntitiesToRedisEntries(command.entities);
                 await db.HashSetAsync(nameKey, entries).ConfigureAwait(false);
                 return new UpsertEntitiesResult();
             }
@@ -99,9 +99,9 @@ namespace Friflo.Json.Fliox.Hub.Redis
             }
             try {
                 var db      = Database(connection, databaseNumber);
-                var keys    = CreateKeys(command.ids);
+                var keys    = KeysToRedisKeys(command.ids);
                 var values  = await db.HashGetAsync(nameKey, keys).ConfigureAwait(false);
-                var entities = RedisUtils.CreateEntities(keys, values);
+                var entities = KeyValuesToEntities(keys, values);
                 return new ReadEntitiesResult { entities = entities };
             }
             catch (RedisException e) {
@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             try {
                 if (filter.IsTrue) {
                     var entries     = await db.HashGetAllAsync(nameKey).ConfigureAwait(false);
-                    var entities    = RedisUtils.CreateEntities(entries);
+                    var entities    = EntriesToEntities(entries);
                     return new QueryEntitiesResult { entities = entities };    
                 }
                 var where   = filter.IsTrue ? "TRUE" : filter.RedisFilter();
@@ -167,7 +167,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                     var keys = await db.HashKeysAsync(nameKey).ConfigureAwait(false);
                     await db.HashDeleteAsync(nameKey, keys).ConfigureAwait(false);
                 } else {
-                    var keys = CreateKeys(command.ids);
+                    var keys = KeysToRedisKeys(command.ids);
                     await db.HashDeleteAsync(nameKey, keys).ConfigureAwait(false);
                 }
                 return new DeleteEntitiesResult();

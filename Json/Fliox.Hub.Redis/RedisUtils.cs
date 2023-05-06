@@ -20,29 +20,29 @@ namespace Friflo.Json.Fliox.Hub.Redis
             return multiplexer!.GetDatabase(databaseNumber);
         }
         
-        internal static HashEntry[] CreateEntries(List<JsonEntity> entities) {
+        internal static HashEntry[] EntitiesToRedisEntries(List<JsonEntity> entities) {
             var count = entities.Count;
             var result = new HashEntry[count];
             for (int n = 0; n < count; n++) {
                 var entity          = entities[n];
-                RedisValue key      = ToRedisValue(entity.key);
+                RedisValue key      = KeyToRedisKey(entity.key);
                 RedisValue value    = entity.value.AsReadOnlyMemory(); 
                 result[n]           = new HashEntry(key, value);
             }
             return result;
         }
         
-        internal static RedisValue[] CreateKeys(List<JsonEntity> entities) {
+        internal static RedisValue[] EntitiesToRedisKeys(List<JsonEntity> entities) {
             var count = entities.Count;
             var result = new RedisValue[count];
             for (int n = 0; n < count; n++) {
                 var key     = entities[n].key;
-                result[n]   = ToRedisValue(key);
+                result[n]   = KeyToRedisKey(key);
             }
             return result;
         }
         
-        private static RedisValue ToRedisValue(in JsonKey key) {
+        private static RedisValue KeyToRedisKey(in JsonKey key) {
             var encoding = key.GetEncoding();
             switch (encoding) {
                 case JsonKeyEncoding.LONG:          return key.AsLong();
@@ -54,16 +54,16 @@ namespace Friflo.Json.Fliox.Hub.Redis
             }
         }
         
-        internal static RedisValue[] CreateKeys(List<JsonKey> keys) {
+        internal static RedisValue[] KeysToRedisKeys(List<JsonKey> keys) {
             var count = keys.Count;
             var result = new RedisValue[count];
             for (int n = 0; n < count; n++) {
-                result[n]   = ToRedisValue(keys[n]);
+                result[n]   = KeyToRedisKey(keys[n]);
             }
             return result;
         }
         
-        private static JsonKey ToJsonKey (in RedisValue key) {
+        private static JsonKey KeyToJsonKey (in RedisValue key) {
             if (key.IsInteger) {
                 key.TryParse(out long value);
                 return new JsonKey(value);
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             return new JsonKey(bytes, default);
         }
         
-        private static JsonValue ToJsonValue (in RedisValue value) {
+        private static JsonValue ValueToJsonValue (in RedisValue value) {
             if (value.IsNull) {
                 return default;
             }
@@ -83,24 +83,24 @@ namespace Friflo.Json.Fliox.Hub.Redis
             return new JsonValue(array);
         }
         
-        internal static EntityValue[] CreateEntities(RedisValue[] keys, RedisValue[] values) {
+        internal static EntityValue[] KeyValuesToEntities(RedisValue[] keys, RedisValue[] values) {
             var count = values.Length;
             var result = new EntityValue[count];
             for (int n = 0; n < count; n++) {
-                var key     = ToJsonKey(keys[n]);
-                var value   = ToJsonValue(values[n]);
+                var key     = KeyToJsonKey(keys[n]);
+                var value   = ValueToJsonValue(values[n]);
                 result[n]   = new EntityValue(key, value);
             }
             return result;
         }
         
-        internal static EntityValue[] CreateEntities(HashEntry[] entries) {
+        internal static EntityValue[] EntriesToEntities(HashEntry[] entries) {
             var count = entries.Length;
             var result = new EntityValue[count];
             for (int n = 0; n < count; n++) {
                 var entry   = entries[n];
-                var key     = ToJsonKey(entry.Name);
-                var value   = ToJsonValue(entry.Value);
+                var key     = KeyToJsonKey(entry.Name);
+                var value   = ValueToJsonValue(entry.Value);
                 result[n]   = new EntityValue(key, value);
             }
             return result;
