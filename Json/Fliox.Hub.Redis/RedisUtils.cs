@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 key.TryParse(out long value);
                 return new JsonKey(value);
             }
-            // ReadOnlyMemory<byte> array    = key; // uses RedisValue > implicit operator ReadOnlyMemory<byte>(RedisValue value)
+            // ReadOnlyMemory<byte> array = key; // uses RedisValue > implicit operator ReadOnlyMemory<byte>(RedisValue value)
             return new JsonKey(key.ToString()); // key is already a string -> used its reference
         }
         
@@ -75,8 +75,8 @@ namespace Friflo.Json.Fliox.Hub.Redis
             if (value.IsNull) {
                 return default;
             }
-            byte[] array = value; // uses RedisValue > implicit operator byte[] (RedisValue value)
-            return new JsonValue(array); // JsonValue store UTF-8 byte arrays -> use conversion method above
+            byte[] array = value;           // uses RedisValue > implicit operator byte[] (RedisValue value)
+            return new JsonValue(array);    // JsonValue store UTF-8 byte arrays -> use conversion method above
         }
         
         internal static EntityValue[] KeyValuesToEntities(List<JsonKey> ids, RedisValue[] values) {
