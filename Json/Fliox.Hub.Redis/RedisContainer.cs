@@ -87,10 +87,10 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 return new ReadEntitiesResult { Error = connection.error };
             }
             try {
-                var db      = Database(connection, databaseNumber);
-                var keys    = KeysToRedisKeys(command.ids);
-                var values  = await db.HashGetAsync(nameKey, keys).ConfigureAwait(false);
-                var entities = KeyValuesToEntities(keys, values);
+                var db          = Database(connection, databaseNumber);
+                var keys        = KeysToRedisKeys(command.ids);
+                var values      = await db.HashGetAsync(nameKey, keys).ConfigureAwait(false);
+                var entities    = KeyValuesToEntities(command.ids, values);
                 return new ReadEntitiesResult { entities = entities };
             }
             catch (RedisException e) {

@@ -79,13 +79,12 @@ namespace Friflo.Json.Fliox.Hub.Redis
             return new JsonValue(array); // JsonValue store UTF-8 byte arrays -> use conversion method above
         }
         
-        internal static EntityValue[] KeyValuesToEntities(RedisValue[] keys, RedisValue[] values) {
+        internal static EntityValue[] KeyValuesToEntities(List<JsonKey> ids, RedisValue[] values) {
             var count = values.Length;
             var result = new EntityValue[count];
             for (int n = 0; n < count; n++) {
-                var key     = KeyToJsonKey(keys[n]);
                 var value   = ValueToJsonValue(values[n]);
-                result[n]   = new EntityValue(key, value);
+                result[n]   = new EntityValue(ids[n], value);
             }
             return result;
         }
