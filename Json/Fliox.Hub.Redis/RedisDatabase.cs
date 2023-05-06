@@ -12,17 +12,19 @@ namespace Friflo.Json.Fliox.Hub.Redis
 {
     public class RedisDatabase : EntityDatabase
     {
-        public              bool                    Pretty      { get; init; } = false;
+        public              bool        Pretty      { get; init; } = false;
         
-        internal readonly   string                  connectionString;
+        private  readonly   string      connectionString;
+        internal readonly   int         databaseNumber;
         
         
-        public   override   string          StorageType => "Redis";
+        public   override   string      StorageType => "Redis";
         
-        public RedisDatabase(string dbName, string connectionString, DatabaseService service = null)
+        public RedisDatabase(string dbName, string connectionString, int databaseNumber = 0, DatabaseService service = null)
             : base(dbName, service)
         {
-            this.connectionString = connectionString;
+            this.connectionString   = connectionString;
+            this.databaseNumber     = databaseNumber;
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {

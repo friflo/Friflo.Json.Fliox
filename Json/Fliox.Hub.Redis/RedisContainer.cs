@@ -18,13 +18,15 @@ namespace Friflo.Json.Fliox.Hub.Redis
 {
     public sealed class RedisContainer : EntityContainer
     {
+        private  readonly   int             databaseNumber;
         private             bool            tableExists;
         public   override   bool            Pretty      { get; }
-        
+
         internal RedisContainer(string name, RedisDatabase database, bool pretty)
             : base(name, database)
         {
-            Pretty      = pretty;
+            databaseNumber  = database.databaseNumber;
+            Pretty          = pretty;
         }
         
         // todo remove?
@@ -45,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 return new CreateEntitiesResult();
             }
             try {
-                var db      = Database(connection);
+                var db      = Database(connection, databaseNumber);
                 var keys    = CreateKeys(command.entities);
                 // obviously not optimal.
                 var values  = await db.HashGetAsync(new RedisKey(name), keys).ConfigureAwait(false);
@@ -79,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 return new UpsertEntitiesResult();
             }
             try {
-                var db      = Database(connection);
+                var db      = Database(connection, databaseNumber);
                 var entries = CreateEntries(command.entities);
                 await db.HashSetAsync(new RedisKey(name), entries).ConfigureAwait(false);
                 return new UpsertEntitiesResult();
@@ -133,7 +135,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             if (connection.Failed) {
                 return new AggregateEntitiesResult { Error = connection.error };
             }
-            var db = Database(connection);
+            var db = Database(connection, databaseNumber);
             if (command.type == AggregateType.count) {
                 try {
                     var filter  = command.GetFilter();
@@ -166,7 +168,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 return new DeleteEntitiesResult { Error = error };
             }
             try {
-                var db = Database(connection);
+                var db = Database(connection, databaseNumber);
                 var nameKey = new RedisKey(name);
                 if (command.all == true) {
                     var keys = await db.HashKeysAsync(nameKey).ConfigureAwait(false);

@@ -19,9 +19,9 @@ namespace Friflo.Json.Fliox.Hub.Redis
             throw new NotImplementedException();
         }
         
-        internal static IDatabase Database (SyncConnection connection) {
+        internal static IDatabase Database (SyncConnection connection, int databaseNumber) {
             var multiplexer = connection.instance as ConnectionMultiplexer;
-            return multiplexer!.GetDatabase();
+            return multiplexer!.GetDatabase(databaseNumber);
         }
         
         internal static Task<SQLResult> Execute(SyncConnection connection, string sql) {
