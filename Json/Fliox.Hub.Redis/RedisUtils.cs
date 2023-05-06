@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 key.TryParse(out long value);
                 return new JsonKey(value);
             }
-            return new JsonKey(key); // found no interface to get raw bytes
+            return new JsonKey(key.ToString()); // found no interface to get raw bytes
         }
         
         private static JsonValue ToJsonValue (in RedisValue value) {
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             for (int n = 0; n < count; n++) {
                 var key     = ToJsonKey(keys[n]);
                 var value   = ToJsonValue(values[n]);
-                result[n]   = new EntityValue(key, value); // found no interface to get raw bytes
+                result[n]   = new EntityValue(key, value);
             }
             return result;
         }
