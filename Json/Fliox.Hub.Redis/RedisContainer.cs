@@ -111,8 +111,8 @@ namespace Friflo.Json.Fliox.Hub.Redis
                     var entities    = EntriesToEntities(entries);
                     return new QueryEntitiesResult { entities = entities };    
                 }
-                var where   = filter.IsTrue ? "TRUE" : filter.RedisFilter();
-                return new QueryEntitiesResult { Error = NotImplemented("todo") };
+                // var where   = filter.RedisFilter();
+                return new QueryEntitiesResult { Error = NotImplemented("todo") }; // TODO
             }
             catch (RedisException e) {
                 return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message) };
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                         var count = await db.HashLengthAsync(nameKey).ConfigureAwait(false);
                         return new AggregateEntitiesResult { value = count };
                     }
-                    return new AggregateEntitiesResult { Error = NotImplemented("todo") };
+                    return new AggregateEntitiesResult { Error = NotImplemented("todo") }; // TODO
                 }
                 catch (RedisException e) {
                     return new AggregateEntitiesResult { Error = DatabaseError(e.Message) };
