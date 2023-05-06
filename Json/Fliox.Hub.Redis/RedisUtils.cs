@@ -5,8 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Threading.Tasks;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -17,17 +15,9 @@ namespace Friflo.Json.Fliox.Hub.Redis
 {
     public static class RedisUtils
     {
-        internal static DbCommand Command (string sql, SyncConnection connection) {
-            throw new NotImplementedException();
-        }
-        
         internal static IDatabase Database (SyncConnection connection, int databaseNumber) {
             var multiplexer = connection.instance as ConnectionMultiplexer;
             return multiplexer!.GetDatabase(databaseNumber);
-        }
-        
-        internal static Task<SQLResult> Execute(SyncConnection connection, string sql) {
-            throw new NotImplementedException();
         }
         
         internal static HashEntry[] CreateEntries(List<JsonEntity> entities) {
