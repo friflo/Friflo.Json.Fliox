@@ -6,6 +6,8 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using StackExchange.Redis;
 
 namespace Friflo.Json.Fliox.Hub.Redis
@@ -32,8 +34,14 @@ namespace Friflo.Json.Fliox.Hub.Redis
         }
         
         public override async Task<SyncConnection> GetConnection()  {
-            var instance = await ConnectionMultiplexer.ConnectAsync(connectionString).ConfigureAwait(false);
-            return new SyncConnection(instance);
+            try {
+                var instance = await ConnectionMultiplexer.ConnectAsync(connectionString).ConfigureAwait(false);
+                return new SyncConnection(instance);
+            }
+            catch (RedisException e) {
+                var error = new TaskExecuteError(TaskErrorType.DatabaseError, e.Message);
+                return new SyncConnection(error);
+            }
         }
     }
 }
