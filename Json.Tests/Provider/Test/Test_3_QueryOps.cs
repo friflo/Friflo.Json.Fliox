@@ -20,6 +20,16 @@ namespace Friflo.Json.Tests.Provider.Test
         private static readonly     int One     = 1;
         
         private const int ArticleCount = 2;
+        
+        // --- query all
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_All(string db) {
+            var client  = await GetClient(db);
+            var query   = client.testOps.QueryAll();
+            await client.SyncTasks();
+            LogSQL(query.SQL);
+            AreEqual(ArticleCount, query.Result.Count);
+        }
 
         // --- query filter: compare
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]

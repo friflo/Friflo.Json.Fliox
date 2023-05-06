@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,18 +19,6 @@ namespace Friflo.Json.Tests.Provider.Test
     // ReSharper disable once InconsistentNaming
     public static class Test_4_QueryFields
     {
-        private const int ArticleCount = 2;
-
-        // --- query all
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestQuery_All(string db) {
-            var client  = await GetClient(db);
-            var query   = client.testOps.QueryAll();
-            await client.SyncTasks();
-            LogSQL(query.SQL);
-            AreEqual(ArticleCount, query.Result.Count);
-        }
-
         // --- query filter: enum
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Enum(string db) {
