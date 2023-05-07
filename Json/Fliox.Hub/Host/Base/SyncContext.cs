@@ -159,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             connection = null;
         }
 
-        public async Task<SyncConnection> GetConnection () {
+        public async Task<SyncConnection> GetConnectionAsync () {
             if (connection != null) {
                 return connection;
             }
