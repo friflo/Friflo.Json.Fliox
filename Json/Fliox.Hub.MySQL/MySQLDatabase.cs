@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return new MySQLContainer(name.AsString(), this, Pretty);
         }
         
-        public override async Task<SyncConnection> GetConnection()  {
+        public override async Task<SyncConnection> GetConnectionAsync()  {
             Exception openException;
             try {
                 var connection = new MySqlConnection(connectionString);

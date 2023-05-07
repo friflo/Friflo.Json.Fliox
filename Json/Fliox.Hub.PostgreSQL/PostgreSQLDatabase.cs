@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             return new PostgreSQLContainer(name.AsString(), this);
         }
         
-        public override async Task<SyncConnection> GetConnection()  {
+        public override async Task<SyncConnection> GetConnectionAsync()  {
             Exception openException;
             try {
                 var connection = new NpgsqlConnection(connectionString);

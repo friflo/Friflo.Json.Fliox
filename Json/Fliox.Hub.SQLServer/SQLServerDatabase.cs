@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             return new SQLServerContainer(name.AsString(), this, Pretty);
         }
         
-        public override async Task<SyncConnection> GetConnection()  {
+        public override async Task<SyncConnection> GetConnectionAsync()  {
             Exception openException;
             SqlConnection connection= null;
             try {
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             if (tableTypesCreated) {
                 return;
             }
-            var connection = await GetConnection().ConfigureAwait(false);
+            var connection = await GetConnectionAsync().ConfigureAwait(false);
             var sql = "IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE(id varchar(128), data varchar(max));";
             using (var cmd = Command(sql, connection)) {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);

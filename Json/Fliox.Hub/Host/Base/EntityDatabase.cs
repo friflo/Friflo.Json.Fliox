@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public              DatabaseSchema      Schema          { get; set; }
         
-        public  virtual     Task<SyncConnection> GetConnection()  => throw new NotImplementedException();
+        public  virtual     Task<SyncConnection> GetConnectionAsync()  => throw new NotImplementedException();
         /// <summary>A mapping function used to assign a custom container name.</summary>
         /// <remarks>
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
