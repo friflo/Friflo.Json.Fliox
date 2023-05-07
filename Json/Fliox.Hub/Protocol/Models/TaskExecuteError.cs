@@ -17,10 +17,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </summary>
     public sealed class TaskExecuteError
     {
-        [Ignore]    internal    TaskErrorType   type;
-        [Ignore]    internal    string          message;
+        [Ignore]    internal  readonly  TaskErrorType   type;
+        [Ignore]    internal  readonly  string          message;
 
-        public      override    string          ToString() => message;
+        public      override            string          ToString() => message;
         
         public TaskExecuteError(string message) {
             this.type       = TaskErrorType.DatabaseError;
