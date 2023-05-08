@@ -30,7 +30,8 @@ The intended order to implement a database provider:
 | 3.1 Query container entities without access to entities fields. Pure query operator tests.     | [Test_3_1_QueryOps](Test/Test_3_1_QueryOps.cs)               |
 | 3.2 Query container entities including access to entities fields. Test query operators on data.| [Test_3_2_QueryFields](Test/Test_3_2_QueryFields.cs)         |
 | 3.3 Query container entities with access to sub fields.                                        | [Test_3_3_QuerySubFields](Test/Test_3_3_QuerySubFields.cs)   |
-| 3.4 Query cursor                                                                               | [Test_3_4_QueryCursor](Test/Test_3_4_QueryCursor.cs)         |
+| 3.4 Query container using a cursor                                                             | [Test_3_4_QueryCursor](Test/Test_3_4_QueryCursor.cs)         |
+| 3.5 Query container using Any() or All()                                                       | [Test_3_5_QueryQuantify](Test/Test_3_5_QueryQuantify.cs)     |
 | 6   Aggregate entities > Count                                                                 | [Test_4_Aggregate](Test/Test_4_Aggregate.cs)                 |
 
 
