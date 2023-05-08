@@ -2,5 +2,9 @@
     "id": "c-1",
     "int32": 1,
     "str": "str-1",
-    "boolean": true
+    "boolean": true,
+    "obj": {
+        "int32": 1,
+        "str": "obj-1"
+    }
 }

@@ -221,7 +221,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         // SELECT * FROM c WHERE c.value = 0
         // errors because value (VALUE, Value, ...) is a reserved SQL keyword 
         private static string ConvertPath (string path) {
-            var names = path.Split();
+            var names = path.Split(".");
             var cosmosNames = names.Select(name => $"['{name}']");
             return string.Join(null, cosmosNames);
         }

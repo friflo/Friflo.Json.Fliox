@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
@@ -28,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         internal ConvertContext (string collection, FilterOperation filterOp, TypeDef entityType) {
             this.collection = collection;
-            this.entityType = entityType;
+            this.entityType = entityType ?? throw new InvalidOperationException(nameof(entityType));
             if (filterOp is Filter filter) {
                 collectionStart = $"{filter.arg}.";
             }
@@ -44,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case Field field: {
                     if (collectionStart != null && field.name.StartsWith(collectionStart)) {
                         var fieldName = field.name.Substring(collectionStart.Length);
-                        return $"(data ->> '{fieldName}')";
+                        return ConvertPath("data", fieldName);
                     }
                     throw new InvalidOperationException($"expect field {field.name} starts with {collectionStart}");
                 }
@@ -240,9 +241,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 
         private string GetCast(Operation op) {
             if (op is Field field) {
-                var path = field.name.Substring(field.arg.Length + 1);
-                var fieldType = entityType.Fields.First(f => f.name == path);
-                switch (fieldType.type.TypeId) {
+                var fieldType = GetFieldType(entityType, field.name);
+                switch (fieldType.TypeId) {
                     case StandardTypeId.Uint8:
                     case StandardTypeId.Int16:
                     case StandardTypeId.Int32:
@@ -255,6 +255,20 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 }
             }
             return "";
+        }
+        
+        private static TypeDef GetFieldType (TypeDef entityType, string path) {
+            var pathFields  = path.Split(".");
+            var fieldType   = entityType;
+            for (int n = 1; n < pathFields.Length; n++) {
+                var pathField   = pathFields[n];
+                var field       = fieldType.Fields.FirstOrDefault(f => f.name == pathField);
+                if (field == null) {
+                    return null;
+                }
+                fieldType = field.type;
+            }
+            return fieldType;
         }
         
         private string[] GetOperands (List<FilterOperation> operands) {
@@ -270,6 +284,25 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return value.Substring(1, value.Length - 2);
             }
             return value;
+        }
+        
+        private static string ConvertPath (string arg, string path) {
+            var names   = path.Split(".");
+            var count   = names.Length;
+            var sb      = new StringBuilder();
+            sb.Append('(');
+            sb.Append(arg);
+            for (int n = 0; n < count; n++) {
+                if (n == count - 1) {
+                    sb.Append(" ->> '");
+                } else {
+                    sb.Append(" -> '");
+                }
+                sb.Append(names[n]);
+                sb.Append('\'');
+            }
+            sb.Append(')');
+            return sb.ToString();
         }
     }
 }

@@ -38,6 +38,7 @@ namespace Friflo.Json.Tests.Provider.Client
                     public  int?                int32;
                     public  string              str;
                     public  bool?               boolean;
+                    public  TestObject          obj;
     }
     
     public enum TestEnum {
