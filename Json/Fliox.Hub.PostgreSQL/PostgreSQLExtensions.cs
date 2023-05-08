@@ -258,7 +258,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         private static TypeDef GetFieldType (TypeDef entityType, string path) {
-            var pathFields  = path.Split(".");
+            var pathFields  = path.Split('.');
             var fieldType   = entityType;
             for (int n = 1; n < pathFields.Length; n++) {
                 var pathField   = pathFields[n];
@@ -287,7 +287,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         private static string ConvertPath (string arg, string path) {
-            var names   = path.Split(".");
+            var names   = path.Split('.');
             var count   = names.Length;
             var sb      = new StringBuilder();
             sb.Append('(');

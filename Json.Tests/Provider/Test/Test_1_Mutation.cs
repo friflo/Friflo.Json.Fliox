@@ -10,7 +10,7 @@ namespace Friflo.Json.Tests.Provider.Test
 {
     /// <summary>
     /// Used to implement and test <see cref="EntityContainer"/> methods required by subsequent test classes:
-    /// <see cref="Test_2_Read"/>, <see cref="Test_3_QueryOps"/>, ...<br/>
+    /// <see cref="Test_2_Read"/>, <see cref="Test_3_1_QueryOps"/>, ...<br/>
     /// Methods to implement:
     /// <list type="bullet">
     ///   <item><see cref="EntityContainer.DeleteEntitiesAsync"/> to delete all container entities before executing mutations.</item>

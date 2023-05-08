@@ -21,16 +21,17 @@ public static async Task TestDatabaseBehavior(string db) {
 The unit test structure aims to guide implementation and validation of full functional provider for a specific database.  
 The intended order to implement a database provider:
 
-| database command                                                                              | unit test class                                   |
-|-----------------------------------------------------------------------------------------------|-------------------------------------------------- |
-|    Create / open database                                                                     |                                                   |
-|    Create table / container in the database                                                   |                                                   |
-| 1. Mutation > Upsert, Create and Delete and entities in a container                           | [Test_1_Mutation](Test/Test_1_Mutation.cs)        |
-| 2. Read entities from a container.                                                            | [Test_2_Read](Test/Test_2_Read.cs)                |
-| 3. Query container entities without access to entities fields. Pure query operator tests.     | [Test_3_QueryOps](Test/Test_3_QueryOps.cs)        |
-| 4. Query container entities including access to entities fields. Test query operators on data.| [Test_4_QueryFields](Test/Test_4_QueryFields.cs)  |
-| 5. Query cursor                                                                               | [Test_5_QueryCursor](Test/Test_5_QueryCursor.cs)  |
-| 6. Aggregate entities > Count                                                                 | [Test_6_Aggregate](Test/Test_6_Aggregate.cs)      |
+| database command                                                                               | unit test class                                              |
+|------------------------------------------------------------------------------------------------|------------------------------------------------------------- |
+|     Create / open database                                                                     |                                                              |
+|     Create table / container in the database                                                   |                                                              |
+| 1   Mutation > Upsert, Create and Delete and entities in a container                           | [Test_1_Mutation](Test/Test_1_Mutation.cs)                   |
+| 2   Read entities from a container.                                                            | [Test_2_Read](Test/Test_2_Read.cs)                           |
+| 3.1 Query container entities without access to entities fields. Pure query operator tests.     | [Test_3_1_QueryOps](Test/Test_3_1_QueryOps.cs)               |
+| 3.2 Query container entities including access to entities fields. Test query operators on data.| [Test_3_2_QueryFields](Test/Test_3_2_QueryFields.cs)         |
+| 3.3 Query container entities with access to sub fields.                                        | [Test_3_3_QuerySubFields](Test/Test_3_3_QuerySubFields.cs)   |
+| 3.4 Query cursor                                                                               | [Test_3_4_QueryCursor](Test/Test_3_4_QueryCursor.cs)         |
+| 6   Aggregate entities > Count                                                                 | [Test_4_Aggregate](Test/Test_4_Aggregate.cs)                 |
 
 
 ## Query filter implementation

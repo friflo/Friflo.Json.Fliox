@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Provider.Test
     /// Requires implementation of cursors used in <see cref="EntityContainer.AggregateEntitiesAsync"/>.  
     /// </summary>
     // ReSharper disable once InconsistentNaming
-    public static class Test_6_Aggregate
+    public static class Test_4_Aggregate
     {
         private const int ArticleCount = 2;
 

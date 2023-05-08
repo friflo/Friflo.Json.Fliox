@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Provider.Test
     /// The cursor is available in the <c>command</c> parameter with <see cref="QueryEntities.cursor"/>.  
     /// </summary>
     // ReSharper disable once InconsistentNaming
-    public static class Test_5_QueryCursor
+    public static class Test_3_4_QueryCursor
     {
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Limit(string db) {

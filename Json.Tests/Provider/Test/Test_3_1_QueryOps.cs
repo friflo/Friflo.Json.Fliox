@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Provider.Test
     /// This filter is available in the <c>command</c> parameter with <see cref="QueryEntities.GetFilter"/>.  
     /// </summary>
     // ReSharper disable once InconsistentNaming
-    public static class Test_3_QueryOps
+    public static class Test_3_1_QueryOps
     {
         private static readonly     int Zero    = 0;
         private static readonly     int One     = 1;
