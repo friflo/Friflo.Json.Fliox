@@ -92,29 +92,56 @@ In detail:
 
 Instances of `ShopStore` can be used on server and client side.
 
-To access a database using the `ShopStore` a `FlioxHub` is required.
+Example of a custom `DatabaseService` implementation
 
 ``` csharp
-public static async Task AccessDatabase() {
-    var database    = new FileDatabase("shop", new MessageHandler());
-    // or other database implementations like: MemoryDatabase, SQLite, Postgres, ...
-    var hub         = new FlioxHub(database);
-    var store       = new ShopStore(hub);
-    
-    var hello           = store.Hello("World");
-    var createArticle   = store.articles.Upsert(new Article() { id = 1, name = "Bread" });
-    var stats           = store.std.Stats(null);
-
-    await store.SyncTasks();
-    
-    Console.WriteLine(hello.Result);
-    // output:  hello World!
-    Console.WriteLine($"createArticle.Success: {createArticle.Success}");
-    // output:  createArticle.Success: True
-    foreach (var container in stats.Result.containers) {
-        Console.WriteLine($"{container.name}: {container.count}");
+public class ShopService : DatabaseService
+{
+    internal ShopService() {
+        AddMessageHandlers(this, null);
     }
-    // output:  articles: 1
+    
+    private static string Hello(Param<string> param, MessageContext command) {
+        if (!param.GetValidate(out string value, out string error)) {
+            command.ValidationError(error);
+            return null;
+        }
+        return $"hello {value}!";
+    } 
+}
+```
+
+To access a database using the `ShopStore` a `FlioxHub` is required.
+``` csharp
+// -------------------------------- run example as unit tests --------------------------------
+public static class TestShopStore
+{
+    /// <summary>
+    /// Execute service commands: Hello and std.Stats <br/>
+    /// Execute database command: Upsert
+    /// </summary>
+    [Test]
+    public static async Task AccessDatabase() {
+        var database    = new FileDatabase("shop_db", "./shop_db", new ShopService());
+        // or other database implementations like: MemoryDatabase, SQLite, Postgres, ...
+        var hub         = new FlioxHub(database);
+        var store       = new ShopStore(hub);
+        
+        var hello           = store.Hello("World");
+        var createArticle   = store.articles.Upsert(new Article() { id = 1, name = "Bread" });
+        var stats           = store.std.Stats(null);
+
+        await store.SyncTasks();
+        
+        Console.WriteLine(hello.Result);
+        // output:  hello World!
+        Console.WriteLine($"createArticle.Success: {createArticle.Success}");
+        // output:  createArticle.Success: True
+        foreach (var container in stats.Result.containers) {
+            Console.WriteLine($"{container.name}: {container.count}");
+        }
+        // output:  articles: 1
+    }
 }
 ```
 
@@ -209,11 +236,19 @@ The following example generate the types for Typescript, C#, Kotlin, JSON Schema
 passed schema type `ShopStore`. The generated code is written to folder `./schema/`
 
 ``` csharp
-public static void GenerateSchemaModels() {
-    var schemaModels = SchemaModel.GenerateSchemaModels(typeof(ShopStore));
-    foreach (var schemaModel in schemaModels) {
-        var folder = $"./schema/{schemaModel.type}";
-        schemaModel.WriteFiles(folder);
+public static class TestSchemaGeneration
+{
+    /// <summary>
+    /// Generate schema model files (HTML, JSON Schema / OpenAPI, Typescript, C#, Kotlin) for <see cref="ShopStore"/>
+    /// in the working directory.
+    /// </summary>
+    [Test]
+    public static void GenerateSchemaModels() {
+        var schemaModels = SchemaModel.GenerateSchemaModels(typeof(ShopStore));
+        foreach (var schemaModel in schemaModels) {
+            var folder = $"./schema/{schemaModel.type}";
+            schemaModel.WriteFiles(folder);
+        }
     }
 }
 ```

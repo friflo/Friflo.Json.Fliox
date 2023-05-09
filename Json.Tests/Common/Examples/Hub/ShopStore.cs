@@ -1,3 +1,5 @@
+#if !UNITY_5_3_OR_NEWER
+
 using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
@@ -41,17 +43,16 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         } 
     }
     
-    // -------------------------------- run examples as unit tests --------------------------------
+    // -------------------------------- run example as unit tests --------------------------------
     public static class TestShopStore
     {
-#if !UNITY_5_3_OR_NEWER
         /// <summary>
-        /// Execute database commands: Hello and std.Stats <br/>
-        /// Execute container operation: Upsert
+        /// Execute service commands: Hello and std.Stats <br/>
+        /// Execute database command: Upsert
         /// </summary>
         [Test]
         public static async Task AccessDatabase() {
-            var database    = new FileDatabase("shop_db", "shop", new ShopService());
+            var database    = new FileDatabase("shop_db", "./shop_db", new ShopService());
             // or other database implementations like: MemoryDatabase, SQLite, Postgres, ...
             var hub         = new FlioxHub(database);
             var store       = new ShopStore(hub);
@@ -71,8 +72,10 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
             }
             // output:  articles: 1
         }
-#endif
-        
+    }
+    
+    public static class TestSchemaGeneration
+    {
         /// <summary>
         /// Generate schema model files (HTML, JSON Schema / OpenAPI, Typescript, C#, Kotlin) for <see cref="ShopStore"/>
         /// in the working directory.
@@ -87,3 +90,4 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         }
     }
 }
+#endif
