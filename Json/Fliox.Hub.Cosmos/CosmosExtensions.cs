@@ -63,104 +63,128 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     return "null";
                 
                 // --- compare ---
-                case Equal equal:
+                case Equal equal: {
                     var left    = Traverse(equal.left);
                     var right   = Traverse(equal.right);
                     if (left  == "null") return $"(IS_NULL({right}) OR NOT IS_DEFINED({right}))";
                     if (right == "null") return $"(IS_NULL({left}) OR NOT IS_DEFINED({left}))";
                     return $"{left} = {right}";
-                case NotEqual notEqual:
-                    left    = Traverse(notEqual.left);
-                    right   = Traverse(notEqual.right);
+                }
+                case NotEqual notEqual: {
+                    var left    = Traverse(notEqual.left);
+                    var right   = Traverse(notEqual.right);
                     if (left  == "null") return $"(NOT IS_NULL({right}) AND IS_DEFINED({right}))";
                     if (right == "null") return $"(NOT IS_NULL({left}) AND IS_DEFINED({left}))";
                     return $"(NOT IS_DEFINED({left}) or NOT IS_DEFINED({right}) or {left} != {right})";
-                case Less lessThan:
-                    left    = Traverse(lessThan.left);
-                    right   = Traverse(lessThan.right);
+                }
+                case Less lessThan: {
+                    var left    = Traverse(lessThan.left);
+                    var right   = Traverse(lessThan.right);
                     return $"{left} < {right}";
-                case LessOrEqual lessThanOrEqual:
-                    left    = Traverse(lessThanOrEqual.left);
-                    right   = Traverse(lessThanOrEqual.right);
+                }
+                case LessOrEqual lessThanOrEqual: {
+                    var left    = Traverse(lessThanOrEqual.left);
+                    var right   = Traverse(lessThanOrEqual.right);
                     return $"{left} <= {right}";
-                case Greater greaterThan:
-                    left    = Traverse(greaterThan.left);
-                    right   = Traverse(greaterThan.right);
+                }
+                case Greater greaterThan: {
+                    var left    = Traverse(greaterThan.left);
+                    var right   = Traverse(greaterThan.right);
                     return $"{left} > {right}";
-                case GreaterOrEqual greaterThanOrEqual:
-                    left    = Traverse(greaterThanOrEqual.left);
-                    right   = Traverse(greaterThanOrEqual.right);
+                }
+                case GreaterOrEqual greaterThanOrEqual: {
+                    var left    = Traverse(greaterThanOrEqual.left);
+                    var right   = Traverse(greaterThanOrEqual.right);
                     return $"{left} >= {right}";
+                }
                 
                 // --- logical ---
-                case Not @not:
+                case Not @not: {
                     var operand = Traverse(@not.operand);
                     return $"NOT({operand})";
-                case Or or:
+                }
+                case Or or: {
                     var operands = GetOperands(or.operands);
                     return string.Join(" OR ", operands);
-                case And and:
-                    operands = GetOperands(and.operands);
+                }
+                case And and: {
+                    var operands = GetOperands(and.operands);
                     return string.Join(" AND ", operands);
+                }
                 
                 // --- string ---
-                case StartsWith startsWith:
-                    left    = Traverse(startsWith.left);
-                    right   = Traverse(startsWith.right);
+                case StartsWith startsWith: {
+                    var left    = Traverse(startsWith.left);
+                    var right   = Traverse(startsWith.right);
                     return $"STARTSWITH({left},{right})";
-                case EndsWith endsWith:
-                    left    = Traverse(endsWith.left);
-                    right   = Traverse(endsWith.right);
+                }
+                case EndsWith endsWith: {
+                    var left    = Traverse(endsWith.left);
+                    var right   = Traverse(endsWith.right);
                     return $"ENDSWITH({left},{right})";
-                case Contains contains:
-                    left    = Traverse(contains.left);
-                    right   = Traverse(contains.right);
+                }
+                case Contains contains: {
+                    var left    = Traverse(contains.left);
+                    var right   = Traverse(contains.right);
                     return $"CONTAINS({left},{right})";
-                case Length length:
+                }
+                case Length length: {
                     var value = Traverse(length.value);
                     return $"LENGTH({value})";
+                }
                 
                 // --- arithmetic: operators ---
-                case Add add:
-                    left    = Traverse(add.left);
-                    right   = Traverse(add.right);
+                case Add add: {
+                    var left    = Traverse(add.left);
+                    var right   = Traverse(add.right);
                     return $"{left} + {right}";
-                case Subtract subtract:
-                    left    = Traverse(subtract.left);
-                    right   = Traverse(subtract.right);
+                }
+                case Subtract subtract: {
+                    var left    = Traverse(subtract.left);
+                    var right   = Traverse(subtract.right);
                     return $"{left} - {right}";
-                case Multiply multiply:
-                    left    = Traverse(multiply.left);
-                    right   = Traverse(multiply.right);
+                }
+                case Multiply multiply: {
+                    var left    = Traverse(multiply.left);
+                    var right   = Traverse(multiply.right);
                     return $"{left} * {right}";
-                case Divide divide:
-                    left    = Traverse(divide.left);
-                    right   = Traverse(divide.right);
+                }
+                case Divide divide: {
+                    var left    = Traverse(divide.left);
+                    var right   = Traverse(divide.right);
                     return $"{left} / {right}";
-                case Modulo modulo:
-                    left    = Traverse(modulo.left);
-                    right   = Traverse(modulo.right);
+                }
+                case Modulo modulo: {
+                    var left    = Traverse(modulo.left);
+                    var right   = Traverse(modulo.right);
                     return $"{left} % {right}";
+                }
                 
                 // --- arithmetic: methods ---
-                case Abs abs:
-                    value = Traverse(abs.value);
+                case Abs abs: {
+                    var value = Traverse(abs.value);
                     return $"ABS({value})";
-                case Ceiling ceiling:
-                    value = Traverse(ceiling.value);
+                }
+                case Ceiling ceiling: {
+                    var value = Traverse(ceiling.value);
                     return $"CEILING({value})";
-                case Floor floor:
-                    value = Traverse(floor.value);
+                }
+                case Floor floor: {
+                    var value = Traverse(floor.value);
                     return $"FLOOR({value})";
-                case Exp exp:
-                    value = Traverse(exp.value);
+                }
+                case Exp exp: {
+                    var value = Traverse(exp.value);
                     return $"EXP({value})";
-                case Log log:
-                    value = Traverse(log.value);
+                }
+                case Log log: {
+                    var value = Traverse(log.value);
                     return $"LOG({value})";
-                case Sqrt sqrt:
-                    value = Traverse(sqrt.value);
+                }
+                case Sqrt sqrt: {
+                    var value = Traverse(sqrt.value);
                     return $"SQRT({value})";
+                }
                 
                 // --- constants ---
                 case PiLiteral:
@@ -172,7 +196,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 case CountWhere countWhere: {
                     string arg          = countWhere.arg;
                     using var scope     = args.AddArg(arg);
-                    operand             = Traverse(countWhere.predicate);
+                    var operand         = Traverse(countWhere.predicate);
                     string fieldName    = Traverse(countWhere.field);
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
                 }
@@ -180,14 +204,14 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 case Any any: {
                     var arg             = any.arg;
                     using var scope     = args.AddArg(arg);
-                    operand             = Traverse(any.predicate);
+                    var operand         = Traverse(any.predicate);
                     var fieldName       = Traverse(any.field);
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
                 }
                 case All all: {
                     var arg             = all.arg;
                     using var scope     = args.AddArg(arg);
-                    operand             = Traverse(all.predicate);
+                    var operand         = Traverse(all.predicate);
                     var fieldName       = Traverse(all.field);
                     // treat array == null and missing array as empty array <=> array[]
                     return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
