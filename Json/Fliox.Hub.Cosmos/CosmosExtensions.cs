@@ -8,6 +8,7 @@ using System.Linq;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+using static Friflo.Json.Fliox.Transform.OpType;
 
 namespace Friflo.Json.Fliox.Hub.Cosmos
 {
@@ -36,8 +37,9 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         /// https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox.Hub/Client#query-filter
         /// </summary>
         internal string Traverse(Operation operation) {
-            switch (operation) {
-                case Field field: {
+            switch (operation.Type) {
+                case FIELD: {
+                    var field       = (Field)operation;
                     var arg  = args.GetArg(field);
                     var firstDot = field.name.IndexOf('.');
                     if (firstDot != - 1) {
@@ -49,157 +51,184 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 }
                 
                 // --- literal --- 
-                case StringLiteral stringLiteral:
+                case STRING:
+                    var stringLiteral = (StringLiteral)operation;
                     return $"'{stringLiteral.value}'";
-                case DoubleLiteral doubleLiteral:
+                case DOUBLE:
+                    var doubleLiteral = (DoubleLiteral)operation;
                     return doubleLiteral.value.ToString(CultureInfo.InvariantCulture);
-                case LongLiteral longLiteral:
+                case INT64:
+                    var longLiteral = (LongLiteral)operation;
                     return longLiteral.value.ToString();
-                case TrueLiteral    _:
+                case TRUE:
                     return "true";
-                case FalseLiteral   _:
+                case FALSE:
                     return "false";
-                case NullLiteral    _:
+                case NULL:
                     return "null";
                 
                 // --- compare ---
-                case Equal equal: {
+                case EQUAL: {
+                    var equal = (Equal)operation;
                     var left    = Traverse(equal.left);
                     var right   = Traverse(equal.right);
                     if (left  == "null") return $"(IS_NULL({right}) OR NOT IS_DEFINED({right}))";
                     if (right == "null") return $"(IS_NULL({left}) OR NOT IS_DEFINED({left}))";
                     return $"{left} = {right}";
                 }
-                case NotEqual notEqual: {
+                case NOT_EQUAL: {
+                    var notEqual = (NotEqual)operation;
                     var left    = Traverse(notEqual.left);
                     var right   = Traverse(notEqual.right);
                     if (left  == "null") return $"(NOT IS_NULL({right}) AND IS_DEFINED({right}))";
                     if (right == "null") return $"(NOT IS_NULL({left}) AND IS_DEFINED({left}))";
                     return $"(NOT IS_DEFINED({left}) or NOT IS_DEFINED({right}) or {left} != {right})";
                 }
-                case Less lessThan: {
+                case LESS: {
+                    var lessThan = (Less)operation;
                     var left    = Traverse(lessThan.left);
                     var right   = Traverse(lessThan.right);
                     return $"{left} < {right}";
                 }
-                case LessOrEqual lessThanOrEqual: {
+                case LESS_OR_EQUAL: {
+                    var lessThanOrEqual = (LessOrEqual)operation;
                     var left    = Traverse(lessThanOrEqual.left);
                     var right   = Traverse(lessThanOrEqual.right);
                     return $"{left} <= {right}";
                 }
-                case Greater greaterThan: {
+                case GREATER: {
+                    var greaterThan = (Greater)operation;
                     var left    = Traverse(greaterThan.left);
                     var right   = Traverse(greaterThan.right);
                     return $"{left} > {right}";
                 }
-                case GreaterOrEqual greaterThanOrEqual: {
+                case GREATER_OR_EQUAL: {
+                    var greaterThanOrEqual = (GreaterOrEqual)operation;
                     var left    = Traverse(greaterThanOrEqual.left);
                     var right   = Traverse(greaterThanOrEqual.right);
                     return $"{left} >= {right}";
                 }
                 
                 // --- logical ---
-                case Not @not: {
+                case NOT: {
+                    var @not = (Not)operation;
                     var operand = Traverse(@not.operand);
                     return $"NOT({operand})";
                 }
-                case Or or: {
+                case OR: {
+                    var or = (Or)operation;
                     var operands = GetOperands(or.operands);
                     return string.Join(" OR ", operands);
                 }
-                case And and: {
+                case AND: {
+                    var and = (And)operation;
                     var operands = GetOperands(and.operands);
                     return string.Join(" AND ", operands);
                 }
                 
                 // --- string ---
-                case StartsWith startsWith: {
+                case STARTS_WITH: {
+                    var startsWith = (StartsWith)operation;
                     var left    = Traverse(startsWith.left);
                     var right   = Traverse(startsWith.right);
                     return $"STARTSWITH({left},{right})";
                 }
-                case EndsWith endsWith: {
+                case ENDS_WITH: {
+                    var endsWith = (EndsWith)operation;
                     var left    = Traverse(endsWith.left);
                     var right   = Traverse(endsWith.right);
                     return $"ENDSWITH({left},{right})";
                 }
-                case Contains contains: {
+                case CONTAINS: {
+                    var contains = (Contains)operation;
                     var left    = Traverse(contains.left);
                     var right   = Traverse(contains.right);
                     return $"CONTAINS({left},{right})";
                 }
-                case Length length: {
+                case LENGTH: {
+                    var length = (Length)operation;
                     var value = Traverse(length.value);
                     return $"LENGTH({value})";
                 }
                 
                 // --- arithmetic: operators ---
-                case Add add: {
+                case ADD: {
+                    var add = (Add)operation;
                     var left    = Traverse(add.left);
                     var right   = Traverse(add.right);
                     return $"{left} + {right}";
                 }
-                case Subtract subtract: {
+                case SUBTRACT: {
+                    var subtract = (Subtract)operation;
                     var left    = Traverse(subtract.left);
                     var right   = Traverse(subtract.right);
                     return $"{left} - {right}";
                 }
-                case Multiply multiply: {
+                case MULTIPLY: {
+                    var multiply = (Multiply)operation;
                     var left    = Traverse(multiply.left);
                     var right   = Traverse(multiply.right);
                     return $"{left} * {right}";
                 }
-                case Divide divide: {
+                case DIVIDE: {
+                    var divide = (Divide)operation;
                     var left    = Traverse(divide.left);
                     var right   = Traverse(divide.right);
                     return $"{left} / {right}";
                 }
-                case Modulo modulo: {
+                case MODULO: {
+                    var modulo = (Modulo)operation;
                     var left    = Traverse(modulo.left);
                     var right   = Traverse(modulo.right);
                     return $"{left} % {right}";
                 }
                 
                 // --- arithmetic: methods ---
-                case Abs abs: {
+                case ABS: {
+                    var abs = (Abs)operation;
                     var value = Traverse(abs.value);
                     return $"ABS({value})";
                 }
-                case Ceiling ceiling: {
+                case CEILING: {
+                    var ceiling = (Ceiling)operation;
                     var value = Traverse(ceiling.value);
                     return $"CEILING({value})";
                 }
-                case Floor floor: {
+                case FLOOR: {
+                    var floor = (Floor)operation;
                     var value = Traverse(floor.value);
                     return $"FLOOR({value})";
                 }
-                case Exp exp: {
+                case EXP: {
+                    var exp = (Exp)operation;
                     var value = Traverse(exp.value);
                     return $"EXP({value})";
                 }
-                case Log log: {
+                case LOG: {
+                    var log = (Log)operation;
                     var value = Traverse(log.value);
                     return $"LOG({value})";
                 }
-                case Sqrt sqrt: {
+                case SQRT: {
+                    var sqrt = (Sqrt)operation;
                     var value = Traverse(sqrt.value);
                     return $"SQRT({value})";
                 }
                 
                 // --- constants ---
-                case PiLiteral:
+                case PI:
                     return "PI()";
-                case EulerLiteral:
+                case E:
                     return "EXP(1)";
                 
                 // --- aggregate ---
-                case CountWhere countWhere:
-                    return TraverseCount(countWhere);
+                case COUNT_WHERE:
+                    return TraverseCount((CountWhere)operation);
                 // --- quantify ---
-                case Any any:
-                    return TraverseAny(any);
-                case All all:
-                    return TraverseAll(all);
+                case ANY:
+                    return TraverseAny((Any)operation);
+                case ALL:
+                    return TraverseAll((All)operation);
                 
                 default:
                     throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {args.filter}");
