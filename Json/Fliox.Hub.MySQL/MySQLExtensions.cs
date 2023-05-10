@@ -12,15 +12,17 @@ using static Friflo.Json.Fliox.Hub.MySQL.MySQLProvider;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
-    public enum MySQLProvider
-    {
+    internal enum MySQLProvider {
         MY_SQL,
         MARIA_DB
     }
     
     public static class MySQLExtensions
     {
-        public static string MySQLFilter(this FilterOperation op, MySQLProvider provider) {
+        public static string MySQLFilter  (this FilterOperation op) => MySQLFilter(op, MY_SQL);
+        public static string MariaDBFilter(this FilterOperation op) => MySQLFilter(op, MARIA_DB);
+
+        internal static string MySQLFilter(this FilterOperation op, MySQLProvider provider) {
             var filter      = (Filter)op;
             var args        = new FilterArgs(filter);
             args.AddArg(filter.arg, "data");
