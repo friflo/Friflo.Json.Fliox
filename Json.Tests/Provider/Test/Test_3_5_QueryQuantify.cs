@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AnyObjectArray(string db) {
-            if (IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
+            if (IsPostgres || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectArray.Any(o => o.int32 == 10));
@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AnyObjectList(string db) {
-            if (IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
+            if (IsPostgres || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectList.Any(o => o.str == "str-10"));
@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AllObjectArray(string db) {
-            if (IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
+            if (IsPostgres || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectArray.All(o => o.int32 == 10));
@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_AllObjectList(string db) {
-            if (IsPostgres || IsSQLServer || IsMySQL || IsMariaDB) return;
+            if (IsPostgres || IsMySQL || IsMariaDB) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectList.All(o => o.str == "str-10"));

@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     var path        = GetFieldPath(field);
                     var arrayField  = args.GetArrayField(field);
                     if (arrayField != null) {
-                        return $"json_extract({arrayField.array}.value, '{path}')";    
+                        return $"json_extract({arrayField.array}.value, '{path}')";
                     }
                     return $"json_extract({arg},'{path}')";
                 }

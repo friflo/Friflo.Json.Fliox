@@ -38,7 +38,11 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 case Field field: {
                     var arg  = args.GetArg(field);
                     var path = GetFieldPath(field);
-                    return $"JSON_VALUE({arg},'{path}')";
+                    var arrayField  = args.GetArrayField(field);
+                    if (arrayField != null) {
+                        return $"JSON_VALUE(value, '{path}')";
+                    }
+                    return $"JSON_VALUE({arg}, '{path}')";
                 }
                 
                 // --- literal --- 
@@ -175,18 +179,31 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 // --- quantify ---
                 case Any any: {
                     var arg             = any.arg;
+                    var arrayTable      = "je_array";
                     using var scope     = args.AddArg(arg);
+                    using var array     = args.AddArrayField(arg, arrayTable);
                     operand             = Traverse(any.predicate);
-                    string fieldName    = Traverse(any.field);
-                    return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
+                    string arrayPath    = GetFieldPath(any.field);
+                    return
+                        $@"EXISTS(
+    SELECT 1
+    FROM openjson(data, '{arrayPath}')
+    WHERE {operand}
+)";
                 }
                 case All all: {
                     var arg             = all.arg;
+                    var arrayTable      = "je_array";
                     using var scope     = args.AddArg(arg);
+                    using var array     = args.AddArrayField(arg, arrayTable);
                     operand             = Traverse(all.predicate);
-                    var fieldName       = Traverse(all.field);
-                    // treat array == null and missing array as empty array <=> array[]
-                    return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
+                    string arrayPath    = GetFieldPath(all.field);
+                    return
+                        $@"NOT EXISTS(
+    SELECT 1
+    FROM openjson(data, '{arrayPath}')
+    WHERE NOT ({operand})
+)";
                 }
                 /* // --- query filter expression
                 case Filter filter: {
