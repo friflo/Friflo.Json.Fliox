@@ -34,6 +34,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Add(Operation left, Operation right) : base(left, right) { }
 
         public   override string    OperationName           => "+";
+        public   override OpType    Type                    => OpType.ADD;
         internal override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "+", left, right);
         
         internal override Scalar Eval(EvalCx cx) {
@@ -49,6 +50,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Subtract(Operation left, Operation right) : base(left, right) { }
 
         public   override string    OperationName           => "-";
+        public   override OpType    Type                    => OpType.SUBTRACT;
         internal override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "-", left, right);
         
         internal override Scalar Eval(EvalCx cx) {
@@ -64,6 +66,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Multiply(Operation left, Operation right) : base(left, right) { }
 
         public   override string    OperationName           => "*";
+        public   override OpType    Type                    => OpType.MULTIPLY;
         internal override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "*", left, right);
         
         internal override Scalar Eval(EvalCx cx) {
@@ -79,6 +82,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Divide(Operation left, Operation right) : base(left, right) { }
 
         public   override string    OperationName           => "/";
+        public   override OpType    Type                    => OpType.DIVIDE;
         internal override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "/", left, right);
         
         internal override Scalar Eval(EvalCx cx) {
@@ -94,6 +98,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Modulo(Operation left, Operation right) : base(left, right) { }
 
         public   override string    OperationName           => "%";
+        public   override OpType    Type                    => OpType.MODULO;
         internal override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "%", left, right);
         
         internal override Scalar Eval(EvalCx cx) {

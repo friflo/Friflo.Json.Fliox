@@ -30,6 +30,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     public sealed class Any : BinaryQuantifyOp
     {
         public   override string    OperationName           => "Any";
+        public   override OpType    Type                    => OpType.ANY;
         internal override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Any", field, arg, predicate, cx);
 
         public Any() { }
@@ -54,6 +55,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     public sealed class All : BinaryQuantifyOp
     {
         public   override string    OperationName           => "All";
+        public   override OpType    Type                    => OpType.ALL;
         internal override void      AppendLinq(AppendCx cx) => AppendLinqArrow("All", field, arg, predicate, cx);
 
         public All() { }
@@ -96,6 +98,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
 
         public   override string    OperationName           => "Count";
+        public   override OpType    Type                    => OpType.COUNT_WHERE;
         internal override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Count", field, arg, predicate, cx);
 
         internal override Scalar Eval(EvalCx cx) {

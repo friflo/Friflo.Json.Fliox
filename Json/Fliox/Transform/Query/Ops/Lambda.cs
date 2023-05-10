@@ -12,6 +12,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
         internal override string    GetArg()        => arg;
         public   override string    OperationName   => "(o): any";
+        public   override OpType    Type            => OpType.LAMBDA;
         internal override void      AppendLinq(AppendCx cx) {
             cx.Append(arg);
             cx.Append(" => ");
@@ -45,6 +46,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
         internal override string    GetArg()        => arg;
         public   override string    OperationName   => "(o): bool";
+        public   override OpType    Type            => OpType.FILTER;
         internal override void      AppendLinq(AppendCx cx) {
             cx.Append(arg);
             cx.Append(" => ");

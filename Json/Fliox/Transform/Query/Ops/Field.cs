@@ -23,6 +23,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Ignore]    private     string      nameIntern;
 
         public   override string    OperationName           => "name";
+        public   override OpType    Type                    => OpType.FIELD;
         internal override void      AppendLinq(AppendCx cx) { cx.Append(name); }
 
         public Field() { }

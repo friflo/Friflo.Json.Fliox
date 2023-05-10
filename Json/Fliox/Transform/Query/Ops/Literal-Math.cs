@@ -7,6 +7,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     {
         internal override   bool    IsNumeric()             => true;
         public   override   string  OperationName           => "PI";
+        public   override OpType    Type                    => OpType.PI;
         internal override   void    AppendLinq(AppendCx cx) => cx.Append("PI");
 
         public PiLiteral() { }
@@ -20,6 +21,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     {
         internal override   bool    IsNumeric()             => true;
         public   override   string  OperationName           => "E";
+        public   override OpType    Type                    => OpType.E;
         internal override   void    AppendLinq(AppendCx cx) => cx.Append("E");
 
         public EulerLiteral() { }
@@ -33,6 +35,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     {
         internal override   bool    IsNumeric()             => true;
         public   override   string  OperationName           => "Tau";
+        public   override OpType    Type                    => OpType.TAU;
         internal override   void    AppendLinq(AppendCx cx) => cx.Append("Tau");
 
         public TauLiteral() { }

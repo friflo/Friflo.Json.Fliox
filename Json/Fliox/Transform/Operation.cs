@@ -76,14 +76,15 @@ namespace Friflo.Json.Fliox.Transform
 #endif
     public abstract class Operation
     {
-        public    abstract  string      OperationName   { get; }
-        internal  abstract  void        AppendLinq      (AppendCx cx);
-        internal  abstract  void        Init            (OperationContext cx);
-        internal  abstract  Scalar      Eval            (EvalCx cx);    // todo - use in modifier
-        internal  virtual   bool        IsNumeric()     => false;
-        internal  virtual   string      GetArg()        => null;
+        public    abstract  string  OperationName   { get; }
+        public    abstract  OpType  Type            { get; }
+        internal  abstract  void    AppendLinq      (AppendCx cx);
+        internal  abstract  void    Init            (OperationContext cx);
+        internal  abstract  Scalar  Eval            (EvalCx cx);    // todo - use in modifier
+        internal  virtual   bool    IsNumeric()     => false;
+        internal  virtual   string  GetArg()        => null;
         
-        public              string      Linq            { get {
+        public              string  Linq            { get {
             var cs = new AppendCx(new StringBuilder());
             AppendLinq(cs);
             return cs.sb.ToString();
@@ -263,5 +264,67 @@ namespace Friflo.Json.Fliox.Transform
                     public             bool        IsTrue => this is TrueLiteral || (this as Filter)?.body is TrueLiteral;
                      
         protected FilterOperation() { }
+    }
+    
+    // ReSharper disable InconsistentNaming
+
+    public enum OpType
+    {
+        FIELD       = 1,
+        //  
+        STRING      = 2,
+        DOUBLE      = 3,
+        INT64       = 4,
+        //
+        NULL        = 5,
+        PI          = 6,
+        E           = 7,
+        TAU         = 8,
+        //  
+        ABS         = 9,
+        CEILING     = 10,
+        FLOOR       = 11,
+        EXP         = 12,
+        LOG         = 13,
+        SQRT        = 14,
+        NEGATE      = 15,
+        //  
+        ADD         = 16,
+        SUBTRACT    = 17,
+        MULTIPLY    = 18,
+        DIVIDE      = 19,
+        MODULO      = 20,
+        //  
+        MIN         = 21,
+        MAX         = 22,
+        SUM         = 23,
+        AVERAGE     = 24,
+        COUNT       = 25,
+        
+        // --- FilterOperation
+        EQUAL               = 26,
+        NOT_EQUAL           = 27,
+        LESS                = 28,
+        LESS_OR_EQUAL       = 29,
+        GREATER             = 30,
+        GREATER_OR_EQUAL    = 31,
+        //
+        AND         = 32,
+        OR          = 33,
+        //
+        TRUE        = 34,
+        FALSE       = 35,
+        NOT         = 36,
+        //
+        LAMBDA      = 37,
+        FILTER      = 38,
+        ANY         = 39,
+        ALL         = 40,
+        COUNT_WHERE = 41,
+        //
+        CONTAINS    = 42,
+        STARTS_WITH = 43,
+        ENDS_WITH   = 44,
+        LENGTH      = 45,
     }
 }
