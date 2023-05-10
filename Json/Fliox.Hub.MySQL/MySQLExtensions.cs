@@ -264,13 +264,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             string arrayPath    = GetFieldPath(any.field);
             switch (provider) {
                 case MY_SQL: return
-                    $@"FALSE OR EXISTS(
+$@"FALSE OR EXISTS(
     SELECT 1
     FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
     WHERE {operand}
 )";
                 case MARIA_DB: return
-                    $@"EXISTS(
+$@"EXISTS(
     SELECT data
     FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
     WHERE {operand}
