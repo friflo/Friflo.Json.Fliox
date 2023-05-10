@@ -4,33 +4,39 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
+// ReSharper disable UseNegatedPatternMatching
+// ReSharper disable ReplaceSubstringWithRangeIndexer
 namespace Friflo.Json.Fliox.Hub.SQLite
 {
     public static class SQLiteExtensions
     {
         public static string SQLiteFilter(this FilterOperation op) {
-            var cx      = new ConvertContext("c", op);
-            var result  = cx.Traverse(op);
+            var filter      = (Filter)op;
+            var args        = new FilterArgs(filter);
+            using var cx    = new ConvertContext (args, filter.arg, "data");
+            var result      = cx.Traverse(filter.body);
             return result;
         }
     }
     
-    internal sealed class ConvertContext {
-        private readonly   string           collection;
-        private readonly   string           collectionStart;
-        private readonly   FilterOperation  filterOp;
-        
-        internal ConvertContext (string collection, FilterOperation filterOp) {
-            this.collection = collection;
-            if (filterOp is Filter filter) {
-                collectionStart = $"{filter.arg}.";
-            }
-            this.filterOp     = filterOp;
+    internal sealed class ConvertContext : IDisposable {
+        private readonly    FilterArgs  args;
+        private readonly    string      argument;
+
+        internal ConvertContext (FilterArgs args, string argument, string alias = null) {
+            this.args       = args;
+            this.argument   = argument;
+            this.args.AddArg(argument, alias);
         }
-        
+
+        public void Dispose() {
+            args.RemoveArg(argument);
+        }
+
         /// <summary>
         /// Create CosmosDB query filter specified at: 
         /// https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox.Hub/Client#query-filter
@@ -38,11 +44,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         internal string Traverse(Operation operation) {
             switch (operation) {
                 case Field field: {
-                    if (collectionStart != null && field.name.StartsWith(collectionStart)) {
-                        var fieldName = field.name.Substring(collectionStart.Length);
-                        return $"json_extract(data,'$.{fieldName}')";
-                    }
-                    throw new InvalidOperationException($"expect field {field.name} starts with {collectionStart}");
+                    var arg = args.GetArg(field);
+                    var path = GetFieldPath(field);
+                    return $"json_extract({arg},'{path}')";
                 }
                 
                 // --- literal --- 
@@ -167,36 +171,37 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 
                 // --- aggregate ---
                 case CountWhere countWhere: {
-                    var cx              = new ConvertContext ("", filterOp);
+                    string arg          = countWhere.arg;
+                    using var cx        = new ConvertContext (args, arg);
                     operand             = cx.Traverse(countWhere.predicate);
                     string fieldName    = Traverse(countWhere.field);
-                    string arg          = countWhere.arg;
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
                 }
                 // --- quantify ---
                 case Any any: {
-                    var cx              = new ConvertContext ("", filterOp);
+                    var arg             = any.arg;
+                    using var cx        = new ConvertContext (args, arg);
                     operand             = cx.Traverse(any.predicate);
                     string fieldName    = Traverse(any.field);
-                    var arg             = any.arg;
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
                 }
                 case All all: {
-                    var cx              = new ConvertContext ("", filterOp);
+                    var arg             = all.arg;
+                    using var cx        = new ConvertContext (args, arg);
                     operand             = cx.Traverse(all.predicate);
                     var fieldName       = Traverse(all.field);
-                    var arg             = all.arg;
                     // treat array == null and missing array as empty array <=> array[]
                     return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
                 }
-                // --- query filter expression
+                /* // --- query filter expression
                 case Filter filter: {
-                    var cx              = new ConvertContext (collection, filterOp);
+                    var arg             = filter.arg;
+                    using var cx        = new ConvertContext (args, arg);
                     operand             = cx.Traverse(filter.body);
                     return $"{operand}";
-                }
+                } */
                 default:
-                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filterOp}");
+                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {args.filter}");
             }
         }
         
@@ -213,6 +218,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 return value.Substring(1, value.Length - 2);
             }
             return value;
+        }
+        
+        private static string GetFieldPath(Field field) {
+            if (field.arg == field.name) {
+                return "$";
+            }
+            var path = field.name.Substring(field.arg.Length + 1);
+            return $"$.{path}";
         }
     }
 }
