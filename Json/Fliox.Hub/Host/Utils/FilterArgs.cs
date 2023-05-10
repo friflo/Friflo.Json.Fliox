@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             if (args.TryGetValue(arg, out string result)) {
                 return result;
             }
-            throw new InvalidOperationException($"argument not found in {field.name}. arg: {arg}");
+            return arg;
         }
         
         public ArgScope AddArg(string arg, string alias = null) {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
@@ -13,23 +14,21 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
     public static class CosmosExtensions
     {
         public static string CosmosFilter(this FilterOperation op) {
-            var cx      = new ConvertContext("c", op);
-            var result  = cx.Traverse(op);
-            return result;
+            var args        = new FilterArgs(op);
+            var cx          = new ConvertContext (args);
+            if (op is Filter filter) {
+                args.AddArg(filter.arg, "c");
+                return cx.Traverse(filter.body);
+            }
+            return cx.Traverse(op);
         }
     }
     
     internal sealed class ConvertContext {
-        private readonly   string           collection;
-        private readonly   string           collectionStart;
-        private readonly   FilterOperation  filterOp;
+        private readonly   FilterArgs       args;
         
-        internal ConvertContext (string collection, FilterOperation filterOp) {
-            this.collection = collection;
-            if (filterOp is Filter filter) {
-                collectionStart = $"{filter.arg}.";
-            }
-            this.filterOp     = filterOp;
+        internal ConvertContext (FilterArgs       args) {
+            this.args = args;
         }
         
         /// <summary>
@@ -39,19 +38,14 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         internal string Traverse(Operation operation) {
             switch (operation) {
                 case Field field: {
-                    /* if (collectionStart != null && field.name.StartsWith(collectionStart)) {
-                        var fieldName   = field.name.Substring(collectionStart.Length);
-                        var path        = ConvertPath(fieldName);
-                        return $"{collection}{path}";
-                    } */
+                    var arg  = args.GetArg(field);
                     var firstDot = field.name.IndexOf('.');
                     if (firstDot != - 1) {
                         var fieldName       = field.name.Substring(firstDot + 1);
                         var path            = ConvertPath(fieldName);
-                        var collectionName  = collection ?? field.name.Substring(0, firstDot);
-                        return $"{collectionName}{path}";
+                        return $"{arg}{path}";
                     }
-                    return field.name;
+                    return arg;
                 }
                 
                 // --- literal --- 
@@ -176,36 +170,36 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 
                 // --- aggregate ---
                 case CountWhere countWhere: {
-                    var cx              = new ConvertContext (null, filterOp);
-                    operand             = cx.Traverse(countWhere.predicate);
-                    string fieldName    = Traverse(countWhere.field);
                     string arg          = countWhere.arg;
+                    using var scope     = args.AddArg(arg);
+                    operand             = Traverse(countWhere.predicate);
+                    string fieldName    = Traverse(countWhere.field);
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
                 }
                 // --- quantify ---
                 case Any any: {
-                    var cx              = new ConvertContext (null, filterOp);
-                    operand             = cx.Traverse(any.predicate);
-                    var fieldName       = Traverse(any.field);
                     var arg             = any.arg;
+                    using var scope     = args.AddArg(arg);
+                    operand             = Traverse(any.predicate);
+                    var fieldName       = Traverse(any.field);
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
                 }
                 case All all: {
-                    var cx              = new ConvertContext (null, filterOp);
-                    operand             = cx.Traverse(all.predicate);
+                    var arg             = all.arg;
+                    using var scope     = args.AddArg(arg);
+                    operand             = Traverse(all.predicate);
                     var fieldName       = Traverse(all.field);
-                    var arg            = all.arg;
                     // treat array == null and missing array as empty array <=> array[]
                     return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
                 }
-                // --- query filter expression
+                /* // --- query filter expression
                 case Filter filter: {
                     var cx              = new ConvertContext (collection, filterOp);
                     operand             = cx.Traverse(filter.body);
                     return $"{operand}";
-                }
+                } */
                 default:
-                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filterOp}");
+                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {args.filter}");
             }
         }
         

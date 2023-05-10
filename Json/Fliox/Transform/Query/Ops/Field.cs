@@ -6,6 +6,8 @@ using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Transform.Tree;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable InconsistentNaming
 // ReSharper disable ReplaceSliceWithRangeIndexer
 // ReSharper disable ReplaceSubstringWithRangeIndexer
 namespace Friflo.Json.Fliox.Transform.Query.Ops
@@ -13,15 +15,28 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------- unary operations -------------------------------------
     public sealed class Field : Operation
     {
-        [Required]  public      string      name;
-        [Ignore]    public      string      arg;
+        [Required]  public      string      name { get => nameIntern; set => SetArg(value); }
+        [Ignore]    public      string      arg  { get; private set; }
         [Ignore]    internal    Utf8Bytes[] pathItems;
+        
+        // --- private
+        [Ignore]    private     string      nameIntern;
 
         public   override string    OperationName           => "name";
         internal override void      AppendLinq(AppendCx cx) { cx.Append(name); }
 
         public Field() { }
         public Field(string name) { this.name = name; }
+        
+        private void SetArg(string value) {
+            nameIntern = value;
+            var dotPos = value.IndexOf('.');
+            if (dotPos == -1) {
+                arg   = value;
+            } else {
+                arg   = value.Substring(0, dotPos);
+            }
+        }
 
         internal override void Init(OperationContext cx)
         {
@@ -32,11 +47,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             }
             if (dotPos == -1) {
                 pathItems   = Array.Empty<Utf8Bytes>();
-                arg         = name;
             } else {
                 var fields  = name.AsSpan().Slice(dotPos + 1);
                 pathItems   = JsonAst.GetPathItems(fields);
-                arg         = name.Substring(0, dotPos);
             }
             if (!cx.initArgs.Contains(arg)) {
                 cx.Error($"symbol '{arg}' not found");
