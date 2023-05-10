@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Hub.Host.Utils
@@ -26,16 +25,29 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             throw new InvalidOperationException($"argument not found in {field.name}. arg: {arg}");
         }
         
-        public void AddArg(string arg, string alias) {
-            if (alias == null) {
-                int n = 11;
-            }
+        public ArgScope AddArg(string arg, string alias = null) {
             alias ??= arg;
             args.Add(arg, alias);
+            return new ArgScope(this, arg);
         }
         
         public void RemoveArg(string arg) {
             args.Remove(arg);
+        }
+    }
+    
+    public readonly struct ArgScope : IDisposable
+    {
+        private readonly FilterArgs args;
+        private readonly string     argument;
+        
+        public ArgScope(FilterArgs args, string argument) {
+            this.args       = args;
+            this.argument   = argument;
+        }
+            
+        public void Dispose() {
+            args.RemoveArg(argument);
         }
     }
 }

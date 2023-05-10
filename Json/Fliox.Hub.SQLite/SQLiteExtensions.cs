@@ -17,24 +17,18 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         public static string SQLiteFilter(this FilterOperation op) {
             var filter      = (Filter)op;
             var args        = new FilterArgs(filter);
-            using var cx    = new ConvertContext (args, filter.arg, "data");
+            args.AddArg(filter.arg, "data");
+            var cx          = new ConvertContext (args);
             var result      = cx.Traverse(filter.body);
             return result;
         }
     }
     
-    internal sealed class ConvertContext : IDisposable {
+    internal sealed class ConvertContext {
         private readonly    FilterArgs  args;
-        private readonly    string      argument;
 
-        internal ConvertContext (FilterArgs args, string argument, string alias = null) {
+        internal ConvertContext (FilterArgs args) {
             this.args       = args;
-            this.argument   = argument;
-            this.args.AddArg(argument, alias);
-        }
-
-        public void Dispose() {
-            args.RemoveArg(argument);
         }
 
         /// <summary>
@@ -44,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         internal string Traverse(Operation operation) {
             switch (operation) {
                 case Field field: {
-                    var arg = args.GetArg(field);
+                    var arg  = args.GetArg(field);
                     var path = GetFieldPath(field);
                     return $"json_extract({arg},'{path}')";
                 }
@@ -172,23 +166,23 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 // --- aggregate ---
                 case CountWhere countWhere: {
                     string arg          = countWhere.arg;
-                    using var cx        = new ConvertContext (args, arg);
-                    operand             = cx.Traverse(countWhere.predicate);
+                    using var scope     = args.AddArg(arg);
+                    operand             = Traverse(countWhere.predicate);
                     string fieldName    = Traverse(countWhere.field);
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
                 }
                 // --- quantify ---
                 case Any any: {
                     var arg             = any.arg;
-                    using var cx        = new ConvertContext (args, arg);
-                    operand             = cx.Traverse(any.predicate);
+                    using var scope     = args.AddArg(arg);
+                    operand             = Traverse(any.predicate);
                     string fieldName    = Traverse(any.field);
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
                 }
                 case All all: {
                     var arg             = all.arg;
-                    using var cx        = new ConvertContext (args, arg);
-                    operand             = cx.Traverse(all.predicate);
+                    using var scope     = args.AddArg(arg);
+                    operand             = Traverse(all.predicate);
                     var fieldName       = Traverse(all.field);
                     // treat array == null and missing array as empty array <=> array[]
                     return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
