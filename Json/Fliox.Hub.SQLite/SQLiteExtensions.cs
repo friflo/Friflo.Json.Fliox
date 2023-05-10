@@ -192,54 +192,57 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return "2.718281828459045"; // return "EXP(1)";
                 
                 // --- aggregate ---
-                case CountWhere countWhere: {
-                    string arg          = countWhere.arg;
-                    var arrayTable      = "je_array";
-                    using var scope     = args.AddArg(arg);
-                    using var array     = args.AddArrayField(arg, arrayTable);
-                    var operand         = Traverse(countWhere.predicate);
-                    string fieldName    = Traverse(countWhere.field);
-                    return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
-                }
+                case CountWhere countWhere:
+                    return TraverseCount(countWhere);
                 // --- quantify ---
-                case Any any: {
-                    var arg             = any.arg;
-                    var arrayTable      = "je_array";
-                    using var scope     = args.AddArg(arg);
-                    using var array     = args.AddArrayField(arg, arrayTable);
-                    var operand         = Traverse(any.predicate);
-                    string arrayPath    = GetFieldPath(any.field);
-                    return
+                case Any any:
+                    return TraverseAny(any);
+                case All all:
+                    return TraverseAll(all);
+                
+                default:
+                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {args.filter}");
+            }
+        }
+        
+        private string TraverseCount (CountWhere countWhere) {
+            string arg          = countWhere.arg;
+            var arrayTable      = "je_array";
+            using var scope     = args.AddArg(arg);
+            using var array     = args.AddArrayField(arg, arrayTable);
+            var operand         = Traverse(countWhere.predicate);
+            string fieldName    = Traverse(countWhere.field);
+            return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
+        }
+        
+        private string TraverseAny (Any any) {
+            var arg             = any.arg;
+            var arrayTable      = "je_array";
+            using var scope     = args.AddArg(arg);
+            using var array     = args.AddArrayField(arg, arrayTable);
+            var operand         = Traverse(any.predicate);
+            string arrayPath    = GetFieldPath(any.field);
+            return
 $@"EXISTS(
     SELECT 1
     FROM json_each(data, '{arrayPath}') as {arrayTable}
     WHERE {operand}
 )";
-                }
-                case All all: {
-                    var arg             = all.arg;
-                    var arrayTable      = "je_array";
-                    using var scope     = args.AddArg(arg);
-                    using var array     = args.AddArrayField(arg, arrayTable);
-                    var operand         = Traverse(all.predicate);
-                    string arrayPath    = GetFieldPath(all.field);
-                    return
+        }
+        
+        private string TraverseAll (All all) {
+            var arg             = all.arg;
+            var arrayTable      = "je_array";
+            using var scope     = args.AddArg(arg);
+            using var array     = args.AddArrayField(arg, arrayTable);
+            var operand         = Traverse(all.predicate);
+            string arrayPath    = GetFieldPath(all.field);
+            return
 $@"NOT EXISTS(
     SELECT 1
     FROM json_each(data, '{arrayPath}') as {arrayTable}
     WHERE NOT ({operand})
 )";
-                }
-                /* // --- query filter expression
-                case Filter filter: {
-                    var arg             = filter.arg;
-                    using var cx        = new ConvertContext (args, arg);
-                    operand             = cx.Traverse(filter.body);
-                    return $"{operand}";
-                } */
-                default:
-                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {args.filter}");
-            }
         }
         
         private string[] GetOperands (List<FilterOperation> operands) {

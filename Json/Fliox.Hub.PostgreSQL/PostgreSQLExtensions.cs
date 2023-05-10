@@ -195,41 +195,45 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     return "EXP(1)";
                 
                 // --- aggregate ---
-                case CountWhere countWhere: {
-                    string arg          = countWhere.arg;
-                    using var scope     = args.AddArg(arg);
-                    var cx              = new ConvertContext (args, null);
-                    operand             = cx.Traverse(countWhere.predicate);
-                    string fieldName    = Traverse(countWhere.field);
-                    return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
-                }
+                case CountWhere countWhere:
+                    return TraverseCount(countWhere);
                 // --- quantify ---
-                case Any any: {
-                    var arg             = any.arg;
-                    using var scope     = args.AddArg(arg);
-                    var cx              = new ConvertContext (args, null);
-                    operand             = cx.Traverse(any.predicate);
-                    string fieldName    = Traverse(any.field);
-                    return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
-                }
-                case All all: {
-                    var arg             = all.arg;
-                    using var scope     = args.AddArg(arg);
-                    var cx              = new ConvertContext (args, null);
-                    operand             = cx.Traverse(all.predicate);
-                    var fieldName       = Traverse(all.field);
-                    // treat array == null and missing array as empty array <=> array[]
-                    return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
-                }
-                /* // --- query filter expression
-                case Filter filter: {
-                    var cx              = new ConvertContext (collection, filterOp, entityType);
-                    operand             = cx.Traverse(filter.body);
-                    return $"{operand}";
-                } */
+                case Any any:
+                    return TraverseAny(any);
+                case All all:
+                    return TraverseAll(all);
+                
                 default:
                     throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {args.filter}");
             }
+        }
+        
+        private string TraverseCount (CountWhere countWhere) {
+            string arg          = countWhere.arg;
+            using var scope     = args.AddArg(arg);
+            var cx              = new ConvertContext (args, null);
+            var operand         = cx.Traverse(countWhere.predicate);
+            string fieldName    = Traverse(countWhere.field);
+            return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
+        }
+        
+        private string TraverseAny (Any any) {
+            var arg             = any.arg;
+            using var scope     = args.AddArg(arg);
+            var cx              = new ConvertContext (args, null);
+            var operand         = cx.Traverse(any.predicate);
+            string fieldName    = Traverse(any.field);
+            return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
+        }
+        
+        private string TraverseAll (All all) {
+            var arg             = all.arg;
+            using var scope     = args.AddArg(arg);
+            var cx              = new ConvertContext (args, null);
+            var operand         = cx.Traverse(all.predicate);
+            var fieldName       = Traverse(all.field);
+            // treat array == null and missing array as empty array <=> array[]
+            return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
         }
         
         private void GetCasts(BinaryBoolOp op, out string leftCast, out string rightCast) {

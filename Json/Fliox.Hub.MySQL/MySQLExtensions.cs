@@ -202,47 +202,61 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     return "EXP(1)";
                 
                 // --- aggregate ---
-                case CountWhere countWhere: {
-                    string arg          = countWhere.arg;
-                    var arrayTable      = "je_array";
-                    using var scope     = args.AddArg(arg);
-                    using var array     = args.AddArrayField(arg, arrayTable);
-                    var operand         = Traverse(countWhere.predicate);
-                    string fieldName    = Traverse(countWhere.field);
-                    return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
-                }
+                case CountWhere countWhere:
+                    return TraverseCount(countWhere);
                 // --- quantify ---
-                case Any any: {
-                    var arg             = any.arg;
-                    var arrayTable      = "je_array";
-                    using var scope     = args.AddArg(arg);
-                    using var array     = args.AddArrayField(arg, arrayTable);
-                    var operand         = Traverse(any.predicate);
-                    string arrayPath    = GetFieldPath(any.field);
-                    switch (provider) {
-case MY_SQL: return
-$@"FALSE OR EXISTS(
+                case Any any:
+                    return TraverseAny(any);
+                case All all:
+                    return TraverseAll(all);
+
+                default:
+                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {args.filter}");
+            }
+        }
+        
+        private string TraverseCount (CountWhere countWhere) {
+            string arg          = countWhere.arg;
+            var arrayTable      = "je_array";
+            using var scope     = args.AddArg(arg);
+            using var array     = args.AddArrayField(arg, arrayTable);
+            var operand         = Traverse(countWhere.predicate);
+            string fieldName    = Traverse(countWhere.field);
+            return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
+        }
+        
+        private string TraverseAny (Any any) {
+            var arg             = any.arg;
+            var arrayTable      = "je_array";
+            using var scope     = args.AddArg(arg);
+            using var array     = args.AddArrayField(arg, arrayTable);
+            var operand         = Traverse(any.predicate);
+            string arrayPath    = GetFieldPath(any.field);
+            switch (provider) {
+                case MY_SQL: return
+                    $@"FALSE OR EXISTS(
     SELECT 1
     FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
     WHERE {operand}
 )";
-case MARIA_DB: return
-$@"EXISTS(
+                case MARIA_DB: return
+                    $@"EXISTS(
     SELECT data
     FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
     WHERE {operand}
 )"; 
-                    }
-                    throw new InvalidOperationException("invalid provider");
-                }
-                case All all: {
-                    var arg             = all.arg;
-                    var arrayTable      = "je_array";
-                    using var scope     = args.AddArg(arg);
-                    using var array     = args.AddArrayField(arg, arrayTable);
-                    var operand         = Traverse(all.predicate);
-                    string arrayPath    = GetFieldPath(all.field);
-                    switch (provider) {
+            }
+            throw new InvalidOperationException("invalid provider");
+        }
+        
+        private string TraverseAll (All all) {
+            var arg             = all.arg;
+            var arrayTable      = "je_array";
+            using var scope     = args.AddArg(arg);
+            using var array     = args.AddArrayField(arg, arrayTable);
+            var operand         = Traverse(all.predicate);
+            string arrayPath    = GetFieldPath(all.field);
+            switch (provider) {
 case MY_SQL: return
 $@"NOT EXISTS(
     SELECT 1
@@ -255,18 +269,8 @@ $@"NOT EXISTS(
     FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
     WHERE NOT ({operand})
 )";
-                    }
-                    throw new InvalidOperationException("invalid provider");
-                }
-                /* // --- query filter expression
-                case Filter filter: {
-                    var cx              = new ConvertContext (collection, filterOp, provider);
-                    operand             = cx.Traverse(filter.body);
-                    return $"{operand}";
-                } */
-                default:
-                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {args.filter}");
             }
+            throw new InvalidOperationException("invalid provider");
         }
         
         private string ToBoolean(string operand) {
