@@ -38,8 +38,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         internal string Traverse(Operation operation) {
             switch (operation) {
                 case Field field: {
-                    var arg  = args.GetArg(field);
-                    var path = GetFieldPath(field);
+                    var arg         = args.GetArg(field);
+                    var path        = GetFieldPath(field);
+                    var arrayField  = args.GetArrayField(field);
+                    if (arrayField != null) {
+                        return $"json_extract({arrayField.array}.value, '{path}')";    
+                    }
                     return $"json_extract({arg},'{path}')";
                 }
                 
@@ -166,7 +170,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 // --- aggregate ---
                 case CountWhere countWhere: {
                     string arg          = countWhere.arg;
+                    var arrayTable      = "je_array";
                     using var scope     = args.AddArg(arg);
+                    using var array     = args.AddArrayField(arg, arrayTable);
                     operand             = Traverse(countWhere.predicate);
                     string fieldName    = Traverse(countWhere.field);
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
@@ -174,18 +180,31 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 // --- quantify ---
                 case Any any: {
                     var arg             = any.arg;
+                    var arrayTable      = "je_array";
                     using var scope     = args.AddArg(arg);
+                    using var array     = args.AddArrayField(arg, arrayTable);
                     operand             = Traverse(any.predicate);
-                    string fieldName    = Traverse(any.field);
-                    return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
+                    string arrayPath    = GetFieldPath(any.field);
+                    return
+$@"EXISTS(
+    SELECT 1
+    FROM json_each(data, '{arrayPath}') as {arrayTable}
+    WHERE {operand}
+)";
                 }
                 case All all: {
                     var arg             = all.arg;
+                    var arrayTable      = "je_array";
                     using var scope     = args.AddArg(arg);
+                    using var array     = args.AddArrayField(arg, arrayTable);
                     operand             = Traverse(all.predicate);
-                    var fieldName       = Traverse(all.field);
-                    // treat array == null and missing array as empty array <=> array[]
-                    return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
+                    string arrayPath    = GetFieldPath(all.field);
+                    return
+$@"NOT EXISTS(
+    SELECT 1
+    FROM json_each(data, '{arrayPath}') as {arrayTable}
+    WHERE NOT ({operand})
+)";
                 }
                 /* // --- query filter expression
                 case Filter filter: {
