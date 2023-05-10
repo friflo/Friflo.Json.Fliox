@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
@@ -15,25 +16,22 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
     public static class PostgreSQLExtensions
     {
         public static string PostgresFilter(this FilterOperation op, TypeDef entityType) {
-            var cx      = new ConvertContext("c", op, entityType);
-            var result  = cx.Traverse(op);
+            var filter      = (Filter)op;
+            var args        = new FilterArgs(filter);
+            args.AddArg(filter.arg, "data");
+            var cx          = new ConvertContext (args, entityType);
+            var result      = cx.Traverse(filter.body);
             return result;
         }
     }
     
     internal sealed class ConvertContext {
-        private readonly   string           collection;
-        private readonly   string           collectionStart;
-        private readonly   FilterOperation  filterOp;
+        private readonly   FilterArgs       args;
         private readonly   TypeDef          entityType;
         
-        internal ConvertContext (string collection, FilterOperation filterOp, TypeDef entityType) {
-            this.collection = collection;
+        internal ConvertContext (FilterArgs args, TypeDef entityType) {
+            this.args = args;
             this.entityType = entityType ?? throw new InvalidOperationException(nameof(entityType));
-            if (filterOp is Filter filter) {
-                collectionStart = $"{filter.arg}.";
-            }
-            this.filterOp     = filterOp;
         }
         
         /// <summary>
@@ -43,11 +41,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         internal string Traverse(Operation operation) {
             switch (operation) {
                 case Field field: {
-                    if (collectionStart != null && field.name.StartsWith(collectionStart)) {
-                        var fieldName = field.name.Substring(collectionStart.Length);
-                        return ConvertPath("data", fieldName);
-                    }
-                    throw new InvalidOperationException($"expect field {field.name} starts with {collectionStart}");
+                    var arg  = args.GetArg(field);
+                    return ConvertPath(arg, field.name);
                 }
                 
                 // --- literal --- 
@@ -201,36 +196,39 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 
                 // --- aggregate ---
                 case CountWhere countWhere: {
-                    var cx              = new ConvertContext ("", filterOp, null);
+                    string arg          = countWhere.arg;
+                    using var scope     = args.AddArg(arg);
+                    var cx              = new ConvertContext (args, null);
                     operand             = cx.Traverse(countWhere.predicate);
                     string fieldName    = Traverse(countWhere.field);
-                    string arg          = countWhere.arg;
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
                 }
                 // --- quantify ---
                 case Any any: {
-                    var cx              = new ConvertContext ("", filterOp, null);
+                    var arg             = any.arg;
+                    using var scope     = args.AddArg(arg);
+                    var cx              = new ConvertContext (args, null);
                     operand             = cx.Traverse(any.predicate);
                     string fieldName    = Traverse(any.field);
-                    var arg             = any.arg;
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
                 }
                 case All all: {
-                    var cx              = new ConvertContext ("", filterOp, null);
+                    var arg             = all.arg;
+                    using var scope     = args.AddArg(arg);
+                    var cx              = new ConvertContext (args, null);
                     operand             = cx.Traverse(all.predicate);
                     var fieldName       = Traverse(all.field);
-                    var arg             = all.arg;
                     // treat array == null and missing array as empty array <=> array[]
                     return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
                 }
-                // --- query filter expression
+                /* // --- query filter expression
                 case Filter filter: {
                     var cx              = new ConvertContext (collection, filterOp, entityType);
                     operand             = cx.Traverse(filter.body);
                     return $"{operand}";
-                }
+                } */
                 default:
-                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filterOp}");
+                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {args.filter}");
             }
         }
         
@@ -292,7 +290,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var sb      = new StringBuilder();
             sb.Append('(');
             sb.Append(arg);
-            for (int n = 0; n < count; n++) {
+            for (int n = 1; n < count; n++) {
                 if (n == count - 1) {
                     sb.Append(" ->> '");
                 } else {

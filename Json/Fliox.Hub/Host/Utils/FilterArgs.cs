@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Hub.Host.Utils
@@ -10,9 +11,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     public class FilterArgs
     {
         private readonly   Dictionary<string, string>   args;
-        public  readonly   Filter                       filter;
+        public  readonly   FilterOperation              filter;
         
-        public FilterArgs(Filter filter) {
+        public FilterArgs(FilterOperation filter) {
             this.filter = filter ?? throw new ArgumentNullException(nameof(filter));
             args        = new Dictionary<string, string>();
         }
