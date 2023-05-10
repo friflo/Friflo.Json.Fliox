@@ -7,13 +7,15 @@ using System.Globalization;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+using static Friflo.Json.Fliox.Hub.MySQL.MySQLProvider;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
     public enum MySQLProvider
     {
-        MySQL,
-        MariaDB
+        MY_SQL,
+        MARIA_DB
     }
     
     public static class MySQLExtensions
@@ -46,6 +48,10 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case Field field: {
                     var arg  = args.GetArg(field);
                     var path = GetFieldPath(field);
+                    var arrayField  = args.GetArrayField(field);
+                    if (arrayField != null) {
+                        return $"JSON_VALUE({arrayField.array}, '{path}')";
+                    }
                     return $"JSON_VALUE({arg},'{path}')";
                 }
                 
@@ -57,9 +63,9 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case LongLiteral longLiteral:
                     return longLiteral.value.ToString();
                 case TrueLiteral    _:
-                    return provider == MySQLProvider.MySQL ? "'true'" : "true";
+                    return provider == MY_SQL ? "'true'" : "true";
                 case FalseLiteral   _:
-                    return provider == MySQLProvider.MySQL ? "'false'" : "false";
+                    return provider == MY_SQL ? "'false'" : "false";
                 case NullLiteral    _:
                     return "null";
                 
@@ -198,7 +204,9 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 // --- aggregate ---
                 case CountWhere countWhere: {
                     string arg          = countWhere.arg;
+                    var arrayTable      = "je_array";
                     using var scope     = args.AddArg(arg);
+                    using var array     = args.AddArrayField(arg, arrayTable);
                     var operand         = Traverse(countWhere.predicate);
                     string fieldName    = Traverse(countWhere.field);
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
@@ -206,18 +214,49 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 // --- quantify ---
                 case Any any: {
                     var arg             = any.arg;
+                    var arrayTable      = "je_array";
                     using var scope     = args.AddArg(arg);
+                    using var array     = args.AddArrayField(arg, arrayTable);
                     var operand         = Traverse(any.predicate);
-                    string fieldName    = Traverse(any.field);
-                    return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
+                    string arrayPath    = GetFieldPath(any.field);
+                    switch (provider) {
+case MY_SQL: return
+$@"FALSE OR EXISTS(
+    SELECT 1
+    FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
+    WHERE {operand}
+)";
+case MARIA_DB: return
+$@"EXISTS(
+    SELECT data
+    FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
+    WHERE {operand}
+)"; 
+                    }
+                    throw new InvalidOperationException("invalid provider");
                 }
                 case All all: {
                     var arg             = all.arg;
+                    var arrayTable      = "je_array";
                     using var scope     = args.AddArg(arg);
+                    using var array     = args.AddArrayField(arg, arrayTable);
                     var operand         = Traverse(all.predicate);
-                    var fieldName       = Traverse(all.field);
-                    // treat array == null and missing array as empty array <=> array[]
-                    return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
+                    string arrayPath    = GetFieldPath(all.field);
+                    switch (provider) {
+case MY_SQL: return
+$@"NOT EXISTS(
+    SELECT 1
+    FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
+    WHERE NOT ({operand})
+)";
+case MARIA_DB: return
+$@"NOT EXISTS(
+    SELECT data
+    FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
+    WHERE NOT ({operand})
+)";
+                    }
+                    throw new InvalidOperationException("invalid provider");
                 }
                 /* // --- query filter expression
                 case Filter filter: {
@@ -231,7 +270,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
         
         private string ToBoolean(string operand) {
-            if (provider == MySQLProvider.MySQL) {
+            if (provider == MY_SQL) {
                 switch (operand) {
                     case "'true'":  return "true";
                     case "'false'": return "false";
