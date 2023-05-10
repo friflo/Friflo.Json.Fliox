@@ -40,6 +40,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     var path = GetFieldPath(field);
                     var arrayField  = args.GetArrayField(field);
                     if (arrayField != null) {
+                        if (arg == field.name) { return "value"; }
                         return $"JSON_VALUE(value, '{path}')";
                     }
                     return $"JSON_VALUE({arg}, '{path}')";
