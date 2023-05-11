@@ -237,6 +237,33 @@ namespace Friflo.Json.Fliox.Hub.Host
                 query.cursor = queryResult.cursor;
             }
         }
+        
+        public async Task ClearDatabase() {
+            if (Schema == null) throw new InvalidOperationException("ClearDatabase requires a Schema");
+            var sharedEnv       = new SharedEnv();
+            var memoryBuffer    = new MemoryBuffer(4 * 1024);
+            var syncContext     = new SyncContext(sharedEnv, null, memoryBuffer);
+            try {
+                syncContext.database = this;
+                var entityTypes     = Schema.typeSchema.GetEntityTypes();
+                foreach (var pair in entityTypes) {
+                    var container = pair.Key;
+                    await ClearContainer(container, syncContext).ConfigureAwait(false);
+                }
+            }
+            finally {
+                syncContext.CloseConnection();
+            }
+        }
+        
+        private async Task ClearContainer(string container, SyncContext syncContext)
+        {
+            var containerName   = new ShortString(container);
+            var dstContainer    = GetOrCreateContainer(containerName);
+            
+            var delete          = new DeleteEntities { container = containerName, all = true };
+            await dstContainer.DeleteEntitiesAsync(delete, syncContext).ConfigureAwait(false);
+        }
         #endregion
     }
 }

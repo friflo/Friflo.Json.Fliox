@@ -62,6 +62,7 @@ namespace Friflo.Json.Tests.Provider
             
         internal static async Task Seed(EntityDatabase target, EntityDatabase source) {
             target.Schema = source.Schema;
+            await target.ClearDatabase().ConfigureAwait(false);
             await target.SeedDatabase(source).ConfigureAwait(false);
         }
         
