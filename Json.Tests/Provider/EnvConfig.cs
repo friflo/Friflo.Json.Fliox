@@ -1,6 +1,5 @@
 #if !UNITY_5_3_OR_NEWER
 
-using System;
 using Friflo.Json.Tests.Common.Utils;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
@@ -19,11 +18,7 @@ namespace Friflo.Json.Tests.Provider
         }
         
         public static string GetConnectionString(string provider) {
-            string connectionString = Configuration[provider];
-            if (connectionString == null) {
-                throw new ArgumentException($"provider not found in appsettings. provider: {provider}");
-            }
-            return connectionString;
+            return Configuration[provider];
         }
         
         // --- CosmosDB
