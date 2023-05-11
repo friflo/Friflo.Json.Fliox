@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Provider
         internal static             bool    IsPostgres          => TEST_DB_PROVIDER == "postgres";
         internal static             bool    IsSQLServer         => TEST_DB_PROVIDER == "sqlserver";
         internal static             bool    IsSQLite(string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
-        private  static             bool    IsFileSystem        => TEST_DB_PROVIDER == "file";
+        private  static             bool    IsFileSystem        => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
 
         static Env() {
             TEST_DB_PROVIDER = Environment.GetEnvironmentVariable(nameof(TEST_DB_PROVIDER));
@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Provider
                 case sqlite_db:
                     return CreateSQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3");
                 case test_db:
-                    if (TEST_DB_PROVIDER is null || IsFileSystem) {
+                    if (IsFileSystem) {
                         return SeedSource;
                     }
                     return CreateTestDatabase("test_db", TEST_DB_PROVIDER);
@@ -109,7 +109,7 @@ namespace Friflo.Json.Tests.Provider
             throw new InvalidOperationException($"invalid database Env: {db}");
         }
         
-        internal static EntityDatabase CreateTestDatabase(string db, string provider)
+        private static EntityDatabase CreateTestDatabase(string db, string provider)
         {
             switch (provider) {
                 case "cosmos":      return CreateCosmosDatabase     (db);
@@ -120,8 +120,7 @@ namespace Friflo.Json.Tests.Provider
                 case "sqlserver":   return CreateSQLServerDatabase  (db);
                 case "redis":       return CreateRedisDatabase      (db);
             }
-            return null;
-            // throw new ArgumentException($"invalid provider: {provider}");
+            throw new ArgumentException($"invalid provider: {provider}");
         }
         
         private static EntityDatabase CreateCosmosDatabase(string db)
