@@ -43,8 +43,15 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             switch (operation.Type) {
                 case FIELD: {
                     var field       = (Field)operation;
-                    var arg  = args.GetArg(field);
-                    return ConvertPath(arg, field.name);
+                    var arrayField  = args.GetArrayField(field);
+                    if (arrayField != null) {
+                        var path = GetArrayPath(arrayField.array, field);
+                        return path;
+                    } else {
+                        var arg     = args.GetArg(field);
+                        var path    = ConvertPath(arg, field.name); // todo check using GetFieldPath() instead
+                        return path;
+                    }
                 }
                 
                 // --- literal --- 
@@ -251,21 +258,40 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         private string TraverseAny (Any any) {
             var arg             = any.arg;
+            var arrayTable      = "je_array";
             using var scope     = args.AddArg(arg);
-            var cx              = new ConvertContext (args, null);
+            using var array     = args.AddArrayField(arg, arrayTable);
+            var fieldType       = GetFieldType(entityType, any.field.name);
+            var cx              = new ConvertContext (args, fieldType);
             var operand         = cx.Traverse(any.predicate);
-            string fieldName    = Traverse(any.field);
-            return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
+            string arrayPath    = GetFieldPath(any.field);
+            var result =
+$@"jsonb_typeof({arrayPath}) = 'array'
+  AND EXISTS(
+    SELECT 1
+    FROM jsonb_array_elements({arrayPath}) as {arrayTable}
+    WHERE {operand}
+)";
+            return result;
         }
         
         private string TraverseAll (All all) {
             var arg             = all.arg;
+            var arrayTable      = "je_array";
             using var scope     = args.AddArg(arg);
-            var cx              = new ConvertContext (args, null);
+            using var array     = args.AddArrayField(arg, arrayTable);
+            var fieldType       = GetFieldType(entityType, all.field.name);
+            var cx              = new ConvertContext (args, fieldType);
             var operand         = cx.Traverse(all.predicate);
-            var fieldName       = Traverse(all.field);
-            // treat array == null and missing array as empty array <=> array[]
-            return $"IS_NULL({fieldName}) OR NOT IS_DEFINED({fieldName}) OR (SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
+            string arrayPath    = GetFieldPath(all.field);
+            var result =
+$@"jsonb_typeof({arrayPath}) <> 'array'
+  OR NOT EXISTS(
+    SELECT 1
+    FROM jsonb_array_elements({arrayPath}) as {arrayTable}
+    WHERE NOT ({operand})
+)";
+            return result;
         }
         
         private void GetCasts(BinaryBoolOp op, out string leftCast, out string rightCast) {
@@ -286,6 +312,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                         return "::numeric";
                     case StandardTypeId.Boolean:
                         return "::boolean";
+                /*  case StandardTypeId.String:
+                    case StandardTypeId.DateTime:
+                    case StandardTypeId.BigInteger:
+                    case StandardTypeId.Guid:
+                        return "::text"; */
                 }
             }
             return "";
@@ -326,6 +357,39 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var sb      = new StringBuilder();
             sb.Append('(');
             sb.Append(arg);
+            for (int n = 1; n < count; n++) {
+                if (n == count - 1) {
+                    sb.Append(" ->> '");
+                } else {
+                    sb.Append(" -> '");
+                }
+                sb.Append(names[n]);
+                sb.Append('\'');
+            }
+            sb.Append(')');
+            return sb.ToString();
+        }
+        
+        private string GetFieldPath(Field field) {
+            var sb  = new StringBuilder();
+            var arg = args.GetArg(field);    
+            sb.Append(arg);
+            var names   = field.name.Split('.');
+            var count   = names.Length;
+            for (int n = 1; n < count; n++) {
+                sb.Append(" -> '");
+                sb.Append(names[n]);
+                sb.Append('\'');
+            }
+            return sb.ToString();
+        }
+        
+        private string GetArrayPath(string arg, Field field) {
+            var sb  = new StringBuilder();
+            sb.Append('(');
+            sb.Append(arg);
+            var names   = field.name.Split('.');
+            var count   = names.Length;
             for (int n = 1; n < count; n++) {
                 if (n == count - 1) {
                     sb.Append(" ->> '");
