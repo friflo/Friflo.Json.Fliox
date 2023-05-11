@@ -224,7 +224,12 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     var value = Traverse(sqrt.value);
                     return $"SQRT({value})";
                 }
-                
+                case NEGATE: {
+                    var negate = (Negate)operation;
+                    var value = Traverse(negate.value);
+                    return $"-({value})";
+                }
+
                 // --- constants ---
                 case PI:
                     return "PI()";

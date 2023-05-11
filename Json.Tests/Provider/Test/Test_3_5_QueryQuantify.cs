@@ -91,5 +91,29 @@ namespace Friflo.Json.Tests.Provider.Test
             LogSQL(query.SQL);
             AreEqual(4, query.Result.Count);
         }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_MinObjectList(string db) {
+            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB || IsCosmosDB) return;
+            
+            var client  = await GetClient(db);
+            var query   = client.testQuantify.Query(t => t.objectList.Min(o => o.int32) >= 10);
+            AreEqual("t => t.objectList.Min(o => o.int32) >= 10", query.filterLinq);
+            await client.SyncTasks();
+            LogSQL(query.SQL);
+            AreEqual(2, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_MaxObjectList(string db) {
+            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB || IsCosmosDB) return;
+            
+            var client  = await GetClient(db);
+            var query   = client.testQuantify.Query(t => t.objectList.Max(o => o.int32) >= 10);
+            AreEqual("t => t.objectList.Max(o => o.int32) >= 10", query.filterLinq);
+            await client.SyncTasks();
+            LogSQL(query.SQL);
+            AreEqual(2, query.Result.Count);
+        }
     }
 }

@@ -115,6 +115,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
+    /// <summary>
+    /// Returns the additive inverse number. Aka: opposite number, sign change or negation.<br/>
+    /// E.g. Negate from 5 is -5.<br/>
+    /// General: Negate(x) = -x
+    /// </summary>
     public sealed class Negate : UnaryArithmeticOp
     {
         public Negate() { }

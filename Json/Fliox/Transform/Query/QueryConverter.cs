@@ -224,20 +224,33 @@ namespace Friflo.Json.Fliox.Transform.Query
         }
         
         private static Operation OperationFromBinaryAggregate(MethodCallExpression methodCall, QueryCx cx) {
-            var predicate   = (LambdaExpression)methodCall.Arguments[1];
-            string sourceField = $"{cx.path}";
-            var lambdaParameter = predicate.Parameters[0].Name;
-            var lambdaCx = new QueryCx(lambdaParameter, cx.path, cx.exp, cx.queryPath);
-            var valueOp = TraceExpression(predicate, lambdaCx);
+            var args        = methodCall.Arguments;
+            var methodName  = methodCall.Method.Name;
+            if (args[1] is LambdaExpression predicate) {
+                string sourceField = $"{cx.path}";
+                var lambdaParameter = predicate.Parameters[0].Name;
+                var lambdaCx = new QueryCx(lambdaParameter, cx.path, cx.exp, cx.queryPath);
+                var valueOp = TraceExpression(predicate, lambdaCx);
             
-            switch (methodCall.Method.Name) {
-                case "Min":     return new Min      (new Field(sourceField), lambdaParameter, valueOp);
-                case "Max":     return new Max      (new Field(sourceField), lambdaParameter, valueOp);
-                case "Sum":     return new Sum      (new Field(sourceField), lambdaParameter, valueOp);
-                case "Average": return new Average  (new Field(sourceField), lambdaParameter, valueOp);
-                default:
-                    throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
+                switch (methodName) {
+                    case "Min":     return new Min      (new Field(sourceField), lambdaParameter, valueOp);
+                    case "Max":     return new Max      (new Field(sourceField), lambdaParameter, valueOp);
+                    case "Sum":     return new Sum      (new Field(sourceField), lambdaParameter, valueOp);
+                    case "Average": return new Average  (new Field(sourceField), lambdaParameter, valueOp);
+                    default:
+                        throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
+                }
             }
+            throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
+            /* switch (methodName) {
+                case "Min":
+                case "Max":
+                    break;
+                default:
+                    
+            }
+            var leftOp  = TraceExpression(args[0], cx);
+            var rightOp = TraceExpression(args[1], cx); */
         }
 
         private static Operation OperationFromUnaryExpression(UnaryExpression unary, QueryCx cx) {
