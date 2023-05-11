@@ -22,11 +22,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task  ValidationByTypesAsync() { await ValidationByTypes(); }
 
         private static async Task ValidationByTypes() {
+            var schema                  = new DatabaseSchema(typeof(PocStore)); 
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
+            using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()) { Schema = schema })
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var createStore      = new PocStore(hub) { UserId = "createStore"}) {
-                database.Schema     = new DatabaseSchema(typeof(PocStore)); 
                 // All write operation performed in following call produce JSON payload which meet the types defined
                 // in the assigned schema => the call succeed without any validation error. 
                 await TestRelationPoC.CreateStore(createStore);
@@ -39,12 +39,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task ValidationByJsonSchema() {
             var jsonSchemaFolder    = CommonUtils.GetBasePath() + "assets~/Schema/JSON/PocStore";
             var schemas             = JsonTypeSchema.ReadSchemas(jsonSchemaFolder);
+            var jsonSchema          = new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore");
+            var schema              = new DatabaseSchema(jsonSchema);
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
+            using (var database     = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()) { Schema = schema })
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
-            using (var createStore  = new PocStore(hub) { UserId = "createStore"})
-            using (var jsonSchema   = new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore")) {
-                database.Schema  = new DatabaseSchema(jsonSchema); 
+            using (var createStore  = new PocStore(hub) { UserId = "createStore"}) {
                 // All write operation performed in following call produce JSON payload which meet the types defined
                 // in the assigned schema => the call succeed without any validation error. 
                 await TestRelationPoC.CreateStore(createStore);

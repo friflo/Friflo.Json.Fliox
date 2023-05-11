@@ -13,6 +13,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     public static class UserDB
     {
+        public static readonly DatabaseSchema Schema = new DatabaseSchema(typeof(UserStore));
+        
         public static class ID {
             /// <summary>"userId" used for a <see cref="UserStore"/> to perform user authentication.</summary>
             public const string Server              = "Server";

@@ -46,6 +46,8 @@ namespace Friflo.Json.Tests.Provider
         internal static             bool    IsSQLServer         => TEST_DB_PROVIDER == "sqlserver";
         internal static             bool    IsSQLite(string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
         private  static             bool    IsFileSystem        => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
+        
+        internal static readonly    string  SQLiteFile  = CommonUtils.GetBasePath() + "test_db.sqlite3";
 
         static Env() {
             TEST_DB_PROVIDER = Environment.GetEnvironmentVariable(nameof(TEST_DB_PROVIDER));
@@ -71,8 +73,8 @@ namespace Friflo.Json.Tests.Provider
         internal static async Task<TestClient> GetClient(string db, bool seed = true)
         {
             if (!hubs.TryGetValue(db, out var hub)) {
-                var database    = CreateDatabase(db);
-                database.Schema = SeedSource.Schema;
+                var schema      = SeedSource.Schema;
+                var database    = CreateDatabase(db, schema);
                 hub = new FlioxHub(database);
                 hubs.Add(db, hub);
             }
@@ -89,43 +91,43 @@ namespace Friflo.Json.Tests.Provider
         }
 
 #if UNITY_5_3_OR_NEWER
-        private static EntityDatabase CreateDatabase(string db) => null;
+        private static EntityDatabase CreateDatabase(string db, DatabaseSchema schema) => null;
 #else
-        private static EntityDatabase CreateDatabase(string db)
+        private static EntityDatabase CreateDatabase(string db, DatabaseSchema schema)
         {
             switch (db) {
                 case memory_db:
-                    return new MemoryDatabase("memory_db");
+                    return new MemoryDatabase("memory_db") { Schema = schema };
                 case sqlite_db:
-                    return new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3");
+                    return new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3") { Schema = schema };
                 case test_db:
                     if (IsFileSystem) {
                         return SeedSource;
                     }
-                    return CreateTestDatabase("test_db", TEST_DB_PROVIDER);
+                    return CreateTestDatabase("test_db", TEST_DB_PROVIDER, schema);
                 default:
-                    return CreateTestDatabase("test_db", db);
+                    return CreateTestDatabase("test_db", db, schema);
             }
         }
         
-        private static EntityDatabase CreateTestDatabase(string db, string provider)
+        private static EntityDatabase CreateTestDatabase(string db, string provider, DatabaseSchema schema)
         {
             var connection = EnvConfig.GetConnectionString(provider);
             switch (provider) {
-                case "sqlite":      return new SQLiteDatabase       (db, CommonUtils.GetBasePath() + "test_db.sqlite3");
-                case "mysql":       return new MySQLDatabase        (db, connection);
-                case "mariadb":     return new MariaDBDatabase      (db, connection);
-                case "postgres":    return new PostgreSQLDatabase   (db, connection);
-                case "sqlserver":   return new SQLServerDatabase    (db, connection);
-                case "redis":       return new RedisDatabase        (db, connection);
-                case "cosmos":      return CreateCosmosDatabase     (db);
+                case "sqlite":      return new SQLiteDatabase       (db, SQLiteFile) { Schema = schema };
+                case "mysql":       return new MySQLDatabase        (db, connection) { Schema = schema };
+                case "mariadb":     return new MariaDBDatabase      (db, connection) { Schema = schema };
+                case "postgres":    return new PostgreSQLDatabase   (db, connection) { Schema = schema };
+                case "sqlserver":   return new SQLServerDatabase    (db, connection) { Schema = schema };
+                case "redis":       return new RedisDatabase        (db, connection) { Schema = schema };
+                case "cosmos":      return CreateCosmosDatabase     (db, schema);
             }
             throw new ArgumentException($"invalid provider: {provider}");
         }
         
-        private static EntityDatabase CreateCosmosDatabase(string db) {
+        private static EntityDatabase CreateCosmosDatabase(string db, DatabaseSchema schema) {
             var client = EnvConfig.CreateCosmosClient();
-            return new CosmosDatabase(db, client, db) { Throughput = 400 };
+            return new CosmosDatabase(db, client, db) { Schema = schema, Throughput = 400 };
         }
 #endif
     }

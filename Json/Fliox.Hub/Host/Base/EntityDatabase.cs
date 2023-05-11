@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
         /// performed on the <see cref="EntityContainer"/>'s of the database
         /// </summary>
-        public              DatabaseSchema      Schema          { get; set; }
+        public              DatabaseSchema      Schema          { get; init; }
         
         public  virtual     Task<SyncConnection> GetConnectionAsync()  => throw new NotImplementedException();
         /// <summary>A mapping function used to assign a custom container name.</summary>

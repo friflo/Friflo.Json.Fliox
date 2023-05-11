@@ -63,11 +63,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null)
         {
+            if (userDatabase.Schema == null) throw new ArgumentException("userDatabase requires Schema", nameof(userDatabase));
             var service             = userDatabase.service;
             var userDbService       = service as UserDBService
                                       ?? throw new ArgumentException($"userDatabase requires service: {nameof(UserDBService)}. was: {service.GetType().Name}");
             var sharedEnv           = env  ?? SharedEnv.Default;
-            userDatabase.Schema     = new DatabaseSchema(typeof(UserStore));
             userHub        	        = new FlioxHub(userDatabase, sharedEnv);
             userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase.name);  // authorize access to userDatabase
             this.userAuth           = userAuth;
