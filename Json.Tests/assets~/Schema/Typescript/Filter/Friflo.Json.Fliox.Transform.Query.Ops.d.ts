@@ -97,6 +97,11 @@ export class Sqrt extends UnaryArithmeticOp {
     op     : "sqrt";
 }
 
+/**
+ * Returns the additive inverse number. Aka: opposite number, sign change or negation.  
+ * E.g. Negate from 5 is -5.  
+ * General: Negate(x) = -x
+ */
 export class Negate extends UnaryArithmeticOp {
     /** operation type */
     op     : "negate";

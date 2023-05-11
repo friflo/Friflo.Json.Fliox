@@ -229,6 +229,7 @@
         "Negate": {
             "type": "object",
             "extends": { "$ref": "#/definitions/UnaryArithmeticOp" },
+            "description": "Returns the additive inverse number. Aka: opposite number, sign change or negation.<br/>\nE.g. Negate from 5 is -5.<br/>\nGeneral: Negate(x) = -x",
             "properties": {
                 "op":    { "enum": ["negate"] },
                 "value": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" }

@@ -227,6 +227,12 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                     return "EXP(1)";
                 
                 // --- aggregate ---
+                case MIN:
+                case MAX:
+                case SUM:
+                case AVERAGE:
+                case COUNT:
+                    throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {args.filter}");
                 case COUNT_WHERE:
                     return TraverseCount((CountWhere)operation);
                 // --- quantify ---
@@ -235,6 +241,9 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 case ALL:
                     return TraverseAll((All)operation);
                 
+                case TAU:
+                case LAMBDA:
+                case FILTER:
                 default:
                     throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {args.filter}");
             }
