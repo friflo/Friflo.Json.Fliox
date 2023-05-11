@@ -33,8 +33,8 @@ namespace Friflo.Json.Tests.Provider
             string      cache       = null;
             var schema              = new DatabaseSchema(typeof(TestClient));
             var fileDb              = new FileDatabase("file_db", Env.TestDbFolder) { Schema = schema };
-            var memoryDb            = new MemoryDatabase("memory_db");
-            await Env.Seed(memoryDb, fileDb);
+            var memoryDb            = new MemoryDatabase("memory_db") { Schema = schema };
+            await memoryDb.SeedDatabase(fileDb).ConfigureAwait(false);
             
             var hub                 = new FlioxHub(memoryDb, env);
             hub.Info.projectName    = "Test DB";
@@ -42,11 +42,11 @@ namespace Friflo.Json.Tests.Provider
             hub.Info.envName        = "test"; hub.Info.envColor = "rgb(0 140 255)";
             hub.AddExtensionDB (fileDb);
 #if !UNITY_5_3_OR_NEWER
-            var testDb              = Env.CreateTestDatabase("test_db", Env.TEST_DB_PROVIDER);
+            /* var testDb              = Env.CreateTestDatabase("test_db", Env.TEST_DB_PROVIDER);
             if (testDb != null) {
-                await Env.Seed(testDb, fileDb);
+                await testDb.SeedDatabase(fileDb).ConfigureAwait(false);
                 hub.AddExtensionDB (testDb);
-            }
+            } */
             var sqliteDb           = new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3") { Schema = schema };
             hub.AddExtensionDB (sqliteDb);
             

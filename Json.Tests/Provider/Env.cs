@@ -59,12 +59,6 @@ namespace Friflo.Json.Tests.Provider
                 // Console.Write($"SQL: {sql}");
             }
         }
-            
-        internal static async Task Seed(EntityDatabase target, EntityDatabase source) {
-            target.Schema = source.Schema;
-            await target.ClearDatabase().ConfigureAwait(false);
-            await target.SeedDatabase(source).ConfigureAwait(false);
-        }
         
         private static EntityDatabase SeedSource { get {
             if (_seedSource != null) {
@@ -85,7 +79,11 @@ namespace Friflo.Json.Tests.Provider
             if (seed && !seededDatabases.Contains(db)) {
                 seededDatabases.Add(db);
                 var source = SeedSource;
-                await Seed(hub.database, source).ConfigureAwait(false);
+                // file system database is the seed source for all other database. So it is not cleared
+                if (!IsFileSystem) {
+                    await hub.database.ClearDatabase().ConfigureAwait(false);
+                }
+                await hub.database.SeedDatabase(source).ConfigureAwait(false);
             }
             return new TestClient(hub);
         }
