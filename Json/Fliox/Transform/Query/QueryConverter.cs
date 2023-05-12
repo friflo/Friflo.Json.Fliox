@@ -17,9 +17,9 @@ namespace Friflo.Json.Fliox.Transform.Query
         private static readonly QueryPath DefaultQueryPath = new QueryPath();
         
         public static Operation OperationFromExpression(Expression query, QueryPath queryPath) {
-            if (queryPath == null)
+            if (queryPath == null) {
                 queryPath = DefaultQueryPath;
-            
+            }
             var cx = new QueryCx ("", "", query, queryPath);
             if (query is LambdaExpression lambda) {
                 var body = lambda.Body;
@@ -71,6 +71,9 @@ namespace Friflo.Json.Fliox.Transform.Query
                         var field = (Field) GetMember(parentMember, cx);
                         return new Length(field);
                     }
+                    if (GetMemberValue(parentMember, out object value)) {
+                        return OperationFromConstant(member, value, member.Type, null, cx);
+                    }
                     break;
                 case ConstantExpression constant:
                     name = GetMemberName(member, cx);
@@ -87,6 +90,33 @@ namespace Friflo.Json.Fliox.Transform.Query
             return new Field(paramName + "." + memberName); // field refers to object root (.) or a lambda parameter
         }
         
+        private static bool GetMemberValue(MemberExpression member, out object value)
+        {
+            switch (member.Expression) {
+                case ConstantExpression constant:
+                    value = constant.Value;
+                    break;
+                case MemberExpression parentMember:
+                    if (!GetMemberValue(parentMember, out value)) {
+                        return false;
+                    }
+                    break;
+                default:
+                    value = null;
+                    return false;
+            }
+            var memberInfo = member.Member;
+            switch (memberInfo) {
+                case FieldInfo      field:
+                    value   = field.GetValue(value);
+                    return true;
+                case PropertyInfo   property:
+                    value   = property.GetValue(value);
+                    return true;
+            }
+            throw new InvalidOperationException($"unexpected member type: {memberInfo}");
+        }
+
         private static string GetParameterName(MemberExpression member) {
             var expression = member;
             while (expression != null) {

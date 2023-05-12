@@ -16,6 +16,7 @@ using static System.Math;
 
 using Contains = Friflo.Json.Fliox.Transform.Query.Ops.Contains;
 
+// ReSharper disable InconsistentNaming
 // ReSharper disable CollectionNeverQueried.Global
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
@@ -46,7 +47,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public          string          houseNumber;
     }
 
-    
+    internal class TestClassFields
+    {
+        internal    int                 field_int;
+        internal    bool                field_bool;
+        internal    string              field_str;
+        internal    TestClassFields     field_sub   { get; set; }
+        
+        internal    int                 prop_int    { get; set; }
+        internal    TestClassFields     prop_sub    { get; set; }
+        
+        internal    int                 GetInt()    => field_int;
+    }
     
     public static class TestQuery
     {
@@ -247,6 +259,44 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             name = filter.ToString();
             name = name.Replace('"', '\'');
             return filter.Compile();
+        }
+        
+        // ReSharper disable once ConvertToConstant.Local
+        private static readonly int Four    =  4;
+        private static          int Five()  => 5;
+
+        [Test]
+        public static void TestLambdaParameters() {
+            // ReSharper disable once ConvertToConstant.Local
+            var         two     = 2;
+            const int   three   = 3;
+            var         test    = new TestClassFields { field_int = 1, prop_int = 11, field_bool = true, field_str = "foo"};
+            test.field_sub      = new TestClassFields { field_int = 2, prop_int = 12, field_bool = true, field_str = "bar"};
+            test.prop_sub       = new TestClassFields { field_int = 3, prop_int = 13, field_bool = true, field_str = "xyz"};
+
+            // AreEqual("p => 1",      JsonLambda.Create<object>(p => test.field_str.Length).Linq); todo
+            
+            AreEqual("p => 1",      JsonLambda.Create<object>(p => 1).Linq);
+            AreEqual("p => 2",      JsonLambda.Create<object>(p => two).Linq);
+            AreEqual("p => 3",      JsonLambda.Create<object>(p => three).Linq);
+            AreEqual("p => 4",      JsonLambda.Create<object>(p => Four).Linq);
+            AreEqual("p => 5",      JsonLambda.Create<object>(p => Five()).Linq);
+            
+            AreEqual("p => 1",      JsonLambda.Create<object>(p => test.field_int).Linq);
+            AreEqual("p => 1",      JsonLambda.Create<object>(p => test.GetInt()).Linq);
+            AreEqual("p => 11",     JsonLambda.Create<object>(p => test.prop_int).Linq);
+            AreEqual("p => true",   JsonLambda.Create<object>(p => test.field_bool).Linq);
+            AreEqual("p => 'foo'",  JsonLambda.Create<object>(p => test.field_str).Linq);
+            
+            AreEqual("p => 2",      JsonLambda.Create<object>(p => test.field_sub.field_int).Linq);
+            AreEqual("p => 12",     JsonLambda.Create<object>(p => test.field_sub.prop_int).Linq);
+            AreEqual("p => true",   JsonLambda.Create<object>(p => test.field_sub.field_bool).Linq);
+            AreEqual("p => 'bar'",  JsonLambda.Create<object>(p => test.field_sub.field_str).Linq);
+            
+            AreEqual("p => 3",      JsonLambda.Create<object>(p => test.prop_sub.field_int).Linq);
+            AreEqual("p => 13",     JsonLambda.Create<object>(p => test.prop_sub.prop_int).Linq);
+            AreEqual("p => true",   JsonLambda.Create<object>(p => test.prop_sub.field_bool).Linq);
+            AreEqual("p => 'xyz'",  JsonLambda.Create<object>(p => test.prop_sub.field_str).Linq);
         }
 
         [Test]
