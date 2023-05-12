@@ -262,19 +262,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         // ReSharper disable once ConvertToConstant.Local
-        private static readonly int Four    =  4;
-        private static          int Five()  => 5;
+        private static readonly int             Four    =  4;
+        private static          int             Five()  => 5;
+        private static readonly TestClassFields Test = new TestClassFields {
+                                                    field_int = 1, prop_int = 11, field_bool = true, field_str = "foo",
+                field_sub   = new TestClassFields { field_int = 2, prop_int = 12, field_bool = true, field_str = "bar"},
+                prop_sub    = new TestClassFields { field_int = 3, prop_int = 13, field_bool = true, field_str = "xyz"}   
+        };
+        
+        // [Test]
+        public static void TestLambdaParametersMethods() {
+            var         test    = Test;
+            AreEqual("p => 3",      JsonLambda.Create<object>(p => test.field_str.Length).Linq);
+        }
 
         [Test]
         public static void TestLambdaParameters() {
             // ReSharper disable once ConvertToConstant.Local
             var         two     = 2;
             const int   three   = 3;
-            var         test    = new TestClassFields { field_int = 1, prop_int = 11, field_bool = true, field_str = "foo"};
-            test.field_sub      = new TestClassFields { field_int = 2, prop_int = 12, field_bool = true, field_str = "bar"};
-            test.prop_sub       = new TestClassFields { field_int = 3, prop_int = 13, field_bool = true, field_str = "xyz"};
-
-            // AreEqual("p => 1",      JsonLambda.Create<object>(p => test.field_str.Length).Linq); todo
+            var         test    = Test;
             
             AreEqual("p => 1",      JsonLambda.Create<object>(p => 1).Linq);
             AreEqual("p => 2",      JsonLambda.Create<object>(p => two).Linq);
