@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         
         public   override   string          StorageType => "Microsoft SQL Server";
         
-        public SQLServerDatabase(string dbName, string connectionString)
-            : base(dbName)
+        public SQLServerDatabase(string dbName, string connectionString, DatabaseService service = null)
+            : base(dbName, service)
         {
             this.connectionString = connectionString;
         }

@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AssertSubscribe() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var eventDispatcher  = new EventDispatcher(EventDispatching.Send))
-            using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder) { Service = new PocService() })
+            using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()))
             using (var hub              = new FlioxHub(database, TestGlobals.Shared))
             using (var listenDb         = new PocStore(hub) { UserId = "listenDb", ClientId = "listen-client" }) {
                 hub.EventDispatcher     = eventDispatcher;

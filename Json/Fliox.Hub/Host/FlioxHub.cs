@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <br/>
     /// The <see cref="SyncRequest.tasks"/> contains all database operations like create, read, upsert, delete
     /// and all messages / commands send by a client. <br/>
-    /// The <see cref="FlioxHub"/> execute these tasks by the <see cref="EntityDatabase.Service"/> of the
+    /// The <see cref="FlioxHub"/> execute these tasks by the <see cref="EntityDatabase.service"/> of the
     /// specified <see cref="database"/>.<br/>
     /// <br/>
     /// Instances of <see cref="FlioxHub"/> are <b>thread-safe</b> enabling multiple clients e.g. <see cref="Client.FlioxClient"/>
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
         /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.
-        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="EntityDatabase.Service"/>.
+        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="EntityDatabase.service"/>.
         /// </summary>
         public              Authenticator       Authenticator   { get => authenticator; set => authenticator = value ?? throw new ArgumentNullException(nameof(Authenticator)); }
         
@@ -226,11 +226,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             var executionType = isSyncRequest ? Sync : Async;
             syncRequest.intern.error = null;
             syncRequest.intern.executionType = executionType;
-            return db.Service.GetExecutionType(syncRequest);
+            return db.service.GetExecutionType(syncRequest);
         }
 
         public Task<ExecuteSyncResult> QueueRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
-            var queue   = syncRequest.intern.db.Service.queue ?? throw new InvalidOperationException("DatabaseService initialized without a queue");
+            var queue   = syncRequest.intern.db.service.queue ?? throw new InvalidOperationException("DatabaseService initialized without a queue");
             var job     = new ServiceJob(this, syncRequest, syncContext);
             queue.EnqueueJob(job);
             return job.taskCompletionSource.Task;
@@ -252,7 +252,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             
             response.AssertResponse(syncRequest);
             
-            db.Service.PostExecuteTasks(syncContext);
+            db.service.PostExecuteTasks(syncContext);
             
             var dispatcher = EventDispatcher;
             if (dispatcher != null) {

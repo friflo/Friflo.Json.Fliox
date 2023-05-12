@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
 
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            database.Service.CustomizeMerge(this, syncContext);
+            database.service.CustomizeMerge(this, syncContext);
             if (error != null) {
                 return error;
             }
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            database.Service.CustomizeMerge(this, syncContext);
+            database.service.CustomizeMerge(this, syncContext);
             if (error != null) {
                 return error;
             }

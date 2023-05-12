@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             syncContext.clientId            = syncRequest.clientId;
             syncContext.clientIdValidation  = authenticator.ValidateClientId(clientController, syncContext);
             
-            var service         = db.Service;
+            var service         = db.service;
             var requestTasks    = syncRequest.tasks;
             var taskCount       = requestTasks.Count;
 

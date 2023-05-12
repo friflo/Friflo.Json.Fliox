@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         public   override   string      StorageType => "remote";
         
-        public RemoteDatabase(string dbName) : base(dbName) { }
+        public RemoteDatabase(string dbName) : base(dbName, null) { }
 
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             throw new InvalidOperationException("RemoteDatabase cannot create a container");
