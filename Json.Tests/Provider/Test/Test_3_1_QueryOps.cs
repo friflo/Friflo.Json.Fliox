@@ -16,9 +16,11 @@ namespace Friflo.Json.Tests.Provider.Test
     // ReSharper disable once InconsistentNaming
     public static class Test_3_1_QueryOps
     {
-        private static readonly     int Zero    = 0;
-        private static readonly     int One     = 1;
+        private static readonly     int     Zero    = 0;
+        private static readonly     int     One     = 1;
         
+        private static              int     ZeroMethod() => 0;
+
         private const int ArticleCount = 2;
         
         // --- query all
@@ -45,7 +47,9 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_OpNotEquals(string db) {
             var client  = await GetClient(db);
-            var query   = client.testOps.Query(a => One != Zero);
+            // Note: ZeroMethod() is called in the Query call. This should be avoided as it result in performance degradation. 
+            //       It should be called before the Query() and assign its result to a captured variable: var z = ZeroMethod()
+            var query   = client.testOps.Query(a => One != ZeroMethod());
             AreEqual("a => 1 != 0", query.filterLinq);
             await client.SyncTasks();
             LogSQL(query.SQL);

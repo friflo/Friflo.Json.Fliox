@@ -114,8 +114,26 @@ namespace Friflo.Json.Fliox.Transform.Query
                     throw NotSupported($"Member not supported: {member}", cx);
             }
         }
+        
+        private static bool IsBclMethod(MethodInfo methodInfo) {
+            var declType    = methodInfo.DeclaringType;
+            return declType == typeof (Math)       ||
+                   declType == typeof (Enumerable) ||
+                   declType == typeof (string);
+        }
 
         private static Operation OperationFromMethodCallExpression(MethodCallExpression methodCall, QueryCx cx) {
+            if (IsBclMethod(methodCall.Method)) {
+                return OperationFromBclMethodCallExpression(methodCall, cx);
+            }
+            // Invoke the method and return its constant result as an operation. 
+            var lambda  = Expression.Lambda(methodCall).Compile();
+            var value   = lambda.DynamicInvoke();
+            var type    = methodCall.Method.ReturnType;
+            return OperationFromValue(value, type);
+        }
+
+        private static Operation OperationFromBclMethodCallExpression(MethodCallExpression methodCall, QueryCx cx) {
             switch (methodCall.Method.Name) {
                 // quantify operations
                 case "Any":
