@@ -14,14 +14,14 @@ using static Friflo.Json.Fliox.Hub.Redis.RedisUtils;
 // ReSharper disable UseIndexFromEndExpression
 namespace Friflo.Json.Fliox.Hub.Redis
 {
-    public sealed class RedisContainer : EntityContainer
+    public sealed class RedisHashContainer : EntityContainer
     {
         private  readonly   int             databaseNumber;
         private  readonly   RedisKey        nameKey;
     //  private             bool            tableExists;
         public   override   bool            Pretty      { get; }
 
-        internal RedisContainer(string name, RedisDatabase database, bool pretty)
+        internal RedisHashContainer(string name, RedisHashDatabase database, bool pretty)
             : base(name, database)
         {
             databaseNumber  = database.databaseNumber;

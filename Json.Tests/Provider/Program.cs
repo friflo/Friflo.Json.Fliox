@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Provider
             hub.AddExtensionDB       (new SQLServerDatabase("sqlserver_db", sqlServerConnection){ Schema = schema });
 
             var redisConnection     = EnvConfig.GetConnectionString("redis");
-            hub.AddExtensionDB       (new RedisDatabase("redis_db", redisConnection)            { Schema = schema });
+            hub.AddExtensionDB       (new RedisHashDatabase("redis_db", redisConnection)            { Schema = schema });
 #endif
             hub.AddExtensionDB       (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)

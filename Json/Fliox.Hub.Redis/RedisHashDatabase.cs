@@ -12,7 +12,7 @@ using StackExchange.Redis;
 
 namespace Friflo.Json.Fliox.Hub.Redis
 {
-    public class RedisDatabase : EntityDatabase
+    public class RedisHashDatabase : EntityDatabase
     {
         public              bool        Pretty      { get; init; } = false;
         
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
         
         public   override   string      StorageType => "Redis";
         
-        public RedisDatabase(string dbName, string connectionString, int databaseNumber = 0, DatabaseService service = null)
+        public RedisHashDatabase(string dbName, string connectionString, int databaseNumber = 0, DatabaseService service = null)
             : base(dbName, service)
         {
             this.connectionString   = connectionString;
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
-            return new RedisContainer(name.AsString(), this, Pretty);
+            return new RedisHashContainer(name.AsString(), this, Pretty);
         }
         
         public override async Task<SyncConnection> GetConnectionAsync()  {
