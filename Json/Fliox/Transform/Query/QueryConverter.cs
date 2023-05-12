@@ -20,15 +20,17 @@ namespace Friflo.Json.Fliox.Transform.Query
             if (queryPath == null) {
                 queryPath = DefaultQueryPath;
             }
-            var cx = new QueryCx ("", "", query, queryPath);
+            var queryCx = new QueryCx(query, queryPath);
             if (query is LambdaExpression lambda) {
-                var body = lambda.Body;
+                var param   = lambda.Parameters[0].Name;
+                var cx      = new LambdaCx (param, "", queryCx);
+                var body    = lambda.Body;
                 return TraceExpression(body, cx);
             }
-            throw NotSupported($"query not supported: {query}", cx);
+            throw new NotSupportedException($"query not supported: {query}");
         }
         
-        private static Operation TraceExpression(Expression expression, QueryCx cx, BinaryExpression binBase = null) {
+        private static Operation TraceExpression(Expression expression, LambdaCx cx, BinaryExpression binBase = null) {
             switch (expression) {
                 case MemberExpression member:
                     return GetMember(member, cx);
@@ -54,7 +56,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             return type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
         }
         
-        private static Operation GetMember(MemberExpression member, QueryCx cx) {
+        private static Operation GetMember(MemberExpression member, LambdaCx cx) {
             switch (member.Expression) {
                 case null:
                     // get value from static class field / property 
@@ -85,7 +87,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                 default:
                     throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
             }
-            var memberName  = cx.queryPath.GetQueryPath(member, cx);
+            var memberName  = cx.query.queryPath.GetQueryPath(member, cx);
             var paramName   = GetParameterName(member);
             return new Field(paramName + "." + memberName); // field refers to object root (.) or a lambda parameter
         }
@@ -129,7 +131,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             throw new InvalidOperationException();
         }
         
-        public static string GetMemberName(MemberExpression member, QueryCx cx) {
+        public static string GetMemberName(MemberExpression member, LambdaCx cx) {
             MemberInfo memberInfo = member.Member;
             AttributeUtils.Property(memberInfo.CustomAttributes, out var customName);
             if (customName != null)
@@ -152,7 +154,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                    declType == typeof (string);
         }
 
-        private static Operation OperationFromMethodCallExpression(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromMethodCallExpression(MethodCallExpression methodCall, LambdaCx cx) {
             if (IsBclMethod(methodCall.Method)) {
                 return OperationFromBclMethodCallExpression(methodCall, cx);
             }
@@ -163,7 +165,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             return OperationFromValue(value, type);
         }
 
-        private static Operation OperationFromBclMethodCallExpression(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromBclMethodCallExpression(MethodCallExpression methodCall, LambdaCx cx) {
             switch (methodCall.Method.Name) {
                 // quantify operations
                 case "Any":
@@ -195,15 +197,15 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
 
-        private static Operation OperationFromBinaryQuantifier(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromBinaryQuantifier(MethodCallExpression methodCall, LambdaCx cx) {
             var args = methodCall.Arguments;
             var source      = args[0];
-            var sourceOp = TraceExpression(source, cx);
+            var sourceOp    = TraceExpression(source, cx);
             
-            var predicate   = (LambdaExpression)args[1];
-            string sourceField = $"{sourceOp}"; // [=>]
+            var predicate       = (LambdaExpression)args[1];
+            string sourceField  = $"{sourceOp}"; // [=>]
             var lambdaParameter = predicate.Parameters[0].Name;
-            var lambdaCx = new QueryCx(lambdaParameter, cx.path + sourceField, cx.exp, cx.queryPath);
+            var lambdaCx        = new LambdaCx(lambdaParameter, cx.path + sourceField, cx.query);
             var predicateOp = (FilterOperation)TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
@@ -214,7 +216,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
         
-        private static Operation OperationFromUnaryArithmetic(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromUnaryArithmetic(MethodCallExpression methodCall, LambdaCx cx) {
             var value = methodCall.Arguments[0];
             var valueOp = TraceExpression(value, cx);
             switch (methodCall.Method.Name) {
@@ -230,7 +232,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
         
-        private static Operation OperationFromAggregate(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromAggregate(MethodCallExpression methodCall, LambdaCx cx) {
             var     args        = methodCall.Arguments;
             var     source      = args[0];
             var     sourceOp    = TraceExpression(source, cx);
@@ -239,10 +241,10 @@ namespace Friflo.Json.Fliox.Transform.Query
             switch (methodCall.Method.Name) {
                 case "Count":
                     if (args.Count >= 2) {
-                        var predicate   = (LambdaExpression)args[1];
+                        var predicate       = (LambdaExpression)args[1];
                         var lambdaParameter = predicate.Parameters[0].Name;
-                        var lambdaCxCount = new QueryCx(lambdaParameter, cx.path, cx.exp, cx.queryPath);
-                        var predicateOp = (FilterOperation)TraceExpression(predicate, lambdaCxCount);
+                        var lambdaCxCount   = new LambdaCx(lambdaParameter, cx.path, cx.query);
+                        var predicateOp     = (FilterOperation)TraceExpression(predicate, lambdaCxCount);
                         return new CountWhere(new Field(sourceField), lambdaParameter, predicateOp);
                     }
                     return new Count(new Field(sourceField));
@@ -250,14 +252,14 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case "Max":
                 case "Sum":
                 case "Average":
-                    var lambdaCx = new QueryCx(cx.parameter, cx.path + sourceField, cx.exp, cx.queryPath);
+                    var lambdaCx = new LambdaCx(cx.parameter, cx.path + sourceField, cx.query);
                     return OperationFromBinaryAggregate(methodCall, lambdaCx);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
         }
         
-        private static Operation OperationFromBinaryCall(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromBinaryCall(MethodCallExpression methodCall, LambdaCx cx) {
             var leftOp  = TraceExpression(methodCall.Object,       cx);
             var rightOp = TraceExpression(methodCall.Arguments[0], cx);
             switch (methodCall.Method.Name) {
@@ -271,14 +273,14 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
         
-        private static Operation OperationFromBinaryAggregate(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromBinaryAggregate(MethodCallExpression methodCall, LambdaCx cx) {
             var args        = methodCall.Arguments;
             var methodName  = methodCall.Method.Name;
             if (args[1] is LambdaExpression predicate) {
-                string sourceField = $"{cx.path}";
+                string sourceField  = cx.path;
                 var lambdaParameter = predicate.Parameters[0].Name;
-                var lambdaCx = new QueryCx(lambdaParameter, cx.path, cx.exp, cx.queryPath);
-                var valueOp = TraceExpression(predicate, lambdaCx);
+                var lambdaCx        = new LambdaCx(lambdaParameter, cx.path, cx.query);
+                var valueOp         = TraceExpression(predicate, lambdaCx);
             
                 switch (methodName) {
                     case "Min":     return new Min      (new Field(sourceField), lambdaParameter, valueOp);
@@ -301,7 +303,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             var rightOp = TraceExpression(args[1], cx); */
         }
 
-        private static Operation OperationFromUnaryExpression(UnaryExpression unary, QueryCx cx) {
+        private static Operation OperationFromUnaryExpression(UnaryExpression unary, LambdaCx cx) {
             var operand = TraceExpression(unary.Operand, cx);
             switch (unary.NodeType) {
                 case ExpressionType.Not:            return new Not((FilterOperation)operand);
@@ -313,7 +315,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
 
-        private static Operation OperationFromConvert(UnaryExpression unary, QueryCx cx) {
+        private static Operation OperationFromConvert(UnaryExpression unary, LambdaCx cx) {
             var type = unary.Operand.NodeType;
             switch (type) {
                 /*
@@ -336,7 +338,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
 
-        private static Operation OperationFromBinaryExpression(BinaryExpression binary, QueryCx cx) {
+        private static Operation OperationFromBinaryExpression(BinaryExpression binary, LambdaCx cx) {
             var leftOp  = TraceExpression(binary.Left,  cx, binary);
             var rightOp = TraceExpression(binary.Right, cx, binary);
             switch (binary.NodeType) {
@@ -382,7 +384,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             return false;
         }
         
-        private static Operation OperationFromConstant(MemberExpression member, object value, Type type, BinaryExpression binBase, QueryCx cx) {
+        private static Operation OperationFromConstant(MemberExpression member, object value, Type type, BinaryExpression binBase, LambdaCx cx) {
             if (binBase != null) {
                 if (GetBinaryConvertType(binBase, out var convertType)) {
                     type = convertType;
@@ -461,28 +463,38 @@ namespace Friflo.Json.Fliox.Transform.Query
             return null;
         }
 
-        public static Exception NotSupported(string message, QueryCx cx) {
-            return new NotSupportedException($"{message}, expression: {cx.exp}");
+        public static Exception NotSupported(string message, LambdaCx cx) {
+            return new NotSupportedException($"{message}, expression: {cx.query.exp}");
         }
     }
-
-    public sealed class QueryCx
+    
+    internal sealed class QueryCx
     {
-        internal readonly   string      parameter;
-        internal readonly   string      path;
         internal readonly   Expression  exp;
         internal readonly   QueryPath   queryPath;
 
-        internal QueryCx(string parameter, string path, Expression exp, QueryPath queryPath) {
-            this.path       = path;
+        internal QueryCx(Expression exp, QueryPath queryPath) {
             this.exp        = exp;
-            this.parameter  = parameter;
             this.queryPath  = queryPath;
         }
     }
 
+    public sealed class LambdaCx
+    {
+        internal readonly   string      parameter;
+        internal readonly   string      path;
+        internal readonly   QueryCx     query;
+
+        internal LambdaCx(string parameter, string path, QueryCx query) {
+            if (string.IsNullOrEmpty(parameter)) throw new ArgumentException(nameof(parameter));
+            this.parameter  = parameter;
+            this.path       = path;
+            this.query      = query;
+        }
+    }
+
     public class QueryPath {
-        public virtual string GetQueryPath(MemberExpression member, QueryCx cx) {
+        public virtual string GetQueryPath(MemberExpression member, LambdaCx cx) {
             switch (member.Expression) {
                 case ParameterExpression _:
                     return QueryConverter.GetMemberName(member, cx);

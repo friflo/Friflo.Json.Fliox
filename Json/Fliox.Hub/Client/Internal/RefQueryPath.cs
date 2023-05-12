@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal sealed class RefQueryPath : QueryPath
     {
-        public override string GetQueryPath(MemberExpression member, QueryCx cx) {
+        public override string GetQueryPath(MemberExpression member, LambdaCx cx) {
             switch (member.Expression) {
                 case ParameterExpression _:
                     return QueryConverter.GetMemberName(member, cx);
