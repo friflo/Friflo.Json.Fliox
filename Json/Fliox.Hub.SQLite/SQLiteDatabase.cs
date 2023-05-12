@@ -28,8 +28,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         /// See: <a href="https://www.sqlite.org/inmemorydb.html">SQLite - In-Memory Databases</a>
         /// </summary>
         /// <returns></returns>
-        public SQLiteDatabase(string dbName, string path, DatabaseService service = null)
-            : base(dbName, service)
+        public SQLiteDatabase(string dbName, string path)
+            : base(dbName)
         {
             var rc = raw.sqlite3_open(path, out sqliteDB);
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"sqlite3_open failed. error: {rc}");

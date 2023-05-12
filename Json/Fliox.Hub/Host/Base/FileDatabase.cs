@@ -37,8 +37,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         private  readonly   string      databaseFolder;
         public   override   string      StorageType => "file-system";
         
-        public FileDatabase(string dbName, string databaseFolder, DatabaseService service = null)
-            : base(dbName, service)
+        public FileDatabase(string dbName, string databaseFolder)
+            : base(dbName)
         {
             this.databaseFolder = databaseFolder + "/";
             Directory.CreateDirectory(databaseFolder);

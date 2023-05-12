@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         /// </summary>
         [Test]
         public static async Task AccessDatabase() {
-            var database    = new FileDatabase("shop_db", "./shop_db", new ShopService());
+            var database    = new FileDatabase("shop_db", "./shop_db") { Service = new ShopService()};
             // or other database implementations like: MemoryDatabase, SQLite, Postgres, ...
             var hub         = new FlioxHub(database);
             var store       = new ShopStore(hub);

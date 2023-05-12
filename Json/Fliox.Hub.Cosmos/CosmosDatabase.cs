@@ -20,8 +20,8 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         
         public   override   string      StorageType => "CosmosDB";
         
-        public CosmosDatabase(string dbName, CosmosClient client, string cosmosDbName = null, DatabaseService service = null)
-            : base(dbName, service)
+        public CosmosDatabase(string dbName, CosmosClient client, string cosmosDbName = null)
+            : base(dbName)
         {
             this.client         = client;
             this.cosmosDbName   = cosmosDbName ?? dbName;

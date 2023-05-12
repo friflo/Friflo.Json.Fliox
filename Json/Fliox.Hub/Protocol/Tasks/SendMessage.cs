@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 intern.executionType = ExecutionType.Sync; // execute error synchronously. error: missing field: {name}
                 return true; 
             }
-            if (database.service.TryGetMessage(name, out callback)) {
+            if (database.Service.TryGetMessage(name, out callback)) {
                 var isSync = callback.IsSynchronous;
                 intern.executionType = isSync ? ExecutionType.Sync : ExecutionType.Async;
                 return isSync;

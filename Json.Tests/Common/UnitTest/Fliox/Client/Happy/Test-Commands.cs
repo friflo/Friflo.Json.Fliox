@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var service             = new SubPocService();
             var schema              = new DatabaseSchema(typeof(SubPocStore)); 
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new MemoryDatabase(TestGlobals.DB, service) { Schema = schema })
+            using (var database     = new MemoryDatabase(TestGlobals.DB) { Service = service, Schema = schema })
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var store        = new SubPocStore(hub) { UserId = "createStore"}) {
                 await test(store, service);
@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task InitDatabase(Func<SubPocStore, SubPocService, Task> test) {
             var service         = new SubPocService();
             using (var _        = SharedEnv.Default) // for LeakTestsFixture
-            using (var database = new MemoryDatabase(TestGlobals.DB, service))
+            using (var database = new MemoryDatabase(TestGlobals.DB) { Service = service })
             using (var hub      = new FlioxHub(database, TestGlobals.Shared))
             using (var store    = new SubPocStore(hub) { UserId = "createStore"}) {
                 await test(store, service);

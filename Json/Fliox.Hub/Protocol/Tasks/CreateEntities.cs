@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             PrepareCreate(database, syncContext.sharedEnv);
-            database.service.CustomizeCreate(this, syncContext);
+            database.Service.CustomizeCreate(this, syncContext);
             if (error != null) {
                 return error;
             }
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            database.service.CustomizeCreate(this, syncContext);
+            database.Service.CustomizeCreate(this, syncContext);
             if (error != null) {
                 return error;
             }

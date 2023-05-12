@@ -58,9 +58,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
         /// performed on the <see cref="EntityContainer"/>'s of the database
         /// </summary>
-        public              DatabaseSchema      Schema          { get; init; }
+        public              DatabaseSchema          Schema  { get; init; }
         
-        public  virtual     Task<SyncConnection> GetConnectionAsync()  => throw new NotImplementedException();
+        /// <summary>
+        /// The <see cref="Service"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
+        /// An <see cref="EntityDatabase"/> implementation can assign as custom handler by its constructor
+        /// </summary>
+        public              DatabaseService         Service { get; init; } = new DatabaseService();
+        
+        public  virtual     Task<SyncConnection>    GetConnectionAsync()  => throw new NotImplementedException();
         /// <summary>A mapping function used to assign a custom container name.</summary>
         /// <remarks>
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
@@ -68,17 +74,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <see cref="EntityContainer"/> implementations.
         /// </remarks>
         [DebuggerBrowsable(Never)]
-        public          CustomContainerName CustomContainerName { get; init; } = DefaultCustomContainerName;
+        public              CustomContainerName     CustomContainerName { get; init; } = DefaultCustomContainerName;
 
         private static readonly CustomContainerName DefaultCustomContainerName = name => name;
         
-        /// <summary>
-        /// The <see cref="service"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
-        /// An <see cref="EntityDatabase"/> implementation can assign as custom handler by its constructor
-        /// </summary>
-        internal readonly   DatabaseService     service;    // never null
         /// <summary>name of the storage type. E.g. <c>in-memory, file-system, remote, Cosmos, ...</c></summary>
-        public   abstract   string              StorageType  { get; }
+        public   abstract   string                  StorageType  { get; }
         
         #endregion
         
@@ -87,11 +88,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// constructor parameters are mandatory to force implementations having them in their constructors also or
         /// pass null by implementations.
         /// </summary>
-        protected EntityDatabase(string dbName, DatabaseService service){
+        protected EntityDatabase(string dbName){
             containers      = new ConcurrentDictionary<ShortString, EntityContainer>(ShortString.Equality);
             name            = dbName ?? throw new ArgumentNullException(nameof(dbName));
             nameShort       = new ShortString(dbName);
-            this.service    = service ?? new DatabaseService();
         }
         
         public virtual void Dispose() {
@@ -174,8 +174,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 commands = schema.GetCommands();
                 messages = schema.GetMessages();
             } else {
-                commands = service.GetCommands();
-                messages = service.GetMessages();
+                commands = Service.GetCommands();
+                messages = Service.GetMessages();
             }
             return new DbMessages { commands = commands, messages = messages };
         }

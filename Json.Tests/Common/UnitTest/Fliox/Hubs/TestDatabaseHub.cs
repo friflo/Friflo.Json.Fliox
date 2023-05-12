@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         public   override   string                                  StorageType => "TestDatabase";
 
         public TestDatabase(EntityDatabase local)
-            : base (local.name, null)
+            : base (local.name)
         {
             this.local = local;
         }

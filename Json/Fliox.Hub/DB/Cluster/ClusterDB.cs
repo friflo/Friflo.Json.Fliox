@@ -27,9 +27,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public   override   string              StorageType => stateDB.StorageType;
 
         public ClusterDB (string dbName, FlioxHub hub)
-            : base (dbName, new ClusterService())
+            : base (dbName)
         {
-            ((ClusterService)service).clusterDB = this;
+            Service         = new ClusterService();
+            ((ClusterService)Service).clusterDB = this;
             this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
             Schema          = new DatabaseSchema(typeof(ClusterStore));
             stateDB         = new MemoryDatabase(dbName) { ContainerType = MemoryType.NonConcurrent };

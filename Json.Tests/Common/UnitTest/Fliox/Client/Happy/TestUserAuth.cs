@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task<Context> CreateHub () {
-            var userDatabase    = new MemoryDatabase(TestGlobals.UserDB, new UserDBService()) { Schema = UserDB.Schema };
+            var userDatabase    = new MemoryDatabase(TestGlobals.UserDB) { Service = new UserDBService(), Schema = UserDB.Schema };
             var authenticator   = new UserAuthenticator(userDatabase, TestGlobals.Shared);
             var database        = new MemoryDatabase(TestGlobals.DB);
             var hub          	= new FlioxHub(database, TestGlobals.Shared);
