@@ -232,7 +232,11 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case "EndsWith":
                     return OperationFromBinaryCall(methodCall, cx);
                 default:
-                    throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
+                    var argument    = methodCall.Arguments[0];
+                    if (GetRootExpression(argument) is ParameterExpression) {
+                        throw NotSupported($"unsupported method: {methodCall.Method.Name}", cx);
+                    }
+                    return null;
             }
         }
 
@@ -276,8 +280,11 @@ namespace Friflo.Json.Fliox.Transform.Query
         
         private static Operation OperationFromAggregate(MethodCallExpression methodCall, LambdaCx cx) {
             var     args        = methodCall.Arguments;
-            var     source      = args[0];
-            var     sourceOp    = TraceExpression(source, cx);
+            var     arg         = args[0];
+            var     sourceOp    = TraceExpression(arg, cx);
+            if (sourceOp == null) {
+                return null;
+            }
             string  sourceField = $"{sourceOp}"; // [=>]
             
             switch (methodCall.Method.Name) {

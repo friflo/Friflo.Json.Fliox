@@ -332,8 +332,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         };
         
         class TestObject {
-            internal string str;
-            internal int?   nullInt;
+            internal    string      str;
+            internal    int?        nullInt;
+            internal    string[]    array;
         }
         
         [Test]
@@ -410,6 +411,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AreEqual("p => 13",     JsonLambda.Create<object>(p => test.prop_sub.prop_int).Linq);
             AreEqual("p => true",   JsonLambda.Create<object>(p => test.prop_sub.field_bool).Linq);
             AreEqual("p => 'xyz'",  JsonLambda.Create<object>(p => test.prop_sub.field_str).Linq);
+        }
+        
+        [Test]
+        public static void TestUnsupportedLinqMethods() {
+            var e = Throws<NotSupportedException>(() => {
+                JsonLambda.Create<TestObject>    (p => p.array.Select(i => i));
+            });
+            AreEqual("unsupported method: Select, expression: p => p.array.Select(i => i)", e.Message);
+            
+            e = Throws<NotSupportedException>(() => {
+                JsonLambda.Create<TestObject>    (p => p.array.Reverse());
+            });
+            AreEqual("unsupported method: Reverse, expression: p => p.array.Reverse()", e.Message);
+        }
+        
+        [Test]
+        public static void TestUseLinqMethodsOnConstants() {
+            var array = new int[] { 1, 2, 3 };
+            // Evaluation of a constant expression should obviously not done inside a query filter :)
+            AreEqual("p => 3",      JsonLambda.Create<object>(p => array.Select(i => i).Count()).Linq);
         }
     }
 }
