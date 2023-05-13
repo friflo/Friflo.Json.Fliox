@@ -333,6 +333,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Prop_sub2 =   new TestClassFields { field_int = 3, Prop_int = 13, field_bool = true, field_str = "xyz"}   
         };
         
+#pragma warning disable CS0649
         class TestObject {
             internal    string      str;
             internal    int?        nullInt;
