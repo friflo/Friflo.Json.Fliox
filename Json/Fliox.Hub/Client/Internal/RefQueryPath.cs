@@ -13,10 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 case ParameterExpression _:
                     return QueryConverter.GetMemberName(member, cx);
                 case MemberExpression parentMember:
-                    var parentName  = GetMemberPath(parentMember, cx);
-                    var name        = QueryConverter.GetMemberName(member, cx);
-
-                    return $"{parentName}.{name}";
+                    return GetMemberExpressionPath(member, parentMember, cx);
                 default:
                     throw QueryConverter.NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
             }

@@ -333,6 +333,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         class TestObject {
             internal string str;
+            internal int?   nullInt;
+        }
+        
+        [Test]
+        public static void TestLambdaNullableValue() {
+            AreEqual("p => p.nullInt", JsonLambda.Create<TestObject>(p => p.nullInt.Value).Linq);
         }
         
         [Test]

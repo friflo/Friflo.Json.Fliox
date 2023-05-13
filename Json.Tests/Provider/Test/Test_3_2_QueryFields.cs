@@ -8,6 +8,7 @@ using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Provider.Env;
+using static System.Math;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Json.Tests.Provider.Test
@@ -203,6 +204,17 @@ namespace Friflo.Json.Tests.Provider.Test
             await client.SyncTasks();
             LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
+        }
+        
+        // --- query filter: arithmetic operator
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_CompareAdd(string db) {
+            var client  = await GetClient(db);
+            var query   = client.compare.Query(c => Abs(c.int32.Value) > 0);
+            AreEqual("c => Abs(c.int32) > 0", query.filterLinq);
+            await client.SyncTasks();
+            LogSQL(query.SQL);
+            AreEqual(1, query.Result.Count);
         }
     }
 }

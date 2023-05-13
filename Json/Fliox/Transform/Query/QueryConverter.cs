@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Transform.Query
         ///   (*) In this case the root references a static class field / property.
         /// </summary>
         private static Operation GetMember(MemberExpression member, LambdaCx cx) {
-            var root = GetRootExpression(member);
+            var root = GetRootExpression(member.Expression);
             switch (root) {
                 case ParameterExpression parameter: {
                     // case: root is a lambda parameter
@@ -98,8 +98,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
         
-        private static Expression GetRootExpression(MemberExpression member) {
-            var expression = member.Expression;
+        private static Expression GetRootExpression(Expression expression) {
             while (true) {
                 switch (expression) {
                     case null:
@@ -187,7 +186,10 @@ namespace Friflo.Json.Fliox.Transform.Query
 
         private static Operation OperationFromMethodCallExpression(MethodCallExpression methodCall, LambdaCx cx) {
             if (IsBclMethod(methodCall.Method)) {
-                return OperationFromBclMethodCallExpression(methodCall, cx);
+                var operation = OperationFromBclMethodCallExpression(methodCall, cx);
+                if (operation != null) {
+                    return operation;
+                }
             }
             // Invoke the method and return its constant result as an operation. 
             var lambda  = Expression.Lambda(methodCall).Compile();
@@ -235,27 +237,30 @@ namespace Friflo.Json.Fliox.Transform.Query
         }
 
         private static Operation OperationFromBinaryQuantifier(MethodCallExpression methodCall, LambdaCx cx) {
-            var args = methodCall.Arguments;
-            var source      = args[0];
-            var sourceOp    = TraceExpression(source, cx);
-            
+            var args            = methodCall.Arguments;
             var predicate       = (LambdaExpression)args[1];
+            var lambdaParameter = predicate.Parameters[0];
+            if (GetRootExpression(lambdaParameter) is not ParameterExpression) {
+                throw new NotSupportedException($"Any() and All() must be used on lambda parameter. was: {methodCall}");
+            }
+            var source          = args[0];
+            var sourceOp        = TraceExpression(source, cx);
+            var paramName       = lambdaParameter.Name;
             string sourceField  = $"{sourceOp}"; // [=>]
-            var lambdaParameter = predicate.Parameters[0].Name;
-            var lambdaCx        = new LambdaCx(lambdaParameter, cx.path + sourceField, cx.query);
+            var lambdaCx        = new LambdaCx(paramName, cx.path + sourceField, cx.query);
             var predicateOp     = (FilterOperation)TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
-                case "Any":     return new Any(new Field(sourceField), lambdaParameter, predicateOp);
-                case "All":     return new All(new Field(sourceField), lambdaParameter, predicateOp);
+                case "Any":     return new Any(new Field(sourceField), paramName, predicateOp);
+                case "All":     return new All(new Field(sourceField), paramName, predicateOp);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
         }
         
         private static Operation OperationFromUnaryArithmetic(MethodCallExpression methodCall, LambdaCx cx) {
-            var value = methodCall.Arguments[0];
-            var valueOp = TraceExpression(value, cx);
+            var value       = methodCall.Arguments[0];
+            var valueOp     = TraceExpression(value, cx);
             switch (methodCall.Method.Name) {
                 // --- arithmetic operations
                 case "Abs":     return new Abs      (valueOp);
@@ -299,8 +304,12 @@ namespace Friflo.Json.Fliox.Transform.Query
         }
         
         private static Operation OperationFromBinaryCall(MethodCallExpression methodCall, LambdaCx cx) {
-            var leftOp  = TraceExpression(methodCall.Object,       cx);
-            var rightOp = TraceExpression(methodCall.Arguments[0], cx);
+            var argument    = methodCall.Arguments[0];
+            /* if (GetRootExpression(argument) is not ParameterExpression) {
+                return null;
+            } */
+            var leftOp      = TraceExpression(methodCall.Object,       cx);
+            var rightOp     = TraceExpression(argument, cx);
             switch (methodCall.Method.Name) {
                 // --- binary comparison operations
                 case "Contains":            return new Contains     (leftOp, rightOp);

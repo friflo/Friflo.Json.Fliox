@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Friflo.Json.Fliox.Transform.Query
@@ -38,12 +37,21 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case ParameterExpression _:
                     return QueryConverter.GetMemberName(member, cx);
                 case MemberExpression parentMember:
-                    var name        = QueryConverter.GetMemberName(member, cx);
-                    var parentName  = GetMemberPath(parentMember, cx);
-                    return $"{parentName}.{name}";
+                    return GetMemberExpressionPath(member, parentMember, cx);
                 default:
                     throw QueryConverter.NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
             }
-        }       
+        }
+        
+        protected string GetMemberExpressionPath(MemberExpression member, MemberExpression parentMember, LambdaCx cx) {
+            var parentName      = GetMemberPath(parentMember, cx);
+            var memberInfo      = member.Member;
+            var declaringType   = memberInfo.DeclaringType;
+            if (declaringType != null && Nullable.GetUnderlyingType(declaringType) != null && memberInfo.Name == "Value") {
+                return parentName;
+            }
+            var name        = QueryConverter.GetMemberName(member, cx);
+            return $"{parentName}.{name}";
+        }
     }
 }
