@@ -181,7 +181,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var jsonSelector = new ScalarSelector())
             {
                 jsonMapper.Pretty = true;
-                var peter  = jsonMapper.Write(TestQuery.Peter);
+                var peter  = jsonMapper.Write(TestQueryEval.Peter);
                 var result = jsonSelector.Select(peter, select);
                 
                 // --- path[0]  group by using [=>]
@@ -217,7 +217,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var jsonSelector = new ScalarSelector())
             {
                 jsonMapper.Pretty = true;
-                var peter  = jsonMapper.WriteAsValue(TestQuery.Peter);
+                var peter  = jsonMapper.WriteAsValue(TestQueryEval.Peter);
 
                 IReadOnlyList<ScalarSelectResult> result = new List<ScalarSelectResult>();
                 for (int n = 0; n < 100; n++) {
