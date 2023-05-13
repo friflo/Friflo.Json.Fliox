@@ -270,10 +270,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 prop_sub    = new TestClassFields { field_int = 3, prop_int = 13, field_bool = true, field_str = "xyz"}   
         };
         
-        // [Test]
-        public static void TestLambdaParametersMethods() {
+        class TestObject {
+            internal string str;
+        }
+        
+        [Test]
+        public static void TestLambdaMethods() {
             var         test    = Test;
-            AreEqual("p => 3",      JsonLambda.Create<object>(p => test.field_str.Length).Linq);
+            AreEqual("p => 3",              JsonLambda.Create<object>    (p => test.field_str.Length).Linq);
+            AreEqual("p => p.str.Length()", JsonLambda.Create<TestObject>(p => p.str.Length).Linq);
+            AreEqual("p => 1",              JsonLambda.Create<object>    (p => test.GetInt()).Linq);
+        }
+        
+        [Test]
+        public static void TestLambdaStaticReference() {
+            AreEqual("p => 3",              JsonLambda.Create<object>    (p => Test.field_str.Length).Linq);
+            AreEqual("p => 1",              JsonLambda.Create<object>    (p => Test.GetInt()).Linq);
+        }
+        
+        [Test]
+        public static void TestDev() {
         }
 
         [Test]

@@ -22,10 +22,9 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
             var queryCx = new QueryCx(query, queryPath);
             if (query is LambdaExpression lambda) {
-                var param       = lambda.Parameters[0].Name;
-                using var cx    = new LambdaCx (param, "", queryCx);
-                var body        = lambda.Body;
-                if (queryCx.lambdas.Count != 1) throw new InvalidOperationException("expect Count == 1");  
+                var param   = lambda.Parameters[0].Name;
+                var cx      = new LambdaCx (param, "", queryCx);
+                var body    = lambda.Body;
                 return TraceExpression(body, cx);
             }
             throw new NotSupportedException($"query not supported: {query}");
@@ -45,7 +44,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case BinaryExpression binary:
                     return OperationFromBinaryExpression(binary, cx);
                 case ConstantExpression constant:
-                    return OperationFromConstant(null, constant.Value, constant.Type, binBase, cx);
+                    return OperationFromConstant(constant.Value, constant.Type, binBase, cx);
                 case ParameterExpression parameter:
                     return new Field(parameter.Name);
                 default:
@@ -57,92 +56,115 @@ namespace Friflo.Json.Fliox.Transform.Query
             return type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
         }
         
+        /// <summary>
+        /// A path of chained fields (members) in C# starts at the root.    field_root.field_1. ... .field_leaf
+        /// In the LINQ expression tree its starts at the leaf (field_n).   field_leaf -> ... -> field_1 -> field_root
+        ///  
+        /// The root field (member) decide which <see cref="Operation"/> need to be created.
+        /// - If the root is a <see cref="ParameterExpression"/> a <see cref="Field"/> is created.
+        ///   (*) In this case the root is a lambda argument.
+        /// - If the root is a <see cref="ConstantExpression"/> a <see cref="Literal"/> is created
+        ///   from the value return by the leaf field.
+        ///   (*) In this case the root references a variable declared outside the lambda expression.
+        /// - If the root is <c>null</c> <see cref="Literal"/> is created
+        ///   from the value return by the leaf field.
+        ///   (*) In this case the root references a static class field / property.
+        /// </summary>
         private static Operation GetMember(MemberExpression member, LambdaCx cx) {
-            switch (member.Expression) {
-                case null:
-                    // get value from static class field / property 
-                    return OperationFromConstant(member, null, member.Type, null, cx);
-                case ParameterExpression _:
-                    break;
-                case MemberExpression parentMember:
+            var root = GetRootExpression(member);
+            switch (root) {
+                case ParameterExpression parameter: {
+                    // case: root is a lambda parameter
+                    if (member.Expression is MemberExpression parentMember) {
+                        var name = GetMemberName(member, cx);
+                        if (name == "Count" && IsEnumerable(parentMember.Type)) {
+                            var memberPath  = cx.query.queryPath.GetMemberPath(parentMember, cx);
+                            var field = new Field(parameter.Name + "." + memberPath);
+                            return new Count(field);
+                        }
+                        if (name == "Length" && IsEnumerable(parentMember.Type)) {
+                            var memberPath  = cx.query.queryPath.GetMemberPath(parentMember, cx);
+                            var field = new Field(parameter.Name + "." + memberPath);
+                            return new Length(field);
+                        }
+                    } {
+                        var memberPath  = cx.query.queryPath.GetMemberPath(member, cx);
+                        return new Field(parameter.Name + "." + memberPath);
+                    }
+                }
+                case null: {
+                    // case: root is a reference to a static class field / property 
+                    var value = GetMemberValue(member);
+                    return OperationFromValue(value, member.Type);
+                }
+                case ConstantExpression constant: {
+                    // case: root references a variable declared outside the lambda expression.
                     var name = GetMemberName(member, cx);
-                    if (name == "Count" && IsEnumerable(parentMember.Type)) {
-                        var field = (Field) GetMember(parentMember, cx);
-                        return new Count(field);
-                    }
-                    if (name == "Length" && IsEnumerable(parentMember.Type)) {
-                        var field = (Field) GetMember(parentMember, cx);
-                        return new Length(field);
-                    }
-                    if (GetMemberValue(parentMember, out object value)) {
-                        return OperationFromConstant(member, value, member.Type, null, cx);
-                    }
-                    break;
-                case ConstantExpression constant:
-                    name = GetMemberName(member, cx);
                     if (name == "Length" && constant.Type == typeof(string)) {
                         var literal = new StringLiteral(constant.Value.ToString());
                         return new Length(literal);
                     }
-                    return OperationFromConstant(member, constant.Value, constant.Type, null, cx);
+                    var value = GetMemberValue(member);
+                    return OperationFromValue(value, member.Type);
+                }
                 default:
                     throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
             }
-            var memberName  = cx.query.queryPath.GetQueryPath(member, cx);
-            var paramName   = GetParameterName(member);
-            return new Field(paramName + "." + memberName); // field refers to object root (.) or a lambda parameter
         }
         
-        private static bool GetMemberValue(MemberExpression member, out object value)
+        private static Expression GetRootExpression(MemberExpression member) {
+            var expression = member.Expression;
+            while (true) {
+                switch (expression) {
+                    case null:
+                        return null;        // member is a reference to a static class field / property 
+                    case ParameterExpression parameter:
+                        return parameter;   // member represents a lambda parameter
+                    case MemberExpression parentMember:
+                        expression = parentMember.Expression;
+                        break;              // traverse expression tree further to get to the root 
+                    case ConstantExpression constant:
+                        return constant;    // member is a reference to a variable declared outside the lambda scope
+                    default:
+                        throw new InvalidOperationException($"unexpected expression: {expression}");
+                }
+            }
+        }
+        
+        private static object GetMemberValue(MemberExpression member)
         {
+            object value;
             switch (member.Expression) {
-                case ConstantExpression constant:
+                case null:                          // case: static class field / property 
+                    value = null;
+                    break;
+                case ConstantExpression constant:   // case: member is reference to variable declared outside lambda scope
                     value = constant.Value;
                     break;
-                case MemberExpression parentMember:
-                    if (!GetMemberValue(parentMember, out value)) {
-                        return false;
-                    }
+                case MemberExpression parentMember: // case: class instance field / property
+                    value = GetMemberValue(parentMember);
                     break;
                 default:
-                    value = null;
-                    return false;
+                    throw new InvalidOperationException($"unexpected member.Expression: {member.Expression}");
             }
             var memberInfo = member.Member;
             switch (memberInfo) {
-                case FieldInfo      field:
-                    value   = field.GetValue(value);
-                    return true;
-                case PropertyInfo   property:
-                    value   = property.GetValue(value);
-                    return true;
+                case FieldInfo      field:      return field.GetValue(value);
+                case PropertyInfo   property:   return property.GetValue(value);
             }
             throw new InvalidOperationException($"unexpected member type: {memberInfo}");
         }
 
-        private static string GetParameterName(MemberExpression member) {
-            var expression = member;
-            while (expression != null) {
-                var memberExpression = expression.Expression;
-                if (memberExpression is ParameterExpression param) {
-                    return param.Name;
-                }
-                expression = (MemberExpression)memberExpression;
-            }
-            throw new InvalidOperationException();
-        }
-        
         public static string GetMemberName(MemberExpression member, LambdaCx cx) {
             MemberInfo memberInfo = member.Member;
             AttributeUtils.Property(memberInfo.CustomAttributes, out var customName);
-            if (customName != null)
+            if (customName != null) {
                 return customName;
-            
+            }
             switch (memberInfo) {
-                case FieldInfo fieldInfo:
-                    return fieldInfo.Name;
-                case PropertyInfo propertyInfo:
-                    return propertyInfo.Name;
+                case FieldInfo:
+                case PropertyInfo:
+                    return memberInfo.Name;
                 default:
                     throw NotSupported($"Member not supported: {member}", cx);
             }
@@ -206,7 +228,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             var predicate       = (LambdaExpression)args[1];
             string sourceField  = $"{sourceOp}"; // [=>]
             var lambdaParameter = predicate.Parameters[0].Name;
-            using var lambdaCx  = new LambdaCx(lambdaParameter, cx.path + sourceField, cx.query);
+            var lambdaCx        = new LambdaCx(lambdaParameter, cx.path + sourceField, cx.query);
             var predicateOp     = (FilterOperation)TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
@@ -244,7 +266,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                     if (args.Count >= 2) {
                         var predicate           = (LambdaExpression)args[1];
                         var lambdaParameter     = predicate.Parameters[0].Name;
-                        using var lambdaCxCount = new LambdaCx(lambdaParameter, cx.path, cx.query);
+                        var lambdaCxCount       = new LambdaCx(lambdaParameter, cx.path, cx.query);
                         var predicateOp         = (FilterOperation)TraceExpression(predicate, lambdaCxCount);
                         
                         return new CountWhere(new Field(sourceField), lambdaParameter, predicateOp);
@@ -254,7 +276,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case "Max":
                 case "Sum":
                 case "Average": {
-                    using var lambdaCx = new LambdaCx(cx.parameter, cx.path + sourceField, cx.query);
+                    var lambdaCx = new LambdaCx(cx.parameter, cx.path + sourceField, cx.query);
                     return OperationFromBinaryAggregate(methodCall, lambdaCx);
                 }
                 default:
@@ -282,7 +304,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             if (args[1] is LambdaExpression predicate) {
                 string sourceField  = cx.path;
                 var lambdaParameter = predicate.Parameters[0].Name;
-                using var lambdaCx  = new LambdaCx(lambdaParameter, cx.path, cx.query);
+                var lambdaCx        = new LambdaCx(lambdaParameter, cx.path, cx.query);
                 var valueOp         = TraceExpression(predicate, lambdaCx);
             
                 switch (methodName) {
@@ -387,26 +409,10 @@ namespace Friflo.Json.Fliox.Transform.Query
             return false;
         }
         
-        private static Operation OperationFromConstant(MemberExpression member, object value, Type type, BinaryExpression binBase, LambdaCx cx) {
+        private static Operation OperationFromConstant(object value, Type type, BinaryExpression binBase, LambdaCx cx) {
             if (binBase != null) {
                 if (GetBinaryConvertType(binBase, out var convertType)) {
                     type = convertType;
-                }
-            }
-            // is local variable used in expression? A DisplayClass is generated for them
-            if (member != null) {
-                var memberInfo = member.Member;
-                switch (memberInfo) {
-                    case FieldInfo      field:
-                        type    = field.FieldType;
-                        value   = field.GetValue(value);
-                        break;
-                    case PropertyInfo   property:
-                        type    = property.PropertyType;
-                        value   = property.GetValue(value);
-                        break;
-                    default:
-                        throw new InvalidOperationException($"unexpected member type: {memberInfo}");
                 }
             }
             /* if (type.IsDefined (typeof (CompilerGeneratedAttribute), false)) {
@@ -415,10 +421,8 @@ namespace Friflo.Json.Fliox.Transform.Query
                 value       = field.GetValue(value);
                 type        = field.FieldType;
             }*/
-            var operation   =  OperationFromValue(value, type);    
-            
-            if (operation == null)
-                throw NotSupported($"Constant not supported: type: {type.FullName}, value: {value}", cx);
+            var operation   =  OperationFromValue(value, type);
+            if (operation == null) throw NotSupported($"Constant not supported: type: {type.FullName}, value: {value}", cx);
             return operation;
         }
 
