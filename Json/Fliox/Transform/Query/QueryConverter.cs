@@ -134,9 +134,14 @@ namespace Friflo.Json.Fliox.Transform.Query
                     throw new InvalidOperationException($"unexpected member.Expression: {member.Expression}");
             }
             var memberInfo = member.Member;
-            switch (memberInfo) {
-                case FieldInfo      field:      return field.GetValue(value);
-                case PropertyInfo   property:   return property.GetValue(value);
+            try {
+                switch (memberInfo) {
+                    case FieldInfo      field:      return field.GetValue(value);
+                    case PropertyInfo   property:   return property.GetValue(value);
+                }
+            } catch (TargetInvocationException e) {
+                var type    = memberInfo.DeclaringType?.Name ?? member.Type.Name;
+                throw new TargetInvocationException($"property: {memberInfo.Name}, type: {type}", e.InnerException);
             }
             throw new InvalidOperationException($"unexpected member type: {memberInfo}");
         }

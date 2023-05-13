@@ -15,6 +15,7 @@ using static System.Math;
 using static Friflo.Json.Tests.Common.UnitTest.Fliox.Transform.TestQueryEval;
 using Contains = Friflo.Json.Fliox.Transform.Query.Ops.Contains;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
     public static class TestQueryConversion {
@@ -313,12 +314,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             internal    int                 field_int;
             internal    bool                field_bool;
             internal    string              field_str;
-            internal    TestClassFields     field_sub   { get; set; }
+            internal    TestClassFields     Prop_sub1       { get; set; }
         
-            internal    int                 prop_int    { get; set; }
-            internal    TestClassFields     prop_sub    { get; set; }
+            internal    int                 Prop_int        { get; set; }
+            internal    TestClassFields     Prop_sub2       { get; set; }
         
-            internal    int                 GetInt()    => field_int;
+            internal    int                 GetInt()        => field_int;
+            internal    int                 Prop_Exception  => throw new InvalidOperationException("test property exception");
         }
         
         // ReSharper disable once ConvertToConstant.Local
@@ -326,9 +328,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         private static          int             FiveStatic()  => 5;
         private static readonly TestClassFields TestStaticNull = null;
         private static readonly TestClassFields TestStatic = new TestClassFields {
-                                                    field_int = 1, prop_int = 11, field_bool = true, field_str = "foo",
-                field_sub   = new TestClassFields { field_int = 2, prop_int = 12, field_bool = true, field_str = "bar"},
-                prop_sub    = new TestClassFields { field_int = 3, prop_int = 13, field_bool = true, field_str = "xyz"}   
+                                                    field_int = 1, Prop_int = 11, field_bool = true, field_str = "foo",
+                Prop_sub1 =   new TestClassFields { field_int = 2, Prop_int = 12, field_bool = true, field_str = "bar"},
+                Prop_sub2 =   new TestClassFields { field_int = 3, Prop_int = 13, field_bool = true, field_str = "xyz"}   
         };
         
         class TestObject {
@@ -365,6 +367,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
+        public static void TestLambdaPropertyException() {
+            TestClassFields test = TestStatic;
+            var e = Throws<TargetInvocationException>(() => {
+                JsonLambda.Create<object>    (p => test.Prop_Exception);
+            });
+            AreEqual("property: Prop_Exception, type: TestClassFields", e.Message);
+        }
+        
+        [Test]
         public static void TestLambdaMethodTargetInvocationException() {
             TestClassFields test = null;
             var e = Throws<TargetInvocationException>(() => {
@@ -398,19 +409,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             
             AreEqual("p => 1",      JsonLambda.Create<object>(p => test.field_int).Linq);
             AreEqual("p => 1",      JsonLambda.Create<object>(p => test.GetInt()).Linq);
-            AreEqual("p => 11",     JsonLambda.Create<object>(p => test.prop_int).Linq);
+            AreEqual("p => 11",     JsonLambda.Create<object>(p => test.Prop_int).Linq);
             AreEqual("p => true",   JsonLambda.Create<object>(p => test.field_bool).Linq);
             AreEqual("p => 'foo'",  JsonLambda.Create<object>(p => test.field_str).Linq);
             
-            AreEqual("p => 2",      JsonLambda.Create<object>(p => test.field_sub.field_int).Linq);
-            AreEqual("p => 12",     JsonLambda.Create<object>(p => test.field_sub.prop_int).Linq);
-            AreEqual("p => true",   JsonLambda.Create<object>(p => test.field_sub.field_bool).Linq);
-            AreEqual("p => 'bar'",  JsonLambda.Create<object>(p => test.field_sub.field_str).Linq);
+            AreEqual("p => 2",      JsonLambda.Create<object>(p => test.Prop_sub1.field_int).Linq);
+            AreEqual("p => 12",     JsonLambda.Create<object>(p => test.Prop_sub1.Prop_int).Linq);
+            AreEqual("p => true",   JsonLambda.Create<object>(p => test.Prop_sub1.field_bool).Linq);
+            AreEqual("p => 'bar'",  JsonLambda.Create<object>(p => test.Prop_sub1.field_str).Linq);
             
-            AreEqual("p => 3",      JsonLambda.Create<object>(p => test.prop_sub.field_int).Linq);
-            AreEqual("p => 13",     JsonLambda.Create<object>(p => test.prop_sub.prop_int).Linq);
-            AreEqual("p => true",   JsonLambda.Create<object>(p => test.prop_sub.field_bool).Linq);
-            AreEqual("p => 'xyz'",  JsonLambda.Create<object>(p => test.prop_sub.field_str).Linq);
+            AreEqual("p => 3",      JsonLambda.Create<object>(p => test.Prop_sub2.field_int).Linq);
+            AreEqual("p => 13",     JsonLambda.Create<object>(p => test.Prop_sub2.Prop_int).Linq);
+            AreEqual("p => true",   JsonLambda.Create<object>(p => test.Prop_sub2.field_bool).Linq);
+            AreEqual("p => 'xyz'",  JsonLambda.Create<object>(p => test.Prop_sub2.field_str).Linq);
         }
         
         [Test]
