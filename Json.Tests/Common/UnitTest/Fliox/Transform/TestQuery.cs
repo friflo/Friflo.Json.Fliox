@@ -740,8 +740,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             {
                 var isEqual = (Equal)  FromFilter((object p) =>
                           "12345".Length == 5);
-                AreEqual("'12345'.Length() == 5",   isEqual.Linq);
-                AreEqual("LENGTH('12345') = 5",     isEqual.CosmosFilter());
+                AreEqual("5 == 5",  isEqual.Linq);
+                AreEqual("5 = 5",   isEqual.CosmosFilter());
             } {
                 var isEqual =     (Equal)   FromFilter((Person p) =>
                           p.name.Length == 5);

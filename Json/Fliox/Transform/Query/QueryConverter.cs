@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Mapper.Map.Val;
 using Friflo.Json.Fliox.Mapper.Utils;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
+// ReSharper disable MergeIntoPattern
 namespace Friflo.Json.Fliox.Transform.Query
 {
     public static class QueryConverter
@@ -75,35 +76,20 @@ namespace Friflo.Json.Fliox.Transform.Query
             switch (root) {
                 case ParameterExpression parameter: {
                     // case: root is a lambda parameter
-                    if (member.Expression is MemberExpression parentMember) {
-                        var name = GetMemberName(member, cx);
-                        if (name == "Count" && IsEnumerable(parentMember.Type)) {
-                            var memberPath  = cx.query.queryPath.GetMemberPath(parentMember, cx);
-                            var field = new Field(parameter.Name + "." + memberPath);
-                            return new Count(field);
-                        }
-                        if (name == "Length" && IsEnumerable(parentMember.Type)) {
-                            var memberPath  = cx.query.queryPath.GetMemberPath(parentMember, cx);
-                            var field = new Field(parameter.Name + "." + memberPath);
-                            return new Length(field);
-                        }
-                    } {
-                        var memberPath  = cx.query.queryPath.GetMemberPath(member, cx);
-                        return new Field(parameter.Name + "." + memberPath);
+                    var linqOperation = GetLinqMemberOperation(member, parameter, cx);
+                    if (linqOperation != null) {
+                        return linqOperation;
                     }
+                    var memberPath  = cx.query.queryPath.GetMemberPath(member, cx);
+                    return new Field(parameter.Name + "." + memberPath);
                 }
                 case null: {
                     // case: root is a reference to a static class field / property 
                     var value = GetMemberValue(member);
                     return OperationFromValue(value, member.Type);
                 }
-                case ConstantExpression constant: {
+                case ConstantExpression: {
                     // case: root references a variable declared outside the lambda expression.
-                    var name = GetMemberName(member, cx);
-                    if (name == "Length" && constant.Type == typeof(string)) {
-                        var literal = new StringLiteral(constant.Value.ToString());
-                        return new Length(literal);
-                    }
                     var value = GetMemberValue(member);
                     return OperationFromValue(value, member.Type);
                 }
@@ -170,6 +156,27 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
         }
         
+        /// <summary>
+        /// Return an operation if path ends with <c>.Length</c> or <c>.Count</c>
+        /// </summary>
+        private static Operation GetLinqMemberOperation(MemberExpression member, ParameterExpression parameter, LambdaCx cx) {
+            if (member.Expression is not MemberExpression parentMember) {
+                return null;
+            }
+            var name = GetMemberName(member, cx);
+            if (name == "Count" && IsEnumerable(parentMember.Type)) {
+                var memberPath  = cx.query.queryPath.GetMemberPath(parentMember, cx);
+                var field       = new Field(parameter.Name + "." + memberPath);
+                return new Count(field);
+            }
+            if (name == "Length" && IsEnumerable(parentMember.Type)) {
+                var memberPath  = cx.query.queryPath.GetMemberPath(parentMember, cx);
+                var field       = new Field(parameter.Name + "." + memberPath);
+                return new Length(field);
+            }
+            return null;
+        }
+
         private static bool IsBclMethod(MethodInfo methodInfo) {
             var declType    = methodInfo.DeclaringType;
             return declType == typeof (Math)       ||
