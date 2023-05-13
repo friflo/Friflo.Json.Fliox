@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Cosmos;
 using Friflo.Json.Fliox.Transform;
@@ -47,19 +48,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public          string          houseNumber;
     }
 
-    internal class TestClassFields
-    {
-        internal    int                 field_int;
-        internal    bool                field_bool;
-        internal    string              field_str;
-        internal    TestClassFields     field_sub   { get; set; }
-        
-        internal    int                 prop_int    { get; set; }
-        internal    TestClassFields     prop_sub    { get; set; }
-        
-        internal    int                 GetInt()    => field_int;
-    }
-    
     public static class TestQuery
     {
         public static readonly Person Peter =         new Person {
@@ -261,10 +249,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             return filter.Compile();
         }
         
+        internal class TestClassFields
+        {
+            internal    int                 field_int;
+            internal    bool                field_bool;
+            internal    string              field_str;
+            internal    TestClassFields     field_sub   { get; set; }
+        
+            internal    int                 prop_int    { get; set; }
+            internal    TestClassFields     prop_sub    { get; set; }
+        
+            internal    int                 GetInt()    => field_int;
+        }
+        
         // ReSharper disable once ConvertToConstant.Local
-        private static readonly int             Four    =  4;
-        private static          int             Five()  => 5;
-        private static readonly TestClassFields Test = new TestClassFields {
+        private static readonly int             FourStatic    =  4;
+        private static          int             FiveStatic()  => 5;
+        private static readonly TestClassFields TestStatic = new TestClassFields {
                                                     field_int = 1, prop_int = 11, field_bool = true, field_str = "foo",
                 field_sub   = new TestClassFields { field_int = 2, prop_int = 12, field_bool = true, field_str = "bar"},
                 prop_sub    = new TestClassFields { field_int = 3, prop_int = 13, field_bool = true, field_str = "xyz"}   
@@ -276,16 +277,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         [Test]
         public static void TestLambdaMethods() {
-            var         test    = Test;
+            var         test    = TestStatic;
             AreEqual("p => 3",              JsonLambda.Create<object>    (p => test.field_str.Length).Linq);
             AreEqual("p => p.str.Length()", JsonLambda.Create<TestObject>(p => p.str.Length).Linq);
             AreEqual("p => 1",              JsonLambda.Create<object>    (p => test.GetInt()).Linq);
         }
         
         [Test]
+        public static void TestLambdaMethodNullReferenceException() {
+            TestClassFields test = null;
+            var e = Throws<NullReferenceException>(() => {
+                JsonLambda.Create<object>    (p => test.field_str.Length);
+            });
+            AreEqual("member: field_str, type: TestClassFields", e.Message);
+        }
+        
+        [Test]
+        public static void TestLambdaMethodTargetInvocationException() {
+            TestClassFields test = null;
+            var e = Throws<TargetInvocationException>(() => {
+                JsonLambda.Create<object>    (p => test.GetInt());
+            });
+            AreEqual("method: GetInt, type: TestClassFields", e.Message);
+        }
+        
+        [Test]
         public static void TestLambdaStaticReference() {
-            AreEqual("p => 3",              JsonLambda.Create<object>    (p => Test.field_str.Length).Linq);
-            AreEqual("p => 1",              JsonLambda.Create<object>    (p => Test.GetInt()).Linq);
+            AreEqual("p => 3",              JsonLambda.Create<object>    (p => TestStatic.field_str.Length).Linq);
+            AreEqual("p => 1",              JsonLambda.Create<object>    (p => TestStatic.GetInt()).Linq);
         }
         
         [Test]
@@ -297,13 +316,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             // ReSharper disable once ConvertToConstant.Local
             var         two     = 2;
             const int   three   = 3;
-            var         test    = Test;
+            var         test    = TestStatic;
             
             AreEqual("p => 1",      JsonLambda.Create<object>(p => 1).Linq);
             AreEqual("p => 2",      JsonLambda.Create<object>(p => two).Linq);
             AreEqual("p => 3",      JsonLambda.Create<object>(p => three).Linq);
-            AreEqual("p => 4",      JsonLambda.Create<object>(p => Four).Linq);
-            AreEqual("p => 5",      JsonLambda.Create<object>(p => Five()).Linq);
+            AreEqual("p => 4",      JsonLambda.Create<object>(p => FourStatic).Linq);
+            AreEqual("p => 5",      JsonLambda.Create<object>(p => FiveStatic()).Linq);
             
             AreEqual("p => 1",      JsonLambda.Create<object>(p => test.field_int).Linq);
             AreEqual("p => 1",      JsonLambda.Create<object>(p => test.GetInt()).Linq);

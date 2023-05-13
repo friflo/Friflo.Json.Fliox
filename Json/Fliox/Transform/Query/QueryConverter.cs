@@ -129,6 +129,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                     break;
                 case MemberExpression parentMember: // case: class instance field / property
                     value = GetMemberValue(parentMember);
+                    if (value == null) throw new NullReferenceException($"member: {member.Member.Name}, type: {parentMember.Type.Name}");
                     break;
                 default:
                     throw new InvalidOperationException($"unexpected member.Expression: {member.Expression}");
@@ -190,9 +191,15 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
             // Invoke the method and return its constant result as an operation. 
             var lambda  = Expression.Lambda(methodCall).Compile();
-            var value   = lambda.DynamicInvoke();
-            var type    = methodCall.Method.ReturnType;
-            return OperationFromValue(value, type);
+            var method  = methodCall.Method;
+            try {
+                var value   = lambda.DynamicInvoke();
+                var type    = method.ReturnType;
+                return OperationFromValue(value, type);
+            } catch (TargetInvocationException e) {
+                var type    = method.DeclaringType?.Name ?? methodCall.Type.Name;
+                throw new TargetInvocationException($"method: {method.Name}, type: {type}", e.InnerException);
+            }
         }
 
         private static Operation OperationFromBclMethodCallExpression(MethodCallExpression methodCall, LambdaCx cx) {
