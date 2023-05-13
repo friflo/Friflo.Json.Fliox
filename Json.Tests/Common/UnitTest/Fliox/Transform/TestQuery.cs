@@ -265,6 +265,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         // ReSharper disable once ConvertToConstant.Local
         private static readonly int             FourStatic    =  4;
         private static          int             FiveStatic()  => 5;
+        private static readonly TestClassFields TestStaticNull = null;
         private static readonly TestClassFields TestStatic = new TestClassFields {
                                                     field_int = 1, prop_int = 11, field_bool = true, field_str = "foo",
                 field_sub   = new TestClassFields { field_int = 2, prop_int = 12, field_bool = true, field_str = "bar"},
@@ -290,6 +291,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 JsonLambda.Create<object>    (p => test.field_str.Length);
             });
             AreEqual("member: field_str, type: TestClassFields", e.Message);
+            
+            e = Throws<NullReferenceException>(() => {
+                JsonLambda.Create<object>    (p => TestStaticNull.field_int);
+            });
+            AreEqual("member: field_int, type: TestClassFields", e.Message);
         }
         
         [Test]
