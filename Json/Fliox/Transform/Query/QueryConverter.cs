@@ -179,9 +179,13 @@ namespace Friflo.Json.Fliox.Transform.Query
 
         private static bool IsBclMethod(MethodInfo methodInfo) {
             var declType    = methodInfo.DeclaringType;
-            return declType == typeof (Math)       ||
-                   declType == typeof (Enumerable) ||
-                   declType == typeof (string);
+            return
+                // arithmetic methods in Math like: Abs(), Ceiling(), ...
+                declType == typeof (Math)       ||
+                // all LINQ methods operating on System.Linq.Enumerable like: Any(), All(), Min(), Max(), ... 
+                declType == typeof (Enumerable) || 
+                // string methods: Contains(), StartsWith(), EndsWith()
+                declType == typeof (string);
         }
 
         private static Operation OperationFromMethodCallExpression(MethodCallExpression methodCall, LambdaCx cx) {
