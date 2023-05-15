@@ -3,7 +3,9 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Text;
 
+// ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable EmptyConstructor
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
@@ -19,13 +21,28 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
         public   override string    OperationName           => value;
         public   override OpType    Type                    => OpType.STRING;
-        internal override void      AppendLinq(AppendCx cx) { cx.Append("'"); cx.Append(value); cx.Append("'"); }
+        internal override void      AppendLinq(AppendCx cx) { cx.Append("'"); AppendEscaped(cx.sb); cx.Append("'"); }
 
         public StringLiteral() { }
         public StringLiteral(string value) { this.value = value; }
 
         internal override Scalar Eval(EvalCx cx) {
             return new Scalar(value);
+        }
+        
+        private void AppendEscaped(StringBuilder sb) {
+            foreach (var c in value) {
+                switch (c) {
+                    case '\'':  sb.Append("\\'"); continue;  // single quote
+                    case '\b':  sb.Append("\\b"); continue;  // backspace
+                    case '\f':  sb.Append("\\f"); continue;  // form feed
+                    case '\n':  sb.Append("\\n"); continue;  // new line
+                    case '\r':  sb.Append("\\r"); continue;  // carriage return
+                    case '\t':  sb.Append("\\t"); continue;  // horizontal tabulator
+                    case '\v':  sb.Append("\\v"); continue;  // vertical tabulator
+                }
+                sb.Append(c);
+            }
         }
     }
     

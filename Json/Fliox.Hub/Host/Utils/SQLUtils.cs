@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Transform.Query.Ops;
 
 // ReSharper disable UseIndexFromEndExpression
 // ReSharper disable UseAwaitUsing
@@ -107,6 +108,25 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 result.cursor = entities[entities.Count - 1].key.AsString();
             }
             return result;
+        }
+        
+        public static string SqlString(StringLiteral literal) {
+            var sb = new StringBuilder(literal.value.Length + 2 + 3);
+            sb.Append('\'');
+            foreach (var c in literal.value) {
+                switch (c) {
+                    case '\'':  sb.Append("\\'"); continue;  // single quote
+                    case '\b':  sb.Append("\\b"); continue;  // backspace
+                    case '\f':  sb.Append("\\f"); continue;  // form feed
+                    case '\n':  sb.Append("\\n"); continue;  // new line
+                    case '\r':  sb.Append("\\r"); continue;  // carriage return
+                    case '\t':  sb.Append("\\t"); continue;  // horizontal tabulator
+                    case '\v':  sb.Append("\\v"); continue;  // vertical tabulator
+                }
+                sb.Append(c);
+            }
+            sb.Append('\'');
+            return sb.ToString();
         }
     }
     

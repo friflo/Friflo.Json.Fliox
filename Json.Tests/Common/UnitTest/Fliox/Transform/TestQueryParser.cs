@@ -48,6 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken(".abc");
             AssertToken("abc.xyz");
             AssertToken("'xyz'");
+            AssertToken("\"foo\"", 1, "'foo'");
             AssertToken("'☀🌎♥👋'");
             
             AssertToken("1+1",   3);
@@ -58,6 +59,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken("a.Contains('xyz')", 3);
 
             AssertToken("a=>!((a.b==-1||1<2)&&(-2<=3||3>1||3>=(1-1*1)/1||-1!=2||false))", 42); // must be 42 in any case :)
+        }
+        
+        [Test]
+        public static void TestQueryLexer_Escape() {
+            AssertToken("'\\''",    1, "'''");
+            AssertToken("'\\\"'",   1, "'\"'");
+            AssertToken("'\\a'",    1, "'a'");
+            //
+            AssertToken("'\\b'", 1, "'\b'"); // backspace
+            AssertToken("'\\f'", 1, "'\f'"); // form feed
+            AssertToken("'\\n'", 1, "'\n'"); // new line
+            AssertToken("'\\r'", 1, "'\r'"); // carriage return
+            AssertToken("'\\t'", 1, "'\t'"); // horizontal tabulator
+            AssertToken("'\\v'", 1, "'\v'"); // vertical tabulator
         }
         
         private static void AssertToken (string str, int len = 1, string expect = null) {
@@ -464,9 +479,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("'abc", out error);
                 AreEqual("missing string terminator for: abc at pos 4", error);
-            }  {
+            } {
                 Parse("1.23.4", out error);
                 AreEqual("invalid floating point number: 1.23. at pos 4", error);
+            } {
+                Parse("'abc\\", out error);
+                AreEqual("missing escaped character for: abc\\ at pos 5", error);
             }
         }
         

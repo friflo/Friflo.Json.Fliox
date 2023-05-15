@@ -289,6 +289,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
+        public static void TestQueryConversion_StringEscape() {
+            {
+                var filter      = FromFilter((object p) =>
+                          "\'".Contains("foo"));
+                AreEqual("'\\''.Contains('foo')", filter.Linq);
+            } {
+                var filter      = FromFilter((object p) =>
+                          "\b".Contains("foo"));
+                AreEqual("'\\b'.Contains('foo')", filter.Linq);
+            } {
+                var filter      = FromFilter((object p) =>
+                          "\f".Contains("foo"));
+                AreEqual("'\\f'.Contains('foo')", filter.Linq);
+            } {
+                var filter      = FromFilter((object p) =>
+                          "\n".Contains("foo"));
+                AreEqual("'\\n'.Contains('foo')", filter.Linq);
+            } {
+                var filter      = FromFilter((object p) =>
+                          "\r".Contains("foo"));
+                AreEqual("'\\r'.Contains('foo')", filter.Linq);
+            } {
+                var filter      = FromFilter((object p) =>
+                          "\t".Contains("foo"));
+                AreEqual("'\\t'.Contains('foo')", filter.Linq);
+            } {
+                var filter      = FromFilter((object p) =>
+                          "\v".Contains("foo"));
+                AreEqual("'\\v'.Contains('foo')", filter.Linq);
+            }
+        }
+        
+        [Test]
         public static void TestField() {
             {
                 var is20 =          (Equal)          FromFilter((Person p) =>

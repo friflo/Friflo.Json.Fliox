@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
@@ -207,21 +208,58 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static Token GetString(string operation, int terminator, ref int pos, out string error) {
             int start = pos;
+            bool hasEscapedChars = false;
             while (true) {
                 int c = GetChar(operation, pos);
-                if (c == End) {
-                    var str = operation.Substring(start, pos - start);
-                    error = $"missing string terminator for: {str} {At} {pos}";
-                    return new Token(TokenType.Error, start);
+                switch (c) {
+                    case End: {
+                        var str = operation.Substring(start, pos - start);
+                        error = $"missing string terminator for: {str} {At} {pos}";
+                        return new Token(TokenType.Error, start);
+                    }
+                    case '\\':
+                        hasEscapedChars = true;
+                        c = GetChar(operation, ++pos);
+                        if (c == End) {
+                            var str = operation.Substring(start, pos - start);
+                            error = $"missing escaped character for: {str} {At} {pos}";
+                            return new Token(TokenType.Error, start);
+                        }
+                        pos++;
+                        continue;
                 }
                 if (c == terminator) {
                     error = null;
-                    var str = operation.Substring(start, pos - start);
+                    var str = hasEscapedChars ?
+                        UnEscape (operation, start, pos) :
+                        operation.Substring(start, pos - start);
                     pos++;
                     return new Token(TokenType.String, start, str);
                 }
                 pos++;
             }
+        }
+        
+        private static string UnEscape(string str, int start, int end) {
+            var sb = new StringBuilder(end - start);
+            for (int n = start; n < end; n++) {
+                var c = str[n];
+                if (c == '\\') {
+                    c = str[++n];
+                    switch (c) {
+                        case 'b': sb.Append('\b'); continue;    // backspace
+                        case 'f': sb.Append('\f'); continue;    // form feed
+                        case 'n': sb.Append('\n'); continue;    // new line
+                        case 'r': sb.Append('\r'); continue;    // carriage return
+                        case 't': sb.Append('\t'); continue;    // horizontal tabulator
+                        case 'v': sb.Append('\v'); continue;    // vertical tabulator
+                    }
+                    sb.Append(c);
+                    continue;
+                }
+                sb.Append(c);
+            }
+            return sb.ToString();
         }
         
         private static void SkipWhitespace(string operation, ref int pos) {

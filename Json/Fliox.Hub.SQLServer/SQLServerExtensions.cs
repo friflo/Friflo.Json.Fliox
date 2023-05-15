@@ -50,8 +50,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 
                 // --- literal --- 
                 case STRING:
-                    var stringLiteral = (StringLiteral)operation;
-                    return $"'{stringLiteral.value}'";
+                    var str = (StringLiteral)operation;
+                    return SQLUtils.SqlString(str);
                 case DOUBLE:
                     var doubleLiteral = (DoubleLiteral)operation;
                     return doubleLiteral.value.ToString(CultureInfo.InvariantCulture);
