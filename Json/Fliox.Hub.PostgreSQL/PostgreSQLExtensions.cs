@@ -35,6 +35,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             this.entityType = entityType ?? throw new InvalidOperationException(nameof(entityType));
         }
         
+        private const string DblType = "::double precision";
+        
         /// <summary>
         /// Create CosmosDB query filter specified at: 
         /// https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox.Hub/Client#query-filter
@@ -199,37 +201,37 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case ABS: {
                     var abs = (Abs)operation;
                     var value = Traverse(abs.value);
-                    return $"ABS({value})";
+                    return $"ABS(({value}){DblType})";
                 }
                 case CEILING: {
                     var ceiling = (Ceiling)operation;
                     var value = Traverse(ceiling.value);
-                    return $"ROUND({value}+0.5)";
+                    return $"ROUND(({value}+0.5){DblType})";
                 }
                 case FLOOR: {
                     var floor = (Floor)operation;
                     var value = Traverse(floor.value);
-                    return $"ROUND({value}-0.5)";
+                    return $"ROUND(({value}-0.5){DblType})";
                 }
                 case EXP: {
                     var exp = (Exp)operation;
                     var value = Traverse(exp.value);
-                    return $"EXP({value})";
+                    return $"EXP(({value}){DblType})";
                 }
                 case LOG: {
                     var log = (Log)operation;
                     var value = Traverse(log.value);
-                    return $"LN({value})";
+                    return $"LN(({value}){DblType})";
                 }
                 case SQRT: {
                     var sqrt = (Sqrt)operation;
                     var value = Traverse(sqrt.value);
-                    return $"SQRT({value})";
+                    return $"SQRT(({value}){DblType})";
                 }
                 case NEGATE: {
                     var negate = (Negate)operation;
                     var value = Traverse(negate.value);
-                    return $"-({value})";
+                    return $"-(({value}){DblType})";
                 }
 
                 // --- constants ---
@@ -317,15 +319,13 @@ $@"jsonb_typeof({arrayPath}) <> 'array'
             if (op is Field field) {
                 var fieldType = GetFieldType(entityType, field.name);
                 switch (fieldType.TypeId) {
-                    case StandardTypeId.Uint8:
-                    case StandardTypeId.Int16:
-                    case StandardTypeId.Int32:
-                    case StandardTypeId.Int64:
-                    case StandardTypeId.Float:
-                    case StandardTypeId.Double:
-                        return "::numeric";
-                    case StandardTypeId.Boolean:
-                        return "::boolean";
+                    case StandardTypeId.Uint8:      return "::smallint";
+                    case StandardTypeId.Int16:      return "::smallint";
+                    case StandardTypeId.Int32:      return "::integer";
+                    case StandardTypeId.Int64:      return "::bigint";
+                    case StandardTypeId.Float:      return "::real";
+                    case StandardTypeId.Double:     return "::double precision";
+                    case StandardTypeId.Boolean:    return "::boolean";
                 /*  case StandardTypeId.String:
                     case StandardTypeId.DateTime:
                     case StandardTypeId.BigInteger:
