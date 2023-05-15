@@ -258,14 +258,16 @@ namespace Friflo.Json.Fliox.Transform.Query
             }
             var source          = args[0];
             var sourceOp        = TraceExpression(source, cx);
+            if (sourceOp is not Field field) {
+                return null;
+            }
             var paramName       = lambdaParameter.Name;
-            string sourceField  = $"{sourceOp}"; // [=>]
-            var lambdaCx        = new LambdaCx(paramName, cx.path + sourceField, cx.query);
+            var lambdaCx        = new LambdaCx(paramName, cx.path + field.name, cx.query);
             var predicateOp     = (FilterOperation)TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
-                case "Any":     return new Any(new Field(sourceField), paramName, predicateOp);
-                case "All":     return new All(new Field(sourceField), paramName, predicateOp);
+                case "Any":     return new Any(field, paramName, predicateOp);
+                case "All":     return new All(field, paramName, predicateOp);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
@@ -291,11 +293,9 @@ namespace Friflo.Json.Fliox.Transform.Query
             var     args        = methodCall.Arguments;
             var     arg         = args[0];
             var     sourceOp    = TraceExpression(arg, cx);
-            if (sourceOp == null) {
+            if (sourceOp is not Field field) {
                 return null;
             }
-            string  sourceField = $"{sourceOp}"; // [=>]
-            
             switch (methodCall.Method.Name) {
                 case "Count":
                     if (args.Count >= 2) {
@@ -304,14 +304,14 @@ namespace Friflo.Json.Fliox.Transform.Query
                         var lambdaCxCount       = new LambdaCx(lambdaParameter, cx.path, cx.query);
                         var predicateOp         = (FilterOperation)TraceExpression(predicate, lambdaCxCount);
                         
-                        return new CountWhere(new Field(sourceField), lambdaParameter, predicateOp);
+                        return new CountWhere(field, lambdaParameter, predicateOp);
                     }
-                    return new Count(new Field(sourceField));
+                    return new Count(field);
                 case "Min":
                 case "Max":
                 case "Sum":
                 case "Average": {
-                    var lambdaCx = new LambdaCx(cx.parameter, cx.path + sourceField, cx.query);
+                    var lambdaCx = new LambdaCx(cx.parameter, cx.path + field.name, cx.query);
                     return OperationFromBinaryAggregate(methodCall, lambdaCx);
                 }
                 default:
