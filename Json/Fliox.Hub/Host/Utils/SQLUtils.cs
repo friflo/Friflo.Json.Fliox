@@ -132,11 +132,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         }
         
         public static string SqlString(StringLiteral literal) {
-            var sb = new StringBuilder(literal.value.Length + 2 + 3);
+            return $"'{literal.value}'";
+            /* var sb = new StringBuilder(literal.value.Length + 2 + 3);
             sb.Append('\'');
             foreach (var c in literal.value) {
                 switch (c) {
-                    case '\'':  sb.Append("\\'"); continue;  // single quote
+                    case '\'':  sb.Append("''");  continue;  // single quote - SQL specific
+                    //
                     case '\b':  sb.Append("\\b"); continue;  // backspace
                     case '\f':  sb.Append("\\f"); continue;  // form feed
                     case '\n':  sb.Append("\\n"); continue;  // new line
@@ -147,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 sb.Append(c);
             }
             sb.Append('\'');
-            return sb.ToString();
+            return sb.ToString();*/
         }
     }
     

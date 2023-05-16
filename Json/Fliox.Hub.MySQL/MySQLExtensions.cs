@@ -141,19 +141,19 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     var startsWith = (StartsWith)operation;
                     var left    = Traverse(startsWith.left);
                     var right   = Traverse(startsWith.right);
-                    return $"{left} LIKE '{UnString(right)}%'";
+                    return $"{left} LIKE CONCAT({right},'%')";
                 }
                 case ENDS_WITH: {
                     var endsWith = (EndsWith)operation;
                     var left    = Traverse(endsWith.left);
                     var right   = Traverse(endsWith.right);
-                    return $"{left} LIKE '%{UnString(right)}'";
+                    return $"{left} LIKE CONCAT('%',{right})";
                 }
                 case CONTAINS: {
                     var contains = (Contains)operation;
                     var left    = Traverse(contains.left);
                     var right   = Traverse(contains.right);
-                    return $"{left} LIKE '%{UnString(right)}%'";
+                    return $"{left} LIKE CONCAT('%',{right},'%')";
                 }
                 case LENGTH: {
                     var length = (Length)operation;
@@ -335,13 +335,6 @@ $@"NOT EXISTS(
                 result[n]   = operand;
             }
             return result;
-        }
-        
-        private static string UnString(string value) {
-            if (value[0] == '\'') {
-                return value.Substring(1, value.Length - 2);
-            }
-            return value;
         }
         
         private static string GetFieldPath(Field field) {

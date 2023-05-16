@@ -33,13 +33,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         private void AppendEscaped(StringBuilder sb) {
             foreach (var c in value) {
                 switch (c) {
-                    case '\'':  sb.Append("\\'"); continue;  // single quote
-                    case '\b':  sb.Append("\\b"); continue;  // backspace
-                    case '\f':  sb.Append("\\f"); continue;  // form feed
-                    case '\n':  sb.Append("\\n"); continue;  // new line
-                    case '\r':  sb.Append("\\r"); continue;  // carriage return
-                    case '\t':  sb.Append("\\t"); continue;  // horizontal tabulator
-                    case '\v':  sb.Append("\\v"); continue;  // vertical tabulator
+                    case '\b':  sb.Append("\\b"); continue;  // backspace               ASCII:  8
+                    case '\f':  sb.Append("\\f"); continue;  // form feed               ASCII: 12
+                    case '\n':  sb.Append("\\n"); continue;  // new line                ASCII: 10
+                    case '\r':  sb.Append("\\r"); continue;  // carriage return         ASCII: 13
+                    case '\t':  sb.Append("\\t"); continue;  // horizontal tabulator    ASCII:  9
+                    case '\v':  sb.Append("\\v"); continue;  // vertical tabulator      ASCII: 11
                 }
                 sb.Append(c);
             }

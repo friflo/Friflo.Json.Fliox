@@ -293,7 +293,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             {
                 var filter      = FromFilter((object p) =>
                           "\'".Contains("foo"));
-                AreEqual("'\\''.Contains('foo')", filter.Linq);
+                AreEqual("'\''.Contains('foo')", filter.Linq);
             } {
                 var filter      = FromFilter((object p) =>
                           "\b".Contains("foo"));
