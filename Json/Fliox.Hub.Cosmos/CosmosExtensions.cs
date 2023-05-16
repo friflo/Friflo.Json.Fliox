@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
@@ -51,9 +52,10 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 }
                 
                 // --- literal --- 
-                case STRING:
-                    var str = (StringLiteral)operation;
-                    return SQLUtils.SqlString(str);
+                case STRING: {
+                    var str     = (StringLiteral)operation;
+                    return EscapeCosmosDB(str.value);
+                }
                 case DOUBLE:
                     var doubleLiteral = (DoubleLiteral)operation;
                     return doubleLiteral.value.ToString(CultureInfo.InvariantCulture);
@@ -289,6 +291,36 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             var names = path.Split('.');
             var cosmosNames = names.Select(name => $"['{name}']");
             return string.Join(null, cosmosNames);
+        }
+        
+        // [SQL constants in Azure Cosmos DB | Microsoft Learn] https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/query/constants#bk_arguments
+        private static string EscapeCosmosDB(string value) {
+            var sb = new StringBuilder();
+            sb.Append('"');
+            foreach (var c in value) {
+                switch (c) {
+                    case '\'':  sb.Append("\\'");   continue;
+                    case '"':   sb.Append("\\\"");  continue;
+                    case '\\':  sb.Append("\\\\");  continue;
+                    case '/':   sb.Append("\\/");   continue;
+                    /*
+                    case '\b':  sb.Append("\\b");   continue;                    
+                    case '\f':  sb.Append("\\f");   continue;
+                    case '\n':  sb.Append("\\n");   continue;
+                    case '\r':  sb.Append("\\r");   continue;
+                    case '\t':  sb.Append("\\t");   continue;
+                    */
+                }
+                /*if (c < 32) {
+                    var i = (int)c;
+                    sb.Append("\\u");
+                    sb.Append(i.ToString("x4"));
+                    continue;
+                }*/
+                sb.Append(c);
+            }
+            sb.Append('"');
+            return sb.ToString();
         }
     }
 }

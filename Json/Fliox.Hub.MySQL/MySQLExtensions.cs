@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
@@ -59,9 +60,11 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 }
                 
                 // --- literal --- 
-                case STRING:
-                    var str = (StringLiteral)operation;
-                    return SQLUtils.SqlString(str);
+                case STRING: {
+                    var str     = (StringLiteral)operation;
+                    var value   = EscapeMySql(str.value); 
+                    return SQLUtils.ToSqlString(value, "CONCAT(", ",", ")", "CHAR");
+                }
                 case DOUBLE:
                     var doubleLiteral = (DoubleLiteral)operation;
                     return doubleLiteral.value.ToString(CultureInfo.InvariantCulture);
@@ -325,6 +328,22 @@ $@"NOT EXISTS(
                 }
             }
             return operand;
+        }
+        
+        // [MySQL :: MySQL 8.0 Reference Manual :: 9.1.1 String Literals] https://dev.mysql.com/doc/refman/8.0/en/string-literals.html
+        private static string EscapeMySql(string value) {
+            var sb = new StringBuilder();
+            foreach (var c in value) {
+                switch (c) {
+                    case '\'':  sb.Append("''");    continue;
+                    case '"':   sb.Append("\\\"");  continue;
+                    case '\\':  sb.Append("\\\\");  continue;
+                    case '%':   sb.Append("\\%");   continue;
+                    case '_':   sb.Append("\\_");   continue;
+                }
+                sb.Append(c);
+            }
+            return sb.ToString();
         }
         
         private string[] GetOperands (List<FilterOperation> operands) {

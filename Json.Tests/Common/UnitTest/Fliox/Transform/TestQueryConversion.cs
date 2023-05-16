@@ -38,13 +38,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var isEqual =           (Equal)             FromFilter((Person p) =>
                           p.name == "Peter");
                 AreEqual("p.name == 'Peter'",   isEqual.Linq);
-                AreEqual("p['name'] = 'Peter'", isEqual.CosmosFilter());
+                AreEqual("p['name'] = \"Peter\"", isEqual.CosmosFilter());
                 AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}");
             } {
                 var isNotEqual =        (NotEqual)          FromFilter((Person p) =>
                           p.name != "Peter");
                 AreEqual("p.name != 'Peter'",   isNotEqual.Linq);
-                AreEqual("(NOT IS_DEFINED(p['name']) or NOT IS_DEFINED('Peter') or p['name'] != 'Peter')",isNotEqual.CosmosFilter());
+                AreEqual("(NOT IS_DEFINED(p['name']) or NOT IS_DEFINED(\"Peter\") or p['name'] != \"Peter\")",isNotEqual.CosmosFilter());
                 AssertJson(mapper, isNotEqual, "{'op':'notEqual','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}");
             } {
                 var isLess =            (Less)          FromFilter((Person p) =>
@@ -82,13 +82,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var or =    (Or)        FromFilter((Person p) =>
                           p.age >= 20 || p.name == "Peter");
                 AreEqual("p.age >= 20 || p.name == 'Peter'",        or.Linq);
-                AreEqual("p['age'] >= 20 OR p['name'] = 'Peter'",   or.CosmosFilter());
+                AreEqual("p['age'] >= 20 OR p['name'] = \"Peter\"",   or.CosmosFilter());
                 AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}]}");
             } {            
                 var and =   (And)       FromFilter((Person p) =>
                           p.age >= 20 && p.name == "Peter");
                 AreEqual("p.age >= 20 && p.name == 'Peter'",        and.Linq);
-                AreEqual( "p['age'] >= 20 AND p['name'] = 'Peter'", and.CosmosFilter());
+                AreEqual( "p['age'] >= 20 AND p['name'] = \"Peter\"", and.CosmosFilter());
                 AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'p.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'p.name'},'right':{'op':'string','value':'Peter'}}]}");
             } {            
                 var or2 =   (Or)        FromLambda((Person p) =>

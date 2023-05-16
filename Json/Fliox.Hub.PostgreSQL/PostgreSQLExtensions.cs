@@ -57,9 +57,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 }
                 
                 // --- literal --- 
-                case STRING:
-                    var str = (StringLiteral)operation;
-                    return SQLUtils.SqlString(str);
+                case STRING: {
+                    var str     = (StringLiteral)operation;
+                    var value   = SQLUtils.Escape(str.value);
+                    return SQLUtils.ToSqlString(value, "(", "||", ")", "CHR");
+                }
                 case DOUBLE:
                     var doubleLiteral = (DoubleLiteral)operation;
                     var dbl = doubleLiteral.value.ToString(CultureInfo.InvariantCulture);

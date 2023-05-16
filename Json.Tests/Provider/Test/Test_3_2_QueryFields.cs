@@ -74,6 +74,16 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_Compare_Equals_string_Escape(string db) {
+            var client  = await GetClient(db);
+            var query   = client.compare.Query(c => c.str == "escape-\\-\b-\f-\n-\r-\t-");
+            // AreEqual("c => c.str == 'str-1'",      query.filterLinq);
+            await client.SyncTasks();
+            LogSQL(query.SQL);
+            AreEqual(1, query.Result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Compare_Equals_true(string db) {
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.boolean == true);

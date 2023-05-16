@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Transform.Query.Ops;
 
 // ReSharper disable UseIndexFromEndExpression
 // ReSharper disable UseAwaitUsing
@@ -131,25 +130,52 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             return result;
         }
         
-        public static string SqlString(StringLiteral literal) {
-            return $"'{literal.value}'";
-            /* var sb = new StringBuilder(literal.value.Length + 2 + 3);
-            sb.Append('\'');
-            foreach (var c in literal.value) {
-                switch (c) {
-                    case '\'':  sb.Append("''");  continue;  // single quote - SQL specific
-                    //
-                    case '\b':  sb.Append("\\b"); continue;  // backspace
-                    case '\f':  sb.Append("\\f"); continue;  // form feed
-                    case '\n':  sb.Append("\\n"); continue;  // new line
-                    case '\r':  sb.Append("\\r"); continue;  // carriage return
-                    case '\t':  sb.Append("\\t"); continue;  // horizontal tabulator
-                    case '\v':  sb.Append("\\v"); continue;  // vertical tabulator
-                }
-                sb.Append(c);
+        public static string Escape(string value) {
+            return value.Replace("'", "''");
+        }
+        
+        // https://www.sqlshack.com/introduction-to-sql-escape/
+        public static string ToSqlString(
+            string value,
+            string concatStart,
+            string concatDelimiter,
+            string concatEnd,
+            string charFunction)
+        {
+            if (value == "") {
+                return "''";
             }
-            sb.Append('\'');
-            return sb.ToString();*/
+            var sb = new StringBuilder();
+            var parts   = new List<string>();
+            foreach (var c in value) {
+                if (c >= 32) {
+                    if (sb.Length == 0) { sb.Append('\''); }
+                    sb.Append(c);
+                    continue;
+                }
+                if (sb.Length > 0) {
+                    sb.Append('\'');
+                    parts.Add(sb.ToString());
+                    sb.Clear();
+                }
+                parts.Add($"{charFunction}({(int)c})");
+            }
+            if (sb.Length > 0) {
+                sb.Append('\'');
+                parts.Add(sb.ToString());
+            }
+            if (parts.Count == 1) {
+                return parts[0]; 
+            }
+            sb.Clear();
+            sb.Append(concatStart);
+            sb.Append(parts[0]);
+            for (int n = 1; n < parts.Count; n++) {
+                sb.Append(concatDelimiter);
+                sb.Append(parts[n]);
+            }
+            sb.Append(concatEnd);
+            return sb.ToString();
         }
     }
     
