@@ -86,6 +86,26 @@ namespace Friflo.Json.Tests.Provider.Test
             IsTrue(deleteAll.Success);
         }
         
+        /// <summary>
+        /// Requires implementation of <see cref="EntityContainer.UpsertEntitiesAsync"/>
+        /// </summary>
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestMutation_3_UpsertEscape(string db) {
+            var client      = await GetClient(db, false);
+            var deleteAll   = client.testMutate.DeleteAll();
+            var entities    = new List<TestMutate> {
+                new TestMutate { id = $"upsert-quote",  str = "quote-\'" },
+                new TestMutate { id = $"upsert-escape", str = "escape-\\-\b-\f-\n-\r-\t-" }
+            };
+            var upsert      = client.testMutate.UpsertRange(entities);
+            var countAll    = client.testMutate.CountAll();
+            await client.SyncTasks();
+            
+            IsTrue(upsert.Success);
+            AreEqual(2, countAll.Result);
+            IsTrue(deleteAll.Success);
+        }
+        
         // --- create
         /// <summary>
         /// Requires implementation of <see cref="EntityContainer.CreateEntitiesAsync"/>

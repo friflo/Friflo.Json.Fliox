@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         internal static DbCommand CreateEntitiesCmd_Values (SyncConnection connection, List<JsonEntity> entities, string table) {
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {table} (id,data) VALUES\n");
-            SQLUtils.AppendValuesSQL(sql, entities);
+            SQLUtils.AppendValuesSQL(sql, entities, SQLEscape.Default);
             return Command(sql.ToString(), connection);
         }
         
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             sql.Append(
 $@"MERGE {table} AS target
 USING (VALUES");
-            SQLUtils.AppendValuesSQL(sql, entities);
+            SQLUtils.AppendValuesSQL(sql, entities, SQLEscape.Default);
             sql.Append(
 @") AS source (id, data)
 ON source.id = target.id
@@ -59,7 +59,7 @@ WHEN NOT MATCHED THEN
         internal static DbCommand DeleteEntitiesCmd_Values (SyncConnection connection, List<JsonKey> ids, string table) {
             var sql = new StringBuilder();
             sql.Append($"DELETE FROM  {table} WHERE id in\n");
-            SQLUtils.AppendKeysSQL(sql, ids);
+            SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.Default);
             return Command(sql.ToString(), connection);
         }
     }

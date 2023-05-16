@@ -13,6 +13,7 @@ namespace Friflo.Json.Tests.Provider.Client
         [Key]       public  string          id { get; set; }
                     public  int             val1;
                     public  int             val2;
+                    public  string          str;
     }
     
     public class TestOps {

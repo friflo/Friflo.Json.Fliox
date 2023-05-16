@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -14,6 +15,12 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
+    [Flags]
+    public enum SQLEscape {
+        Default     = 0,
+        BackSlash   = 1
+    }
+    
     public static class SQLUtils
     {
         public static string QueryEntitiesSQL(QueryEntities command, string table, string filter) {
@@ -44,7 +51,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             return table;
         }
         
-        public static void AppendValuesSQL(StringBuilder sb, List<JsonEntity> entities) {
+        public static void AppendValuesSQL(StringBuilder sb, List<JsonEntity> entities, SQLEscape escape) {
+            var escaped = new StringBuilder();
             var isFirst = true;
             foreach (var entity in entities)
             {
@@ -54,14 +62,26 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                     sb.Append(',');
                 }
                 sb.Append("('");
-                entity.key.AppendTo(sb);
+                entity.key.AppendTo(escaped);
+                AppendEscaped(sb, escaped, escape);
                 sb.Append("','");
-                sb.Append(entity.value.AsString());
+                escaped.Append(entity.value.AsString());
+                AppendEscaped(sb, escaped, escape);
                 sb.Append("')");
             }
         }
         
-        public static void AppendKeysSQL(StringBuilder sb, List<JsonKey> keys) {
+        private static void AppendEscaped(StringBuilder sb, StringBuilder escaped, SQLEscape escape) {
+            if ((escape & SQLEscape.BackSlash) != 0) {
+                escaped.Replace("\\", "\\\\", 0, escaped.Length);
+            }
+            escaped.Replace("'", "''",    0, escaped.Length);
+            sb.Append(escaped);
+            escaped.Length = 0;
+        }
+        
+        public static void AppendKeysSQL(StringBuilder sb, List<JsonKey> keys, SQLEscape escape) {
+            var escaped = new StringBuilder();
             var isFirst = true;
             sb.Append('(');
             foreach (var key in keys)
@@ -72,7 +92,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                     sb.Append(',');
                 }
                 sb.Append('\'');
-                key.AppendTo(sb);
+                key.AppendTo(escaped);
+                AppendEscaped(sb, escaped, escape);
                 sb.Append('\'');
             }
             sb.Append(')');

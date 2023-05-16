@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Provider.Test
             
             await client.SyncTasks();
             LogSQL(query.SQL);
-            AreEqual(3, query.Result.Count);
+            AreEqual(5, query.Result.Count);
         }
     }
 }

@@ -40,5 +40,18 @@ namespace Friflo.Json.Tests.Provider.Test
             await client.SyncTasks();
             IsNull(find.Result);
         }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_4_Escaped(string db) {
+            var client  = await GetClient(db);
+            var read    = client.compare.Read();
+            var quote   = read.Find("c-quote");
+            var escape  = read.Find("c-escape");
+            await client.SyncTasks();
+            NotNull(quote.Result);
+            NotNull(escape.Result);
+            AreEqual("quote-'",                     quote.Result.str);
+            AreEqual("escape-\\-\b-\f-\n-\r-\t-",   escape.Result.str);
+        }
     }
 }

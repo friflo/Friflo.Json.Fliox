@@ -99,7 +99,7 @@ CREATE TABLE dbo.{name} (id VARCHAR(128) PRIMARY KEY, data VARCHAR(max));";
             var ids = command.ids;
             var sql = new StringBuilder();
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
-            SQLUtils.AppendKeysSQL(sql, ids);
+            SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.Default); // todo use DataTable as in DeleteEntitiesAsync()
             using var cmd   = Command(sql.ToString(), connection);
             return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
         }

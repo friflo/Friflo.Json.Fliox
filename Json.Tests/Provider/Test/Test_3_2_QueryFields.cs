@@ -20,6 +20,8 @@ namespace Friflo.Json.Tests.Provider.Test
     // ReSharper disable once InconsistentNaming
     public static class Test_3_2_QueryFields
     {
+        private const int All = 6;
+        
         // --- query filter: enum
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_Enum(string db) {
@@ -98,7 +100,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual("c => c.int32 == null",      query.filterLinq);
             await client.SyncTasks();
             LogSQL(query.SQL);
-            AreEqual(2, query.Result.Count);
+            AreEqual(All - 2, query.Result.Count);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
@@ -108,7 +110,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual("c => null == c.int32",      query.filterLinq);
             await client.SyncTasks();
             LogSQL(query.SQL);
-            AreEqual(2, query.Result.Count);
+            AreEqual(All - 2, query.Result.Count);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
@@ -130,7 +132,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual("c => c.int32 != 1",      query.filterLinq);
             await client.SyncTasks();
             LogSQL(query.SQL);
-            AreEqual(3, query.Result.Count);
+            AreEqual(All - 1, query.Result.Count);
         }
         
         /// <summary>Apply LINQ behavior. <see cref="TestQuery_Compare_NotEquals_Reference"/></summary>
@@ -142,7 +144,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual("c => c.str != 'str-0'",      query.filterLinq);
             await client.SyncTasks();
             LogSQL(query.SQL);
-            AreEqual(3, query.Result.Count);
+            AreEqual(All - 1, query.Result.Count);
         }
         
         /// <summary>

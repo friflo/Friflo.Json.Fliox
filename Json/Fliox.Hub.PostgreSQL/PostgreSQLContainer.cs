@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
-            SQLUtils.AppendValuesSQL(sql, command.entities);
+            SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
             try {
                 using var cmd = Command(sql.ToString(), connection);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
-            SQLUtils.AppendValuesSQL(sql, command.entities);
+            SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
             sql.Append("\nON CONFLICT(id) DO UPDATE SET data = excluded.data;");
             using var cmd = Command(sql.ToString(), connection);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var ids = command.ids;
             var sql = new StringBuilder();
             sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
-            SQLUtils.AppendKeysSQL(sql, ids);
+            SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.Default);
             using var cmd = Command(sql.ToString(), connection);
             return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
         }
@@ -161,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 var sql = new StringBuilder();
                 sql.Append($"DELETE FROM  {name} WHERE id in\n");
                 
-                SQLUtils.AppendKeysSQL(sql, command.ids);
+                SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.Default);
                 using var cmd = Command(sql.ToString(), connection);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 return new DeleteEntitiesResult();
