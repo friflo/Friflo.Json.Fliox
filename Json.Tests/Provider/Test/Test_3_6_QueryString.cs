@@ -21,15 +21,27 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestQuery_Compare_Equals_string_Unicode(string db) {
+        public static async Task TestQuery_Compare_Equals_string_Quote(string db) {
             var client  = await GetClient(db);
-            var query   = client.testString.Query(c => c.str == "☀🌎♥👋");
+            var query   = client.testString.Query(c => c.str == "escape-\\-\b-\f-\n-\r-\t-");
             // AreEqual("c => c.str == 'str-1'",      query.filterLinq);
             await client.SyncTasks();
             LogSQL(query.SQL);
             var result =  query.Result;
             AreEqual(1, result.Count);
-            AreEqual("s-unicode", result[0].id);
+            AreEqual("s-escape", result[0].id);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_Compare_Equals_string_Unicode(string db) {
+            var client  = await GetClient(db);
+            var query   = client.testString.Query(c => c.str == "quote-'");
+            // AreEqual("c => c.str == 'str-1'",      query.filterLinq);
+            await client.SyncTasks();
+            LogSQL(query.SQL);
+            var result =  query.Result;
+            AreEqual(1, result.Count);
+            AreEqual("s-quote", result[0].id);
         }
     }
 }
