@@ -3,7 +3,6 @@
 
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
-using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
