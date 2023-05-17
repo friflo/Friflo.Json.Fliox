@@ -42,6 +42,11 @@ namespace Friflo.Json.Tests.Provider.Client
                     public  TestObject          obj;
     }
     
+    public class TestString {
+        [Key]       public  string              id { get; set; }
+                    public  string              str;
+    }
+    
     public enum TestEnum {
         e1 = 101,
         e2 = 102

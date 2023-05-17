@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Provider.Test
     // ReSharper disable once InconsistentNaming
     public static class Test_3_2_QueryFields
     {
-        private const int All = 6;
+        private const int All = 4;
         
         // --- query filter: enum
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
@@ -68,16 +68,6 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.str == "str-1");
             AreEqual("c => c.str == 'str-1'",      query.filterLinq);
-            await client.SyncTasks();
-            LogSQL(query.SQL);
-            AreEqual(1, query.Result.Count);
-        }
-        
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestQuery_Compare_Equals_string_Escape(string db) {
-            var client  = await GetClient(db);
-            var query   = client.compare.Query(c => c.str == "escape-\\-\b-\f-\n-\r-\t-");
-            // AreEqual("c => c.str == 'str-1'",      query.filterLinq);
             await client.SyncTasks();
             LogSQL(query.SQL);
             AreEqual(1, query.Result.Count);

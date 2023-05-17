@@ -10,6 +10,7 @@ namespace Friflo.Json.Tests.Provider.Client
         public readonly EntitySet <string, TestOps>         testOps;
         public readonly EntitySet <string, TestQuantify>    testQuantify;
         public readonly EntitySet <string, CompareScalar>   compare;
+        public readonly EntitySet <string, TestString>      testString;
         public readonly EntitySet <string, TestEnumEntity>  testEnum;
         public readonly EntitySet <string, CursorEntity>    testCursor;
 

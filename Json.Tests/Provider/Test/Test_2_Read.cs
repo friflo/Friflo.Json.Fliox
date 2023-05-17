@@ -44,9 +44,9 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestRead_4_Escaped(string db) {
             var client  = await GetClient(db);
-            var read    = client.compare.Read();
-            var quote   = read.Find("c-quote");
-            var escape  = read.Find("c-escape");
+            var read    = client.testString.Read();
+            var quote   = read.Find("s-quote");
+            var escape  = read.Find("s-escape");
             await client.SyncTasks();
             NotNull(quote.Result);
             NotNull(escape.Result);
