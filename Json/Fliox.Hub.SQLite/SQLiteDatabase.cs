@@ -15,7 +15,6 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     public sealed class SQLiteDatabase : EntityDatabase
     {
         public              bool        Pretty      { get; init; } = false;
-        public              int?        Throughput  { get; init; } = null;
         
         internal readonly   sqlite3                                 sqliteDB;
         private             Dictionary<string, SQLitePrimaryKey>    keys;
