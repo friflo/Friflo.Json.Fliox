@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 case STRING: {
                     var str     = (StringLiteral)operation;
                     var value   = SQLUtils.Escape(str.value);
-                    return SQLUtils.ToSqlString(value, "(", "+", ")", "CHAR");
+                    return SQLUtils.ToSqlString(value, "(", "+", ")", "CHAR", "N'");
                 }
                 case DOUBLE:
                     var doubleLiteral = (DoubleLiteral)operation;

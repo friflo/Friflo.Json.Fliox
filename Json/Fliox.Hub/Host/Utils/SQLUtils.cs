@@ -140,7 +140,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             string concatStart,
             string concatDelimiter,
             string concatEnd,
-            string charFunction)
+            string charFunction,
+            string literalStart = "'")
         {
             if (value == "") {
                 return "''";
@@ -149,7 +150,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             var parts   = new List<string>();
             foreach (var c in value) {
                 if (c >= 32) {
-                    if (sb.Length == 0) { sb.Append('\''); }
+                    if (sb.Length == 0) { sb.Append(literalStart); }
                     sb.Append(c);
                     continue;
                 }
