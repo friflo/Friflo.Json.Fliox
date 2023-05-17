@@ -17,12 +17,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     {
         private  readonly   sqlite3     sqliteDB;
         private             bool        tableExists;
+        private  readonly   bool        synchronous;
         public   override   bool        Pretty      { get; }
         
         internal SQLiteContainer(string name, SQLiteDatabase database, bool pretty)
             : base(name, database)
         {
             sqliteDB    = database.sqliteDB;
+            synchronous = database.Synchronous;
             Pretty      = pretty;
         }
 
@@ -39,9 +41,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return success;
         }
         
-        public override Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
-            var result = CreateEntities(command, syncContext);
-            return Task.FromResult(result);
+        public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
+            if (synchronous) {
+                return CreateEntities(command, syncContext);
+            }
+            return await Task.Run(() => CreateEntities(command, syncContext));
         }
         
         public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
@@ -65,9 +69,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
         }
         
-        public override Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
-            var result = UpsertEntities(command, syncContext);
-            return Task.FromResult(result);
+        public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
+            if (synchronous) {
+                return UpsertEntities(command, syncContext);
+            }
+            return await Task.Run(() => UpsertEntities(command, syncContext));
         }
 
         public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
@@ -94,9 +100,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
         }
         
-        public override Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
-            var result = ReadEntities(command, syncContext);
-            return Task.FromResult(result);
+        public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
+            if (synchronous) {
+                return ReadEntities(command, syncContext);
+            }
+            return await Task.Run(() => ReadEntities(command, syncContext));
         }
 
         public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
@@ -114,9 +122,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return new ReadEntitiesResult { entities = values.ToArray() };
         }
         
-        public override Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
-            var result = QueryEntities(command, syncContext);
-            return Task.FromResult(result);
+        public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
+            if (synchronous) {
+                return QueryEntities(command, syncContext);
+            }
+            return await Task.Run(() => QueryEntities(command, syncContext));
         }
         
         public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext) {
@@ -159,9 +169,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return result;
         }
         
-        public override Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
-            var result = AggregateEntities(command, syncContext);
-            return Task.FromResult(result);
+        public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
+            if (synchronous) {
+                return AggregateEntities(command, syncContext);
+            }
+            return await Task.Run(() => AggregateEntities(command, syncContext));
         }
         
         private AggregateEntitiesResult AggregateEntities (AggregateEntities command, SyncContext syncContext) {
@@ -187,9 +199,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
         }
         
-        public override Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
-            var result = DeleteEntities(command, syncContext);
-            return Task.FromResult(result);
+        public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
+            if (synchronous) {
+                return DeleteEntities(command, syncContext);
+            }
+            return await Task.Run(() => DeleteEntities(command, syncContext));
         }
         
         public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {

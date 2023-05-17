@@ -15,6 +15,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     public sealed class SQLiteDatabase : EntityDatabase
     {
         public              bool        Pretty      { get; init; } = false;
+        /// <summary>Set the execution mode of SQLite database commands.<br/>
+        /// If true database commands are executed synchronously otherwise asynchronously.<br/>
+        /// <br/>
+        /// The use cases of sync vs async execution are explained in detail at:<br/>
+        /// <a href="https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods/">
+        /// Should I expose asynchronous wrappers for synchronous methods? - .NET Parallel Programming</a>
+        /// </summary>
+        public              bool        Synchronous { get; init; } = false;
         
         internal readonly   sqlite3                                 sqliteDB;
         private             Dictionary<string, SQLitePrimaryKey>    keys;
