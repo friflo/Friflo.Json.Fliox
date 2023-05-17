@@ -68,11 +68,11 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 return;
             }
             var connection = await GetConnectionAsync().ConfigureAwait(false);
-            var sql = "IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE(id varchar(128), data varchar(max));";
+            var sql = $"IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE({SQLServerContainer.ColumnId}, {SQLServerContainer.ColumnData});";
             using (var cmd = Command(sql, connection)) {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
-            sql = "IF TYPE_ID(N'KeyType') IS NULL CREATE TYPE KeyType AS TABLE(id varchar(128));";
+            sql = $"IF TYPE_ID(N'KeyType') IS NULL CREATE TYPE KeyType AS TABLE({SQLServerContainer.ColumnId});";
             using (var cmd = Command(sql, connection)) {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
