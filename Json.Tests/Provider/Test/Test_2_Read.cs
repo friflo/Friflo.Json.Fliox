@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestRead_4_Escaped(string db) {
+        public static async Task TestRead_4_FieldEscaped(string db) {
             var client  = await GetClient(db);
             var read    = client.testString.Read();
             var quote   = read.Find("s-quote");
@@ -52,6 +52,24 @@ namespace Friflo.Json.Tests.Provider.Test
             NotNull(escape.Result);
             AreEqual("quote-'",                     quote.Result.str);
             AreEqual("escape-\\-\b-\f-\n-\r-\t-",   escape.Result.str);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_5_IdQuote(string db) {
+            var client  = await GetClient(db);
+            var read    = client.testString.Read();
+            var quote   = read.Find("id-quote-'");
+            await client.SyncTasks();
+            NotNull(quote.Result);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_6_IdUnicode(string db) {
+            var client  = await GetClient(db);
+            var read    = client.testString.Read();
+            var quote   = read.Find("id-unicode-🔑");
+            await client.SyncTasks();
+            NotNull(quote.Result);
         }
     }
 }
