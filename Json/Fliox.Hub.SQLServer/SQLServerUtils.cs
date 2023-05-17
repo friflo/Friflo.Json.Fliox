@@ -107,6 +107,20 @@ WHEN NOT MATCHED THEN
             p.TypeName  = "KeyType";
             return cmd;
         }
+        
+        internal static DbCommand ReadEntitiesCmd (SyncConnection connection, List<JsonKey> ids, string table) {
+            var dataTable = new DataTable();
+            dataTable.Columns.Add("id", typeof(string));
+            foreach(var id in ids) {
+                dataTable.Rows.Add(id.AsString());
+            }
+            var sql     = $"SELECT id, data FROM {table} WHERE id in (SELECT id FROM @ids);";
+            var cmd     = Command(sql, connection);
+            var p       = cmd.Parameters.Add(new SqlParameter("@ids", SqlDbType.Structured));
+            p.Value     = dataTable;
+            p.TypeName  = "KeyType";
+            return cmd;
+        }
     }
 }
 

@@ -99,11 +99,10 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             if (error != null) {
                 return new ReadEntitiesResult { Error = error };
             }
-            var ids = command.ids;
-            var sql = new StringBuilder();
-            sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
-            SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.Default); // todo use DataTable as in DeleteEntitiesAsync()
-            using var cmd   = Command(sql.ToString(), connection);
+            await database.CreateTableTypes().ConfigureAwait(false);
+            using var cmd = ReadEntitiesCmd(connection, command.ids, name);
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+            
             return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
         }
 
