@@ -32,11 +32,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskState           State       => state;
 
         internal abstract void GetIds(List<JsonKey> ids);
-        
-        internal void AddPeer (Peer<T> peer, PeerState peerState) {
-            entities.Add(new KeyEntity<T>(peer.id, peer.Entity));   // sole place a peer (entity) is added
-            peer.state = peerState;                                 // sole place Updated is set
-        }
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -56,11 +51,21 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.syncSet    = syncSet;
         }
         
+        private void AddPeer (Peer<T> peer, T entity) {
+            if (peer == null) {
+                // case: entity key has default value 
+                entities.Add(new KeyEntity<T>(default, entity));
+                return;
+            }
+            entities.Add(new KeyEntity<T>(peer.id, entity));
+            peer.state = PeerState.Create;                          // sole place Updated is set
+        }
+        
         public void Add(T entity) {
             if (entity == null)
                 throw new ArgumentException($"CreateTask<{set.name}>.Add() entity must not be null.");
             var peer = set.CreatePeer(entity);
-            AddPeer(peer, PeerState.Create);
+            AddPeer(peer, entity);
         }
         
         public void AddRange(List<T> entities) {
@@ -70,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     throw new ArgumentException($"CreateTask<{set.name}>.AddRange() entities[{n}] must not be null.");
                 n++;
                 var peer = set.CreatePeer(entity);
-                AddPeer(peer, PeerState.Create);
+                AddPeer(peer, entity);
             }
         }
         
@@ -81,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     throw new ArgumentException($"CreateTask<{set.name}>.AddRange() entities[{n}] must not be null.");
                 n++;
                 var peer = set.CreatePeer(entity);
-                AddPeer(peer, PeerState.Create);
+                AddPeer(peer, entity);
             }
         }
         
