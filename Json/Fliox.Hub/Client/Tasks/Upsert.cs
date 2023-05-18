@@ -17,17 +17,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         private  readonly   EntitySetBase<T>    set;
         private  readonly   SyncSetBase<T>      syncSet;
-        private  readonly   List<T>             entities;
         private             UpsertEntities      upsertEntities;
 
         public   override   string              Details     => $"UpsertTask<{typeof(T).Name}> (entities: {entities.Count})";
         internal override   TaskType            TaskType    => TaskType.upsert;
         
         
-        internal UpsertTask(List<T> entities, EntitySetBase<T> set, SyncSetBase<T> syncSet) {
+        internal UpsertTask(EntitySetBase<T> set, SyncSetBase<T> syncSet) {
             this.set        = set;
             this.syncSet    = syncSet;
-            this.entities   = entities;
         }
         
         public void Add(T entity) {
@@ -35,7 +33,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new ArgumentException($"UpsertTask<{set.name}>.Add() entity must not be null.");
             var peer = set.CreatePeer(entity);
             AddPeer(peer, PeerState.Upsert);
-            entities.Add(entity);
         }
         
         public void AddRange(List<T> entities) {
@@ -47,7 +44,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var peer = set.CreatePeer(entity);
                 AddPeer(peer, PeerState.Upsert);
             }
-            this.entities.AddRange(entities);
         }
         
         public void AddRange(ICollection<T> entities) {
@@ -59,7 +55,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var peer = set.CreatePeer(entity);
                 AddPeer(peer, PeerState.Upsert);
             }
-            this.entities.AddRange(entities);
         }
         
         protected internal override void Reuse() {
@@ -67,7 +62,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             set.upsertEntitiesBuffer.Add(upsertEntities);
                 
             entities.Clear();
-            keyEntities.Clear();
             state       = default;
             taskName    = null;
             set.upsertBuffer.Add(this);
@@ -75,8 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal override void GetIds(List<JsonKey> ids) {
             foreach (var entity in entities) {
-                var id = set.GetEntityId(entity);
-                ids.Add(id);
+                ids.Add(entity.key);
             }
         }
         

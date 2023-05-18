@@ -446,12 +446,12 @@ namespace Friflo.Json.Fliox.Hub.Client
                 case TaskType.create:
                     var create =            (CreateEntities)    task;
                     syncSet = syncSets[create.container];
-                    syncSet.CreateEntitiesResult(create, result, mapper);
+                    syncSet.CreateEntitiesResult(create, result);
                     break;
                 case TaskType.upsert:
                     var upsert =            (UpsertEntities)    task;
                     syncSet = syncSets[upsert.container];
-                    syncSet.UpsertEntitiesResult(upsert, result, mapper);
+                    syncSet.UpsertEntitiesResult(upsert, result);
                     break;
                 case TaskType.read:
                     var readList =          (ReadEntities)      task;

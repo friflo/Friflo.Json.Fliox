@@ -25,7 +25,7 @@ internal readonly struct KeyEntity<T>  where T : class
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public abstract class WriteTask<T> : SyncTask where T : class {
-        internal readonly   List<KeyEntity<T>>  keyEntities = new List<KeyEntity<T>>();
+        internal readonly   List<KeyEntity<T>>  entities = new List<KeyEntity<T>>();
         
         [DebuggerBrowsable(Never)]
         internal            TaskState           state;
@@ -34,8 +34,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal abstract void GetIds(List<JsonKey> ids);
         
         internal void AddPeer (Peer<T> peer, PeerState peerState) {
-            keyEntities.Add(new KeyEntity<T>(peer.id, peer.Entity));    // sole place a peer (entity) is added
-            peer.state = peerState;                                     // sole place Updated is set
+            entities.Add(new KeyEntity<T>(peer.id, peer.Entity));   // sole place a peer (entity) is added
+            peer.state = peerState;                                 // sole place Updated is set
         }
     }
     
@@ -46,16 +46,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         private readonly    EntitySetBase<T>    set;
         private readonly    SyncSetBase<T>      syncSet;
-        private readonly    List<T>             entities;
 
         public   override   string              Details => $"CreateTask<{typeof(T).Name}> (entities: {entities.Count})";
         internal override   TaskType            TaskType=> TaskType.create;
         
         
-        internal CreateTask(List<T> entities, EntitySetBase<T> set, SyncSetBase<T>  syncSet) {
+        internal CreateTask(EntitySetBase<T> set, SyncSetBase<T>  syncSet) {
             this.set        = set;
             this.syncSet    = syncSet;
-            this.entities   = entities;
         }
         
         public void Add(T entity) {
@@ -63,7 +61,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new ArgumentException($"CreateTask<{set.name}>.Add() entity must not be null.");
             var peer = set.CreatePeer(entity);
             AddPeer(peer, PeerState.Create);
-            entities.Add(entity);
         }
         
         public void AddRange(List<T> entities) {
@@ -75,7 +72,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var peer = set.CreatePeer(entity);
                 AddPeer(peer, PeerState.Create);
             }
-            this.entities.AddRange(entities);
         }
         
         public void AddRange(ICollection<T> entities) {
@@ -87,12 +83,10 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var peer = set.CreatePeer(entity);
                 AddPeer(peer, PeerState.Create);
             }
-            this.entities.AddRange(entities);
         }
         
         protected internal override void Reuse() {
             entities.Clear();
-            keyEntities.Clear();
             state       = default;
             taskName    = null;
             set.createBuffer.Add(this);
@@ -100,8 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override void GetIds(List<JsonKey> ids) {
             foreach (var entity in entities) {
-                var id = set.GetEntityId(entity);
-                ids.Add(id);    
+                ids.Add(entity.key);    
             }
         }
         

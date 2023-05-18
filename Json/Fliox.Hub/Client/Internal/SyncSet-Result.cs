@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
@@ -25,8 +24,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  CloseCursors        CloseCursors        (CloseCursorsTask   closeCursor);
         
         internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);
-        internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result, ObjectMapper mapper);
-        internal  abstract  void    UpsertEntitiesResult    (UpsertEntities     task, SyncTaskResult result, ObjectMapper mapper);
+        internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result);
+        internal  abstract  void    UpsertEntitiesResult    (UpsertEntities     task, SyncTaskResult result);
         internal  abstract  void    ReadEntitiesResult      (ReadEntities       task, SyncTaskResult result, ContainerEntities readEntities);
         internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, SyncTaskResult result, ContainerEntities queryEntities);
         internal  abstract  void    AggregateEntitiesResult (AggregateEntities  task, SyncTaskResult result);
@@ -90,17 +89,17 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
-        /// <see cref="WriteTask{T}.keyEntities"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{TKey,T}.SetResult"/>. 
-        internal override void CreateEntitiesResult(CreateEntities task, SyncTaskResult result, ObjectMapper mapper) {
+        /// <see cref="WriteTask{T}.entities"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{TKey,T}.SetResult"/>. 
+        internal override void CreateEntitiesResult(CreateEntities task, SyncTaskResult result) {
             var createTask = (CreateTask<T>)task.intern.syncTask;
-            CreateUpsertEntitiesResult(task.entities, result, createTask, errorsCreate, mapper);
-            var keyEntities = createTask.keyEntities;
+            CreateUpsertEntitiesResult(task.entities, result, createTask, errorsCreate);
+            var keyEntities = createTask.entities;
             if (result is TaskErrorResult taskError) {
                 if (errorsCreate == NoErrors) {
                     errorsCreate = new Dictionary<JsonKey, EntityError>(keyEntities.Count, JsonKey.Equality);
                 }
-                foreach (var keyEntity in keyEntities) {
-                    var id = keyEntity.key;
+                foreach (var entity in keyEntities) {
+                    var id = entity.key;
                     var error = new EntityError(EntityErrorType.WriteError, set.nameShort, id, taskError.message) {
                         taskErrorType   = taskError.type,
                         stacktrace      = taskError.stacktrace
@@ -110,23 +109,21 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
 
-        internal override void UpsertEntitiesResult(UpsertEntities task, SyncTaskResult result, ObjectMapper mapper) {
+        internal override void UpsertEntitiesResult(UpsertEntities task, SyncTaskResult result) {
             var upsertTask = (UpsertTask<T>)task.intern.syncTask;
-            CreateUpsertEntitiesResult(task.entities, result, upsertTask, errorsUpsert, mapper);
+            CreateUpsertEntitiesResult(task.entities, result, upsertTask, errorsUpsert);
         }
 
         private void CreateUpsertEntitiesResult(
             List<JsonEntity>                    entities,
             SyncTaskResult                      result,
             WriteTask<T>                        writeTask,
-            IDictionary<JsonKey, EntityError>   writeErrors,
-            ObjectMapper                        mapper)
+            IDictionary<JsonKey, EntityError>   writeErrors)
         {
             if (result is TaskErrorResult taskError) {
                 writeTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            var reader = mapper.reader;
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
                 // if (entity.json == null)  continue; // TAG_ENTITY_NULL

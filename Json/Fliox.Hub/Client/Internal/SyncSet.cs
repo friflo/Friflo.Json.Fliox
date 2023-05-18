@@ -83,12 +83,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Create
         internal CreateTask<T> CreateCreateTask() {
-            return set.createBuffer.Get() ?? new CreateTask<T>(new List<T>(), set, this);
+            return set.createBuffer.Get() ?? new CreateTask<T>(set, this);
         }
 
         // --- Upsert
         internal UpsertTask<T> CreateUpsertTask() {
-            return set.upsertBuffer.Get() ?? new UpsertTask<T>(new List<T>(), set, this);
+            return set.upsertBuffer.Get() ?? new UpsertTask<T>(set, this);
         }
         
         // --- Delete
@@ -146,15 +146,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal override CreateEntities CreateEntities(CreateTask<T> create, in CreateTaskContext context) {
-            var keyEntities = create.keyEntities;
+            var keyEntities = create.entities;
             var entities    = new List<JsonEntity>(keyEntities.Count);
             var writer      = context.mapper;
             writer.Pretty           = set.intern.writePretty;
             writer.WriteNullMembers = set.intern.writeNull;
 
-            foreach (var keyEntity in keyEntities) {
-                var value   = writer.WriteAsValue(keyEntity.value);
-                entities.Add(new JsonEntity(keyEntity.key, value));
+            foreach (var entity in keyEntities) {
+                var value   = writer.WriteAsValue(entity.value);
+                entities.Add(new JsonEntity(entity.key, value));
             }
             return new CreateEntities {
                 container       = set.nameShort,
@@ -167,7 +167,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal override UpsertEntities UpsertEntities(UpsertTask<T> upsert, in CreateTaskContext context) {
-            var keyEntities         = upsert.keyEntities;
+            var keyEntities         = upsert.entities;
             var writer              = context.mapper;
             writer.Pretty           = set.intern.writePretty;
             writer.WriteNullMembers = set.intern.writeNull;
