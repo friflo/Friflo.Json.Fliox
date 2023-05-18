@@ -146,22 +146,20 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal override CreateEntities CreateEntities(CreateTask<T> create, in CreateTaskContext context) {
-            var creates = create.peers;
-            var entries = new List<JsonEntity>(creates.Count);
-            var writer  = context.mapper;
+            var keyEntities = create.keyEntities;
+            var entities    = new List<JsonEntity>(keyEntities.Count);
+            var writer      = context.mapper;
             writer.Pretty           = set.intern.writePretty;
             writer.WriteNullMembers = set.intern.writeNull;
 
-            foreach (var createPair in creates) {
-                var peer    = createPair.Value;
-                T entity    = peer.Entity;
-                var value   = writer.WriteAsValue(entity);
-                entries.Add(new JsonEntity(peer.id, value));
+            foreach (var keyEntity in keyEntities) {
+                var value   = writer.WriteAsValue(keyEntity.value);
+                entities.Add(new JsonEntity(keyEntity.key, value));
             }
             return new CreateEntities {
                 container       = set.nameShort,
                 keyName         = SyncKeyName(set.GetKeyName()),
-                entities        = entries,
+                entities        = entities,
                 reservedToken   = new Guid(), // todo
                 intern          = new SyncTaskIntern(create)
             };
@@ -169,17 +167,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal override UpsertEntities UpsertEntities(UpsertTask<T> upsert, in CreateTaskContext context) {
-            var peers               = upsert.peers;
+            var keyEntities         = upsert.keyEntities;
             var writer              = context.mapper;
             writer.Pretty           = set.intern.writePretty;
             writer.WriteNullMembers = set.intern.writeNull;
             var upsertEntities      = set.upsertEntitiesBuffer.Get() ?? new UpsertEntities();
-            var entities            = upsertEntities.entities ?? new List<JsonEntity>(peers.Count);
-            foreach (var upsertPair in peers) {
-                var peer    = upsertPair.Value;
-                T entity    = peer.Entity;
-                var value   = writer.WriteAsValue(entity);
-                entities.Add(new JsonEntity(peer.id, value));
+            var entities            = upsertEntities.entities ?? new List<JsonEntity>(keyEntities.Count);
+            foreach (var keyEntity in keyEntities) {
+                var value   = writer.WriteAsValue(keyEntity.value);
+                entities.Add(new JsonEntity(keyEntity.key, value));
             }
             upsertEntities.container        = set.nameShort;
             upsertEntities.keyName          = SyncKeyName(set.GetKeyName());

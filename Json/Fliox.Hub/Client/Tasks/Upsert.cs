@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             set.upsertEntitiesBuffer.Add(upsertEntities);
                 
             entities.Clear();
-            peers.Clear();
+            keyEntities.Clear();
             state       = default;
             taskName    = null;
             set.upsertBuffer.Add(this);

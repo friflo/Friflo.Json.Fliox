@@ -90,17 +90,17 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
-        /// <see cref="WriteTask{T}.peers"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{TKey,T}.SetResult"/>. 
+        /// <see cref="WriteTask{T}.keyEntities"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask{TKey,T}.SetResult"/>. 
         internal override void CreateEntitiesResult(CreateEntities task, SyncTaskResult result, ObjectMapper mapper) {
             var createTask = (CreateTask<T>)task.intern.syncTask;
             CreateUpsertEntitiesResult(task.entities, result, createTask, errorsCreate, mapper);
-            var creates = createTask.peers;
+            var keyEntities = createTask.keyEntities;
             if (result is TaskErrorResult taskError) {
                 if (errorsCreate == NoErrors) {
-                    errorsCreate = new Dictionary<JsonKey, EntityError>(creates.Count, JsonKey.Equality);
+                    errorsCreate = new Dictionary<JsonKey, EntityError>(keyEntities.Count, JsonKey.Equality);
                 }
-                foreach (var createPair in creates) {
-                    var id = createPair.Key;
+                foreach (var keyEntity in keyEntities) {
+                    var id = keyEntity.key;
                     var error = new EntityError(EntityErrorType.WriteError, set.nameShort, id, taskError.message) {
                         taskErrorType   = taskError.type,
                         stacktrace      = taskError.stacktrace

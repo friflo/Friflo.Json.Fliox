@@ -4,25 +4,38 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
+
+
+internal readonly struct KeyEntity<T>  where T : class 
+{
+    internal readonly  JsonKey  key;
+    internal readonly  T        value;
+    
+    internal KeyEntity(in JsonKey key, T value) {
+        this.key    = key;
+        this.value  = value;
+    }
+}
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public abstract class WriteTask<T> : SyncTask where T : class {
-        internal readonly   Dictionary<JsonKey, Peer<T>>    peers = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality);
+        internal readonly   List<KeyEntity<T>>  keyEntities = new List<KeyEntity<T>>();
         
         [DebuggerBrowsable(Never)]
-        internal            TaskState                       state;
-        internal override   TaskState                       State   => state;
+        internal            TaskState           state;
+        internal override   TaskState           State       => state;
 
         internal abstract void GetIds(List<JsonKey> ids);
         
         internal void AddPeer (Peer<T> peer, PeerState peerState) {
-            peers.TryAdd(peer.id, peer);        // sole place a peer (entity) is added
-            peer.state = peerState;             // sole place Updated is set
+            keyEntities.Add(new KeyEntity<T>(peer.id, peer.Entity));    // sole place a peer (entity) is added
+            peer.state = peerState;                                     // sole place Updated is set
         }
     }
     
@@ -79,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         protected internal override void Reuse() {
             entities.Clear();
-            peers.Clear();
+            keyEntities.Clear();
             state       = default;
             taskName    = null;
             set.createBuffer.Add(this);
