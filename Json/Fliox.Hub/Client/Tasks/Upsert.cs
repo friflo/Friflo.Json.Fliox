@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private void AddPeer (Peer<T> peer) {
-            entities.Add(new KeyEntity<T>(peer.id, peer.Entity));
+            entities.Add(new KeyEntity<T>(peer.id, peer.Entity));   // sole place an entity is added
             peer.state = PeerState.Upsert;                          // sole place Updated is set
         }
         
