@@ -14,7 +14,9 @@ internal readonly struct KeyEntity<T>  where T : class
 {
     internal readonly  JsonKey  key;
     internal readonly  T        value;
-    
+
+    public   override   string  ToString() => key.AsString();
+
     internal KeyEntity(in JsonKey key, T value) {
         this.key    = key;
         this.value  = value;
