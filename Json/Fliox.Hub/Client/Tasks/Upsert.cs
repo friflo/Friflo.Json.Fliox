@@ -72,12 +72,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             set.upsertBuffer.Add(this);
         }
         
-        internal override void GetIds(List<JsonKey> ids) {
-            foreach (var entity in entities) {
-                ids.Add(entity.key);
-            }
-        }
-        
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return upsertEntities = syncSet.UpsertEntities(this, context);
         }

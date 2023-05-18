@@ -30,8 +30,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         internal            TaskState           state;
         internal override   TaskState           State       => state;
-
-        internal abstract void GetIds(List<JsonKey> ids);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -95,12 +93,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             state       = default;
             taskName    = null;
             set.createBuffer.Add(this);
-        }
-
-        internal override void GetIds(List<JsonKey> ids) {
-            foreach (var entity in entities) {
-                ids.Add(entity.key);    
-            }
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
