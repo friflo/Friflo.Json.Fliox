@@ -208,6 +208,16 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(2, query.Result.Count);
         }
         
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestQuery_Compare_String_Length(string db) {
+            var client  = await GetClient(db);
+            var query   = client.compare.Query(c => c.str.Length == 5);
+            AreEqual("c => c.str.Length() == 5", query.filterLinq);
+            await client.SyncTasks();
+            LogSQL(query.SQL);
+            AreEqual(2, query.Result.Count);
+        }
+        
         // --- query filter: arithmetic operator
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_CompareAdd(string db) {
