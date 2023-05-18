@@ -138,11 +138,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
 
             var entityErrorInfo = new TaskErrorInfo();
-            var idsBuf = set.intern.store._intern.IdsBuf();
-            idsBuf.Clear();
-            writeTask.GetIds(idsBuf);
-            foreach (var id in idsBuf) {
-                if (writeErrors.TryGetValue(id, out EntityError error)) {
+            foreach (var entity in writeTask.entities) {
+                if (writeErrors.TryGetValue(entity.key, out EntityError error)) {
                     entityErrorInfo.AddEntityError(error);
                 }
             }

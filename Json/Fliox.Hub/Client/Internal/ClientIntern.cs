@@ -58,7 +58,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            List<MessageSubscriber>                     subscriptionsPrefix;    // create on demand - only used for subscriptions
         // lock (pendingSyncs) instead of using ConcurrentDictionary<,> to avoid heap allocations
         internal readonly   Dictionary<Task, SyncContext>               pendingSyncs;
-        private             List<JsonKey>                               idsBuf;     //  create buffer on demand - only used for Upsert
 
         // --- mutable state
         internal            SyncStore                   syncStore;
@@ -83,14 +82,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
 
         // --- create expensive / infrequently used objects on demand. Used method to avoid creation by debugger
-        internal EntityProcessor        EntityProcessor()       => processor             ?? (processor             = new EntityProcessor());
-        internal ObjectDiffer           ObjectDiffer()          => objectDiffer          ?? (objectDiffer          = new ObjectDiffer(typeStore));
-        internal JsonMergeWriter        JsonMergeWriter()       => mergeWriter           ?? (mergeWriter           = new JsonMergeWriter(typeStore));
-        internal ObjectMapper           ObjectMapper()          => objectMapper          ?? (objectMapper          = new ObjectMapper(typeStore));
-        internal ReaderPool             EventReaderPool()       => eventReaderPool       ?? (eventReaderPool       = new ReaderPool(typeStore));
+        internal EntityProcessor        EntityProcessor()       => processor        ??= new EntityProcessor();
+        internal ObjectDiffer           ObjectDiffer()          => objectDiffer     ??= new ObjectDiffer(typeStore);
+        internal JsonMergeWriter        JsonMergeWriter()       => mergeWriter      ??= new JsonMergeWriter(typeStore);
+        internal ObjectMapper           ObjectMapper()          => objectMapper     ??= new ObjectMapper(typeStore);
+        internal ReaderPool             EventReaderPool()       => eventReaderPool  ??= new ReaderPool(typeStore);
 
-        internal SubscriptionProcessor  SubscriptionProcessor() => subscriptionProcessor ?? (subscriptionProcessor = new SubscriptionProcessor());
-        internal List<JsonKey>          IdsBuf()                => idsBuf                ?? (idsBuf                = new List<JsonKey>());
+        internal SubscriptionProcessor  SubscriptionProcessor() => subscriptionProcessor ??= new SubscriptionProcessor();
 
         public   override string        ToString()              => "";
 
@@ -136,7 +134,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             subscriptions           = null; 
             subscriptionsPrefix     = null; 
             pendingSyncs            = new Dictionary<Task, SyncContext>();
-            idsBuf                  = null;
 
             // --- mutable state
             syncStore                   = new SyncStore();
@@ -167,7 +164,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal void Dispose() {
             // readonly - owned
             ackTimer?.Dispose();
-            idsBuf?.Clear();
             lock (pendingSyncs) { pendingSyncs.Clear(); }
             disposed = true;
             // messageReader.Dispose();
