@@ -9,7 +9,6 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -75,6 +74,5 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return upsertEntities = syncSet.UpsertEntities(this, context);
         }
-
     }
 }

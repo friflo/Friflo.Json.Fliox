@@ -3,37 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using static System.Diagnostics.DebuggerBrowsableState;
-
-
-internal readonly struct KeyEntity<T>  where T : class 
-{
-    internal readonly  JsonKey  key;
-    internal readonly  T        value;
-
-    public   override   string  ToString() => key.AsString();
-
-    internal KeyEntity(in JsonKey key, T value) {
-        this.key    = key;
-        this.value  = value;
-    }
-}
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public abstract class WriteTask<T> : SyncTask where T : class {
-        internal readonly   List<KeyEntity<T>>  entities = new List<KeyEntity<T>>();
-        
-        [DebuggerBrowsable(Never)]
-        internal            TaskState           state;
-        internal override   TaskState           State       => state;
-    }
-    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -95,6 +70,5 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return syncSet.CreateEntities(this, context);
         }
-
     }
 }
