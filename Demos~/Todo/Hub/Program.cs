@@ -18,7 +18,7 @@ namespace TodoHub
         /// <summary> blueprint to showcase a minimal feature set of a <see cref="HttpHost"/> </summary>
         private static HttpHost CreateHttpHost()
         {
-            var schema          = new DatabaseSchema(typeof(TodoClient));
+            var schema          = DatabaseSchema.Create<TodoClient>();
             var database        = new FileDatabase("main_db", "../Test/DB/main_db") { Schema = schema }; // uses records stored in 'main_db/jobs' folder
 
             var hub             = new FlioxHub(database);

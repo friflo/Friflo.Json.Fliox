@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task InitDatabaseSchema(Func<SubPocStore, SubPocService, Task> test) {
             var service             = new SubPocService();
-            var schema              = new DatabaseSchema(typeof(SubPocStore)); 
+            var schema              = DatabaseSchema.Create<SubPocStore>(); 
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(TestGlobals.DB, service) { Schema = schema })
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))

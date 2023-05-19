@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Provider
         private static async Task<HttpHost> CreateHttpHost() {
             var env                 = new SharedEnv();
             string      cache       = null;
-            var schema              = new DatabaseSchema(typeof(TestClient));
+            var schema              = DatabaseSchema.Create<TestClient>();
             var fileDb              = new FileDatabase("file_db", Env.TestDbFolder) { Schema = schema };
             var memoryDb            = new MemoryDatabase("memory_db") { Schema = schema };
             await memoryDb.SeedDatabase(fileDb).ConfigureAwait(false);

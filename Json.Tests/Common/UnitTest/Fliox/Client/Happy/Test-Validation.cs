@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task  ValidationByTypesAsync() { await ValidationByTypes(); }
 
         private static async Task ValidationByTypes() {
-            var schema                  = new DatabaseSchema(typeof(PocStore)); 
+            var schema                  = DatabaseSchema.Create<PocStore>(); 
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocService()) { Schema = schema })
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))

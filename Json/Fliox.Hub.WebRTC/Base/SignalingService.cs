@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
     {
         private const       string              LogName = "Signaling";
 
-        public  static      DatabaseSchema      Schema { get; } = new DatabaseSchema(typeof(Signaling));
+        public  static      DatabaseSchema      Schema { get; } = DatabaseSchema.Create<Signaling>();
 
         public SignalingService() {
             AddMessageHandlers(this, null);

@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Provider
             if (_seedSource != null) {
                 return _seedSource;
             }
-            var databaseSchema  = new DatabaseSchema(typeof(TestClient));
+            var databaseSchema  = DatabaseSchema.Create<TestClient>();
             return _seedSource = new FileDatabase("file_db", TestDbFolder) { Schema = databaseSchema };
         } }
         

@@ -40,7 +40,7 @@ namespace DemoHub
         /// </summary>
         internal static async Task<HttpHost> CreateHttpHost()
         {
-            var databaseSchema      = new DatabaseSchema(typeof(DemoClient));           // optional - create TypeSchema from Type
+            var databaseSchema      = DatabaseSchema.Create<DemoClient>();           // optional - create TypeSchema from Type
             var database            = CreateDatabase(databaseSchema, new DemoService());
 
             var hub                 = new FlioxHub(database);
