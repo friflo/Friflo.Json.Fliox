@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -65,6 +66,11 @@ namespace Friflo.Json.Tests.Provider.Client
     
     public class TestIntKeyEntity {
         [Key]       public  int             id { get; set; }
+                    public  string          value;
+    }
+    
+    public class TestGuidKeyEntity {
+        [Key]       public  Guid            id { get; set; }
                     public  string          value;
     }
 }

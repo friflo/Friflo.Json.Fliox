@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using NUnit.Framework;
@@ -93,6 +94,32 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(2, result.Count);
             NotNull(result[1]);
             NotNull(result[2]);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_9_GuidKey_One(string db) {
+            var client  = await GetClient(db);
+            var read    = client.testGuidKey.Read();
+            var find    = read.Find(new Guid("9fa5c8d6-9a24-4562-9861-0c4ffd9ea221"));
+            await client.SyncTasks();
+            NotNull(find.Result);
+        }
+        
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_9_GuidKey_Many(string db) {
+            Guid guid9f = new Guid("9fa5c8d6-9a24-4562-9861-0c4ffd9ea221");
+            Guid guidB3 = new Guid("b36d1650-679c-4ef2-927a-8bdb73e3cfcf");
+            var client  = await GetClient(db);
+            var read    = client.testGuidKey.Read();
+            var range   = read.FindRange(new [] { guid9f, guidB3});
+            await client.SyncTasks();
+            
+            var result = range.Result;
+            NotNull(result);
+            AreEqual(2, result.Count);
+            NotNull(result[guid9f]);
+            NotNull(result[guidB3]);
         }
     }
 }
