@@ -62,4 +62,9 @@ namespace Friflo.Json.Tests.Provider.Client
         [Key]       public  string          id { get; set; }
                     public  int             value;
     }
+    
+    public class TestIntKeyEntity {
+        [Key]       public  int             id { get; set; }
+                    public  string          value;
+    }
 }

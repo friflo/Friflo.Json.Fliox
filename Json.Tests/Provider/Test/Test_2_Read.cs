@@ -71,5 +71,28 @@ namespace Friflo.Json.Tests.Provider.Test
             await client.SyncTasks();
             NotNull(quote.Result);
         }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_7_IntKey_One(string db) {
+            var client  = await GetClient(db);
+            var read    = client.testIntKey.Read();
+            var find    = read.Find(1);
+            await client.SyncTasks();
+            NotNull(find.Result);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_8_IntKey_Many(string db) {
+            var client  = await GetClient(db);
+            var read    = client.testIntKey.Read();
+            var range   = read.FindRange(new int [] { 1, 2 });
+            await client.SyncTasks();
+            
+            var result = range.Result;
+            NotNull(result);
+            AreEqual(2, result.Count);
+            NotNull(result[1]);
+            NotNull(result[2]);
+        }
     }
 }
