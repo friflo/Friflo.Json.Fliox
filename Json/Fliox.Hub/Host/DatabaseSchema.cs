@@ -62,6 +62,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public              ValidationType  GetValidationType (in ShortString container) => containerTypes[container];
 
+        /// <summary>
+        /// Create a <see cref="DatabaseSchema"/> from the given <paramref name="typeSchema"/>.<br/>
+        /// To create a schema from a class extending <see cref="FlioxClient"/> prefer using <see cref="Create{T}"/>.
+        /// </summary>
         public DatabaseSchema(TypeSchema typeSchema) {
             this.typeSchema = typeSchema;
             AddTypeSchema(typeSchema);
@@ -69,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// <summary>
-        /// Create as <see cref="DatabaseSchema"/> from the given <typeparam name="T"></typeparam>>.<br/>
+        /// Create as <see cref="DatabaseSchema"/> from the given <typeparamref name="T"/> extending <see cref="FlioxClient"/>.
         /// </summary>
         public static DatabaseSchema Create<T>() where T : FlioxClient {
             var typeSchema = NativeTypeSchema.Create(typeof(T));
@@ -78,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         /// <summary>
         /// Create as <see cref="DatabaseSchema"/> from the given type. The type must extend <see cref="FlioxClient"/>.<br/>
-        /// Prefer using <see cref="Create{T}"/> to avoid runtime exception by passing an incompatible type. 
+        /// Prefer using <see cref="Create{T}"/> to avoid runtime exception by passing an incompatible schema type. 
         /// </summary>
         public static DatabaseSchema CreateFromType(Type type) {
             if (type == null) {
