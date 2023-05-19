@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   List<SyncFunction>  functions           = new List<SyncFunction>();
         
         private     List<DetectAllPatches>      detectAllPatches;
-        private     List<DetectAllPatches>      DetectAllPatches()  => detectAllPatches ?? (detectAllPatches = new List<DetectAllPatches>());
+        private     List<DetectAllPatches>      DetectAllPatches()  => detectAllPatches ??= new List<DetectAllPatches>();
         
         internal void SetSyncSets(FlioxClient store) {
             SyncSets = store._intern.CreateSyncSets(SyncSets);

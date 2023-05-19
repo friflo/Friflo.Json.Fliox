@@ -31,8 +31,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal            SyncSet             SyncSet => entitySet.syncSet;
         
-        internal List<TKey>     GetKeysBuf()    => keysBuf      ?? (keysBuf = new List<TKey>());
-        internal TypeMapper<T>  GetTypeMapper() => typeMapper   ?? (typeMapper = (TypeMapper<T>)store._intern.typeStore.GetTypeMapper(typeof(T)));
+        internal List<TKey>     GetKeysBuf()    => keysBuf      ??= new List<TKey>();
+        internal TypeMapper<T>  GetTypeMapper() => typeMapper   ??= (TypeMapper<T>)store._intern.typeStore.GetTypeMapper(typeof(T));
 
         internal SetIntern(FlioxClient store, EntitySet<TKey,T> entitySet) {
             typeMapper      = null;
