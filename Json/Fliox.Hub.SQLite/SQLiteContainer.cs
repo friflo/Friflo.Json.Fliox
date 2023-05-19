@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 error = null;
                 return true;
             }
-            var sql = $"CREATE TABLE IF NOT EXISTS {name} (id TEXT PRIMARY KEY, data TEXT NOT NULL)";
+            var sql = $"CREATE TABLE IF NOT EXISTS {name} (id TEXT PRIMARY KEY, data TEXT NOT NULL);";
             var success = SQLiteUtils.Execute(sqliteDB, sql, out error);
             if (success) {
                 tableExists = true;

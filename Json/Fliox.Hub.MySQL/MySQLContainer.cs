@@ -34,7 +34,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (tableExists) {
                 return null;
             }
-            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSON);";
+            // [MySQL :: MySQL 8.0 Reference Manual :: 11.7 Data Type Storage Requirements] https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html
+            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(255) PRIMARY KEY, data JSON);";
             var result = await Execute(connection, sql).ConfigureAwait(false);
             if (result.Failed) {
                 return result.error;

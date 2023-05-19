@@ -34,7 +34,10 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (tableExists) {
                 return null;
             }
-            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(128) PRIMARY KEY, data JSONB);";
+            // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
+            // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
+            // set to 255 as for all SQL databases
+            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(255) PRIMARY KEY, data JSONB);";
             var result = await Execute(connection, sql).ConfigureAwait(false);
             if (result.Failed) {
                 return result.error;

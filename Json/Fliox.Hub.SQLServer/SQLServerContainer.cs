@@ -22,7 +22,10 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         public   override   bool                Pretty      { get; }
         private   readonly  SQLServerDatabase   database;
         
-        internal const string ColumnId     = "id NVARCHAR(128)";
+        // [Maximum capacity specifications for SQL Server - SQL Server | Microsoft Learn]
+        // https://learn.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server?view=sql-server-ver16
+        // Bytes per primary key 900, used 255 same as in MySQL
+        internal const string ColumnId     = "id NVARCHAR(255)";
         internal const string ColumnData   = "data NVARCHAR(max)";
         
         internal SQLServerContainer(string name, SQLServerDatabase database, bool pretty)
