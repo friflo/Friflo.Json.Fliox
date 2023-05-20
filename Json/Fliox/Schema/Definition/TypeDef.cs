@@ -42,10 +42,11 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   abstract   TypeDef                     BaseType        { get; }
         
         /// If <see cref="IsClass"/> is true it has <see cref="Fields"/>
-        public   abstract   bool                        IsClass         { get; }
+        public              bool                        IsClass         => Fields != null;
         /// <summary><see cref="IsStruct"/> can be true only, if <see cref="IsClass"/> is true</summary>
         public   abstract   bool                        IsStruct        { get; }
         public              FieldDef                    KeyField        => keyField;
+        /// <summary>List of class fields if <see cref="TypeDef"/> is a class. Otherwise null</summary>
         public   abstract   IReadOnlyList<FieldDef>     Fields          { get; }
         
         public   abstract   IReadOnlyList<MessageDef>   Messages        { get; }
@@ -74,6 +75,8 @@ namespace Friflo.Json.Fliox.Schema.Definition
         // can be null. If null keyField name of an entity defaults to "id"
         private  readonly   string                      keyFieldName;
         private             FieldDef                    keyField;
+        /// <summary>Map of class fields if <see cref="TypeDef"/> is a class. Otherwise null</summary>
+        private             Dictionary<string,FieldDef> fieldMap;
         internal            SchemaInfo                  schemaInfo;
 
         
@@ -88,12 +91,18 @@ namespace Friflo.Json.Fliox.Schema.Definition
             // if (nameUtf8.GetName() != name) throw new InvalidOperationException($"invalid UTF-8 name. Expect: {name}, was: {nameUtf8.ToString()}");
         }
         
-        internal FieldDef FindField(string name) {
-            foreach (var field in Fields) {
-                if (field.name == name)
-                    return field;
+        internal void SetFieldMap() {
+            var fields  = Fields;
+            fieldMap    = new Dictionary<string, FieldDef>(fields.Count);
+            foreach (var field in fields) {
+                fieldMap.Add(field.name, field);
             }
-            return null;
+        }
+        
+        public FieldDef FindField(string name) {
+            if (fieldMap == null) throw new InvalidOperationException($"TypeDef {Name} is not a class.");
+            fieldMap.TryGetValue(name, out var field);
+            return field;
         }
         
         public void GetDependencies(HashSet<TypeDef> dependencies) {

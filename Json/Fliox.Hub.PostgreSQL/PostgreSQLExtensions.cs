@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -343,7 +342,7 @@ $@"jsonb_typeof({arrayPath}) <> 'array'
             var fieldType   = entityType;
             for (int n = 1; n < pathFields.Length; n++) {
                 var pathField   = pathFields[n];
-                var field       = fieldType.Fields.FirstOrDefault(f => f.name == pathField);
+                var field       = fieldType.FindField(pathField);
                 if (field == null) {
                     return null;
                 }

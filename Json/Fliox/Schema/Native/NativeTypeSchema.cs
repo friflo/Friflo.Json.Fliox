@@ -103,8 +103,9 @@ namespace Friflo.Json.Fliox.Schema.Native
                     // set the fields for classes or structs
                     var  propFields         = mapper.PropFields;
                     if (propFields != null) {
-                        typeDef.fields          = new List<FieldDef>(propFields.fields.Length);
-                        foreach (var propField in propFields.fields) {
+                        var fields              = propFields.fields;
+                        typeDef.fields          = new List<FieldDef>(fields.Length);
+                        foreach (var propField in fields) {
                             var fieldMapper     = propField.fieldType.GetUnderlyingMapper();
                             var isNullable      = IsNullableMapper(fieldMapper, out var nonNullableType) ||
                                                   fieldMapper.type == typeof(JsonValue);
@@ -133,6 +134,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                                 isArray, isDictionary, isNullableElement, typeDef, relation, propField.docs, Utf8Buffer);
                             typeDef.fields.Add(fieldDef);
                         }
+                        typeDef.SetFieldMap();
                     }
                     var commands = HubMessagesUtils.GetMessageInfos(typeDef.native, typeStore);
                     AddMessages(typeDef, commands);

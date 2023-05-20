@@ -26,7 +26,6 @@ namespace Friflo.Json.Fliox.Schema.Native
         // --- TypeDef
         public   override   TypeDef                     BaseType        => baseType;
         public   override   bool                        IsEnum          { get; }
-        public   override   bool                        IsClass         { get; }
         public   override   bool                        IsStruct        { get; }
         public   override   IReadOnlyList<FieldDef>     Fields          => fields;
         public   override   IReadOnlyList<MessageDef>   Messages        => messages;
@@ -46,7 +45,6 @@ namespace Friflo.Json.Fliox.Schema.Native
             this.native     = mapper.type;
             this.mapper     = mapper;
             IsEnum          = native.IsEnum;
-            IsClass         = mapper.IsComplex;
             IsStruct        = mapper.type.IsValueType && mapper.type != typeof(JsonKey) && mapper.type != typeof(ShortString); // JsonKey is "nullable"
             Discriminant    = mapper.Discriminant;
             EnumValues      = EnumValue.CreateEnumValues(mapper.GetEnumValues(), mapper.GetEnumValueDocs(), buffer);

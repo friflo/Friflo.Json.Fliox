@@ -14,7 +14,6 @@ namespace Friflo.Json.Fliox.Schema.JSON
         
         // --- TypeDef
         public   override   TypeDef                     BaseType        => baseType;
-        public   override   bool                        IsClass         => fields != null;
         public   override   bool                        IsStruct        => isStruct;
         public   override   IReadOnlyList<FieldDef>     Fields          => fields;
         public   override   IReadOnlyList<MessageDef>   Messages        => messages;

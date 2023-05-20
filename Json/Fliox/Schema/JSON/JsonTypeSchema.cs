@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                         typeDef.isStruct    = type.isStruct.HasValue && type.isStruct.Value;
                         var properties      = type.properties;
                         if (properties != null) {
-                            typeDef.fields = new List<FieldDef>(properties.Count);
+                            typeDef.fields   = new List<FieldDef>(properties.Count);
                             foreach (var propPair in properties) {
                                 string      fieldName   = propPair.Key;
                                 FieldType   field       = propPair.Value;
@@ -79,6 +79,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                                     continue;
                                 SetField(typeDef, fieldName, field, context);
                             }
+                            typeDef.SetFieldMap();
                         }
                         typeDef.commands = CreateMessages(type.commands, true,  context);
                         typeDef.messages = CreateMessages(type.messages, false, context);
