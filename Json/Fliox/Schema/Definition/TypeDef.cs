@@ -153,7 +153,6 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   readonly   string          nativeName;
         public   readonly   Utf8String      nameUtf8;
         public   readonly   bool            required;
-        public   readonly   bool            isKey;
         public   readonly   bool            isAutoIncrement;
         public   readonly   TypeDef         type;
         /// if <see cref="isArray"/> is true <see cref="type"/> contains the element type.
@@ -176,7 +175,6 @@ namespace Friflo.Json.Fliox.Schema.Definition
             string      name,
             string      nativeName,
             bool        required,
-            bool        isKey,
             bool        isAutoIncrement,
             TypeDef     type,
             bool        isArray,
@@ -191,7 +189,6 @@ namespace Friflo.Json.Fliox.Schema.Definition
             this.nativeName         = nativeName;
             this.nameUtf8           = buffer.GetOrAdd(name);
             this.required           = required;
-            this.isKey              = isKey;
             this.isAutoIncrement    = isAutoIncrement;
             this.type               = type;
             this.isArray            = isArray;

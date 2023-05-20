@@ -145,12 +145,10 @@ namespace Friflo.Json.Fliox.Schema.JSON
             bool required       = typeDef.type.required?.Contains(fieldName) ?? false;
             var  attr           = new FieldAttributes();
             var  fieldType      = GetFieldType(field, ref attr, context);
-            
-            var isKey           = field.isKey.HasValue && field.isKey.Value;
             var isAutoIncrement = field.isAutoIncrement.HasValue && field.isAutoIncrement.Value;
             var relation        = field.relation;
 
-            var fieldDef = new FieldDef (fieldName, null, required, isKey, isAutoIncrement, fieldType,
+            var fieldDef = new FieldDef (fieldName, null, required, isAutoIncrement, fieldType,
                 attr.isArray, attr.isDictionary, attr.isNullableElement, typeDef, relation, field.description, context.utf8Buffer);
             typeDef.fields.Add(fieldDef);
         }
@@ -232,7 +230,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             var attr        = new FieldAttributes();
             var argType     = GetFieldType(fieldType, ref attr, context);
             var required    = !attr.isNullable;
-            return new FieldDef(name, null, required, false, false, argType, attr.isArray, attr.isDictionary, false, null, null, null, context.utf8Buffer);
+            return new FieldDef(name, null, required, false, argType, attr.isArray, attr.isDictionary, false, null, null, null, context.utf8Buffer);
         }
         
         private static TypeDef FindTypeFromJson (

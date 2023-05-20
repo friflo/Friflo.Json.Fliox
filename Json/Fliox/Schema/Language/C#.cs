@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var isReferenceType = def.isArray || def.isDictionary || !def.type.IsStruct;
                 bool notNull        = def.required || isReferenceType;
                 var nullStr         = notNull ? " " : "?";
-                if (def.isKey && def.name != "id")
+                if (def == type.KeyField && def.name != "id")
                     sb.AppendLF("    [Key]");
                 if (def.required && isReferenceType)
                     sb.AppendLF("    [Required]");
