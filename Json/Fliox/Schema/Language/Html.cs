@@ -346,7 +346,7 @@ $@"            <li><a href='#{ns}.{typeName}'><div><span>{typeName}</span>{discT
         private static void EmitHtmlMermaidER(Generator generator) {
             var mermaidGenerator    = new Generator(generator.typeSchema, ".mmd");
             var schemaName          = mermaidGenerator.rootType.Name;
-            var htmlFile            = Mermaid;             
+            var htmlFile            = Mermaid.Replace("SCHEMA_NAME", schemaName);             
             MermaidClassDiagramGenerator.Generate(mermaidGenerator);
             var mermaidFile         = mermaidGenerator.files["class-diagram.mmd"];
             
