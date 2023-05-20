@@ -22,6 +22,11 @@ namespace Friflo.Json.Fliox.Schema.Language
             --enum-fill:   #f8f8f8;
             --enum-stroke: #d0d0d0;
         }
+        @media print {
+          .hidden-print {
+            display: none !important;
+          }
+        }
         [data-theme='dark'] {
             --enum-fill:   #3e3e3e;
             --enum-stroke: #606060;
@@ -43,14 +48,15 @@ namespace Friflo.Json.Fliox.Schema.Language
             fill:  var(--enum-fill)   !important;
             stroke:var(--enum-stroke) !important;
         }
-        .title      { margin: 0px 0px 0px 20px; height: 26px; padding: 3px 10px; display: inline-flex; box-shadow: 0px 0px  7px  7px #0000001a; border-radius: 4px; }
+        .title      { margin: 0px 0px 0px 20px; height: 26px; padding: 3px 10px; display: inline-flex; box-shadow: 0px 0px  7px  7px #00000014; border-radius: 4px; }
         .diagram    { margin: 0px 20px;         height: 18px; padding: 3px 10px; display: inline-flex; box-shadow: 0px 0px 10px 10px #00000018; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;            }
+        .titleH2    { color: black; font-size: 20px; background-color: #ffffff; border: 1px solid #aaa; margin-top: 10px;align-items: center; }
     </style>
 </head>
 <body>
     <div style='position: fixed; top: 0; font-family: sans-serif;'>
-      <h2 class='title' style='background-color: #ffffff; margin-top: 5px;'>SCHEMA_NAME</h2>
-      <div class='diagram' style='background-color: #363bff; position: fixed; top: 0;'>
+      <h2 class='title titleH2'>SCHEMA_NAME</h2>
+      <div class='diagram hidden-print' style='background-color: #363bff; position: fixed; top: 0;'>
         <a href='./schema.html' style='color: white; text-decoration: none;'>Schema</a>
       </div>
     </div>
