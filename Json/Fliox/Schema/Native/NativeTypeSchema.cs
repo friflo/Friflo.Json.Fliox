@@ -103,7 +103,6 @@ namespace Friflo.Json.Fliox.Schema.Native
                     // set the fields for classes or structs
                     var  propFields         = mapper.PropFields;
                     if (propFields != null) {
-                        typeDef.keyFieldName    = propFields.GetPropField("id") != null ? "id" : null;
                         typeDef.fields          = new List<FieldDef>(propFields.fields.Length);
                         foreach (var propField in propFields.fields) {
                             var fieldMapper     = propField.fieldType.GetUnderlyingMapper();
@@ -129,9 +128,6 @@ namespace Friflo.Json.Fliox.Schema.Native
                             var relation    = propField.relation;
                             var required    = propField.required || !isNullable;
                             var isKey       = propFields.KeyField == propField;
-                            if (isKey) {
-                                typeDef.keyFieldName = propField.jsonName;
-                            }
                             bool isAutoIncrement = AttributeUtils.IsAutoIncrement(propField.Member.CustomAttributes);
 
                             var fieldDef = new FieldDef (propField.jsonName, propField.name, required, isKey, isAutoIncrement, type,
@@ -224,9 +220,10 @@ namespace Friflo.Json.Fliox.Schema.Native
                 return;
             NativeTypeDef typeDef;
             if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out var info)) {
-                typeDef = new NativeTypeDef(mapper, info.typeName, "Standard", info.typeId, Utf8Buffer);
+                typeDef = new NativeTypeDef(mapper, info.typeName, "Standard", null, info.typeId, Utf8Buffer);
             } else {
-                typeDef = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace, StandardTypeId.None, Utf8Buffer);
+                var keyField = mapper.PropFields?.KeyField?.name;
+                typeDef = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace, keyField, StandardTypeId.None, Utf8Buffer);
             }
             nativeTypes.Add(nonNullableType, typeDef);
             types.      Add(typeDef);

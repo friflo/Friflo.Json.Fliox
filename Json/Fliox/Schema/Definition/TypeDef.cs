@@ -71,16 +71,18 @@ namespace Friflo.Json.Fliox.Schema.Definition
         
         // --- internal
         internal readonly   string                      fullName;
-        internal            string                      keyFieldName;
+        // can be null. If null keyField name of an entity defaults to "id"
+        private  readonly   string                      keyFieldName;
         private             FieldDef                    keyField;
         internal            SchemaInfo                  schemaInfo;
 
         
-        protected TypeDef (string name, string @namespace, StandardTypeId typeId, string doc, in Utf8String nameUtf8) {
+        protected TypeDef (string name, string @namespace, string keyField, StandardTypeId typeId, string doc, in Utf8String nameUtf8) {
             fullName        = @namespace + "#" + name;
             Name            = name;
             this.nameUtf8   = nameUtf8;
             Namespace       = @namespace;
+            keyFieldName    = keyField;
             this.TypeId     = typeId;
             this.doc        = doc;
             // if (nameUtf8.GetName() != name) throw new InvalidOperationException($"invalid UTF-8 name. Expect: {name}, was: {nameUtf8.ToString()}");
@@ -119,22 +121,20 @@ namespace Friflo.Json.Fliox.Schema.Definition
             if (!IsSchema) {
                 return;
             }
-            var rootFields = Fields;
-            foreach (var rootField in rootFields) {
-                var jsonType            = rootField.type;
-                jsonType.keyFieldName ??= "id";
-                jsonType.SetEntityKeyField();
+            foreach (var field in Fields) {
+                field.type.SetEntityKeyField();
             }
         }
         
         private void  SetEntityKeyField() {
+            var keyName = keyFieldName ?? "id";
             foreach (var field in Fields) {
-                if (keyFieldName == field.name) {
+                if (keyName == field.name) {
                     keyField = field;
                     return;
                 }
             }
-            throw new InvalidOperationException($"key field not found in TypeDef: {Name}. field: {keyFieldName}");
+            throw new InvalidOperationException($"key field not found in TypeDef: {Name}. field: {keyName}");
         }
     }
     

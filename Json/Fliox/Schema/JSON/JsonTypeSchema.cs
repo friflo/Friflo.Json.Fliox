@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     var typeName    = pair.Key;
                     var type        = pair.Value;
                     var @namespace  = GetNamespace(schema, typeName);
-                    var typeDef     = new JsonTypeDef (type, typeName, @namespace, schema, Utf8Buffer);
+                    var typeDef     = new JsonTypeDef (type, typeName, @namespace, type.key, schema, Utf8Buffer);
                     var schemaId    = $"./{schema.fileName}#/definitions/{typeName}";
                     typeMap.Add(schemaId, typeDef);
                     var localId = $"#/definitions/{typeName}";
@@ -59,7 +59,6 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     }
                     
                     var         extends     = type.extends;
-                    typeDef.keyFieldName    = type.key;
                     type.name               = pair.Key;
                     if (extends != null) {
                         typeDef.baseType = FindRef(extends.reference, context);
