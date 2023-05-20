@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   abstract   bool                        IsClass         { get; }
         /// <summary><see cref="IsStruct"/> can be true only, if <see cref="IsClass"/> is true</summary>
         public   abstract   bool                        IsStruct        { get; }
-        public              string                      KeyField        => keyField;
+        public              FieldDef                    KeyField        => keyField;
         public   abstract   IReadOnlyList<FieldDef>     Fields          { get; }
         
         public   abstract   IReadOnlyList<MessageDef>   Messages        { get; }
@@ -67,13 +67,13 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   readonly   string                      doc;
         /// <summary>meta data assigned to a schema compatible to <b>OpenAPI</b></summary>
         public              SchemaInfo                  SchemaInfo      => schemaInfo;
-        public              bool                        IsEntity        => isEntity;
+        public              bool                        IsEntity        => keyField != null;
         
         // --- internal
         internal readonly   string                      fullName;
-        internal            string                      keyField;
+        internal            string                      keyFieldName;
+        private             FieldDef                    keyField;
         internal            SchemaInfo                  schemaInfo;
-        internal            bool                        isEntity;
 
         
         protected TypeDef (string name, string @namespace, StandardTypeId typeId, string doc, in Utf8String nameUtf8) {
@@ -113,6 +113,28 @@ namespace Friflo.Json.Fliox.Schema.Definition
                     polyType.typeDef.GetDependencies(dependencies);
                 }
             }
+        }
+        
+        internal void  SetEntityKeyFields() {
+            if (!IsSchema) {
+                return;
+            }
+            var rootFields = Fields;
+            foreach (var rootField in rootFields) {
+                var jsonType            = rootField.type;
+                jsonType.keyFieldName ??= "id";
+                jsonType.SetEntityKeyField();
+            }
+        }
+        
+        private void  SetEntityKeyField() {
+            foreach (var field in Fields) {
+                if (keyFieldName == field.name) {
+                    keyField = field;
+                    return;
+                }
+            }
+            throw new InvalidOperationException($"key field not found in TypeDef: {Name}. field: {keyFieldName}");
         }
     }
     

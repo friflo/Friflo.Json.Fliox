@@ -58,9 +58,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
                         FindRef(schema.rootRef, context);
                     }
                     
-                    var         extends = type.extends;
-                    typeDef.keyField    = type.key;
-                    type.name           = pair.Key;
+                    var         extends     = type.extends;
+                    typeDef.keyFieldName    = type.key;
+                    type.name               = pair.Key;
                     if (extends != null) {
                         typeDef.baseType = FindRef(extends.reference, context);
                     }
@@ -128,10 +128,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 var rootTypeDef = TypeAsTypeDef(rootType);
                 if (rootTypeDef == null)
                     throw new InvalidOperationException($"rootType not found: {rootType}");
-                SetKeyField(rootTypeDef);
+                rootTypeDef.SetEntityKeyFields();
                 SetRelationTypes(rootTypeDef, types);
                 RootType = rootTypeDef;
-                MarkEntityTypes();
             }
             Types = OrderTypes(RootType, types);
         }

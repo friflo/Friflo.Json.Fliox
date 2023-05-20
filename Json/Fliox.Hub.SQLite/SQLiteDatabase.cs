@@ -4,8 +4,6 @@
 #if !UNITY_5_3_OR_NEWER || SQLITE
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using SQLitePCL;
@@ -25,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         public              bool        Synchronous { get; init; } = false;
         
         internal readonly   sqlite3                                 sqliteDB;
-        private             Dictionary<string, SQLitePrimaryKey>    keys;
+
         
         public   override   string      StorageType => "SQLite " + SQLiteUtils.GetVersion(sqliteDB);
         
@@ -49,27 +47,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         static SQLiteDatabase() {
             raw.SetProvider(new SQLite3Provider_e_sqlite3());
         }
-        
-        internal void CreateSchema() {
-            if (keys != null) {
-                return;
-            }
-            var schema = Schema;
-            keys = new Dictionary<string, SQLitePrimaryKey>();
-            var fields = schema.typeSchema.RootType.Fields;
-            foreach (var container in schema.GetContainers()) {
-                var field           = fields.First(f => f.name == container);
-                var keyField        = field.type.KeyField;
-                var containerFields = field.type.Fields;
-                var key             = containerFields.First(f => f.name == keyField);
-                bool isString       = key.type == schema.typeSchema.StandardTypes.String;
-            }
-        }
     }
-    
-    internal sealed class SQLitePrimaryKey {
-        
-    }
+
     
     internal sealed class SQLiteQueryEnumerator : QueryEnumerator
     {

@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.AppendLF($"{baseType.Name} <|-- {type.Name}");
             }
             var unionType = type.UnionType;
-            var cssType = type.isEntity ? ":::cssEntity" : type.IsSchema ? ":::cssSchema" : "";
+            var cssType = type.IsEntity ? ":::cssEntity" : type.IsSchema ? ":::cssSchema" : "";
             if (unionType == null) {
                 sb.AppendLF($"class {type.Name}{cssType} {{");
                 if (type.IsSchema)      sb.AppendLF("    <<Schema>>");
@@ -211,7 +211,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return $"{elementTypeName}[]{nullStr}";
             }
             if (field.isDictionary) {
-                var key = field.type.isEntity ? $"[{field.type.KeyField}]" : "string";
+                var key = field.type.IsEntity ? $"[{field.type.KeyField}]" : "string";
                 var valueTypeName = GetElementType(field, context);
                 return $"{key} ➞ {valueTypeName}{nullStr}";
                 // return $"{valueTypeName}[]{nullStr}";

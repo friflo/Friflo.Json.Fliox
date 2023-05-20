@@ -103,8 +103,8 @@ namespace Friflo.Json.Fliox.Schema.Native
                     // set the fields for classes or structs
                     var  propFields         = mapper.PropFields;
                     if (propFields != null) {
-                        typeDef.keyField        = propFields.GetPropField("id") != null ? "id" : null;
-                        typeDef.fields = new List<FieldDef>(propFields.fields.Length);
+                        typeDef.keyFieldName    = propFields.GetPropField("id") != null ? "id" : null;
+                        typeDef.fields          = new List<FieldDef>(propFields.fields.Length);
                         foreach (var propField in propFields.fields) {
                             var fieldMapper     = propField.fieldType.GetUnderlyingMapper();
                             var isNullable      = IsNullableMapper(fieldMapper, out var nonNullableType) ||
@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                             var required    = propField.required || !isNullable;
                             var isKey       = propFields.KeyField == propField;
                             if (isKey) {
-                                typeDef.keyField = propField.jsonName;
+                                typeDef.keyFieldName = propField.jsonName;
                             }
                             bool isAutoIncrement = AttributeUtils.IsAutoIncrement(propField.Member.CustomAttributes);
 
@@ -176,10 +176,9 @@ namespace Friflo.Json.Fliox.Schema.Native
                 MarkDerivedFields(types);
                 // nativeTypes contain only non-nullable types => no entries for int?, double?, ...
                 if (nativeTypes.TryGetValue(rootType, out var rootTypeDef)) {
-                    SetKeyField(rootTypeDef);
+                    rootTypeDef.SetEntityKeyFields();
                     SetRelationTypes(rootTypeDef, types);
                     RootType = rootTypeDef;
-                    MarkEntityTypes();
                     rootTypeDef.schemaInfo    = SchemaInfo.GetSchemaInfo(rootType);
                 }
                 Types = OrderTypes(RootType, types);

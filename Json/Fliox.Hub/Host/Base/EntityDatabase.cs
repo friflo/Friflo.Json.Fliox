@@ -197,7 +197,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 foreach (var container in containerNames) {
                     string keyName = null;
                     if (entityTypes != null && entityTypes.TryGetValue(container, out TypeDef entityType)) {
-                        keyName = entityType.KeyField;
+                        keyName = entityType.KeyField.name;
                     }
                     await SeedContainer(src, container, keyName, maxCount, syncContext).ConfigureAwait(false);
                 }

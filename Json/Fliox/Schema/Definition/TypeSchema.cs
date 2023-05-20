@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 
@@ -75,14 +74,6 @@ namespace Friflo.Json.Fliox.Schema.Definition
             return map;
         }
         
-        protected void MarkEntityTypes () {
-            if (!RootType.IsSchema)
-                return;
-            foreach (var field in RootType.Fields) {
-                field.type.isEntity = true;
-            }
-        }
-        
         /// <summary>
         /// Must to be called after collecting all <see cref="Types"/> and their <see cref="TypeDef.Fields"/>.
         /// </summary>
@@ -110,28 +101,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
                 }
             }
         }
-        
-        protected static void  SetKeyField(TypeDef rootType) {
-            if (!rootType.IsSchema)
-                return;
-            var rootFields = rootType.Fields;
-            foreach (var rootField in rootFields) {
-                var jsonType = rootField.type;
-                if (jsonType.keyField != null)
-                    continue;
-                bool foundId = false;
-                foreach (var field in jsonType.Fields) {
-                    if (field.name == "id") {
-                        foundId = true;
-                        break;
-                    }
-                }
-                if (!foundId)
-                    throw new InvalidOperationException($"missing entity identifier at: {jsonType}");
-                jsonType.keyField = "id";
-            }
-        }
-        
+
         /// <summary>
         /// Create a list from the given  <paramref name="types"/> in the order:
         /// <list>

@@ -167,7 +167,7 @@ $@"        <tr>
                     continue;
                 var fieldType   = GetFieldType(field, context, field.required);
                 var fieldTag    = "field";
-                if (type.KeyField == field.name) {
+                if (type.KeyField?.name == field.name) {
                     fieldTag    = "key";
                 }
                 var reference   = "";

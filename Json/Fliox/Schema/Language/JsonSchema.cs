@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.AppendLF();
                 sb.AppendLF($"            ],");
             }
-            var key = type.KeyField; 
+            var key = type.KeyField?.name; 
             if (key != null && key != "id") {
                 sb.AppendLF($"            \"key\": \"{key}\",");    
             }
