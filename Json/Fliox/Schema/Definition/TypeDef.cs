@@ -51,13 +51,17 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   abstract   IReadOnlyList<FieldDef>     Fields          { get; }
         
         /// <summary>
-        /// List of messages exposed by a database service.<br/>
+        /// List of messages exposed by a <c>DatabaseService</c>.<br/>
         /// In contrast to <see cref="Commands"/> database service <see cref="Messages"/> have no return type.
         /// </summary>
         public   abstract   IReadOnlyList<MessageDef>   Messages        { get; }
-        /// <summary>List of commands exposed by a database service</summary>
+        /// <summary>List of commands exposed by a <c>DatabaseService</c></summary>
         public   abstract   IReadOnlyList<MessageDef>   Commands        { get; }
-        /// <summary>If true the <see cref="TypeDef"/> is the root type of a database schema.</summary>
+        /// <summary>
+        /// If true the <see cref="TypeDef"/> is the root type of a database schema.<br/>
+        /// Each field in <see cref="Fields"/> defines a database container / table.<br/>
+        /// It also declare list of <see cref="Commands"/> and <see cref="Messages"/> exposed by a <c>DatabaseService</c>.
+        /// </summary>
         public              bool                        IsSchema        => Commands != null; 
         
         /// <summary><see cref="UnionType"/> is not null, if the type is as discriminated union.</summary>
