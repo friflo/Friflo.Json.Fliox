@@ -12,8 +12,20 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
     {
         private static readonly Dictionary<Type, MessageInfo[]> MessageInfoCache = new Dictionary<Type, MessageInfo[]>();
 
+        private const string SchemaType  = "Friflo.Json.Fliox.Hub.Client.FlioxClient";
         private const string MessageType = "Friflo.Json.Fliox.Hub.Client.MessageTask";
         private const string CommandType = "Friflo.Json.Fliox.Hub.Client.CommandTask`1";
+        
+        internal static bool IsSchemaType(Type schemaType) {
+            var type = schemaType;
+            while (type != null) {
+                if (type.FullName == SchemaType) {
+                    return true;
+                }
+                type = type.BaseType;
+            }
+            return false;
+        }
         
         public static MessageInfo[] GetMessageInfos (Type type, TypeStore typeStore) {
             var docs            = typeStore.assemblyDocs;

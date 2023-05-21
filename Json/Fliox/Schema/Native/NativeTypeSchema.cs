@@ -50,8 +50,8 @@ namespace Friflo.Json.Fliox.Schema.Native
             nativeRootType  = rootType ?? throw new ArgumentNullException(nameof(rootType));
             var typeList    = new List<Type> {rootType};
 
-            using (var typeStore = new TypeStore()) {
-              
+            using (var typeStore = new TypeStore())
+            {
                 typeStore.AddMappers(typeList);
                 var typeMappers = typeStore.GetTypeMappers();
                 TypeMapper rootTypeMapper = typeMappers[rootType];
@@ -97,77 +97,16 @@ namespace Friflo.Json.Fliox.Schema.Native
                     }
                 }
                 foreach (var pair in nativeTypes) {
-                    NativeTypeDef   typeDef = pair.Value;
-                    TypeMapper      mapper  = typeDef.mapper;
-                    
-                    // set the fields for classes or structs
-                    var  propFields         = mapper.PropFields;
-                    if (propFields != null) {
-                        var fields              = propFields.fields;
-                        typeDef.fields          = new List<FieldDef>(fields.Length);
-                        foreach (var propField in fields) {
-                            var fieldMapper     = propField.fieldType.GetUnderlyingMapper();
-                            var isNullable      = IsNullableMapper(fieldMapper, out var nonNullableType) ||
-                                                  fieldMapper.type == typeof(JsonValue);
-                            var isArray         = fieldMapper.IsArray;
-                            var isDictionary    = fieldMapper.IsDictionary;
-                            NativeTypeDef type;
-                            bool isNullableElement = false;
-                            if (isArray || isDictionary) {
-                                var elementMapper       = fieldMapper.GetElementMapper();
-                                var underlyingMapper    = elementMapper.GetUnderlyingMapper();
-                                if(underlyingMapper.isValueType && underlyingMapper.isNullable) {
-                                    IsNullableMapper(underlyingMapper, out var nonNullableElementType);
-                                    type = nativeTypes[nonNullableElementType];
-                                    isNullableElement = true;
-                                } else {
-                                    type = nativeTypes[underlyingMapper.type];
-                                }
-                            } else {
-                                type            = nativeTypes[nonNullableType];
-                            }
-                            var relation    = propField.relation;
-                            var required    = propField.required || !isNullable;
-                            bool isAutoIncrement = AttributeUtils.IsAutoIncrement(propField.Member.CustomAttributes);
-
-                            var fieldDef = new FieldDef (propField.jsonName, propField.name, required, isAutoIncrement, type,
-                                isArray, isDictionary, isNullableElement, typeDef, relation, propField.docs, Utf8Buffer);
-                            typeDef.fields.Add(fieldDef);
-                        }
-                        typeDef.SetFieldMap();
+                    NativeTypeDef typeDef   = pair.Value;
+                    var  propFields         = typeDef.mapper.PropFields;
+                    // only class types contain fields / properties
+                    if (propFields == null) {
+                        continue;
                     }
-                    var commands = HubMessagesUtils.GetMessageInfos(typeDef.native, typeStore);
-                    AddMessages(typeDef, commands);
-
-                    if (typeDef.Discriminant != null) {
-                        var baseType = typeDef.baseType;
-                        while (baseType != null) {
-                            var unionType = baseType.unionType;
-                            if (unionType != null) {
-                                typeDef.discriminator       = unionType.discriminator;
-                                typeDef.discriminatorDoc    = unionType.doc;
-                                break;
-                            }
-                            baseType = baseType.baseType;
-                        }
-                        if (typeDef.discriminator == null)
-                            throw new InvalidOperationException($"found no discriminator in base classes. type: {typeDef}");
-                    }
-                    // set the unionType if a class is a discriminated union
-                    var factory = mapper.instanceFactory;
-                    if (factory != null) {
-                        typeDef.isAbstract = true;
-                        // expect polyTypes if not abstract
-                        if (!factory.isAbstract) {
-                            var polyTypes   = factory.polyTypes;
-                            var unionTypes  = new List<UnionItem>(polyTypes.Length);
-                            foreach (var polyType in polyTypes) {
-                                TypeDef element = nativeTypes[polyType.type];
-                                var item = new UnionItem (element, polyType.name, Utf8Buffer);
-                                unionTypes.Add(item);
-                            }
-                            typeDef.unionType  = new UnionType (factory.discriminator, factory.description, unionTypes, Utf8Buffer);
-                        }
+                    InitClassType(typeDef);
+                    if (HubMessagesUtils.IsSchemaType(typeDef.native)) {
+                        var commands = HubMessagesUtils.GetMessageInfos(typeDef.native, typeStore);
+                        AddSchemaMessages(typeDef, commands);
                     }
                 }
                 MarkDerivedFields(types);
@@ -182,7 +121,78 @@ namespace Friflo.Json.Fliox.Schema.Native
             }
         }
         
-        private void AddMessages(NativeTypeDef typeDef, MessageInfo[] messageInfos) {
+        private void InitClassType(NativeTypeDef typeDef)
+        {
+            // --- add class / struct fields
+            var fields              = typeDef.mapper.PropFields.fields;
+            typeDef.fields          = new List<FieldDef>(fields.Length);
+            foreach (var propField in fields) {
+                var fieldMapper     = propField.fieldType.GetUnderlyingMapper();
+                var isNullable      = IsNullableMapper(fieldMapper, out var nonNullableType) ||
+                                      fieldMapper.type == typeof(JsonValue);
+                var isArray         = fieldMapper.IsArray;
+                var isDictionary    = fieldMapper.IsDictionary;
+                NativeTypeDef type;
+                bool isNullableElement = false;
+                if (isArray || isDictionary) {
+                    var elementMapper       = fieldMapper.GetElementMapper();
+                    var underlyingMapper    = elementMapper.GetUnderlyingMapper();
+                    if(underlyingMapper.isValueType && underlyingMapper.isNullable) {
+                        IsNullableMapper(underlyingMapper, out var nonNullableElementType);
+                        type = nativeTypes[nonNullableElementType];
+                        isNullableElement = true;
+                    } else {
+                        type = nativeTypes[underlyingMapper.type];
+                    }
+                } else {
+                    type            = nativeTypes[nonNullableType];
+                }
+                var relation    = propField.relation;
+                var required    = propField.required || !isNullable;
+                bool isAutoIncrement = AttributeUtils.IsAutoIncrement(propField.Member.CustomAttributes);
+
+                var fieldDef = new FieldDef (propField.jsonName, propField.name, required, isAutoIncrement, type,
+                    isArray, isDictionary, isNullableElement, typeDef, relation, propField.docs, Utf8Buffer);
+                typeDef.fields.Add(fieldDef);
+            }
+            typeDef.SetFieldMap();
+            
+            // --- handle discriminator
+            if (typeDef.Discriminant != null) {
+                var baseType = typeDef.baseType;
+                while (baseType != null) {
+                    var unionType = baseType.unionType;
+                    if (unionType != null) {
+                        typeDef.discriminator       = unionType.discriminator;
+                        typeDef.discriminatorDoc    = unionType.doc;
+                        break;
+                    }
+                    baseType = baseType.baseType;
+                }
+                if (typeDef.discriminator == null)
+                    throw new InvalidOperationException($"found no discriminator in base classes. type: {typeDef}");
+            }
+            // --- set the unionType if a class is a discriminated union
+            var factory = typeDef.mapper.instanceFactory;
+            if (factory != null) {
+                typeDef.isAbstract = true;
+                // expect polyTypes if not abstract
+                if (!factory.isAbstract) {
+                    var polyTypes   = factory.polyTypes;
+                    var unionTypes  = new List<UnionItem>(polyTypes.Length);
+                    foreach (var polyType in polyTypes) {
+                        TypeDef element = nativeTypes[polyType.type];
+                        var item = new UnionItem (element, polyType.name, Utf8Buffer);
+                        unionTypes.Add(item);
+                    }
+                    typeDef.unionType  = new UnionType (factory.discriminator, factory.description, unionTypes, Utf8Buffer);
+                }
+            }
+        }
+        
+
+        
+        private void AddSchemaMessages(NativeTypeDef typeDef, MessageInfo[] messageInfos) {
             if (messageInfos == null || messageInfos.Length == 0)
                 return;
             var messageDefs = typeDef.messages;
