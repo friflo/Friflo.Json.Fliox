@@ -5,13 +5,18 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 
+// Note: This file does and must not have any dependency to <see cref="System.Type"/>.
 namespace Friflo.Json.Fliox.Schema.Definition
 {
     /// <summary>
-    /// Contains the all required data to generate code for a type.<br/>
-    /// Note: This file does and must not have any dependency to <see cref="System.Type"/>.<br/>
-    /// Note: Instances of <see cref="TypeDef"/> including its fields are immutable.
+    /// Declare the shape of a specific type within a <see cref="TypeSchema"/>.<br/>
+    /// <br/>
+    /// If <see cref="IsSchema"/> is true the type is the root type of a database schema.<br/>
+    /// In this each field in <see cref="Fields"/> represents a database container / table.  
     /// </summary>
+    /// <remarks>
+    /// Note: Instances of <see cref="TypeDef"/> including its fields are immutable.
+    /// </remarks>
     public abstract class TypeDef {
         public              string                      Name            { get; }
         public   readonly   Utf8String                  nameUtf8;

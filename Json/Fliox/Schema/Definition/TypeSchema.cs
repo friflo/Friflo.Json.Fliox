@@ -4,13 +4,17 @@
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 
+// Note: This file does and must not have any dependency to <see cref="System.Type"/>. <br/>
 namespace Friflo.Json.Fliox.Schema.Definition
 {
     /// <summary>
-    /// <see cref="TypeSchema"/> is an abstraction of an entire type system / schema used as input for code generators
+    /// <see cref="TypeSchema"/> is an abstraction of an entire type system / database schema used for code generation
     /// and JSON payload validation like <b>JSON Schema</b>.
+    /// </summary>
+    /// 
+    /// <remarks>
     /// <br></br>
-    /// The abstraction enables:
+    /// The <see cref="TypeSchema"/> enables:
     /// <list type="bullet">
     ///   <item>
     ///     Simplify implementation of code generators as its API is tailored towards retrieving type information by
@@ -29,11 +33,9 @@ namespace Friflo.Json.Fliox.Schema.Definition
     ///     to simplify type access and avoiding type lookups. E.g. references like <see cref="TypeDef.BaseType"/> or
     ///     <see cref="FieldDef.type"/>. 
     ///   </item>
-    /// </list>  
-    /// <br></br>
-    /// Note: This file does and must not have any dependency to <see cref="System.Type"/>. <br/>
+    /// </list>
     /// Note: <see cref="TypeSchema"/> instances are immutable.
-    /// </summary>
+    /// </remarks>
     public abstract class TypeSchema
     {
         /// <summary>Set of all types defined in the type system / schema.</summary>
