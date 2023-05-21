@@ -147,19 +147,10 @@ namespace Friflo.Json.Fliox.Schema.Definition
                 return;
             }
             foreach (var field in Fields) {
-                field.type.SetEntityKeyField();
+                var fieldType       = field.type;
+                var keyName         = fieldType.keyFieldName ?? "id";
+                fieldType.keyField  = fieldType.FindField(keyName);
             }
-        }
-        
-        private void  SetEntityKeyField() {
-            var keyName = keyFieldName ?? "id";
-            foreach (var field in Fields) {
-                if (keyName == field.name) {
-                    keyField = field;
-                    return;
-                }
-            }
-            throw new InvalidOperationException($"key field not found in TypeDef: {Name}. field: {keyName}");
         }
     }
     
