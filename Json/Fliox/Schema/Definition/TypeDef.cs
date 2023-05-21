@@ -45,12 +45,19 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public              bool                        IsClass         => Fields != null;
         /// <summary><see cref="IsStruct"/> can be true only, if <see cref="IsClass"/> is true</summary>
         public   abstract   bool                        IsStruct        { get; }
+        /// <summary>Defines the field used as the primary key for a database container / table</summary>
         public              FieldDef                    KeyField        => keyField;
         /// <summary>List of class fields if <see cref="TypeDef"/> is a class. Otherwise null</summary>
         public   abstract   IReadOnlyList<FieldDef>     Fields          { get; }
         
+        /// <summary>
+        /// List of messages exposed by a database service.<br/>
+        /// In contrast to <see cref="Commands"/> database service <see cref="Messages"/> have no return type.
+        /// </summary>
         public   abstract   IReadOnlyList<MessageDef>   Messages        { get; }
+        /// <summary>List of commands exposed by a database service</summary>
         public   abstract   IReadOnlyList<MessageDef>   Commands        { get; }
+        /// <summary>If true the <see cref="TypeDef"/> is the root type of a database schema.</summary>
         public              bool                        IsSchema        => Commands != null; 
         
         /// <summary><see cref="UnionType"/> is not null, if the type is as discriminated union.</summary>
@@ -153,9 +160,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// int, float, double, DateTime, Guid, BigInteger or string or a complex type like an array, a map (= Dictionary) or a class.
     /// Fields also have a modifier to specify if a field is required or optional.
     /// <br/>
-    /// As <see cref="FieldDef"/>'s are also used within in a <see cref="TypeSchema"/> to define a database schema
-    /// a field can be selected to be the primary key of a table / container in a database by <see cref="isKey"/>.
-    /// To simplify code generation the primary key is exposed by <see cref="TypeDef.KeyField"/>.
+    /// Within a database schema every table / container has a primary key exposed by the <see cref="TypeDef.KeyField"/>. 
     /// </summary>
     public sealed class FieldDef {
         public   readonly   string          name;
