@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using static Friflo.Json.Fliox.Transform.OpType;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 // ReSharper disable UseNegatedPatternMatching
 // ReSharper disable ReplaceSubstringWithRangeIndexer
@@ -18,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         public static string SQLiteFilter(this FilterOperation op) {
             var filter      = (Filter)op;
             var args        = new FilterArgs(filter);
-            args.AddArg(filter.arg, "data");
+            args.AddArg(filter.arg, DATA);
             var cx          = new ConvertContext (args);
             var result      = cx.Traverse(filter.body);
             return result;
@@ -270,7 +271,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return
 $@"EXISTS(
     SELECT 1
-    FROM json_each(data, '{arrayPath}') as {arrayTable}
+    FROM json_each({DATA}, '{arrayPath}') as {arrayTable}
     WHERE {operand}
 )";
         }
@@ -285,7 +286,7 @@ $@"EXISTS(
             return
 $@"NOT EXISTS(
     SELECT 1
-    FROM json_each(data, '{arrayPath}') as {arrayTable}
+    FROM json_each({DATA}, '{arrayPath}') as {arrayTable}
     WHERE NOT ({operand})
 )";
         }

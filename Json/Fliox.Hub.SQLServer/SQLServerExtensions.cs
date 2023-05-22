@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using static Friflo.Json.Fliox.Transform.OpType;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 namespace Friflo.Json.Fliox.Hub.SQLServer
 {
@@ -16,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         public static string SQLServerFilter(this FilterOperation op) {
             var filter      = (Filter)op;
             var args        = new FilterArgs(filter);
-            args.AddArg(filter.arg, "data");
+            args.AddArg(filter.arg, DATA);
             var cx          = new ConvertContext (args);
             var result      = cx.Traverse(filter.body);
             return result;
@@ -72,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     var equal = (Equal)operation;
                     var left    = Traverse(equal.left);
                     var right   = Traverse(equal.right);
-                    // e.g. WHERE json_extract(data,'$.int32') is null || JSON_TYPE(json_extract(data,'$.int32')) = 'NULL'
+                    // e.g. WHERE json_extract({DATA},'$.int32') is null || JSON_TYPE(json_extract({DATA},'$.int32')) = 'NULL'
                     if (left  == "null") return $"({right} is null)";
                     if (right == "null") return $"({left} is null)";
                     return $"{left} = {right}";
@@ -81,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     var notEqual = (NotEqual)operation;
                     var left    = Traverse(notEqual.left);
                     var right   = Traverse(notEqual.right);
-                    // e.g WHERE json_extract(data,'$.int32') is not null && JSON_TYPE(json_extract(data,'$.int32')) != 'NULL'
+                    // e.g WHERE json_extract({DATA},'$.int32') is not null && JSON_TYPE(json_extract({DATA},'$.int32')) != 'NULL'
                     if (left  == "null") return $"({right} is not null)";
                     if (right == "null") return $"({left} is not null)";
                     return $"({left} is null or {right} is null or {left} != {right})";
@@ -270,7 +271,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             return
 $@"EXISTS(
     SELECT 1
-    FROM openjson(data, '{arrayPath}')
+    FROM openjson({DATA}, '{arrayPath}')
     WHERE {operand}
 )";
         }
@@ -285,7 +286,7 @@ $@"EXISTS(
             return
 $@"NOT EXISTS(
     SELECT 1
-    FROM openjson(data, '{arrayPath}')
+    FROM openjson({DATA}, '{arrayPath}')
     WHERE NOT ({operand})
 )";
         }

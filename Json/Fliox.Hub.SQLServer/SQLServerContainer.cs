@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Microsoft.Data.SqlClient;
 using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 
 // ReSharper disable UseAwaitUsing
@@ -25,8 +26,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         // [Maximum capacity specifications for SQL Server - SQL Server | Microsoft Learn]
         // https://learn.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server?view=sql-server-ver16
         // Bytes per primary key 900, used 255 same as in MySQL
-        internal const string ColumnId     = "id NVARCHAR(255)";
-        internal const string ColumnData   = "data NVARCHAR(max)";
+        internal const string ColumnId     = ID   + " NVARCHAR(255)";
+        internal const string ColumnData   = DATA + " NVARCHAR(max)";
         
         internal SQLServerContainer(string name, SQLServerDatabase database, bool pretty)
             : base(name, database)

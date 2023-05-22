@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using MySqlConnector;
 using static Friflo.Json.Fliox.Hub.MySQL.MySQLUtils;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 // ReSharper disable UseAwaitUsing
 // ReSharper disable UseIndexFromEndExpression
@@ -35,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return null;
             }
             // [MySQL :: MySQL 8.0 Reference Manual :: 11.7 Data Type Storage Requirements] https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html
-            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(255) PRIMARY KEY, data JSON);";
+            var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSON);";
             var result = await Execute(connection, sql).ConfigureAwait(false);
             if (result.Failed) {
                 return result.error;
@@ -57,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new CreateEntitiesResult();
             }
             var sql = new StringBuilder();
-            sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
+            sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
             try {
                 using var cmd = Command(sql.ToString(), connection);
@@ -81,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new UpsertEntitiesResult();
             }
             var sql = new StringBuilder();
-            sql.Append($"REPLACE INTO {name} (id,data) VALUES\n");
+            sql.Append($"REPLACE INTO {name} ({ID},{DATA}) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
 
             using var cmd = Command(sql.ToString(), connection);
@@ -101,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var ids = command.ids;
             var sql = new StringBuilder();
-            sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
+            sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
             SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.BackSlash);
 
             using var cmd = Command(sql.ToString(), connection);
@@ -162,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();
-                sql.Append($"DELETE FROM  {name} WHERE id in\n");
+                sql.Append($"DELETE FROM  {name} WHERE {ID} in\n");
                 
                 SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.BackSlash);
                 using var cmd = Command(sql.ToString(), connection);

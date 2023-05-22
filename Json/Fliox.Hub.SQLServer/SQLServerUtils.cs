@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Microsoft.Data.SqlClient;
-
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.SQLServer
@@ -56,16 +56,16 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         public static string QueryEntities(QueryEntities command, string table, string filter) {
             if (command.maxCount == null) {
                 var top = command.limit == null ? "" : $" TOP {command.limit}";
-                return $"SELECT{top} id, data FROM {table} WHERE {filter}";
+                return $"SELECT{top} {ID}, {DATA} FROM {table} WHERE {filter}";
             }
-            var cursorStart = command.cursor == null ? "" : $"id < '{command.cursor}' AND ";
-            var cursorDesc  = command.maxCount == null ? "" : " ORDER BY id DESC";
-            return $"SELECT id, data FROM {table} WHERE {cursorStart}{filter}{cursorDesc} OFFSET 0 ROWS FETCH FIRST {command.maxCount} ROWS ONLY";
+            var cursorStart = command.cursor == null ? "" : $"{ID} < '{command.cursor}' AND ";
+            var cursorDesc  = command.maxCount == null ? "" : $" ORDER BY {ID} DESC";
+            return $"SELECT {ID}, {DATA} FROM {table} WHERE {cursorStart}{filter}{cursorDesc} OFFSET 0 ROWS FETCH FIRST {command.maxCount} ROWS ONLY";
         }
         
         // --- create / upsert using DataTable in SQL statement
         internal static DbCommand CreateEntitiesCmd (SyncConnection connection, List<JsonEntity> entities, string table) {
-            var sql = $"INSERT INTO {table} (id,data) select id, data from @rows;";
+            var sql = $"INSERT INTO {table} ({ID},{DATA}) select {ID}, {DATA} from @rows;";
             var cmd = Command(sql, connection);
             AddRows(cmd, entities);
             return cmd;
@@ -75,12 +75,12 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             var sql = $@"
 MERGE {table} AS target
 USING @rows as source
-ON source.id = target.id
+ON source.{ID} = target.{ID}
 WHEN MATCHED THEN
-    UPDATE SET target.data = source.data
+    UPDATE SET target.{DATA} = source.{DATA}
 WHEN NOT MATCHED THEN
-    INSERT (id, data)
-    VALUES (id, data);";
+    INSERT ({ID}, {DATA})
+    VALUES ({ID}, {DATA});";
             var cmd = Command(sql, connection);
             AddRows(cmd, entities);
             return cmd;
@@ -90,17 +90,17 @@ WHEN NOT MATCHED THEN
             var p = cmd.Parameters.Add(new SqlParameter("@rows", SqlDbType.Structured));
             p.Value = SQLUtils.ToDataTable(entities);
             // DataTable requires registering UDT (User defined type) in database before execution:
-            // CREATE TYPE KeyValueType AS TABLE(id varchar(128), data varchar(max));
+            // CREATE TYPE KeyValueType AS TABLE({ID} varchar(128), {DATA} varchar(max));
             p.TypeName = "KeyValueType";
         }
         
         internal static DbCommand DeleteEntitiesCmd (SyncConnection connection, List<JsonKey> ids, string table) {
             var dataTable = new DataTable();
-            dataTable.Columns.Add("id", typeof(string));
+            dataTable.Columns.Add(ID, typeof(string));
             foreach(var id in ids) {
                 dataTable.Rows.Add(id.AsString());
             }
-            var sql     = $"DELETE FROM  {table} WHERE id in (SELECT id FROM @ids);";
+            var sql     = $"DELETE FROM  {table} WHERE {ID} in (SELECT {ID} FROM @ids);";
             var cmd     = Command(sql, connection);
             var p       = cmd.Parameters.Add(new SqlParameter("@ids", SqlDbType.Structured));
             p.Value     = dataTable;
@@ -110,11 +110,11 @@ WHEN NOT MATCHED THEN
         
         internal static DbCommand ReadEntitiesCmd (SyncConnection connection, List<JsonKey> ids, string table) {
             var dataTable = new DataTable();
-            dataTable.Columns.Add("id", typeof(string));
+            dataTable.Columns.Add(ID, typeof(string));
             foreach(var id in ids) {
                 dataTable.Rows.Add(id.AsString());
             }
-            var sql     = $"SELECT id, data FROM {table} WHERE id in (SELECT id FROM @ids);";
+            var sql     = $"SELECT {ID}, {DATA} FROM {table} WHERE {ID} in (SELECT {ID} FROM @ids);";
             var cmd     = Command(sql, connection);
             var p       = cmd.Parameters.Add(new SqlParameter("@ids", SqlDbType.Structured));
             p.Value     = dataTable;

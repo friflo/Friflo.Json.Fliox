@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
 using Npgsql;
 using static Friflo.Json.Fliox.Hub.PostgreSQL.PostgreSQLUtils;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 // ReSharper disable UseIndexFromEndExpression
 // ReSharper disable UseAwaitUsing
@@ -37,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
             // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
             // set to 255 as for all SQL databases
-            var sql = $"CREATE TABLE if not exists {name} (id VARCHAR(255) PRIMARY KEY, data JSONB);";
+            var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
             var result = await Execute(connection, sql).ConfigureAwait(false);
             if (result.Failed) {
                 return result.error;
@@ -59,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new CreateEntitiesResult();
             }
             var sql = new StringBuilder();
-            sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
+            sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
             try {
                 using var cmd = Command(sql.ToString(), connection);
@@ -83,9 +84,9 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new UpsertEntitiesResult();
             }
             var sql = new StringBuilder();
-            sql.Append($"INSERT INTO {name} (id,data) VALUES\n");
+            sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
-            sql.Append("\nON CONFLICT(id) DO UPDATE SET data = excluded.data;");
+            sql.Append($"\nON CONFLICT({ID}) DO UPDATE SET {DATA} = excluded.{DATA};");
             using var cmd = Command(sql.ToString(), connection);
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
@@ -103,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             var ids = command.ids;
             var sql = new StringBuilder();
-            sql.Append($"SELECT id, data FROM {name} WHERE id in\n");
+            sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
             SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.Default);
             using var cmd = Command(sql.ToString(), connection);
             return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
@@ -162,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();
-                sql.Append($"DELETE FROM  {name} WHERE id in\n");
+                sql.Append($"DELETE FROM  {name} WHERE {ID} in\n");
                 
                 SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.Default);
                 using var cmd = Command(sql.ToString(), connection);

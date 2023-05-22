@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Microsoft.Data.SqlClient;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.SQLServer
@@ -19,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         // --- create / upsert using VALUES() in SQL statement
         internal static DbCommand CreateEntitiesCmd_Values (SyncConnection connection, List<JsonEntity> entities, string table) {
             var sql = new StringBuilder();
-            sql.Append($"INSERT INTO {table} (id,data) VALUES\n");
+            sql.Append($"INSERT INTO {table} ({ID},{DATA}) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, entities, SQLEscape.Default);
             return Command(sql.ToString(), connection);
         }
@@ -31,13 +32,13 @@ $@"MERGE {table} AS target
 USING (VALUES");
             SQLUtils.AppendValuesSQL(sql, entities, SQLEscape.Default);
             sql.Append(
-@") AS source (id, data)
-ON source.id = target.id
+$@") AS source ({ID}, {DATA})
+ON source.{ID} = target.{ID}
 WHEN MATCHED THEN
-    UPDATE SET target.data = source.data
+    UPDATE SET target.{DATA} = source.{DATA}
 WHEN NOT MATCHED THEN
-    INSERT (id, data)
-    VALUES (id, data);");
+    INSERT ({ID}, {DATA})
+    VALUES ({ID}, {DATA});");
             return Command(sql.ToString(), connection);
         }
         
@@ -58,7 +59,7 @@ WHEN NOT MATCHED THEN
         
         internal static DbCommand DeleteEntitiesCmd_Values (SyncConnection connection, List<JsonKey> ids, string table) {
             var sql = new StringBuilder();
-            sql.Append($"DELETE FROM  {table} WHERE id in\n");
+            sql.Append($"DELETE FROM  {table} WHERE {ID} in\n");
             SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.Default);
             return Command(sql.ToString(), connection);
         }

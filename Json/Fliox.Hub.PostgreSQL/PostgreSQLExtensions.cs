@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using static Friflo.Json.Fliox.Transform.OpType;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
@@ -18,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         public static string PostgresFilter(this FilterOperation op, TypeDef entityType) {
             var filter      = (Filter)op;
             var args        = new FilterArgs(filter);
-            args.AddArg(filter.arg, "data");
+            args.AddArg(filter.arg, DATA);
             var cx          = new ConvertContext (args, entityType);
             var result      = cx.Traverse(filter.body);
             return result;

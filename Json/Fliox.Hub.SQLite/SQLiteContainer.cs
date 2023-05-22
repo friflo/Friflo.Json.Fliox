@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using SQLitePCL;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
 {
@@ -33,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 error = null;
                 return true;
             }
-            var sql = $"CREATE TABLE IF NOT EXISTS {name} (id TEXT PRIMARY KEY, data TEXT NOT NULL);";
+            var sql = $"CREATE TABLE IF NOT EXISTS {name} ({ID} TEXT PRIMARY KEY, {DATA} TEXT NOT NULL);";
             var success = SQLiteUtils.Execute(sqliteDB, sql, out error);
             if (success) {
                 tableExists = true;
@@ -85,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (error != null) {
                     return new UpsertEntitiesResult { Error = error };
                 }
-                var sql = $@"INSERT INTO {name} VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data";
+                var sql = $@"INSERT INTO {name} VALUES(?,?) ON CONFLICT({ID}) DO UPDATE SET {DATA}=excluded.{DATA}";
                 if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
                     return new UpsertEntitiesResult { Error = error };
                 }
@@ -111,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!EnsureContainerExists(out var error)) {
                 return new ReadEntitiesResult { Error = error };
             }
-            var sql = $"SELECT id, data FROM {name} WHERE id in (?)";
+            var sql = $"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in (?)";
             if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
                 return new ReadEntitiesResult { Error = error };
             }
@@ -148,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
                 var limit   = command.limit == null ? "" : $" LIMIT {command.limit}";
-                sql         = $"SELECT id, data FROM {name}{where}{limit}";
+                sql         = $"SELECT {ID}, {DATA} FROM {name}{where}{limit}";
                 if (!SQLiteUtils.Prepare(sqliteDB, sql, out stmt, out error)) {
                     return new QueryEntitiesResult { Error = error, sql = sql };
                 }
@@ -222,7 +223,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (error != null) {
                     return new DeleteEntitiesResult { Error = error };
                 }
-                var sql = $"DELETE from {name} WHERE id in (?)";
+                var sql = $"DELETE from {name} WHERE {ID} in (?)";
                 if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }

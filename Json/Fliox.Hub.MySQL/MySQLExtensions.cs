@@ -10,6 +10,8 @@ using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using static Friflo.Json.Fliox.Hub.MySQL.MySQLProvider;
 using static Friflo.Json.Fliox.Transform.OpType;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
+
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
@@ -26,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         internal static string MySQLFilter(this FilterOperation op, MySQLProvider provider) {
             var filter      = (Filter)op;
             var args        = new FilterArgs(filter);
-            args.AddArg(filter.arg, "data");
+            args.AddArg(filter.arg, DATA);
             var cx          = new ConvertContext (args, provider);
             var result      = cx.Traverse(filter.body);
             return result;
@@ -83,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     var equal = (Equal)operation;
                     var left    = Traverse(equal.left);
                     var right   = Traverse(equal.right);
-                    // e.g. WHERE json_extract(data,'$.int32') is null || JSON_TYPE(json_extract(data,'$.int32')) = 'NULL'
+                    // e.g. WHERE json_extract({DATA},'$.int32') is null || JSON_TYPE(json_extract({DATA},'$.int32')) = 'NULL'
                     if (left  == "null") return $"({right} is null)";
                     if (right == "null") return $"({left} is null)";
                     return $"{left} = {right}";
@@ -92,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     var notEqual = (NotEqual)operation;
                     var left    = Traverse(notEqual.left);
                     var right   = Traverse(notEqual.right);
-                    // e.g WHERE json_extract(data,'$.int32') is not null && JSON_TYPE(json_extract(data,'$.int32')) != 'NULL'
+                    // e.g WHERE json_extract({DATA},'$.int32') is not null && JSON_TYPE(json_extract({DATA},'$.int32')) != 'NULL'
                     if (left  == "null") return $"({right} is not null)";
                     if (right == "null") return $"({left} is not null)";
                     return $"({left} is null or {right} is null or {left} != {right})";
@@ -283,13 +285,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case MY_SQL: return
 $@"FALSE OR EXISTS(
     SELECT 1
-    FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
+    FROM JSON_TABLE({DATA}, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
     WHERE {operand}
 )";
                 case MARIA_DB: return
 $@"EXISTS(
-    SELECT data
-    FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
+    SELECT {DATA}
+    FROM JSON_TABLE({DATA}, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
     WHERE {operand}
 )"; 
             }
@@ -307,13 +309,13 @@ $@"EXISTS(
 case MY_SQL: return
 $@"NOT EXISTS(
     SELECT 1
-    FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
+    FROM JSON_TABLE({DATA}, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
     WHERE NOT ({operand})
 )";
 case MARIA_DB: return
 $@"NOT EXISTS(
-    SELECT data
-    FROM JSON_TABLE(data, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
+    SELECT {DATA}
+    FROM JSON_TABLE({DATA}, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
     WHERE NOT ({operand})
 )";
             }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 // ReSharper disable UseIndexFromEndExpression
 // ReSharper disable UseAwaitUsing
@@ -20,24 +21,30 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         BackSlash   = 1
     }
     
+    public static class SQLName
+    {
+        public const string ID     = "json_id";
+        public const string DATA   = "json_data";
+    }
+    
     public static class SQLUtils
     {
         public static string QueryEntitiesSQL(QueryEntities command, string table, string filter) {
-            var cursorStart = command.cursor == null ? "" : $"id < '{command.cursor}' AND ";
-            var cursorDesc  = command.maxCount == null ? "" : " ORDER BY id DESC";
+            var cursorStart = command.cursor == null ? "" : $"{ID} < '{command.cursor}' AND ";
+            var cursorDesc  = command.maxCount == null ? "" : $" ORDER BY {ID} DESC";
             string limit;
             if (command.maxCount != null) {
                 limit       = $" LIMIT {command.maxCount}";
             } else {
                 limit       = command.limit == null ? "" : $" LIMIT {command.limit}";
             }
-            return $"SELECT id, data FROM {table} WHERE {cursorStart}{filter}{cursorDesc}{limit}";
+            return $"SELECT {ID}, {DATA} FROM {table} WHERE {cursorStart}{filter}{cursorDesc}{limit}";
         }
         
         public static DataTable ToDataTable(List<JsonEntity> entities) {
             var table = new DataTable();
-            table.Columns.Add("id",   typeof(string));
-            table.Columns.Add("data", typeof(string));
+            table.Columns.Add(ID,   typeof(string));
+            table.Columns.Add(DATA, typeof(string));
             var rows        = table.Rows;
             var rowValues   = new object[2]; 
             foreach (var entity in entities) {
