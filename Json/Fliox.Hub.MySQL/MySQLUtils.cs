@@ -37,12 +37,12 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         
         private static string GetSqlType(StandardTypeId typeId, MySQLProvider provider) {
             switch (typeId) {
-                case StandardTypeId.Uint8:      return "TINYINT";
-                case StandardTypeId.Int16:      return "SMALLINT";
-                case StandardTypeId.Int32:      return "INT";
-                case StandardTypeId.Int64:      return "BIGINT";
-                case StandardTypeId.Float:      return "FLOAT";
-                case StandardTypeId.Double:     return "DOUBLE";
+                case StandardTypeId.Uint8:      return "tinyint";
+                case StandardTypeId.Int16:      return "smallint";
+                case StandardTypeId.Int32:      return "integer";
+                case StandardTypeId.Int64:      return "bigint";
+                case StandardTypeId.Float:      return "float";
+                case StandardTypeId.Double:     return "double precision";
                 case StandardTypeId.Boolean:    return "text";
                 case StandardTypeId.DateTime:
                 case StandardTypeId.Guid:
@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
 var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN IF NOT EXISTS {colName} {type}
-GENERATED ALWAYS AS (json_extract({DATA}, '$.{colName}')) VIRTUAL;";
+GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
                     await Execute(connection, sql);
                     return;
                 }
