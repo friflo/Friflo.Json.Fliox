@@ -51,5 +51,6 @@ namespace Friflo.Json.Fliox.Schema.Definition
         JsonValue   = 12,
         JsonKey     = 13,
         JsonEntity  = 15,
+        Enum        = 16,
     }
 }

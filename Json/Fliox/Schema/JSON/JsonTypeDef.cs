@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         internal readonly   JSONSchema          schema;
 
         public JsonTypeDef (JsonType type, string name, string ns, string keyField, JSONSchema schema, IUtf8Buffer buffer) :
-            base (name, ns, keyField, GetTypeId(name, ns), type.description, buffer.Add(name))
+            base (name, ns, keyField, GetTypeId(type, name, ns), type.description, buffer.Add(name))
         {
             this.name   = name;
             this.type   = type;
@@ -56,9 +56,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
             this.name   = name;
         }
         
-        private static StandardTypeId GetTypeId(string name, string ns) {
+        private static StandardTypeId GetTypeId(JsonType type, string name, string ns) {
             if (ns != "Standard") {
-                return StandardTypeId.None;
+                return type.enums != null ? StandardTypeId.Enum : StandardTypeId.None;
             }
             switch (name) {
                case "uint8":        return StandardTypeId.Uint8;

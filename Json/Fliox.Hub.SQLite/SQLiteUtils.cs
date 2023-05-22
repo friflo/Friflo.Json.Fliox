@@ -64,7 +64,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case StandardTypeId.DateTime:
                 case StandardTypeId.Guid:
                 case StandardTypeId.BigInteger:
-                case StandardTypeId.String:     return "text";
+                case StandardTypeId.String:
+                case StandardTypeId.Enum:       return "text";
             }
             throw new NotSupportedException($"column type: {typeId}");
         }
