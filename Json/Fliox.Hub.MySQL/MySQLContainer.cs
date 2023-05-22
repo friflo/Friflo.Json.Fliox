@@ -20,6 +20,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
 {
     public sealed class MySQLContainer : EntityContainer
     {
+        private  readonly   TableInfo       tableInfo;
         private             bool            tableExists;
         public   override   bool            Pretty      { get; }
         private  readonly   MySQLProvider   provider;
@@ -27,6 +28,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         internal MySQLContainer(string name, MySQLDatabase database, bool pretty)
             : base(name, database)
         {
+            tableInfo   = new TableInfo (database, name);
             Pretty      = pretty;
             provider    = database.Provider;
         }
@@ -42,6 +44,14 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return result.error;
             }
             tableExists = true;
+            foreach (var column in tableInfo.columns.Values) {
+                if (column == tableInfo.keyColumn) {
+                    continue;
+                }
+                if (provider == MySQLProvider.MARIA_DB) {
+                    await AddVirtualColumn(connection, name, column);
+                }
+            }
             return null;
         }
         

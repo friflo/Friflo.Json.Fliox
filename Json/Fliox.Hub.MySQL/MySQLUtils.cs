@@ -3,9 +3,12 @@
 
 #if !UNITY_5_3_OR_NEWER || MYSQL
 
+using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Schema.Definition;
 using MySqlConnector;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.MySQL
@@ -30,6 +33,33 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             catch (MySqlException e) {
                 return new SQLResult(e.Message);
             }
+        }
+        
+        private static string GetSqlType(StandardTypeId typeId) {
+            switch (typeId) {
+                case StandardTypeId.Uint8:      return "TINYINT";
+                case StandardTypeId.Int16:      return "SMALLINT";
+                case StandardTypeId.Int32:      return "INT";
+                case StandardTypeId.Int64:      return "BIGINT";
+                case StandardTypeId.Float:      return "FLOAT";
+                case StandardTypeId.Double:     return "DOUBLE";
+                case StandardTypeId.Boolean:    return "bool";
+                case StandardTypeId.DateTime:
+                case StandardTypeId.Guid:
+                case StandardTypeId.BigInteger:
+                case StandardTypeId.String:
+                case StandardTypeId.Enum:       return "text";
+            }
+            throw new NotSupportedException($"column type: {typeId}");
+        }
+        
+        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
+            var type = GetSqlType(column.typeId);
+            var sql =
+$@"ALTER TABLE {table}
+ADD COLUMN IF NOT EXISTS {column.name} {type}
+GENERATED ALWAYS AS (json_extract({DATA}, '$.{column.name}')) VIRTUAL;";
+            await Execute(connection, sql);
         }
         
         internal static async Task CreateDatabaseIfNotExistsAsync(string connectionString) {
