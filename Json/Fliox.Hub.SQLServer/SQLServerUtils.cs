@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 case StandardTypeId.Int64:      return "bigint";
                 case StandardTypeId.Float:      return "float";
                 case StandardTypeId.Double:     return "double precision";
-                case StandardTypeId.Boolean:    return "bool";
+                case StandardTypeId.Boolean:    return "nvarchar(max)";
                 case StandardTypeId.DateTime:
                 case StandardTypeId.Guid:
                 case StandardTypeId.BigInteger:
