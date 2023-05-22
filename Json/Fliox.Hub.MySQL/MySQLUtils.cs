@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
         }
         
-        private static string GetSqlType(StandardTypeId typeId) {
+        private static string GetSqlType(StandardTypeId typeId, MySQLProvider provider) {
             switch (typeId) {
                 case StandardTypeId.Uint8:      return "TINYINT";
                 case StandardTypeId.Int16:      return "SMALLINT";
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case StandardTypeId.Int64:      return "BIGINT";
                 case StandardTypeId.Float:      return "FLOAT";
                 case StandardTypeId.Double:     return "DOUBLE";
-                case StandardTypeId.Boolean:    return "bool";
+                case StandardTypeId.Boolean:    return "text";
                 case StandardTypeId.DateTime:
                 case StandardTypeId.Guid:
                 case StandardTypeId.BigInteger:
@@ -53,13 +53,39 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             throw new NotSupportedException($"column type: {typeId}");
         }
         
-        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
-            var type = GetSqlType(column.typeId);
-            var sql =
+        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column, MySQLProvider provider) {
+            var type = GetSqlType(column.typeId, provider);
+            var colName = column.name; 
+            switch (provider) {
+                case MySQLProvider.MARIA_DB: {
+var sql =
 $@"ALTER TABLE {table}
-ADD COLUMN IF NOT EXISTS {column.name} {type}
-GENERATED ALWAYS AS (json_extract({DATA}, '$.{column.name}')) VIRTUAL;";
-            await Execute(connection, sql);
+ADD COLUMN IF NOT EXISTS {colName} {type}
+GENERATED ALWAYS AS (json_extract({DATA}, '$.{colName}')) VIRTUAL;";
+                    await Execute(connection, sql);
+                    return;
+                }
+                case MySQLProvider.MY_SQL: {
+var sql =    
+$@"SELECT COUNT(*)
+FROM `INFORMATION_SCHEMA`.`COLUMNS`
+WHERE `TABLE_NAME`= '{table}' AND `COLUMN_NAME` = '{colName}';";
+                    var result = await Execute(connection, sql);
+                    if (result.Failed) {
+                        return;
+                    }
+                    if ((long)result.value != 0)
+                        return;
+                    /*var jsonValue = column.typeId == StandardTypeId.Boolean ?
+                        $"(IF(JSON_VALUE({DATA}, '$.{colName}')=true, 1,0))" :
+                        $"(JSON_VALUE({DATA}, '$.{colName}'))";*/
+sql = $@"alter table {table}
+add column {colName} {type}
+as (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
+                    await Execute(connection, sql);
+                    return;
+                }
+            }
         }
         
         internal static async Task CreateDatabaseIfNotExistsAsync(string connectionString) {

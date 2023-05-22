@@ -48,9 +48,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 if (column == tableInfo.keyColumn) {
                     continue;
                 }
-                if (provider == MySQLProvider.MARIA_DB) {
-                    await AddVirtualColumn(connection, name, column);
-                }
+                await AddVirtualColumn(connection, name, column, provider);
             }
             return null;
         }
