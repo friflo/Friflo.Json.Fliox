@@ -6,10 +6,13 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Utils;
 using SQLitePCL;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
 {
@@ -47,6 +50,32 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             raw.sqlite3_finalize(stmt);
             return Success(out error);
+        }
+        
+        private static string GetSqlType(StandardTypeId typeId) {
+            switch (typeId) {
+                case StandardTypeId.Uint8:
+                case StandardTypeId.Int16:
+                case StandardTypeId.Int32:
+                case StandardTypeId.Int64:      return "integer";
+                case StandardTypeId.Float:
+                case StandardTypeId.Double:     return "real";
+                case StandardTypeId.Boolean:    return "text";
+                case StandardTypeId.DateTime:
+                case StandardTypeId.Guid:
+                case StandardTypeId.BigInteger:
+                case StandardTypeId.String:     return "text";
+            }
+            throw new NotSupportedException($"column type: {typeId}");
+        }
+        
+        internal static void AddVirtualColumn(sqlite3 db, string table, ColumnInfo column) {
+            var type = GetSqlType(column.typeId);
+            var sql =
+$@"ALTER TABLE {table}
+ADD COLUMN {column.name} {type}
+AS (json_extract({DATA}, '$.{column.name}'));";
+            Execute(db, sql, out _);
         }
         
         internal static bool ReadValues(

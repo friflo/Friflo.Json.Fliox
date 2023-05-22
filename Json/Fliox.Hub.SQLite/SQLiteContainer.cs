@@ -17,6 +17,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     public sealed class SQLiteContainer : EntityContainer
     {
         private  readonly   sqlite3     sqliteDB;
+        private  readonly   TableInfo   tableInfo;
         private             bool        tableExists;
         private  readonly   bool        synchronous;
         public   override   bool        Pretty      { get; }
@@ -24,6 +25,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         internal SQLiteContainer(string name, SQLiteDatabase database, bool pretty)
             : base(name, database)
         {
+            tableInfo   = new TableInfo (database, name);
             sqliteDB    = database.sqliteDB;
             synchronous = database.Synchronous;
             Pretty      = pretty;
@@ -38,6 +40,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             var success = SQLiteUtils.Execute(sqliteDB, sql, out error);
             if (success) {
                 tableExists = true;
+            }
+            foreach (var column in tableInfo.columns.Values) {
+                if (column == tableInfo.keyColumn) {
+                    continue;
+                }
+                SQLiteUtils.AddVirtualColumn(sqliteDB, name, column);
             }
             return success;
         }
