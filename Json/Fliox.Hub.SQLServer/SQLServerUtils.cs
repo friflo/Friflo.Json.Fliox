@@ -3,12 +3,14 @@
 
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Schema.Definition;
 using Microsoft.Data.SqlClient;
 using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
@@ -34,6 +36,33 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             catch (SqlException e) {
                 return new SQLResult(e.Message);
             }
+        }
+        
+        private static string GetSqlType(StandardTypeId typeId) {
+            switch (typeId) {
+                case StandardTypeId.Uint8:      return "tinyint";
+                case StandardTypeId.Int16:      return "smallint";
+                case StandardTypeId.Int32:      return "int";
+                case StandardTypeId.Int64:      return "bigint";
+                case StandardTypeId.Float:      return "float";
+                case StandardTypeId.Double:     return "double precision";
+                case StandardTypeId.Boolean:    return "bool";
+                case StandardTypeId.DateTime:
+                case StandardTypeId.Guid:
+                case StandardTypeId.BigInteger:
+                case StandardTypeId.String:
+                case StandardTypeId.Enum:       return "nvarchar(max)";
+            }
+            throw new NotSupportedException($"column type: {typeId}");
+        }
+        
+        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
+            var type = GetSqlType(column.typeId);
+            var sql =
+                $@"ALTER TABLE {table}
+ADD {column.name}
+AS CAST(JSON_VALUE({DATA}, '$.{column.name}') AS {type});";
+            await Execute(connection, sql);
         }
         
         internal static async Task CreateDatabaseIfNotExistsAsync(string connectionString) {

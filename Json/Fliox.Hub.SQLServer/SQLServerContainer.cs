@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     public sealed class SQLServerContainer : EntityContainer
     {
+        private  readonly   TableInfo           tableInfo;
         private             bool                tableExists;
         public   override   bool                Pretty      { get; }
         private   readonly  SQLServerDatabase   database;
@@ -32,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         internal SQLServerContainer(string name, SQLServerDatabase database, bool pretty)
             : base(name, database)
         {
+            tableInfo       = new TableInfo (database, name);
             Pretty          = pretty;
             this.database   = database;
         }
@@ -49,6 +51,12 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
                 return result.error;
             }
             tableExists = true;
+            foreach (var column in tableInfo.columns.Values) {
+                if (column == tableInfo.keyColumn) {
+                    continue;
+                }
+                await AddVirtualColumn(connection, name, column);
+            }
             return null;
         }
         
