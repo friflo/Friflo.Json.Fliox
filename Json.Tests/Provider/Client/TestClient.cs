@@ -17,6 +17,7 @@ namespace Friflo.Json.Tests.Provider.Client
         public readonly EntitySet <string, CursorEntity>        testCursor;
         public readonly EntitySet <int,    TestIntKeyEntity>    testIntKey;
         public readonly EntitySet <Guid,   TestGuidKeyEntity>   testGuidKey;
+        public readonly EntitySet <string, TestKeyName>         testKeyName;
 
         public TestClient(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
     }

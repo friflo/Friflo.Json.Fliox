@@ -9,7 +9,8 @@ namespace TodoTest {
 
     public static class TodoTests
     {
-        private static readonly string DbPath = GetBasePath() + "Todo/Test/DB/main_db";
+        private static readonly string          DbPath = GetBasePath() + "Todo/Test/DB/main_db";
+        private static readonly DatabaseSchema  Schema = DatabaseSchema.Create<TodoClient>();
 
         /// <summary>create a <see cref="MemoryDatabase"/> clone for every client to avoid side effects by DB mutations</summary>
         private static FlioxHub CreateTodoHub()
@@ -27,7 +28,7 @@ namespace TodoTest {
         private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath, DatabaseService service = null)
         {
             var referenceDB = new FileDatabase("source_db", srcDatabasePath);
-            var cloneDB     = new MemoryDatabase(dbName, service);
+            var cloneDB     = new MemoryDatabase(dbName, service) { Schema = Schema };
             cloneDB.SeedDatabase(referenceDB).Wait();
             return cloneDB;
         }

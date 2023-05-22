@@ -73,4 +73,9 @@ namespace Friflo.Json.Tests.Provider.Client
         [Key]       public  Guid            id { get; set; }
                     public  string          value;
     }
+    
+    public class TestKeyName {
+        [Key]       public  string          testId;
+                    public  string          value;
+    }
 }

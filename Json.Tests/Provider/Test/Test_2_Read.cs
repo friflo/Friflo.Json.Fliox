@@ -121,5 +121,17 @@ namespace Friflo.Json.Tests.Provider.Test
             NotNull(result[guid9f]);
             NotNull(result[guidB3]);
         }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_10_KeyName(string db) {
+            var client  = await GetClient(db);
+            var read    = client.testKeyName.Read();
+            var range   = read.FindRange(new [] { "k-1", "k-2" });
+            await client.SyncTasks();
+            
+            var result = range.Result;
+            NotNull(result);
+            AreEqual(2, result.Count);
+        }
     }
 }

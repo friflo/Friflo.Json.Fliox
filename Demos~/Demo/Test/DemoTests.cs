@@ -15,7 +15,8 @@ namespace DemoTest {
 
     public static class DemoTests
     {
-        private static readonly string DbPath = GetBasePath() + "Demo/Test/DB/main_db";
+        private static readonly string          DbPath = GetBasePath() + "Demo/Test/DB/main_db";
+        private static readonly DatabaseSchema  Schema = DatabaseSchema.Create<DemoClient>();
 
         /// <summary>create a <see cref="MemoryDatabase"/> clone for every client to avoid side effects by DB mutations</summary>
         private static FlioxHub CreateDemoHub()
@@ -33,7 +34,7 @@ namespace DemoTest {
         private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath, DatabaseService service = null)
         {
             var referenceDB = new FileDatabase("source_db", srcDatabasePath);
-            var cloneDB     = new MemoryDatabase(dbName, service);
+            var cloneDB     = new MemoryDatabase(dbName, service) { Schema = Schema };
             cloneDB.SeedDatabase(referenceDB).Wait();
             return cloneDB;
         }
