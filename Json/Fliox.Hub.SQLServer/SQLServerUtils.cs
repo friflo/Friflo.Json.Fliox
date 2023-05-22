@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
             var type = GetSqlType(column.typeId);
             var sql =
-                $@"ALTER TABLE {table}
+$@"ALTER TABLE {table}
 ADD {column.name}
 AS CAST(JSON_VALUE({DATA}, '$.{column.name}') AS {type});";
             await Execute(connection, sql);

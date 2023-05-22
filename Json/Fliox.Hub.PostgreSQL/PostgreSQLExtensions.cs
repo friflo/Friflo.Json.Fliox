@@ -319,20 +319,10 @@ $@"jsonb_typeof({arrayPath}) <> 'array'
 
         private string GetCast(Operation op) {
             if (op is Field field) {
-                var fieldType = GetFieldType(entityType, field.name);
-                switch (fieldType.TypeId) {
-                    case StandardTypeId.Uint8:      return "::smallint";
-                    case StandardTypeId.Int16:      return "::smallint";
-                    case StandardTypeId.Int32:      return "::integer";
-                    case StandardTypeId.Int64:      return "::bigint";
-                    case StandardTypeId.Float:      return "::real";
-                    case StandardTypeId.Double:     return "::double precision";
-                    case StandardTypeId.Boolean:    return "::boolean";
-                /*  case StandardTypeId.String:
-                    case StandardTypeId.DateTime:
-                    case StandardTypeId.BigInteger:
-                    case StandardTypeId.Guid:
-                        return "::text"; */
+                var fieldType   = GetFieldType(entityType, field.name);
+                var type        = PostgreSQLUtils.GetSqlType(fieldType.TypeId);
+                if (type != "text") {
+                    return "::" + type;
                 }
             }
             return "";

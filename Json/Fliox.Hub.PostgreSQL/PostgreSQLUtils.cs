@@ -3,9 +3,12 @@
 
 #if !UNITY_5_3_OR_NEWER || POSTGRESQL
 
+using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Schema.Definition;
 using Npgsql;
+using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
@@ -29,6 +32,33 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             catch (PostgresException e) {
                 return new SQLResult(e.MessageText);
             }
+        }
+        
+        internal static string GetSqlType(StandardTypeId typeId) {
+            switch (typeId) {
+                case StandardTypeId.Uint8:      return "smallint";
+                case StandardTypeId.Int16:      return "smallint";
+                case StandardTypeId.Int32:      return "integer";
+                case StandardTypeId.Int64:      return "bigint";
+                case StandardTypeId.Float:      return "float";
+                case StandardTypeId.Double:     return "double precision";
+                case StandardTypeId.Boolean:    return "boolean";
+                case StandardTypeId.DateTime:
+                case StandardTypeId.Guid:
+                case StandardTypeId.BigInteger:
+                case StandardTypeId.String:
+                case StandardTypeId.Enum:       return "text";
+            }
+            throw new NotSupportedException($"column type: {typeId}");
+        }
+        
+        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
+            var type = GetSqlType(column.typeId);
+            var sql =
+$@"ALTER TABLE {table}
+ADD COLUMN IF NOT EXISTS {column.name} {type} NULL
+GENERATED ALWAYS AS (({DATA} ->> '{column.name}')::{type}) STORED;";
+            await Execute(connection, sql);
         }
         
         internal static async Task CreateDatabaseIfNotExistsAsync(string connectionString) {

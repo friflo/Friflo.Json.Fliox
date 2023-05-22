@@ -21,12 +21,14 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public sealed class PostgreSQLContainer : EntityContainer
     {
+        private  readonly   TableInfo           tableInfo;
         private             bool                tableExists;
         private  readonly   TypeDef             entityType;
         
         internal PostgreSQLContainer(string name, PostgreSQLDatabase database)
             : base(name, database)
         {
+            tableInfo       = new TableInfo (database, name);
             var types       = database.Schema.typeSchema.GetEntityTypes();
             entityType      = types[name];
         }
@@ -44,6 +46,12 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return result.error;
             }
             tableExists = true;
+            foreach (var column in tableInfo.columns.Values) {
+                if (column == tableInfo.keyColumn) {
+                    continue;
+                }
+                await AddVirtualColumn(connection, name, column);
+            }
             return null;
         }
         
