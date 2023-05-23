@@ -22,10 +22,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         /// Should I expose asynchronous wrappers for synchronous methods? - .NET Parallel Programming</a>
         /// </summary>
         public              bool        Synchronous             { get; init; } = false;
-        public              bool        AutoCreateTable         { get; init; } = true;
+        public              bool        AutoCreateDatabase      { get; init; } = true;
+        public              bool        AutoCreateTables        { get; init; } = true;
         public              bool        AutoAddVirtualColumns   { get; init; } = true;
         
-        internal readonly   sqlite3                                 sqliteDB;
+        internal readonly   sqlite3     sqliteDB;
 
         
         public   override   string      StorageType => "SQLite " + SQLiteUtils.GetVersion(sqliteDB);

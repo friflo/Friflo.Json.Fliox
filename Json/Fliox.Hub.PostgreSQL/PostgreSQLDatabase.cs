@@ -7,7 +7,6 @@ using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Npgsql;
 using static Friflo.Json.Fliox.Hub.PostgreSQL.PostgreSQLUtils;
 
@@ -15,7 +14,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public sealed class PostgreSQLDatabase : EntityDatabase, ISQLDatabase
     {
-        public              bool        AutoCreateTable         { get; init; } = true;
+        public              bool        AutoCreateDatabase      { get; init; } = true;
+        public              bool        AutoCreateTables        { get; init; } = true;
         public              bool        AutoAddVirtualColumns   { get; init; } = true;
         
         internal readonly   string      connectionString;
@@ -41,17 +41,20 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             } catch (Exception e) {
                 openException = e;
             }
+            if (!AutoCreateDatabase) {
+                return new SyncConnection(openException);
+            }
             try {
                 await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
-            } catch (Exception) {
-                return new SyncConnection(new TaskExecuteError(openException.Message));
+            } catch (Exception e) {
+                return new SyncConnection(e);
             }
             try {
                 var connection = new NpgsqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
                 return new SyncConnection(connection);
             } catch (Exception e) {
-                return new SyncConnection(new TaskExecuteError(e.Message));
+                return new SyncConnection(e);
             }
         }
     }

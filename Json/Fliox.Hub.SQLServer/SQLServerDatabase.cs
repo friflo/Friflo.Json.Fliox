@@ -16,7 +16,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     public sealed class SQLServerDatabase : EntityDatabase, ISQLDatabase
     {
         public              bool            Pretty                  { get; init; } = false;
-        public              bool            AutoCreateTable         { get; init; } = true;
+        public              bool            AutoCreateDatabase      { get; init; } = true;
+        public              bool            AutoCreateTables        { get; init; } = true;
         public              bool            AutoAddVirtualColumns   { get; init; } = true;
         
         private  readonly   string          connectionString;
@@ -45,12 +46,14 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 connection?.Dispose();
                 openException = e;
             }
+            if (!AutoCreateDatabase) {
+                return new SyncConnection(openException);
+            }
             try {
                 await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
             } catch (Exception e) {
                 connection?.Dispose();
-                openException = e;
-                return new SyncConnection(new TaskExecuteError(openException.Message));
+                return new SyncConnection(e);
             }
             var end = DateTime.Now + new TimeSpan(0, 0, 0, 10, 0);
             while (DateTime.Now < end) {

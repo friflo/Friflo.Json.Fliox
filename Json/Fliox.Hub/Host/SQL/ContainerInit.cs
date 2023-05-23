@@ -8,7 +8,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public interface ISQLDatabase
     {
-        public bool AutoCreateTable         { get; init; }
+        public bool AutoCreateDatabase      { get; init; }
+        public bool AutoCreateTables        { get; init; }
         public bool AutoAddVirtualColumns   { get; init; }
     }
     
@@ -30,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public              bool    AddVirtualColumns   => !virtualColumnsAdded && autoAddVirtualColumns;
         
         public ContainerInit(ISQLDatabase database) {
-            autoCreateTable         = database.AutoCreateTable;
+            autoCreateTable         = database.AutoCreateTables;
             autoAddVirtualColumns   = database.AutoAddVirtualColumns;
         }
     }

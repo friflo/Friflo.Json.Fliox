@@ -31,6 +31,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             instance        = default;
             this.error      = error ?? throw new ArgumentNullException(nameof(error));
         }
+        
+        public SyncConnection(Exception exception) {
+            instance        = default;
+            error           = new TaskExecuteError(exception.Message);
+        }
 
         public void Dispose() {
             instance?.Dispose();
