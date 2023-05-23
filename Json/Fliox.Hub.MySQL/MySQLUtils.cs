@@ -5,10 +5,10 @@
 
 using System;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Schema.Definition;
 using MySqlConnector;
-using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
+using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.MySQL

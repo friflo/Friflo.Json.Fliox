@@ -8,9 +8,9 @@ using System.Data;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Host.SQL;
 using Microsoft.Data.SqlClient;
-using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
+using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.SQLServer

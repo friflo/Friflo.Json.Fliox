@@ -5,12 +5,12 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Microsoft.Data.SqlClient;
 using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
-using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
+using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
 
 // ReSharper disable UseAwaitUsing

@@ -4,7 +4,7 @@
 using System;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
-namespace Friflo.Json.Fliox.Hub.Host.Utils
+namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     /// <summary>
     /// <see cref="SyncConnection"/> instances are created on demand per <see cref="SyncContext"/>.<br/>

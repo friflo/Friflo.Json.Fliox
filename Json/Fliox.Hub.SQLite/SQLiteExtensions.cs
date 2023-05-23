@@ -4,11 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using static Friflo.Json.Fliox.Transform.OpType;
-using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
+using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
 // ReSharper disable UseNegatedPatternMatching
 // ReSharper disable ReplaceSubstringWithRangeIndexer

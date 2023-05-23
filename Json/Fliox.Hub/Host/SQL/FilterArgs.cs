@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
-namespace Friflo.Json.Fliox.Hub.Host.Utils
+namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public class FilterArgs
     {

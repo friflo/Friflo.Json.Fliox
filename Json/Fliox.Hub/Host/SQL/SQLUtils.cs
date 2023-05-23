@@ -7,14 +7,15 @@ using System.Data;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
-using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
+using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
 // ReSharper disable UseIndexFromEndExpression
 // ReSharper disable UseAwaitUsing
-namespace Friflo.Json.Fliox.Hub.Host.Utils
+namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     [Flags]
     public enum SQLEscape {
