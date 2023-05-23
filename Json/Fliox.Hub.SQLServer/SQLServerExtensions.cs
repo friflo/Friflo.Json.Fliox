@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Friflo.Json.Fliox.Hub.Host.SQL;
+using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using static Friflo.Json.Fliox.Transform.OpType;
@@ -29,6 +30,24 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         
         internal ConvertContext (FilterArgs args) {
             this.args = args;
+        }
+        
+        internal static string GetSqlType(StandardTypeId typeId) {
+            switch (typeId) {
+                case StandardTypeId.Uint8:      return "tinyint";
+                case StandardTypeId.Int16:      return "smallint";
+                case StandardTypeId.Int32:      return "int";
+                case StandardTypeId.Int64:      return "bigint";
+                case StandardTypeId.Float:      return "float";
+                case StandardTypeId.Double:     return "double precision";
+                case StandardTypeId.Boolean:    return "nvarchar(max)";
+                case StandardTypeId.DateTime:
+                case StandardTypeId.Guid:
+                case StandardTypeId.BigInteger:
+                case StandardTypeId.String:
+                case StandardTypeId.Enum:       return "nvarchar(max)";
+            }
+            throw new NotSupportedException($"column type: {typeId}");
         }
         
         /// <summary>

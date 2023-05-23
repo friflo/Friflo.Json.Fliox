@@ -37,6 +37,24 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         private const string DblType = "::double precision";
         
+        internal static string GetSqlType(StandardTypeId typeId) {
+            switch (typeId) {
+                case StandardTypeId.Uint8:      return "smallint";
+                case StandardTypeId.Int16:      return "smallint";
+                case StandardTypeId.Int32:      return "integer";
+                case StandardTypeId.Int64:      return "bigint";
+                case StandardTypeId.Float:      return "float";
+                case StandardTypeId.Double:     return "double precision";
+                case StandardTypeId.Boolean:    return "boolean";
+                case StandardTypeId.DateTime:
+                case StandardTypeId.Guid:
+                case StandardTypeId.BigInteger:
+                case StandardTypeId.String:
+                case StandardTypeId.Enum:       return "text";
+            }
+            throw new NotSupportedException($"column type: {typeId}");
+        }
+        
         /// <summary>
         /// Create CosmosDB query filter specified at: 
         /// https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox.Hub/Client#query-filter
@@ -320,7 +338,7 @@ $@"jsonb_typeof({arrayPath}) <> 'array'
         private string GetCast(Operation op) {
             if (op is Field field) {
                 var fieldType   = GetFieldType(entityType, field.name);
-                var type        = PostgreSQLUtils.GetSqlType(fieldType.TypeId);
+                var type        = GetSqlType(fieldType.TypeId);
                 if (type != "text") {
                     return "::" + type;
                 }

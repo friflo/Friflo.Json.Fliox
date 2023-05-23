@@ -3,10 +3,8 @@
 
 #if !UNITY_5_3_OR_NEWER || MYSQL
 
-using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Schema.Definition;
 using MySqlConnector;
 using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
@@ -35,26 +33,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
         }
         
-        private static string GetSqlType(StandardTypeId typeId, MySQLProvider provider) {
-            switch (typeId) {
-                case StandardTypeId.Uint8:      return "tinyint";
-                case StandardTypeId.Int16:      return "smallint";
-                case StandardTypeId.Int32:      return "integer";
-                case StandardTypeId.Int64:      return "bigint";
-                case StandardTypeId.Float:      return "float";
-                case StandardTypeId.Double:     return "double precision";
-                case StandardTypeId.Boolean:    return "text";
-                case StandardTypeId.DateTime:
-                case StandardTypeId.Guid:
-                case StandardTypeId.BigInteger:
-                case StandardTypeId.String:
-                case StandardTypeId.Enum:       return "text";
-            }
-            throw new NotSupportedException($"column type: {typeId}");
-        }
-        
         internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column, MySQLProvider provider) {
-            var type = GetSqlType(column.typeId, provider);
+            var type = ConvertContext.GetSqlType(column.typeId, provider);
             var colName = column.name; 
             switch (provider) {
                 case MySQLProvider.MARIA_DB: {

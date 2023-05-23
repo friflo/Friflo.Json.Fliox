@@ -9,7 +9,6 @@ using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Utils;
 using SQLitePCL;
 using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
@@ -52,24 +51,6 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return Success(out error);
         }
         
-        private static string GetSqlType(StandardTypeId typeId) {
-            switch (typeId) {
-                case StandardTypeId.Uint8:
-                case StandardTypeId.Int16:
-                case StandardTypeId.Int32:
-                case StandardTypeId.Int64:      return "integer";
-                case StandardTypeId.Float:
-                case StandardTypeId.Double:     return "real";
-                case StandardTypeId.Boolean:    return "text";
-                case StandardTypeId.DateTime:
-                case StandardTypeId.Guid:
-                case StandardTypeId.BigInteger:
-                case StandardTypeId.String:
-                case StandardTypeId.Enum:       return "text";
-            }
-            throw new NotSupportedException($"column type: {typeId}");
-        }
-        
         internal static HashSet<string> GetColumnNames(sqlite3 db, string table) {
             var sql = $"SELECT * FROM {table} LIMIT 0";
             Prepare(db, sql, out var stmt, out var error);
@@ -84,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         internal static void AddVirtualColumn(sqlite3 db, string table, ColumnInfo column) {
-            var type = GetSqlType(column.typeId);
+            var type = ConvertContext.GetSqlType(column.typeId);
             var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN ""{column.name}"" {type}
