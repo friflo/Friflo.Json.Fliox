@@ -22,6 +22,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         BackSlash   = 1
     }
     
+    public interface ISQLContainer
+    {
+        Task<TaskExecuteError>  EnsureContainerExists   (SyncConnection connection);
+        Task                    AddVirtualColumns       (SyncConnection connection);
+    }
+    
+    
     public static class SQLName
     {
         public const string ID     = "json_id";
@@ -177,6 +184,24 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             var result = new QueryEntitiesResult { entities = entities.ToArray(), sql = sql };
             if (entities.Count >= query.maxCount) {
                 result.cursor = entities[entities.Count - 1].key.AsString();
+            }
+            return result;
+        }
+        
+        public static async Task<HashSet<string>> GetColumnNames(DbCommand cmd) {
+            using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            while (await reader.ReadAsync().ConfigureAwait(false)) {
+                throw new InvalidOperationException("expect 0 rows");
+            }
+            var schema  = reader.GetSchemaTable();
+            var columns = schema!.Columns;
+            var column  = columns["ColumnName"];
+            var rows    = schema.Rows;
+            var result  = new HashSet<string>(rows.Count);
+            for (int n = 0; n < rows.Count; n++) {
+                var row     = rows[n];
+                var name    = row.ItemArray[column.Ordinal];
+                result.Add((string)name);
             }
             return result;
         }

@@ -66,7 +66,7 @@ GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
                     return;
                 }
                 case MySQLProvider.MY_SQL: {
-var sql =    
+/* var sql =    
 $@"SELECT COUNT(*)
 FROM `INFORMATION_SCHEMA`.`COLUMNS`
 WHERE `TABLE_NAME`= '{table}' AND `COLUMN_NAME` = '{colName}';";
@@ -76,10 +76,9 @@ WHERE `TABLE_NAME`= '{table}' AND `COLUMN_NAME` = '{colName}';";
                     }
                     if ((long)result.value != 0)
                         return;
-                    /*var jsonValue = column.typeId == StandardTypeId.Boolean ?
-                        $"(IF(JSON_VALUE({DATA}, '$.{colName}')=true, 1,0))" :
-                        $"(JSON_VALUE({DATA}, '$.{colName}'))";*/
-sql = $@"alter table {table}
+*/
+
+var sql = $@"alter table {table}
 add column {colName} {type}
 as (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
                     await Execute(connection, sql);

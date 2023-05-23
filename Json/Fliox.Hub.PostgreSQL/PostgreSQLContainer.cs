@@ -19,7 +19,7 @@ using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
-    public sealed class PostgreSQLContainer : EntityContainer
+    public sealed class PostgreSQLContainer : EntityContainer, ISQLContainer
     {
         private  readonly   TableInfo           tableInfo;
         private             bool                tableExists;
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             entityType      = types[name];
         }
         
-        private async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
+        public async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
             if (tableExists) {
                 return null;
             }
@@ -46,13 +46,19 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return result.error;
             }
             tableExists = true;
+            await AddVirtualColumns(connection);
+            return null;
+        }
+        
+        public async Task AddVirtualColumns(SyncConnection connection) {
+            using var cmd   = Command($"SELECT * FROM {name} LIMIT 0", connection);
+            var columnNames = await SQLUtils.GetColumnNames(cmd);
             foreach (var column in tableInfo.columns.Values) {
-                if (column == tableInfo.keyColumn) {
+                if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
                 }
                 await AddVirtualColumn(connection, name, column);
             }
-            return null;
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {

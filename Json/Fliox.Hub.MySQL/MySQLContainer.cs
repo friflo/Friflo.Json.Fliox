@@ -18,7 +18,7 @@ using static Friflo.Json.Fliox.Hub.Host.Utils.SQLName;
 // ReSharper disable UseIndexFromEndExpression
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
-    public sealed class MySQLContainer : EntityContainer
+    public sealed class MySQLContainer : EntityContainer, ISQLContainer
     {
         private  readonly   TableInfo       tableInfo;
         private             bool            tableExists;
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             provider    = database.Provider;
         }
         
-        private async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
+        public async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
             if (tableExists) {
                 return null;
             }
@@ -44,13 +44,19 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return result.error;
             }
             tableExists = true;
+            await AddVirtualColumns(connection);
+            return null;
+        }
+        
+        public async Task AddVirtualColumns(SyncConnection connection) {
+            using var cmd   = Command($"SELECT * FROM {name} LIMIT 0", connection);
+            var columnNames = await SQLUtils.GetColumnNames(cmd);
             foreach (var column in tableInfo.columns.Values) {
-                if (column == tableInfo.keyColumn) {
+                if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
                 }
                 await AddVirtualColumn(connection, name, column, provider);
             }
-            return null;
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {

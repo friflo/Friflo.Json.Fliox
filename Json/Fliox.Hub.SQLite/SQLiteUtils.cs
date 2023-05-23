@@ -70,6 +70,19 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             throw new NotSupportedException($"column type: {typeId}");
         }
         
+        internal static HashSet<string> GetColumnNames(sqlite3 db, string table) {
+            var sql = $"SELECT * FROM {table} LIMIT 0";
+            Prepare(db, sql, out var stmt, out var error);
+            var count   = raw.sqlite3_column_count(stmt);
+            var result = new HashSet<string>(count);
+            for (int n = 0; n < count; n++) {
+                var name = raw.sqlite3_column_name(stmt, n).utf8_to_string();
+                result.Add(name); 
+            }
+            raw.sqlite3_finalize(stmt);
+            return result;
+        }
+        
         internal static void AddVirtualColumn(sqlite3 db, string table, ColumnInfo column) {
             var type = GetSqlType(column.typeId);
             var sql =

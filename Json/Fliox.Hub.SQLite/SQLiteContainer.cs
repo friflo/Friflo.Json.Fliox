@@ -41,13 +41,18 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (success) {
                 tableExists = true;
             }
+            AddVirtualColumns();
+            return success;
+        }
+        
+        private void AddVirtualColumns() {
+            var columnNames = SQLiteUtils.GetColumnNames(sqliteDB, name);
             foreach (var column in tableInfo.columns.Values) {
-                if (column == tableInfo.keyColumn) {
+                if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
                 }
                 SQLiteUtils.AddVirtualColumn(sqliteDB, name, column);
             }
-            return success;
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
