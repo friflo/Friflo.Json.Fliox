@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             var sql = $"SELECT * FROM {table} LIMIT 0";
             Prepare(db, sql, out var stmt, out var error);
             var count   = raw.sqlite3_column_count(stmt);
-            var result = new HashSet<string>(count);
+            var result = Helper.CreateHashSet<string>(count);
             for (int n = 0; n < count; n++) {
                 var name = raw.sqlite3_column_name(stmt, n).utf8_to_string();
                 result.Add(name); 

@@ -197,7 +197,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             var columns = schema!.Columns;
             var column  = columns["ColumnName"];
             var rows    = schema.Rows;
-            var result  = new HashSet<string>(rows.Count);
+            var result  = Helper.CreateHashSet<string>(rows.Count);
             for (int n = 0; n < rows.Count; n++) {
                 var row     = rows[n];
                 var name    = row.ItemArray[column.Ordinal];
