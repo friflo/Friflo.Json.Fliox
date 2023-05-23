@@ -34,10 +34,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
             var type = ConvertContext.GetSqlType(column.typeId);
+            var path = ConvertContext.ConvertPath(DATA, column.name, 0);
             var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN IF NOT EXISTS ""{column.name}"" {type} NULL
-GENERATED ALWAYS AS (({DATA} ->> '{column.name}')::{type}) STORED;";
+GENERATED ALWAYS AS (({path})::{type}) STORED;";
             await Execute(connection, sql);
         }
         

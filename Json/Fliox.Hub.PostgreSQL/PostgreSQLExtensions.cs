@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                         return path;
                     } else {
                         var arg     = args.GetArg(field);
-                        var path    = ConvertPath(arg, field.name); // todo check using GetFieldPath() instead
+                        var path    = ConvertPath(arg, field.name, 1); // todo check using GetFieldPath() instead
                         return path;
                     }
                 }
@@ -368,13 +368,13 @@ $@"jsonb_typeof({arrayPath}) <> 'array'
             return result;
         }
         
-        private static string ConvertPath (string arg, string path) {
+        internal static string ConvertPath (string arg, string path, int start) {
             var names   = path.Split('.');
             var count   = names.Length;
             var sb      = new StringBuilder();
             sb.Append('(');
             sb.Append(arg);
-            for (int n = 1; n < count; n++) {
+            for (int n = start; n < count; n++) {
                 if (n == count - 1) {
                     sb.Append(" ->> '");
                 } else {
