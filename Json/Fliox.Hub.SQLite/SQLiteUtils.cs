@@ -87,8 +87,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             var type = GetSqlType(column.typeId);
             var sql =
 $@"ALTER TABLE {table}
-ADD COLUMN {column.name} {type}
-AS (json_extract({DATA}, '$.{column.name}'));";
+ADD COLUMN ""{column.name}"" {type}
+GENERATED ALWAYS AS (json_extract({DATA}, '$.{column.name}'));";
             Execute(db, sql, out _);
         }
         

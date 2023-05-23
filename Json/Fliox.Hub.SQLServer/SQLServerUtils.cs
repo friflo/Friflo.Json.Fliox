@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             var type = GetSqlType(column.typeId);
             var sql =
 $@"ALTER TABLE {table}
-ADD {column.name}
+ADD ""{column.name}""
 AS CAST(JSON_VALUE({DATA}, '$.{column.name}') AS {type});";
             await Execute(connection, sql);
         }

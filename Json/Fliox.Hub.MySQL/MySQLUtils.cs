@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
 var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN IF NOT EXISTS {colName} {type}
-GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
+GENERATED ALWAYS AS (JSON_VALUE(`{DATA}`, '$.{colName}')) VIRTUAL;";
                     await Execute(connection, sql);
                     return;
                 }
@@ -78,9 +78,9 @@ WHERE `TABLE_NAME`= '{table}' AND `COLUMN_NAME` = '{colName}';";
                         return;
 */
 
-var sql = $@"alter table {table}
-add column {colName} {type}
-as (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
+var sql = $@"ALTER TABLE {table}
+ADD COLUMN {colName} {type}
+GENERATED ALWAYS AS (JSON_VALUE(`{DATA}`, '$.{colName}')) VIRTUAL;";
                     await Execute(connection, sql);
                     return;
                 }

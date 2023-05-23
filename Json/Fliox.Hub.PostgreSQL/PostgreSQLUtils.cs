@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var type = GetSqlType(column.typeId);
             var sql =
 $@"ALTER TABLE {table}
-ADD COLUMN IF NOT EXISTS {column.name} {type} NULL
+ADD COLUMN IF NOT EXISTS ""{column.name}"" {type} NULL
 GENERATED ALWAYS AS (({DATA} ->> '{column.name}')::{type}) STORED;";
             await Execute(connection, sql);
         }
