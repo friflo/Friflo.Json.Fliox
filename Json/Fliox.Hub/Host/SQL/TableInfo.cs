@@ -21,28 +21,40 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     public class TableInfo
     {
+        private  readonly   string                          container;
         public   readonly   ColumnInfo                      keyColumn;
         public   readonly   Dictionary<string, ColumnInfo>  columns;
         private  readonly   Dictionary<string, ColumnInfo>  indexes;
-        
+
+        public   override   string                          ToString() => container;
+
         public TableInfo(EntityDatabase database, string container) {
-            columns     = new Dictionary<string, ColumnInfo>();
-            indexes     = new Dictionary<string, ColumnInfo>();
-            var type    = database.Schema.typeSchema.RootType.FindField(container).type;
+            this.container  = container;
+            columns         = new Dictionary<string, ColumnInfo>();
+            indexes         = new Dictionary<string, ColumnInfo>();
+            var type        = database.Schema.typeSchema.RootType.FindField(container).type;
+            AddTypeFields(type, null);
+            keyColumn       = columns[type.KeyField.name];
+        }
+        
+        private void AddTypeFields(TypeDef type, string prefix) {
             var fields  = type.Fields;
             foreach (var field in fields) {
-                var typeId      = field.type.TypeId;
+                var fieldPath   = prefix == null ? field.name : prefix + "." + field.name;
+                var fieldType   = field.type;
+                if (fieldType.IsClass) {
+                    AddTypeFields(fieldType, fieldPath);
+                    continue;
+                }
+                var typeId      = fieldType.TypeId;
                 if (typeId == StandardTypeId.None) {
                     continue;
                 }
                 var isScalar    = !field.isArray && !field.isDictionary;
-                var column      = new ColumnInfo(field.name, typeId);
                 if (isScalar) {
-                    columns.Add(field.name, column);
-                    indexes.Add(field.name, column);
-                }
-                if (type.KeyField == field) {
-                    keyColumn = column;
+                    var column      = new ColumnInfo(fieldPath, typeId);
+                    columns.Add(fieldPath, column);
+                    indexes.Add(fieldPath, column);
                 }
             }
         }

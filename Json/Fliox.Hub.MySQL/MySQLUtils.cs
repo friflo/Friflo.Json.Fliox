@@ -40,8 +40,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case MySQLProvider.MARIA_DB: {
 var sql =
 $@"ALTER TABLE {table}
-ADD COLUMN IF NOT EXISTS {colName} {type}
-GENERATED ALWAYS AS (JSON_VALUE(`{DATA}`, '$.{colName}')) VIRTUAL;";
+ADD COLUMN IF NOT EXISTS `{colName}` {type}
+GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
                     await Execute(connection, sql);
                     return;
                 }
@@ -59,8 +59,8 @@ WHERE `TABLE_NAME`= '{table}' AND `COLUMN_NAME` = '{colName}';";
 */
 
 var sql = $@"ALTER TABLE {table}
-ADD COLUMN {colName} {type}
-GENERATED ALWAYS AS (JSON_VALUE(`{DATA}`, '$.{colName}')) VIRTUAL;";
+ADD COLUMN `{colName}` {type}
+GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
                     await Execute(connection, sql);
                     return;
                 }
