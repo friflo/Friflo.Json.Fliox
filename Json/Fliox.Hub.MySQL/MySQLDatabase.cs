@@ -13,9 +13,11 @@ using static Friflo.Json.Fliox.Hub.MySQL.MySQLUtils;
 
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
-    public class MySQLDatabase : EntityDatabase
+    public class MySQLDatabase : EntityDatabase, ISQLDatabase
     {
-        public              bool            Pretty      { get; init; } = false;
+        public              bool            Pretty                  { get; init; } = false;
+        public              bool            AutoCreateTable         { get; init; } = true;
+        public              bool            AutoAddVirtualColumns   { get; init; } = true;
         
         internal readonly   string          connectionString;
         

@@ -22,12 +22,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         BackSlash   = 1
     }
     
-    public interface ISQLContainer
-    {
-        Task<TaskExecuteError>  EnsureContainerExists   (SyncConnection connection);
-        Task                    AddVirtualColumns       (SyncConnection connection);
-    }
-
     public static class SQLName
     {
         public const string ID     = "json_id";

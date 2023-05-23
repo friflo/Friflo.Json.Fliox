@@ -13,9 +13,11 @@ using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
 
 namespace Friflo.Json.Fliox.Hub.SQLServer
 {
-    public sealed class SQLServerDatabase : EntityDatabase
+    public sealed class SQLServerDatabase : EntityDatabase, ISQLDatabase
     {
-        public              bool            Pretty      { get; init; } = false;
+        public              bool            Pretty                  { get; init; } = false;
+        public              bool            AutoCreateTable         { get; init; } = true;
+        public              bool            AutoAddVirtualColumns   { get; init; } = true;
         
         private  readonly   string          connectionString;
         private             bool            tableTypesCreated;

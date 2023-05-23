@@ -17,33 +17,36 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 {
     public sealed class SQLiteContainer : EntityContainer
     {
-        private  readonly   sqlite3     sqliteDB;
-        private  readonly   TableInfo   tableInfo;
-        private             bool        tableExists;
-        private  readonly   bool        synchronous;
-        public   override   bool        Pretty      { get; }
+        private  readonly   sqlite3         sqliteDB;
+        private  readonly   TableInfo       tableInfo;
+        private  readonly   ContainerInit   init;
+        private  readonly   bool            synchronous;
+        public   override   bool            Pretty      { get; }
         
         internal SQLiteContainer(string name, SQLiteDatabase database, bool pretty)
             : base(name, database)
         {
+            init        = new ContainerInit(database);
             tableInfo   = new TableInfo (database, name);
             sqliteDB    = database.sqliteDB;
             synchronous = database.Synchronous;
             Pretty      = pretty;
         }
 
-        private bool EnsureContainerExists(out TaskExecuteError error) {
-            if (tableExists) {
-                error = null;
-                return true;
+        private bool InitTable(out TaskExecuteError error) {
+            error = null;
+            if (init.CreateTable) {
+                var sql = $"CREATE TABLE IF NOT EXISTS {name} ({ID} TEXT PRIMARY KEY, {DATA} TEXT NOT NULL);";
+                if (!SQLiteUtils.Execute(sqliteDB, sql, out error)) {
+                    return false;
+                }
+                init.tableCreated = true;
             }
-            var sql = $"CREATE TABLE IF NOT EXISTS {name} ({ID} TEXT PRIMARY KEY, {DATA} TEXT NOT NULL);";
-            var success = SQLiteUtils.Execute(sqliteDB, sql, out error);
-            if (success) {
-                tableExists = true;
+            if (init.AddVirtualColumns) {
+                AddVirtualColumns();
+                init.virtualColumnsAdded = true;
             }
-            AddVirtualColumns();
-            return success;
+            return true;
         }
         
         private void AddVirtualColumns() {
@@ -64,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
-            if (!EnsureContainerExists(out var error)) {
+            if (!InitTable(out var error)) {
                 return new CreateEntitiesResult { Error = error };
             }
             using (SQLiteUtils.Transaction(sqliteDB, out error))
@@ -92,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
 
         public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
-            if (!EnsureContainerExists(out var error)) {
+            if (!InitTable(out var error)) {
                 return new UpsertEntitiesResult { Error = error };
             }
             using (SQLiteUtils.Transaction(sqliteDB, out error))
@@ -123,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
 
         public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
-            if (!EnsureContainerExists(out var error)) {
+            if (!InitTable(out var error)) {
                 return new ReadEntitiesResult { Error = error };
             }
             var sql = $"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in (?)";
@@ -145,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext) {
-            if (!EnsureContainerExists(out var error)) {
+            if (!InitTable(out var error)) {
                 return new QueryEntitiesResult { Error = error };
             }
             sqlite3_stmt    stmt;
@@ -192,7 +195,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         private AggregateEntitiesResult AggregateEntities (AggregateEntities command, SyncContext syncContext) {
-            if (!EnsureContainerExists(out var error)) {
+            if (!InitTable(out var error)) {
                 return new AggregateEntitiesResult { Error = error };
             }
             if (command.type == AggregateType.count) {
@@ -222,7 +225,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {
-            if (!EnsureContainerExists(out var error)) {
+            if (!InitTable(out var error)) {
                 return new DeleteEntitiesResult { Error = error };
             }
             if (command.all == true) {

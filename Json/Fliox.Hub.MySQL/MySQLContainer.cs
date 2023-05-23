@@ -18,33 +18,36 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseIndexFromEndExpression
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
-    public sealed class MySQLContainer : EntityContainer, ISQLContainer
+    public sealed class MySQLContainer : EntityContainer, ISQLTable
     {
         private  readonly   TableInfo       tableInfo;
-        private             bool            tableExists;
+        private  readonly   ContainerInit   init;
         public   override   bool            Pretty      { get; }
         private  readonly   MySQLProvider   provider;
         
         internal MySQLContainer(string name, MySQLDatabase database, bool pretty)
             : base(name, database)
         {
+            init        = new ContainerInit(database);
             tableInfo   = new TableInfo (database, name);
             Pretty      = pretty;
             provider    = database.Provider;
         }
         
-        public async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
-            if (tableExists) {
-                return null;
+        public async Task<TaskExecuteError> InitTable(SyncConnection connection) {
+            if (init.CreateTable) {
+                // [MySQL :: MySQL 8.0 Reference Manual :: 11.7 Data Type Storage Requirements] https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html
+                var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSON);";
+                var result = await Execute(connection, sql).ConfigureAwait(false);
+                if (result.Failed) {
+                    return result.error;
+                }
+                init.tableCreated = true;
             }
-            // [MySQL :: MySQL 8.0 Reference Manual :: 11.7 Data Type Storage Requirements] https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html
-            var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSON);";
-            var result = await Execute(connection, sql).ConfigureAwait(false);
-            if (result.Failed) {
-                return result.error;
+            if (init.AddVirtualColumns) {
+                await AddVirtualColumns(connection);
+                init.virtualColumnsAdded = true;
             }
-            tableExists = true;
-            await AddVirtualColumns(connection);
             return null;
         }
         
@@ -64,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (connection.Failed) {
                 return new CreateEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new CreateEntitiesResult { Error = error };
             }
@@ -88,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (connection.Failed) {
                 return new UpsertEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new UpsertEntitiesResult { Error = error };
             }
@@ -110,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (connection.Failed) {
                 return new ReadEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new ReadEntitiesResult { Error = error };
             }
@@ -128,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (connection.Failed) {
                 return new QueryEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new QueryEntitiesResult { Error = error };
             }
@@ -166,7 +169,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (connection.Failed) {
                 return new DeleteEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new DeleteEntitiesResult { Error = error };
             }

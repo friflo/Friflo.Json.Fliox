@@ -19,34 +19,37 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
-    public sealed class PostgreSQLContainer : EntityContainer, ISQLContainer
+    public sealed class PostgreSQLContainer : EntityContainer, ISQLTable
     {
-        private  readonly   TableInfo           tableInfo;
-        private             bool                tableExists;
-        private  readonly   TypeDef             entityType;
+        private  readonly   TableInfo       tableInfo;
+        private  readonly   ContainerInit   init;
+        private  readonly   TypeDef         entityType;
         
         internal PostgreSQLContainer(string name, PostgreSQLDatabase database)
             : base(name, database)
         {
+            init            = new ContainerInit(database);
             tableInfo       = new TableInfo (database, name);
             var types       = database.Schema.typeSchema.GetEntityTypes();
             entityType      = types[name];
         }
         
-        public async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
-            if (tableExists) {
-                return null;
+        public async Task<TaskExecuteError> InitTable(SyncConnection connection) {
+            if (init.CreateTable) {
+                // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
+                // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
+                // set to 255 as for all SQL databases
+                var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
+                var result = await Execute(connection, sql).ConfigureAwait(false);
+                if (result.Failed) {
+                    return result.error;
+                }
+                init.tableCreated = true;
             }
-            // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
-            // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
-            // set to 255 as for all SQL databases
-            var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
-            var result = await Execute(connection, sql).ConfigureAwait(false);
-            if (result.Failed) {
-                return result.error;
+            if (init.AddVirtualColumns) {
+                await AddVirtualColumns(connection);
+                init.virtualColumnsAdded = true;
             }
-            tableExists = true;
-            await AddVirtualColumns(connection);
             return null;
         }
         
@@ -66,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (connection.Failed) {
                 return new CreateEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new CreateEntitiesResult { Error = error };
             }
@@ -90,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (connection.Failed) {
                 return new UpsertEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new UpsertEntitiesResult { Error = error };
             }
@@ -112,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (connection.Failed) {
                 return new ReadEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new ReadEntitiesResult { Error = error };
             }
@@ -129,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (connection.Failed) {
                 return new QueryEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new QueryEntitiesResult { Error = error };
             }
@@ -166,7 +169,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (connection.Failed) {
                 return new DeleteEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new DeleteEntitiesResult { Error = error };
             }

@@ -13,11 +13,14 @@ using static Friflo.Json.Fliox.Hub.PostgreSQL.PostgreSQLUtils;
 
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
-    public sealed class PostgreSQLDatabase : EntityDatabase
+    public sealed class PostgreSQLDatabase : EntityDatabase, ISQLDatabase
     {
-        internal readonly   string  connectionString;
+        public              bool        AutoCreateTable         { get; init; } = true;
+        public              bool        AutoAddVirtualColumns   { get; init; } = true;
         
-        public   override   string  StorageType => "PostgreSQL";
+        internal readonly   string      connectionString;
+        
+        public   override   string      StorageType => "PostgreSQL";
         
         public PostgreSQLDatabase(string dbName, string  connectionString, DatabaseService service = null)
             : base(dbName, service)

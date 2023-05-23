@@ -17,12 +17,12 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseIndexFromEndExpression
 namespace Friflo.Json.Fliox.Hub.SQLServer
 {
-    public sealed class SQLServerContainer : EntityContainer, ISQLContainer
+    public sealed class SQLServerContainer : EntityContainer, ISQLTable
     {
         private  readonly   TableInfo           tableInfo;
-        private             bool                tableExists;
+        private  readonly   ContainerInit       init;
         public   override   bool                Pretty      { get; }
-        private   readonly  SQLServerDatabase   database;
+        private  readonly   SQLServerDatabase   database;
         
         // [Maximum capacity specifications for SQL Server - SQL Server | Microsoft Learn]
         // https://learn.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server?view=sql-server-ver16
@@ -33,25 +33,29 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         internal SQLServerContainer(string name, SQLServerDatabase database, bool pretty)
             : base(name, database)
         {
+            init            = new ContainerInit(database);
             tableInfo       = new TableInfo (database, name);
             Pretty          = pretty;
             this.database   = database;
         }
         
-        public async Task<TaskExecuteError> EnsureContainerExists(SyncConnection connection) {
-            if (tableExists) {
-                return null;
-            }
-            var sql = $@"IF NOT EXISTS (
+        public async Task<TaskExecuteError> InitTable(SyncConnection connection) {
+            if (init.CreateTable) {
+                var sql =
+$@"IF NOT EXISTS (
     SELECT * FROM sys.tables t JOIN sys.schemas s ON (t.schema_id = s.schema_id)
     WHERE s.name = 'dbo' AND t.name = '{name}')
 CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
-            var result = await Execute(connection, sql).ConfigureAwait(false);
-            if (result.Failed) {
-                return result.error;
+                var result = await Execute(connection, sql).ConfigureAwait(false);
+                if (result.Failed) {
+                    return result.error;
+                }
+                init.tableCreated = true;
             }
-            tableExists = true;
-            await AddVirtualColumns(connection);
+            if (init.AddVirtualColumns) {
+                await AddVirtualColumns(connection);
+                init.virtualColumnsAdded = true;
+            }
             return null;
         }
         
@@ -71,7 +75,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             if (connection.Failed) {
                 return new CreateEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new CreateEntitiesResult { Error = error };
             }
@@ -93,7 +97,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             if (connection.Failed) {
                 return new UpsertEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new UpsertEntitiesResult { Error = error };
             }
@@ -112,7 +116,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             if (connection.Failed) {
                 return new ReadEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new ReadEntitiesResult { Error = error };
             }
@@ -128,7 +132,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             if (connection.Failed) {
                 return new QueryEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new QueryEntitiesResult { Error = error };
             }
@@ -165,7 +169,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             if (connection.Failed) {
                 return new DeleteEntitiesResult { Error = connection.error };
             }
-            var error = await EnsureContainerExists(connection).ConfigureAwait(false);
+            var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
                 return new DeleteEntitiesResult { Error = error };
             }

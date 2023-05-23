@@ -5,12 +5,13 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using SQLitePCL;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
 {
-    public sealed class SQLiteDatabase : EntityDatabase
+    public sealed class SQLiteDatabase : EntityDatabase, ISQLDatabase
     {
         public              bool        Pretty      { get; init; } = false;
         /// <summary>Set the execution mode of SQLite database commands.<br/>
@@ -20,7 +21,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         /// <a href="https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods/">
         /// Should I expose asynchronous wrappers for synchronous methods? - .NET Parallel Programming</a>
         /// </summary>
-        public              bool        Synchronous { get; init; } = false;
+        public              bool        Synchronous             { get; init; } = false;
+        public              bool        AutoCreateTable         { get; init; } = true;
+        public              bool        AutoAddVirtualColumns   { get; init; } = true;
         
         internal readonly   sqlite3                                 sqliteDB;
 
