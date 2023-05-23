@@ -99,7 +99,9 @@ namespace Friflo.Json.Tests.Provider
                 case memory_db:
                     return new MemoryDatabase("memory_db") { Schema = schema };
                 case sqlite_db:
-                    return new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3") { Schema = schema };
+                    return new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3") {
+                        Schema = schema, Synchronous = true // Synchronous to simplify debugging
+                    };
                 case test_db:
                     if (IsFileSystem) {
                         return SeedSource;
