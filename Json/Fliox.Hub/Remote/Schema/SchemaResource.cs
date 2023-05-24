@@ -28,9 +28,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Schema
             this.separateTypes  = separateTypes;
         }
 
-        internal Result GetSchemaFile(string path, SchemaHandler handler, RequestContext context) {
+        internal SchemaResult GetSchemaFile(string path, SchemaHandler handler, RequestContext context) {
             if (typeSchema == null) {
-                return Result.Error("no schema attached to database");
+                return SchemaResult.Error("no schema attached to database");
             }
             var storeName = typeSchema.RootType.Name;
             if (modelResources == null) {
@@ -54,23 +54,23 @@ namespace Friflo.Json.Fliox.Hub.Remote.Schema
                 }
                 sb.AppendLF("</ul>");
                 HtmlFooter(sb);
-                return Result.Success(sb.ToString(), "text/html");
+                return SchemaResult.Success(sb.ToString(), "text/html");
             }
             if (path == "json-schema.json") {
                 var jsonSchemaModel = modelResources["json-schema"];
-                return Result.Success(jsonSchemaModel.fullSchema, jsonSchemaModel.schemaModel.contentType);
+                return SchemaResult.Success(jsonSchemaModel.fullSchema, jsonSchemaModel.schemaModel.contentType);
             }
             if (path == "open-api.html") {
                 var html = SchemaSwagger.Get(storeName);
-                return Result.Success(html, "text/html");
+                return SchemaResult.Success(html, "text/html");
             }
             var schemaTypeEnd = path.IndexOf('/');
             if (schemaTypeEnd <= 0) {
-                return Result.Error($"invalid path:  {path}");
+                return SchemaResult.Error($"invalid path:  {path}");
             }
             var schemaType = path.Substring(0, schemaTypeEnd);
             if (!modelResources.TryGetValue(schemaType, out ModelResource modelResource)) {
-                return Result.Error($"unknown schema type: {schemaType}");
+                return SchemaResult.Error($"unknown schema type: {schemaType}");
             }
             var schemaModel = modelResource.schemaModel;
             var files       = schemaModel.files;
@@ -88,25 +88,25 @@ namespace Friflo.Json.Fliox.Hub.Remote.Schema
                 }
                 sb.AppendLF("</ul>");
                 HtmlFooter(sb);
-                return Result.Success(sb.ToString(), "text/html");
+                return SchemaResult.Success(sb.ToString(), "text/html");
             }
             if (fileName.StartsWith(storeName) && fileName.EndsWith(modelResource.zipNameSuffix)) {
                 var bytes = new JsonValue(modelResource.GetZipArchive(handler.zip));
                 if (bytes.IsNull())
-                    return Result.Error("ZipArchive not supported (Unity)");
-                return Result.Success(bytes, "application/zip");
+                    return SchemaResult.Error("ZipArchive not supported (Unity)");
+                return SchemaResult.Success(bytes, "application/zip");
             }
             if (fileName == "directory") {
                 using (var pooled = context.ObjectMapper.Get()) {
                     var writer      = MessageUtils.GetPrettyWriter(pooled.instance);
                     var directory   = writer.Write(files.Keys.ToList());
-                    return Result.Success(directory, "application/json");
+                    return SchemaResult.Success(directory, "application/json");
                 }
             }
             if (!files.TryGetValue(fileName, out string content)) {
-                return Result.Error($"file not found: '{fileName}'");
+                return SchemaResult.Error($"file not found: '{fileName}'");
             }
-            return Result.Success(content, schemaModel.contentType);
+            return SchemaResult.Success(content, schemaModel.contentType);
         }
 
         private static void HtmlHeader(StringBuilder sb, string[] titlePath, string description, SchemaHandler handler) {

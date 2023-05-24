@@ -133,14 +133,14 @@ namespace Friflo.Json.Fliox.Hub.Remote.Schema
         }
     }
 
-    internal readonly struct Result {
+    internal readonly struct SchemaResult {
         internal  readonly  bool        success;
         internal  readonly  string      content;
         internal  readonly  string      contentType;
         internal  readonly  JsonValue   bytes;
         internal  readonly  bool        isText;
         
-        private Result (string content, string contentType, in JsonValue bytes, bool isText, bool success) {
+        private SchemaResult (string content, string contentType, in JsonValue bytes, bool isText, bool success) {
             this.content        = content;
             this.contentType    = contentType;
             this.bytes          = bytes;
@@ -148,16 +148,16 @@ namespace Friflo.Json.Fliox.Hub.Remote.Schema
             this.success        = success;
         }
         
-        internal static Result Success(string  content, string  contentType) {
-            return new Result(content, contentType, default, true, true);
+        internal static SchemaResult Success(string  content, string  contentType) {
+            return new SchemaResult(content, contentType, default, true, true);
         }
         
-        internal static  Result Success(in JsonValue content, string  contentType) {
-            return new Result(null, contentType, content, false, true);
+        internal static  SchemaResult Success(in JsonValue content, string  contentType) {
+            return new SchemaResult(null, contentType, content, false, true);
         }
         
-        internal static Result Error(string  content) {
-            return new Result(content, "text/plain", default, true, false);
+        internal static SchemaResult Error(string  content) {
+            return new SchemaResult(content, "text/plain", default, true, false);
         }
     }
 }
