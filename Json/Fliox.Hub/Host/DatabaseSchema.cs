@@ -73,6 +73,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// <summary>
+        /// Create as <see cref="DatabaseSchema"/> from the given type. The type must extend <see cref="FlioxClient"/>.<br/>
+        /// Prefer using <see cref="Create{T}"/> to avoid runtime exception by passing an incompatible schema type. 
+        /// </summary>
+        [Obsolete("use DatabaseSchema.Create()", false)]
+        public DatabaseSchema(Type type) : this (CreateTypeSchema (type)) { }
+        
+        /// <summary>
         /// Create as <see cref="DatabaseSchema"/> from the given <typeparamref name="T"/> extending <see cref="FlioxClient"/>.
         /// </summary>
         public static DatabaseSchema Create<T>() where T : FlioxClient {
@@ -85,14 +92,18 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// Prefer using <see cref="Create{T}"/> to avoid runtime exception by passing an incompatible schema type. 
         /// </summary>
         public static DatabaseSchema CreateFromType(Type type) {
+            var typeSchema = CreateTypeSchema(type);
+            return new DatabaseSchema(typeSchema);
+        }
+        
+        private static TypeSchema CreateTypeSchema(Type type) {
             if (type == null) {
                 throw new ArgumentNullException(nameof(type));
             }
             if (!type.IsSubclassOf(typeof(FlioxClient))) {
                 throw new ArgumentException($"type must extend {nameof(FlioxClient)}", nameof(type));
             }
-            var typeSchema = NativeTypeSchema.Create(type);
-            return new DatabaseSchema(typeSchema);
+            return NativeTypeSchema.Create(type);
         }
         
         public void AddStoreSchema<TClient>() where TClient : FlioxClient {
