@@ -164,11 +164,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AddMessageHandlers(this, "sub.");
         }
         
-        public string Command3(Param<string> param, MessageContext command) {
+        public Result<string> Command3(Param<string> param, MessageContext context) {
             return "Command3";
         }
         
-        public string Command4(Param<string> param, MessageContext command) {
+        public Result<string> Command4(Param<string> param, MessageContext context) {
             return "Command4";
         }
     }

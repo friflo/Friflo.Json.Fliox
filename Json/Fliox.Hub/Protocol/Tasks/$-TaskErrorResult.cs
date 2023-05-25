@@ -25,6 +25,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override       string          ToString() => $"type: {type}, message: {message}";
         
         public TaskErrorResult() {}
+        
+        public TaskErrorResult(ResultError error) {
+            type       = error.errorType;
+            message    = error.message;
+        }
+        
         public TaskErrorResult(TaskErrorType type, string message, string stacktrace = null) {
             this.type       = type;
             this.message    = message;

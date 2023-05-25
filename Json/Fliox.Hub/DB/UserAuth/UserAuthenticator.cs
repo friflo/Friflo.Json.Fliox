@@ -11,7 +11,6 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Utils;
 using static Friflo.Json.Fliox.Hub.DB.UserAuth.UserStore;
 
@@ -368,7 +367,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var authorizers = new List<TaskAuthorizer>(right.names.Count);
             foreach (var predicateName in right.names) {
                 if (!registeredPredicates.TryGetValue(predicateName, out var predicate)) {
-                    return $"unknown predicate: {predicateName}";
+                    return Result.Error($"unknown predicate: {predicateName}");
                 }
                 authorizers.Add(predicate);
             }

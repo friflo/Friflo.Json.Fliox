@@ -9,22 +9,20 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
 {
     internal readonly struct InvokeResult
     {
-        internal readonly   JsonValue       value;
-        internal readonly   string          error;
-        internal readonly   TaskErrorType   errorType;
+        internal readonly   JsonValue   value;
+        internal readonly   ResultError error;
+        internal            bool        Success     => error.message == null;
 
-        public override     string          ToString() => error ?? value.AsString();
+        public override     string      ToString()  => error.message ?? value.AsString();
 
         internal InvokeResult(in JsonValue value) {
             this.value  = value;
-            error       = null;
-            errorType   = default;
+            error       = default;
         }
         
-        internal InvokeResult(string error, TaskErrorType errorType) {
-            this.value      = default;
-            this.error      = error;
-            this.errorType  = errorType;
+        internal InvokeResult(in ResultError error) {
+            this.value  = default;
+            this.error  = error;
         }
     }
     
@@ -70,10 +68,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             var param   = new Param<TValue> (messageValue, syncContext); 
             handler(param, cmd);
             
-            var error = cmd.error;
-            if (error != null) {
-                return new InvokeResult(error, cmd.errorType);
-            }
             return new InvokeResult(new JsonValue());
         }
     }
@@ -94,10 +88,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             var param   = new Param<TParam> (messageValue, syncContext); 
             await handler(param, cmd).ConfigureAwait(false);
             
-            var error   = cmd.error;
-            if (error != null) {
-                return new InvokeResult(error, cmd.errorType);
-            }
             return new InvokeResult(new JsonValue());
         }
     }
@@ -116,17 +106,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         internal override InvokeResult InvokeDelegate(SyncRequestTask task, in ShortString messageName, in JsonValue messageValue, SyncContext syncContext) {
             var cmd     = new MessageContext(task, messageName,  syncContext);
             var param   = new Param<TValue> (messageValue, syncContext); 
-            TResult result  = handler(param, cmd);
+            var result  = handler(param, cmd);
             
-            var error = cmd.error;
-            if (error != null) {
-                return new InvokeResult(error, cmd.errorType);
+            if (!result.Success) {
+                return new InvokeResult(result.error);
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
                 writer.WriteNullMembers = cmd.WriteNull;
                 writer.Pretty           = cmd.WritePretty;
-                var jsonResult          = writer.WriteAsValue(result);
+                var jsonResult          = writer.WriteAsValue(result.value);
                 return new InvokeResult(jsonResult);
             }
         }
@@ -135,12 +124,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     // ----------------------------------- CommandDelegateAsync<,> -----------------------------------
     internal sealed class CommandDelegateAsync<TParam, TResult> : MessageDelegate
     {
-        private  readonly   HostCommandHandler<TParam, Task<TResult>>   handler;
+        private  readonly   HostCommandHandlerAsync<TParam, TResult>    handler;
 
         internal override   MsgType                                     MsgType         => MsgType.Command;
         internal override   bool                                        IsSynchronous   => false;
 
-        internal CommandDelegateAsync (string name, HostCommandHandler<TParam, Task<TResult>> handler) : base(name) {
+        internal CommandDelegateAsync (string name, HostCommandHandlerAsync<TParam, TResult> handler) : base(name) {
             this.handler    = handler;
         }
         
@@ -149,15 +138,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             var param   = new Param<TParam> (messageValue, syncContext); 
             var result  = await handler(param, cmd).ConfigureAwait(false);
             
-            var error   = cmd.error;
-            if (error != null) {
-                return new InvokeResult(error, cmd.errorType);
+            if (!result.Success) {
+                return new InvokeResult(result.error);
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 var writer = pooled.instance;
                 writer.WriteNullMembers = cmd.WriteNull;
                 writer.Pretty           = cmd.WritePretty;
-                var jsonResult          = writer.WriteAsValue(result);
+                var jsonResult          = writer.WriteAsValue(result.value);
                 return new InvokeResult(jsonResult);
             }
         }

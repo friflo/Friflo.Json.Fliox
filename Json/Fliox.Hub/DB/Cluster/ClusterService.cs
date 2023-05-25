@@ -110,17 +110,15 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             // Console.WriteLine(query.filter);
         }
         
-        internal List<ModelFiles> ModelFiles (Param<ModelFilesQuery> param, MessageContext command) {
+        internal Result<List<ModelFiles>> ModelFiles (Param<ModelFilesQuery> param, MessageContext context) {
             if (!param.GetValidate(out var query, out string error)) {
-                command.ValidationError(error);
-                return null;
+                return Result.Error(error);
             }
-            var allDatabases = command.Hub.GetDatabases();
+            var allDatabases = context.Hub.GetDatabases();
             EntityDatabase[] databases;
             if (query?.db != null) {
                 if (!allDatabases.TryGetValue(query.db, out var database)) {
-                    command.Error($"database not found: {query.db}");
-                    return null;
+                    return Result.Error($"database not found: {query.db}");
                 }
                 databases = new [] { database };
             } else {

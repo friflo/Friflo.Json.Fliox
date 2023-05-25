@@ -34,10 +34,9 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
             AddMessageHandlers(this, null);
         }
         
-        private static string Hello(Param<string> param, MessageContext command) {
+        private static Result<string> Hello(Param<string> param, MessageContext context) {
             if (!param.GetValidate(out string value, out string error)) {
-                command.ValidationError(error);
-                return null;
+                return Result.ValidationError(error);
             }
             return $"hello {value}!";
         } 

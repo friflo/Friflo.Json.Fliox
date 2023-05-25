@@ -35,15 +35,14 @@ namespace DemoHub
         /// <b> Note </b>: Using a synchronous method would require to <see cref="Task.Wait()"/> on the SyncTasks() call
         /// resulting in worse performance as a worker thread is exclusively blocked by the while method execution.
         /// </summary> 
-        private static async Task<Records> FakeRecords(Param<Fake> param, MessageContext command)
+        private static async Task<Result<Records>> FakeRecords(Param<Fake> param, MessageContext context)
         {
-            var client          = new DemoClient(command.Hub);
-            client.UserInfo     = command.UserInfo;
+            var client          = new DemoClient(context.Hub);
+            client.UserInfo     = context.UserInfo;
             client.WritePretty  = true;
             
             if (!param.GetValidate(out var fake, out var error)) {
-                command.ValidationError(error);
-                return null;
+                return Result.ValidationError(error);
             }
             var result = FakeUtils.CreateFakes(fake);
             
@@ -66,14 +65,13 @@ namespace DemoHub
             return result;
         }
 
-        private static async Task<Counts> CountLatest(Param<int?> param, MessageContext command)
+        private static async Task<Result<Counts>> CountLatest(Param<int?> param, MessageContext context)
         {
-            var client      = new DemoClient(command.Hub);
-            client.UserInfo = command.UserInfo;
+            var client      = new DemoClient(context.Hub);
+            client.UserInfo = context.UserInfo;
             
             if (!param.GetValidate(out var duration, out var error)) {
-                command.ValidationError(error);
-                return null;
+                return Result.ValidationError(error);
             }
             
             var seconds         = duration ?? 60;
@@ -97,14 +95,13 @@ namespace DemoHub
             return result;
         }
         
-        private static async Task<Records> LatestRecords(Param<int?> param, MessageContext command)
+        private static async Task<Result<Records>> LatestRecords(Param<int?> param, MessageContext context)
         {
-            var client      = new DemoClient(command.Hub);
-            client.UserInfo = command.UserInfo;
+            var client      = new DemoClient(context.Hub);
+            client.UserInfo = context.UserInfo;
             
             if (!param.GetValidate(out var duration, out var error)) {
-                command.ValidationError(error);
-                return null;
+                return Result.ValidationError(error);
             }
             var seconds         = duration ?? 60;
             var from            = DateTime.Now.AddSeconds(-seconds);
@@ -136,11 +133,10 @@ namespace DemoHub
         }
         
         /// use synchronous handler only when no async methods need to be awaited  
-        private static double Add(Param<Operands> param, MessageContext command)
+        private static Result<double> Add(Param<Operands> param, MessageContext context)
         {
             if (!param.GetValidate(out var operands, out var error)) {
-                command.ValidationError(error);
-                return 0;
+                return Result.ValidationError(error);
             }
             if (operands == null)
                 return 0;

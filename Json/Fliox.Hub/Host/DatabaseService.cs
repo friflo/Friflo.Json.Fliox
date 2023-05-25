@@ -18,10 +18,11 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable UseDeconstruction
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    public  delegate  void    HostMessageHandler<TParam>              (Param<TParam> param, MessageContext context);
-    public  delegate  Task    HostMessageHandlerAsync<TParam>         (Param<TParam> param, MessageContext context);
-    public  delegate  TResult HostCommandHandler<TParam, out TResult> (Param<TParam> param, MessageContext context);
+    public  delegate  void                  HostMessageHandler<TParam>              (Param<TParam> param, MessageContext context);
+    public  delegate  Task                  HostMessageHandlerAsync<TParam>         (Param<TParam> param, MessageContext context);
     
+    public  delegate       Result<TResult>  HostCommandHandler<TParam, TResult>     (Param<TParam> param, MessageContext context);
+    public  delegate  Task<Result<TResult>> HostCommandHandlerAsync<TParam, TResult>(Param<TParam> param, MessageContext context);
 
     /// <summary>
     /// A <see cref="DatabaseService"/> is attached to every <see cref="EntityDatabase"/> to handle all
@@ -122,7 +123,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             return false;
         }
         
-        
         // ------------------- API to add instance / static and synchronous / async methods -------------------
         /// <summary>
         /// Add a synchronous message handler method with a method signature like:
@@ -167,7 +167,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommandHandlerAsync<TParam, TResult> (string name, HostCommandHandler<TParam, Task<TResult>> handler) {
+        protected void AddCommandHandlerAsync<TParam, TResult> (string name, HostCommandHandlerAsync<TParam, TResult> handler) {
             var command = new CommandDelegateAsync<TParam, TResult>(name, handler);
             handlers.Add(new ShortString(name), command);
         }
@@ -240,7 +240,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             // if (handler.name == "DbContainers") { int i = 1; }
             genericArgs[0]          = handler.valueType;
             genericArgs[1]          = handler.resultType;
-            var genericTypeArgs     = typeof(HostCommandHandler<,>).MakeGenericType(genericArgs);
+            Type genericTypeArgs;
+            if (handler.isAsync) {
+                genericTypeArgs     = typeof(HostCommandHandlerAsync<,>).MakeGenericType(genericArgs);
+            } else {
+                genericTypeArgs     = typeof(HostCommandHandler<,>).MakeGenericType(genericArgs);
+            }
             var firstArgument       = handler.method.IsStatic ? null : handlerClass;
             var handlerDelegate     = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
 
@@ -248,8 +253,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             constructorParams[1]    = handlerDelegate;
             object instance;
             // is return type of command handler of type: Task<TResult> ?  (==  is async command handler)
-            if (handler.resultTaskType != null) {
-                genericArgs[1] = handler.resultTaskType;
+            if (handler.isAsync) {
                 instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandDelegateAsync<,>), genericArgs, constructorParams);
             } else {
                 instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandDelegate<,>),      genericArgs, constructorParams);    

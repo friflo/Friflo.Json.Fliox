@@ -19,40 +19,37 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             AddMessageHandlers(this, null);
         }
         
-        private static async Task<AddHostResult> AddHost (Param<AddHost> param, MessageContext command)
+        private static async Task<Result<AddHostResult>> AddHost (Param<AddHost> param, MessageContext context)
         {
             if (!param.GetValidate(out var value, out string error)) {
-                command.ValidationError(error);
-                return null;
+                return Result.ValidationError(error);
             }
-            var signaling   = new Signaling(command.Hub, command.Database.name)  { UserInfo = command.UserInfo };
-            var webRtcHost  = new WebRtcHost { id = value.hostId, client = command.ClientId.AsString() };
+            var signaling   = new Signaling(context.Hub, context.Database.name)  { UserInfo = context.UserInfo };
+            var webRtcHost  = new WebRtcHost { id = value.hostId, client = context.ClientId.AsString() };
             signaling.hosts.Upsert(webRtcHost);
             await signaling.SyncTasks().ConfigureAwait(false);
             
-            command.Logger.Log(HubLog.Info, $"{LogName}: host added. host: '{value.hostId}' client: {command.ClientId}");
+            context.Logger.Log(HubLog.Info, $"{LogName}: host added. host: '{value.hostId}' client: {context.ClientId}");
             return new AddHostResult();
         }
         
-        private async Task<ConnectClientResult> ConnectClient (Param<ConnectClient> param, MessageContext command)
+        private async Task<Result<ConnectClientResult>> ConnectClient (Param<ConnectClient> param, MessageContext context)
         {
             if (!param.GetValidate(out var value, out string error)) {
-                command.ValidationError(error);
-                return null;
+                return Result.ValidationError(error);
             }
             // --- find WebRTC Host in database
             var hostId      = value.hostId;
-            var signaling   = new Signaling(command.Hub, command.Database.name)  { UserInfo = command.UserInfo };
+            var signaling   = new Signaling(context.Hub, context.Database.name)  { UserInfo = context.UserInfo };
             var findHost    = signaling.hosts.Read().Find(hostId);
             await signaling.SyncTasks().ConfigureAwait(false);
             
             var webRtcHost = findHost.Result;
             if (webRtcHost == null) {
-                command.Error($"WebRTC connect failed. host not found. host: '{hostId}'");
-                return null;
+                return Result.Error($"WebRTC connect failed. host not found. host: '{hostId}'");
             }
             // --- send offer SDP to WebRTC host 
-            var clientId        = command.ClientId;
+            var clientId        = context.ClientId;
             var offer           = new Offer { sdp = value.offerSDP, client = clientId };
             var offerMsg        = signaling.SendMessage(nameof(Offer), offer);
             offerMsg.EventTargetClient(webRtcHost.client);

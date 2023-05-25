@@ -34,9 +34,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return error;
             }
             var result  = await callback.InvokeDelegateAsync(this, name, param, syncContext).ConfigureAwait(false);
-            if (result.error == null)
+            if (result.Success) {
                 return new SendCommandResult { result = result.value };
-            return new TaskErrorResult (result.errorType, result.error);
+            }
+            return new TaskErrorResult (result.error);
         }
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
@@ -45,9 +46,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return error;
             }
             var result  = callback.InvokeDelegate(this, name, param, syncContext);
-            if (result.error == null)
+            if (result.Success) {
                 return new SendCommandResult { result = result.value };
-            return new TaskErrorResult (result.errorType, result.error);
+            }
+            return new TaskErrorResult (result.error);
         }
     }
     

@@ -56,19 +56,62 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             if (genericArgs.Length != 1)
                 return false;
             var paramType       = genericArgs[0];
-            var resultType      = methodInfo.ReturnType;
-            Type resultTaskType = null;
-            // is return type of command handler of type: Task<TResult> ?  (==  is async command handler)
-            if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(Task<>)) {
-                var genericResultArgs   = resultType.GenericTypeArguments; // Length == 1
-                resultTaskType          = genericResultArgs[0];
+            
+            // --- result type
+            var  resultType      = methodInfo.ReturnType;
+            Type resultType2;
+            bool isAsync = false;
+            if (!resultType.IsGenericType) {
+                if (resultType == typeof(Task)) {
+                    isAsync = true;
+                    resultType2 = typeof(void);
+                } else {
+                    resultType2 = resultType;
+                }
+            } else {
+                resultType2 = GetGenericResultType (resultType, out isAsync);
+                if (resultType2 == null) {
+                    return false;
+                }
             }
             var name = AttributeUtils.CommandName(methodInfo.CustomAttributes);
-            if (name == null)
+            if (name == null) {
                 name = methodInfo.Name;
-
-            handlerInfo = new HandlerInfo(name, methodInfo, paramType, resultType, resultTaskType);
+            }
+            handlerInfo = new HandlerInfo(name, methodInfo, paramType, resultType2, isAsync);
             return true;
+        }
+        
+        // Is return type of command handler of type:
+        //      Task<Result<TResult>>  (==  is async command handler)
+        // or        Result<TResult>
+        private static Type GetGenericResultType(Type resultType, out bool isAsync) {
+            isAsync = false;
+            var genericResultArgs = resultType.GenericTypeArguments;
+            if (genericResultArgs.Length != 1) {
+                return null;
+            }
+            var genericResultArg    = genericResultArgs[0];
+            var genericResultType   = resultType.GetGenericTypeDefinition();
+            if (genericResultType == typeof(Task<>)) {
+                isAsync = true;
+                if (!genericResultArg.IsGenericType) {
+                    return null;
+                }
+                var genResult = genericResultArg.GetGenericTypeDefinition();
+                if (genResult != typeof(Result<>)) {
+                    return null;
+                }
+                var genericTaskArgs = genericResultArg.GenericTypeArguments;
+                if (genericTaskArgs.Length != 1) {
+                    return null;
+                }
+                return genericTaskArgs[0];
+            }
+            if (genericResultType != typeof(Result<>)) {
+                return null;
+            }
+            return genericResultArg;
         }
     }
     
@@ -77,7 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         public  readonly    MethodInfo  method;
         public  readonly    Type        valueType;
         public  readonly    Type        resultType;
-        public  readonly    Type        resultTaskType;
+        public  readonly    bool        isAsync;
 
         public  override    string  ToString() => name;
 
@@ -86,13 +129,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             MethodInfo  method,
             Type        valueType,
             Type        resultType,
-            Type        resultTaskType)
+            bool        isAsync)
         {
             this.name           = name;
             this.method         = method;
             this.valueType      = valueType;
             this.resultType     = resultType;
-            this.resultTaskType = resultTaskType;
+            this.isAsync        = isAsync;
         }
     }
 }

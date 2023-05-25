@@ -32,17 +32,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AddCommandHandler       <Article[], Article[]>  ("CommandClassArray",   manual.CommandClassArray);
         }
         
-        private static bool TestCommand(Param<TestCommand> param, MessageContext command) {
-            AreEqual("TestCommand", command.Name);
-            AreEqual("TestCommand", command.ToString());
-            command.WriteNull = true; // ensure API available
+        private static Result<bool> TestCommand(Param<TestCommand> param, MessageContext context) {
+            AreEqual("TestCommand", context.Name);
+            AreEqual("TestCommand", context.ToString());
+            context.WriteNull = true; // ensure API available
             return true;
         }
         
-        private async Task<int> MultiRequests(Param<int?> param, MessageContext command) {
+        private async Task<Result<int>> MultiRequests(Param<int?> param, MessageContext context) {
             param.Get(out int? count, out var _);
             if (count == null) count = 100;
-            var store = new PocStore(command.Hub) { UserInfo = command.UserInfo };
+            var store = new PocStore(context.Hub) { UserInfo = context.UserInfo };
             store.StartTime(DateTime.Now);
             var article = new Article { id = "1111", name = "MultiRequests"};
             for (int i = 0; i < count; i++) {
@@ -61,25 +61,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     public class TestHandlerScan {
         private string message2 = "nothing received";
             
-        private void Message2(Param<string> param, MessageContext command) {
+        private void Message2(Param<string> param, MessageContext context) {
             param.Get(out message2, out _);
         }
         
-        private string Command2(Param<string> param, MessageContext command) {
+        private Result<string> Command2(Param<string> param, MessageContext context) {
             return message2;
         }
         
-        private static string CommandHello(Param<string> param, MessageContext command) {
+        private static Result<string> CommandHello(Param<string> param, MessageContext context) {
             param.Get(out var result, out _);
             return result;
         }
         
-        private static int CommandExecutionError(Param<string> param, MessageContext command) {
-            command.Error("test command execution error");
-            return -1;
+        private static Result<int> CommandExecutionError(Param<string> param, MessageContext context) {
+            return Result.Error("test command execution error");
         }
         
-        private static int CommandExecutionException(Param<string> param, MessageContext command) {
+        private static Result<int> CommandExecutionException(Param<string> param, MessageContext context) {
             throw new InvalidOperationException("test command throw exception");
         }
     }
@@ -94,45 +93,46 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public      string  AsyncMessageParam => asyncMessageParam;
         
-        public static string SyncCommand(Param<string> param, MessageContext command) {
+        public static Result<string> SyncCommand(Param<string> param, MessageContext context) {
             return "hello SyncCommand";
         }
         
-        public static Task<string> AsyncCommand(Param<string> param, MessageContext command) {
-            return Task.FromResult("hello AsyncCommand");
+        public static Task<Result<string>> AsyncCommand(Param<string> param, MessageContext context) {
+            return Result.TaskError<string>("hello AsyncCommand");
         }
         
-        public string Command1(Param<string> param, MessageContext command) {
+        public Result<string> Command1(Param<string> param, MessageContext context) {
             return message1Param;
         }
         
-        public int CommandInt(Param<int> param, MessageContext command) {
-            if (!param.Get(out int value, out var error))
-                command.ValidationError(error);
+        public Result<int> CommandInt(Param<int> param, MessageContext context) {
+            if (!param.Get(out int value, out var error)) {
+                return Result.ValidationError(error);
+            }
             return value;
         }
         
-        public void Message1(Param<string> param, MessageContext command) {
+        public void Message1(Param<string> param, MessageContext context) {
             param.Get(out message1Param, out _);
         }
         
-        public Task AsyncMessage(Param<string> param, MessageContext command) {
+        public Task AsyncMessage(Param<string> param, MessageContext context) {
             param.Get(out asyncMessageParam, out _);
             return Task.CompletedTask;
         }
         
-        public int[] CommandIntArray(Param<int[]> param, MessageContext command) {
+        public Result<int[]> CommandIntArray(Param<int[]> param, MessageContext context) {
             if (!param.Get(out int[] value, out var error)) {
-                command.ValidationError(error);
+                return Result.ValidationError(error);
             }
             if (value == null)
                 return new int[] { 1, 2, 3 };
             return value;
         }
         
-        public Article[] CommandClassArray(Param<Article[]> param, MessageContext command) {
+        public Result<Article[]> CommandClassArray(Param<Article[]> param, MessageContext context) {
             if (!param.Get(out Article[] value, out var error)) {
-                command.ValidationError(error);
+                return Result.ValidationError(error);
             }
             if (value == null)
                 return new Article[] { new Article { id = "foo", name = "bar" } };

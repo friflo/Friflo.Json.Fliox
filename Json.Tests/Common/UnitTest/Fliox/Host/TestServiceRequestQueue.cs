@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             AddMessageHandlers(this, null);
         }
         
-        private static string Test(Param<string> param, MessageContext command)
+        private static Result<string> Test(Param<string> param, MessageContext context)
         {
             param.Get(out var result, out _);
             return result;

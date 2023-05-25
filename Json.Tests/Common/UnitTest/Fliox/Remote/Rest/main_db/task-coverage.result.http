@@ -36,7 +36,7 @@ POST {{base}}/rest/main_db?cmd=test.CommandExecutionException
 # Content-Type: text/plain
 
 UnhandledException > InvalidOperationException: test command throw exception
-   at Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestHandlerScan.CommandExecutionException(Param`1 param, MessageContext command)
+   at Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestHandlerScan.CommandExecutionException(Param`1 param, MessageContext context)
    at Friflo.Json.Fliox.Hub.Host.Internal.CommandDelegate`2.InvokeDelegate(SyncRequestTask task, ShortString& messageName, JsonValue& messageValue, SyncContext syncContext)
    at Friflo.Json.Fliox.Hub.Protocol.Tasks.SendCommand.Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext)
    at Friflo.Json.Fliox.Hub.Host.DatabaseService.ExecuteTask(SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext)

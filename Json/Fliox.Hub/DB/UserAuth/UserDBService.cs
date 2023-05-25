@@ -61,14 +61,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             return true;
         }
         
-        private async Task<AuthResult> AuthenticateUser (Param<Credentials> param, MessageContext command)
+        private async Task<Result<AuthResult>> AuthenticateUser (Param<Credentials> param, MessageContext context)
         {
             using (var pooled = storePool.Get()) {
                 var store       = pooled.instance;
                 store.UserId    = UserDB.ID.Server;
                 if (!param.GetValidate(out var authenticate, out var error)) {
-                    command.ValidationError(error);
-                    return null;
+                    return Result.ValidationError(error);
                 }
                 var userId          = authenticate.userId;
                 var readCredentials = store.credentials.Read();
@@ -77,8 +76,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 await store.TrySyncTasks().ConfigureAwait(false);
                 
                 if (!readCredentials.Success) {
-                    command.Error(readCredentials.Error.Message);
-                    return null;  
+                    return Result.Error(readCredentials.Error.Message);
                 }
 
                 UserCredential  cred    = findCred.Result;
@@ -87,16 +85,16 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
         }
         
-        private async Task<ValidateUserDbResult> ValidateUserDb (Param<JsonValue> param, MessageContext command) {
-            var authenticator   = (UserAuthenticator)command.Hub.Authenticator;
-            var databases       = command.Hub.GetDatabases().Keys.ToHashSet();
+        private async Task<Result<ValidateUserDbResult>> ValidateUserDb (Param<JsonValue> param, MessageContext context) {
+            var authenticator   = (UserAuthenticator)context.Hub.Authenticator;
+            var databases       = context.Hub.GetDatabases().Keys.ToHashSet();
             var errors          = await authenticator.ValidateUserDb(databases).ConfigureAwait(false);
             
             return new ValidateUserDbResult { errors = errors.ToArray() };
         }
         
-        private static bool ClearAuthCache (Param<JsonValue> param, MessageContext command) {
-            var authenticator   = (UserAuthenticator)command.Hub.Authenticator;
+        private static Result<bool> ClearAuthCache (Param<JsonValue> param, MessageContext context) {
+            var authenticator   = (UserAuthenticator)context.Hub.Authenticator;
             authenticator.users.Clear();
             authenticator.roleCache.Clear();
             return true;

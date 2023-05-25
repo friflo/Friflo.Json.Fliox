@@ -35,14 +35,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandler      <ClientParam, ClientResult>  (Std.Client,        Client);
         }
         
-        private static JsonValue Echo (Param<JsonValue> param, MessageContext context) {
+        private static Result<JsonValue> Echo (Param<JsonValue> param, MessageContext context) {
             return param.RawParam;
         }
         
-        private static async Task<int> Delay (Param<int> param, MessageContext context) {
+        private static async Task<Result<int>> Delay (Param<int> param, MessageContext context) {
             if (!param.Get(out var delay, out var error)) {
-                context.ValidationError(error);
-                return 0;
+                return Result.ValidationError(error);
             }
             var start = Stopwatch.GetTimestamp();
             await Task.Delay(delay).ConfigureAwait(false);
@@ -51,10 +50,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             return duration;
         }
         
-        private static HostInfo HostInfo (Param<HostParam> param, MessageContext context) {
+        private static Result<HostInfo> HostInfo (Param<HostParam> param, MessageContext context) {
             if (!param.Get(out var hostParam, out var error)) {
-                context.ValidationError(error);
-                return null;
+                return Result.ValidationError(error);
             }
             if (hostParam?.gcCollect == true) {
                 GC.Collect();
@@ -102,31 +100,30 @@ namespace Friflo.Json.Fliox.Hub.Host
 #endif
         }
 
-        private static async Task<DbContainers> Containers (Param<Empty> param, MessageContext context) {
+        private static async Task<Result<DbContainers>> Containers (Param<Empty> param, MessageContext context) {
             var database        = context.Database;  
             var dbContainers    = await database.GetDbContainers(database.name, context.Hub).ConfigureAwait(false);
             return dbContainers;
         }
         
-        private static DbMessages Messages (Param<Empty> param, MessageContext context) {
+        private static Result<DbMessages> Messages (Param<Empty> param, MessageContext context) {
             var database        = context.Database;  
             var dbMessages      = database.GetDbMessages();
             dbMessages.id       = database.name;
             return dbMessages;
         }
         
-        private static DbSchema Schema (Param<Empty> param, MessageContext context) {
+        private static Result<DbSchema> Schema (Param<Empty> param, MessageContext context) {
             context.WritePretty = false;
             var database        = context.Database;  
             return ClusterStore.CreateDbSchema(database);
         }
         
-        private static async Task<DbStats> Stats (Param<string> param, MessageContext context) {
+        private static async Task<Result<DbStats>> Stats (Param<string> param, MessageContext context) {
             var database        = context.Database;
             string[] containerNames;
             if (!param.GetValidate(out var containerName, out var error)) {
-                context.ValidationError(error);
-                return null;
+                return Result.ValidationError(error);
             }
 
             if (containerName == null) {
@@ -150,14 +147,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        private static async Task<HostCluster> HostCluster (Param<Empty> param, MessageContext context) {
+        private static async Task<Result<HostCluster>> HostCluster (Param<Empty> param, MessageContext context) {
             return await ClusterStore.GetDbList(context).ConfigureAwait(false);
         }
         
-        private static async Task<UserResult> User (Param<UserParam> param, MessageContext context) {
+        private static async Task<Result<UserResult>> User (Param<UserParam> param, MessageContext context) {
             if (!param.GetValidate(out UserParam options, out var error)) {
-                context.ValidationError(error);
-                return null;
+                return Result.ValidationError(error);
             }
             var user    = context.User;
             var groups  = user.GetGroups();
@@ -165,8 +161,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (options?.addGroups != null || options?.removeGroups != null) {
                 var eventDispatcher  = context.Hub.EventDispatcher;
                 if (eventDispatcher == null) {
-                    context.Error("command requires a Hub with an EventDispatcher");
-                    return null;
+                    return Result.Error("command requires a Hub with an EventDispatcher");
                 }
                 var authenticator = context.Hub.Authenticator;
                 await authenticator.SetUserOptionsAsync(context.User, options).ConfigureAwait(false);
@@ -190,23 +185,20 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// Calling <see cref="Event.EventSubClient.SendUnacknowledgedEvents"/> here is too early.
         /// An outdated <see cref="Event.EventSubClient.eventReceiver"/> may be used.
         /// </summary>
-        private static ClientResult Client (Param<ClientParam> param, MessageContext context) {
+        private static Result<ClientResult> Client (Param<ClientParam> param, MessageContext context) {
             /* if (context.ClientId.IsNull()) {
                 return context.Error<ClientResult>("Missing client id (clt)");
             } */
             if (!param.GetValidate(out var clientParam, out string error)) { 
-                context.ValidationError(error);
-                return null;
+                return Result.ValidationError(error);
             }
             error = EnsureClientId(clientParam, context);
             if (error != null) {
-                context.Error(error);
-                return null;
+                return Result.Error(error);
             }
             error = SetQueueEvents(clientParam, context);
             if (error != null) {
-                context.Error(error);
-                return null;
+                return Result.Error(error);
             }
             var hub         = context.Hub;
             var dispatcher  = hub.EventDispatcher;
