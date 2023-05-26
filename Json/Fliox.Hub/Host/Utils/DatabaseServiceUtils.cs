@@ -20,28 +20,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 return result;
             }
             var handlers    = new List<HandlerInfo>();
-            var clazz = type;
-            while (clazz != null && clazz != typeof(DatabaseService)) {
-                var flags       = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
-                MethodInfo[] methods = clazz.GetMethods(flags);
-                for (int n = 0; n < methods.Length; n++) {
-                    var method      = methods[n];
-                    var handlerType = AttributeUtils.GetHandler(method.CustomAttributes, out string commandName);
-                    if (handlerType == HandlerType.None) {
-                        continue;
-                    }
-                    var name = commandName ?? method.Name; 
-                    if (!GetHandler(method, name, out HandlerInfo handler)) {
-                        var msg = $"invalid [{handlerType}] - method: {method.DeclaringType?.Name}.{method.Name}()";
-                        return new ServiceInfo(null, msg);
-                    }
-                    if (handlerType != handler.type) {
-                        var msg = $"expected [{handlerType}], was [{handler.type}] - method: {method.DeclaringType?.Name}.{method.Name}()";
-                        return new ServiceInfo(null, msg);
-                    }
-                    handlers.Add(handler);
-                }
-                clazz = clazz.BaseType;
+            var types       = new HashSet<Type>();
+            if (!AddHandlers(type, handlers, types, out string error)) {
+                return new ServiceInfo(null, error);
             }
             if (handlers.Count == 0) {
                 cache[type] = null;
@@ -51,6 +32,47 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             var infos = new ServiceInfo(array, null);
             cache[type] = infos;
             return infos;
+        }
+        
+        private static bool AddHandlers(Type type, List<HandlerInfo> handlers, HashSet<Type> types, out string error)
+        {
+            if (!types.Add(type)) {
+                error = null;
+                return true;
+            }
+            if (type == null                    ||
+                type == typeof(object)          ||
+                type == typeof(string)          ||
+                type == typeof(DatabaseService) ||
+                !type.IsClass)
+            {
+                error = null;
+                return true;
+            }
+            var methodFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
+            MethodInfo[] methods = type.GetMethods(methodFlags);
+            for (int n = 0; n < methods.Length; n++) {
+                var method      = methods[n];
+                var handlerType = AttributeUtils.GetHandler(method.CustomAttributes, out string commandName);
+                if (handlerType == HandlerType.None) {
+                    continue;
+                }
+                var name = commandName ?? method.Name; 
+                if (!GetHandler(method, name, out HandlerInfo handler)) {
+                    error = $"invalid [{handlerType}] - method: {method.DeclaringType?.Name}.{method.Name}()";
+                    return false;
+                }
+                if (handlerType != handler.type) {
+                    error = $"expected [{handlerType}], was [{handler.type}] - method: {method.DeclaringType?.Name}.{method.Name}()";
+                    return false;
+                }
+                handlers.Add(handler);
+            }
+            if (!AddHandlers(type.BaseType, handlers, types, out error)) {
+                return false;
+            }
+            error = null;
+            return true;
         }
 
         internal static ServiceInfo GetHandlers(Type type) {

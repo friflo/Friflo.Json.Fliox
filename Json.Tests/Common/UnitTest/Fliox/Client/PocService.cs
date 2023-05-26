@@ -12,15 +12,9 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     public class PocService : DatabaseService {
-        private   readonly  TestHandlerScan        test    = new TestHandlerScan();
         internal  readonly  TestHandlerManual      manual  = new TestHandlerManual();
-        private   readonly  EmptyHandler           empty   = new EmptyHandler();
         
         public PocService() {
-            // add all command handlers of the passed handler classes
-            AddMessageHandlers(test,    "test.");
-            AddMessageHandlers(empty,   "empty.");
-            
             // add command handlers individually
             AddCommandHandler       <string,string>         ("SyncCommand",         TestHandlerManual.SyncCommand);
             AddCommandHandlerAsync  <string,string>         ("AsyncCommand",        TestHandlerManual.AsyncCommand);
@@ -55,31 +49,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             await store.SyncTasks();
             return count.Value;
         }
-    }
-    
-    /// <summary>
-    /// Uses to show adding all its command handlers by <see cref="DatabaseService.AddMessageHandlers{TClass}"/>
-    /// </summary>
-    public class TestHandlerScan {
+        
         private string message2 = "nothing received";
-            
+        
+        // --- Note:
+        //  following handler methods were declared in a separate class before: class TestHandlerScan.
+        //  Removed this feature to simplify implementation and perception.
+        //  Now all handlers methods must be declared in a single class. 
+        [MessageHandler("test.Message2")]
         private void Message2(Param<string> param, MessageContext context) {
             param.Get(out message2, out _);
         }
         
+        [CommandHandler("test.Command2")]
         private Result<string> Command2(Param<string> param, MessageContext context) {
             return message2;
         }
         
+        [CommandHandler("test.CommandHello")]
         private static Result<string> CommandHello(Param<string> param, MessageContext context) {
             param.Get(out var result, out _);
             return result;
         }
         
+        [CommandHandler("test.CommandExecutionError")]
         private static Result<int> CommandExecutionError(Param<string> param, MessageContext context) {
             return Result.Error("test command execution error");
         }
         
+        [CommandHandler("test.CommandExecutionException")]
         private static Result<int> CommandExecutionException(Param<string> param, MessageContext context) {
             throw new InvalidOperationException("test command throw exception");
         }
@@ -141,6 +139,4 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             return value;
         }
     }
-    
-    public class EmptyHandler { }
 }

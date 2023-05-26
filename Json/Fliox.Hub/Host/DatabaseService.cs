@@ -72,11 +72,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks> 
         public DatabaseService (DatabaseServiceQueue queue = null) {
             handlers = new Dictionary<ShortString, MessageDelegate>(ShortString.Equality);
-            AddStdCommandHandlers();
             if (!AddAttributedHandlers(out var error)) {
                 throw new InvalidOperationException(error);
             }
-            this.queue = queue; 
+            AddStdCommandHandlers();
+            this.queue = queue;
         }
         
         protected internal virtual ExecutionType GetExecutionType(SyncRequest syncRequest) {
@@ -190,6 +190,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="instance">the instance of class containing message handler methods.
         ///     Commonly the instance of a <see cref="DatabaseService"/></param>
         /// <param name="messagePrefix">the prefix of a message/command - e.g. "test."; null or "" to add messages without prefix</param>
+        [Obsolete("use attributed command / message handler instead: [CommandHandler] or [MessageHandler]", false)]
         protected void AddMessageHandlers<TClass>(TClass instance, string messagePrefix) where TClass : class
         {
             var type        = typeof(TClass);
