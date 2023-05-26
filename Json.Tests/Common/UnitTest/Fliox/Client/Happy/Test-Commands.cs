@@ -162,7 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         [CommandHandler("sub.Command3")]
         public Result<string> Command3(Param<string> param, MessageContext context) {
-            return "Command3";
+            return Result.Value("Command3");    // ensue API available
         }
         
         [CommandHandler("sub.Command4")]

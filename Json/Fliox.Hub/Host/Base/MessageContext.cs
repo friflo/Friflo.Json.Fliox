@@ -21,23 +21,20 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/>
     /// For consistency the API to access the command param is same a <see cref="IMessage"/>
     /// </remarks>
-    public sealed class MessageContext { // : IMessage { // uncomment to check API consistency
-        public              string          Name            => nameShort.AsString();
-        public              SyncRequestTask Task            { get; }
-        public              FlioxHub        Hub             => syncContext.hub;
-        public              IHubLogger      Logger          => syncContext.hub.Logger;
-        public              EntityDatabase  Database        => syncContext.database;            // not null
-        public              User            User            => syncContext.User;
-        public              ShortString     ClientId        => syncContext.clientId;
-        public              UserInfo        UserInfo        => GetUserInfo();
-        
-        public              bool            WriteNull       { get; set; }
-        public              bool            WritePretty     { get; set; }
+    public readonly struct MessageContext { // : IMessage { // uncomment to check API consistency
+        public              string          Name        => nameShort.AsString();
+        public              SyncRequestTask Task        { get; }
+        public              FlioxHub        Hub         => syncContext.hub;
+        public              IHubLogger      Logger      => syncContext.hub.Logger;
+        public              EntityDatabase  Database    => syncContext.database;            // not null
+        public              User            User        => syncContext.User;
+        public              ShortString     ClientId    => syncContext.clientId;
+        public              UserInfo        UserInfo    => GetUserInfo();
 
         // --- internal / private properties
-        internal            Pool            Pool            => syncContext.pool;
+        internal            Pool            Pool        => syncContext.pool;
         [DebuggerBrowsable(Never)]
-        internal            SyncContext     SyncContext     => syncContext;
+        internal            SyncContext     SyncContext => syncContext;
         
         // --- internal / private fields
         [DebuggerBrowsable(Never)]
@@ -45,14 +42,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         [DebuggerBrowsable(Never)]
         private  readonly   SyncContext     syncContext;
         
-        public   override   string          ToString()      => nameShort.AsString();
+        public   override   string          ToString()  => nameShort.AsString();
 
 
         internal MessageContext(SyncRequestTask task, in ShortString name, SyncContext syncContext) {
             Task                = task;
             nameShort           = name;
             this.syncContext    = syncContext;
-            WritePretty         = true;
         }
 
         private UserInfo GetUserInfo() { 

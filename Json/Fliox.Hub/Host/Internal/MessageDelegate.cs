@@ -113,8 +113,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
-                writer.WriteNullMembers = cmd.WriteNull;
-                writer.Pretty           = cmd.WritePretty;
+                writer.WriteNullMembers = result.writeNull;
+                writer.Pretty           = result.writePretty;
                 var jsonResult          = writer.WriteAsValue(result.value);
                 return new InvokeResult(jsonResult);
             }
@@ -143,8 +143,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             }
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 var writer = pooled.instance;
-                writer.WriteNullMembers = cmd.WriteNull;
-                writer.Pretty           = cmd.WritePretty;
+                writer.WriteNullMembers = result.writeNull;
+                writer.Pretty           = result.writePretty;
                 var jsonResult          = writer.WriteAsValue(result.value);
                 return new InvokeResult(jsonResult);
             }
