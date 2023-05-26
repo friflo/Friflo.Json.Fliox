@@ -11,10 +11,51 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
     internal static class DatabaseServiceUtils
     {
-        private static readonly Dictionary<Type, HandlerInfo[]> HandlerInfoCache = new Dictionary<Type, HandlerInfo[]>();
+        private static readonly Dictionary<Type, ServiceInfo> ServiceInfoCache            = new Dictionary<Type, ServiceInfo>();
+        private static readonly Dictionary<Type, ServiceInfo> AttributedServiceInfoCache  = new Dictionary<Type, ServiceInfo>();
+        
+        internal static ServiceInfo GetAttributedHandlers(Type type) {
+            var cache = AttributedServiceInfoCache;
+            if (cache.TryGetValue(type, out  var result)) {
+                return result;
+            }
+            var handlers    = new List<HandlerInfo>();
+            var clazz = type;
+            while (clazz != null && clazz != typeof(DatabaseService)) {
+                var flags       = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
+                MethodInfo[] methods = clazz.GetMethods(flags);
+                for (int n = 0; n < methods.Length; n++) {
+                    var method      = methods[n];
+                    var handlerType = AttributeUtils.GetHandler(method.CustomAttributes, out string commandName);
+                    if (handlerType == HandlerType.None) {
+                        continue;
+                    }
+                    var name = commandName ?? method.Name; 
+                    if (!GetHandler(method, name, out HandlerInfo handler)) {
+                        var msg = $"invalid [{handlerType}] - method: {method.DeclaringType?.Name}.{method.Name}()";
+                        return new ServiceInfo(null, msg);
+                    }
+                    if (handlerType != handler.type) {
+                        var msg = $"expected [{handlerType}], was [{handler.type}] - method: {method.DeclaringType?.Name}.{method.Name}()";
+                        return new ServiceInfo(null, msg);
+                    }
+                    handlers.Add(handler);
+                }
+                clazz = clazz.BaseType;
+            }
+            if (handlers.Count == 0) {
+                cache[type] = null;
+                return null;
+            }
+            var array = handlers.ToArray();
+            var infos = new ServiceInfo(array, null);
+            cache[type] = infos;
+            return infos;
+        }
 
-        internal static HandlerInfo[] GetHandlers(Type type) {
-            if (HandlerInfoCache.TryGetValue(type, out  HandlerInfo[] result)) {
+        internal static ServiceInfo GetHandlers(Type type) {
+            var cache = ServiceInfoCache;
+            if (cache.TryGetValue(type, out var result)) {
                 return result;
             }
             var handlers = new List<HandlerInfo>();
@@ -22,20 +63,21 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             MethodInfo[] methods = type.GetMethods(flags);
             for (int n = 0; n < methods.Length; n++) {
                 var  method         = methods[n];
-                if (!IsHandler(method, out HandlerInfo commandInfo))
+                if (!GetHandler(method, method.Name, out HandlerInfo commandInfo))
                     continue;
                 handlers.Add(commandInfo);
             }
             if (handlers.Count == 0) {
-                HandlerInfoCache[type] = null;
+                cache[type] = null;
                 return null;
             }
             var array = handlers.ToArray();
-            HandlerInfoCache[type] = array;
-            return array;
+            var serviceInfo = new ServiceInfo(array, null);
+            cache[type] = serviceInfo;
+            return serviceInfo;
         }
         
-        private static bool IsHandler(MethodInfo methodInfo, out HandlerInfo handlerInfo) {
+        private static bool GetHandler(MethodInfo methodInfo, string name, out HandlerInfo handlerInfo) {
             handlerInfo = new HandlerInfo();
             // if (methodInfo.Name == "DbContainers") { var i = 1; }
             
@@ -58,27 +100,25 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             var paramType       = genericArgs[0];
             
             // --- result type
-            var  resultType      = methodInfo.ReturnType;
-            Type resultType2;
+            Type returnType     = methodInfo.ReturnType;
+            Type resultType;
             bool isAsync = false;
-            if (!resultType.IsGenericType) {
-                if (resultType == typeof(Task)) {
-                    isAsync = true;
-                    resultType2 = typeof(void);
-                } else {
-                    resultType2 = resultType;
+            if (returnType.IsGenericType) {
+                resultType = GetGenericResultType (returnType, out isAsync);
+                if (resultType == null) {
+                    return false;
                 }
             } else {
-                resultType2 = GetGenericResultType (resultType, out isAsync);
-                if (resultType2 == null) {
+                if (returnType == typeof(Task)) {
+                    isAsync = true;
+                    resultType = typeof(void);
+                } else if (returnType == typeof(void)) {
+                    resultType = returnType;
+                } else {
                     return false;
                 }
             }
-            var name = AttributeUtils.CommandName(methodInfo.CustomAttributes);
-            if (name == null) {
-                name = methodInfo.Name;
-            }
-            handlerInfo = new HandlerInfo(name, methodInfo, paramType, resultType2, isAsync);
+            handlerInfo = new HandlerInfo(name, methodInfo, paramType, resultType, isAsync);
             return true;
         }
         
@@ -115,14 +155,33 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         }
     }
     
+    internal class ServiceInfo
+    {
+        internal readonly HandlerInfo[]  handlers;
+        internal readonly string         error;
+        
+        internal ServiceInfo(HandlerInfo[] handlers, string error) {
+            this.handlers   = handlers;
+            this.error      = error;
+        }
+    }
+    
     internal readonly struct HandlerInfo {
         public  readonly    string      name;
+        public  readonly    HandlerType type;
         public  readonly    MethodInfo  method;
+        /// <summary>
+        /// The type <c>TParam</c> of the <see cref="Param{TParam}"/> parameter of a method attributed with
+        /// <see cref="CommandHandlerAttribute"/> or <see cref="MessageHandlerAttribute"/></summary>
         public  readonly    Type        valueType;
+        /// <summary>
+        /// For methods attributed with <see cref="CommandHandlerAttribute"/> the type <c>T</c> of a <see cref="Result{T}"/><br/>
+        /// For methods attributed with <see cref="MessageHandlerAttribute"/> the type is <see cref="Void"/><br/>
+        /// </summary>
         public  readonly    Type        resultType;
         public  readonly    bool        isAsync;
 
-        public  override    string  ToString() => name;
+        public  override    string      ToString() => name;
 
         internal HandlerInfo (
             string      name,
@@ -131,11 +190,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             Type        resultType,
             bool        isAsync)
         {
-            this.name           = name;
-            this.method         = method;
-            this.valueType      = valueType;
-            this.resultType     = resultType;
-            this.isAsync        = isAsync;
+            this.name       = name;
+            this.method     = method;
+            this.valueType  = valueType;
+            this.resultType = resultType;
+            this.isAsync    = isAsync;
+            type            = this.resultType == typeof(void) ? HandlerType.MessageHandler : HandlerType.CommandHandler;
         }
     }
 }

@@ -31,6 +31,30 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             return null;
         }
         
+        public static HandlerType GetHandler(IEnumerable<CustomAttributeData> attributes, out string name) {
+            foreach (var attr in attributes) {
+                var type = GetHandlerType (attr.AttributeType);
+                if (type == HandlerType.None) {
+                    continue;
+                }
+                var arguments   = attr.ConstructorArguments;
+                name =  arguments.Count < 1 ? null : (string)arguments[0].Value;
+                return type;
+            }
+            name = null;
+            return HandlerType.None;
+        }
+        
+        private static HandlerType GetHandlerType(Type type) {
+            if (type == typeof(CommandHandlerAttribute)) {
+                return HandlerType.CommandHandler;
+            }
+            if (type == typeof(MessageHandlerAttribute)) {
+                return HandlerType.MessageHandler;
+            }
+            return HandlerType.None;
+        }
+        
         internal static void GetMembers(Type type, List<MemberInfo> members) {
             if (type == null || type == typeof(object))
                 return;
@@ -103,5 +127,12 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             }
             return false;
         }
+    }
+            
+    public enum HandlerType
+    {
+        None            = 0,
+        MessageHandler  = 1,
+        CommandHandler  = 2,
     }
 }

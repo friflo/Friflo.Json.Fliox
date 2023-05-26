@@ -73,6 +73,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         public DatabaseService (DatabaseServiceQueue queue = null) {
             handlers = new Dictionary<ShortString, MessageDelegate>(ShortString.Equality);
             AddStdCommandHandlers();
+            if (!AddAttributedHandlers(out var error)) {
+                throw new InvalidOperationException(error);
+            }
             this.queue = queue; 
         }
         
@@ -189,12 +192,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="messagePrefix">the prefix of a message/command - e.g. "test."; null or "" to add messages without prefix</param>
         protected void AddMessageHandlers<TClass>(TClass instance, string messagePrefix) where TClass : class
         {
-            var type                = typeof(TClass);
-            var handlerInfos        = DatabaseServiceUtils.GetHandlers(type);
-            if (handlerInfos == null)
+            var type        = typeof(TClass);
+            var serviceInfo = DatabaseServiceUtils.GetHandlers(type);
+            if (serviceInfo == null) {
                 return;
-
-            foreach (var handler in handlerInfos) {
+            }
+            foreach (var handler in serviceInfo.handlers) {
                 MessageDelegate messageDelegate;
                 if (handler.resultType == typeof(void)) {
                     messageDelegate = CreateMessageCallback(instance, handler, messagePrefix);
@@ -203,6 +206,30 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
                 handlers.Add(new ShortString(messageDelegate.name), messageDelegate);
             }
+        }
+        
+        private bool AddAttributedHandlers(out string error) {
+            var type        = GetType();
+            var serviceInfo = DatabaseServiceUtils.GetAttributedHandlers(type);
+            if (serviceInfo == null) {
+                error = null;
+                return true;
+            }
+            if (serviceInfo.error != null) {
+                error = serviceInfo.error;
+                return false;
+            }
+            foreach (var handler in serviceInfo.handlers) {
+                MessageDelegate messageDelegate;
+                if (handler.resultType == typeof(void)) {
+                    messageDelegate = CreateMessageCallback(this, handler, null);
+                } else {
+                    messageDelegate = CreateCommandCallback(this, handler, null);
+                }
+                handlers.Add(new ShortString(messageDelegate.name), messageDelegate);
+            }
+            error = null;
+            return true;
         }
         
         private static string GetHandlerName(HandlerInfo handler, string messagePrefix) {

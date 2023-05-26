@@ -39,4 +39,52 @@ namespace Friflo.Json.Fliox
         public DatabaseCommandAttribute (string name) { Name = name; }
         public string       Name        { get; }
     }
+    
+    /// <summary>
+    /// Declare the attributed method as a command handler.<br/>
+    /// Signature of command handler methods<br/>
+    /// <list type="bullet">
+    ///   <item><i>synchronous</i>
+    ///     <code>
+    ///     [CommandHandler]
+    ///     Result&lt;TResult&gt; Method(Param&lt;TParam&gt; param, MessageContext context)
+    ///     </code>
+    ///   </item>
+    ///   <item><i>asynchronous</i>
+    ///     <code>
+    ///     [CommandHandler]
+    ///     async Task&lt;Result&lt;TResult&gt;&gt; Method(Param&lt;TParam&gt; param, MessageContext context)
+    ///     </code>
+    ///   </item>
+    /// </list>
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class CommandHandlerAttribute : Attribute {
+        public CommandHandlerAttribute (string name = null) { Name = name; }
+        public string       Name        { get; }
+    }
+    
+    /// <summary>
+    /// Declare the attributed method as a message handler.<br/>
+    /// Signature of command handler methods<br/>
+    /// <list type="bullet">
+    ///   <item><i>synchronous</i>
+    ///     <code>
+    ///     [MessageHandler]
+    ///     void Method(Param&lt;TParam&gt; param, MessageContext context)
+    ///     </code>
+    ///   </item>
+    ///   <item><i>asynchronous</i>
+    ///     <code>
+    ///     [MessageHandler]
+    ///     async Task Method(Param&lt;TParam&gt; param, MessageContext context)
+    ///     </code>
+    ///   </item>
+    /// </list>
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class MessageHandlerAttribute : Attribute {
+        public MessageHandlerAttribute (string name = null) { Name = name; }
+        public string       Name        { get; }
+    }
 }

@@ -16,9 +16,9 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
         public  static      DatabaseSchema      Schema { get; } = DatabaseSchema.Create<Signaling>();
 
         public SignalingService() {
-            AddMessageHandlers(this, null);
         }
         
+        [CommandHandler]
         private static async Task<Result<AddHostResult>> AddHost (Param<AddHost> param, MessageContext context)
         {
             if (!param.GetValidate(out var value, out string error)) {
@@ -33,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.WebRTC
             return new AddHostResult();
         }
         
+        [CommandHandler]
         private async Task<Result<ConnectClientResult>> ConnectClient (Param<ConnectClient> param, MessageContext context)
         {
             if (!param.GetValidate(out var value, out string error)) {

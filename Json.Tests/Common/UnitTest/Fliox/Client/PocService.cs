@@ -3,6 +3,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Host;
 using static NUnit.Framework.Assert;
 
@@ -17,7 +18,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public PocService() {
             // add all command handlers of the passed handler classes
-            AddMessageHandlers(this,    "");
             AddMessageHandlers(test,    "test.");
             AddMessageHandlers(empty,   "empty.");
             
@@ -32,6 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AddCommandHandler       <Article[], Article[]>  ("CommandClassArray",   manual.CommandClassArray);
         }
         
+        [CommandHandler]
         private static Result<bool> TestCommand(Param<TestCommand> param, MessageContext context) {
             AreEqual("TestCommand", context.Name);
             AreEqual("TestCommand", context.ToString());
@@ -39,6 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             return true;
         }
         
+        [CommandHandler]
         private async Task<Result<int>> MultiRequests(Param<int?> param, MessageContext context) {
             param.Get(out int? count, out var _);
             if (count == null) count = 100;

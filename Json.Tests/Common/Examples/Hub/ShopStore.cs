@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Schema.Language;
@@ -30,10 +31,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
     
     public class ShopService : DatabaseService
     {
-        internal ShopService() {
-            AddMessageHandlers(this, null);
-        }
-        
+        [CommandHandler]
         private static Result<string> Hello(Param<string> param, MessageContext context) {
             if (!param.GetValidate(out string value, out string error)) {
                 return Result.ValidationError(error);

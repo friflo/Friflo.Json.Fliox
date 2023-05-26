@@ -158,16 +158,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public CommandTask<string>      Command4 ()                 => send.Command<string>          ();
     }
     
-    public class SubPocService : PocService {
-        
-        public SubPocService() {
-            AddMessageHandlers(this, "sub.");
-        }
-        
+    public class SubPocService : PocService
+    {
+        [CommandHandler("sub.Command3")]
         public Result<string> Command3(Param<string> param, MessageContext context) {
             return "Command3";
         }
         
+        [CommandHandler("sub.Command4")]
         public Result<string> Command4(Param<string> param, MessageContext context) {
             return "Command4";
         }

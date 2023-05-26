@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -21,9 +22,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         /// sequentially from a single thread using <see cref="DatabaseService.queue"/>
         /// </summary>
         internal QueueingService() : base (new DatabaseServiceQueue()) {
-            AddMessageHandlers(this, null);
         }
         
+        [CommandHandler]
         private static Result<string> Test(Param<string> param, MessageContext context)
         {
             param.Get(out var result, out _);
