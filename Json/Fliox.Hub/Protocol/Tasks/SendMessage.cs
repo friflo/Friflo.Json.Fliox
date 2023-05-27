@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (name.IsNull())
                 return MissingField(nameof(name));
             if (callback != null) {
-                await callback.InvokeDelegateAsync(this, param, syncContext).ConfigureAwait(false);
+                await callback.InvokeDelegateAsync(this, syncContext).ConfigureAwait(false);
             }
             return SendMessageResult.Create(syncContext);
         }
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (name.IsNull())
                 return MissingField(nameof(name));
             if (callback != null) {
-                callback.InvokeDelegate(this, param, syncContext);
+                callback.InvokeDelegate(this, syncContext);
             }
             return SendMessageResult.Create(syncContext);
         }
