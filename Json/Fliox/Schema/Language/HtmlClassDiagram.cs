@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     <meta name='generated-by' content='{{generatedByLink}}'>
     <link rel='icon' href='../../../explorer/img/Json-Fliox-53x43.svg' type='image/x-icon'>
     <title>{{schemaName}} - Class Diagram</title>
-    <script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
+    <script src='../../../mermaid/dist/mermaid.min.js'></script>
     <style>
         :root {
             --enum-fill:   #f8f8f8;

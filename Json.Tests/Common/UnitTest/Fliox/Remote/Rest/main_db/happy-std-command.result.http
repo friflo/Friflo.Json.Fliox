@@ -94,6 +94,7 @@ GET {{base}}/rest/main_db?cmd=std.Host
         "/explorer",
         "/graphiql",
         "/graphql",
+        "/mermaid",
         "/monaco-editor",
         "/rest",
         "/schema",
