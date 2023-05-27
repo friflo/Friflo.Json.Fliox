@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// For consistency the API to access the command param is same a <see cref="IMessage"/>
     /// </remarks>
     public readonly struct MessageContext { // : IMessage { // uncomment to check API consistency
-        public              string          Name        => nameShort.AsString();
-        public              SyncMessageTask Task        { get; }
+        public              string          Name        => task.name.AsString();
+        public              SyncMessageTask Task        => task;
         public              FlioxHub        Hub         => syncContext.hub;
         public              IHubLogger      Logger      => syncContext.hub.Logger;
         public              EntityDatabase  Database    => syncContext.database;            // not null
@@ -38,16 +38,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         // --- internal / private fields
         [DebuggerBrowsable(Never)]
-        private  readonly   ShortString     nameShort;
-        [DebuggerBrowsable(Never)]
         private  readonly   SyncContext     syncContext;
+        private  readonly   SyncMessageTask task;
         
-        public   override   string          ToString()  => nameShort.AsString();
+        public   override   string          ToString()  => Task.name.AsString();
 
 
-        internal MessageContext(SyncMessageTask task, in ShortString name, SyncContext syncContext) {
-            Task                = task;
-            nameShort           = name;
+        internal MessageContext(SyncMessageTask task, SyncContext syncContext) {
+            this.task           = task;
             this.syncContext    = syncContext;
         }
 

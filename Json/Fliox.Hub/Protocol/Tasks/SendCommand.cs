@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
-            var result  = await callback.InvokeDelegateAsync(this, name, param, syncContext).ConfigureAwait(false);
+            var result  = await callback.InvokeDelegateAsync(this, param, syncContext).ConfigureAwait(false);
             if (result.Success) {
                 return new SendCommandResult { result = result.value };
             }
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return error;
             }
-            var result  = callback.InvokeDelegate(this, name, param, syncContext);
+            var result  = callback.InvokeDelegate(this, param, syncContext);
             if (result.Success) {
                 return new SendCommandResult { result = result.value };
             }
