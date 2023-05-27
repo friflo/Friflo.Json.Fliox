@@ -15,18 +15,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         public static ResultError       ValidationError(string message)                 => new ResultError(TaskErrorType.ValidationError, message);
 
         // --- success results
-        public static Result<T>         Value<T>(T value)                                           => new Result<T>(value);
-        public static Result<T>         Value<T>(T value, bool writePretty, bool writeNull = false) => new Result<T>(value, writePretty, writeNull);
-        public static Task<Result<T>>   TaskValue<T>(T value)                                       => Task.FromResult(new Result<T>(value));
-        public static Task<Result<T>>   TaskError<T>(string message)                                => Task.FromResult<Result<T>>(new ResultError(message));
+        public static Result<T>         Value<T>(T value)               => new Result<T>(value);
+        public static Task<Result<T>>   TaskValue<T>(T value)           => Task.FromResult(new Result<T>(value));
+        public static Task<Result<T>>   TaskError<T>(string message)    => Task.FromResult<Result<T>>(new ResultError(message));
     }
 
     public readonly struct Result<T>
     {
         internal  readonly  T           value;
         internal  readonly  ResultError error;
-        internal  readonly  bool        writeNull;
-        internal  readonly  bool        writePretty;
 
         public    override  string      ToString() => error.message != null ? error.ToString() : $"{value}";
 
@@ -35,22 +32,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         public Result (T value) {
             this.value  = value;
             this.error  = default;
-            writePretty = true;
-            writeNull   = false;
-        }
-        
-        public Result (T value, bool writePretty, bool writeNull) {
-            this.value          = value;
-            this.error          = default;
-            this.writePretty    = writeNull;
-            this.writeNull      = writePretty;
         }
         
         private Result (in ResultError error) {
             this.value  = default;
             this.error  = error;
-            writePretty = true;
-            writeNull   = false;
         }
         
         public static implicit operator Result<T>(T value)              => new Result<T>(value);

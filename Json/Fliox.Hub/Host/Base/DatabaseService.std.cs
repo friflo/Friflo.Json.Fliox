@@ -115,8 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static Result<DbSchema> Schema (Param<Empty> param, MessageContext context) {
             var database    = context.Database;  
-            var result      = ClusterStore.CreateDbSchema(database);
-            return Result.Value(result, writePretty: true);
+            return ClusterStore.CreateDbSchema(database);
         }
         
         private static async Task<Result<DbStats>> Stats (Param<string> param, MessageContext context) {

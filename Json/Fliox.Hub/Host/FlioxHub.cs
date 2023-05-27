@@ -75,6 +75,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)]
         public              IHubLogger          Logger          => sharedEnv.hubLogger;
         
+        public              bool                PrettyCommandResults { get; set; } = false;
+        
         /// <summary>
         /// An optional <see cref="Event.EventDispatcher"/> used to enable Pub-Sub. <br/>
         /// If assigned the database send push events to clients for database changes and messages these clients have subscribed.

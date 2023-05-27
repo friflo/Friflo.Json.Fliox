@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         private static Result<bool> TestCommand(Param<TestCommand> param, MessageContext context) {
             AreEqual("TestCommand", context.Name);
             AreEqual("TestCommand", context.ToString());
-            return Result.Value(true, writePretty: true, writeNull: true); // ensure API available
+            return true;
         }
         
         [CommandHandler]

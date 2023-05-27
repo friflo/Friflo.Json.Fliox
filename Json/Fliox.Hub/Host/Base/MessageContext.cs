@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </remarks>
     public readonly struct MessageContext { // : IMessage { // uncomment to check API consistency
         public              string          Name        => nameShort.AsString();
-        public              SyncRequestTask Task        { get; }
+        public              SyncMessageTask Task        { get; }
         public              FlioxHub        Hub         => syncContext.hub;
         public              IHubLogger      Logger      => syncContext.hub.Logger;
         public              EntityDatabase  Database    => syncContext.database;            // not null
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   override   string          ToString()  => nameShort.AsString();
 
 
-        internal MessageContext(SyncRequestTask task, in ShortString name, SyncContext syncContext) {
+        internal MessageContext(SyncMessageTask task, in ShortString name, SyncContext syncContext) {
             Task                = task;
             nameShort           = name;
             this.syncContext    = syncContext;

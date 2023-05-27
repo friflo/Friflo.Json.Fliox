@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Main
             var databaseSchema      = new DatabaseSchema(typeSchema);
             var database            = CreateDatabase(c, databaseSchema, new PocService());
             
-            var hub                 = new FlioxHub(database, c.env) { HostName = "test-server" };
+            var hub                 = new FlioxHub(database, c.env) { HostName = "test-server", PrettyCommandResults = true };
             hub.Info.projectName    = "Test Hub";                                                               // optional
             hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Main";  // optional
             hub.Info.envName        = "dev"; hub.Info.envColor = "rgb(34 140 0)";                               // optional
