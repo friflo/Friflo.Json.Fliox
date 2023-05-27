@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         internal            bool        Success => error.message == null;      
         
-        public Result (T value) {
+        internal Result (T value) {
             this.value  = value;
             this.error  = default;
         }
