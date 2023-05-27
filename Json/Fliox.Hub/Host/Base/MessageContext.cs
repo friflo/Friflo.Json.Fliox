@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private  readonly   SyncContext     syncContext;
         private  readonly   SyncMessageTask task;
         
-        public   override   string          ToString()  => Task.name.AsString();
+        public   override   string          ToString()  => task.name.AsString();
 
 
         internal MessageContext(SyncMessageTask task, SyncContext syncContext) {
