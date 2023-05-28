@@ -27,9 +27,10 @@ public class ShopStore : FlioxClient
 {
     // --- containers
     public readonly EntitySet <long, Article>     articles;
-
+    
     // --- commands
-    public CommandTask<string> Hello (string param) => SendCommand<string, string> ("Hello", param);
+    /// <summary>return 'hello ...!' with the given <paramref name="param"/></summary>
+    public CommandTask<string>  Hello (string param)    => send.Command<string, string> (param);
     
     public ShopStore(FlioxHub hub) : base(hub) { }
 }
@@ -97,14 +98,10 @@ Example of a custom `DatabaseService` implementation
 ``` csharp
 public class ShopService : DatabaseService
 {
-    internal ShopService() {
-        AddMessageHandlers(this, null);
-    }
-    
-    private static string Hello(Param<string> param, MessageContext command) {
+    [CommandHandler]
+    private static Result<string> Hello(Param<string> param, MessageContext context) {
         if (!param.GetValidate(out string value, out string error)) {
-            command.ValidationError(error);
-            return null;
+            return Result.ValidationError(error);
         }
         return $"hello {value}!";
     } 
