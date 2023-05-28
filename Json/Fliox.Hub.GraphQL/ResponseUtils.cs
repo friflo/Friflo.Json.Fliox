@@ -3,7 +3,6 @@
 
 #if !UNITY_5_3_OR_NEWER
 
-using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Transform.Project;
