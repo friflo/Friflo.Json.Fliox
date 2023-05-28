@@ -17,8 +17,6 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable UseDeconstruction
 namespace Friflo.Json.Fliox.Hub.Host
 {
-
-
     /// <summary>
     /// A <see cref="DatabaseService"/> is attached to every <see cref="EntityDatabase"/> to handle all
     /// <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
