@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Provider
             
             var hub                 = new FlioxHub(memoryDb, env);
             hub.Info.projectName    = "Test DB";
-            hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/DB";
+            hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Provider";
             hub.Info.envName        = "test"; hub.Info.envColor = "rgb(0 140 255)";
             hub.AddExtensionDB (fileDb);
 #if !UNITY_5_3_OR_NEWER
