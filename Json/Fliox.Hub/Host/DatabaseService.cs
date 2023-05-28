@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -18,11 +17,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable UseDeconstruction
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    public  delegate  void                  HostMessageHandler<TParam>              (Param<TParam> param, MessageContext context);
-    public  delegate  Task                  HostMessageHandlerAsync<TParam>         (Param<TParam> param, MessageContext context);
-    
-    public  delegate       Result<TResult>  HostCommandHandler<TParam, TResult>     (Param<TParam> param, MessageContext context);
-    public  delegate  Task<Result<TResult>> HostCommandHandlerAsync<TParam, TResult>(Param<TParam> param, MessageContext context);
+
 
     /// <summary>
     /// A <see cref="DatabaseService"/> is attached to every <see cref="EntityDatabase"/> to handle all

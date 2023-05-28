@@ -5,8 +5,15 @@ using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
-namespace Friflo.Json.Fliox.Hub.Host.Internal
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.Hub.Host
 {
+    public  delegate  void                  HostMessageHandler<TParam>              (Param<TParam> param, MessageContext context);
+    public  delegate  Task                  HostMessageHandlerAsync<TParam>         (Param<TParam> param, MessageContext context);
+    
+    public  delegate       Result<TResult>  HostCommandHandler<TParam, TResult>     (Param<TParam> param, MessageContext context);
+    public  delegate  Task<Result<TResult>> HostCommandHandlerAsync<TParam, TResult>(Param<TParam> param, MessageContext context);
+    
     internal readonly struct InvokeResult
     {
         internal readonly   JsonValue   value;
