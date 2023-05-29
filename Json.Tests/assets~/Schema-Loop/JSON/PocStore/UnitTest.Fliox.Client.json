@@ -61,11 +61,12 @@
                     "description": "Return client specific infos and adjust general client behavior like <b>queueEvents</b>" }
             },
             "messages": {
-                "Message1":      { "param": { "type": ["string", "null"] } },
-                "AsyncMessage":  { "param": { "type": ["string", "null"] } },
-                "StartTime":     { "param": { "$ref": "./Standard.json#/definitions/DateTime" } },
-                "StopTime":      { "param": { "$ref": "./Standard.json#/definitions/DateTime" } },
-                "test.Message2": { "param": { "type": ["string", "null"] } }
+                "Message1":           { "param": { "type": ["string", "null"] } },
+                "AsyncMessage":       { "param": { "type": ["string", "null"] } },
+                "StartTime":          { "param": { "$ref": "./Standard.json#/definitions/DateTime" } },
+                "StopTime":           { "param": { "$ref": "./Standard.json#/definitions/DateTime" } },
+                "test.Message2":      { "param": { "type": ["string", "null"] } },
+                "test.AsyncMessage3": { "param": { "type": ["string", "null"] } }
             }
         },
         "OrderItem": {

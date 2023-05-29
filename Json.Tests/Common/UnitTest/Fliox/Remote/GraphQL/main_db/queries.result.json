@@ -143,7 +143,8 @@
         "AsyncMessage",
         "StartTime",
         "StopTime",
-        "test.Message2"
+        "test.Message2",
+        "test.AsyncMessage3"
     ]
 },
         "echo_backSlash": 

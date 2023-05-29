@@ -64,6 +64,7 @@ type Query {
     StartTime                     (param: String!) : Any
     StopTime                      (param: String!) : Any
     test_Message2                 (param: String) : Any
+    test_AsyncMessage3            (param: String) : Any
 }
 
 type QueryOrdersResult {

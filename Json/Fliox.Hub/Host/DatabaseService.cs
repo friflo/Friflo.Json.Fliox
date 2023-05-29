@@ -241,13 +241,23 @@ namespace Friflo.Json.Fliox.Hub.Host
             var constructorParams   = new object[2];
             // if (handler.name == "DbContainers") { int i = 1; }
             genericArgs[0]          = handler.valueType;
-            var genericTypeArgs     = typeof(HostMessageHandler<>).MakeGenericType(genericArgs);
+            Type genericTypeArgs;
+            if (handler.isAsync) {
+                genericTypeArgs     = typeof(HostMessageHandlerAsync<>).MakeGenericType(genericArgs);
+            } else {
+                genericTypeArgs     = typeof(HostMessageHandler<>).MakeGenericType(genericArgs);    
+            }
             var firstArgument       = handler.method.IsStatic ? null : handlerClass;
             var handlerDelegate     = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
 
             constructorParams[0]    = GetHandlerName(handler, messagePrefix);
             constructorParams[1]    = handlerDelegate;
-            object instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageDelegate<>),      genericArgs, constructorParams);   
+            object instance;
+            if (handler.isAsync) {
+                instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageDelegateAsync<>), genericArgs, constructorParams);
+            } else {
+                instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageDelegate<>),      genericArgs, constructorParams);
+            }
             return (MessageDelegate)instance;
         }
         

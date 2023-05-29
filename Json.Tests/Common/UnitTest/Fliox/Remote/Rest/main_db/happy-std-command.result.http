@@ -71,7 +71,8 @@ GET {{base}}/rest/main_db?cmd=std.Messages
         "AsyncMessage",
         "StartTime",
         "StopTime",
-        "test.Message2"
+        "test.Message2",
+        "test.AsyncMessage3"
     ]
 }
 

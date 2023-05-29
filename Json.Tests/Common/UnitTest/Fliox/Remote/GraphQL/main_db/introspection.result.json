@@ -1246,6 +1246,23 @@
                         "kind":"SCALAR",
                         "name": "Any"
                     }
+                },
+                {
+                    "name": "test_AsyncMessage3",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
                 }
             ],
             "interfaces": [

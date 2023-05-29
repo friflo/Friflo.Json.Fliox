@@ -60,6 +60,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             param.Get(out message2, out _);
         }
         
+        [MessageHandler("test.AsyncMessage3")]
+        private Task AsyncMessage3(Param<string> param, MessageContext context) {
+            return Task.CompletedTask;
+        }
+        
         [CommandHandler("test.Command2")]
         private Result<string> Command2(Param<string> param, MessageContext context) {
             return message2;

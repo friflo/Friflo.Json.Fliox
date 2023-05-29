@@ -80,5 +80,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         // --- messages
         public MessageTask          Message2 (string param)     => send.Message                  (param);
+        public MessageTask          AsyncMessage3 (string param)=> send.Message                  (param);
     }
 }

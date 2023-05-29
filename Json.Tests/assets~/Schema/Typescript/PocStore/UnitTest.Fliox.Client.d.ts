@@ -72,11 +72,12 @@ export interface PocStore {
     ["std.Client"]                         (param: ClientParam | null) : ClientResult;
 
     // --- messages
-    ["Message1"]          (param: string | null) : void;
-    ["AsyncMessage"]      (param: string | null) : void;
-    ["StartTime"]         (param: DateTime) : void;
-    ["StopTime"]          (param: DateTime) : void;
-    ["test.Message2"]     (param: string | null) : void;
+    ["Message1"]               (param: string | null) : void;
+    ["AsyncMessage"]           (param: string | null) : void;
+    ["StartTime"]              (param: DateTime) : void;
+    ["StopTime"]               (param: DateTime) : void;
+    ["test.Message2"]          (param: string | null) : void;
+    ["test.AsyncMessage3"]     (param: string | null) : void;
 }
 
 /**

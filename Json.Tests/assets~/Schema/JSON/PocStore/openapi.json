@@ -739,6 +739,33 @@
         }
       }
     },
+    "/?msg=test.AsyncMessage3": {
+      "post": {
+        "summary":    "",
+        "tags":       ["messages"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/orders": {
       "get": {
         "summary":    "return / filter multiple records from container orders",

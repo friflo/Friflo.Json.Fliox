@@ -68,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var commandsResult = commands.Result;
             AreEqual(24,                commandsResult.commands.Length);
-            AreEqual(5,                 commandsResult.messages.Length);
+            AreEqual(6,                 commandsResult.messages.Length);
         }
         
         private static async Task AssertCommands(SubPocStore store, SubPocService service) {
@@ -76,6 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             await store.SyncTasks();
             var message1        = store.Message1("test message1");
             var message2        = store.test.Message2("test message2");
+            var message3        = store.test.AsyncMessage3("test async message3");
             var messageAsync    = store.AsyncMessage("async message param");
 
             var command1        = store.Command1();
@@ -95,6 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             IsTrue(message1.Success);
             IsTrue(message2.Success);
+            IsTrue(message3.Success);
             IsTrue(messageAsync.Success);
             AreEqual("async message param", service.manual.AsyncMessageParam);
             
@@ -125,7 +127,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var commandsResult = commands.Result;
             AreEqual(24,                commandsResult.commands.Length);
-            AreEqual(3,                 commandsResult.messages.Length);
+            AreEqual(4,                 commandsResult.messages.Length);
             //
             var hostResult = stdHost.Result;
             // AreEqual("0.0.0",        hostResult.flioxVersion); -> will fail at CD tests
