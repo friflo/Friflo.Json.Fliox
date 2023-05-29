@@ -47,13 +47,13 @@ namespace Friflo.Json.Fliox
     ///   <item><i>synchronous</i>
     ///     <code>
     ///     [CommandHandler]
-    ///     Result&lt;TResult&gt; MyCommand(Param&lt;TParam&gt; param, MessageContext context)
+    ///     Result&lt;TResult&gt; MyCommand(Param&lt;TParam&gt; param, MessageContext context) { }
     ///     </code>
     ///   </item>
     ///   <item><i>asynchronous</i>
     ///     <code>
     ///     [CommandHandler]
-    ///     async Task&lt;Result&lt;TResult&gt;&gt; MyCommand(Param&lt;TParam&gt; param, MessageContext context)
+    ///     async Task&lt;Result&lt;TResult&gt;&gt; MyCommand(Param&lt;TParam&gt; param, MessageContext context) { }
     ///     </code>
     ///   </item>
     /// </list>
@@ -71,13 +71,13 @@ namespace Friflo.Json.Fliox
     ///   <item><i>synchronous</i>
     ///     <code>
     ///     [MessageHandler]
-    ///     void MyMessage(Param&lt;TParam&gt; param, MessageContext context)
+    ///     void MyMessage(Param&lt;TParam&gt; param, MessageContext context) { }
     ///     </code>
     ///   </item>
     ///   <item><i>asynchronous</i>
     ///     <code>
     ///     [MessageHandler]
-    ///     async Task MyMessage(Param&lt;TParam&gt; param, MessageContext context)
+    ///     async Task MyMessage(Param&lt;TParam&gt; param, MessageContext context) { }
     ///     </code>
     ///   </item>
     /// </list>

@@ -18,29 +18,25 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// A <see cref="DatabaseService"/> is attached to every <see cref="EntityDatabase"/> to handle all
-    /// <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
+    /// The main use case is assigning a single <see cref="DatabaseService"/> to an <see cref="EntityDatabase"/> to declare
+    /// custom command handler methods annotated with <c>[CommandHandler]</c>. E.g.<br/>
+    /// <code>
+    ///     [CommandHandler]
+    ///     async Task&lt;Result&lt;TResult&gt;&gt; MyCommand(Param&lt;TParam&gt; param, MessageContext context)
+    /// </code> 
     /// </summary>
+    /// 
     /// <remarks>
-    /// Each task is either a database operation, a command or a message.
-    /// <list type="bullet">
-    ///   <item>
-    ///     <b>Database operations</b> are a build-in functionality of every <see cref="EntityDatabase"/>.
-    ///     These operations are:
-    ///     <see cref="CreateEntities"/>, <see cref="UpsertEntities"/>, <see cref="DeleteEntities"/>,
-    ///     <see cref="MergeEntities"/>, <see cref="ReadEntities"/> or <see cref="QueryEntities"/>.
-    ///   </item>
-    ///   <item>
-    ///     An application can add <b>command</b> handlers to perform custom operations.
-    ///     Each command is a tuple of its name and param. See <see cref="SendCommand"/>.
-    ///     Its command handler must return a result. See <see cref="SendCommandResult"/>. 
-    ///   </item>
-    ///   <item>
-    ///     Similar to commands an application can add <b>message</b> handlers to process events or notifications.
-    ///     Each message is a tuple of its name and param. See <see cref="SendMessage"/>.
-    ///     In contrast to commands message handlers return void (nothing).
-    ///   </item>
-    /// </list>
+    /// Additional to commands a <see cref="DatabaseService"/> can be used to declare message handler methods. E.g.<br/>
+    /// <code>
+    ///     [MessageHandler]
+    ///     void MyMessage(Param&lt;TParam&gt; param, MessageContext context) { }
+    /// </code>
+    /// <br/>
+    /// <i>Note</i>: Message handler methods - in contrast to command handlers - doesn't return a result.<br/>
+    /// <br/>
+    /// A <see cref="DatabaseService"/> can also be used to intercept / customize execution of all commands or
+    /// database operations by overriding <see cref="ExecuteTask"/> or <see cref="ExecuteTaskAsync"/>  
     /// </remarks>
     public partial class DatabaseService
     {
