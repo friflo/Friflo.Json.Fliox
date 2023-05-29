@@ -9,6 +9,17 @@ using Friflo.Json.Fliox.Hub.Protocol;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
+    /// <summary>
+    /// A <see cref="DatabaseServiceQueue"/> can be used by a <see cref="DatabaseService"/> to queue execution
+    /// of all commands and messages.<br/>
+    /// <br/>
+    /// To execute queued commands the application needs to call <see cref="ExecuteQueuedRequestsAsync()"/> on a regular basis.<br/>
+    /// This enables synchronous execution of requests / commands / tasks  on the <b>main thread used in game loops</b>.<br/>
+    /// As a result states or resources used / mutated by commands can be performed without any expensive thread synchronization mechanisms.<br/>
+    /// <br/>
+    /// <b>Note</b>: <see cref="DatabaseServiceQueue"/> is not appropriate for a typical server application as they are not intended
+    /// to have a 'main thread' which would be the bottle neck for high concurrency.   
+    /// </summary>
     public class DatabaseServiceQueue {
         // used non concurrent Queue<> to avoid heap allocation on Enqueue()
         private     readonly    Queue<ServiceJob>   serviceJobs;
