@@ -122,14 +122,9 @@ namespace Friflo.Json.Tests.Provider
                 case "postgres":    return new PostgreSQLDatabase   (db, connection) { Schema = schema };
                 case "sqlserver":   return new SQLServerDatabase    (db, connection) { Schema = schema };
                 case "redis":       return new RedisHashDatabase    (db, connection) { Schema = schema };
-                case "cosmos":      return CreateCosmosDatabase     (db, schema);
+                case "cosmos":      return new CosmosDatabase       (db, connection) { Schema = schema };
             }
             throw new ArgumentException($"invalid provider: {provider}");
-        }
-        
-        private static EntityDatabase CreateCosmosDatabase(string db, DatabaseSchema schema) {
-            var client = EnvConfig.CreateCosmosClient();
-            return new CosmosDatabase(db, client, db) { Schema = schema, Throughput = 400 };
         }
 #endif
     }

@@ -6,6 +6,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
 
 namespace Friflo.Json.Fliox.Hub.Cosmos
 {
@@ -25,6 +26,14 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         {
             this.client         = client;
             this.cosmosDbName   = cosmosDbName ?? dbName;
+        }
+        
+        public CosmosDatabase(string dbName, string connectionString, DatabaseService service = null)
+            : base(dbName, service)
+        {
+            var builder     = new CosmosClientBuilder(connectionString);
+            client         = builder.Build();
+            cosmosDbName   = dbName;
         }
         
         internal async Task<Database> GetCosmosDb() {
