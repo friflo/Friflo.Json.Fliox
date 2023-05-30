@@ -3,10 +3,10 @@
 
 #if !UNITY_5_3_OR_NEWER
 
+using System.Data.Common;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Fluent;
 
 namespace Friflo.Json.Fliox.Hub.Cosmos
 {
@@ -31,9 +31,16 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         public CosmosDatabase(string dbName, string connectionString, DatabaseService service = null)
             : base(dbName, service)
         {
-            var builder     = new CosmosClientBuilder(connectionString);
-            client         = builder.Build();
-            cosmosDbName   = dbName;
+            var builder         = new DbConnectionStringBuilder { ConnectionString = connectionString };
+            var accountEndpoint = (string)builder["AccountEndpoint"];
+            var accountKey      = (string)builder["AccountKey"];
+            var options         = new CosmosClientOptions { ApplicationName = "Friflo.Json.Fliox.Hub.Cosmos.CosmosDatabase" };
+            client              = new CosmosClient(accountEndpoint, accountKey, options);
+            cosmosDbName        = dbName;
+            // --- alternative using CosmosClientBuilder
+            // var builder    = new CosmosClientBuilder(connectionString);
+            // client         = builder.Build();
+            // cosmosDbName   = dbName;
         }
         
         internal async Task<Database> GetCosmosDb() {

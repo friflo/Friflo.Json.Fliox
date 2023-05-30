@@ -1,7 +1,6 @@
 #if !UNITY_5_3_OR_NEWER
 
 using Friflo.Json.Tests.Common.Utils;
-using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 
 namespace Friflo.Json.Tests.Provider
@@ -14,19 +13,11 @@ namespace Friflo.Json.Tests.Provider
             var basePath        = CommonUtils.GetBasePath();
             var appSettings     = basePath + "appsettings.test.json";
             var privateSettings = basePath + "appsettings.private.json";
-            Configuration = new ConfigurationBuilder().AddJsonFile(appSettings).AddJsonFile(privateSettings).Build();
+            Configuration       = new ConfigurationBuilder().AddJsonFile(appSettings).AddJsonFile(privateSettings).Build();
         }
         
         public static string GetConnectionString(string provider) {
             return Configuration[provider];
-        }
-        
-        // --- CosmosDB
-        public static CosmosClient CreateCosmosClient() {
-            var endpointUri = Configuration["EndPointUri"];    // The Azure Cosmos DB endpoint for running this sample.
-            var primaryKey  = Configuration["PrimaryKey"];     // The primary key for the Azure Cosmos account.
-            var options     = new CosmosClientOptions { ApplicationName = "Friflo.Playground" };
-            return new CosmosClient(endpointUri, primaryKey, options);
         }
     }
 }

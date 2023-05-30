@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Provider
         internal static             bool    IsSQLite(string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
         private  static             bool    IsFileSystem        => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
         
-        internal static readonly    string  SQLiteFile  = CommonUtils.GetBasePath() + "test_db.sqlite3";
+        private  static readonly    string  SQLiteFile  = CommonUtils.GetBasePath() + "test_db.sqlite3";
 
         static Env() {
             TEST_DB_PROVIDER = Environment.GetEnvironmentVariable(nameof(TEST_DB_PROVIDER));
