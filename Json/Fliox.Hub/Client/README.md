@@ -23,7 +23,7 @@ It can be assigned as a `DatabaseSchema` to an `EntityDatabase` instance for
 
 
 ``` csharp
-public class ShopStore : FlioxClient
+public class ShopClient : FlioxClient
 {
     // --- containers
     public readonly EntitySet <long, Article>     articles;
@@ -32,7 +32,7 @@ public class ShopStore : FlioxClient
     /// <summary>return 'hello ...!' with the given <paramref name="param"/></summary>
     public CommandTask<string>  Hello (string param)    => send.Command<string, string> (param);
     
-    public ShopStore(FlioxHub hub) : base(hub) { }
+    public ShopClient(FlioxHub hub) : base(hub) { }
 }
 
 public class Article
@@ -42,9 +42,9 @@ public class Article
 }
 ```
 
-Using this setup the `ShopStore` offer two main functionalities:
+Using this setup the `ShopClient` offer two main functionalities:
 -   Define a **database schema** by declaring its containers, commands and messages
--   Instances of `ShopStore` are **clients** providing
+-   Instances of `ShopClient` are **clients** providing
     type-safe access to the database containers, commands and messages  
 
 In detail:
@@ -78,9 +78,9 @@ In detail:
   The `param` can be any JSON type like: `string`, `number`, `boolean`, `object` or `array`.  
   The difference between command and message is:
   - a **command** return a **result** - a command is primarily used to execute a domain specific operation on the Hub.  
-    Therefore a command requires a **message handler** in the `DatabaseService` assigned to a database.
+    Therefore a command requires a **message handler** in the `IServiceCommands` assigned to a database.
   - a **message** return **void**     - messages are used to send notifications to the Hub and to other clients connected to the Hub.  
-    Adding a **message handler** for a message in the `DatabaseService` is optional.
+    Adding a **message handler** for a message in the `IServiceCommands` is optional.
 
 - **Subscribe** messages / commands send to a Hub by passing their name and a handler method or lambda.  
   - The Hub forward message / command events **only** to clients which have subscribed.  
@@ -91,12 +91,12 @@ In detail:
 
 ## Client usage
 
-Instances of `ShopStore` can be used on server and client side.
+Instances of `ShopClient` can be used on server and client side.
 
-Example of a custom `DatabaseService` implementation
+Example of a `IServiceCommands` implementation
 
 ``` csharp
-public class ShopService : DatabaseService
+public class ShopCommands : IServiceCommands
 {
     [CommandHandler]
     private static Result<string> Hello(Param<string> param, MessageContext context) {
@@ -108,7 +108,7 @@ public class ShopService : DatabaseService
 }
 ```
 
-To access a database using the `ShopStore` a `FlioxHub` is required.
+To access a database using the `ShopClient` a `FlioxHub` is required.
 ``` csharp
 // -------------------------------- run example as unit tests --------------------------------
 public static class TestShopStore
@@ -119,16 +119,16 @@ public static class TestShopStore
     /// </summary>
     [Test]
     public static async Task AccessDatabase() {
-        var database    = new FileDatabase("shop_db", "./shop_db", new ShopService());
+        var database    = new FileDatabase("shop_db", "./shop_db").AddCommands(new ShopCommands());
         // or other database implementations like: MemoryDatabase, SQLite, Postgres, ...
         var hub         = new FlioxHub(database);
-        var store       = new ShopStore(hub);
+        var client      = new ShopClient(hub);
         
-        var hello           = store.Hello("World");
-        var createArticle   = store.articles.Upsert(new Article() { id = 1, name = "Bread" });
-        var stats           = store.std.Stats(null);
+        var hello           = client.Hello("World");
+        var createArticle   = client.articles.Upsert(new Article() { id = 1, name = "Bread" });
+        var stats           = client.std.Stats(null);
 
-        await store.SyncTasks();
+        await client.SyncTasks();
         
         Console.WriteLine(hello.Result);
         // output:  hello World!
@@ -157,7 +157,7 @@ entity => condition
 
 In contrast to **SQL** statements **LINQ** has compiler support and enable code navigation, searching and refactoring in C#.
 
-**C#** example query filter for the `ShopStore` client above
+**C#** example query filter for the `ShopClient` client above
 ```csharp
 store.articles.Query(o => o.name == "Bread")
 ```
@@ -218,7 +218,7 @@ When using a filter for a container query it is converted into an expression tre
 
 ## Schema generation
 
-As mentioned above `ShopStore` also defines a database schema.  
+As mentioned above `ShopClient` also defines a database schema.  
 A database schema is the declaration of database **containers**, **commands** and **messages**.  
 
 All declarations are expressed as types in a schema. This principle enables code generation as types
@@ -230,18 +230,18 @@ So all generated files and their zip archives are available via urls.
 Alternatively code can be generated with C# using `SchemaModel.GenerateSchemaModels()`
 
 The following example generate the types for Typescript, C#, Kotlin, JSON Schema / OpenAPI, GraphQL and HTML based on the
-passed schema type `ShopStore`. The generated code is written to folder `./schema/`
+passed schema type `ShopClient`. The generated code is written to folder `./schema/`
 
 ``` csharp
 public static class TestSchemaGeneration
 {
     /// <summary>
-    /// Generate schema model files (HTML, JSON Schema / OpenAPI, Typescript, C#, Kotlin) for <see cref="ShopStore"/>
+    /// Generate schema model files (HTML, JSON Schema / OpenAPI, Typescript, C#, Kotlin) for <see cref="ShopClient"/>
     /// in the working directory.
     /// </summary>
     [Test]
     public static void GenerateSchemaModels() {
-        var schemaModels = SchemaModel.GenerateSchemaModels(typeof(ShopStore));
+        var schemaModels = SchemaModel.GenerateSchemaModels(typeof(ShopClient));
         foreach (var schemaModel in schemaModels) {
             var folder = $"./schema/{schemaModel.type}";
             schemaModel.WriteFiles(folder);
