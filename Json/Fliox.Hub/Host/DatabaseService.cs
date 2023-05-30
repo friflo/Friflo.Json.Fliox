@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -240,16 +241,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             string      messagePrefix)
         {
             var firstArgument       = handler.method.IsStatic ? null : commands;
-            var handlerDelegate     = Delegate.CreateDelegate(handler.delegateType, firstArgument, handler.method);
+            var handlerDelegate     = Delegate.CreateDelegate(handler.handlerDelegate, firstArgument, handler.method);
 
             var constructorParams   = new object[2];
             constructorParams[0]    = GetHandlerName(handler, messagePrefix);
             constructorParams[1]    = handlerDelegate;
             object instance;
             if (handler.isAsync) {
-                instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageDelegateAsync<>), handler.genericArgs, constructorParams);
+                instance = CreateGenericInstance(handler.messageDelegate, constructorParams);
             } else {
-                instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageDelegate<>),      handler.genericArgs, constructorParams);
+                instance = CreateGenericInstance(handler.messageDelegate, constructorParams);
             }
             return (MessageDelegate)instance;
         }
@@ -260,19 +261,25 @@ namespace Friflo.Json.Fliox.Hub.Host
             string      messagePrefix)
         {
             var firstArgument       = handler.method.IsStatic ? null : commands;
-            var handlerDelegate     = Delegate.CreateDelegate(handler.delegateType, firstArgument, handler.method);
+            var handlerDelegate     = Delegate.CreateDelegate(handler.handlerDelegate, firstArgument, handler.method);
 
             var constructorParams   = new object[2];
             constructorParams[0]    = GetHandlerName(handler, messagePrefix);
             constructorParams[1]    = handlerDelegate;
             object instance;
             if (handler.isAsync) {
-                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandDelegateAsync<,>), handler.genericArgs, constructorParams);
+                instance = CreateGenericInstance(handler.messageDelegate, constructorParams);
             } else {
-                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandDelegate<,>),      handler.genericArgs, constructorParams);    
+                instance = CreateGenericInstance(handler.messageDelegate, constructorParams);    
             }
             return (MessageDelegate)instance;
         }
+        
+        private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+        
+        private static object CreateGenericInstance(Type type, object[] constructorParams) {
+            return Activator.CreateInstance(type, Flags, null, constructorParams, null);
+        } 
         
         // --- internal API ---
         internal bool TryGetMessage(in ShortString name, out MessageDelegate message) {

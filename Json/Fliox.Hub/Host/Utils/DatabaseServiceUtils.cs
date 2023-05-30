@@ -202,8 +202,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         /// </summary>
         public  readonly    Type        resultType;
         public  readonly    bool        isAsync;
-        public  readonly    Type        delegateType;
-        public  readonly    Type[]      genericArgs;    // <TParam, TResult> or <TParam>
+        public  readonly    Type        handlerDelegate;
+        public  readonly    Type        messageDelegate;
 
         public  override    string      ToString() => name;
 
@@ -222,21 +222,25 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             type            = this.resultType == typeof(void) ? HandlerType.MessageHandler : HandlerType.CommandHandler;
             
             if (resultType == typeof(void)) {
-                genericArgs = new Type[1];
+                var genericArgs = new Type[1]; // <TParam>
                 genericArgs[0]  = valueType;
                 if (isAsync) {
-                    delegateType    = typeof(HostMessageHandlerAsync<>).MakeGenericType(genericArgs);
+                    handlerDelegate = typeof(HostMessageHandlerAsync<>) .MakeGenericType(genericArgs);
+                    messageDelegate = typeof(MessageDelegateAsync<>)    .MakeGenericType(genericArgs);
                 } else {
-                    delegateType    = typeof(HostMessageHandler<>).MakeGenericType(genericArgs);    
+                    handlerDelegate = typeof(HostMessageHandler<>)      .MakeGenericType(genericArgs);
+                    messageDelegate = typeof(MessageDelegate<>)         .MakeGenericType(genericArgs);
                 }
             } else {
-                genericArgs = new Type[2];
+                var genericArgs = new Type[2];  // <TParam, TResult>
                 genericArgs[0]  = valueType;
                 genericArgs[1]  = resultType;
                 if (isAsync) {
-                    delegateType    = typeof(HostCommandHandlerAsync<,>).MakeGenericType(genericArgs);
+                    handlerDelegate = typeof(HostCommandHandlerAsync<,>).MakeGenericType(genericArgs);
+                    messageDelegate = typeof(CommandDelegateAsync<,>)   .MakeGenericType(genericArgs);
                 } else {
-                    delegateType    = typeof(HostCommandHandler<,>).MakeGenericType(genericArgs);
+                    handlerDelegate = typeof(HostCommandHandler<,>)     .MakeGenericType(genericArgs);
+                    messageDelegate = typeof(CommandDelegate<,>)        .MakeGenericType(genericArgs);
                 }
             }
         }
