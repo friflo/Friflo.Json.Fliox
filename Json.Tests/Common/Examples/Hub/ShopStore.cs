@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         public  string      name;
     }
     
-    public class ShopService : DatabaseService
+    public class ShopCommands : ICommands
     {
         [CommandHandler]
         private static Result<string> Hello(Param<string> param, MessageContext context) {
@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         /// </summary>
         [Test]
         public static async Task AccessDatabase() {
-            var database    = new FileDatabase("shop_db", "./shop_db", new ShopService());
+            var database    = new FileDatabase("shop_db", "./shop_db").AddCommands(new ShopCommands());
             // or other database implementations like: MemoryDatabase, SQLite, Postgres, ...
             var hub         = new FlioxHub(database);
             var store       = new ShopStore(hub);

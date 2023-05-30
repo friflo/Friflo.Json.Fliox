@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Hub.Host;
 namespace DemoHub
 {
     /// <summary>
-    /// <see cref="DemoService"/> extends <see cref="DatabaseService"/> to implement the <see cref="DemoClient"/> API (database commands).
+    /// <see cref="DemoCommands"/> extends <see cref="DatabaseService"/> to implement the <see cref="DemoClient"/> API (database commands).
     /// <br/>
     /// Database commands are executed at the host and declared by the <see cref="DemoClient"/>. <br/>
     /// Therefore it create <see cref="DemoClient"/> clients in its handler methods to perform database operations
@@ -20,7 +20,7 @@ namespace DemoHub
     /// Every method attributed with <see cref="CommandHandlerAttribute"/> handle command sent to the service<br/>
     /// To handle messages a method need to be attributed with <see cref="MessageHandlerAttribute"/>.
     /// </summary>
-    public class DemoService : DatabaseService
+    public class DemoCommands : ICommands
     {
         private static readonly FakeUtils FakeUtils = new FakeUtils();
         

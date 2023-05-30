@@ -76,7 +76,8 @@ namespace Friflo.Json.Tests.Main
             hub.AddExtensionDB(userDB);                                                     // optional - expose userStore as extension database
             hub.Authenticator       = userAuthenticator;                                    // optional - otherwise all request tasks are authorized
             
-            var signalingDB         = new MemoryDatabase("signaling", new SignalingService()) { Schema = SignalingService.Schema };
+            var signalingDB         = new MemoryDatabase("signaling") { Schema = SignalingCommands.Schema };
+            signalingDB.AddCommands(new SignalingCommands());
             hub.AddExtensionDB(signalingDB);
             
             var httpHost            = new HttpHost(hub, "/fliox/", c.env) { CacheControl = c.cache };

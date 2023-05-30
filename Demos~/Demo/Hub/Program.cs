@@ -41,8 +41,7 @@ namespace DemoHub
         internal static async Task<HttpHost> CreateHttpHost()
         {
             var databaseSchema      = DatabaseSchema.Create<DemoClient>();           // optional - create TypeSchema from Type
-            var database            = CreateDatabase(databaseSchema, new DemoService());
-
+            var database            = CreateDatabase(databaseSchema).AddCommands(new DemoCommands());
             var hub                 = new FlioxHub(database);
             hub.Info.projectName    = "DemoHub";                                        // optional
             hub.Info.projectWebsite = "https://github.com/friflo/Fliox.Examples#demo";  // optional
@@ -80,14 +79,14 @@ namespace DemoHub
         
         private static readonly bool UseMemoryDbClone = true;
         
-        private static EntityDatabase CreateDatabase(DatabaseSchema schema, DatabaseService service)
+        private static EntityDatabase CreateDatabase(DatabaseSchema schema)
         {
-            var fileDb = new FileDatabase("main_db", "../Test/DB/main_db", service) { Schema = schema };
+            var fileDb = new FileDatabase("main_db", "../Test/DB/main_db") { Schema = schema };
             if (!UseMemoryDbClone)
                 return fileDb;
             // As the DemoHub is also deployed as a demo service in the internet it uses a memory database
             // to minimize operation cost and prevent abuse as a free persistent database.   
-            var memoryDB = new MemoryDatabase("main_db", service) { Schema = schema };
+            var memoryDB = new MemoryDatabase("main_db") { Schema = schema };
             memoryDB.SeedDatabase(fileDb).Wait();
             return memoryDB;
         }

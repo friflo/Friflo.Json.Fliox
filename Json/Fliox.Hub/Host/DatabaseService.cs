@@ -18,26 +18,32 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// The main use case is assigning a single <see cref="DatabaseService"/> to an <see cref="EntityDatabase"/> to declare
-    /// custom command handler methods annotated with <c>[CommandHandler]</c>. E.g.<br/>
+    /// A class implementing <see cref="ICommands"/> is used to to declare custom command handler methods annotated
+    /// with <c>[CommandHandler]</c>. E.g.<br/>
+    /// 
     /// <code>
     ///     [CommandHandler]
     ///     async Task&lt;Result&lt;TResult&gt;&gt; MyCommand(Param&lt;TParam&gt; param, MessageContext context)
-    /// </code> 
+    /// </code>
+    /// <br/>
+    /// <see cref="ICommands"/> are added to a database using <see cref="EntityDatabase.AddCommands"/>
     /// </summary>
     /// 
     /// <remarks>
-    /// Additional to commands a <see cref="DatabaseService"/> can be used to declare message handler methods. E.g.<br/>
+    /// Additional to commands a class implementing <see cref="ICommands"/> can also be used to declare message handler methods. E.g.<br/>
     /// <code>
     ///     [MessageHandler]
     ///     void MyMessage(Param&lt;TParam&gt; param, MessageContext context) { }
     /// </code>
     /// <br/>
     /// <i>Note</i>: Message handler methods - in contrast to command handlers - doesn't return a result.<br/>
-    /// <br/>
+    /// </remarks>
+    public interface ICommands { }
+
+    /// <summary>
     /// A <see cref="DatabaseService"/> can also be used to intercept / customize execution of all commands or
     /// database operations by overriding <see cref="ExecuteTask"/> or <see cref="ExecuteTaskAsync"/>  
-    /// </remarks>
+    /// </summary>
     public partial class DatabaseService
     {
         [DebuggerBrowsable(Never)]
@@ -165,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
        
         /// <summary>
-        /// Add all methods of the given class <paramref name="service"/> with the parameters <br/>
+        /// Add all methods of the given class <paramref name="commands"/> with the parameters <br/>
         /// (<see cref="Param{TParam}"/> param, <see cref="MessageContext"/> context) as a message/command handler. <br/>
         /// A command handler has return type - a message handler returns void. <br/>
         /// Command handler example:
@@ -176,13 +182,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// - static or instance methods <br/>
         /// - synchronous or asynchronous - using <see cref="Task{TResult}"/> as return type.
         /// </summary>
-        /// <param name="service">the instance of class containing message handler methods.
+        /// <param name="commands">the instance of class containing message handler methods.
         ///     Commonly the instance of a <see cref="DatabaseService"/></param>
         /// <param name="messagePrefix">the prefix of a message/command - e.g. "test."; null or "" to add messages without prefix</param>
         [Obsolete("use attributed command / message handler instead: [CommandHandler] or [MessageHandler]", false)]
-        protected void AddMessageHandlers<TClass>(TClass service, string messagePrefix) where TClass : class
+        protected void AddMessageHandlers(ICommands commands, string messagePrefix)
         {
-            var type        = typeof(TClass);
+            var type        = commands.GetType();
             var serviceInfo = DatabaseServiceUtils.GetHandlers(type);
             if (serviceInfo == null) {
                 return;
@@ -190,16 +196,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             foreach (var handler in serviceInfo.handlers) {
                 MessageDelegate messageDelegate;
                 if (handler.resultType == typeof(void)) {
-                    messageDelegate = CreateMessageCallback(service, handler, messagePrefix);
+                    messageDelegate = CreateMessageCallback(commands, handler, messagePrefix);
                 } else {
-                    messageDelegate = CreateCommandCallback(service, handler, messagePrefix);
+                    messageDelegate = CreateCommandCallback(commands, handler, messagePrefix);
                 }
                 handlers.Add(new ShortString(messageDelegate.name), messageDelegate);
             }
         }
         
-        private bool AddAttributedHandlers(object service, out string error) {
-            var type = service.GetType();
+        internal bool AddAttributedHandlers(object commands, out string error) {
+            var type = commands.GetType();
             var serviceInfo = DatabaseServiceUtils.GetAttributedHandlers(type);
             if (serviceInfo == null) {
                 error = null;
@@ -212,9 +218,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             foreach (var handler in serviceInfo.handlers) {
                 MessageDelegate messageDelegate;
                 if (handler.resultType == typeof(void)) {
-                    messageDelegate = CreateMessageCallback(service, handler, null);
+                    messageDelegate = CreateMessageCallback(commands, handler, null);
                 } else {
-                    messageDelegate = CreateCommandCallback(service, handler, null);
+                    messageDelegate = CreateCommandCallback(commands, handler, null);
                 }
                 handlers.Add(new ShortString(messageDelegate.name), messageDelegate);
             }
@@ -229,11 +235,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static MessageDelegate  CreateMessageCallback (
-            object      service,
+            object      commands,
             HandlerInfo handler,
             string      messagePrefix)
         {
-            var firstArgument       = handler.method.IsStatic ? null : service;
+            var firstArgument       = handler.method.IsStatic ? null : commands;
             var handlerDelegate     = Delegate.CreateDelegate(handler.delegateType, firstArgument, handler.method);
 
             var constructorParams   = new object[2];
@@ -249,11 +255,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static MessageDelegate  CreateCommandCallback(
-            object      service,
+            object      commands,
             HandlerInfo handler,
             string      messagePrefix)
         {
-            var firstArgument       = handler.method.IsStatic ? null : service;
+            var firstArgument       = handler.method.IsStatic ? null : commands;
             var handlerDelegate     = Delegate.CreateDelegate(handler.delegateType, firstArgument, handler.method);
 
             var constructorParams   = new object[2];

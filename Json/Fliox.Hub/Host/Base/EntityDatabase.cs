@@ -99,6 +99,13 @@ namespace Friflo.Json.Fliox.Hub.Host
                 container.Value.Dispose();
             }
         }
+        
+        public EntityDatabase AddCommands(ICommands commands) {
+            if (!service.AddAttributedHandlers(commands, out var error)) {
+                throw new InvalidOperationException(error);
+            }
+            return this;
+        }
         #endregion
         
     #region - general public methods
