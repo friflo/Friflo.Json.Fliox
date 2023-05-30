@@ -7,6 +7,11 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
+    /// <summary>
+    /// <see cref="Result"/> contain utility methods to return errors or values of methods annotated with <see cref="CommandHandlerAttribute"/>.<br/>
+    /// E.g the method <see cref="Result.Error(string)"/> to return an error.<br/>
+    /// These methods return their result using a <see cref="Result{T}"/> type.
+    /// </summary>
     public static class Result
     {
         // --- error results
@@ -20,6 +25,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         public static Task<Result<T>>   TaskError<T>(string message)    => Task.FromResult<Result<T>>(new ResultError(message));
     }
 
+    /// <summary>
+    /// Used to return either a result or an error of methods annotated with <see cref="CommandHandlerAttribute"/>.<br/>
+    /// To return errors use one of the error methods of <see cref="Result"/> like <see cref="Result.Error(string)"/> 
+    /// </summary>
     public readonly struct Result<T>
     {
         internal  readonly  T           value;
