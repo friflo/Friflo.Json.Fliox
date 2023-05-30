@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        public EntityDatabase AddCommands(ICommands commands) {
+        public EntityDatabase AddCommands(IServiceCommands commands) {
             if (!service.AddAttributedHandlers(commands, out var error)) {
                 throw new InvalidOperationException(error);
             }

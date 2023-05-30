@@ -20,7 +20,7 @@ namespace DemoHub
     /// Every method attributed with <see cref="CommandHandlerAttribute"/> handle command sent to the service<br/>
     /// To handle messages a method need to be attributed with <see cref="MessageHandlerAttribute"/>.
     /// </summary>
-    public class DemoCommands : ICommands
+    public class DemoCommands : IServiceCommands
     {
         private static readonly FakeUtils FakeUtils = new FakeUtils();
         

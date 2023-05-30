@@ -18,7 +18,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// A class implementing <see cref="ICommands"/> is used to to declare custom command handler methods annotated
+    /// A class implementing <see cref="IServiceCommands"/> is used to to declare custom command handler methods annotated
     /// with <c>[CommandHandler]</c>. E.g.<br/>
     /// 
     /// <code>
@@ -26,11 +26,11 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     async Task&lt;Result&lt;TResult&gt;&gt; MyCommand(Param&lt;TParam&gt; param, MessageContext context)
     /// </code>
     /// <br/>
-    /// <see cref="ICommands"/> are added to a database using <see cref="EntityDatabase.AddCommands"/>
+    /// <see cref="IServiceCommands"/> are added to a database using <see cref="EntityDatabase.AddCommands"/>
     /// </summary>
     /// 
     /// <remarks>
-    /// Additional to commands a class implementing <see cref="ICommands"/> can also be used to declare message handler methods. E.g.<br/>
+    /// Additional to commands a class implementing <see cref="IServiceCommands"/> can also be used to declare message handler methods. E.g.<br/>
     /// <code>
     ///     [MessageHandler]
     ///     void MyMessage(Param&lt;TParam&gt; param, MessageContext context) { }
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <br/>
     /// <i>Note</i>: Message handler methods - in contrast to command handlers - doesn't return a result.<br/>
     /// </remarks>
-    public interface ICommands { }
+    public interface IServiceCommands { }
 
     /// <summary>
     /// A <see cref="DatabaseService"/> can also be used to intercept / customize execution of all commands or
@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///     Commonly the instance of a <see cref="DatabaseService"/></param>
         /// <param name="messagePrefix">the prefix of a message/command - e.g. "test."; null or "" to add messages without prefix</param>
         [Obsolete("use attributed command / message handler instead: [CommandHandler] or [MessageHandler]", false)]
-        protected void AddMessageHandlers(ICommands commands, string messagePrefix)
+        protected void AddMessageHandlers(IServiceCommands commands, string messagePrefix)
         {
             var type        = commands.GetType();
             var serviceInfo = DatabaseServiceUtils.GetHandlers(type);

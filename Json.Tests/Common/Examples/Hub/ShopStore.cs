@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         public  string      name;
     }
     
-    public class ShopCommands : ICommands
+    public class ShopCommands : IServiceCommands
     {
         [CommandHandler]
         private static Result<string> Hello(Param<string> param, MessageContext context) {

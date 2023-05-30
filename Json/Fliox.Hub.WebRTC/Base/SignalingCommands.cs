@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Hub.Host;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.WebRTC
 {
-    public sealed class SignalingCommands : ICommands
+    public sealed class SignalingCommands : IServiceCommands
     {
         private const       string              LogName = "Signaling";
 
