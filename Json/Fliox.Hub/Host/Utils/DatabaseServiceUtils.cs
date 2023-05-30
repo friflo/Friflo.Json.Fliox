@@ -202,6 +202,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         /// </summary>
         public  readonly    Type        resultType;
         public  readonly    bool        isAsync;
+        public  readonly    Type        delegateType;
+        public  readonly    Type[]      genericArgs;    // <TParam, TResult> or <TParam>
 
         public  override    string      ToString() => name;
 
@@ -218,6 +220,25 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             this.resultType = resultType;
             this.isAsync    = isAsync;
             type            = this.resultType == typeof(void) ? HandlerType.MessageHandler : HandlerType.CommandHandler;
+            
+            if (resultType == typeof(void)) {
+                genericArgs = new Type[1];
+                genericArgs[0]  = valueType;
+                if (isAsync) {
+                    delegateType    = typeof(HostMessageHandlerAsync<>).MakeGenericType(genericArgs);
+                } else {
+                    delegateType    = typeof(HostMessageHandler<>).MakeGenericType(genericArgs);    
+                }
+            } else {
+                genericArgs = new Type[2];
+                genericArgs[0]  = valueType;
+                genericArgs[1]  = resultType;
+                if (isAsync) {
+                    delegateType    = typeof(HostCommandHandlerAsync<,>).MakeGenericType(genericArgs);
+                } else {
+                    delegateType    = typeof(HostCommandHandler<,>).MakeGenericType(genericArgs);
+                }
+            }
         }
     }
 }

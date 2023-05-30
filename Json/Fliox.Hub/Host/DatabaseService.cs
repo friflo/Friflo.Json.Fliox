@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks> 
         public DatabaseService (DatabaseServiceQueue queue = null) {
             handlers = new Dictionary<ShortString, MessageDelegate>(ShortString.Equality);
-            if (!AddAttributedHandlers(out var error)) {
+            if (!AddAttributedHandlers(this, out var error)) {
                 throw new InvalidOperationException(error);
             }
             AddStdCommandHandlers();
@@ -165,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
        
         /// <summary>
-        /// Add all methods of the given class <paramref name="instance"/> with the parameters <br/>
+        /// Add all methods of the given class <paramref name="service"/> with the parameters <br/>
         /// (<see cref="Param{TParam}"/> param, <see cref="MessageContext"/> context) as a message/command handler. <br/>
         /// A command handler has return type - a message handler returns void. <br/>
         /// Command handler example:
@@ -176,11 +176,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// - static or instance methods <br/>
         /// - synchronous or asynchronous - using <see cref="Task{TResult}"/> as return type.
         /// </summary>
-        /// <param name="instance">the instance of class containing message handler methods.
+        /// <param name="service">the instance of class containing message handler methods.
         ///     Commonly the instance of a <see cref="DatabaseService"/></param>
         /// <param name="messagePrefix">the prefix of a message/command - e.g. "test."; null or "" to add messages without prefix</param>
         [Obsolete("use attributed command / message handler instead: [CommandHandler] or [MessageHandler]", false)]
-        protected void AddMessageHandlers<TClass>(TClass instance, string messagePrefix) where TClass : class
+        protected void AddMessageHandlers<TClass>(TClass service, string messagePrefix) where TClass : class
         {
             var type        = typeof(TClass);
             var serviceInfo = DatabaseServiceUtils.GetHandlers(type);
@@ -190,16 +190,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             foreach (var handler in serviceInfo.handlers) {
                 MessageDelegate messageDelegate;
                 if (handler.resultType == typeof(void)) {
-                    messageDelegate = CreateMessageCallback(instance, handler, messagePrefix);
+                    messageDelegate = CreateMessageCallback(service, handler, messagePrefix);
                 } else {
-                    messageDelegate = CreateCommandCallback(instance, handler, messagePrefix);
+                    messageDelegate = CreateCommandCallback(service, handler, messagePrefix);
                 }
                 handlers.Add(new ShortString(messageDelegate.name), messageDelegate);
             }
         }
         
-        private bool AddAttributedHandlers(out string error) {
-            var type        = GetType();
+        private bool AddAttributedHandlers(object service, out string error) {
+            var type = service.GetType();
             var serviceInfo = DatabaseServiceUtils.GetAttributedHandlers(type);
             if (serviceInfo == null) {
                 error = null;
@@ -212,9 +212,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             foreach (var handler in serviceInfo.handlers) {
                 MessageDelegate messageDelegate;
                 if (handler.resultType == typeof(void)) {
-                    messageDelegate = CreateMessageCallback(this, handler, null);
+                    messageDelegate = CreateMessageCallback(service, handler, null);
                 } else {
-                    messageDelegate = CreateCommandCallback(this, handler, null);
+                    messageDelegate = CreateCommandCallback(service, handler, null);
                 }
                 handlers.Add(new ShortString(messageDelegate.name), messageDelegate);
             }
@@ -228,62 +228,42 @@ namespace Friflo.Json.Fliox.Hub.Host
             return $"{messagePrefix}{handler.name}";
         }
         
-        private static MessageDelegate  CreateMessageCallback<TClass>(
-            TClass      handlerClass,
+        private static MessageDelegate  CreateMessageCallback (
+            object      service,
             HandlerInfo handler,
-            string      messagePrefix) where TClass : class
+            string      messagePrefix)
         {
-            var genericArgs         = new Type[1];
-            var constructorParams   = new object[2];
-            // if (handler.name == "DbContainers") { int i = 1; }
-            genericArgs[0]          = handler.valueType;
-            Type genericTypeArgs;
-            if (handler.isAsync) {
-                genericTypeArgs     = typeof(HostMessageHandlerAsync<>).MakeGenericType(genericArgs);
-            } else {
-                genericTypeArgs     = typeof(HostMessageHandler<>).MakeGenericType(genericArgs);    
-            }
-            var firstArgument       = handler.method.IsStatic ? null : handlerClass;
-            var handlerDelegate     = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
+            var firstArgument       = handler.method.IsStatic ? null : service;
+            var handlerDelegate     = Delegate.CreateDelegate(handler.delegateType, firstArgument, handler.method);
 
+            var constructorParams   = new object[2];
             constructorParams[0]    = GetHandlerName(handler, messagePrefix);
             constructorParams[1]    = handlerDelegate;
             object instance;
             if (handler.isAsync) {
-                instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageDelegateAsync<>), genericArgs, constructorParams);
+                instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageDelegateAsync<>), handler.genericArgs, constructorParams);
             } else {
-                instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageDelegate<>),      genericArgs, constructorParams);
+                instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageDelegate<>),      handler.genericArgs, constructorParams);
             }
             return (MessageDelegate)instance;
         }
         
-        private static MessageDelegate  CreateCommandCallback<TClass>(
-            TClass      handlerClass,
+        private static MessageDelegate  CreateCommandCallback(
+            object      service,
             HandlerInfo handler,
-            string      messagePrefix) where TClass : class
+            string      messagePrefix)
         {
-            var genericArgs         = new Type[2];
-            var constructorParams   = new object[2];
-            // if (handler.name == "DbContainers") { int i = 1; }
-            genericArgs[0]          = handler.valueType;
-            genericArgs[1]          = handler.resultType;
-            Type genericTypeArgs;
-            if (handler.isAsync) {
-                genericTypeArgs     = typeof(HostCommandHandlerAsync<,>).MakeGenericType(genericArgs);
-            } else {
-                genericTypeArgs     = typeof(HostCommandHandler<,>).MakeGenericType(genericArgs);
-            }
-            var firstArgument       = handler.method.IsStatic ? null : handlerClass;
-            var handlerDelegate     = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
+            var firstArgument       = handler.method.IsStatic ? null : service;
+            var handlerDelegate     = Delegate.CreateDelegate(handler.delegateType, firstArgument, handler.method);
 
+            var constructorParams   = new object[2];
             constructorParams[0]    = GetHandlerName(handler, messagePrefix);
             constructorParams[1]    = handlerDelegate;
             object instance;
-            // is return type of command handler of type: Task<TResult> ?  (==  is async command handler)
             if (handler.isAsync) {
-                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandDelegateAsync<,>), genericArgs, constructorParams);
+                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandDelegateAsync<,>), handler.genericArgs, constructorParams);
             } else {
-                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandDelegate<,>),      genericArgs, constructorParams);    
+                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandDelegate<,>),      handler.genericArgs, constructorParams);    
             }
             return (MessageDelegate)instance;
         }
