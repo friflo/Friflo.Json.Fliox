@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///     Commonly the instance of a <see cref="DatabaseService"/></param>
         /// <param name="messagePrefix">the prefix of a message/command - e.g. "test."; null or "" to add messages without prefix</param>
         [Obsolete("use attributed command / message handler instead: [CommandHandler] or [MessageHandler]", false)]
-        protected void AddMessageHandlers(IServiceCommands commands, string messagePrefix)
+        protected void AddMessageHandlers(object commands, string messagePrefix)
         {
             var type        = commands.GetType();
             var serviceInfo = DatabaseServiceUtils.GetHandlers(type);
