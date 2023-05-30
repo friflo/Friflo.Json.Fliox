@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Mapper.Map;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
@@ -19,8 +18,8 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// A class implementing <see cref="IServiceCommands"/> is used to to declare custom command handler methods annotated
-    /// with <c>[CommandHandler]</c>. E.g.<br/>
+    /// A class implementing <see cref="IServiceCommands"/> is used to provide custom command handler methods
+    /// for an <see cref="EntityDatabase"/> annotated with <c>[CommandHandler]</c>. E.g.<br/>
     /// 
     /// <code>
     ///     [CommandHandler]
@@ -42,8 +41,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     public interface IServiceCommands { }
 
     /// <summary>
-    /// A <see cref="DatabaseService"/> can also be used to intercept / customize execution of all commands or
-    /// database operations by overriding <see cref="ExecuteTask"/> or <see cref="ExecuteTaskAsync"/>  
+    /// A single <see cref="DatabaseService"/> is assigned to every <see cref="EntityDatabase"/>.
+    /// It can be extended to intercept / customize execution of commands or database operations.  
     /// </summary>
     public partial class DatabaseService
     {

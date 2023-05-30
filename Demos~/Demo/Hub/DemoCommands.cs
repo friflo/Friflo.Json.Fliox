@@ -8,16 +8,16 @@ using Friflo.Json.Fliox.Hub.Host;
 namespace DemoHub
 {
     /// <summary>
-    /// <see cref="DemoCommands"/> extends <see cref="DatabaseService"/> to implement the <see cref="DemoClient"/> API (database commands).
+    /// <see cref="DemoCommands"/> extends <see cref="IServiceCommands"/> to handle custom commands send by a <see cref="DemoClient"/>.
     /// <br/>
     /// Database commands are executed at the host and declared by the <see cref="DemoClient"/>. <br/>
     /// Therefore it create <see cref="DemoClient"/> clients in its handler methods to perform database operations
     /// like query, count and upsert.<br/>
     /// <br/>
-    /// A <see cref="DatabaseService"/> instance need to be passed when instantiating an <see cref="EntityDatabase"/>. <br/>
+    /// <see cref="IServiceCommands"/> are added to a database using <see cref="EntityDatabase.AddCommands"/>. <br/>
     /// E.g. a <see cref="MemoryDatabase"/>, a <see cref="FileDatabase"/>, ... <br/>
     /// <br/>
-    /// Every method attributed with <see cref="CommandHandlerAttribute"/> handle command sent to the service<br/>
+    /// Every method attributed with <see cref="CommandHandlerAttribute"/> handle commands sent to the service<br/>
     /// To handle messages a method need to be attributed with <see cref="MessageHandlerAttribute"/>.
     /// </summary>
     public class DemoCommands : IServiceCommands
