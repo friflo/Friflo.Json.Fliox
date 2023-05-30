@@ -11,7 +11,7 @@ using NUnit.Framework;
 // ReSharper disable All
 namespace Friflo.Json.Tests.Common.Examples.Hub
 {
-    public class ShopStore : FlioxClient
+    public class ShopClient : FlioxClient
     {
         // --- containers
         public readonly EntitySet <long, Article>     articles;
@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         /// <summary>return 'hello ...!' with the given <paramref name="param"/></summary>
         public CommandTask<string>  Hello (string param)    => send.Command<string, string> (param);
         
-        public ShopStore(FlioxHub hub) : base(hub) { }
+        public ShopClient(FlioxHub hub) : base(hub) { }
     }
     
     public class Article
@@ -52,13 +52,13 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
             var database    = new FileDatabase("shop_db", "./shop_db").AddCommands(new ShopCommands());
             // or other database implementations like: MemoryDatabase, SQLite, Postgres, ...
             var hub         = new FlioxHub(database);
-            var store       = new ShopStore(hub);
+            var client      = new ShopClient(hub);
             
-            var hello           = store.Hello("World");
-            var createArticle   = store.articles.Upsert(new Article() { id = 1, name = "Bread" });
-            var stats           = store.std.Stats(null);
+            var hello           = client.Hello("World");
+            var createArticle   = client.articles.Upsert(new Article() { id = 1, name = "Bread" });
+            var stats           = client.std.Stats(null);
 
-            await store.SyncTasks();
+            await client.SyncTasks();
             
             Console.WriteLine(hello.Result);
             // output:  hello World!
@@ -74,12 +74,12 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
     public static class TestSchemaGeneration
     {
         /// <summary>
-        /// Generate schema model files (HTML, JSON Schema / OpenAPI, Typescript, C#, Kotlin) for <see cref="ShopStore"/>
+        /// Generate schema model files (HTML, JSON Schema / OpenAPI, Typescript, C#, Kotlin) for <see cref="ShopClient"/>
         /// in the working directory.
         /// </summary>
         [Test]
         public static void GenerateSchemaModels() {
-            var schemaModels = SchemaModel.GenerateSchemaModels(typeof(ShopStore));
+            var schemaModels = SchemaModel.GenerateSchemaModels(typeof(ShopClient));
             foreach (var schemaModel in schemaModels) {
                 var folder = $"./schema/{schemaModel.type}";
                 schemaModel.WriteFiles(folder);
