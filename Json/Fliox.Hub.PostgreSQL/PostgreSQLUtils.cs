@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 $@"ALTER TABLE {table}
 ADD COLUMN IF NOT EXISTS ""{column.name}"" {type} NULL
 GENERATED ALWAYS AS (({path})::{type}) STORED;";
-            await Execute(connection, sql);
+            await Execute(connection, sql).ConfigureAwait(false);
         }
         
         internal static async Task CreateDatabaseIfNotExistsAsync(string connectionString) {
@@ -49,7 +49,7 @@ GENERATED ALWAYS AS (({path})::{type}) STORED;";
             
             var sql = $"CREATE DATABASE {database}";
             using var cmd = new NpgsqlCommand(sql, connection);
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
         
         private static string GetDbmsConnectionString(string connectionString, out string database) {

@@ -42,7 +42,7 @@ var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN IF NOT EXISTS `{colName}` {type}
 GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
-                    await Execute(connection, sql);
+                    await Execute(connection, sql).ConfigureAwait(false);
                     return;
                 }
                 case MySQLProvider.MY_SQL: {
@@ -50,7 +50,7 @@ GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
 $@"SELECT COUNT(*)
 FROM `INFORMATION_SCHEMA`.`COLUMNS`
 WHERE `TABLE_NAME`= '{table}' AND `COLUMN_NAME` = '{colName}';";
-                    var result = await Execute(connection, sql);
+                    var result = await Execute(connection, sql).ConfigureAwait(false);
                     if (result.Failed) {
                         return;
                     }
@@ -61,7 +61,7 @@ WHERE `TABLE_NAME`= '{table}' AND `COLUMN_NAME` = '{colName}';";
 var sql = $@"ALTER TABLE {table}
 ADD COLUMN `{colName}` {type}
 GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
-                    await Execute(connection, sql);
+                    await Execute(connection, sql).ConfigureAwait(false);
                     return;
                 }
             }

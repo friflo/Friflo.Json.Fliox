@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (synchronous) {
                 return CreateEntities(command, syncContext);
             }
-            return await Task.Run(() => CreateEntities(command, syncContext));
+            return await Task.Run(() => CreateEntities(command, syncContext)).ConfigureAwait(false);
         }
         
         public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (synchronous) {
                 return UpsertEntities(command, syncContext);
             }
-            return await Task.Run(() => UpsertEntities(command, syncContext));
+            return await Task.Run(() => UpsertEntities(command, syncContext)).ConfigureAwait(false);
         }
 
         public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (synchronous) {
                 return ReadEntities(command, syncContext);
             }
-            return await Task.Run(() => ReadEntities(command, syncContext));
+            return await Task.Run(() => ReadEntities(command, syncContext)).ConfigureAwait(false);
         }
 
         public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (synchronous) {
                 return QueryEntities(command, syncContext);
             }
-            return await Task.Run(() => QueryEntities(command, syncContext));
+            return await Task.Run(() => QueryEntities(command, syncContext)).ConfigureAwait(false);
         }
         
         public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext) {
@@ -191,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (synchronous) {
                 return AggregateEntities(command, syncContext);
             }
-            return await Task.Run(() => AggregateEntities(command, syncContext));
+            return await Task.Run(() => AggregateEntities(command, syncContext)).ConfigureAwait(false);
         }
         
         private AggregateEntitiesResult AggregateEntities (AggregateEntities command, SyncContext syncContext) {
@@ -221,7 +221,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (synchronous) {
                 return DeleteEntities(command, syncContext);
             }
-            return await Task.Run(() => DeleteEntities(command, syncContext));
+            return await Task.Run(() => DeleteEntities(command, syncContext)).ConfigureAwait(false);
         }
         
         public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {

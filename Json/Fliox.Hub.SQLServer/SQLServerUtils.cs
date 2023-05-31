@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 $@"ALTER TABLE {table}
 ADD ""{column.name}""
 AS CAST(JSON_VALUE({DATA}, '$.{column.name}') AS {type});";
-            await Execute(connection, sql);
+            await Execute(connection, sql).ConfigureAwait(false);
         }
         
         internal static async Task CreateDatabaseIfNotExistsAsync(string connectionString) {

@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 init.tableCreated = true;
             }
             if (init.AddVirtualColumns) {
-                await AddVirtualColumns(connection);
+                await AddVirtualColumns(connection).ConfigureAwait(false);
                 init.virtualColumnsAdded = true;
             }
             return null;
@@ -53,12 +53,12 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         
         public async Task AddVirtualColumns(SyncConnection connection) {
             using var cmd   = Command($"SELECT * FROM {name} LIMIT 0", connection);
-            var columnNames = await SQLUtils.GetColumnNames(cmd);
+            var columnNames = await SQLUtils.GetColumnNames(cmd).ConfigureAwait(false);
             foreach (var column in tableInfo.columns.Values) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
                 }
-                await AddVirtualColumn(connection, name, column, provider);
+                await AddVirtualColumn(connection, name, column, provider).ConfigureAwait(false);
             }
         }
         
