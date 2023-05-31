@@ -6,8 +6,14 @@
         xmlns:local="clr-namespace:TodoWPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
-    <Grid>
-		<ListBox x:Name="listBox" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="108,0,0,0"/>
+	<Grid>
+		<ListBox x:Name="listBox" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,90,10,10"/>
+		<TextBox x:Name="Info" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="1. Start TodoHub server&#xD;&#xA;2. Open Hub Explorer and add records to jobs container&#xD;&#xA;3. Changes are instantly reflected in the ListView below&#xD;&#xA;" VerticalAlignment="Top" Width="307" Height="53" AcceptsReturn="True" IsReadOnly="True" BorderThickness="0,0,0,0"/>
+		<TextBlock HorizontalAlignment="Left" Margin="348,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+            <Hyperlink NavigateUri="http://localhost:8010/fliox/" RequestNavigate="Hyperlink_RequestNavigate">
+                Hub Explorer
+            </Hyperlink>
+		</TextBlock>
 
 	</Grid>
 </Window>

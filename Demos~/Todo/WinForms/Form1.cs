@@ -1,5 +1,7 @@
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Remote;
+using System.Diagnostics;
+using System.Windows.Forms;
 using Todo;
 
 namespace TodoWinForms;
@@ -45,5 +47,11 @@ public partial class Form1 : Form
 		{
 			listView1.Items.Add("" + job.id, job.title, "");
 		}
+	}
+
+	private void openExplorer_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+	{
+		ProcessStartInfo sInfo = new ProcessStartInfo("http://localhost:8010/fliox/") { UseShellExecute = true };
+		System.Diagnostics.Process.Start(sInfo);
 	}
 }

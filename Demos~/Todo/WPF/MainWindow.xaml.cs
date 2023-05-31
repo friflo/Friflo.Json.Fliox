@@ -2,6 +2,7 @@
 using Friflo.Json.Fliox.Hub.Remote;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Channels;
@@ -66,6 +67,12 @@ namespace TodoWPF
 		private async void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			await Init();
+		}
+
+		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+		{			
+			ProcessStartInfo sInfo = new ProcessStartInfo("http://localhost:8010/fliox/") { UseShellExecute = true };
+			System.Diagnostics.Process.Start(sInfo);
 		}
 	}
 }
