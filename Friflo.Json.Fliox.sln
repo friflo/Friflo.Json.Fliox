@@ -48,6 +48,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.SQLSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.Redis", "Json\Fliox.Hub.Redis\Friflo.Json.Fliox.Hub.Redis.csproj", "{AC56D93E-2A02-4D6D-864C-9ADE9C139BC8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoWinForms", "Demos~\Todo\WinForms\TodoWinForms.csproj", "{C1AD47ED-2BB4-4BEC-A1C6-023FBEB86167}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoWPF", "Demos~\Todo\WPF\TodoWPF.csproj", "{7AF19200-E97A-4D94-BAD9-67B12292C530}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -150,5 +154,13 @@ Global
 		{AC56D93E-2A02-4D6D-864C-9ADE9C139BC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC56D93E-2A02-4D6D-864C-9ADE9C139BC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC56D93E-2A02-4D6D-864C-9ADE9C139BC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1AD47ED-2BB4-4BEC-A1C6-023FBEB86167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1AD47ED-2BB4-4BEC-A1C6-023FBEB86167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1AD47ED-2BB4-4BEC-A1C6-023FBEB86167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1AD47ED-2BB4-4BEC-A1C6-023FBEB86167}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AF19200-E97A-4D94-BAD9-67B12292C530}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AF19200-E97A-4D94-BAD9-67B12292C530}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AF19200-E97A-4D94-BAD9-67B12292C530}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AF19200-E97A-4D94-BAD9-67B12292C530}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
