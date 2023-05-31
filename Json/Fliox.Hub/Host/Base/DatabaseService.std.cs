@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var hub         = context.Hub;
             var pubSub      = hub.EventDispatcher != null;
             var info        = hub.Info;
-            var host        = context.SyncContext.Host as IHttpHost;
+            var host        = context.syncContext.Host as IHttpHost;
             var routes      = host?.Routes;
             var result      = new HostInfo {
                 hostName        = hub.HostName,
@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var nameShort   = new ShortString(name);
                 var container   = database.GetOrCreateContainer(nameShort);
                 var aggregate   = new AggregateEntities { container = nameShort, type = AggregateType.count };
-                var aggResult   = await container.AggregateEntitiesAsync(aggregate, context.SyncContext).ConfigureAwait(false);
+                var aggResult   = await container.AggregateEntitiesAsync(aggregate, context.syncContext).ConfigureAwait(false);
                 
                 double count    = aggResult.value ?? 0;
                 var stats       = new ContainerStats { name = name, count = (long)count };
@@ -221,7 +221,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (dispatcher == null) {
                 return "std.Client ensureClientId requires an EventDispatcher assigned to FlioxHub";
             }
-            if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, context.SyncContext, out var error)) {
+            if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, context.syncContext, out var error)) {
                 return error;
             }
             return null;
@@ -238,7 +238,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
 
             if (queueEvents.Value) {
-                var syncContext = context.SyncContext; 
+                var syncContext = context.syncContext; 
                 if (!syncContext.authState.hubPermission.queueEvents) {
                     return "std.Client queueEvents requires permission (Role.hubRights) queueEvents = true";
                 }

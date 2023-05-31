@@ -1,11 +1,11 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
@@ -22,27 +22,20 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// For consistency the API to access the command param is same a <see cref="IMessage"/>
     /// </remarks>
     public readonly struct MessageContext { // : IMessage { // uncomment to check API consistency
-        public              string          Name        => task.name.AsString();
-        public              SyncMessageTask Task        => task;
-        public              FlioxHub        Hub         => syncContext.hub;
-        public              IHubLogger      Logger      => syncContext.hub.Logger;
-        public              EntityDatabase  Database    => syncContext.database;            // not null
-        public              User            User        => syncContext.User;
-        public              ShortString     ClientId    => syncContext.clientId;
-        public              UserInfo        UserInfo    => GetUserInfo();
+        public          string          Name        => task.name.AsString();
+        public          SyncMessageTask Task        => task;
+        public          FlioxHub        Hub         => syncContext.hub;
+        public          IHubLogger      Logger      => syncContext.hub.Logger;
+        public          EntityDatabase  Database    => syncContext.database;            // not null
+        public          User            User        => syncContext.User;
+        public          ShortString     ClientId    => syncContext.clientId;
+        public          UserInfo        UserInfo    => GetUserInfo();
 
-        // --- internal / private properties
-        internal            Pool            Pool        => syncContext.pool;
-        [DebuggerBrowsable(Never)]
-        internal            SyncContext     SyncContext => syncContext;
-        
+        public override string          ToString()  => task.name.AsString();
+
         // --- internal / private fields
-        [DebuggerBrowsable(Never)]
-        private  readonly   SyncContext     syncContext;
-        private  readonly   SyncMessageTask task;
-        
-        public   override   string          ToString()  => task.name.AsString();
-
+        [Browse(Never)] internal readonly   SyncContext     syncContext;
+        [Browse(Never)] private  readonly   SyncMessageTask task;
 
         internal MessageContext(SyncMessageTask task, SyncContext syncContext) {
             this.task           = task;

@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         internal static async Task<HostCluster> GetDbList (MessageContext context) {
             var authorizedDatabases = Helper.CreateHashSet(4, DatabaseFilterComparer.Instance);
-            var taskAuthorizer      = context.SyncContext.authState.taskAuthorizer;
+            var taskAuthorizer      = context.syncContext.authState.taskAuthorizer;
             taskAuthorizer.AddAuthorizedDatabases(authorizedDatabases);
             var hub             = context.Hub;
             var databases       = hub.GetDatabases();
