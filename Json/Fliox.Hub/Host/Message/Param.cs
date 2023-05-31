@@ -1,35 +1,33 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
 using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     public readonly struct Param<TParam>
     {
-        public                      JsonValue   RawValue    => rawValue;
-        
-        public    override          string      ToString()  => rawValue.AsString();
-        
-        [DebuggerBrowsable(Never)]
-        private   readonly          JsonValue   rawValue;
-        [DebuggerBrowsable(Never)]
-        private   readonly          SyncContext syncContext;
-
+                        public              JsonValue   RawValue    => rawValue;
+                        public              TParam      Value       => GetValue();
+                        public  override    string      ToString()  => rawValue.AsString();
+                        
+        // --- internal / private fields
+        [Browse(Never)] private readonly    JsonValue   rawValue;
+        [Browse(Never)] private readonly    SyncContext syncContext;
 
         internal Param(in JsonValue value, SyncContext  syncContext) {
             this.rawValue       = value;
             this.syncContext    = syncContext;
         }
         
-        public TParam Value { get {
+        private TParam GetValue() {
             using (var pooled = syncContext.pool.ObjectMapper.Get()) {
                 var reader = pooled.instance.reader;
                 return reader.Read<TParam>(rawValue);
             }
-        }}
+        }
 
         /// <summary>Return the command <paramref name="value"/></summary> without validation 
         /// <param name="value">the param value if conversion successful</param>
@@ -46,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public bool Get<T>(out T value, out string error) {
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
-                value       = reader.Read<T>(this.rawValue);
+                value       = reader.Read<T>(rawValue);
                 if (reader.Error.ErrSet) {
                     error   = reader.Error.msg.ToString();
                     return false;
@@ -84,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var paramValidation = syncContext.sharedCache.GetValidationType(typeof(T));
             using (var pooled = syncContext.pool.TypeValidator.Get()) {
                 var validator   = pooled.instance;
-                if (!validator.Validate(this.rawValue, paramValidation, out error)) {
+                if (!validator.Validate(rawValue, paramValidation, out error)) {
                     return false;
                 }
             }
