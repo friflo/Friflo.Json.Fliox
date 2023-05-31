@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static Result<JsonValue> Echo (Param<JsonValue> param, MessageContext context) {
-            return param.RawParam;
+            return param.RawValue;
         }
         
         private static async Task<Result<int>> Delay (Param<int> param, MessageContext context) {

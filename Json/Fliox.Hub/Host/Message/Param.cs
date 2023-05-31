@@ -9,44 +9,44 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public readonly struct Param<TParam>
     {
-        public                      JsonValue   RawParam       => param;
+        public                      JsonValue   RawValue    => rawValue;
         
-        public    override          string      ToString() => param.AsString();
+        public    override          string      ToString()  => rawValue.AsString();
         
         [DebuggerBrowsable(Never)]
-        private   readonly          JsonValue   param;
+        private   readonly          JsonValue   rawValue;
         [DebuggerBrowsable(Never)]
         private   readonly          SyncContext syncContext;
 
 
-        internal Param(in JsonValue param, SyncContext  syncContext) {
-            this.param          = param;
-            this.syncContext = syncContext;
+        internal Param(in JsonValue value, SyncContext  syncContext) {
+            this.rawValue       = value;
+            this.syncContext    = syncContext;
         }
         
-        /*  public TParam Param { get {
+        public TParam Value { get {
             using (var pooled = syncContext.pool.ObjectMapper.Get()) {
                 var reader = pooled.instance.reader;
-                return reader.Read<TParam>(param);
+                return reader.Read<TParam>(rawValue);
             }
-        }} */
+        }}
 
-        /// <summary>Return the command <paramref name="param"/></summary> without validation 
-        /// <param name="param">the param value if conversion successful</param>
+        /// <summary>Return the command <paramref name="value"/></summary> without validation 
+        /// <param name="value">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool Get(out TParam param, out string error) {
-            return Get<TParam>(out param, out error);
+        public bool Get(out TParam value, out string error) {
+            return Get<TParam>(out value, out error);
         }
         
-        /// <summary>Return the command <paramref name="param"/> as the given type <typeparamref name="T"/> without validation</summary>
-        /// <param name="param">the param value if conversion successful</param>
+        /// <summary>Return the command <paramref name="value"/> as the given type <typeparamref name="T"/> without validation</summary>
+        /// <param name="value">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool Get<T>(out T param, out string error) {
+        public bool Get<T>(out T value, out string error) {
             using (var pooled = syncContext.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
-                param       = reader.Read<T>(this.param);
+                value       = reader.Read<T>(this.rawValue);
                 if (reader.Error.ErrSet) {
                     error   = reader.Error.msg.ToString();
                     return false;
@@ -56,24 +56,24 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
 
-        /// <summary>Return the validated command <paramref name="param"/></summary>
-        /// <param name="param">the param value if conversion successful</param>
+        /// <summary>Return the validated command <paramref name="value"/></summary>
+        /// <param name="value">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool GetValidate(out TParam param, out string error) {
-            return GetValidate<TParam>(out param, out error);
+        public bool GetValidate(out TParam value, out string error) {
+            return GetValidate<TParam>(out value, out error);
         }
         
-        /// <summary>Return the validated command <paramref name="param"/> as the given type <typeparamref name="T"/></summary>
-        /// <param name="param">the param value if conversion successful</param>
+        /// <summary>Return the validated command <paramref name="value"/> as the given type <typeparamref name="T"/></summary>
+        /// <param name="value">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool GetValidate<T>(out T param, out string error) {
+        public bool GetValidate<T>(out T value, out string error) {
             if (!Validate<T>(out error)) {
-                param = default;
+                value = default;
                 return false;
             }
-            return Get(out param, out error);
+            return Get(out value, out error);
         }
         
         public bool Validate(out string error) {
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var paramValidation = syncContext.sharedCache.GetValidationType(typeof(T));
             using (var pooled = syncContext.pool.TypeValidator.Get()) {
                 var validator   = pooled.instance;
-                if (!validator.Validate(this.param, paramValidation, out error)) {
+                if (!validator.Validate(this.rawValue, paramValidation, out error)) {
                     return false;
                 }
             }
