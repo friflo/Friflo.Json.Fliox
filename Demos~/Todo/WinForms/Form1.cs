@@ -1,6 +1,4 @@
-using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Todo;
 
@@ -28,7 +26,8 @@ public partial class Form1 : Form
 		var jobs = client.jobs.QueryAll();
 
 		client.jobs.SubscribeChanges(Change.All, (changes, context) => {
-			foreach (var job in changes.Upserts) {
+			foreach (var upsert in changes.Upserts) {
+				var job = upsert.entity;
 				var item = listView1.Items["" + job.id];
 				if (item != null) { 
 					item.Text = job.title;

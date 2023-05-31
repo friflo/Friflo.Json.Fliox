@@ -40,8 +40,9 @@ namespace TodoWPF
 			var jobs = client.jobs.QueryAll();
 
 			client.jobs.SubscribeChanges(Change.All, (changes, context) => {
-				foreach (var job in changes.Upserts)
+				foreach (var upsert in changes.Upserts)
 				{
+					var job = upsert.entity;
 					var item = listBox.Items.IndexOf("" + job.id);
 					if (item != -1)					{
 						listBox.Items[item] = "" + job.id;

@@ -16,6 +16,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoWinForms", "Todo\WinFor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoWPF", "Todo\WPF\TodoWPF.csproj", "{89E11CF1-359B-4D3D-BAFD-761B16B69F00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub", "..\Json\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj", "{9CADD5BB-35A8-479C-9C1F-ADBA5B6F9A29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox", "..\Json\Fliox\Friflo.Json.Fliox.csproj", "{7FFE6805-6E49-4E2F-A10E-AEEF1D9CC18A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst", "..\Json\Burst\Friflo.Json.Burst.csproj", "{3E56FC64-E1FD-4C17-B160-397CA68D08C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Annotation", "..\Json\Fliox.Annotation\Friflo.Json.Fliox.Annotation.csproj", "{BEAC72AA-5360-4E5D-B08B-6423D8A7BCF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.Explorer", "..\Json\Fliox.Hub.Explorer\Friflo.Json.Fliox.Hub.Explorer.csproj", "{1F106202-FFDD-4495-9679-3491F11AE867}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.AspNetCore", "..\Json\Fliox.Hub.AspNetCore\Friflo.Json.Fliox.Hub.AspNetCore.csproj", "{49CDC397-19B1-45DB-988A-599C3448254D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.GraphQL", "..\Json\Fliox.Hub.GraphQL\Friflo.Json.Fliox.Hub.GraphQL.csproj", "{32E3FFF9-8209-44FA-8FB0-BDDFBE53D134}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +68,33 @@ Global
 		{89E11CF1-359B-4D3D-BAFD-761B16B69F00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89E11CF1-359B-4D3D-BAFD-761B16B69F00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89E11CF1-359B-4D3D-BAFD-761B16B69F00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CADD5BB-35A8-479C-9C1F-ADBA5B6F9A29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CADD5BB-35A8-479C-9C1F-ADBA5B6F9A29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CADD5BB-35A8-479C-9C1F-ADBA5B6F9A29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CADD5BB-35A8-479C-9C1F-ADBA5B6F9A29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FFE6805-6E49-4E2F-A10E-AEEF1D9CC18A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FFE6805-6E49-4E2F-A10E-AEEF1D9CC18A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FFE6805-6E49-4E2F-A10E-AEEF1D9CC18A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FFE6805-6E49-4E2F-A10E-AEEF1D9CC18A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E56FC64-E1FD-4C17-B160-397CA68D08C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E56FC64-E1FD-4C17-B160-397CA68D08C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E56FC64-E1FD-4C17-B160-397CA68D08C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E56FC64-E1FD-4C17-B160-397CA68D08C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEAC72AA-5360-4E5D-B08B-6423D8A7BCF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEAC72AA-5360-4E5D-B08B-6423D8A7BCF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEAC72AA-5360-4E5D-B08B-6423D8A7BCF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEAC72AA-5360-4E5D-B08B-6423D8A7BCF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F106202-FFDD-4495-9679-3491F11AE867}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F106202-FFDD-4495-9679-3491F11AE867}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F106202-FFDD-4495-9679-3491F11AE867}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F106202-FFDD-4495-9679-3491F11AE867}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49CDC397-19B1-45DB-988A-599C3448254D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49CDC397-19B1-45DB-988A-599C3448254D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49CDC397-19B1-45DB-988A-599C3448254D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49CDC397-19B1-45DB-988A-599C3448254D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32E3FFF9-8209-44FA-8FB0-BDDFBE53D134}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32E3FFF9-8209-44FA-8FB0-BDDFBE53D134}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32E3FFF9-8209-44FA-8FB0-BDDFBE53D134}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32E3FFF9-8209-44FA-8FB0-BDDFBE53D134}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
