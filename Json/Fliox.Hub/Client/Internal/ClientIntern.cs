@@ -48,7 +48,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private             ReaderPool                      eventReaderPool;    // create on demand
         
         internal readonly   EntitySet[]                                 entitySets;
-        private  readonly   Dictionary<ShortString, EntitySet>          setByName;
+        
+        private             Dictionary<ShortString, EntitySet>          setByName;
+        internal            Dictionary<ShortString, EntitySet>          SetByName => setByName ??= CreateSetByName();
         
         [DebuggerBrowsable(Never)]
         internal            Dictionary<ShortString, MessageSubscriber>  subscriptions;          // create on demand - only used for subscriptions
@@ -95,10 +97,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static readonly Dictionary<Type, ClientTypeInfo>    ClientTypeCache         = new Dictionary<Type, ClientTypeInfo>();
         private static readonly SynchronousEventProcessor           DefaultEventProcessor   = new SynchronousEventProcessor();
 
-       
-        internal EntitySet  GetSetByName    (in ShortString name)                    => setByName[name];
-        internal bool       TryGetSetByName (in ShortString name, out EntitySet set) => setByName.TryGetValue(name, out set);
-
         internal void SetSubscriptionProcessor(SubscriptionProcessor processor) {
             subscriptionProcessor?.Dispose();
             subscriptionProcessor = processor;
@@ -130,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             objectMapper            = null;
             eventReaderPool         = null;
             entitySets              = new EntitySet[entityInfos.Length];
-            setByName               = new Dictionary<ShortString, EntitySet>(entityInfos.Length, ShortString.Equality);
+            setByName               = null;
             subscriptions           = null; 
             subscriptionsPrefix     = null; 
             pendingSyncs            = new Dictionary<Task, SyncContext>();
@@ -171,7 +169,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             subscriptionsPrefix?.Clear();
             subscriptions?.Clear();
             hub.RemoveEventReceiver(clientId);
-            setByName.Clear();
+            setByName?.Clear();
             processor?.Dispose();
             objectDiffer?.Dispose();
             mergeWriter?.Dispose();
@@ -190,21 +188,27 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             syncStore       = new SyncStore();
         }
         
+        private Dictionary<ShortString, EntitySet> CreateSetByName() {
+            var map = new  Dictionary<ShortString, EntitySet>(ShortString.Equality);
+            foreach (var entitySet in entitySets) {
+                map[entitySet.nameShort]  = entitySet;
+            }
+            return map;
+        }
+        
         private ClientTypeInfo InitEntitySets(FlioxClient client, EntityInfo[] entityInfos) {
             var clientTypeInfo  = GetClientTypeInfo (client.type, entityInfos);
             var error           = clientTypeInfo.error;
             if (error != null) {
                 throw new InvalidTypeException(error);
             }
-            var mappers     = clientTypeInfo.entitySetMappers;
-            var length      = entityInfos.Length;
+            var mappers = clientTypeInfo.entitySetMappers;
+            var length  = entityInfos.Length;
+            var sets    = entitySets;
             for (int n = 0; n < length; n++) {
                 ref var entityInfo  = ref entityInfos[n];
-                var name            = entityInfo.container;
-                var setMapper       = mappers[n];
-                var entitySet       = setMapper.CreateEntitySet(name, client);
-                entitySets[n]       = entitySet;
-                setByName[entityInfo.containerShort]  = entitySet;
+                var entitySet       = mappers[n].CreateEntitySet(entityInfo.container, client);
+                sets[n]             = entitySet;
                 entityInfo.SetEntitySetMember(client, entitySet);
             }
             return clientTypeInfo;

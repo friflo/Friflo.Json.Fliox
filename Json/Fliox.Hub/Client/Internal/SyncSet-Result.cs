@@ -263,7 +263,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             for (int n = 0; n < references.Count; n++) {
                 References              reference    = references[n];
                 ReferencesResult        refResult    = referencesResult[n];
-                EntitySet               refContainer = set.client._intern.GetSetByName(reference.container);
+                EntitySet               refContainer = set.client.GetSetByName(reference.container);
                 ReadRelationsFunction   subRelation  = relations[reference.selector];
                 if (refResult.error != null) {
                     var taskError       = new TaskErrorResult (TaskErrorType.DatabaseError, refResult.error);
