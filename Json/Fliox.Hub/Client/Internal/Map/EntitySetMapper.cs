@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
     }
     
     internal interface IEntitySetMapper {
-        EntitySet   CreateEntitySet (string name);
+        EntitySet   CreateEntitySet (string name, FlioxClient client);
     }
     
     internal sealed class EntitySetMapper<T, TKey, TEntity> : TypeMapper<T>, IEntitySetMapper where TEntity : class
@@ -53,9 +53,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             throw new NotImplementedException();
         }
         
-        public EntitySet CreateEntitySet(string name) {
+        public EntitySet CreateEntitySet(string name, FlioxClient client) {
             // EntitySetBase<TEntity>.ValidateKeyType(typeof(TKey));
-            return new EntitySet<TKey,TEntity>(name);
+            return new EntitySet<TKey,TEntity>(name, client);
         }
     }
 }

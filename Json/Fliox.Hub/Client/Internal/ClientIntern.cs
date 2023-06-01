@@ -202,8 +202,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 ref var entityInfo  = ref entityInfos[n];
                 var name            = entityInfo.container;
                 var setMapper       = mappers[n];
-                var entitySet       = setMapper.CreateEntitySet(name);
-                entitySet.Init(client);
+                var entitySet       = setMapper.CreateEntitySet(name, client);
                 entitySets[n]       = entitySet;
                 setByName[entityInfo.containerShort]  = entitySet;
                 entityInfo.SetEntitySetMember(client, entitySet);

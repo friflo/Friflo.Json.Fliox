@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Query
         internal QueryTask<TKey, T> QueryFilter(FilterOperation filter) {
-            var query = new QueryTask<TKey, T>(filter, set.intern.store, this);
+            var query = new QueryTask<TKey, T>(filter, set.client, this);
             tasks.Add(query);
             return query;
         }
@@ -122,12 +122,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (patchSource.IsNull())
                 return;
             var entity  = peer.Entity;
-            var differ  = set.intern.store._intern.ObjectDiffer();
+            var differ  = set.client._intern.ObjectDiffer();
             var source  = mapper.Read<T>(patchSource);
             var diff    = differ.GetDiff(source, entity, DiffKind.DiffArrays);
             if (diff == null)
                 return;
-            var jsonDiff    = set.intern.store._intern.JsonMergeWriter();
+            var jsonDiff    = set.client._intern.JsonMergeWriter();
             var mergePatch  = jsonDiff.WriteEntityMergePatch(diff, entity);
             
             SetNextPatchSource(peer, mapper); // todo next patch source need to be set on Synchronize()

@@ -31,7 +31,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         public    abstract  bool        WritePretty { get; set; }
         public    abstract  bool        WriteNull   { get; set; }
         
-        internal  abstract  void                Init                    (FlioxClient store);
         internal  abstract  void                Reset                   ();
         internal  abstract  void                DetectSetPatchesInternal(DetectAllPatches task, ObjectMapper mapper);
         internal  abstract  void                SyncPeerEntityMap       (Dictionary<JsonKey, EntityValue> entityMap, ObjectMapper mapper);
@@ -93,14 +92,12 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public partial class EntitySet<TKey, T>
     {
+        internal TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._intern.typeStore.GetTypeMapper(typeof(T));
+        
         private SetInfo GetSetInfo() {
             var info = new SetInfo (name) { peers = peerMap?.Count ?? 0 };
             syncSet?.SetTaskInfo(ref info);
             return info;
-        }
-        
-        internal override void Init(FlioxClient store) {
-            intern      = new SetIntern<TKey, T>(store, this);
         }
         
         internal override void Reset() {
@@ -127,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (task.Patches.Count > 0) {
                 allPatches.entitySetPatches.Add(task);
                 set.AddDetectPatches(task);
-                intern.store.AddTask(task);
+                client.AddTask(task);
             }
         }
         
@@ -203,7 +200,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- EntitySet
         internal override void SyncPeerEntityMap(Dictionary<JsonKey, EntityValue> entityMap, ObjectMapper mapper) {
             var reader      = mapper.reader;
-            var typeMapper  = intern.GetTypeMapper();
+            var typeMapper  = GetTypeMapper();
             foreach (var entityPair in entityMap) {
                 var id      = entityPair.Key;
                 var value   = entityPair.Value;
@@ -251,7 +248,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (values.Count != keys.Count) throw new InvalidOperationException("expect values.Count == keys.Count");
             var reader      = mapper.reader;
             var count       = values.Count;
-            var typeMapper  = intern.GetTypeMapper();
+            var typeMapper  = GetTypeMapper();
             for (int n = 0; n < count; n++) {
                 var id          = keys[n];
                 var peer        = GetPeerById(id);
@@ -290,7 +287,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal void PatchPeerEntities (List<Patch<TKey>> patches, ObjectMapper mapper, List<ApplyInfo<TKey,T>> applyInfos) {
             var reader      = mapper.reader;
-            var typeMapper  = intern.GetTypeMapper();
+            var typeMapper  = GetTypeMapper();
             foreach (var patch in patches) {
                 var applyType   = ApplyInfoType.EntityPatched;
                 var peer        = GetOrCreatePeerByKey(patch.key, default);
@@ -310,7 +307,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override SyncTask SubscribeChangesInternal(Change change) {
             var all = Operation.FilterTrue;
             var task = GetSyncSet().SubscribeChangesFilter(change, all);
-            intern.store.AddTask(task);
+            client.AddTask(task);
             return task;
         }
         
