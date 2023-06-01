@@ -196,16 +196,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (error != null) {
                 throw new InvalidTypeException(error);
             }
-            var mappers = clientTypeInfo.entitySetMappers;
-            for (int n = 0; n < entityInfos.Length; n++) {
-                var entityInfo      = entityInfos[n];
+            var mappers     = clientTypeInfo.entitySetMappers;
+            var length      = entityInfos.Length;
+            for (int n = 0; n < length; n++) {
+                ref var entityInfo  = ref entityInfos[n];
                 var name            = entityInfo.container;
-                var nameShort       = new ShortString(name);
                 var setMapper       = mappers[n];
                 var entitySet       = setMapper.CreateEntitySet(name);
                 entitySet.Init(client);
                 entitySets[n]       = entitySet;
-                setByName[nameShort]  = entitySet;
+                setByName[entityInfo.containerShort]  = entitySet;
                 entityInfo.SetEntitySetMember(client, entitySet);
             }
             return clientTypeInfo;

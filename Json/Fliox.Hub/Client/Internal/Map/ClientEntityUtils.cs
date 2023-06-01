@@ -74,6 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
     
     internal readonly struct EntityInfo {
         internal readonly   string                          container;
+        internal readonly   ShortString                     containerShort;
         internal readonly   Type                            entitySetType;
         internal readonly   Type                            keyType;
         internal readonly   Type                            entityType;
@@ -81,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         private  readonly   PropertyInfo                    property;
         private  readonly   Action<FlioxClient,EntitySet>   setMember;
 
-        public override string ToString() => container;
+        public   override   string                          ToString() => container;
 
         internal EntityInfo (
             string         container,
@@ -106,6 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             }
             AttributeUtils.Property(member.CustomAttributes, out string name);
             this.container      = name ?? container;
+            this.containerShort = new ShortString(this.container);
             this.entitySetType  = entitySetType;
             this.keyType        = keyType;
             this.entityType     = entityType;
