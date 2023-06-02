@@ -50,7 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   EntityInfo[]                                entityInfos;
         internal readonly   EntitySet[]                                 entitySets;
         
-        internal readonly   Dictionary<ShortString, EntitySet>          setByName;
+        private             Dictionary<ShortString, EntitySet>          setByName;
+        internal            Dictionary<ShortString, EntitySet>          SetByName => setByName ??= new Dictionary<ShortString, EntitySet>(ShortString.Equality);
         
         [DebuggerBrowsable(Never)]
         internal            Dictionary<ShortString, MessageSubscriber>  subscriptions;          // create on demand - only used for subscriptions
@@ -128,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             objectMapper            = null;
             eventReaderPool         = null;
             entitySets              = new EntitySet[entityInfos.Length];
-            setByName               = new Dictionary<ShortString, EntitySet>(ShortString.Equality);
+            setByName               = null;
             subscriptions           = null; 
             subscriptionsPrefix     = null; 
             pendingSyncs            = new Dictionary<Task, SyncContext>();

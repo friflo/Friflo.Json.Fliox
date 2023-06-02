@@ -27,8 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public partial class FlioxClient
     {
-        internal EntitySet  GetSetByName    (in ShortString name)                    => _intern.setByName[name];
-        internal bool       TryGetSetByName (in ShortString name, out EntitySet set) => _intern.setByName.TryGetValue(name, out set);
+        internal EntitySet  GetSetByName    (in ShortString name)                    => _intern.SetByName[name];
+        internal bool       TryGetSetByName (in ShortString name, out EntitySet set) => _intern.SetByName.TryGetValue(name, out set);
         
         private string FormatToString() {
             var sb = new StringBuilder();

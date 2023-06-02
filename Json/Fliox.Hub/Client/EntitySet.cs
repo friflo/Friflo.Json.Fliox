@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             ref var entityInfo = ref client._intern.entityInfos[index];
             set = (EntitySetInstance<TKey,T>)entityInfo.containerMember.CreateInstance(entityInfo.container, client);
             client._intern.entitySets[index] = set;
-            client._intern.setByName[entityInfo.containerShort] = set;
+            client._intern.SetByName[entityInfo.containerShort] = set;
             return set;
         }
         #endregion

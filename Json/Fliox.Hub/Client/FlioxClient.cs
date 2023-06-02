@@ -241,7 +241,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     var entityInfo  = _intern.entityInfos[n];
                     set             = entityInfo.containerMember.CreateInstance(entityInfo.container, this);
                     _intern.entitySets[n] = set;
-                    _intern.setByName[entityInfo.containerShort] = set;
+                    _intern.SetByName[entityInfo.containerShort] = set;
                 }
                 var task = set.SubscribeChangesInternal(change);
                 tasks.Add(task);
