@@ -395,7 +395,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 // process all task using by passing an error 
                 for (int n = 0; n < tasks.Count; n++) {
                     SyncRequestTask task    = tasks[n];
-                    ProcessTaskResult(task, syncError, syncStore, emptyResults, mapper);
+                    ProcessTaskResult(task, syncError, syncStore, emptyResults);
                 }
                 return;
             }
@@ -433,7 +433,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             for (int n = 0; n < tasks.Count; n++) {
                 SyncRequestTask task    = tasks[n];
                 SyncTaskResult  result  = responseTasks[n];
-                ProcessTaskResult(task, result, syncStore, containers, mapper);
+                ProcessTaskResult(task, result, syncStore, containers);
             }
         }
         
@@ -441,8 +441,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             SyncRequestTask                         task,
             SyncTaskResult                          result,
             SyncStore                               syncStore,
-            List<ContainerEntities>                 containerResults,
-            ObjectMapper                            mapper) // TODO
+            List<ContainerEntities>                 containerResults)
         {
             var syncSets    = syncStore.SyncSets ?? EmptySynSet;
             switch (task.TaskType) {
