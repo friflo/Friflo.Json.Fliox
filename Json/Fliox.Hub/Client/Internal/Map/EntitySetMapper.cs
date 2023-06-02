@@ -2,8 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Reflection;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
 {
@@ -12,17 +14,22 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             bool isEntitySet = ClientEntityUtils.IsEntitySet(type);
             if (!isEntitySet)
                 return null;
+            var mapper = (TypeMapper)CreateMapper(type, config);
+            return mapper;
+        }
+        
+        internal static object CreateMapper(Type type, StoreConfig config) {
             var genericArgs = type.GetGenericArguments();
             var keyType     = genericArgs[0];
             var entityType  = genericArgs[1];
 
-            object[] constructorParams = {config, type};
+            object[] constructorParams = { config, type };
             return (TypeMapper)TypeMapperUtils.CreateGenericInstance(typeof(EntitySetMapper<,,>), new[] {type, keyType, entityType}, constructorParams);
         }
     }
     
     internal interface IEntitySetMapper {
-        EntitySet   CreateEntitySet (string name, FlioxClient client);
+        IContainerMember CreateContainerMember (Type type, string container);
     }
     
     internal sealed class EntitySetMapper<T, TKey, TEntity> : TypeMapper<T>, IEntitySetMapper where TEntity : class
@@ -34,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         public  override    bool            IsNull(ref T value) => value == null;
         
         public EntitySetMapper (StoreConfig config, Type type) :
-            base (config, type, true, false)
+            base (config, type, false, true)
         {
             // instanceFactory = new InstanceFactory(); // abstract type - todo remove
         }
@@ -53,9 +60,42 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             throw new NotImplementedException();
         }
         
-        public EntitySet CreateEntitySet(string name, FlioxClient client) {
-            // EntitySetBase<TEntity>.ValidateKeyType(typeof(TKey));
-            return new EntitySet<TKey,TEntity>(name, client);
+        public IContainerMember  CreateContainerMember (Type type, string container) {
+            return new GenericContainerMember<TKey, TEntity> (type, container);
         }
+    }
+    
+    internal class GenericContainerMember<TKey, T> :  IContainerMember where T : class
+    {
+        private readonly Action<FlioxClient,EntitySet<TKey,T>> setter;
+            
+        internal GenericContainerMember(Type type, string container) {
+            FieldInfo field = type.GetField(container);
+            if (field != null) {
+                setter = DelegateUtils.CreateFieldSetter<FlioxClient,EntitySet<TKey, T>>(field);
+                return;
+            }
+            PropertyInfo property = type.GetProperty(container);
+            var setExp = DelegateUtils.CreateSetLambda<FlioxClient,EntitySet<TKey, T>>(property);
+            setter = setExp.Compile();
+        }
+        
+        public void SetContainerMember(FlioxClient client, int index) {
+            setter(client, new EntitySet<TKey, T>(client, index));
+        }
+        
+        public EntitySet CreateInstance(string container, FlioxClient client) {
+            var result = new EntitySetInstance<TKey,T>(container, client) {
+                WritePretty = client.writePretty,
+                WriteNull   = client.writeNull,
+            };
+            return result;
+        }
+    }
+
+    internal interface IContainerMember
+    {
+        void        SetContainerMember(FlioxClient client, int index);
+        EntitySet   CreateInstance(string container, FlioxClient client);
     }
 }

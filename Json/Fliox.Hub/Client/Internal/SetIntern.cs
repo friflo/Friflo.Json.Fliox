@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper.Map;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -13,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal struct SetIntern<TKey, T> where T : class
     {
         [DebuggerBrowsable(Never)]
-        internal            EntitySet<TKey,T>   entitySet;
+        internal            EntitySetInstance<TKey,T>   entitySet;
         internal            TypeMapper<T>       typeMapper;     // set/create on demand
         private             List<TKey>          keysBuf;        // create on demand
         internal            SubscribeChanges    subscription;

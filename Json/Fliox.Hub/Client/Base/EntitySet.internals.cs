@@ -28,8 +28,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  SetInfo     SetInfo     { get; }
         internal  abstract  Type        KeyType     { get; }
         internal  abstract  Type        EntityType  { get; }
-        public    abstract  bool        WritePretty { get; set; }
-        public    abstract  bool        WriteNull   { get; set; }
+        internal  abstract  bool        WritePretty { get; set; }
+        internal  abstract  bool        WriteNull   { get; set; }
         
         internal  abstract  void                Reset                   ();
         internal  abstract  void                DetectSetPatchesInternal(DetectAllPatches task, ObjectMapper mapper);
@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     }
     
     // --------------------------------------- EntitySetBase<T> ---------------------------------------
-    public abstract class EntitySetBase<T> : EntitySet where T : class
+    internal abstract class EntitySetBase<T> : EntitySet where T : class
     {
         internal  InstanceBuffer<CreateTask<T>>     createBuffer;
         internal  InstanceBuffer<UpsertTask<T>>     upsertBuffer;
@@ -87,12 +87,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public partial class EntitySet<TKey, T>
+    internal partial class EntitySetInstance<TKey, T>
     {
-        internal TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._intern.typeStore.GetTypeMapper(typeof(T));
+        private TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._intern.typeStore.GetTypeMapper(typeof(T));
         
         private SetInfo GetSetInfo() {
             var info = new SetInfo (name) { peers = peerMap?.Count ?? 0 };
@@ -110,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- internal generic entity utility methods - there public counterparts are at EntityUtils<TKey,T>
         private  static     void    SetEntityId (T entity, in JsonKey id)   => Static.EntityKeyTMap.SetId(entity, id);
         internal override   JsonKey GetEntityId (T entity)                  => Static.EntityKeyTMap.GetId(entity);
-        private  static     TKey    GetEntityKey(T entity)                  => Static.EntityKeyTMap.GetKey(entity);
+        internal static     TKey    GetEntityKey(T entity)                  => Static.EntityKeyTMap.GetKey(entity);
 
         internal override void DetectSetPatchesInternal(DetectAllPatches allPatches, ObjectMapper mapper) {
             var set     = GetSyncSet();

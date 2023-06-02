@@ -48,6 +48,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         // exposed only for access in debugger - not used by internally
         // ReSharper disable once UnusedMember.Local
                         private     FlioxHub                    Hub             => _intern.hub;
+                        
+        [Browse(Never)] internal   bool                         writePretty;
+        [Browse(Never)] internal   bool                         writeNull;
 
         /// <summary> name of the database the client is attached to </summary>
         [Browse(Never)] public      string                      DatabaseName    => _intern.database;
@@ -59,9 +62,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> general client information: attached database, the number of cached entities and scheduled <see cref="Tasks"/> </summary>
         [Browse(Never)] public      ClientInfo                  ClientInfo      => new ClientInfo(this); 
         /// <summary> If true the serialization of entities to JSON is prettified </summary>
-        [Browse(Never)] public      bool                        WritePretty { set => SetWritePretty(value); }
+        [Browse(Never)] public      bool                        WritePretty { get => writePretty; set => SetWritePretty(value); }
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
-        [Browse(Never)] public      bool                        WriteNull   { set => SetWriteNull(value); }
+        [Browse(Never)] public      bool                        WriteNull   { get => writeNull;   set => SetWriteNull(value); }
         [Browse(Never)] internal    readonly   Type             type;
         [Browse(Never)] internal    ObjectPool<ObjectMapper>    ObjectMapper            => _intern.pool.ObjectMapper;
         [Browse(Never)] public      IHubLogger                  Logger                  => _intern.hubLogger;
@@ -116,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Remove all tasks and all tracked entities of the <see cref="FlioxClient"/> </summary>
         public void Reset() {
             foreach (var set in _intern.entitySets) {
-                set.Reset();
+                set?.Reset();
             }
             _intern.Reset();
         }
@@ -180,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var task = _intern.syncStore.CreateDetectAllPatchesTask();
             using (var pooled = ObjectMapper.Get()) {
                 foreach (var set in _intern.entitySets) {
-                    set.DetectSetPatchesInternal(task, pooled.instance);
+                    set?.DetectSetPatchesInternal(task, pooled.instance);
                 }
             }
             return task;
@@ -232,8 +235,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         public List<SyncTask> SubscribeAllChanges(Change change, ChangeSubscriptionHandler handler) {
             AssertSubscription();
             var tasks = new List<SyncTask>();
-            foreach (var set in _intern.entitySets) {
-                // ReSharper disable once PossibleMultipleEnumeration
+            for (int n = 0; n < _intern.entitySets.Length; n++) {
+                var set = _intern.entitySets[n];
+                if (set == null) {
+                    var entityInfo  = _intern.entityInfos[n];
+                    set             = entityInfo.containerMember.CreateInstance(entityInfo.container, this);
+                    _intern.entitySets[n] = set;
+                    _intern.setByName[entityInfo.containerShort] = set;
+                }
                 var task = set.SubscribeChangesInternal(change);
                 tasks.Add(task);
             }

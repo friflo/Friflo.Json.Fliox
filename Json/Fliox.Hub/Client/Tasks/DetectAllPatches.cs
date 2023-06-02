@@ -32,8 +32,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary>return type-safe patches of the given <paramref name="entitySet"/></summary>
         public DetectPatchesTask<TKey,T> GetPatches<TKey,T>(EntitySet<TKey,T> entitySet) where T : class {
+            var set = entitySet.GetInstance();
             foreach (var detectPatchesTask in entitySetPatches) {
-                if (detectPatchesTask.Container != entitySet.name)
+                if (detectPatchesTask.Container != set.name)
                     continue;
                 return (DetectPatchesTask<TKey,T>)detectPatchesTask;
             }

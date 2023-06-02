@@ -27,8 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public partial class FlioxClient
     {
-        internal EntitySet  GetSetByName    (in ShortString name)                    => _intern.SetByName[name];
-        internal bool       TryGetSetByName (in ShortString name, out EntitySet set) => _intern.SetByName.TryGetValue(name, out set);
+        internal EntitySet  GetSetByName    (in ShortString name)                    => _intern.setByName[name];
+        internal bool       TryGetSetByName (in ShortString name, out EntitySet set) => _intern.setByName.TryGetValue(name, out set);
         
         private string FormatToString() {
             var sb = new StringBuilder();
@@ -40,13 +40,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private void SetWritePretty (bool value) {
+            writePretty = value;
             foreach (var set in _intern.entitySets) {
+                if (set == null) continue;
                 set.WritePretty = value;
             }
         }
 
         private void SetWriteNull (bool value){
+            writeNull = value;
             foreach (var set in _intern.entitySets) {
+                if (set == null) continue;
                 set.WriteNull = value;
             }
         }
@@ -109,6 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private int GetSubscriptionCount() {
             int count = _intern.subscriptions?.Count ?? 0;
             foreach (var set in _intern.entitySets) {
+                if (set == null) continue;
                 if (set.GetSubscription() != null)
                     count++;
             }
@@ -196,7 +201,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             // --- create new SyncStore and SyncSet's to collect future SyncTask's and execute them via the next SyncTasks() call 
             foreach (var set in _intern.entitySets) {
-                set.ResetSync();
+                set?.ResetSync();
             }
             return syncRequest;
         }
@@ -437,7 +442,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             SyncTaskResult                          result,
             SyncStore                               syncStore,
             List<ContainerEntities>                 containerResults,
-            ObjectMapper                            mapper)
+            ObjectMapper                            mapper) // TODO
         {
             var syncSets    = syncStore.SyncSets ?? EmptySynSet;
             switch (task.TaskType) {

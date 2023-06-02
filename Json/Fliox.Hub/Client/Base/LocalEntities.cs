@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Return all tracked entities in the <see cref="EntitySet{TKey,T}"/> </summary>
         public              T[]                 Entities    => EntitiesToArray();
 
-        private  readonly   EntitySet<TKey, T>  entitySet;
+        private  readonly   EntitySetInstance<TKey, T>  entitySet;
         
         public   override   string              ToString() => $"{entitySet.name}: {GetCount()}";
         
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - initialize
-        internal LocalEntities (EntitySet<TKey, T> entitySet) {
+        internal LocalEntities (EntitySetInstance<TKey, T> entitySet) {
             this.entitySet  = entitySet;
         }
         #endregion
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             private             Dictionary<TKey,Peer<T>>.Enumerator enumerator;
             private  readonly   bool                                isEmpty;
 
-            internal Enumerator(EntitySet<TKey, T> entitySet) {
+            internal Enumerator(EntitySetInstance<TKey, T> entitySet) {
                 var peers   = entitySet.GetPeers();
                 if (peers == null) {
                     isEmpty     = true;

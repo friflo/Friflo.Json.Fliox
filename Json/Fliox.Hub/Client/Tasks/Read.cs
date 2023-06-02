@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         private  readonly   SyncSet<TKey, T>        syncSet;
         [DebuggerBrowsable(Never)]
-        private  readonly   EntitySet<TKey, T>      set;
+        private  readonly   EntitySetInstance<TKey, T>      set;
         internal            Relations               relations;
         internal readonly   Dictionary<TKey, T>     result      = SyncSet.CreateDictionary<TKey,T>();
         internal readonly   List<FindFunction<TKey, T>> findTasks   = new List<FindFunction<TKey, T>>();
@@ -210,45 +210,45 @@ namespace Friflo.Json.Fliox.Hub.Client
         public ReadRelation<TRef> ReadRelation<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return ReadRefByPath<TRef>(relation, path);
+            return ReadRefByPath<TRef>(relation.GetInstance(), path);
         }
         
         public ReadRelation<TRef> ReadRelation<TRefKey, TRef> (EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class   where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return ReadRefByPath<TRef>(relation, path);
+            return ReadRefByPath<TRef>(relation.GetInstance(), path);
         }
         
         public ReadRelation<TRef> ReadRelation<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationPath<TRef> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return ReadRefByPath<TRef>(relation, selector.path);
+            return ReadRefByPath<TRef>(relation.GetInstance(), selector.path);
         }
         
         
         // --- IReadRelationsTask<T>
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation, selector, set.client);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation, selector, set.client);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client);
         }
        
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation, selector, set.client);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class  where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation, selector, set.client);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByPath<TRef>(relation, selector.path, set.client);
+            return relations.ReadRelationsByPath<TRef>(relation.GetInstance(), selector.path, set.client);
         }
 
 

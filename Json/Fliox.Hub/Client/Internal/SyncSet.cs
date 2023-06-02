@@ -28,13 +28,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static readonly KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
 
         // --- internal fields
-        internal  readonly  EntitySet<TKey, T>  set;
+        internal  readonly  EntitySetInstance<TKey, T>  set;
         internal  readonly  List<SyncTask>      tasks  = new List<SyncTask>();
 
         internal  override  EntitySet           EntitySet => set;
         public    override  string              ToString()  => "";
 
-        internal SyncSet(EntitySet<TKey, T> set) {
+        internal SyncSet(EntitySetInstance<TKey, T> set) {
             this.set = set;
         }
 

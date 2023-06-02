@@ -130,6 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             commands    = 0;    
             messages    = 0;
             foreach (var set in client._intern.entitySets) {
+                if (set == null) continue;
                 Add(set.SetInfo);
             }
             foreach (var function in client._intern.syncStore.functions) {

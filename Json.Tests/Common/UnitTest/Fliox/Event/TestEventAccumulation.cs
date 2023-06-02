@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         private class TestAccumulationClient : FlioxClient
         {
             // --- containers
-            public readonly EntitySet <int, Record>     records = null;
+            public readonly EntitySet <int, Record>     records = default;
 
             public TestAccumulationClient(FlioxHub hub, EventReceiver receiver = null)
                 : base (hub, null, receiver == null ? null : new ClientOptions ((h, c)  => receiver)) { }

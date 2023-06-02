@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         /// <summary> called via <see cref="SubscriptionProcessor.GetChanges"/> </summary>
-        internal Changes(EntitySet<TKey, T> entitySet, SubscriptionIntern intern) {
+        internal Changes(EntitySetInstance<TKey, T> entitySet, SubscriptionIntern intern) {
             keyName         = entitySet.GetKeyName();
             Container       = entitySet.name;
             ContainerShort  = entitySet.nameShort;
@@ -193,12 +193,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override void ApplyChangesToInternal  (EntitySet entitySet) {
-            var set = (EntitySet<TKey, T>)entitySet;
-            ApplyChangesTo(set);
+            var set = (EntitySetInstance<TKey, T>)entitySet;
+            ApplyChangesToInternal(set);
         }
         
         /// <summary> Apply the container changes to the given <paramref name="entitySet"/> </summary>
         public ApplyResult<TKey,T> ApplyChangesTo(EntitySet<TKey, T> entitySet, Change change = Change.All) {
+            var instance = entitySet.GetInstance();
+            return ApplyChangesToInternal(instance, change);
+        }
+        
+        private ApplyResult<TKey,T> ApplyChangesToInternal(EntitySetInstance<TKey, T> entitySet, Change change = Change.All) {
             applyInfos.Clear();
             if (Count == 0)
                 return new ApplyResult<TKey,T>(applyInfos);

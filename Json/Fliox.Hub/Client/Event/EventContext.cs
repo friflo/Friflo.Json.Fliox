@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <see cref="Changes{TKey,T}.Deletes"/> and <see cref="Changes{TKey,T}.Patches"/> made to a container
         /// </summary>
         public Changes<TKey, T> GetChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
-            return (Changes<TKey, T>)processor.GetChanges(entitySet);
+            return (Changes<TKey, T>)processor.GetChanges(entitySet.GetInstance());
         }
         
         /// <summary> Apply all <see cref="Changes"/> of the <see cref="EventContext"/> the given <paramref name="client"/> </summary>
