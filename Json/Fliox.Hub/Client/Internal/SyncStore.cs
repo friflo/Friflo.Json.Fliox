@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<DetectAllPatches>      detectAllPatches;
         private     List<DetectAllPatches>      DetectAllPatches()  => detectAllPatches ??= new List<DetectAllPatches>();
         
-        internal void SetSyncSets(FlioxClient store) {
-            SyncSets = CreateSyncSets(store, SyncSets);
+        internal void SetSyncSets(FlioxClient client) {
+            SyncSets = CreateSyncSets(client, SyncSets);
         }
         
         private static Dictionary<ShortString, SyncSet> CreateSyncSets(FlioxClient client, Dictionary<ShortString,SyncSet> syncSets) {

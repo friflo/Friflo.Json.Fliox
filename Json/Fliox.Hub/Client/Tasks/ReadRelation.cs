@@ -29,8 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override   SubRelations SubRelations => relations.subRelations;
 
-        internal ReadRelation(SyncTask parent, string selector, in ShortString container, string keyName, bool isIntKey, FlioxClient store)
-            : base(store)
+        internal ReadRelation(SyncTask parent, string selector, in ShortString container, string keyName, bool isIntKey, FlioxClient client)
+            : base(client)
         {
             relations       = new Relations(this);
             this.parent     = parent;

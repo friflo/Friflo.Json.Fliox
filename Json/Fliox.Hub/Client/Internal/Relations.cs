@@ -17,20 +17,20 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.subRelations    = new SubRelations();
         }
 
-        internal ReadRelations<TRef> ReadRelationsByExpression<TRef>(EntitySet relation, Expression expression, FlioxClient store) where TRef : class {
+        internal ReadRelations<TRef> ReadRelationsByExpression<TRef>(EntitySet relation, Expression expression, FlioxClient client) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(expression, out _);
-            return ReadRelationsByPath<TRef>(relation, path, store);
+            return ReadRelationsByPath<TRef>(relation, path, client);
         }
         
-        internal ReadRelations<TRef> ReadRelationsByPath<TRef>(EntitySet relation, string selector, FlioxClient store) where TRef : class {
+        internal ReadRelations<TRef> ReadRelationsByPath<TRef>(EntitySet relation, string selector, FlioxClient client) where TRef : class {
             if (subRelations.TryGetTask(selector, out ReadRelationsFunction readRelationsFunction))
                 return (ReadRelations<TRef>)readRelationsFunction;
             // var relation = store._intern.GetSetByType(typeof(TValue));
             var keyName         = relation.GetKeyName();
             var isIntKey        = relation.IsIntKey();
-            var readRelations   = new ReadRelations<TRef>(task, selector, relation.nameShort, keyName, isIntKey, store);
+            var readRelations   = new ReadRelations<TRef>(task, selector, relation.nameShort, keyName, isIntKey, client);
             subRelations.AddReadRelations(selector, readRelations);
-            store.AddFunction(readRelations);
+            client.AddFunction(readRelations);
             return readRelations;
         }
     }

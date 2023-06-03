@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            string          sql;
         internal            Dictionary<JsonKey, EntityValue>    entities;
         internal            string          resultCursor;
-        private  readonly   FlioxClient     store;
+        private  readonly   FlioxClient     client;
         private  readonly   SyncSet<TKey,T> syncSet;
 
         public              List<T>         Result          => IsOk("QueryTask.Result",   out Exception e) ? result : throw e;
@@ -57,11 +57,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskType        TaskType        => TaskType.query;
       
 
-        internal QueryTask(FilterOperation filter, FlioxClient store, SyncSet<TKey,T> syncSet) {
+        internal QueryTask(FilterOperation filter, FlioxClient client, SyncSet<TKey,T> syncSet) {
             relations       = new Relations(this);
             this.filter     = filter;
             this.filterLinq = filter.Linq;
-            this.store      = store;
+            this.client     = client;
             this.syncSet    = syncSet;
         }
         
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             relations   = new Relations(this);
             filter      = query.filter;
             filterLinq  = query.filterLinq;
-            store       = query.store;
+            client      = query.client;
             syncSet     = query.syncSet;
         }
         
@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (resultCursor == null) throw new InvalidOperationException("cursor query reached end");
                 var query = new QueryTask<TKey, T>(this) { cursor = resultCursor, maxCount = maxCount };
                 syncSet.set.AddTask(query);
-                store.AddTask(query);
+                client.AddTask(query);
                 return query;
             }
             throw e;
@@ -109,27 +109,27 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- IReadRelationsTask<T>
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, store);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class  where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, store);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, store);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, store);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByPath<TRef>(relation.GetInstance(), selector.path, store);
+            return relations.ReadRelationsByPath<TRef>(relation.GetInstance(), selector.path, client);
         }
     }
     

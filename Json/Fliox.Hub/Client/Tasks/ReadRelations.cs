@@ -29,37 +29,37 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class ReadRelationsFunction<T> : ReadRelationsFunction, IReadRelationsTask<T> where T : class
     {
         internal            Relations       relations;
-        private   readonly  FlioxClient     store;
+        private   readonly  FlioxClient     client;
         
-        protected ReadRelationsFunction(FlioxClient     store) {
+        protected ReadRelationsFunction(FlioxClient client) {
             relations   = new Relations(this);
-            this.store  = store;
+            this.client = client;
         }
 
         // --- IReadRelationsTask<T>
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, store);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, store);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, store);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, store);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByPath<TRef>(relation.GetInstance(), selector.path, store);
+            return relations.ReadRelationsByPath<TRef>(relation.GetInstance(), selector.path, client);
         }
     }
 
@@ -95,8 +95,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal  override  SubRelations SubRelations => relations.subRelations;
 
 
-        internal ReadRelations(SyncFunction parent, string selector, in ShortString container, string keyName, bool isIntKey, FlioxClient store)
-            : base(store)
+        internal ReadRelations(SyncFunction parent, string selector, in ShortString container, string keyName, bool isIntKey, FlioxClient client)
+            : base(client)
         {
             this.parent     = parent;
             this.Selector   = selector;
