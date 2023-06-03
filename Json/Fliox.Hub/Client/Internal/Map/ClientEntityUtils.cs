@@ -12,8 +12,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
 {
     internal static class ClientEntityUtils
     {
-        private static readonly Dictionary<Type, EntityInfo[]>     EntityInfoCache      = new Dictionary<Type, EntityInfo[]>();
-        private static readonly Dictionary<Type, IEntitySetMapper> EntitySetMapperCache = new Dictionary<Type, IEntitySetMapper>();
+        private static readonly Dictionary<Type, EntitySetInfo[]>   EntitySetInfoCache      = new Dictionary<Type, EntitySetInfo[]>();
+        private static readonly Dictionary<Type, IEntitySetMapper>  EntitySetMapperCache    = new Dictionary<Type, IEntitySetMapper>();
         
         private static readonly StoreConfig DefaultStoreConfig = new StoreConfig();
         
@@ -27,13 +27,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             return mapper;
         }
         
-        internal static EntityInfo[] GetEntityInfos(Type client) {
-            var cache = EntityInfoCache;
+        internal static EntitySetInfo[] GetEntitySetInfos(Type client) {
+            var cache = EntitySetInfoCache;
             lock (cache) {
-                if (cache.TryGetValue(client, out  EntityInfo[] result)) {
+                if (cache.TryGetValue(client, out  EntitySetInfo[] result)) {
                     return result;
                 }
-                var entityInfos = new List<EntityInfo>();
+                var index = 0;
+                var entityInfos = new List<EntitySetInfo>();
                 var flags       = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
                 PropertyInfo[] properties = client.GetProperties(flags);
                 for (int n = 0; n < properties.Length; n++) {
@@ -44,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                         continue;
                     var mapper      = GetEntitySetMapper(propType);
                     var genericArgs = propType.GetGenericArguments();
-                    var info        = new EntityInfo (property.Name, propType, genericArgs[0], genericArgs[1], client, mapper, property );
+                    var info        = new EntitySetInfo (index++, property.Name, propType, genericArgs[0], genericArgs[1], client, mapper, property );
                     entityInfos.Add(info);
                 }
                 FieldInfo[] fields = client.GetFields(flags);
@@ -56,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                         continue;
                     var mapper      = GetEntitySetMapper(fieldType);
                     var genericArgs = fieldType.GetGenericArguments();
-                    var info        = new EntityInfo (field.Name, fieldType, genericArgs[0], genericArgs[1], client, mapper, field);
+                    var info        = new EntitySetInfo (index++, field.Name, fieldType, genericArgs[0], genericArgs[1], client, mapper, field);
                     entityInfos.Add(info);
                 }
                 result = entityInfos.ToArray();
@@ -66,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         }
         
         internal static Type[] GetEntityTypes(Type clientType) {
-            var entityInfos = GetEntityInfos (clientType);
+            var entityInfos = GetEntitySetInfos (clientType);
             var types       = new Type[entityInfos.Length];
             for (int n = 0; n < entityInfos.Length; n++) {
                 types[n] = entityInfos[n].entityType;
@@ -87,18 +88,22 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         }
     }
     
-    internal readonly struct EntityInfo
+    public readonly struct EntitySetInfo
     {
-        internal readonly   string              container;
-        internal readonly   ShortString         containerShort;
+        public   readonly   string              container;
+        public   readonly   ShortString         containerShort;
+        public   readonly   Type                keyType;
+        public   readonly   Type                entityType;
+        //
+        /// <summary>index in <see cref="FlioxClient.GetEntitySetInfos"/></summary>
+        internal readonly   int                 index;
         internal readonly   Type                entitySetType;
-        internal readonly   Type                keyType;
-        internal readonly   Type                entityType;
         internal readonly   IContainerMember    containerMember;
 
         public   override   string              ToString() => container;
 
-        internal EntityInfo (
+        internal EntitySetInfo (
+            int                 index,
             string              container,
             Type                entitySetType,
             Type                keyType,
@@ -107,6 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             IEntitySetMapper    mapper,
             MemberInfo          member)
         {
+            this.index          = index;
             containerMember     = mapper.CreateContainerMember(client, container);
             AttributeUtils.Property(member.CustomAttributes, out string name);
             this.container      = name ?? container;

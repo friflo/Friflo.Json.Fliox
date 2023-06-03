@@ -18,7 +18,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     // --------------------------------------- EntitySet ---------------------------------------
-    public abstract class EntitySet
+    internal abstract class EntitySet
     {
         [DebuggerBrowsable(Never)] public   readonly  string          name;
         [DebuggerBrowsable(Never)] public   readonly  ShortString     nameShort;
@@ -40,10 +40,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  SubscribeChanges    GetSubscription();
         internal  abstract  string              GetKeyName();
         internal  abstract  bool                IsIntKey();
-        protected abstract  void                GetRawEntities(List<object> result);
+        internal  abstract  void                GetRawEntities(List<object> result);
         
-        public static       void                GetRawEntities(EntitySet entitySet, List<object> result) => entitySet.GetRawEntities(result);
-
         protected EntitySet(string name) {
             this.name   = name;
             nameShort   = new ShortString(name);
@@ -320,8 +318,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return Static.EntityKeyTMap.IsIntKey();
         }
         
-        protected override  void GetRawEntities(List<object> result) {
-            result.Clear();
+        internal override  void GetRawEntities(List<object> result) {
             foreach (var pair in Local) {
                 result.Add(pair.Value);
             }

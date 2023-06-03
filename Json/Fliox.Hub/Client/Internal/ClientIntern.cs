@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private             ObjectMapper                    objectMapper;       // create on demand
         private             ReaderPool                      eventReaderPool;    // create on demand
         
-        internal readonly   EntityInfo[]                                entityInfos;
+        internal readonly   EntitySetInfo[]                             entityInfos;
         internal readonly   EntitySet[]                                 entitySets;
         
         private             Dictionary<ShortString, EntitySet>          setByName;
@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             string          database,
             EventReceiver   eventReceiver)
         {
-            entityInfos             = ClientEntityUtils.GetEntityInfos (client.type);
+            entityInfos             = ClientEntityUtils.GetEntitySetInfos (client.type);
             
             // --- readonly
             sharedEnv               = hub.sharedEnv;
@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             syncStore       = new SyncStore();
         }
         
-        private ClientTypeInfo InitEntitySets(FlioxClient client, EntityInfo[] entityInfos) {
+        private ClientTypeInfo InitEntitySets(FlioxClient client, EntitySetInfo[] entityInfos) {
             var clientTypeInfo  = GetClientTypeInfo (client.type, entityInfos);
             var error           = clientTypeInfo.error;
             if (error != null) {
@@ -202,7 +202,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return clientTypeInfo;
         }
         
-        private ClientTypeInfo GetClientTypeInfo (Type clientType, EntityInfo[] entityInfos) {
+        private ClientTypeInfo GetClientTypeInfo (Type clientType, EntitySetInfo[] entityInfos) {
             var cache = ClientTypeCache;
             lock (cache) {
                 if (cache.TryGetValue(clientType, out var result))
@@ -221,7 +221,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         // Validate [Relation(<container>)] fields / properties
-        private static string ValidateMappers(IEntitySetMapper[] mappers, EntityInfo[] entityInfos) {
+        private static string ValidateMappers(IEntitySetMapper[] mappers, EntitySetInfo[] entityInfos) {
             var entityInfoMap = entityInfos.ToDictionary(entityInfo => entityInfo.container);
             foreach (var mapper in mappers) {
                 var typeMapper      = (TypeMapper)mapper;

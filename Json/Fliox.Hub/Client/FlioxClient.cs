@@ -88,11 +88,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             internal const bool OriginalContext = true;
         }
 
-        /// <summary>
-        /// Return the <see cref="Type"/>'s used by the <see cref="EntitySet{TKey,T}"/> members of a <see cref="FlioxClient"/> as entity Type. 
-        /// </summary>
-        public static Type[]        GetEntityTypes(Type clientType) => ClientEntityUtils.GetEntityTypes(clientType);
-        public static EntitySet[]   GetEntitySets (FlioxClient client) => client.GetEntitySets();
         #endregion
 
     // ----------------------------------------- public methods -----------------------------------------
@@ -401,6 +396,31 @@ namespace Friflo.Json.Fliox.Hub.Client
                 AddTask(task);
                 return task;
             }
+        }
+        #endregion
+        
+    #region non generic access
+        /// <summary>
+        /// Return the <see cref="Type"/>'s used by the <see cref="EntitySet{TKey,T}"/> members of a <see cref="FlioxClient"/> as entity Type. 
+        /// </summary>
+        public static Type[] GetEntityTypes(Type clientType)         => ClientEntityUtils.GetEntityTypes(clientType);
+            
+        public static EntitySetInfo[] GetEntitySetInfos (FlioxClient client) {
+            var infos   = client._intern.entityInfos;
+            var result  = new EntitySetInfo[infos.Length];
+            for (int n = 0; n < infos.Length; n++) {
+                result[n] = infos[n];
+            }
+            return result;
+        }
+
+        public static void GetRawEntities(FlioxClient client, string entitySet, List<object> result) {
+            result.Clear();
+            var name = new ShortString(entitySet);
+            if (!client.TryGetSetByName(name, out EntitySet set)) {
+                return;
+            }
+            set.GetRawEntities(result);
         }
         #endregion
     }

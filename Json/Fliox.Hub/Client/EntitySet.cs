@@ -48,18 +48,21 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Utility methods for type safe key conversion and generic <typeparamref name="TKey"/> access for entities of type <typeparamref name="T"/>
         /// </summary>
-        [Browse(Never)] public          SetUtils<TKey,T>            Utils   => Static.SetUtils;
+        [Browse(Never)] public          SetUtils<TKey,T>            Utils       => Static.SetUtils;
         
         /// <summary> List of tasks created by its <see cref="EntitySet{TKey,T}"/> methods. These tasks are executed when calling <see cref="FlioxClient.SyncTasks"/> </summary>
         //  Not used internally 
-                        public          IReadOnlyList<SyncTask>     Tasks   => GetInstance().syncSet?.tasks;
+                        public          IReadOnlyList<SyncTask>     Tasks       => GetInstance().syncSet?.tasks;
         
         /// <summary> Provide access to the <see cref="LocalEntities{TKey,T}"/> tracked by the <see cref="EntitySet{TKey,T}"/> </summary>
-                        public          LocalEntities<TKey,T>       Local   => GetInstance().Local;
+                        public          LocalEntities<TKey,T>       Local       => GetInstance().Local;
         
-                        private         EntitySetInstance<TKey, T>  Instance=> (EntitySetInstance<TKey, T>)client._intern.entitySets[index];
+                        private         EntitySetInstance<TKey, T>  Instance    => (EntitySetInstance<TKey, T>)client._intern.entitySets[index];
+                        
+                        public          string                      Name        => client._intern.entityInfos[index].container;
+                        public          ShortString                 NameShort   => client._intern.entityInfos[index].containerShort;
 
-                        public override string                      ToString()      => GetString();
+                        public override string                      ToString()  => GetString();
         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
         private static class Static  {
@@ -74,6 +77,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal EntitySet(FlioxClient client, int index)  {
             this.client = client;
             this.index  = index;
+        }
+        
+        public EntitySet(FlioxClient client, EntitySetInfo info)  {
+            if (typeof(TKey) != info.keyType)    throw new ArgumentException($"expect TKey: {typeof(TKey).Name}. was: {info.keyType.Name}");
+            if (typeof(T)    != info.entityType) throw new ArgumentException($"expect T: {typeof(T).Name}. was: {info.entityType.Name}");
+            this.client = client;
+            this.index  = info.index;
         }
         
         private string GetString() {
