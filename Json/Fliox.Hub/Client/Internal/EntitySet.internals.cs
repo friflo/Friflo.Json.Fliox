@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -20,8 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // --------------------------------------- EntitySet ---------------------------------------
     internal abstract class EntitySet
     {
-        [DebuggerBrowsable(Never)] public   readonly  string          name;
-        [DebuggerBrowsable(Never)] public   readonly  ShortString     nameShort;
+        [DebuggerBrowsable(Never)] internal readonly  string          name;
+        [DebuggerBrowsable(Never)] internal readonly  ShortString     nameShort;
         [DebuggerBrowsable(Never)] internal           ChangeCallback  changeCallback;
 
         internal  abstract  SyncSet     SyncSet     { get; }
@@ -80,10 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             throw new InvalidTypeException(error);
         }
     }
-}
 
-namespace Friflo.Json.Fliox.Hub.Client
-{
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
     internal partial class EntitySetInstance<TKey, T>
     {

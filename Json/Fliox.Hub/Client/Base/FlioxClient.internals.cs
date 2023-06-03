@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         private void SetWritePretty (bool value) {
             writePretty = value;
-            foreach (var set in _intern.entitySets) {
+            foreach (var set in entitySets) {
                 if (set == null) continue;
                 set.WritePretty = value;
             }
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         private void SetWriteNull (bool value){
             writeNull = value;
-            foreach (var set in _intern.entitySets) {
+            foreach (var set in entitySets) {
                 if (set == null) continue;
                 set.WriteNull = value;
             }
@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // ReSharper disable once UnusedMember.Local
         private int GetSubscriptionCount() {
             int count = _intern.subscriptions?.Count ?? 0;
-            foreach (var set in _intern.entitySets) {
+            foreach (var set in entitySets) {
                 if (set == null) continue;
                 if (set.GetSubscription() != null)
                     count++;
@@ -200,7 +200,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
             }
             // --- create new SyncStore and SyncSet's to collect future SyncTask's and execute them via the next SyncTasks() call 
-            foreach (var set in _intern.entitySets) {
+            foreach (var set in entitySets) {
                 set?.ResetSync();
             }
             return syncRequest;

@@ -48,7 +48,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private             ReaderPool                      eventReaderPool;    // create on demand
         
         internal readonly   EntitySetInfo[]                             entityInfos;
-        internal readonly   EntitySet[]                                 entitySets;
         
         private             Dictionary<ShortString, EntitySet>          setByName;
         internal            Dictionary<ShortString, EntitySet>          SetByName => setByName ??= new Dictionary<ShortString, EntitySet>(ShortString.Equality);
@@ -128,7 +127,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             processor               = null;
             objectMapper            = null;
             eventReaderPool         = null;
-            entitySets              = new EntitySet[entityInfos.Length];
             setByName               = null;
             subscriptions           = null; 
             subscriptionsPrefix     = null; 
@@ -246,29 +244,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return null;
         }
 
-        internal Dictionary<ShortString, SyncSet> CreateSyncSets(Dictionary<ShortString,SyncSet> syncSets) {
-            var count = 0;
-            syncSets?.Clear();
-            foreach (var set in entitySets) {
-                SyncSet syncSet = set?.SyncSet;
-                if (syncSet == null)
-                    continue;
-                count++;
-            }
-            if (count == 0) {
-                return syncSets;
-            }
-            // create Dictionary<,> only if required
-            syncSets = syncSets ?? new Dictionary<ShortString, SyncSet>(count, ShortString.Equality);
-            foreach (var set in entitySets) {
-                SyncSet syncSet = set?.SyncSet;
-                if (syncSet == null)
-                    continue;
-                syncSets.Add(set.nameShort, syncSet);
-            }
-            return syncSets;
-        }
-        
         internal SubscribeMessageTask AddCallbackHandler(string name, MessageCallback handler) {
             var task = new SubscribeMessageTask(name, null);
             var subs = subscriptions;

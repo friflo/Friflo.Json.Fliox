@@ -42,15 +42,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         //          This ensures focus on fields & properties relevant for an application which are:
         //          Tasks, UserInfo & EntitySet<,> fields
         // ReSharper disable once InconsistentNaming
-                        internal    ClientIntern                _intern;        // Use intern struct as first field
+                        internal            ClientIntern            _intern;        // Use intern struct as first field
+        [Browse(Never)] internal readonly   EntitySet[]             entitySets;
         /// <summary> List of tasks created by its <see cref="FlioxClient"/> methods. These tasks are executed when calling <see cref="SyncTasks"/> </summary>
-                        public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
+                        public              IReadOnlyList<SyncTask> Tasks           => GetTasks();
         // exposed only for access in debugger - not used by internally
         // ReSharper disable once UnusedMember.Local
-                        private     FlioxHub                    Hub             => _intern.hub;
+                        private             FlioxHub                Hub             => _intern.hub;
                         
-        [Browse(Never)] internal   bool                         writePretty;
-        [Browse(Never)] internal   bool                         writeNull;
+        [Browse(Never)] internal            bool                    writePretty;
+        [Browse(Never)] internal            bool                    writeNull;
 
         /// <summary> name of the database the client is attached to </summary>
         [Browse(Never)] public      string                      DatabaseName    => _intern.database;
@@ -102,6 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             options             = options ?? ClientOptions.Default;
             var eventReceiver   = options.createEventReceiver(hub, this);
             _intern             = new ClientIntern(this, hub, dbName, eventReceiver);
+            entitySets          = new EntitySet[_intern.entityInfos.Length];
             send                = new SendTask(this, _intern.messagePrefix);
             std                 = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
@@ -113,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary> Remove all tasks and all tracked entities of the <see cref="FlioxClient"/> </summary>
         public void Reset() {
-            foreach (var set in _intern.entitySets) {
+            foreach (var set in entitySets) {
                 set?.Reset();
             }
             _intern.Reset();
@@ -177,7 +179,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public DetectAllPatches DetectAllPatches() {
             var task = _intern.syncStore.CreateDetectAllPatchesTask();
             using (var pooled = ObjectMapper.Get()) {
-                foreach (var set in _intern.entitySets) {
+                foreach (var set in entitySets) {
                     set?.DetectSetPatchesInternal(task, pooled.instance);
                 }
             }
@@ -230,15 +232,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         public List<SyncTask> SubscribeAllChanges(Change change, ChangeSubscriptionHandler handler) {
             AssertSubscription();
             var tasks = new List<SyncTask>();
-            for (int n = 0; n < _intern.entitySets.Length; n++) {
-                var set = _intern.entitySets[n];
-                if (set == null) {
+            var sets = entitySets;
+            for (int n = 0; n < sets.Length; n++) {
+                var entitySet = sets[n];
+                if (entitySet == null) {
                     var entityInfo  = _intern.entityInfos[n];
-                    set             = entityInfo.containerMember.CreateInstance(entityInfo.container, this);
-                    _intern.entitySets[n] = set;
-                    _intern.SetByName[entityInfo.containerShort] = set;
+                    entitySet       = entityInfo.containerMember.CreateInstance(entityInfo.container, this);
+                    sets[n] = entitySet;
+                    _intern.SetByName[entityInfo.containerShort] = entitySet;
                 }
-                var task = set.SubscribeChangesInternal(change);
+                var task = entitySet.SubscribeChangesInternal(change);
                 tasks.Add(task);
             }
             _intern.changeSubscriptionHandler = handler; 

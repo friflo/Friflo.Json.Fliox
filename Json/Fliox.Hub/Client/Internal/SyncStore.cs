@@ -16,7 +16,31 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<DetectAllPatches>      DetectAllPatches()  => detectAllPatches ??= new List<DetectAllPatches>();
         
         internal void SetSyncSets(FlioxClient store) {
-            SyncSets = store._intern.CreateSyncSets(SyncSets);
+            SyncSets = CreateSyncSets(store, SyncSets);
+        }
+        
+        private static Dictionary<ShortString, SyncSet> CreateSyncSets(FlioxClient client, Dictionary<ShortString,SyncSet> syncSets) {
+            var count = 0;
+            syncSets?.Clear();
+            var sets =  client.entitySets;
+            foreach (var set in sets) {
+                SyncSet syncSet = set?.SyncSet;
+                if (syncSet == null)
+                    continue;
+                count++;
+            }
+            if (count == 0) {
+                return syncSets;
+            }
+            // create Dictionary<,> only if required
+            syncSets = syncSets ?? new Dictionary<ShortString, SyncSet>(count, ShortString.Equality);
+            foreach (var set in sets) {
+                SyncSet syncSet = set?.SyncSet;
+                if (syncSet == null)
+                    continue;
+                syncSets.Add(set.nameShort, syncSet);
+            }
+            return syncSets;
         }
         
         internal void Reuse() {

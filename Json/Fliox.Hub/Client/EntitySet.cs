@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Provide access to the <see cref="LocalEntities{TKey,T}"/> tracked by the <see cref="EntitySet{TKey,T}"/> </summary>
                         public          LocalEntities<TKey,T>       Local       => GetInstance().Local;
         
-                        private         EntitySetInstance<TKey, T>  Instance    => (EntitySetInstance<TKey, T>)client._intern.entitySets[index];
+                        private         EntitySetInstance<TKey, T>  Instance    => (EntitySetInstance<TKey, T>)client.entitySets[index];
                         
                         public          string                      Name        => client._intern.entityInfos[index].container;
                         public          ShortString                 NameShort   => client._intern.entityInfos[index].containerShort;
@@ -96,15 +96,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         internal EntitySetInstance<TKey, T> GetInstance() {
-            var set = (EntitySetInstance<TKey, T>)client._intern.entitySets[index];
-            if (set != null) {
-                return set;
+            var instance = client.entitySets[index];
+            if (instance != null) {
+                return (EntitySetInstance<TKey,T>)instance;
             }
             ref var entityInfo = ref client._intern.entityInfos[index];
-            set = (EntitySetInstance<TKey,T>)entityInfo.containerMember.CreateInstance(entityInfo.container, client);
-            client._intern.entitySets[index] = set;
-            client._intern.SetByName[entityInfo.containerShort] = set;
-            return set;
+            var newInstance = (EntitySetInstance<TKey,T>)entityInfo.containerMember.CreateInstance(entityInfo.container, client);
+            client.entitySets[index] = newInstance;
+            client._intern.SetByName[entityInfo.containerShort] = newInstance;
+            return newInstance;
         }
         #endregion
 

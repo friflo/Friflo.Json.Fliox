@@ -10,7 +10,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.Client
+namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal sealed partial class EntitySetInstance<TKey, T> : EntitySetBase<T>  where T : class
     {
