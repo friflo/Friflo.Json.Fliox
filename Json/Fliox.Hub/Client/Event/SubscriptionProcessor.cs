@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return;
             if (intern.objectMapper == null) {
                 // use individual ObjectMapper for messages as they are used by App outside the pooled scope below
-                intern.objectMapper = new ObjectMapper(client._intern.typeStore);
+                intern.objectMapper = new ObjectMapper(client._readonly.typeStore);
                 intern.objectMapper.ErrorHandler = ObjectReader.NoThrow;
             }
             messages.Clear();
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             contextChanges.Clear();
             EventCount++;
             var db = syncEvent.db;
-            if (!db.IsNull() && !client._intern.databaseShort.IsEqual(db)) {
+            if (!db.IsNull() && !client._readonly.databaseShort.IsEqual(db)) {
                 var msg = $"invalid SyncEvent db: {db}. expect: {client.DatabaseName}";
                 eventContext.Logger.Log(HubLog.Error, msg);
                 return;

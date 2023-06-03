@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
     internal partial class EntitySetInstance<TKey, T>
     {
-        private TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._intern.typeStore.GetTypeMapper(typeof(T));
+        private TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._readonly.typeStore.GetTypeMapper(typeof(T));
         
         private SetInfo GetSetInfo() {
             var info = new SetInfo (name) { peers = peerMap?.Count ?? 0 };

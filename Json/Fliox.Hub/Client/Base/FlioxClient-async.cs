@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// As an alternative use <see cref="TrySyncTasks"/> to execute tasks which does not throw an exception. <br/>
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> SyncTasks() {
-            var hub             = _intern.hub;
+            var hub             = _readonly.hub;
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var buffer          = CreateMemoryBuffer();
             var syncContext     = CreateSyncContext(buffer);
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// In performance critical application this method should be used instead of <see cref="SyncTasks"/> as throwing exceptions is expensive. <br/> 
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public async Task<SyncResult> TrySyncTasks() {
-            var hub             = _intern.hub;
+            var hub             = _readonly.hub;
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var buffer          = CreateMemoryBuffer();
             var syncContext     = CreateSyncContext(buffer);
@@ -74,13 +74,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             Task<ExecuteSyncResult> task = null;
             try {
                 switch (type) {
-                    case Async: task = _intern.hub.ExecuteRequestAsync(syncRequest, syncContext);   break;
-                    case Queue: task = _intern.hub.QueueRequestAsync  (syncRequest, syncContext);   break;
+                    case Async: task = _readonly.hub.ExecuteRequestAsync(syncRequest, syncContext);   break;
+                    case Queue: task = _readonly.hub.QueueRequestAsync  (syncRequest, syncContext);   break;
                     default:    throw new InvalidOperationException($"invalid execution type {type}");
                 }
                 // add to pendingSyncs for counting and canceling
-                lock (_intern.pendingSyncs) {
-                    _intern.pendingSyncs.Add(task, syncContext);
+                lock (_readonly.pendingSyncs) {
+                    _readonly.pendingSyncs.Add(task, syncContext);
                 }
                 var response = await task.ConfigureAwait(false);
                 
@@ -89,14 +89,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (_intern.clientId.IsNull() && success != null && !success.clientId.IsNull()) {
                     SetClientId(success.clientId);
                 }
-                lock (_intern.pendingSyncs) {
-                    _intern.pendingSyncs.Remove(task);
+                lock (_readonly.pendingSyncs) {
+                    _readonly.pendingSyncs.Remove(task);
                 }
                 return response;
             }
             catch (Exception e) {
-                lock (_intern.pendingSyncs) {
-                    if (task != null) _intern.pendingSyncs.Remove(task);
+                lock (_readonly.pendingSyncs) {
+                    if (task != null) _readonly.pendingSyncs.Remove(task);
                 }
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
                 return new ExecuteSyncResult(errorMsg, ErrorResponseType.Exception);

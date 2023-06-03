@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
@@ -454,7 +455,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// The handlers are stored in collections and are iterated. These collections are copied to temporary collections to avoid:
         /// InvalidOperationException : Collection was modified; enumeration operation may not execute.
         /// <see cref="Friflo.Json.Fliox.Hub.Client.Event.MessageSubscriber"/> callbackHandlers and
-        /// <see cref="Friflo.Json.Fliox.Hub.Client.Internal.ClientIntern.subscriptionsPrefix"/>
+        /// <see cref="ClientIntern.subscriptionsPrefix"/>
         /// </summary>
         private static async Task AssertModifySubscriptionInHandler() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture

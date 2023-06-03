@@ -59,8 +59,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         
                         private         EntitySetInstance<TKey, T>  Instance    => (EntitySetInstance<TKey, T>)client.entitySets[index];
                         
-                        public          string                      Name        => client._intern.entityInfos[index].container;
-                        public          ShortString                 NameShort   => client._intern.entityInfos[index].containerShort;
+                        public          string                      Name        => client._readonly.entityInfos[index].container;
+                        public          ShortString                 NameShort   => client._readonly.entityInfos[index].containerShort;
 
                         public override string                      ToString()  => GetString();
         
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private string GetString() {
             var instance = Instance;
             if (instance == null) {
-                var container = client._intern.entityInfos[index].container;
+                var container = client._readonly.entityInfos[index].container;
                 return new SetInfo(container).ToString();
             }
             return instance.SetInfo.ToString();
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (instance != null) {
                 return (EntitySetInstance<TKey,T>)instance;
             }
-            ref var entityInfo = ref client._intern.entityInfos[index];
+            ref var entityInfo = ref client._readonly.entityInfos[index];
             var newInstance = (EntitySetInstance<TKey,T>)entityInfo.containerMember.CreateInstance(entityInfo.container, client);
             client.entitySets[index] = newInstance;
             client._intern.SetByName[entityInfo.containerShort] = newInstance;

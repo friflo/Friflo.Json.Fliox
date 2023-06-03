@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// As an alternative use <see cref="TrySyncTasks"/> to execute tasks which does not throw an exception. <br/>
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public SyncResult SyncTasksSynchronous() {
-            var hub             = _intern.hub;
+            var hub             = _readonly.hub;
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var buffer          = CreateMemoryBuffer();
             var syncContext     = CreateSyncContext(buffer);
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// In performance critical application this method should be used instead of <see cref="SyncTasks"/> as throwing exceptions is expensive. <br/> 
         /// The method can be called without awaiting the result of a previous call. </remarks>
         public SyncResult TrySyncTasksSynchronous() {
-            var hub             = _intern.hub;
+            var hub             = _readonly.hub;
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var buffer          = CreateMemoryBuffer();
             var syncContext     = CreateSyncContext(buffer);
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // Task<ExecuteSyncResult> task = null; not required
             try {
                 //
-                var response = _intern.hub.ExecuteRequest(syncRequest, syncContext);
+                var response = _readonly.hub.ExecuteRequest(syncRequest, syncContext);
                 //
                 //
                 //

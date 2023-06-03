@@ -42,19 +42,21 @@ namespace Friflo.Json.Fliox.Hub.Client
         //          This ensures focus on fields & properties relevant for an application which are:
         //          Tasks, UserInfo & EntitySet<,> fields
         // ReSharper disable once InconsistentNaming
+                        internal readonly   ClientReadOnly          _readonly;
+        // ReSharper disable once InconsistentNaming
                         internal            ClientIntern            _intern;        // Use intern struct as first field
         [Browse(Never)] internal readonly   EntitySet[]             entitySets;
         /// <summary> List of tasks created by its <see cref="FlioxClient"/> methods. These tasks are executed when calling <see cref="SyncTasks"/> </summary>
                         public              IReadOnlyList<SyncTask> Tasks           => GetTasks();
         // exposed only for access in debugger - not used by internally
         // ReSharper disable once UnusedMember.Local
-                        private             FlioxHub                Hub             => _intern.hub;
+                        private             FlioxHub                Hub             => _readonly.hub;
                         
         [Browse(Never)] internal            bool                    writePretty;
         [Browse(Never)] internal            bool                    writeNull;
 
         /// <summary> name of the database the client is attached to </summary>
-        [Browse(Never)] public      string                      DatabaseName    => _intern.database;
+        [Browse(Never)] public      string                      DatabaseName    => _readonly.database;
         /// <summary> access to standard database commands - <see cref="StdCommands"/> </summary>
         [Browse(Never)] public    readonly   StdCommands        std;
         /// <summary> Used to send typed messages / commands by classes extending <see cref="FlioxClient"/></summary>
@@ -67,13 +69,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
         [Browse(Never)] public      bool                        WriteNull   { get => writeNull;   set => SetWriteNull(value); }
         [Browse(Never)] internal    readonly   Type             type;
-        [Browse(Never)] internal    ObjectPool<ObjectMapper>    ObjectMapper            => _intern.pool.ObjectMapper;
-        [Browse(Never)] public      IHubLogger                  Logger                  => _intern.hubLogger;
+        [Browse(Never)] internal    ObjectPool<ObjectMapper>    ObjectMapper            => _readonly.pool.ObjectMapper;
+        [Browse(Never)] public      IHubLogger                  Logger                  => _readonly.hubLogger;
         
         /// <summary> Return the number of calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
                         public      int                         GetSyncCount()          => _intern.syncCount;
         /// <summary> Return the number of pending <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> calls </summary>
-                        public      int                         GetPendingSyncCount()   => _intern.pendingSyncs.Count;
+                        public      int                         GetPendingSyncCount()   => _readonly.pendingSyncs.Count;
         
         public override             string                      ToString()              => FormatToString();
         
@@ -102,9 +104,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             type                = GetType();
             options             = options ?? ClientOptions.Default;
             var eventReceiver   = options.createEventReceiver(hub, this);
-            _intern             = new ClientIntern(this, hub, dbName, eventReceiver);
-            entitySets          = new EntitySet[_intern.entityInfos.Length];
-            send                = new SendTask(this, _intern.messagePrefix);
+            _readonly           = new ClientReadOnly(this, hub, dbName, eventReceiver);
+            _intern.Init(this);
+            entitySets          = new EntitySet[_readonly.entityInfos.Length];
+            send                = new SendTask(this, _readonly.messagePrefix);
             std                 = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
         }
@@ -148,11 +151,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (newClientId.IsEqual(_intern.clientId))
                 return;
             if (!_intern.clientId.IsNull()) {
-                _intern.hub.RemoveEventReceiver(_intern.clientId);
+                _readonly.hub.RemoveEventReceiver(_intern.clientId);
             }
             _intern.clientId    = newClientId;
             if (!_intern.clientId.IsNull()) {
-                _intern.hub.AddEventReceiver(newClientId, _intern.eventReceiver);
+                _readonly.hub.AddEventReceiver(newClientId, _readonly.eventReceiver);
             }
         }
 
@@ -236,7 +239,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             for (int n = 0; n < sets.Length; n++) {
                 var entitySet = sets[n];
                 if (entitySet == null) {
-                    var entityInfo  = _intern.entityInfos[n];
+                    var entityInfo  = _readonly.entityInfos[n];
                     entitySet       = entityInfo.containerMember.CreateInstance(entityInfo.container, this);
                     sets[n] = entitySet;
                     _intern.SetByName[entityInfo.containerShort] = entitySet;
@@ -378,7 +381,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// the <see cref="FlioxClient"/> subclass. This adds the command and its API to the <see cref="DatabaseSchema"/>. 
         /// </remarks>
         public CommandTask<TResult> SendCommand<TResult>(string name) {
-            var task    = new CommandTask<TResult>(new ShortString(name), new JsonValue(), _intern.pool);
+            var task    = new CommandTask<TResult>(new ShortString(name), new JsonValue(), _readonly.pool);
             AddTask(task);
             return task;
         }
@@ -395,7 +398,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             using (var pooled = ObjectMapper.Get()) {
                 var mapper  = pooled.instance;
                 var json    = mapper.WriteAsValue(param);
-                var task    = new CommandTask<TResult>(new ShortString(name), json, _intern.pool);
+                var task    = new CommandTask<TResult>(new ShortString(name), json, _readonly.pool);
                 AddTask(task);
                 return task;
             }
@@ -409,7 +412,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public static Type[] GetEntityTypes(Type clientType)         => ClientEntityUtils.GetEntityTypes(clientType);
             
         public static EntitySetInfo[] GetEntitySetInfos (FlioxClient client) {
-            var infos   = client._intern.entityInfos;
+            var infos   = client._readonly.entityInfos;
             var result  = new EntitySetInfo[infos.Length];
             for (int n = 0; n < infos.Length; n++) {
                 result[n] = infos[n];

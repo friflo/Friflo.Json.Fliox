@@ -56,8 +56,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal void AssertSubscription() {
-            if (_intern.eventReceiver == null) {
-                var msg = $"The FlioxHub used by the client don't support PushEvents. hub: {_intern.hub.GetType().Name}";
+            if (_readonly.eventReceiver == null) {
+                var msg = $"The FlioxHub used by the client don't support PushEvents. hub: {_readonly.hub.GetType().Name}";
                 throw new InvalidOperationException(msg);
             }
         }
@@ -161,15 +161,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private SyncContext CreateSyncContext(MemoryBuffer memoryBuffer) {
-            var syncContext = _intern.syncContextBuffer.Get() ?? new SyncContext(_intern.sharedEnv, _intern.eventReceiver); 
+            var syncContext = _intern.syncContextBuffer.Get() ?? new SyncContext(_readonly.sharedEnv, _readonly.eventReceiver); 
             syncContext.SetMemoryBuffer(memoryBuffer);
             syncContext.clientId            = _intern.clientId;
-            syncContext.responseReaderPool  = _intern.responseReaderPool?.Get().instance.Reuse();
+            syncContext.responseReaderPool  = _readonly.responseReaderPool?.Get().instance.Reuse();
             return syncContext;
         }
         
         private void ReuseSyncContext(SyncContext syncContext) {
-            _intern.responseReaderPool?.Return(syncContext.responseReaderPool);
+            _readonly.responseReaderPool?.Return(syncContext.responseReaderPool);
             _intern.syncContextBuffer.Add(syncContext);
             syncContext.Init();
         }
@@ -207,7 +207,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private void InitSyncRequest(SyncRequest syncRequest) {
-            syncRequest.database    = _intern.databaseShort;
+            syncRequest.database    = _readonly.databaseShort;
             syncRequest.userId      = _intern.userId;
             syncRequest.clientId    = _intern.clientId; 
             syncRequest.token       = _intern.token;
@@ -402,7 +402,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // ----------- handle SyncResponse -----------
             response.success.AssertResponse(syncRequest);
             SyncResponse    syncResponse    = response.success;
-            var             hub             = _intern.hub; 
+            var             hub             = _readonly.hub; 
             if (hub.IsRemoteHub) {
                 GetContainerResults(syncResponse);
             }
