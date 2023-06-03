@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         #endregion
         
-    #region - initialize
+    #region - Initialize
         /// constructor is called via <see cref="GenericContainerMember{TKey,T}.SetContainerMember"/> 
         internal EntitySet(FlioxClient client, int index)  {
             this.client = client;

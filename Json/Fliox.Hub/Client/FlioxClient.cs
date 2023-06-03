@@ -402,7 +402,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         #endregion
         
-    #region non generic access
+    #region - non generic access
         /// <summary>
         /// Return the <see cref="Type"/>'s used by the <see cref="EntitySet{TKey,T}"/> members of a <see cref="FlioxClient"/> as entity Type. 
         /// </summary>
