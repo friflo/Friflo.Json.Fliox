@@ -15,18 +15,18 @@ namespace Friflo.Json.Fliox.Hub.Redis
     public class RedisHashDatabase : EntityDatabase
     {
         public              bool        Pretty      { get; init; } = false;
+        /// <summary>The ID to get a database for. See <see cref="ConnectionMultiplexer.GetDatabase"/></summary>
+        public              int         DbIndex     { get; init; } = -1;
         
         private  readonly   string      connectionString;
-        internal readonly   int         databaseNumber;
         
         
         public   override   string      StorageType => "Redis";
         
-        public RedisHashDatabase(string dbName, string connectionString, int databaseNumber = 0, DatabaseSchema schema = null, DatabaseService service = null)
+        public RedisHashDatabase(string dbName, string connectionString, DatabaseSchema schema = null, DatabaseService service = null)
             : base(dbName, schema, service)
         {
             this.connectionString   = connectionString;
-            this.databaseNumber     = databaseNumber;
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {

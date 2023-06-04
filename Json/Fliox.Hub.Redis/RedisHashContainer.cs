@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
 {
     public sealed class RedisHashContainer : EntityContainer
     {
-        private  readonly   int             databaseNumber;
+        private  readonly   int             dbIndex;
         private  readonly   RedisKey        nameKey;
     //  private             bool            tableExists;
         public   override   bool            Pretty      { get; }
@@ -24,9 +24,9 @@ namespace Friflo.Json.Fliox.Hub.Redis
         internal RedisHashContainer(string name, RedisHashDatabase database, bool pretty)
             : base(name, database)
         {
-            databaseNumber  = database.databaseNumber;
-            nameKey         = new RedisKey(name);
-            Pretty          = pretty;
+            dbIndex = database.DbIndex;
+            nameKey = new RedisKey(name);
+            Pretty  = pretty;
         }
         
         // not applicable to Redis
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 return new CreateEntitiesResult();
             }
             try {
-                var db      = Database(connection, databaseNumber);
+                var db      = Database(connection, dbIndex);
                 var keys    = EntitiesToRedisKeys(command.entities);
                 // obviously not optimal.
                 var values  = await db.HashGetAsync(nameKey, keys).ConfigureAwait(false);
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 return new UpsertEntitiesResult();
             }
             try {
-                var db      = Database(connection, databaseNumber);
+                var db      = Database(connection, dbIndex);
                 var entries = EntitiesToRedisEntries(command.entities);
                 await db.HashSetAsync(nameKey, entries).ConfigureAwait(false);
                 return new UpsertEntitiesResult();
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 return new ReadEntitiesResult { Error = connection.error };
             }
             try {
-                var db          = Database(connection, databaseNumber);
+                var db          = Database(connection, dbIndex);
                 var keys        = KeysToRedisKeys(command.ids);
                 var values      = await db.HashGetAsync(nameKey, keys).ConfigureAwait(false);
                 var entities    = KeyValuesToEntities(command.ids, values);
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 return new QueryEntitiesResult { Error = connection.error };
             }
             var filter  = command.GetFilter();
-            var db      = Database(connection, databaseNumber);
+            var db      = Database(connection, dbIndex);
             try {
                 if (filter.IsTrue) {
                     var entries     = await db.HashGetAllAsync(nameKey).ConfigureAwait(false);
@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             if (connection.Failed) {
                 return new AggregateEntitiesResult { Error = connection.error };
             }
-            var db = Database(connection, databaseNumber);
+            var db = Database(connection, dbIndex);
             if (command.type == AggregateType.count) {
                 try {
                     var filter  = command.GetFilter();
@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 return new DeleteEntitiesResult { Error = connection.error };
             }
             try {
-                var db = Database(connection, databaseNumber);
+                var db = Database(connection, dbIndex);
                 if (command.all == true) {
                     var keys = await db.HashKeysAsync(nameKey).ConfigureAwait(false);
                     await db.HashDeleteAsync(nameKey, keys).ConfigureAwait(false);

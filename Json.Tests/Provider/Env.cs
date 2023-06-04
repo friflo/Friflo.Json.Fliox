@@ -121,7 +121,7 @@ namespace Friflo.Json.Tests.Provider
                 case "mariadb":     return new MariaDBDatabase      (db, connection, schema);
                 case "postgres":    return new PostgreSQLDatabase   (db, connection, schema);
                 case "sqlserver":   return new SQLServerDatabase    (db, connection, schema);
-                case "redis":       return new RedisHashDatabase    (db, connection, 0, schema);
+                case "redis":       return new RedisHashDatabase    (db, connection, schema);
                 case "cosmos":      return new CosmosDatabase       (db, connection, schema);
             }
             throw new ArgumentException($"invalid provider: {provider}");
