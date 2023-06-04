@@ -107,6 +107,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return this;
         }
+        
+        protected static DatabaseSchema AssertSchema<TDatabase>(DatabaseSchema schema) {
+            return schema ?? throw new ArgumentNullException(nameof(schema), $"{typeof(TDatabase).Name} requires a {nameof(DatabaseSchema)}");
+        }
+        
         #endregion
         
     #region - general public methods

@@ -18,12 +18,12 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         public              bool        AutoCreateTables        { get; init; } = true;
         public              bool        AutoAddVirtualColumns   { get; init; } = true;
         
-        internal readonly   string      connectionString;
+        private  readonly   string      connectionString;
         
         public   override   string      StorageType => "PostgreSQL";
         
-        public PostgreSQLDatabase(string dbName, string  connectionString, DatabaseSchema schema = null, DatabaseService service = null)
-            : base(dbName, schema, service)
+        public PostgreSQLDatabase(string dbName, string  connectionString, DatabaseSchema schema, DatabaseService service = null)
+            : base(dbName, AssertSchema<PostgreSQLDatabase>(schema), service)
         {
             this.connectionString = connectionString;
         }

@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         /// </summary>
         /// <returns></returns>
         public SQLiteDatabase(string dbName, string path, DatabaseSchema schema, DatabaseService service = null)
-            : base(dbName, schema, service)
+            : base(dbName, AssertSchema<SQLiteDatabase>(schema), service)
         {
             var rc = raw.sqlite3_open(path, out sqliteDB);
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"sqlite3_open failed. error: {rc}");

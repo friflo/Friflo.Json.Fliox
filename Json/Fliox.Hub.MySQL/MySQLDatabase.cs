@@ -19,13 +19,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public              bool            AutoCreateTables        { get; init; } = true;
         public              bool            AutoAddVirtualColumns   { get; init; } = true;
         
-        internal readonly   string          connectionString;
+        private  readonly   string          connectionString;
         
         public   override   string          StorageType => "MySQL";
         internal virtual    MySQLProvider   Provider    => MySQLProvider.MY_SQL;
         
-        public MySQLDatabase(string dbName, string connectionString, DatabaseSchema schema = null, DatabaseService service = null)
-            : base(dbName, schema, service)
+        public MySQLDatabase(string dbName, string connectionString, DatabaseSchema schema, DatabaseService service = null)
+            : base(dbName, AssertSchema<MySQLDatabase>(schema), service)
         {
             this.connectionString = connectionString;
         }
@@ -66,8 +66,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public    override   string          StorageType => "MariaDB";
         internal  override   MySQLProvider   Provider    => MySQLProvider.MARIA_DB;
         
-        public MariaDBDatabase(string dbName, string connectionString, DatabaseSchema schema = null, DatabaseService service = null)
-            : base(dbName, connectionString, schema, service)
+        public MariaDBDatabase(string dbName, string connectionString, DatabaseSchema schema, DatabaseService service = null)
+            : base(dbName, connectionString, AssertSchema<MariaDBDatabase>(schema), service)
         { }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
