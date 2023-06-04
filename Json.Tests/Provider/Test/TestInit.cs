@@ -1,3 +1,5 @@
+#if !UNITY_5_3_OR_NEWER
+
 using System;
 using Friflo.Json.Fliox.Hub.MySQL;
 using Friflo.Json.Fliox.Hub.PostgreSQL;
@@ -42,3 +44,5 @@ namespace Friflo.Json.Tests.Provider.Test
         }
     }
 }
+
+#endif
