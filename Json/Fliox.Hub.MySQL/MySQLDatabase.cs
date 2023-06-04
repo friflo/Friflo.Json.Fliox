@@ -24,8 +24,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public   override   string          StorageType => "MySQL";
         internal virtual    MySQLProvider   Provider    => MySQLProvider.MY_SQL;
         
-        public MySQLDatabase(string dbName, string connectionString, DatabaseService service = null)
-            : base(dbName, service)
+        public MySQLDatabase(string dbName, string connectionString, DatabaseSchema schema = null, DatabaseService service = null)
+            : base(dbName, schema, service)
         {
             this.connectionString = connectionString;
         }
@@ -66,8 +66,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public    override   string          StorageType => "MariaDB";
         internal  override   MySQLProvider   Provider    => MySQLProvider.MARIA_DB;
         
-        public MariaDBDatabase(string dbName, string connectionString, DatabaseService service = null)
-            : base(dbName, connectionString, service)
+        public MariaDBDatabase(string dbName, string connectionString, DatabaseSchema schema = null, DatabaseService service = null)
+            : base(dbName, connectionString, schema, service)
         { }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {

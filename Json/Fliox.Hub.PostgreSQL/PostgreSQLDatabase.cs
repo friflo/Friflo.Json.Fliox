@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         public   override   string      StorageType => "PostgreSQL";
         
-        public PostgreSQLDatabase(string dbName, string  connectionString, DatabaseService service = null)
-            : base(dbName, service)
+        public PostgreSQLDatabase(string dbName, string  connectionString, DatabaseSchema schema = null, DatabaseService service = null)
+            : base(dbName, schema, service)
         {
             this.connectionString = connectionString;
         }

@@ -69,14 +69,14 @@ namespace Friflo.Json.Tests.Main
             hub.AddExtensionDB (new MonitorDB("monitor", hub));         // optional - expose monitor stats as extension database
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, c.env); // optional - enables Pub-Sub (sending events for subscriptions)
             
-            var userDB              = new FileDatabase("user_db", c.UserDbPath, new UserDBService()) { Schema = UserDB.Schema, Pretty = false };
+            var userDB              = new FileDatabase("user_db", c.UserDbPath, UserDB.Schema, new UserDBService()) { Pretty = false };
             var userAuthenticator   = new UserAuthenticator(userDB, c.env);
             await userAuthenticator.SetAdminPermissions();                                  // optional - enable Hub access with user/token: admin/admin
             await userAuthenticator.SubscribeUserDbChanges(hub.EventDispatcher);            // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                                                     // optional - expose userStore as extension database
             hub.Authenticator       = userAuthenticator;                                    // optional - otherwise all request tasks are authorized
             
-            var signalingDB         = new MemoryDatabase("signaling") { Schema = SignalingCommands.Schema };
+            var signalingDB         = new MemoryDatabase("signaling", SignalingCommands.Schema);
             signalingDB.AddCommands(new SignalingCommands());
             hub.AddExtensionDB(signalingDB);
             
@@ -116,10 +116,10 @@ namespace Friflo.Json.Tests.Main
         }
         
         private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, DatabaseService service) {
-            var fileDb = new FileDatabase("main_db", c.MainDbPath, service) { Schema = schema, Pretty = false };
+            var fileDb = new FileDatabase("main_db", c.MainDbPath, schema, service) { Pretty = false };
             if (!c.useMemoryDb)
                 return fileDb;
-            var memoryDB = new MemoryDatabase("main_db", service) { Schema = schema, ContainerType = c.memoryType };
+            var memoryDB = new MemoryDatabase("main_db", schema, service) { ContainerType = c.memoryType };
             memoryDB.SeedDatabase(fileDb).Wait();
             return memoryDB;
         }

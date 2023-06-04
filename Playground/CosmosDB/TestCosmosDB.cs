@@ -8,7 +8,6 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
 using Friflo.Json.Tests.Common.Utils;
-using Friflo.Json.Tests.Provider;
 using Friflo.Json.Tests.Unity.Utils;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
@@ -37,7 +36,7 @@ namespace Friflo.Playground.CosmosDB
         public static async Task CosmosCreatePocStore() {
             var client              = CreateCosmosClient();
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new CosmosDatabase("main_db", client, null, new PocService()) { Throughput = 400 })
+            using (var database     = new CosmosDatabase("main_db", client, null, null, new PocService()) { Throughput = 400 })
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var createStore  = new PocStore(hub) { UserId = "createStore"})
             using (var useStore     = new PocStore(hub) { UserId = "useStore"}) {
@@ -50,7 +49,7 @@ namespace Friflo.Playground.CosmosDB
         public static async Task CosmosTestEntityKey() {
             var client              = CreateCosmosClient();
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new CosmosDatabase("main_db", client, null, new PocService()) { Throughput = 400 })
+            using (var database     = new CosmosDatabase("main_db", client, null, null, new PocService()) { Throughput = 400 })
             using (var hub          = new FlioxHub(database, TestGlobals.Shared)) {
                 await TestEntityKey.AssertEntityKeyTests (hub);
             }

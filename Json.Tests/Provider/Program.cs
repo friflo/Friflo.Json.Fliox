@@ -32,8 +32,8 @@ namespace Friflo.Json.Tests.Provider
             var env                 = new SharedEnv();
             string      cache       = null;
             var schema              = DatabaseSchema.Create<TestClient>();
-            var fileDb              = new FileDatabase("file_db", Env.TestDbFolder) { Schema = schema };
-            var memoryDb            = new MemoryDatabase("memory_db") { Schema = schema };
+            var fileDb              = new FileDatabase("file_db", Env.TestDbFolder, schema);
+            var memoryDb            = new MemoryDatabase("memory_db", schema);
             await memoryDb.SeedDatabase(fileDb).ConfigureAwait(false);
             
             var hub                 = new FlioxHub(memoryDb, env);
@@ -47,23 +47,23 @@ namespace Friflo.Json.Tests.Provider
                 await testDb.SeedDatabase(fileDb).ConfigureAwait(false);
                 hub.AddExtensionDB (testDb);
             } */
-            var sqliteDb           = new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3") { Schema = schema };
+            var sqliteDb           = new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3", schema);
             hub.AddExtensionDB (sqliteDb);
             
             var mysqlConnection     = EnvConfig.GetConnectionString("mysql");
-            hub.AddExtensionDB       (new MySQLDatabase("mysql_db", mysqlConnection)            { Schema = schema });
+            hub.AddExtensionDB       (new MySQLDatabase("mysql_db", mysqlConnection, schema));
             
             var mariadbConnection   = EnvConfig.GetConnectionString("mariadb");
-            hub.AddExtensionDB       (new MariaDBDatabase("maria_db", mariadbConnection)        { Schema = schema });
+            hub.AddExtensionDB       (new MariaDBDatabase("maria_db", mariadbConnection, schema));
             
             var postgresConnection  = EnvConfig.GetConnectionString("postgres");
-            hub.AddExtensionDB       (new PostgreSQLDatabase("postgres_db", postgresConnection) { Schema = schema });
+            hub.AddExtensionDB       (new PostgreSQLDatabase("postgres_db", postgresConnection, schema));
             
             var sqlServerConnection = EnvConfig.GetConnectionString("sqlserver");
-            hub.AddExtensionDB       (new SQLServerDatabase("sqlserver_db", sqlServerConnection){ Schema = schema });
+            hub.AddExtensionDB       (new SQLServerDatabase("sqlserver_db", sqlServerConnection, schema));
 
             var redisConnection     = EnvConfig.GetConnectionString("redis");
-            hub.AddExtensionDB       (new RedisHashDatabase("redis_db", redisConnection)        { Schema = schema });
+            hub.AddExtensionDB       (new RedisHashDatabase("redis_db", redisConnection, 0, schema));
 #endif
             hub.AddExtensionDB       (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)

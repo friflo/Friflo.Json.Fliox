@@ -34,7 +34,7 @@ namespace DemoTest {
         private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath, DatabaseService service = null)
         {
             var referenceDB = new FileDatabase("source_db", srcDatabasePath);
-            var cloneDB     = new MemoryDatabase(dbName, service) { Schema = Schema };
+            var cloneDB     = new MemoryDatabase(dbName, Schema, service);
             cloneDB.SeedDatabase(referenceDB).Wait();
             return cloneDB;
         }

@@ -39,11 +39,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public   override   string      StorageType             => "in-memory";
 
-        /// <param name="dbName"></param>
-        /// <param name="service"></param>
         /// Byte arrays used to store container values are reused in case their length is less or equal this size. 
-        public MemoryDatabase(string dbName, DatabaseService service = null)
-            : base(dbName, service)
+        public MemoryDatabase(string dbName, DatabaseSchema schema = null, DatabaseService service = null)
+            : base(dbName, schema, service)
         { }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {

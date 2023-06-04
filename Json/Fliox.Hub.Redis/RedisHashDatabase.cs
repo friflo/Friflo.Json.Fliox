@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.Hub.Redis
         
         public   override   string      StorageType => "Redis";
         
-        public RedisHashDatabase(string dbName, string connectionString, int databaseNumber = 0, DatabaseService service = null)
-            : base(dbName, service)
+        public RedisHashDatabase(string dbName, string connectionString, int databaseNumber = 0, DatabaseSchema schema = null, DatabaseService service = null)
+            : base(dbName, schema, service)
         {
             this.connectionString   = connectionString;
             this.databaseNumber     = databaseNumber;

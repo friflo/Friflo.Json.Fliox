@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Provider
                 return _seedSource;
             }
             var databaseSchema  = DatabaseSchema.Create<TestClient>();
-            return _seedSource = new FileDatabase("file_db", TestDbFolder) { Schema = databaseSchema };
+            return _seedSource = new FileDatabase("file_db", TestDbFolder, databaseSchema);
         } }
         
         internal static async Task<TestClient> GetClient(string db, bool seed = true)
@@ -97,10 +97,10 @@ namespace Friflo.Json.Tests.Provider
         {
             switch (db) {
                 case memory_db:
-                    return new MemoryDatabase("memory_db") { Schema = schema };
+                    return new MemoryDatabase("memory_db", schema);
                 case sqlite_db:
-                    return new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3") {
-                        Schema = schema, Synchronous = true // Synchronous to simplify debugging
+                    return new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3", schema) {
+                        Synchronous = true // Synchronous to simplify debugging
                     };
                 case test_db:
                     if (IsFileSystem) {
@@ -116,13 +116,13 @@ namespace Friflo.Json.Tests.Provider
         {
             var connection = EnvConfig.GetConnectionString(provider);
             switch (provider) {
-                case "sqlite":      return new SQLiteDatabase       (db, SQLiteFile) { Schema = schema };
-                case "mysql":       return new MySQLDatabase        (db, connection) { Schema = schema };
-                case "mariadb":     return new MariaDBDatabase      (db, connection) { Schema = schema };
-                case "postgres":    return new PostgreSQLDatabase   (db, connection) { Schema = schema };
-                case "sqlserver":   return new SQLServerDatabase    (db, connection) { Schema = schema };
-                case "redis":       return new RedisHashDatabase    (db, connection) { Schema = schema };
-                case "cosmos":      return new CosmosDatabase       (db, connection) { Schema = schema };
+                case "sqlite":      return new SQLiteDatabase       (db, SQLiteFile, schema);
+                case "mysql":       return new MySQLDatabase        (db, connection, schema);
+                case "mariadb":     return new MariaDBDatabase      (db, connection, schema);
+                case "postgres":    return new PostgreSQLDatabase   (db, connection, schema);
+                case "sqlserver":   return new SQLServerDatabase    (db, connection, schema);
+                case "redis":       return new RedisHashDatabase    (db, connection, 0, schema);
+                case "cosmos":      return new CosmosDatabase       (db, connection, schema);
             }
             throw new ArgumentException($"invalid provider: {provider}");
         }

@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
         /// performed on the <see cref="EntityContainer"/>'s of the database
         /// </summary>
-        public              DatabaseSchema      Schema          { get; init; }
+        public              DatabaseSchema      Schema          { get; }
         
         public  virtual     Task<SyncConnection> GetConnectionAsync()  => throw new NotImplementedException();
         /// <summary>A mapping function used to assign a custom container name.</summary>
@@ -87,10 +87,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// constructor parameters are mandatory to force implementations having them in their constructors also or
         /// pass null by implementations.
         /// </summary>
-        protected EntityDatabase(string dbName, DatabaseService service){
+        protected EntityDatabase(string dbName, DatabaseSchema schema, DatabaseService service){
             containers      = new ConcurrentDictionary<ShortString, EntityContainer>(ShortString.Equality);
             name            = dbName ?? throw new ArgumentNullException(nameof(dbName));
             nameShort       = new ShortString(dbName);
+            this.Schema     = schema;
             this.service    = service ?? new DatabaseService();
         }
         

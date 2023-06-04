@@ -24,12 +24,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         internal readonly   FlioxHub            monitorHub;
 
         public   override   string              StorageType => stateDB.StorageType;
+        
+        private static readonly DatabaseSchema MonitorSchema = DatabaseSchema.CreateFromType(typeof(MonitorStore));
 
         public MonitorDB (string dbName, FlioxHub hub)
-            : base (dbName, new MonitorService(hub))
+            : base (dbName, MonitorSchema, new MonitorService(hub))
         {
             ((MonitorService)service).monitorDB = this;
-            Schema          = DatabaseSchema.CreateFromType(typeof(MonitorStore));
             stateDB         = new MemoryDatabase(dbName) { ContainerType = MemoryType.NonConcurrent };
             monitorHub      = new FlioxHub(stateDB, hub.sharedEnv);
         }

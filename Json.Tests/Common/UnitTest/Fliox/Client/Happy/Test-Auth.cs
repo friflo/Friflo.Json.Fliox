@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
-                    using (var userDatabase     = new FileDatabase(TestGlobals.UserDB, CommonUtils.GetBasePath() + "assets~/DB/user_db", new UserDBService()) { Schema = UserDB.Schema })
+                    using (var userDatabase     = new FileDatabase(TestGlobals.UserDB, CommonUtils.GetBasePath() + "assets~/DB/user_db", UserDB.Schema, new UserDBService()))
                     using (var authenticator    = new UserAuthenticator(userDatabase, TestGlobals.Shared))
                     using (var database         = new MemoryDatabase(TestGlobals.DB))
                     using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
@@ -226,7 +226,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
-                    using (var userDatabase     = new FileDatabase(TestGlobals.UserDB, CommonUtils.GetBasePath() + "assets~/DB/user_db", new UserDBService()))
+                    using (var userDatabase     = new FileDatabase(TestGlobals.UserDB, CommonUtils.GetBasePath() + "assets~/DB/user_db", null, new UserDBService()))
                     using (var userHub        	= new FlioxHub  (userDatabase, TestGlobals.Shared))
                     using (var serverStore      = new UserStore (userHub) { UserId = UserDB.ID.Server })
                     using (var userStore        = new UserStore (userHub) { UserId = UserDB.ID.AuthenticationUser }) {

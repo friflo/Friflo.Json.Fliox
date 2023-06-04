@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         [Test]
         public static async Task TestServiceRequestQueueRun() {
             var service     = new QueueingService();
-            var database    = new MemoryDatabase("test", service);
+            var database    = new MemoryDatabase("test", null, service);
             var hub         = new FlioxHub(database);
             var client      = new FlioxClient(hub);
             
@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         [Test]
         public static void TestServiceRequestQueueThreaded() {
             var service     = new QueueingService();
-            var database    = new MemoryDatabase("test", service);
+            var database    = new MemoryDatabase("test", null, service);
             var hub         = new FlioxHub(database);
             var count       = 10;
             var finished    = 0;
