@@ -48,22 +48,22 @@ namespace Friflo.Json.Tests.Provider
                 hub.AddExtensionDB (testDb);
             } */
             var sqlitePath          = CommonUtils.GetBasePath() + "sqlite_db.sqlite3";
-            hub.AddExtensionDB      (new SQLiteDatabase("sqlite_db",        sqlitePath,         schema));
+            hub.AddExtensionDB      (new SQLiteDatabase     ("sqlite_db",       sqlitePath,         schema));
             
             var mysqlConnection     = EnvConfig.GetConnectionString("mysql");
-            hub.AddExtensionDB      (new MySQLDatabase("mysql_db",          mysqlConnection,    schema));
+            hub.AddExtensionDB      (new MySQLDatabase      ("mysql_db",        mysqlConnection,    schema));
             
             var mariadbConnection   = EnvConfig.GetConnectionString("mariadb");
-            hub.AddExtensionDB      (new MariaDBDatabase("maria_db",        mariadbConnection,  schema));
+            hub.AddExtensionDB      (new MariaDBDatabase    ("maria_db",        mariadbConnection,  schema));
             
             var postgresConnection  = EnvConfig.GetConnectionString("postgres");
-            hub.AddExtensionDB      (new PostgreSQLDatabase("postgres_db",  postgresConnection, schema));
+            hub.AddExtensionDB      (new PostgreSQLDatabase ("postgres_db",     postgresConnection, schema));
             
             var sqlServerConnection = EnvConfig.GetConnectionString("sqlserver");
-            hub.AddExtensionDB      (new SQLServerDatabase("sqlserver_db",  sqlServerConnection,schema));
+            hub.AddExtensionDB      (new SQLServerDatabase  ("sqlserver_db",    sqlServerConnection,schema));
 
             var redisConnection     = EnvConfig.GetConnectionString("redis");
-            hub.AddExtensionDB      (new RedisHashDatabase("redis_db",      redisConnection,    schema));
+            hub.AddExtensionDB      (new RedisHashDatabase  ("redis_db",        redisConnection,    schema));
 #endif
             hub.AddExtensionDB       (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
             hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)
