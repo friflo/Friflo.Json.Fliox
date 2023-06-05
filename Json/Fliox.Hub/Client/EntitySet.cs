@@ -60,15 +60,15 @@ namespace Friflo.Json.Fliox.Hub.Client
                         private         EntitySetInstance<TKey, T>  Instance    => (EntitySetInstance<TKey, T>)client.entitySets[index];
                         
                         public          string                      Name        => client._readonly.entityInfos[index].container;
-                        public          ShortString                 NameShort   => client._readonly.entityInfos[index].containerShort;
+        [Browse(Never)] public          ShortString                 NameShort   => client._readonly.entityInfos[index].containerShort;
 
                         public override string                      ToString()  => GetString();
         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
         private static class Static  {
-            internal static  readonly       EntityKeyT<TKey, T>         EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
-            internal static  readonly       KeyConverter<TKey>          KeyConvert      = KeyConverter.GetConverter<TKey>();
-            internal static  readonly       SetUtils<TKey, T>           SetUtils        = new SetUtils<TKey, T>();
+            internal static  readonly   EntityKeyT<TKey, T>         EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
+            internal static  readonly   KeyConverter<TKey>          KeyConvert      = KeyConverter.GetConverter<TKey>();
+            internal static  readonly   SetUtils<TKey, T>           SetUtils        = new SetUtils<TKey, T>();
         }
         #endregion
         
