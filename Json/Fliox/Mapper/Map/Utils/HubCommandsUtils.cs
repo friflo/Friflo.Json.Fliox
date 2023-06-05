@@ -13,18 +13,28 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         
         private const string HubCommandsType = "Friflo.Json.Fliox.Hub.Client.HubMessages";
 
+        /// <summary> type is FlioxClient or a derived type </summary>
         internal static HubMessageInfo[] GetHubMessageInfos(Type type) {
             if (HubMessageInfoCache.TryGetValue(type, out  HubMessageInfo[] result)) {
                 return result;
             }
             var messageInfos = new List<HubMessageInfo>();
-            var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-            FieldInfo[] fields = type.GetFields(flags);
-            for (int n = 0; n < fields.Length; n++) {
-                var  field         = fields[n];
-                if (!IsHubCommands(field, out HubMessageInfo messageInfo))
-                    continue;
-                messageInfos.Add(messageInfo);
+            var classType = type;
+            while (classType != null && classType != typeof(object)) {
+                var flags   = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+                FieldInfo[] fields = classType.GetFields(flags);
+                foreach (var field in fields) {
+                    if (!IsHubCommands(field.FieldType, field.Name, out HubMessageInfo messageInfo))
+                        continue;
+                    messageInfos.Add(messageInfo);
+                }
+                PropertyInfo[] properties = classType.GetProperties(flags);
+                foreach (var property in properties) {
+                    if (!IsHubCommands(property.PropertyType, property.Name, out HubMessageInfo messageInfo))
+                        continue;
+                    messageInfos.Add(messageInfo);
+                }
+                classType = classType.BaseType;
             }
             if (messageInfos.Count == 0) {
                 HubMessageInfoCache[type] = null;
@@ -35,14 +45,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             return array;
         }
         
-        private static bool IsHubCommands(FieldInfo fieldInfo, out HubMessageInfo messageInfo) {
+        private static bool IsHubCommands(Type memberType, string name, out HubMessageInfo messageInfo) {
             messageInfo = new HubMessageInfo();
-            var fieldType   = fieldInfo.FieldType;
-            var type        = fieldType;
-            
+            var type = memberType;
             while (type != null) {
                 if (type.FullName == HubCommandsType) {
-                    messageInfo = new HubMessageInfo(fieldInfo.Name, fieldType);
+                    messageInfo = new HubMessageInfo(name, memberType);
                     return true;
                 }
                 if (!type.IsClass)

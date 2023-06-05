@@ -40,11 +40,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         
         public PocStore(FlioxHub hub, string dbName = null): base (hub, dbName) {
-            test = new TestCommands(this);
         }
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public readonly TestCommands    test;
+        private         TestCommands    _test;
+        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public          TestCommands    test => _test ??= new TestCommands(this);
         
         // --- commands
         [DatabaseCommand              ("TestCommand")]

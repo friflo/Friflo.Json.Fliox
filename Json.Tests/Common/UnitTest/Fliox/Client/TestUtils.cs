@@ -133,7 +133,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             stopwatch.Start();
             int count = 1; // 1_000_000;
             for (int n = 0; n < count; n++) {
-                new PocStore(hub);                      // ~ 0.492 µs (Release) - 8 allocations
+                new PocStore(hub);                      // ~ 0.420 µs (Release,best) - 6 allocations
             }
             stopwatch.Stop();
             Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
@@ -144,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff        = Mem.GetAllocationDiff(start);
             var platform    = Environment.OSVersion.Platform;
             var isWindows   = platform == PlatformID.Win32NT; 
-            var expected    = isWindows ? 864 : 864;  // Test Windows & Linux
+            var expected    = isWindows ? 800 : 800;  // Test Windows & Linux
             Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
             Mem.AreEqual(expected, diff);
         }

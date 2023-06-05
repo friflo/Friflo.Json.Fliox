@@ -56,11 +56,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)] internal            bool                    writeNull;
 
         /// <summary> name of the database the client is attached to </summary>
-        [Browse(Never)] public      string                      DatabaseName    => _readonly.database;
+        [Browse(Never)] public              string                  DatabaseName    => _readonly.database;
+
+        // ReSharper disable once InconsistentNaming
+        [Browse(Never)] private             StdCommands        _std;
         /// <summary> access to standard database commands - <see cref="StdCommands"/> </summary>
-        [Browse(Never)] public    readonly   StdCommands        std;
+        // ReSharper disable once InconsistentNaming
+        [Browse(Never)] public              StdCommands         std => _std ??= new StdCommands(this);
+
         /// <summary> Used to send typed messages / commands by classes extending <see cref="FlioxClient"/></summary>
-        [Browse(Never)] protected readonly   SendTask           send;
+        [Browse(Never)] protected readonly  SendTask            send;
+        
         [Browse(Never)] public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
         /// <summary> general client information: attached database, the number of cached entities and scheduled <see cref="Tasks"/> </summary>
         [Browse(Never)] public      ClientInfo                  ClientInfo      => new ClientInfo(this); 
@@ -108,7 +114,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             _intern.Init(this);
             entitySets          = new EntitySet[_readonly.entityInfos.Length];
             send                = new SendTask(this, _readonly.messagePrefix);
-            std                 = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
         }
         
