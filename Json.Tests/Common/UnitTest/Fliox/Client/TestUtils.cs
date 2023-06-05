@@ -119,8 +119,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         /// <summary>
         /// FlioxClient / sub class resource consumption:
-        /// Memory:    ~  650 + 30 * (EntitySet count) [bytes]
-        /// Execution: ~  420 + 10 * (EntitySet count) [ns]
+        /// Memory:      ~ 632 + 24 * (EntitySet count) [bytes]
+        /// Execution:   ~ 350 + 10 * (EntitySet count) [ns]
+        /// Allocations: 6 (independent from EntitySet count)
         /// </summary>
         [Test]
         public void BenchmarkCreateClient() {
@@ -133,7 +134,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             stopwatch.Start();
             int count = 1; // 1_000_000;
             for (int n = 0; n < count; n++) {
-                new PocStore(hub);                      // ~ 0.420 µs (Release,best) - 6 allocations
+                new PocStore(hub);                      // ~ 0.420 µs (Release,best)
             }
             stopwatch.Stop();
             Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
