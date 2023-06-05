@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
-    public class ColumnInfo
+    public sealed class ColumnInfo
     {
         public readonly     string          name;
         public readonly     StandardTypeId  typeId;
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
     }
     
-    public class TableInfo
+    public sealed class TableInfo
     {
         private  readonly   string                          container;
         public   readonly   ColumnInfo                      keyColumn;

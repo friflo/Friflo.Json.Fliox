@@ -15,7 +15,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
 
         /// <summary> type is FlioxClient or a derived type </summary>
         internal static HubMessageInfo[] GetHubMessageInfos(Type type) {
-            if (HubMessageInfoCache.TryGetValue(type, out  HubMessageInfo[] result)) {
+            var cache = HubMessageInfoCache;
+            if (cache.TryGetValue(type, out  HubMessageInfo[] result)) {
                 return result;
             }
             var messageInfos = new List<HubMessageInfo>();
@@ -37,11 +38,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
                 classType = classType.BaseType;
             }
             if (messageInfos.Count == 0) {
-                HubMessageInfoCache[type] = null;
+                cache[type] = null;
                 return null;
             }
             var array = messageInfos.ToArray();
-            HubMessageInfoCache[type] = array;
+            cache[type] = array;
             return array;
         }
         

@@ -227,14 +227,14 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         delete  = 8,
     }
     
-    public class ModelFilesQuery {
+    public sealed class ModelFilesQuery {
         /// <summary>specific database or null to retrieve all available models</summary>
                     public          string              db;
         /// <summary>specific model type - e.g. 'typescript' or null to retrieve all available model types</summary>
                     public          string              type;
     }
 
-    public class ModelFiles {
+    public sealed class ModelFiles {
         [Required]  public          string              db;
         [Required]  public          string              type;
         [Required]  public          string              label;
@@ -243,7 +243,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     public override string              ToString() => $"db: {db}, type: {type}";
     }
     
-    public class ModelFile {
+    public sealed class ModelFile {
         [Required]  public          string              path;
         [Required]  public          string              content;
         

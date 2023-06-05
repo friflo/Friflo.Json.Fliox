@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     ///   <item>Execute a set of database commands (tasks) inside a transaction</item>
     /// </list> 
     /// </summary>
-    public class SyncConnection : IDisposable
+    public sealed class SyncConnection : IDisposable
     {
         public  readonly    IDisposable         instance;
         public  readonly    TaskExecuteError    error;

@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         Task                    AddVirtualColumns   (SyncConnection connection);
     }
     
-    public class ContainerInit
+    public sealed class ContainerInit
     {
         public              bool    tableCreated;
         private  readonly   bool    autoCreateTable;

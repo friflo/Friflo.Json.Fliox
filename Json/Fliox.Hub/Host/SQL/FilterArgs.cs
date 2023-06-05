@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
-    public class FilterArgs
+    public sealed class FilterArgs
     {
         private readonly    Dictionary<string, string>      args;
         private readonly    Dictionary<string, ArrayField>  arrayFields;
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
     }
     
-    public class ArrayField
+    public sealed class ArrayField
     {
         public readonly     string  field;
         public readonly     string  array;

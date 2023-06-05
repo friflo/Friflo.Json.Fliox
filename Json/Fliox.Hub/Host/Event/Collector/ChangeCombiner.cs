@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
     ///   the same <see cref="DatabaseSubs"/> - See <see cref="rawSyncEvents"/><br/>
     /// <see cref="ChangeCombiner"/> is not thread safe.
     /// </remarks>
-    internal class ChangeCombiner
+    internal sealed class ChangeCombiner
     {
         private  readonly   EventCollector                      collector;
         private  readonly   List<DatabaseChanges>               databaseChangesList;

@@ -177,7 +177,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         }
     }
     
-    internal class ServiceInfo
+    internal sealed class ServiceInfo
     {
         internal readonly HandlerInfo[]  handlers;
         internal readonly string         error;

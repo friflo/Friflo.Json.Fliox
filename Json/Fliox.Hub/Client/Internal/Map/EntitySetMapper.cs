@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         }
     }
     
-    internal class GenericContainerMember<TKey, T> :  IContainerMember where T : class
+    internal sealed class GenericContainerMember<TKey, T> :  IContainerMember where T : class
     {
         private readonly Action<FlioxClient,EntitySet<TKey,T>> setter;
             
