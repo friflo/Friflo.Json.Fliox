@@ -1,5 +1,5 @@
 @auth = fliox-user=admin; fliox-token=admin
-@base = http://localhost:8010/fliox
+@base = http://localhost:8011/fliox
 
 ###
 PUT {{base}}/rest/cluster/articles

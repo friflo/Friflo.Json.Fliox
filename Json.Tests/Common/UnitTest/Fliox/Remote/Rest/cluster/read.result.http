@@ -1,4 +1,4 @@
-@base = http://localhost:8010/fliox
+@base = http://localhost:8011/fliox
 
 ###
 GET {{base}}/rest/cluster/containers
