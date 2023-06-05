@@ -123,6 +123,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// Execution:   ~ 350 + 10 * (EntitySet count) [ns]
         /// Allocations: 6 (independent from EntitySet count)
         /// </summary>
+        /*  Allocation list
+            Client.Internal.ClientEventReceiver 24 bytes
+            Client.Internal.EntitySet[]         80 bytes
+            Client.Internal.SyncStore	        40 bytes
+            Client.PocStore                    545 bytes
+            Dictionary<Task, Host.SyncContext>  80 bytes
+            List<Client.SyncFunction>           32 bytes
+        */
         [Test]
         public void BenchmarkCreateClient() {
             var env         = new SharedEnv();
