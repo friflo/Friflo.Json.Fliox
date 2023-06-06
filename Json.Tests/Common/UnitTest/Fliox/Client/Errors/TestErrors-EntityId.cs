@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Text.RegularExpressions;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
@@ -37,37 +38,50 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 _ = new TypeMismatchStore(hub) { ClientId = "store"};
             });
             AreEqual("key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>). Used by: TypeMismatchStore.intEntities", e.Message);
+            AreEqual(4, StackDepth(e));
             
             e = Throws<InvalidTypeException>(() => {
                 _ = new TypeMismatchStore2(hub) { ClientId =  "store"};
             });
             AreEqual("key Type mismatch. String (IntEntity2.id) != Int64 (EntitySet<Int64,IntEntity2>). Used by: TypeMismatchStore2.intEntities", e.Message);
+            AreEqual(4, StackDepth(e));
             
             e = Throws<InvalidTypeException>(() => {
                 _ = new UnsupportedKeyTypeStore(hub) { ClientId = "store"};
             });
             AreEqual("unsupported TKey Type: EntitySet<Char,CharEntity> id. Used by: UnsupportedKeyTypeStore.charEntities", e.Message);
+            AreEqual(4, StackDepth(e));
             
             e = Throws<InvalidTypeException>(() => {
                 _ = new InvalidMemberStore(hub) { ClientId = "store"};
             });
             AreEqual("[Relation('stringEntities')] at StringEntity.entityRef invalid type. Expect: String. Used by: InvalidMemberStore.stringEntities", e.Message);
+            AreEqual(4, StackDepth(e));
             
             e = Throws<InvalidTypeException>(() => {
                 _ = new ContainerNotFoundStore(hub) { ClientId = "store"};
             });
             AreEqual("[Relation('unknown')] at ContainerNotFound.reference not found. Used by: ContainerNotFoundStore.entities", e.Message);
+            AreEqual(4, StackDepth(e));
             
             e = Throws<InvalidTypeException>(() => {
                 _ = new MissingKeyStore(hub) { ClientId = "store"};
             });
             AreEqual("Missing primary [Key] field/property in entity type: MissingKeyEntity. Used by: MissingKeyStore.entities", e.Message);
+            AreEqual(4, StackDepth(e));
             
             e = Throws<InvalidTypeException>(() => {
                 _ = new ReadOnlyKeyStore(hub) { ClientId = "store"};
             });
             AreEqual("entity [Key] property ReadOnlyKeyEntity.id requires { get; set; }. Used by: ReadOnlyKeyStore.entities", e.Message);
+            AreEqual(4, StackDepth(e));
         }
+        
+        ///<summary>Ensure Exception is throw in <see cref="FlioxClient"/> constructor to reduce noise of exception</summary>
+        private static int StackDepth(Exception e) {
+            return Regex.Matches(e.StackTrace!, "   at ").Count;
+        }
+        
     }
 
     // --------
