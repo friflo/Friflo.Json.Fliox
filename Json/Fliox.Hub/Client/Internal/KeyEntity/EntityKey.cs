@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
             var idGetMethod = property.GetGetMethod(true);    
             var idSetMethod = property.GetSetMethod(true);
             if (idGetMethod == null || idSetMethod == null) {
-                var msg2 = $"entity id property must have get & set: {property.Name}, type: {propType.Name}, entity: {type.Name}";
+                var msg2 = $"entity [Key] property {type.Name}.{property.Name} requires {{ get; set; }}";
                 throw new InvalidTypeException(msg2);
             }
             bool auto = AttributeUtils.IsAutoIncrement(property.CustomAttributes);

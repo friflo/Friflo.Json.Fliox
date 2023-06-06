@@ -63,6 +63,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 _ = new MissingKeyStore(hub) { ClientId = "store"};
             });
             AreEqual("Missing primary [Key] field/property in entity type: MissingKeyEntity. Used by: MissingKeyStore.entities", e.Message);
+            
+            e = Throws<InvalidTypeException>(() => {
+                _ = new ReadOnlyKeyStore(hub) { ClientId = "store"};
+            });
+            AreEqual("entity [Key] property ReadOnlyKeyEntity.id requires { get; set; }. Used by: ReadOnlyKeyStore.entities", e.Message);
         }
     }
 
@@ -135,5 +140,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         public  readonly    EntitySet <string,    MissingKeyEntity> entities;
 
         public MissingKeyStore(FlioxHub hub) : base(hub) { }
+    }
+    
+    public class ReadOnlyKeyEntity {
+        public  string      id { get; }
+    }
+    
+    public class ReadOnlyKeyStore : FlioxClient {
+        public  readonly    EntitySet <string,    ReadOnlyKeyEntity> entities;
+
+        public ReadOnlyKeyStore(FlioxHub hub) : base(hub) { }
     }
 }
