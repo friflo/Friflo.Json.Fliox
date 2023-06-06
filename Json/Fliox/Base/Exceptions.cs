@@ -3,7 +3,8 @@
 
 using System;
 
-namespace Friflo.Json.Fliox.Mapper.Map
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox
 {
     public sealed class InvalidTypeException : Exception {
         public InvalidTypeException (string msg) : base(msg) { }

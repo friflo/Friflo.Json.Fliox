@@ -5,7 +5,6 @@ using System;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Mapper.Map;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
