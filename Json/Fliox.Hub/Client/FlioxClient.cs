@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
@@ -111,6 +112,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             options             = options ?? ClientOptions.Default;
             var eventReceiver   = options.createEventReceiver(hub, this);
             _readonly           = new ClientReadOnly(this, hub, dbName, eventReceiver);
+            if (_readonly.typeError != null) {
+                throw new InvalidTypeException(_readonly.typeError);
+            }
             _intern.Init(this);
             entitySets          = new EntitySet[_readonly.entityInfos.Length];
             send                = new SendTask(this, _readonly.messagePrefix);

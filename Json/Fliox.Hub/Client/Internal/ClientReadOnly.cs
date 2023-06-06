@@ -29,6 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
         internal readonly   EventReceiver                   eventReceiver;
         internal readonly   ObjectPool<ReaderPool>          responseReaderPool;
+        internal readonly   string                          typeError;
         internal readonly   string                          messagePrefix;
         internal readonly   EntitySetInfo[]                 entityInfos;
         // lock (pendingSyncs) instead of using ConcurrentDictionary<,> to avoid heap allocations
@@ -54,16 +55,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.eventReceiver      = eventReceiver;
             responseReaderPool      = hub.GetResponseReaderPool();
             pendingSyncs            = new Dictionary<Task, SyncContext>();
-            messagePrefix           = null;
-            var info = InitEntitySets (client, entityInfos);
+            var info                = InitEntitySets (client, entityInfos, typeStore);
+            typeError               = info.error;
             messagePrefix           = info.messagePrefix;
         }
         
-        private ClientTypeInfo InitEntitySets(FlioxClient client, EntitySetInfo[] entityInfos) {
-            var clientTypeInfo  = GetClientTypeInfo (client.type, entityInfos);
+        private static ClientTypeInfo InitEntitySets(FlioxClient client, EntitySetInfo[] entityInfos, TypeStore typeStore) {
+            var clientTypeInfo  = GetClientTypeInfo (client.type, entityInfos, typeStore);
             var error           = clientTypeInfo.error;
             if (error != null) {
-                throw new InvalidTypeException(error);
+                return clientTypeInfo;
             }
             var length  = entityInfos.Length;
             for (int n = 0; n < length; n++) {
@@ -72,17 +73,25 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return clientTypeInfo;
         }
         
-        private ClientTypeInfo GetClientTypeInfo (Type clientType, EntitySetInfo[] entityInfos) {
+        private static ClientTypeInfo GetClientTypeInfo (Type clientType, EntitySetInfo[] entityInfos, TypeStore typeStore) {
             var cache = ClientTypeCache;
             lock (cache) {
                 if (cache.TryGetValue(clientType, out var result))
                     return result;
                 var mappers = new IEntitySetMapper[entityInfos.Length];
+                string error = null;
+
                 for (int n = 0; n < entityInfos.Length; n++) {
-                    var entitySetType = entityInfos[n].entitySetType;
-                    mappers[n] = (IEntitySetMapper)typeStore.GetTypeMapper(entitySetType);
+                    var info = entityInfos[n];
+                    try {
+                        mappers[n] = (IEntitySetMapper)typeStore.GetTypeMapper(info.entitySetType);
+                    }
+                    catch (InvalidTypeException e) {
+                        error = $"{e.Message}. {UsedBy}{clientType.Name}.{info.container}";
+                        break;
+                    }
                 }
-                var error           = ValidateMappers(mappers, entityInfos);
+                error             ??= ValidateMappers(clientType, mappers, entityInfos);
                 var prefix          = HubMessagesUtils.GetMessagePrefix(clientType.CustomAttributes);
                 var clientInfo      = new ClientTypeInfo (prefix, error);
                 cache.Add(clientType, clientInfo);
@@ -91,10 +100,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         // Validate [Relation(<container>)] fields / properties
-        private static string ValidateMappers(IEntitySetMapper[] mappers, EntitySetInfo[] entityInfos) {
+        private static string ValidateMappers(Type clientType, IEntitySetMapper[] mappers, EntitySetInfo[] entityInfos) {
             var entityInfoMap = entityInfos.ToDictionary(entityInfo => entityInfo.container);
-            foreach (var mapper in mappers) {
-                var typeMapper      = (TypeMapper)mapper;
+            for (int n = 0; n < mappers.Length; n++) {
+                var typeMapper      = (TypeMapper)mappers[n];
+                var info            = entityInfos[n];
                 var entityMapper    = typeMapper.GetElementMapper();
                 var fields          = entityMapper.PropFields.fields;
                 foreach (var field in fields) {
@@ -102,19 +112,21 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     if (relation == null)
                         continue;
                     if (!entityInfoMap.TryGetValue(relation, out var entityInfo)) {
-                        return $"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} not found";
+                        return $"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} not found. {UsedBy}{clientType.Name}.{info.container}";
                     }
                     var fieldMapper     = field.fieldType;
                     var relationMapper  = fieldMapper.GetElementMapper() ?? fieldMapper;
                     var relationType    = relationMapper.nullableUnderlyingType ?? relationMapper.type;
                     var setKeyType      = entityInfo.keyType;
                     if (setKeyType != relationType) {
-                        return $"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} invalid type. Expect: {setKeyType.Name}";
+                        return $"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} invalid type. Expect: {setKeyType.Name}. {UsedBy}{clientType.Name}.{info.container}";
                     }
                 }
             }
             return null;
         }
+        
+        private const string UsedBy = "Used by: ";
     }
     
     internal readonly struct ClientTypeInfo

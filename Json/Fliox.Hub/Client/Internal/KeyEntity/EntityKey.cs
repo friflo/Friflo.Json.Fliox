@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
+using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
@@ -36,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
                 Map[type]   = result;
                 return result;
             }
-            throw new InvalidOperationException($"missing entity id member. entity: {type.Name}");
+            throw new InvalidTypeException($"Missing primary [Key] field/property in entity type: {type.Name}"); //
         }
         
         private static MemberInfo FindKeyMember (Type type) {
@@ -84,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
             var idSetMethod = property.GetSetMethod(true);
             if (idGetMethod == null || idSetMethod == null) {
                 var msg2 = $"entity id property must have get & set: {property.Name}, type: {propType.Name}, entity: {type.Name}";
-                throw new InvalidOperationException(msg2);
+                throw new InvalidTypeException(msg2);
             }
             bool auto = AttributeUtils.IsAutoIncrement(property.CustomAttributes);
             if (propType == typeof(string))     return new EntityKeyStringProperty<T>       (property, idGetMethod, idSetMethod);
@@ -96,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
             if (propType == typeof(byte))       return new EntityKeyByteProperty<T>         (property, idGetMethod, idSetMethod);
             if (propType == typeof(JsonKey))    return new EntityKeyJsonKeyProperty<T>      (property, idGetMethod, idSetMethod);
             var msg = UnsupportedTypeMessage(type, property, propType);
-            throw new InvalidOperationException(msg);
+            throw new InvalidTypeException(msg);
         }
             
         private static EntityKey<T> CreateEntityKeyField<T> (FieldInfo field)  where T : class {
@@ -112,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
             if (fieldType == typeof(byte))          return new EntityKeyByteField<T>        (field);
             if (fieldType == typeof(JsonKey))       return new EntityKeyJsonKeyField<T>     (field);
             var msg = UnsupportedTypeMessage(type, field, fieldType);
-            throw new InvalidOperationException(msg);
+            throw new InvalidTypeException(msg);
         }
         
         private static string UnsupportedTypeMessage(Type type, MemberInfo member, Type memberType) {

@@ -37,27 +37,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             e = Throws<InvalidTypeException>(() => {
                 _ = new TypeMismatchStore(hub) { ClientId = "store"};
             });
-            AreEqual("key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>)", e.Message);
+            AreEqual("key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>). Used by: TypeMismatchStore.intEntities", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
                 _ = new TypeMismatchStore2(hub) { ClientId =  "store"};
             });
-            AreEqual("key Type mismatch. String (IntEntity2.id) != Int64 (EntitySet<Int64,IntEntity2>)", e.Message);
+            AreEqual("key Type mismatch. String (IntEntity2.id) != Int64 (EntitySet<Int64,IntEntity2>). Used by: TypeMismatchStore2.intEntities", e.Message);
             
-            e = Throws<InvalidOperationException>(() => {
+            e = Throws<InvalidTypeException>(() => {
                 _ = new UnsupportedKeyTypeStore(hub) { ClientId = "store"};
             });
-            AreEqual("unsupported TKey Type: EntitySet<Char,CharEntity> id", e.Message);
+            AreEqual("unsupported TKey Type: EntitySet<Char,CharEntity> id. Used by: UnsupportedKeyTypeStore.charEntities", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
                 _ = new InvalidMemberStore(hub) { ClientId = "store"};
             });
-            AreEqual("[Relation('stringEntities')] at StringEntity.entityRef invalid type. Expect: String", e.Message);
+            AreEqual("[Relation('stringEntities')] at StringEntity.entityRef invalid type. Expect: String. Used by: InvalidMemberStore.stringEntities", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
                 _ = new ContainerNotFoundStore(hub) { ClientId = "store"};
             });
-            AreEqual("[Relation('unknown')] at ContainerNotFound.reference not found", e.Message);
+            AreEqual("[Relation('unknown')] at ContainerNotFound.reference not found. Used by: ContainerNotFoundStore.entities", e.Message);
+            
+            e = Throws<InvalidTypeException>(() => {
+                _ = new MissingKeyStore(hub) { ClientId = "store"};
+            });
+            AreEqual("Missing primary [Key] field/property in entity type: MissingKeyEntity. Used by: MissingKeyStore.entities", e.Message);
         }
     }
 
@@ -119,5 +124,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         public  readonly    EntitySet <string, ContainerNotFound> entities;
 
         public ContainerNotFoundStore(FlioxHub hub) : base(hub) { }
+    }
+    
+    // --------
+    public class MissingKeyEntity {
+        public  string      Id;
+    }
+    
+    public class MissingKeyStore : FlioxClient {
+        public  readonly    EntitySet <string,    MissingKeyEntity> entities;
+
+        public MissingKeyStore(FlioxHub hub) : base(hub) { }
     }
 }
