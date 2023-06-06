@@ -111,9 +111,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             type                = GetType();
             options             = options ?? ClientOptions.Default;
             var eventReceiver   = options.createEventReceiver(hub, this);
-            _readonly           = new ClientReadOnly(this, hub, dbName, eventReceiver);
-            if (_readonly.typeError != null) {
-                throw new InvalidTypeException(_readonly.typeError);
+            _readonly           = new ClientReadOnly(this, hub, dbName, eventReceiver, out string typeError);
+            if (typeError != null) {
+                throw new InvalidTypeException(typeError);
             }
             _intern.Init(this);
             entitySets          = new EntitySet[_readonly.entityInfos.Length];

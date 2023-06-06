@@ -29,7 +29,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
         internal readonly   EventReceiver                   eventReceiver;
         internal readonly   ObjectPool<ReaderPool>          responseReaderPool;
-        internal readonly   string                          typeError;
         internal readonly   string                          messagePrefix;
         internal readonly   EntitySetInfo[]                 entityInfos;
         // lock (pendingSyncs) instead of using ConcurrentDictionary<,> to avoid heap allocations
@@ -42,7 +41,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             FlioxClient     client,
             FlioxHub        hub,
             string          database,
-            EventReceiver   eventReceiver)
+            EventReceiver   eventReceiver,
+            out string      typeError)
         {
             entityInfos             = ClientEntityUtils.GetEntitySetInfos (client.type);
             sharedEnv               = hub.sharedEnv;
