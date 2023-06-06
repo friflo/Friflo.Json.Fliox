@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// indicating its safe to do so.
         /// </summary>
         private MemoryBuffer CreateMemoryBuffer() {
-            return _intern.memoryBufferPool.Get() ?? new MemoryBuffer(MemoryBufferCapacity);
+            return _intern.memoryBufferPool.Get() ?? new MemoryBuffer(Static.MemoryBufferCapacity);
         }
         
         private SyncContext CreateSyncContext(MemoryBuffer memoryBuffer) {
@@ -228,10 +228,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        private static readonly IDictionary<ShortString, SyncSet> EmptySynSet = new EmptyDictionary<ShortString, SyncSet>();
-
         private static void CopyEntityErrors(List<SyncRequestTask> tasks, List<SyncTaskResult> responseTasks, SyncStore syncStore) {
-            var syncSets = syncStore.SyncSets ?? EmptySynSet;
+            var syncSets = syncStore.SyncSets ?? Static.EmptySyncSet;
             
             for (int n = 0; n < tasks.Count; n++) {
                 var task            = tasks[n];
@@ -443,7 +441,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             SyncStore                               syncStore,
             List<ContainerEntities>                 containerResults)
         {
-            var syncSets    = syncStore.SyncSets ?? EmptySynSet;
+            var syncSets    = syncStore.SyncSets ?? Static.EmptySyncSet;
             switch (task.TaskType) {
                 case TaskType.reserveKeys:
                     var reserveKeys =       (ReserveKeys)       task;

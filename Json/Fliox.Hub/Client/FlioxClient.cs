@@ -85,7 +85,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public override             string                      ToString()              => FormatToString();
         
-        private const               int                         MemoryBufferCapacity = 1024;
         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
         private static class Static {
@@ -94,7 +93,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             /// This ensures modifications to entities are applied on the same context used by the caller. <br/>
             /// It also ensures that <see cref="SyncFunction.OnSync"/> is called on caller context. <br/>
             /// </summary>
-            internal const bool OriginalContext = true;
+            internal const           bool                               OriginalContext = true;
+            internal const           int                                MemoryBufferCapacity = 1024;
+            internal static readonly IDictionary<ShortString, SyncSet>  EmptySyncSet = new EmptyDictionary<ShortString, SyncSet>();
         }
 
         #endregion
