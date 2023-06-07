@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   string                          database;
         internal readonly   ShortString                     databaseShort;
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
-        internal readonly   EventReceiver                   eventReceiver;
+        internal readonly   IEventReceiver                  eventReceiver;
         internal readonly   ObjectPool<ReaderPool>          responseReaderPool;
         internal readonly   string                          messagePrefix;
         internal readonly   EntitySetInfo[]                 entityInfos;
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             FlioxClient     client,
             FlioxHub        hub,
             string          database,
-            EventReceiver   eventReceiver,
+            IEventReceiver  eventReceiver,
             out string      typeError)
         {
             entityInfos             = ClientEntityUtils.GetEntitySetInfos (client.type);

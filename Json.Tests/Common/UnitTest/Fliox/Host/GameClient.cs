@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             : base (hub, dbName, new ClientOptions (CreateEventReceiver))
         { }
         
-        private static EventReceiver CreateEventReceiver(FlioxHub hub, FlioxClient client) {
+        private static IEventReceiver CreateEventReceiver(FlioxHub hub, FlioxClient client) {
             return new TestEventReceiver();
         }
     }
@@ -24,11 +24,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
     }
     
     /// <summary> Used to test performance and memory usage of <see cref="EventDispatcher"/>.EnqueueSyncTasks() </summary>
-    public class TestEventReceiver : EventReceiver
+    public class TestEventReceiver : IEventReceiver
     {
-        public      override string Endpoint           => nameof(TestEventReceiver);
-        public      override bool   IsOpen()           => true;
-        public      override bool   IsRemoteTarget()   => true;
-        protected   override void   SendEvent(in ClientEvent clientEvent) { }
+        public  string  Endpoint           => nameof(TestEventReceiver);
+        public  bool    IsOpen()           => true;
+        public  bool    IsRemoteTarget()   => true;
+        public  void    SendEvent(in ClientEvent clientEvent) { }
     }
 }

@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   ShortString                             clientId;   // key field
         internal readonly   EventSubUser                            user;
         internal            bool                                    queueEvents;
-        private             EventReceiver                           eventReceiver; // can be null if created by a REST request
+        private             IEventReceiver                          eventReceiver; // can be null if created by a REST request
         
         internal            string                                  Endpoint  => eventReceiver?.Endpoint;
 
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             databaseSubs        = new Dictionary<ShortString, DatabaseSubs>(ShortString.Equality);
         }
         
-        internal bool UpdateTarget(EventReceiver eventReceiver) {
+        internal bool UpdateTarget(IEventReceiver eventReceiver) {
             if (eventReceiver == null) throw new ArgumentNullException(nameof(eventReceiver));
             var old = this.eventReceiver;
             if (old == eventReceiver)

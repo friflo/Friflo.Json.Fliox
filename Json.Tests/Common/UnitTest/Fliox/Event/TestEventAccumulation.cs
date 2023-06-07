@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
             // --- containers
             public readonly EntitySet <int, Record>     records = default;
 
-            public TestAccumulationClient(FlioxHub hub, EventReceiver receiver = null)
+            public TestAccumulationClient(FlioxHub hub, IEventReceiver receiver = null)
                 : base (hub, null, receiver == null ? null : new ClientOptions ((h, c)  => receiver)) { }
         }
         
@@ -85,14 +85,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         }
         
         /// <summary> Used to test performance and memory usage of <see cref="EventDispatcher"/>.EnqueueSyncTasks() </summary>
-        private class IgnoreReceiver : EventReceiver
+        private class IgnoreReceiver : IEventReceiver
         {
             internal int count;
             
-            public      override string Endpoint           => nameof(IgnoreReceiver);
-            public      override bool   IsOpen()           => true;
-            public      override bool   IsRemoteTarget()   => false;
-            protected   override void   SendEvent(in ClientEvent clientEvent) { count++; }
+            public  string  Endpoint           => nameof(IgnoreReceiver);
+            public  bool    IsOpen()           => true;
+            public  bool    IsRemoteTarget()   => false;
+            public  void    SendEvent(in ClientEvent clientEvent) { count++; }
         }
         
         [Test]

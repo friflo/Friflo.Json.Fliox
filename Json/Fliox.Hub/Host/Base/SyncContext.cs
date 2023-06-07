@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         [Browse(Never)] internal  readonly  Pool                pool;
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
-        [Browse(Never)] internal  readonly  EventReceiver       eventReceiver;
+        [Browse(Never)] internal  readonly  IEventReceiver      eventReceiver;
         [Browse(Never)] internal  readonly  SharedCache         sharedCache;
         [Browse(Never)] internal  readonly  SyncBuffers         syncBuffers;
         [Browse(Never)] internal  readonly  SyncPools           syncPools;
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             responseReaderPool  = null;
         }
 
-        public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, MemoryBuffer memoryBuffer) {
+        public SyncContext (SharedEnv sharedEnv, IEventReceiver eventReceiver, MemoryBuffer memoryBuffer) {
             this.sharedEnv      = sharedEnv;
             this.pool           = sharedEnv.pool;
             this.eventReceiver  = eventReceiver;
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// <summary>Special constructor used to minimize heap allocation. <b>Note</b> <see cref="SyncBuffers"/> </summary>
-        public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver, in SyncBuffers syncBuffers, SyncPools syncPools) {
+        public SyncContext (SharedEnv sharedEnv, IEventReceiver eventReceiver, in SyncBuffers syncBuffers, SyncPools syncPools) {
             this.sharedEnv      = sharedEnv;
             this.pool           = sharedEnv.pool;
             this.eventReceiver  = eventReceiver;
@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.syncPools      = syncPools;
         }
         
-        public SyncContext (SharedEnv sharedEnv, EventReceiver eventReceiver) {
+        public SyncContext (SharedEnv sharedEnv, IEventReceiver eventReceiver) {
             this.sharedEnv      = sharedEnv;
             this.pool           = sharedEnv.pool;
             this.eventReceiver  = eventReceiver;

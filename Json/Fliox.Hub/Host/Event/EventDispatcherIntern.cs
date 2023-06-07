@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <summary> requires lock <see cref="monitor"/> </summary>
         internal void SubscribeChanges (
             in ShortString database,    SubscribeChanges subscribe,     User        user,
-            in ShortString clientId,    EventReceiver    eventReceiver)
+            in ShortString clientId,    IEventReceiver   eventReceiver)
         {
             EventSubClient subClient;
             if (subscribe.changes.Count == 0) {
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         /// <summary> requires lock <see cref="monitor"/> </summary> 
-        internal EventSubClient GetOrCreateSubClient(User user, in ShortString clientId, EventReceiver eventReceiver) {
+        internal EventSubClient GetOrCreateSubClient(User user, in ShortString clientId, IEventReceiver eventReceiver) {
             subClients.TryGetValue(clientId, out EventSubClient subClient);
             if (subClient != null) {
                 // add to sendClientsMap as the client could have been removed meanwhile caused by a disconnect
@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         /// <summary> requires lock <see cref="monitor"/> </summary>
         internal void SubscribeMessage(
             in ShortString database,    SubscribeMessage subscribe,     User user,
-            in ShortString clientId,    EventReceiver    eventReceiver)
+            in ShortString clientId,    IEventReceiver   eventReceiver)
         {
             EventSubClient subClient;
             var remove = subscribe.remove;

@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// - Synchronous in case a request can be executed synchronous<br/>
     /// - Asynchronous in case a request requires asynchronous execution<br/>
     /// </remarks>
-    public abstract class SocketHost : EventReceiver
+    public abstract class SocketHost : IEventReceiver
     {
         // --- all fields are thread safe types
         private   readonly  FlioxHub                    hub;
@@ -67,7 +67,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             syncContextPool = new Stack<SyncContext>();
         }
 
-        protected internal override void SendEvent(in ClientEvent clientEvent) {
+        // --- IEventReceiver
+        public abstract string Endpoint { get; }
+        public abstract bool   IsOpen ();
+        public abstract bool   IsRemoteTarget ();
+        public void SendEvent(in ClientEvent clientEvent) {
             try {
                 SendMessage(clientEvent.message);
             }

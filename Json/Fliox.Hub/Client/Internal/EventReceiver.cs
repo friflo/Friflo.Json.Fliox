@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
-    internal sealed class ClientEventReceiver : EventReceiver
+    internal sealed class ClientEventReceiver : IEventReceiver
     {
         private readonly FlioxClient    client;
         
@@ -15,11 +15,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         } 
             
         // --- IEventReceiver
-        public override string  Endpoint            => "in-process";
-        public override bool    IsRemoteTarget ()   => false;
-        public override bool    IsOpen ()           => true;
-
-        protected internal override void    SendEvent(in ClientEvent clientEvent) {
+        public  string  Endpoint            => "in-process";
+        public  bool    IsRemoteTarget ()   => false;
+        public  bool    IsOpen ()           => true;
+        public  void    SendEvent(in ClientEvent clientEvent) {
             if (!clientEvent.dstClientId.IsNull() && !clientEvent.dstClientId.IsEqual(client._intern.clientId)) {
                 throw new InvalidOperationException("Expect event target client id == FlioxClient.clientId");
             }

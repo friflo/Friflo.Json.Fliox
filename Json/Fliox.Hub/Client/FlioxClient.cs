@@ -440,7 +440,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
     }
     
-    public delegate EventReceiver CreateEventReceiver (FlioxHub hub, FlioxClient client);
+    public delegate IEventReceiver CreateEventReceiver (FlioxHub hub, FlioxClient client);
     /// <summary>
     /// <see cref="ClientOptions"/> can be passed to a <see cref="FlioxClient"/> constructor to customize
     /// general client behavior. <br/>
@@ -456,7 +456,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.createEventReceiver    = createEventReceiver;
         }
         
-        private static EventReceiver DefaultCreateEventReceiver (FlioxHub hub, FlioxClient client) {
+        private static IEventReceiver DefaultCreateEventReceiver (FlioxHub hub, FlioxClient client) {
             return hub.SupportPushEvents ? new ClientEventReceiver(client) : null;
         }        
     }

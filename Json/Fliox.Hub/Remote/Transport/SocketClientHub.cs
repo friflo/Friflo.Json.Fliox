@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         public              RemoteClientEnv                         ClientEnv { get => env; set => env = value ?? throw new ArgumentNullException(nameof(ClientEnv)); }
         
-        private   readonly  Dictionary<ShortString, EventReceiver>  eventReceivers;
+        private   readonly  Dictionary<ShortString, IEventReceiver> eventReceivers;
         private   readonly  ObjectPool<ReaderPool>                  responseReaderPool;
         private   readonly  ProtocolFeature                         protocolFeature;
         private   readonly  RemoteClientAccess                      access;
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             RemoteClientAccess  access = RemoteClientAccess.Multi)
             : base(database, env)
         {
-            eventReceivers          = new Dictionary<ShortString, EventReceiver>(ShortString.Equality);
+            eventReceivers          = new Dictionary<ShortString, IEventReceiver>(ShortString.Equality);
             responseReaderPool      = new ObjectPool<ReaderPool>(() => new ReaderPool(sharedEnv.typeStore));
             this.protocolFeature    = protocolFeature;
             this.access             = access;     
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// </summary>
         public abstract override Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext);
         
-        internal override void AddEventReceiver(in ShortString clientId, EventReceiver eventReceiver) {
+        internal override void AddEventReceiver(in ShortString clientId, IEventReceiver eventReceiver) {
             if (access == RemoteClientAccess.Single && eventReceivers.Count > 0) {
                 throw new InvalidOperationException("Remote client is configured for single access");
             }

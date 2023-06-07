@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     #region - add / remove subscriptions
         internal bool SubscribeMessage(
             in ShortString database,    SubscribeMessage subscribe,     User       user,
-            in ShortString clientId,    EventReceiver    eventReceiver, out string error)
+            in ShortString clientId,    IEventReceiver   eventReceiver, out string error)
         {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal bool SubscribeChanges (
             in ShortString database,    SubscribeChanges subscribe,     User        user,
-            in ShortString clientId,    EventReceiver    eventReceiver, out string  error)
+            in ShortString clientId,    IEventReceiver   eventReceiver, out string  error)
         {
             if (eventReceiver == null) {
                 error = MissingEventReceiver; 
@@ -184,7 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        internal EventSubClient GetOrCreateSubClient(User user, in ShortString clientId, EventReceiver eventReceiver) {
+        internal EventSubClient GetOrCreateSubClient(User user, in ShortString clientId, IEventReceiver eventReceiver) {
             lock (intern.monitor) {
                 var result = intern.GetOrCreateSubClient(user, clientId, eventReceiver);
                 intern.UpdateSendClients();
