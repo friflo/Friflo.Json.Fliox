@@ -34,16 +34,28 @@ E.g. direct/remote via a [`FlioxClient`](../../Fliox.Hub/Client/README.md) or re
 When instantiating a `FlioxHub` an `EntityDatabase` need to be assigned used to execute all
 **database operations**, **commands** and **messages** send by a client targeting this database.
 
-Domain specific commands and messages can be added to an `EntityDatabase` by creating a class
-that **extends** `DatabaseService`. By convention this class should be named `<application name>Service`. E.g. `DemoService`
+Domain specific command / message handler methods can be added to an `EntityDatabase` by creating a class
+implementing `IServiceCommands`.  
+The handler methods need to be attributed with `[CommandHandler]` or `[MessageHandler]`.  
+An instance of this class needs to be added to an `EntityDatabase` using `EntityDatabase.AddCommands().`
 
-Domain specific commands and messages can be added to the `DemoService` as methods.
-An instance of the `DemoService` need to be passed when instantiating an `EntityDatabase`.
+``` csharp
+public class ShopCommands : IServiceCommands
+{
+    [CommandHandler]
+    private static Result<string> Hello(Param<string> param, MessageContext context) {
+        if (!param.GetValidate(out string value, out string error)) {
+            return Result.ValidationError(error);
+        }
+        return $"hello {value}!";
+    } 
+}
 
-The ownership of this setup looks like this:
-
-```
-    FlioxHub -> EntityDatabase -> DatabaseService
+public static FlioxHub CreateHub() {
+    var database = new MemoryDatabase("shop_db").AddCommands(new ShopCommands());
+    // or use other databases like: FileDatabase, SQLiteDatabase, PostgreSQLDatabase, ...
+    return new FlioxHub(database);
+}
 ```
 
 

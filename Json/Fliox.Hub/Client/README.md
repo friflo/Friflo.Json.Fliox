@@ -120,7 +120,7 @@ public static class TestShopStore
     [Test]
     public static async Task AccessDatabase() {
         var database    = new FileDatabase("shop_db", "./shop_db").AddCommands(new ShopCommands());
-        // or other database implementations like: MemoryDatabase, SQLite, Postgres, ...
+        // or create other databases like: MemoryDatabase, SQLiteDatabase, PostgreSQLDatabase, ...
         var hub         = new FlioxHub(database);
         var client      = new ShopClient(hub);
         

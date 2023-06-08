@@ -15,31 +15,9 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable UseDeconstruction
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    /// <summary>
-    /// A class implementing <see cref="IServiceCommands"/> is used to provide custom command handler methods
-    /// for an <see cref="EntityDatabase"/> annotated with <c>[CommandHandler]</c>. E.g.<br/>
-    /// 
-    /// <code>
-    ///     [CommandHandler]
-    ///     async Task&lt;Result&lt;TResult&gt;&gt; MyCommand(Param&lt;TParam&gt; param, MessageContext context)
-    /// </code>
-    /// <br/>
-    /// <see cref="IServiceCommands"/> are added to a database using <see cref="EntityDatabase.AddCommands"/>
-    /// </summary>
-    /// 
-    /// <remarks>
-    /// Additional to commands a class implementing <see cref="IServiceCommands"/> can also be used to declare message handler methods. E.g.<br/>
-    /// <code>
-    ///     [MessageHandler]
-    ///     void MyMessage(Param&lt;TParam&gt; param, MessageContext context) { }
-    /// </code>
-    /// <br/>
-    /// <i>Note</i>: Message handler methods - in contrast to command handlers - doesn't return a result.<br/>
-    /// </remarks>
-    public interface IServiceCommands { }
-
     /// <summary>
     /// A single <see cref="DatabaseService"/> is assigned to every <see cref="EntityDatabase"/>.
     /// It can be extended to intercept / customize execution of commands or database operations.  

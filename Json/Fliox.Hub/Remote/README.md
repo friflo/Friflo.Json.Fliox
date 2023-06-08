@@ -41,7 +41,7 @@ A `HttpHost` can be integrated by two different HTTP servers:
 The ownership of this setup looks like this:
 
 ```
-    HttpHost -> FlioxHub -> EntityDatabase -> DatabaseService
+    HttpHost -> FlioxHub -> EntityDatabase
 ```
 
 
