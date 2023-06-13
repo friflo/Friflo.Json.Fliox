@@ -156,8 +156,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         private ISyncConnection connection;
         
         internal void CloseConnection() {
-            connection?.Dispose();
-            connection = null;
+            if (connection != null) {
+                Database.CloseConnection(connection);
+                connection = null;
+            }
         }
 
         public async Task<ISyncConnection> GetConnectionAsync () {

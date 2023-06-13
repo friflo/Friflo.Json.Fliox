@@ -4,6 +4,7 @@
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -23,12 +24,15 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         private  readonly   string          connectionString;
         private             bool            tableTypesCreated;
         
+        private  readonly   ConcurrentStack<SqlSyncConnection> connectionPool; 
+
         public   override   string          StorageType => "Microsoft SQL Server";
         
         public SQLServerDatabase(string dbName, string connectionString, DatabaseSchema schema, DatabaseService service = null)
             : base(dbName, AssertSchema<SQLServerDatabase>(schema), service)
         {
-            this.connectionString = connectionString;
+            this.connectionString   = connectionString;
+            connectionPool          = new ConcurrentStack<SqlSyncConnection>();
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
@@ -36,6 +40,9 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
         
         public override async Task<ISyncConnection> GetConnectionAsync()  {
+            if (connectionPool.TryPop(out var syncConnection)) {
+                return syncConnection;
+            }
             Exception openException;
             SqlConnection connection= null;
             try {
@@ -66,6 +73,10 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 }
             }
             return new SyncConnectionError(new TaskExecuteError("timeout open newly created database"));
+        }
+        
+        public override void CloseConnection(ISyncConnection connection) {
+            connectionPool.Push((SqlSyncConnection)connection);
         }
 
         internal async Task CreateTableTypes() {
