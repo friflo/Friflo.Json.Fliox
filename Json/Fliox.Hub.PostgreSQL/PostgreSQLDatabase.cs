@@ -4,6 +4,7 @@
 #if !UNITY_5_3_OR_NEWER || POSTGRESQL
 
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -20,13 +21,15 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         public              bool        AutoAddVirtualColumns   { get; init; } = true;
         
         private  readonly   string      connectionString;
+        private  readonly   ConcurrentStack<SqlSyncConnection> connectionPool;
         
         public   override   string      StorageType => "PostgreSQL";
         
         public PostgreSQLDatabase(string dbName, string  connectionString, DatabaseSchema schema, DatabaseService service = null)
             : base(dbName, AssertSchema<PostgreSQLDatabase>(schema), service)
         {
-            this.connectionString = connectionString;
+            this.connectionString   = connectionString;
+            connectionPool          = new ConcurrentStack<SqlSyncConnection>();
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
@@ -34,6 +37,9 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         public override async Task<ISyncConnection> GetConnectionAsync()  {
+            if (connectionPool.TryPop(out var syncConnection)) {
+                return syncConnection;
+            }
             Exception openException;
             try {
                 var connection = new NpgsqlConnection(connectionString);
@@ -57,6 +63,10 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             } catch (Exception e) {
                 return new SyncConnectionError(e);
             }
+        }
+        
+        public override void CloseConnection(ISyncConnection connection) {
+            connectionPool.Push((SqlSyncConnection)connection);
         }
     }
     

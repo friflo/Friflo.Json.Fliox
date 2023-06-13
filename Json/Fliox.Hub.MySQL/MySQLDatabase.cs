@@ -4,6 +4,7 @@
 #if !UNITY_5_3_OR_NEWER || MYSQL
 
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -19,6 +20,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public              bool            AutoCreateDatabase      { get; init; } = true;
         public              bool            AutoCreateTables        { get; init; } = true;
         public              bool            AutoAddVirtualColumns   { get; init; } = true;
+        private  readonly   ConcurrentStack<SqlSyncConnection> connectionPool; 
         
         private  readonly   string          connectionString;
         
@@ -28,7 +30,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public MySQLDatabase(string dbName, string connectionString, DatabaseSchema schema, DatabaseService service = null)
             : base(dbName, AssertSchema<MySQLDatabase>(schema), service)
         {
-            this.connectionString = connectionString;
+            this.connectionString   = connectionString;
+            connectionPool          = new ConcurrentStack<SqlSyncConnection>();
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
@@ -36,6 +39,9 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
         
         public override async Task<ISyncConnection> GetConnectionAsync()  {
+            if (connectionPool.TryPop(out var syncConnection)) {
+                return syncConnection;
+            }
             Exception openException;
             try {
                 var connection = new MySqlConnection(connectionString);
@@ -59,6 +65,10 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             } catch (Exception e) {
                 return new SyncConnectionError(e);
             }
+        }
+        
+        public override void CloseConnection(ISyncConnection connection) {
+            connectionPool.Push((SqlSyncConnection)connection);
         }
     }
     

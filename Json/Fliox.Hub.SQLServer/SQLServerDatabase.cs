@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         private  readonly   string          connectionString;
         private             bool            tableTypesCreated;
         
-        private  readonly   ConcurrentStack<SqlSyncConnection> connectionPool; 
+        private  readonly   ConcurrentStack<SqlSyncConnection> connectionPool;
 
         public   override   string          StorageType => "Microsoft SQL Server";
         
