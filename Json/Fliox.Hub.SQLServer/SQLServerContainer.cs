@@ -40,14 +40,14 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             this.database   = database;
         }
         
-        public async Task<TaskExecuteError> InitTable(SyncConnection connection) {
+        public async Task<TaskExecuteError> InitTable(ISyncConnection connection) {
             if (init.CreateTable) {
                 var sql =
 $@"IF NOT EXISTS (
     SELECT * FROM sys.tables t JOIN sys.schemas s ON (t.schema_id = s.schema_id)
     WHERE s.name = 'dbo' AND t.name = '{name}')
 CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
-                var result = await Execute(connection, sql).ConfigureAwait(false);
+                var result = await Execute((SqlSyncConnection)connection, sql).ConfigureAwait(false);
                 if (result.Failed) {
                     return result.error;
                 }
@@ -60,7 +60,8 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             return null;
         }
         
-        public async Task AddVirtualColumns(SyncConnection connection) {
+        public async Task AddVirtualColumns(ISyncConnection syncConnection) {
+            var connection = (SqlSyncConnection)syncConnection;
             using var cmd   = Command($"SELECT TOP 0 * FROM {name}", connection);
             var columnNames = await SQLUtils.GetColumnNames(cmd).ConfigureAwait(false);
             foreach (var column in tableInfo.columns.Values) {
@@ -72,9 +73,9 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (connection.Failed) {
-                return new CreateEntitiesResult { Error = connection.error };
+            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
+            if (syncConnection is not SqlSyncConnection connection) {
+                return new CreateEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
@@ -94,9 +95,9 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         }
         
         public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (connection.Failed) {
-                return new UpsertEntitiesResult { Error = connection.error };
+            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
+            if (syncConnection is not SqlSyncConnection connection) {
+                return new UpsertEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
@@ -116,9 +117,9 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         private static readonly bool ExecuteAsync = false; 
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (connection.Failed) {
-                return new ReadEntitiesResult { Error = connection.error };
+            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
+            if (syncConnection is not SqlSyncConnection connection) {
+                return new ReadEntitiesResult { Error = syncConnection.Error };
             }
             if (ExecuteAsync) {
                 var error = await InitTable(connection).ConfigureAwait(false);
@@ -138,9 +139,9 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (connection.Failed) {
-                return new QueryEntitiesResult { Error = connection.error };
+            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
+            if (syncConnection is not SqlSyncConnection connection) {
+                return new QueryEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {
@@ -159,9 +160,9 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (connection.Failed) {
-                return new AggregateEntitiesResult { Error = connection.error };
+            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
+            if (syncConnection is not SqlSyncConnection connection) {
+                return new AggregateEntitiesResult { Error = syncConnection.Error };
             }
             if (command.type == AggregateType.count) {
                 var filter  = command.GetFilter();
@@ -175,9 +176,9 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         }
 
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
-            var connection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (connection.Failed) {
-                return new DeleteEntitiesResult { Error = connection.error };
+            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
+            if (syncConnection is not SqlSyncConnection connection) {
+                return new DeleteEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);
             if (error != null) {

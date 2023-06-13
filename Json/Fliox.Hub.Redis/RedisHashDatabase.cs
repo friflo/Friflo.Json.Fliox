@@ -33,14 +33,14 @@ namespace Friflo.Json.Fliox.Hub.Redis
             return new RedisHashContainer(name.AsString(), this, Pretty);
         }
         
-        public override async Task<SyncConnection> GetConnectionAsync()  {
+        public override async Task<ISyncConnection> GetConnectionAsync()  {
             try {
                 var instance = await ConnectionMultiplexer.ConnectAsync(connectionString).ConfigureAwait(false);
                 return new SyncConnection(instance);
             }
             catch (RedisException e) {
                 var error = new TaskExecuteError(TaskErrorType.DatabaseError, e.Message);
-                return new SyncConnection(error);
+                return new SyncConnectionError(error);
             }
         }
     }

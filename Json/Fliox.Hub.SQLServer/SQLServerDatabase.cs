@@ -35,44 +35,44 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             return new SQLServerContainer(name.AsString(), this, Pretty);
         }
         
-        public override async Task<SyncConnection> GetConnectionAsync()  {
+        public override async Task<ISyncConnection> GetConnectionAsync()  {
             Exception openException;
             SqlConnection connection= null;
             try {
                 connection = new SqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);   
+                return new SqlSyncConnection(connection);   
             } catch (SqlException e) {
                 connection?.Dispose();
                 openException = e;
             }
             if (!AutoCreateDatabase) {
-                return new SyncConnection(openException);
+                return new SyncConnectionError(openException);
             }
             try {
                 await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
             } catch (Exception e) {
                 connection?.Dispose();
-                return new SyncConnection(e);
+                return new SyncConnectionError(e);
             }
             var end = DateTime.Now + new TimeSpan(0, 0, 0, 10, 0);
             while (DateTime.Now < end) {
                 try {
                     connection = new SqlConnection(connectionString);
                     await connection.OpenAsync().ConfigureAwait(false);
-                    return new SyncConnection(connection);
+                    return new SqlSyncConnection(connection);
                 } catch (SqlException) {
                     await Task.Delay(1000).ConfigureAwait(false);
                 }
             }
-            return new SyncConnection(new TaskExecuteError("timeout open newly created database"));
+            return new SyncConnectionError(new TaskExecuteError("timeout open newly created database"));
         }
 
         internal async Task CreateTableTypes() {
             if (tableTypesCreated) {
                 return;
             }
-            var connection = await GetConnectionAsync().ConfigureAwait(false);
+            var connection = (SqlSyncConnection)await GetConnectionAsync().ConfigureAwait(false);
             var sql = $"IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE({SQLServerContainer.ColumnId}, {SQLServerContainer.ColumnData});";
             using (var cmd = Command(sql, connection)) {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -82,6 +82,18 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
             tableTypesCreated = true;
+        }
+    }
+    
+    internal class SqlSyncConnection : ISyncConnection
+    {
+        public  readonly    SqlConnection         instance;
+        
+        public  TaskExecuteError    Error       => throw new InvalidOperationException();
+        public  void                Dispose()   => instance?.Dispose();
+        
+        public SqlSyncConnection (SqlConnection instance) {
+            this.instance = instance;
         }
     }
 }

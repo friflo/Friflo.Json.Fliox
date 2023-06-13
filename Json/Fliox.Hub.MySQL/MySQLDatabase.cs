@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return new MySQLContainer(name.AsString(), this, Pretty);
         }
         
-        public override async Task<SyncConnection> GetConnectionAsync()  {
+        public override async Task<ISyncConnection> GetConnectionAsync()  {
             Exception openException;
             try {
                 var connection = new MySqlConnection(connectionString);
@@ -44,19 +44,19 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 openException = e;
             }
             if (!AutoCreateDatabase) {
-                return new SyncConnection(openException);
+                return new SyncConnectionError(openException);
             }
             try {
                 await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
             } catch (Exception e) {
-                return new SyncConnection(e);
+                return new SyncConnectionError(e);
             }
             try {
                 var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
                 return new SyncConnection(connection);
             } catch (Exception e) {
-                return new SyncConnection(e);
+                return new SyncConnectionError(e);
             }
         }
     }

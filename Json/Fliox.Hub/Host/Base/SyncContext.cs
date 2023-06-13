@@ -153,14 +153,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             canceler(); // canceler.Invoke();
         }
         
-        private SyncConnection connection;
+        private ISyncConnection connection;
         
         internal void CloseConnection() {
             connection?.Dispose();
             connection = null;
         }
 
-        public async Task<SyncConnection> GetConnectionAsync () {
+        public async Task<ISyncConnection> GetConnectionAsync () {
             if (connection != null) {
                 return connection;
             }
