@@ -3,6 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER || REDIS
 
+using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -36,12 +37,24 @@ namespace Friflo.Json.Fliox.Hub.Redis
         public override async Task<ISyncConnection> GetConnectionAsync()  {
             try {
                 var instance = await ConnectionMultiplexer.ConnectAsync(connectionString).ConfigureAwait(false);
-                return new SyncConnection(instance);
+                return new RedisSyncConnection(instance);
             }
             catch (RedisException e) {
                 var error = new TaskExecuteError(TaskErrorType.DatabaseError, e.Message);
                 return new SyncConnectionError(error);
             }
+        }
+    }
+    
+    internal sealed class RedisSyncConnection : ISyncConnection
+    {
+        internal readonly    ConnectionMultiplexer         instance;
+        
+        public  TaskExecuteError    Error       => throw new InvalidOperationException();
+        public  void                Dispose()   => instance?.Dispose();
+        
+        public RedisSyncConnection (ConnectionMultiplexer instance) {
+            this.instance = instance;
         }
     }
 }

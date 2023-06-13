@@ -96,9 +96,9 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
     }
     
-    internal class SqlSyncConnection : ISyncConnection
+    internal sealed class SqlSyncConnection : ISyncConnection
     {
-        public  readonly    SqlConnection         instance;
+        internal readonly    SqlConnection         instance;
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance?.Dispose();

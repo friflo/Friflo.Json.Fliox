@@ -13,13 +13,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
 {
     public static class MySQLUtils
     {
-        internal static MySqlCommand Command (string sql, SyncConnection connection) {
-            return new MySqlCommand(sql, connection.instance as MySqlConnection);
+        internal static MySqlCommand Command (string sql, SqlSyncConnection connection) {
+            return new MySqlCommand(sql, connection.instance);
         }
         
-        internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
+        internal static async Task<SQLResult> Execute(SqlSyncConnection connection, string sql) {
             try {
-                using var command = new MySqlCommand(sql, connection.instance as MySqlConnection);
+                using var command = new MySqlCommand(sql, connection.instance);
                 using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
                     var value = reader.GetValue(0);
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
         }
         
-        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column, MySQLProvider provider) {
+        internal static async Task AddVirtualColumn(SqlSyncConnection connection, string table, ColumnInfo column, MySQLProvider provider) {
             var type = ConvertContext.GetSqlType(column.typeId, provider);
             var colName = column.name; 
             switch (provider) {

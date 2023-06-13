@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Npgsql;
 using static Friflo.Json.Fliox.Hub.PostgreSQL.PostgreSQLUtils;
 
@@ -37,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             try {
                 var connection = new NpgsqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);                
+                return new SqlSyncConnection(connection);                
             } catch (Exception e) {
                 openException = e;
             }
@@ -52,10 +53,22 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             try {
                 var connection = new NpgsqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);
+                return new SqlSyncConnection(connection);
             } catch (Exception e) {
                 return new SyncConnectionError(e);
             }
+        }
+    }
+    
+    internal sealed class SqlSyncConnection : ISyncConnection
+    {
+        internal readonly    NpgsqlConnection         instance;
+        
+        public  TaskExecuteError    Error       => throw new InvalidOperationException();
+        public  void                Dispose()   => instance?.Dispose();
+        
+        public SqlSyncConnection (NpgsqlConnection instance) {
+            this.instance = instance;
         }
     }
 }

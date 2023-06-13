@@ -32,16 +32,4 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             Error = new TaskExecuteError(exception.Message);
         }
     }
-    
-    public class SyncConnection : ISyncConnection
-    {
-        public  readonly    IDisposable         instance;
-        
-        public  TaskExecuteError    Error       => throw new InvalidOperationException();
-        public  void                Dispose()   => instance?.Dispose();
-        
-        public SyncConnection (IDisposable instance) {
-            this.instance = instance;
-        }
-    }
 }

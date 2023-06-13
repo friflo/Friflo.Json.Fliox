@@ -13,13 +13,13 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public static class PostgreSQLUtils
     {
-        internal static NpgsqlCommand Command (string sql, SyncConnection connection) {
-            return new NpgsqlCommand(sql, connection.instance as NpgsqlConnection);
+        internal static NpgsqlCommand Command (string sql, SqlSyncConnection connection) {
+            return new NpgsqlCommand(sql, connection.instance);
         }
         
-        internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
+        internal static async Task<SQLResult> Execute(SqlSyncConnection connection, string sql) {
             try {
-                using var command = new NpgsqlCommand(sql, connection.instance as NpgsqlConnection);
+                using var command = new NpgsqlCommand(sql, connection.instance);
                 using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
                     var value = reader.GetValue(0);
@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
         }
         
-        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
+        internal static async Task AddVirtualColumn(SqlSyncConnection connection, string table, ColumnInfo column) {
             var type = ConvertContext.GetSqlType(column.typeId);
             var path = ConvertContext.ConvertPath(DATA, column.name, 0);
             var sql =

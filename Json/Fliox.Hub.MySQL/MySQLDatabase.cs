@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using MySqlConnector;
 using static Friflo.Json.Fliox.Hub.MySQL.MySQLUtils;
 
@@ -39,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             try {
                 var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);                
+                return new SqlSyncConnection(connection);                
             } catch (Exception e) {
                 openException = e;
             }
@@ -54,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             try {
                 var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);
+                return new SqlSyncConnection(connection);
             } catch (Exception e) {
                 return new SyncConnectionError(e);
             }
@@ -72,6 +73,18 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new MySQLContainer(name.AsString(), this, Pretty);
+        }
+    }
+    
+    internal sealed class SqlSyncConnection : ISyncConnection
+    {
+        internal readonly    MySqlConnection         instance;
+        
+        public  TaskExecuteError    Error       => throw new InvalidOperationException();
+        public  void                Dispose()   => instance?.Dispose();
+        
+        public SqlSyncConnection (MySqlConnection instance) {
+            this.instance = instance;
         }
     }
 }
