@@ -4,6 +4,7 @@
 #if !UNITY_5_3_OR_NEWER || REDIS
 
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -20,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
         public              int         DbIndex     { get; init; } = -1;
         
         private  readonly   string      connectionString;
-        
+        private  readonly   ConcurrentStack<SyncConnection> connectionPool; 
         
         public   override   string      StorageType => "Redis";
         
@@ -28,6 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             : base(dbName, schema, service)
         {
             this.connectionString   = connectionString;
+            connectionPool          = new ConcurrentStack<SyncConnection>();
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
@@ -35,6 +37,9 @@ namespace Friflo.Json.Fliox.Hub.Redis
         }
         
         public override async Task<ISyncConnection> GetConnectionAsync()  {
+            if (connectionPool.TryPop(out var syncConnection)) {
+                return syncConnection;
+            }
             try {
                 var instance = await ConnectionMultiplexer.ConnectAsync(connectionString).ConfigureAwait(false);
                 return new SyncConnection(instance);
@@ -43,6 +48,10 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 var error = new TaskExecuteError(TaskErrorType.DatabaseError, e.Message);
                 return new SyncConnectionError(error);
             }
+        }
+        
+        public override void CloseConnection(ISyncConnection connection) {
+            connectionPool.Push((SyncConnection)connection);
         }
     }
     
