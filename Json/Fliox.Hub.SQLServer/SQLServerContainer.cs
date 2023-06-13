@@ -3,12 +3,13 @@
 
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
+using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
 using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
@@ -110,21 +111,30 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
 
             return new UpsertEntitiesResult();
         }
+        
+        // ReSharper disable once ConvertToConstant.Local
+        private static readonly bool ExecuteAsync = false; 
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             var connection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (connection.Failed) {
                 return new ReadEntitiesResult { Error = connection.error };
             }
-            var error = await InitTable(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new ReadEntitiesResult { Error = error };
-            }
-            await database.CreateTableTypes().ConfigureAwait(false);
-            using var cmd = ReadEntitiesCmd(connection, command.ids, name);
-            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-            
-            return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
+            if (ExecuteAsync) {
+                var error = await InitTable(connection).ConfigureAwait(false);
+                if (error != null) {
+                    return new ReadEntitiesResult { Error = error };
+                }
+                await database.CreateTableTypes().ConfigureAwait(false);
+                using var cmd = ReadEntitiesCmd(connection, command.ids, name);
+                return await SQLUtils.ReadEntitiesAsync(cmd, command).ConfigureAwait(false);
+            } else {
+                var sql = new StringBuilder();
+                sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
+                SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.PrefixN);
+                using var cmd = Command(sql.ToString(), connection);
+                return SQLUtils.ReadEntitiesSync(cmd, command);
+            }    
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {

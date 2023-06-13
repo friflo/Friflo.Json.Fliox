@@ -9,7 +9,7 @@ using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
 // ReSharper disable UseAwaitUsing
@@ -60,7 +60,7 @@ WHEN NOT MATCHED THEN
         internal static DbCommand DeleteEntitiesCmd_Values (SyncConnection connection, List<JsonKey> ids, string table) {
             var sql = new StringBuilder();
             sql.Append($"DELETE FROM  {table} WHERE {ID} in\n");
-            SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.Default);
+            SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.PrefixN);
             return Command(sql.ToString(), connection);
         }
     }

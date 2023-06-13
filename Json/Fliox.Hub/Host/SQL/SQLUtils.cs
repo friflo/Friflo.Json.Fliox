@@ -19,7 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     [Flags]
     public enum SQLEscape {
         Default     = 0,
-        BackSlash   = 1
+        BackSlash   = 1,
+        PrefixN     = 2,
     }
     
     public static class SQLName
@@ -98,6 +99,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 } else {
                     sb.Append(',');
                 }
+                if ((escape & SQLEscape.PrefixN) != 0) {
+                    sb.Append('N');                    
+                }
                 sb.Append('\'');
                 key.AppendTo(escaped);
                 AppendEscaped(sb, escaped, escape);
@@ -106,11 +110,30 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sb.Append(')');
         }
         
-        public static async Task<ReadEntitiesResult> ReadEntities(DbCommand cmd, ReadEntities query) {
+        /// <summary>
+        /// Prefer using <see cref="ReadEntitiesSync"/> for SQL Server for performance.<br/>
+        /// reading a single record - asynchronous: ~700 µs, synchronous: 100µs
+        /// </summary>
+        public static async Task<ReadEntitiesResult> ReadEntitiesAsync(DbCommand cmd, ReadEntities query) {
             var ids = query.ids;
             using var reader= await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var rows        = new List<EntityValue>(ids.Count);
             while (await reader.ReadAsync().ConfigureAwait(false)) {
+                var id      = reader.GetString(0);
+                var data    = reader.GetString(1);
+                var key     = new JsonKey(id);
+                var value   = new JsonValue(data);
+                rows.Add(new EntityValue(key, value));
+            }
+            var entities = KeyValueUtils.EntityListToArray(rows, ids);
+            return new ReadEntitiesResult { entities = entities };
+        }
+        
+        public static ReadEntitiesResult ReadEntitiesSync(DbCommand cmd, ReadEntities query) {
+            var ids = query.ids;
+            using var reader= cmd.ExecuteReader();
+            var rows        = new List<EntityValue>(ids.Count);
+            while (reader.Read()) {
                 var id      = reader.GetString(0);
                 var data    = reader.GetString(1);
                 var key     = new JsonKey(id);

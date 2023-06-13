@@ -117,13 +117,11 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (error != null) {
                 return new ReadEntitiesResult { Error = error };
             }
-            var ids = command.ids;
             var sql = new StringBuilder();
             sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
-            SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.BackSlash);
-
+            SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.BackSlash);
             using var cmd = Command(sql.ToString(), connection);
-            return await SQLUtils.ReadEntities(cmd, command).ConfigureAwait(false);
+            return await SQLUtils.ReadEntitiesAsync(cmd, command).ConfigureAwait(false);
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
