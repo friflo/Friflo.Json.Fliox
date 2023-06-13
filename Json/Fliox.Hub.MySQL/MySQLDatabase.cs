@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public              bool            AutoCreateDatabase      { get; init; } = true;
         public              bool            AutoCreateTables        { get; init; } = true;
         public              bool            AutoAddVirtualColumns   { get; init; } = true;
-        private  readonly   ConcurrentStack<SqlSyncConnection> connectionPool; 
+        private  readonly   ConcurrentStack<SyncConnection> connectionPool; 
         
         private  readonly   string          connectionString;
         
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             : base(dbName, AssertSchema<MySQLDatabase>(schema), service)
         {
             this.connectionString   = connectionString;
-            connectionPool          = new ConcurrentStack<SqlSyncConnection>();
+            connectionPool          = new ConcurrentStack<SyncConnection>();
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             try {
                 var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SqlSyncConnection(connection);                
+                return new SyncConnection(connection);                
             } catch (Exception e) {
                 openException = e;
             }
@@ -61,14 +61,14 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             try {
                 var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SqlSyncConnection(connection);
+                return new SyncConnection(connection);
             } catch (Exception e) {
                 return new SyncConnectionError(e);
             }
         }
         
         public override void CloseConnection(ISyncConnection connection) {
-            connectionPool.Push((SqlSyncConnection)connection);
+            connectionPool.Push((SyncConnection)connection);
         }
     }
     
@@ -86,14 +86,14 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
     }
     
-    internal sealed class SqlSyncConnection : ISyncConnection
+    internal sealed class SyncConnection : ISyncConnection
     {
         internal readonly    MySqlConnection         instance;
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance?.Dispose();
         
-        public SqlSyncConnection (MySqlConnection instance) {
+        public SyncConnection (MySqlConnection instance) {
             this.instance = instance;
         }
     }

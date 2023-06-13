@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
                 // set to 255 as for all SQL databases
                 var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
-                var result = await Execute((SqlSyncConnection)connection, sql).ConfigureAwait(false);
+                var result = await Execute((SyncConnection)connection, sql).ConfigureAwait(false);
                 if (result.Failed) {
                     return result.error;
                 }
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         public async Task AddVirtualColumns(ISyncConnection syncConnection) {
-            var connection = (SqlSyncConnection)syncConnection;
+            var connection = (SyncConnection)syncConnection;
             using var cmd   = Command($"SELECT * FROM {name} LIMIT 0", connection);
             var columnNames = await SQLUtils.GetColumnNames(cmd).ConfigureAwait(false);
             foreach (var column in tableInfo.columns.Values) {
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new CreateEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new UpsertEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new AggregateEntitiesResult { Error = syncConnection.Error };
             }
             if (command.type == AggregateType.count) {
@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
        
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new DeleteEntitiesResult { Error = syncConnection.Error};
             }
             var error = await InitTable(connection).ConfigureAwait(false);

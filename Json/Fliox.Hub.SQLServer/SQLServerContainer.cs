@@ -47,7 +47,7 @@ $@"IF NOT EXISTS (
     SELECT * FROM sys.tables t JOIN sys.schemas s ON (t.schema_id = s.schema_id)
     WHERE s.name = 'dbo' AND t.name = '{name}')
 CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
-                var result = await Execute((SqlSyncConnection)connection, sql).ConfigureAwait(false);
+                var result = await Execute((SyncConnection)connection, sql).ConfigureAwait(false);
                 if (result.Failed) {
                     return result.error;
                 }
@@ -61,7 +61,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         }
         
         public async Task AddVirtualColumns(ISyncConnection syncConnection) {
-            var connection = (SqlSyncConnection)syncConnection;
+            var connection = (SyncConnection)syncConnection;
             using var cmd   = Command($"SELECT TOP 0 * FROM {name}", connection);
             var columnNames = await SQLUtils.GetColumnNames(cmd).ConfigureAwait(false);
             foreach (var column in tableInfo.columns.Values) {
@@ -74,7 +74,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new CreateEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);
@@ -96,7 +96,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         
         public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new UpsertEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);
@@ -118,7 +118,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
             if (ExecuteAsync) {
@@ -140,7 +140,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);
@@ -161,7 +161,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new AggregateEntitiesResult { Error = syncConnection.Error };
             }
             if (command.type == AggregateType.count) {
@@ -177,7 +177,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
 
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SqlSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new DeleteEntitiesResult { Error = syncConnection.Error };
             }
             var error = await InitTable(connection).ConfigureAwait(false);

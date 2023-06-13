@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not RedisSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new CreateEntitiesResult { Error = syncConnection.Error };
             }
             if (command.entities.Count == 0) {
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
         
         public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not RedisSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new UpsertEntitiesResult { Error = syncConnection.Error };
             }
             if (command.entities.Count == 0) {
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not RedisSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
             try {
@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not RedisSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
             }
             var filter  = command.GetFilter();
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not RedisSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new AggregateEntitiesResult { Error = syncConnection.Error };
             }
             var db = Database(connection, dbIndex);
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
 
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not RedisSyncConnection connection) {
+            if (syncConnection is not SyncConnection connection) {
                 return new DeleteEntitiesResult { Error = syncConnection.Error };
             }
             try {

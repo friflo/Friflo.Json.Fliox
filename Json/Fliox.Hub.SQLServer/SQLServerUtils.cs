@@ -17,11 +17,11 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     public static partial class SQLServerUtils
     {
-        internal static SqlCommand Command (string sql, SqlSyncConnection connection) {
+        internal static SqlCommand Command (string sql, SyncConnection connection) {
             return new SqlCommand(sql, connection.instance);
         }
         
-        internal static async Task<SQLResult> Execute(SqlSyncConnection connection, string sql) {
+        internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
             try {
                 using var command = new SqlCommand(sql, connection.instance);
                 using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
         }
         
-        internal static async Task AddVirtualColumn(SqlSyncConnection connection, string table, ColumnInfo column) {
+        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
             var type = ConvertContext.GetSqlType(column.typeId);
             var sql =
 $@"ALTER TABLE {table}
@@ -73,14 +73,14 @@ AS CAST(JSON_VALUE({DATA}, '$.{column.name}') AS {type});";
         }
         
         // --- create / upsert using DataTable in SQL statement
-        internal static DbCommand CreateEntitiesCmd (SqlSyncConnection connection, List<JsonEntity> entities, string table) {
+        internal static DbCommand CreateEntitiesCmd (SyncConnection connection, List<JsonEntity> entities, string table) {
             var sql = $"INSERT INTO {table} ({ID},{DATA}) select {ID}, {DATA} from @rows;";
             var cmd = Command(sql, connection);
             AddRows(cmd, entities);
             return cmd;
         }
         
-        internal static DbCommand UpsertEntitiesCmd (SqlSyncConnection connection, List<JsonEntity> entities, string table) {
+        internal static DbCommand UpsertEntitiesCmd (SyncConnection connection, List<JsonEntity> entities, string table) {
             var sql = $@"
 MERGE {table} AS target
 USING @rows as source
@@ -103,7 +103,7 @@ WHEN NOT MATCHED THEN
             p.TypeName = "KeyValueType";
         }
         
-        internal static DbCommand DeleteEntitiesCmd (SqlSyncConnection connection, List<JsonKey> ids, string table) {
+        internal static DbCommand DeleteEntitiesCmd (SyncConnection connection, List<JsonKey> ids, string table) {
             var dataTable = new DataTable();
             dataTable.Columns.Add(ID, typeof(string));
             foreach(var id in ids) {
@@ -117,7 +117,7 @@ WHEN NOT MATCHED THEN
             return cmd;
         }
         
-        internal static DbCommand ReadEntitiesCmd (SqlSyncConnection connection, List<JsonKey> ids, string table) {
+        internal static DbCommand ReadEntitiesCmd (SyncConnection connection, List<JsonKey> ids, string table) {
             var dataTable = new DataTable();
             dataTable.Columns.Add(ID, typeof(string));
             foreach(var id in ids) {

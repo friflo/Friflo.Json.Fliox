@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         public              bool        AutoAddVirtualColumns   { get; init; } = true;
         
         private  readonly   string      connectionString;
-        private  readonly   ConcurrentStack<SqlSyncConnection> connectionPool;
+        private  readonly   ConcurrentStack<SyncConnection> connectionPool;
         
         public   override   string      StorageType => "PostgreSQL";
         
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             : base(dbName, AssertSchema<PostgreSQLDatabase>(schema), service)
         {
             this.connectionString   = connectionString;
-            connectionPool          = new ConcurrentStack<SqlSyncConnection>();
+            connectionPool          = new ConcurrentStack<SyncConnection>();
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             try {
                 var connection = new NpgsqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SqlSyncConnection(connection);                
+                return new SyncConnection(connection);                
             } catch (Exception e) {
                 openException = e;
             }
@@ -59,25 +59,25 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             try {
                 var connection = new NpgsqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SqlSyncConnection(connection);
+                return new SyncConnection(connection);
             } catch (Exception e) {
                 return new SyncConnectionError(e);
             }
         }
         
         public override void CloseConnection(ISyncConnection connection) {
-            connectionPool.Push((SqlSyncConnection)connection);
+            connectionPool.Push((SyncConnection)connection);
         }
     }
     
-    internal sealed class SqlSyncConnection : ISyncConnection
+    internal sealed class SyncConnection : ISyncConnection
     {
         internal readonly    NpgsqlConnection         instance;
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance?.Dispose();
         
-        public SqlSyncConnection (NpgsqlConnection instance) {
+        public SyncConnection (NpgsqlConnection instance) {
             this.instance = instance;
         }
     }

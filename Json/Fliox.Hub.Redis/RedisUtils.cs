@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
 {
     public static class RedisUtils
     {
-        internal static IDatabase Database (RedisSyncConnection connection, int dbIndex) {
+        internal static IDatabase Database (SyncConnection connection, int dbIndex) {
             return connection.instance!.GetDatabase(dbIndex);
         }
         

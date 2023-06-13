@@ -18,14 +18,14 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     public static partial class SQLServerUtils
     {
         // --- create / upsert using VALUES() in SQL statement
-        internal static DbCommand CreateEntitiesCmd_Values (SqlSyncConnection connection, List<JsonEntity> entities, string table) {
+        internal static DbCommand CreateEntitiesCmd_Values (SyncConnection connection, List<JsonEntity> entities, string table) {
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {table} ({ID},{DATA}) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, entities, SQLEscape.Default);
             return Command(sql.ToString(), connection);
         }
         
-        internal static DbCommand UpsertEntitiesCmd_Values (SqlSyncConnection connection, List<JsonEntity> entities, string table) {
+        internal static DbCommand UpsertEntitiesCmd_Values (SyncConnection connection, List<JsonEntity> entities, string table) {
             var sql = new StringBuilder();
             sql.Append(
 $@"MERGE {table} AS target
@@ -43,7 +43,7 @@ WHEN NOT MATCHED THEN
         }
         
         // --- create / upsert using SqlBulkCopy. Fails on insertion if primary key exists
-        internal static async Task BulkCopy(SqlSyncConnection connection, List<JsonEntity> entities, string name) {
+        internal static async Task BulkCopy(SyncConnection connection, List<JsonEntity> entities, string name) {
             var table = SQLUtils.ToDataTable(entities);
 
             var count = table.Rows.Count;
@@ -57,7 +57,7 @@ WHEN NOT MATCHED THEN
             await bulk.WriteToServerAsync(rowArray).ConfigureAwait(false);
         }
         
-        internal static DbCommand DeleteEntitiesCmd_Values (SqlSyncConnection connection, List<JsonKey> ids, string table) {
+        internal static DbCommand DeleteEntitiesCmd_Values (SyncConnection connection, List<JsonKey> ids, string table) {
             var sql = new StringBuilder();
             sql.Append($"DELETE FROM  {table} WHERE {ID} in\n");
             SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.PrefixN);

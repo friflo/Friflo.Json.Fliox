@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         private  readonly   string          connectionString;
         private             bool            tableTypesCreated;
         
-        private  readonly   ConcurrentStack<SqlSyncConnection> connectionPool;
+        private  readonly   ConcurrentStack<SyncConnection> connectionPool;
 
         public   override   string          StorageType => "Microsoft SQL Server";
         
@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             : base(dbName, AssertSchema<SQLServerDatabase>(schema), service)
         {
             this.connectionString   = connectionString;
-            connectionPool          = new ConcurrentStack<SqlSyncConnection>();
+            connectionPool          = new ConcurrentStack<SyncConnection>();
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             try {
                 connection = new SqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SqlSyncConnection(connection);   
+                return new SyncConnection(connection);   
             } catch (SqlException e) {
                 connection?.Dispose();
                 openException = e;
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 try {
                     connection = new SqlConnection(connectionString);
                     await connection.OpenAsync().ConfigureAwait(false);
-                    return new SqlSyncConnection(connection);
+                    return new SyncConnection(connection);
                 } catch (SqlException) {
                     await Task.Delay(1000).ConfigureAwait(false);
                 }
@@ -76,14 +76,14 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
         
         public override void CloseConnection(ISyncConnection connection) {
-            connectionPool.Push((SqlSyncConnection)connection);
+            connectionPool.Push((SyncConnection)connection);
         }
 
         internal async Task CreateTableTypes() {
             if (tableTypesCreated) {
                 return;
             }
-            var connection = (SqlSyncConnection)await GetConnectionAsync().ConfigureAwait(false);
+            var connection = (SyncConnection)await GetConnectionAsync().ConfigureAwait(false);
             var sql = $"IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE({SQLServerContainer.ColumnId}, {SQLServerContainer.ColumnData});";
             using (var cmd = Command(sql, connection)) {
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -96,14 +96,14 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
     }
     
-    internal sealed class SqlSyncConnection : ISyncConnection
+    internal sealed class SyncConnection : ISyncConnection
     {
         internal readonly    SqlConnection         instance;
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance?.Dispose();
         
-        public SqlSyncConnection (SqlConnection instance) {
+        public SyncConnection (SqlConnection instance) {
             this.instance = instance;
         }
     }
