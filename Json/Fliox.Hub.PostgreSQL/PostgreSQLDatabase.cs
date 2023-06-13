@@ -75,10 +75,10 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         internal readonly    NpgsqlConnection         instance;
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
-        public  void                Dispose()   => instance?.Dispose();
+        public  void                Dispose()   => instance.Dispose();
         
         public SyncConnection (NpgsqlConnection instance) {
-            this.instance = instance;
+            this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
         }
     }
 }

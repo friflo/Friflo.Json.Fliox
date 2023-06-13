@@ -91,10 +91,10 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         internal readonly    MySqlConnection         instance;
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
-        public  void                Dispose()   => instance?.Dispose();
+        public  void                Dispose()   => instance.Dispose();
         
         public SyncConnection (MySqlConnection instance) {
-            this.instance = instance;
+            this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
         }
     }
 }

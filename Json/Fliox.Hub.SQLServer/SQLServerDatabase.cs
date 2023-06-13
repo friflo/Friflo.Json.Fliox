@@ -101,10 +101,10 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         internal readonly    SqlConnection         instance;
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
-        public  void                Dispose()   => instance?.Dispose();
+        public  void                Dispose()   => instance.Dispose();
         
         public SyncConnection (SqlConnection instance) {
-            this.instance = instance;
+            this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
         }
     }
 }
