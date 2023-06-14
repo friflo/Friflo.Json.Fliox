@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
-    public class ConnectionPool<T> where T : ISyncConnection
+    public sealed class ConnectionPool<T> where T : ISyncConnection
     {
         private  readonly   ConcurrentStack<T> connectionPool = new ConcurrentStack<T>();
         
