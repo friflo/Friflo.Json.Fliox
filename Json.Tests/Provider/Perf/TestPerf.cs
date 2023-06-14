@@ -83,8 +83,19 @@ namespace Friflo.Json.Tests.Provider.Perf
                 var entity = new TestMutate { id = $"perf-{n}", val1 = n, val2 = n };
                 entities.Add(entity);
             }
+            // warmup
             var upsert = client.testMutate.UpsertRange(entities);
             await client.SyncTasks();
+            IsTrue(upsert.Success);
+            
+            // measurement
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+            upsert = client.testMutate.UpsertRange(entities);
+            await client.SyncTasks();
+            var duration = stopWatch.ElapsedMilliseconds;
+            Console.WriteLine($"Upsert. count: {count}, duration: {duration} ms");
+            
             IsTrue(upsert.Success);
         }
         
