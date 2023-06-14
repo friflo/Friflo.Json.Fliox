@@ -10,10 +10,14 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private  readonly   ConcurrentStack<T> connectionPool = new ConcurrentStack<T>();
         
         public bool TryPop(out T syncConnection) {
-            if (connectionPool.TryPop(out syncConnection) && syncConnection.IsOpen) {
-                return true;
+            while (true) {
+                if (!connectionPool.TryPop(out syncConnection)) {
+                    return false;
+                }
+                if (syncConnection.IsOpen) {
+                    return true;
+                }
             }
-            return false;
         }
         
         public void Push(ISyncConnection syncConnection) {
