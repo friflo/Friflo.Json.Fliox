@@ -33,6 +33,27 @@ namespace Friflo.Json.Tests.Provider.Perf
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task Perf_QueryFilter(string db) {
+            var client  = await GetClient(db);
+            // warmup
+            for (int n = 0; n < 1; n++) {
+                client.testOps.Query(i => i.id == "a-1");
+                await client.SyncTasks();
+            }
+            // measurement
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+            var count = 1; // 1_000;
+
+            for (int n = 0; n < count; n++) {
+                client.testOps.Query(i => i.id == "a-1");
+                await client.SyncTasks();
+            }
+            var duration = stopWatch.ElapsedMilliseconds;
+            Console.WriteLine($"QueryAll. count: {count}, duration: {duration} ms");
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task Perf_QueryAll(string db) {
             var client  = await GetClient(db);
             // warmup
