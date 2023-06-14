@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Provider.Perf
     public static class TestPerf
     {
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task PerfRead_One(string db) {
+        public static async Task Perf_Read_One(string db) {
             var client  = await GetClient(db);
             // warmup
             for (int n = 0; n < 1; n++) {
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Provider.Perf
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task PerfQueryAll(string db) {
+        public static async Task Perf_QueryAll(string db) {
             var client  = await GetClient(db);
             // warmup
             for (int n = 0; n < 1; n++) {
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Provider.Perf
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task PerfMutationUpsert(string db) {
+        public static async Task Perf_MutationUpsert(string db) {
             var client      = await GetClient(db, false);
             var count       = 1; // 1_000_000; // memory_db & sqlite_db: 1_000_000 ~ 4 sec
             var entities    = new List<TestMutate>();
@@ -68,7 +68,7 @@ namespace Friflo.Json.Tests.Provider.Perf
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task PerfMutationDelete(string db) {
+        public static async Task Perf_MutationDelete(string db) {
             var client      = await GetClient(db, false);
             var count       = 1; // 1_000_000; // memory_db & sqlite_db: 1_000_000 ~ 0.8 sec if already empty
             var ids         = new List<string>();
