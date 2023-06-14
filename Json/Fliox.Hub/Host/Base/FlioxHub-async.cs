@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     Logger.Log(HubLog.Error, message, e);
                 }
             }
-            syncContext.CloseConnection();
+            syncContext.ReturnConnection();
             PostExecute(syncRequest, response, syncContext);
             return new ExecuteSyncResult(response);
         }

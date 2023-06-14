@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Data;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -40,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
         
         public override async Task<ISyncConnection> GetConnectionAsync()  {
-            if (connectionPool.TryPop(out var syncConnection)) {
+            if (connectionPool.TryPop(out var syncConnection) && syncConnection.IsOpen) {
                 return syncConnection;
             }
             Exception openException;
@@ -75,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             return new SyncConnectionError(new TaskExecuteError("timeout open newly created database"));
         }
         
-        public override void CloseConnection(ISyncConnection connection) {
+        public override void ReturnConnection(ISyncConnection connection) {
             connectionPool.Push((SyncConnection)connection);
         }
 
@@ -102,6 +103,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance.Dispose();
+        public  bool                IsOpen      => instance.State == ConnectionState.Open;
         
         public SyncConnection (SqlConnection instance) {
             this.instance = instance ?? throw new ArgumentNullException(nameof(instance));

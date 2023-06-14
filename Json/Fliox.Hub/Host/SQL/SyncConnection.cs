@@ -17,11 +17,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     public interface ISyncConnection
     {
         public  TaskExecuteError    Error    { get; }
+        public  bool                IsOpen   { get; }
         public  void                Dispose();
     }
     
     public class SyncConnectionError : ISyncConnection {
-        public  TaskExecuteError    Error { get; }
+        public  TaskExecuteError    Error   { get; }
+        public  bool                IsOpen  => false;
         public  void                Dispose() { }
         
         public SyncConnectionError(TaskExecuteError error) {

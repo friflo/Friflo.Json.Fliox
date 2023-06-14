@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              DatabaseSchema      Schema          { get; }
         
         public  virtual     Task<ISyncConnection> GetConnectionAsync()                          => throw new NotImplementedException();
-        public  virtual     void                  CloseConnection(ISyncConnection connection)   => connection.Dispose();
+        public  virtual     void                  ReturnConnection(ISyncConnection connection)  => connection.Dispose();
         /// <summary>A mapping function used to assign a custom container name.</summary>
         /// <remarks>
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
@@ -215,7 +215,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
             }
             finally {
-                syncContext.CloseConnection();
+                syncContext.ReturnConnection();
             }
         }
         
@@ -269,7 +269,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
             }
             finally {
-                syncContext.CloseConnection();
+                syncContext.ReturnConnection();
             }
         }
         

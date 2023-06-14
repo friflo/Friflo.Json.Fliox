@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
         }
         
         public override async Task<ISyncConnection> GetConnectionAsync()  {
-            if (connectionPool.TryPop(out var syncConnection)) {
+            if (connectionPool.TryPop(out var syncConnection) && syncConnection.IsOpen) {
                 return syncConnection;
             }
             try {
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             }
         }
         
-        public override void CloseConnection(ISyncConnection connection) {
+        public override void ReturnConnection(ISyncConnection connection) {
             connectionPool.Push((SyncConnection)connection);
         }
     }
@@ -61,6 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance.Dispose();
+        public  bool                IsOpen      => instance.IsConnected;
         
         public SyncConnection (ConnectionMultiplexer instance) {
             this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
