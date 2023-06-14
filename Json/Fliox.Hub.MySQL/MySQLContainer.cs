@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public async Task AddVirtualColumns(ISyncConnection syncConnection) {
             var connection = (SyncConnection)syncConnection;
             using var cmd   = Command($"SELECT * FROM {name} LIMIT 0", connection);
-            var columnNames = await SQLUtils.GetColumnNames(cmd).ConfigureAwait(false);
+            var columnNames = await SQLUtils.GetColumnNamesAsync(cmd).ConfigureAwait(false);
             foreach (var column in tableInfo.columns.Values) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
@@ -139,7 +139,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sql     = SQLUtils.QueryEntitiesSQL(command, name, where);
             try {
                 using var cmd = Command(sql, connection);
-                return await SQLUtils.QueryEntities(cmd, command, sql).ConfigureAwait(false);
+                var entities = await SQLUtils.QueryEntitiesAsync(cmd).ConfigureAwait(false);
+                return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
             catch (MySqlException e) {
                 return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message), sql = sql };

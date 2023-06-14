@@ -144,7 +144,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return new ReadEntitiesResult { entities = entities };
         }
         
-        public static async Task<QueryEntitiesResult> QueryEntities(DbCommand cmd, QueryEntities query, string sql) {
+        /// <summary>
+        /// Prefer using <see cref="QueryEntitiesSync"/> for SQL Server for performance.<br/>
+        /// E.g. reading two records - asynchronous: ~700 µs, synchronous: 100µs
+        /// </summary>
+        public static async Task<List<EntityValue>> QueryEntitiesAsync(DbCommand cmd) {
             using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var entities = new List<EntityValue>();
             while (await reader.ReadAsync().ConfigureAwait(false)) {
@@ -154,6 +158,23 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 var value   = new JsonValue(data);
                 entities.Add(new EntityValue(key, value));
             }
+            return entities;
+        }
+        
+        public static List<EntityValue> QueryEntitiesSync(DbCommand cmd) {
+            using var reader = cmd.ExecuteReader();
+            var entities = new List<EntityValue>();
+            while (reader.Read()) {
+                var id      = reader.GetString(0);
+                var data    = reader.GetString(1);
+                var key     = new JsonKey(id);
+                var value   = new JsonValue(data);
+                entities.Add(new EntityValue(key, value));
+            }
+            return entities;
+        }
+        
+        public static QueryEntitiesResult CreateQueryEntitiesResult(List<EntityValue> entities, QueryEntities query, string sql) {
             var result = new QueryEntitiesResult { entities = entities.ToArray(), sql = sql };
             if (entities.Count >= query.maxCount) {
                 result.cursor = entities[entities.Count - 1].key.AsString();
@@ -161,7 +182,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return result;
         }
         
-        public static async Task<HashSet<string>> GetColumnNames(DbCommand cmd) {
+        public static async Task<HashSet<string>> GetColumnNamesAsync(DbCommand cmd) {
             using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             while (await reader.ReadAsync().ConfigureAwait(false)) {
                 throw new InvalidOperationException("expect 0 rows");

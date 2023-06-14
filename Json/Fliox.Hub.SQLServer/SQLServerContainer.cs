@@ -3,6 +3,8 @@
 
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
+using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -63,7 +65,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         public async Task AddVirtualColumns(ISyncConnection syncConnection) {
             var connection = (SyncConnection)syncConnection;
             using var cmd   = Command($"SELECT TOP 0 * FROM {name}", connection);
-            var columnNames = await SQLUtils.GetColumnNames(cmd).ConfigureAwait(false);
+            var columnNames = await SQLUtils.GetColumnNamesAsync(cmd).ConfigureAwait(false);
             foreach (var column in tableInfo.columns.Values) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
@@ -114,7 +116,11 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         }
         
         // ReSharper disable once ConvertToConstant.Local
-        private static readonly bool ExecuteAsync = false; 
+        /// <summary>
+        /// Using asynchronous execution for SQL Server is significant slower.<br/>
+        /// <see cref="DbCommand.ExecuteReaderAsync()"/> ~7x slower than <see cref="DbCommand.ExecuteReader()"/>.
+        /// </summary>
+        private static readonly bool ExecuteAsync = false;
 
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
@@ -152,7 +158,13 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             var sql     = SQLServerUtils.QueryEntities(command, name, where);
             try {
                 using var cmd = Command(sql, connection);
-                return await SQLUtils.QueryEntities(cmd, command, sql).ConfigureAwait(false);
+                List<EntityValue> entities;
+                if (ExecuteAsync) {
+                    entities = await SQLUtils.QueryEntitiesAsync(cmd).ConfigureAwait(false);
+                } else {
+                    entities = SQLUtils.QueryEntitiesSync(cmd);
+                }
+                return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
             catch (SqlException e) {
                 return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message), sql = sql };

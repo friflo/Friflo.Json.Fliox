@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using NUnit.Framework;
@@ -21,27 +20,6 @@ namespace Friflo.Json.Tests.Provider.Test
             var find    = client.testOps.Read().Find("a-1");
             await client.SyncTasks();
             NotNull(find.Result);
-        }
-        
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestRead_1_One_Perf(string db) {
-            var client  = await GetClient(db);
-
-            for (int n = 0; n < 1; n++) {
-                client.testOps.Read().Find("a-1");
-                await client.SyncTasks();
-            }
-
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            var count = 1; // 1_000;
-
-            for (int n = 0; n < count; n++) {
-                client.testOps.Read().Find("a-1");
-                await client.SyncTasks();
-            }
-            var duration = stopWatch.ElapsedMilliseconds;
-            Console.WriteLine($"read. count: {count}, duration: {duration} ms");
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
