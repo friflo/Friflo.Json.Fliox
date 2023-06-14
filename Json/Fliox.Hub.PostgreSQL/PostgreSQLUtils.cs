@@ -27,8 +27,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 }
                 return default;
             }
-            catch (PostgresException e) {
-                return new SQLResult(e.MessageText);
+            catch (NpgsqlException e) {
+                return new SQLResult(e);
             }
         }
         

@@ -3,7 +3,6 @@
 
 #if !UNITY_5_3_OR_NEWER || POSTGRESQL
 
-using System;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -35,22 +34,26 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         public async Task<TaskExecuteError> InitTable(ISyncConnection connection) {
-            if (init.CreateTable) {
-                // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
-                // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
-                // set to 255 as for all SQL databases
-                var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
-                var result = await Execute((SyncConnection)connection, sql).ConfigureAwait(false);
-                if (result.Failed) {
-                    return result.error;
+            try {
+                if (init.CreateTable) {
+                    // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
+                    // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
+                    // set to 255 as for all SQL databases
+                    var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
+                    var result = await Execute((SyncConnection)connection, sql).ConfigureAwait(false);
+                    if (result.Failed) {
+                        return result.error;
+                    }
+                    init.tableCreated = true;
                 }
-                init.tableCreated = true;
+                if (init.AddVirtualColumns) {
+                    await AddVirtualColumns(connection).ConfigureAwait(false);
+                    init.virtualColumnsAdded = true;
+                }
+                return null;
+            } catch (NpgsqlException e) {
+                return new TaskExecuteError(e.Message);
             }
-            if (init.AddVirtualColumns) {
-                await AddVirtualColumns(connection).ConfigureAwait(false);
-                init.virtualColumnsAdded = true;
-            }
-            return null;
         }
         
         public async Task AddVirtualColumns(ISyncConnection syncConnection) {
@@ -83,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             try {
                 using var cmd = Command(sql.ToString(), connection);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-            } catch (Exception e) {
+            } catch (NpgsqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
             }
             return new CreateEntitiesResult();
@@ -143,8 +146,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 using var cmd = Command(sql, connection);
                 var entities = await SQLUtils.QueryEntitiesAsync(cmd).ConfigureAwait(false);
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
-            } catch (PostgresException e) {
-                return new QueryEntitiesResult { Error = new TaskExecuteError(e.MessageText), sql = sql };
+            } catch (NpgsqlException e) {
+                return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message), sql = sql };
             }
         }
         

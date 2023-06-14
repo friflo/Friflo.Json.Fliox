@@ -262,9 +262,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             error       = null;
         }
         
-        public SQLResult(TaskExecuteError error) {
+        public SQLResult(Exception e) {
             value       = null;
-            this.error  = error;
+            error       = new TaskExecuteError(e.Message);
         }
     }
 }
