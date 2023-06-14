@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         private  readonly   string          connectionString;
         private             bool            tableTypesCreated;
         
-        private  readonly   ConcurrentStack<SyncConnection> connectionPool;
+        private  readonly   ConnectionPool<SyncConnection> connectionPool;
 
         public   override   string          StorageType => "Microsoft SQL Server";
         
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             : base(dbName, AssertSchema<SQLServerDatabase>(schema), service)
         {
             this.connectionString   = connectionString;
-            connectionPool          = new ConcurrentStack<SyncConnection>();
+            connectionPool          = new ConnectionPool<SyncConnection>();
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
         
         public override async Task<ISyncConnection> GetConnectionAsync()  {
-            if (connectionPool.TryPop(out var syncConnection) && syncConnection.IsOpen) {
+            if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
             }
             Exception openException;
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
         
         public override void ReturnConnection(ISyncConnection connection) {
-            connectionPool.Push((SyncConnection)connection);
+            connectionPool.Push(connection);
         }
 
         internal async Task CreateTableTypes() {
