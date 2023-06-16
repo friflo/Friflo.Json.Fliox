@@ -30,8 +30,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private void OnCloseTimerEvent(object source, ElapsedEventArgs e) {
             var now = DateTime.Now;
             lock (connectionPool) {
-                // TryPeek() - returns a connection from the beginning of the queue
-                while (connectionPool.TryPeek(out var connection)) {
+                while (connectionPool.Count > 0) {
+                    // Peek() - returns a connection from the beginning of the queue
+                    var connection = connectionPool.Peek();
                     var diff = now - connection.idleStart;
                     if (diff.TotalMilliseconds < IdleTimeout) {
                         return;
