@@ -4,11 +4,9 @@
 #if !UNITY_5_3_OR_NEWER || MYSQL
 
 using System;
-using System.Data;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using MySqlConnector;
 using static Friflo.Json.Fliox.Hub.MySQL.MySQLUtils;
 
@@ -83,19 +81,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new MySQLContainer(name.AsString(), this, Pretty);
-        }
-    }
-    
-    internal sealed class SyncConnection : ISyncConnection
-    {
-        internal readonly    MySqlConnection         instance;
-        
-        public  TaskExecuteError    Error       => throw new InvalidOperationException();
-        public  void                Dispose()   => instance.Dispose();
-        public  bool                IsOpen      => instance.State == ConnectionState.Open;
-        
-        public SyncConnection (MySqlConnection instance) {
-            this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
         }
     }
 }

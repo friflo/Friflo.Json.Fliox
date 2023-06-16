@@ -13,14 +13,9 @@ namespace Friflo.Json.Fliox.Hub.MySQL
 {
     public static class MySQLUtils
     {
-        internal static MySqlCommand Command (string sql, SyncConnection connection) {
-            return new MySqlCommand(sql, connection.instance);
-        }
-        
         internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
             try {
-                using var command = new MySqlCommand(sql, connection.instance);
-                using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+                using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
                     var value = reader.GetValue(0);
                     return new SQLResult(value); 

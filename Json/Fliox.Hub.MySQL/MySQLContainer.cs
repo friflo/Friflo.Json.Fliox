@@ -3,7 +3,6 @@
 
 #if !UNITY_5_3_OR_NEWER || MYSQL
 
-using System;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -53,8 +52,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         
         public async Task AddVirtualColumns(ISyncConnection syncConnection) {
             var connection = (SyncConnection)syncConnection;
-            using var cmd   = Command($"SELECT * FROM {name} LIMIT 0", connection);
-            var columnNames = await SQLUtils.GetColumnNamesAsync(cmd).ConfigureAwait(false);
+            using var reader    = await connection.ExecuteReaderAsync($"SELECT * FROM {name} LIMIT 0").ConfigureAwait(false);
+            var columnNames     = await SQLUtils.GetColumnNamesAsync(reader).ConfigureAwait(false);
             foreach (var column in tableInfo.columns.Values) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
@@ -79,9 +78,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
             try {
-                using var cmd = Command(sql.ToString(), connection);
-                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-            } catch (Exception e) {
+                await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
+            } catch (MySqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
             }
             return new CreateEntitiesResult();
@@ -102,10 +100,11 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sql = new StringBuilder();
             sql.Append($"REPLACE INTO {name} ({ID},{DATA}) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
-
-            using var cmd = Command(sql.ToString(), connection);
-            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-
+            try {
+                await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
+            } catch (MySqlException e) {
+                return new UpsertEntitiesResult { Error = DatabaseError(e.Message) };    
+            }
             return new UpsertEntitiesResult();
         }
 
@@ -121,8 +120,12 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sql = new StringBuilder();
             sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
             SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.BackSlash);
-            using var cmd = Command(sql.ToString(), connection);
-            return await SQLUtils.ReadEntitiesAsync(cmd, command).ConfigureAwait(false);
+            try {
+                using var reader = await connection.ExecuteReaderAsync(sql.ToString()).ConfigureAwait(false);
+                return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
+            } catch (MySqlException e) {
+                return new ReadEntitiesResult { Error = DatabaseError(e.Message) };    
+            }
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
@@ -138,8 +141,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var where   = filter.IsTrue ? "TRUE" : filter.MySQLFilter(provider);
             var sql     = SQLUtils.QueryEntitiesSQL(command, name, where);
             try {
-                using var cmd = Command(sql, connection);
-                var entities = await SQLUtils.QueryEntitiesAsync(cmd).ConfigureAwait(false);
+                using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
+                var entities        = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
             catch (MySqlException e) {
@@ -183,8 +186,11 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 sql.Append($"DELETE FROM  {name} WHERE {ID} in\n");
                 
                 SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.BackSlash);
-                using var cmd = Command(sql.ToString(), connection);
-                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                try {
+                    await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
+                } catch (MySqlException e) {
+                    return new DeleteEntitiesResult { Error = DatabaseError(e.Message) };    
+                }
                 return new DeleteEntitiesResult();
             }
         }
