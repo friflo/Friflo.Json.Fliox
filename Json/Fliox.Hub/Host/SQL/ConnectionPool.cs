@@ -47,11 +47,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public bool TryPop(out T syncConnection) {
             lock (connectionPool) {
                 while (true) {
-                    // TryDequeue() - removed connection from beginning of the queue 
-                    if (!connectionPool.TryDequeue(out var connection)) {
+                    // TryDequeue() - removed connection from beginning of the queue
+                    if (connectionPool.Count == 0) {
                         syncConnection = default;
                         return false;
                     }
+                    var connection = connectionPool.Dequeue();
                     syncConnection = connection.instance;
                     if (syncConnection.IsOpen) {
                         return true;
