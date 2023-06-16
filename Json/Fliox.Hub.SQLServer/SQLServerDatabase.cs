@@ -30,7 +30,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         public SQLServerDatabase(string dbName, string connectionString, DatabaseSchema schema, DatabaseService service = null)
             : base(dbName, AssertSchema<SQLServerDatabase>(schema), service)
         {
-            this.connectionString   = connectionString;
+            var builder             = new SqlConnectionStringBuilder(connectionString) { Pooling = false };
+            this.connectionString   = builder.ConnectionString;
             connectionPool          = new ConnectionPool<SyncConnection>();
         }
         

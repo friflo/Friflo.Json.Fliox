@@ -28,7 +28,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public MySQLDatabase(string dbName, string connectionString, DatabaseSchema schema, DatabaseService service = null)
             : base(dbName, AssertSchema<MySQLDatabase>(schema), service)
         {
-            this.connectionString   = connectionString;
+            var builder             = new MySqlConnectionStringBuilder(connectionString) { Pooling = false };
+            this.connectionString   = builder.ConnectionString;
             connectionPool          = new ConnectionPool<SyncConnection>();
         }
         

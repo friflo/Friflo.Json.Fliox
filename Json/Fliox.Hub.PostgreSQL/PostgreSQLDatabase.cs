@@ -26,7 +26,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         public PostgreSQLDatabase(string dbName, string  connectionString, DatabaseSchema schema, DatabaseService service = null)
             : base(dbName, AssertSchema<PostgreSQLDatabase>(schema), service)
         {
-            this.connectionString   = connectionString;
+            var builder             = new NpgsqlConnectionStringBuilder(connectionString) { Pooling = false };
+            this.connectionString   = builder.ConnectionString;
             connectionPool          = new ConnectionPool<SyncConnection>();
         }
         
