@@ -4,11 +4,9 @@
 #if !UNITY_5_3_OR_NEWER || POSTGRESQL
 
 using System;
-using System.Data;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Npgsql;
 using static Friflo.Json.Fliox.Hub.PostgreSQL.PostgreSQLUtils;
 
@@ -67,19 +65,6 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         public override void ReturnConnection(ISyncConnection connection) {
             connectionPool.Push(connection);
-        }
-    }
-    
-    internal sealed class SyncConnection : ISyncConnection
-    {
-        internal readonly    NpgsqlConnection         instance;
-        
-        public  TaskExecuteError    Error       => throw new InvalidOperationException();
-        public  void                Dispose()   => instance.Dispose();
-        public  bool                IsOpen      => instance.State == ConnectionState.Open;
-        
-        public SyncConnection (NpgsqlConnection instance) {
-            this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
         }
     }
 }

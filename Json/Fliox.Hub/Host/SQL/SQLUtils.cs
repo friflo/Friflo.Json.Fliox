@@ -110,13 +110,18 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sb.Append(')');
         }
         
+        // TODO remove 
+        public static async Task<ReadEntitiesResult> ReadEntitiesAsync(DbCommand cmd, ReadEntities query) {
+            using var reader= await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            return await ReadEntitiesAsync(reader, query).ConfigureAwait(false);
+        }
+        
         /// <summary>
         /// Prefer using <see cref="ReadEntitiesSync"/> for SQL Server for performance.<br/>
         /// reading a single record - asynchronous: ~700 µs, synchronous: 100µs
         /// </summary>
-        public static async Task<ReadEntitiesResult> ReadEntitiesAsync(DbCommand cmd, ReadEntities query) {
+        public static async Task<ReadEntitiesResult> ReadEntitiesAsync(DbDataReader reader, ReadEntities query) {
             var ids = query.ids;
-            using var reader= await cmd.ExecuteReaderAsync().ConfigureAwait(false);
             var rows        = new List<EntityValue>(ids.Count);
             while (await reader.ReadAsync().ConfigureAwait(false)) {
                 var id      = reader.GetString(0);
@@ -144,12 +149,17 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return new ReadEntitiesResult { entities = entities };
         }
         
+        // TODO remove
+        public static async Task<List<EntityValue>> QueryEntitiesAsync(DbCommand cmd) {
+            using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            return await QueryEntitiesAsync(reader).ConfigureAwait(false);
+        }
+        
         /// <summary>
         /// Prefer using <see cref="QueryEntitiesSync"/> for SQL Server for performance.<br/>
         /// E.g. reading two records - asynchronous: ~700 µs, synchronous: 100µs
         /// </summary>
-        public static async Task<List<EntityValue>> QueryEntitiesAsync(DbCommand cmd) {
-            using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+        public static async Task<List<EntityValue>> QueryEntitiesAsync(DbDataReader reader) {
             var entities = new List<EntityValue>();
             while (await reader.ReadAsync().ConfigureAwait(false)) {
                 var id      = reader.GetString(0);
@@ -184,6 +194,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         public static async Task<HashSet<string>> GetColumnNamesAsync(DbCommand cmd) {
             using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            return await GetColumnNamesAsync(reader);
+        }
+        
+        public static async Task<HashSet<string>> GetColumnNamesAsync(DbDataReader reader) {
             while (await reader.ReadAsync().ConfigureAwait(false)) {
                 throw new InvalidOperationException("expect 0 rows");
             }

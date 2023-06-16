@@ -13,14 +13,9 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public static class PostgreSQLUtils
     {
-        internal static NpgsqlCommand Command (string sql, SyncConnection connection) {
-            return new NpgsqlCommand(sql, connection.instance);
-        }
-        
-        internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
+        internal static async Task<SQLResult> ExecuteAsync(SyncConnection connection, string sql) {
             try {
-                using var command = new NpgsqlCommand(sql, connection.instance);
-                using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+                using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
                     var value = reader.GetValue(0);
                     return new SQLResult(value); 
@@ -39,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 $@"ALTER TABLE {table}
 ADD COLUMN IF NOT EXISTS ""{column.name}"" {type} NULL
 GENERATED ALWAYS AS (({path})::{type}) STORED;";
-            await Execute(connection, sql).ConfigureAwait(false);
+            await ExecuteAsync(connection, sql).ConfigureAwait(false);
         }
         
         internal static async Task CreateDatabaseIfNotExistsAsync(string connectionString) {

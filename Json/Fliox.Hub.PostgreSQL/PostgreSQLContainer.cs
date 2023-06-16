@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
                     // set to 255 as for all SQL databases
                     var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
-                    var result = await Execute((SyncConnection)connection, sql).ConfigureAwait(false);
+                    var result = await ExecuteAsync((SyncConnection)connection, sql).ConfigureAwait(false);
                     if (result.Failed) {
                         return result.error;
                     }
@@ -58,8 +58,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         public async Task AddVirtualColumns(ISyncConnection syncConnection) {
             var connection = (SyncConnection)syncConnection;
-            using var cmd   = Command($"SELECT * FROM {name} LIMIT 0", connection);
-            var columnNames = await SQLUtils.GetColumnNamesAsync(cmd).ConfigureAwait(false);
+            using var reader    = await connection.ExecuteReaderAsync($"SELECT * FROM {name} LIMIT 0").ConfigureAwait(false);
+            var columnNames     = await SQLUtils.GetColumnNamesAsync(reader).ConfigureAwait(false);
             foreach (var column in tableInfo.columns.Values) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
@@ -84,8 +84,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
             try {
-                using var cmd = Command(sql.ToString(), connection);
-                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
             } catch (NpgsqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
             }
@@ -108,9 +107,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
             sql.Append($"\nON CONFLICT({ID}) DO UPDATE SET {DATA} = excluded.{DATA};");
-            using var cmd = Command(sql.ToString(), connection);
-            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-
+            try {
+                await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
+            } catch (NpgsqlException e) {
+                return new UpsertEntitiesResult { Error = DatabaseError(e.Message) };    
+            }
             return new UpsertEntitiesResult();
         }
 
@@ -126,8 +127,12 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var sql = new StringBuilder();
             sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
             SQLUtils.AppendKeysSQL(sql,  command.ids, SQLEscape.Default);
-            using var cmd = Command(sql.ToString(), connection);
-            return await SQLUtils.ReadEntitiesAsync(cmd, command).ConfigureAwait(false);
+            try {
+                using var reader = await connection.ExecuteReaderAsync(sql.ToString()).ConfigureAwait(false);
+                return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
+            } catch (NpgsqlException e) {
+                return new ReadEntitiesResult { Error = new TaskExecuteError(e.Message) };
+            }
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
@@ -143,8 +148,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var where   = filter.IsTrue ? "TRUE" : filter.PostgresFilter(entityType);
             var sql     = SQLUtils.QueryEntitiesSQL(command, name, where);
             try {
-                using var cmd = Command(sql, connection);
-                var entities = await SQLUtils.QueryEntitiesAsync(cmd).ConfigureAwait(false);
+                using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
+                var entities        = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             } catch (NpgsqlException e) {
                 return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message), sql = sql };
@@ -160,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter(entityType)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
-                var result  = await Execute(connection, sql).ConfigureAwait(false);
+                var result  = await ExecuteAsync(connection, sql).ConfigureAwait(false);
                 if (result.Failed) { return new AggregateEntitiesResult { Error = result.error }; }
                 return new AggregateEntitiesResult { value = (long)result.value };
             }
@@ -179,16 +184,18 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
-                var result = await Execute(connection, sql).ConfigureAwait(false);
+                var result = await ExecuteAsync(connection, sql).ConfigureAwait(false);
                 if (result.Failed) { return new DeleteEntitiesResult { Error = result.error }; }
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();
                 sql.Append($"DELETE FROM  {name} WHERE {ID} in\n");
-                
                 SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.Default);
-                using var cmd = Command(sql.ToString(), connection);
-                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                try {
+                    await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
+                } catch (NpgsqlException e) {
+                    return new DeleteEntitiesResult { Error = DatabaseError(e.Message) };    
+                }
                 return new DeleteEntitiesResult();
             }
         }
