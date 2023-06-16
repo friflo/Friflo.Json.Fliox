@@ -5,27 +5,30 @@
 
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using MySqlConnector;
 
-namespace Friflo.Json.Fliox.Hub.MySQL
+namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     internal sealed class SyncConnection : ISyncConnection
     {
-        private readonly    MySqlConnection         instance;
+        internal readonly    SqlConnection         instance;
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance.Dispose();
         public  bool                IsOpen      => instance.State == ConnectionState.Open;
         
-        public SyncConnection (MySqlConnection instance) {
+        public SyncConnection (SqlConnection instance) {
             this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
         }
         
-        internal async Task ExecuteNonQueryAsync (string sql) {
-            using var cmd = new MySqlCommand(sql, instance);
+        internal async Task ExecuteNonQueryAsync (string sql, SqlParameter parameter = null) {
+            using var cmd = new SqlCommand(sql, instance);
+            if (parameter != null) {
+                cmd.Parameters.Add(parameter);
+            }
             int tryCount = 0;
             while (true) {
                 tryCount++;
@@ -33,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                     return;
                 }
-                catch (MySqlException) {
+                catch (SqlException) {
                     if (instance.State != ConnectionState.Open && tryCount == 1) {
                         await instance.OpenAsync().ConfigureAwait(false);
                         continue;
@@ -43,15 +46,37 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
         }
         
-        internal async Task<MySqlDataReader> ExecuteReaderAsync(string sql) {
-            using var command = new MySqlCommand(sql, instance);
+        internal async Task<SqlDataReader> ExecuteReaderAsync(string sql, SqlParameter parameter = null) {
+            using var command = new SqlCommand(sql, instance);
+            if (parameter != null) {
+                command.Parameters.Add(parameter);
+            }
             int tryCount = 0;
             while (true) {
                 tryCount++;
                 try {
                     return await command.ExecuteReaderAsync().ConfigureAwait(false);
                 }
-                catch (MySqlException) {
+                catch (SqlException) {
+                    if (instance.State != ConnectionState.Open && tryCount == 1) {
+                        await instance.OpenAsync().ConfigureAwait(false);
+                        continue;
+                    }
+                    throw;
+                }
+            }
+        }
+        
+        internal async Task<SqlDataReader> ExecuteReaderSync(string sql) {
+            using var command = new SqlCommand(sql, instance);
+            int tryCount = 0;
+            while (true) {
+                tryCount++;
+                try {
+                    // ReSharper disable once MethodHasAsyncOverload
+                    return command.ExecuteReader();
+                }
+                catch (SqlException) {
                     if (instance.State != ConnectionState.Open && tryCount == 1) {
                         await instance.OpenAsync().ConfigureAwait(false);
                         continue;

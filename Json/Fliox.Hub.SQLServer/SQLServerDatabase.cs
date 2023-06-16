@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
 using System;
-using System.Data;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -85,27 +84,11 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
             var connection = (SyncConnection)await GetConnectionAsync().ConfigureAwait(false);
             var sql = $"IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE({SQLServerContainer.ColumnId}, {SQLServerContainer.ColumnData});";
-            using (var cmd = Command(sql, connection)) {
-                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-            }
+            await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+
             sql = $"IF TYPE_ID(N'KeyType') IS NULL CREATE TYPE KeyType AS TABLE({SQLServerContainer.ColumnId});";
-            using (var cmd = Command(sql, connection)) {
-                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-            }
+            await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
             tableTypesCreated = true;
-        }
-    }
-    
-    internal sealed class SyncConnection : ISyncConnection
-    {
-        internal readonly    SqlConnection         instance;
-        
-        public  TaskExecuteError    Error       => throw new InvalidOperationException();
-        public  void                Dispose()   => instance.Dispose();
-        public  bool                IsOpen      => instance.State == ConnectionState.Open;
-        
-        public SyncConnection (SqlConnection instance) {
-            this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
         }
     }
 }

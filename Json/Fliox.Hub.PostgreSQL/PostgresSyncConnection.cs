@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 }
                 catch (NpgsqlException) {
                     if (instance.State != ConnectionState.Open && tryCount == 1) {
-                        await instance.OpenAsync();
+                        await instance.OpenAsync().ConfigureAwait(false);
                         continue;
                     }
                     throw;
@@ -49,11 +49,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             while (true) {
                 tryCount++;
                 try {
-                    return await command.ExecuteReaderAsync();
+                    return await command.ExecuteReaderAsync().ConfigureAwait(false);
                 }
                 catch (NpgsqlException) {
                     if (instance.State != ConnectionState.Open && tryCount == 1) {
-                        await instance.OpenAsync();
+                        await instance.OpenAsync().ConfigureAwait(false);
                         continue;
                     }
                     throw;

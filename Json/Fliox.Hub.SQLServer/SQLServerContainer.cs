@@ -64,8 +64,8 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         
         public async Task AddVirtualColumns(ISyncConnection syncConnection) {
             var connection = (SyncConnection)syncConnection;
-            using var cmd   = Command($"SELECT TOP 0 * FROM {name}", connection);
-            var columnNames = await SQLUtils.GetColumnNamesAsync(cmd).ConfigureAwait(false);
+            using var reader    = await connection.ExecuteReaderAsync($"SELECT TOP 0 * FROM {name}").ConfigureAwait(false);
+            var columnNames     = await SQLUtils.GetColumnNamesAsync(reader).ConfigureAwait(false);
             foreach (var column in tableInfo.columns.Values) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
@@ -88,8 +88,7 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             }
             try {
                 await database.CreateTableTypes().ConfigureAwait(false);
-                using var cmd = CreateEntitiesCmd(connection, command.entities, name);
-                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                await CreateEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
             } catch (SqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
             }
@@ -108,10 +107,12 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             if (command.entities.Count == 0) {
                 return new UpsertEntitiesResult();
             }
-            await database.CreateTableTypes().ConfigureAwait(false);
-            using var cmd = UpsertEntitiesCmd(connection, command.entities, name);
-            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-
+            try {
+                await database.CreateTableTypes().ConfigureAwait(false);
+                await UpsertEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
+            } catch (SqlException e) {
+                return new UpsertEntitiesResult { Error = new TaskExecuteError(e.Message) };
+            }
             return new UpsertEntitiesResult();
         }
         
@@ -127,21 +128,25 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
-            if (ExecuteAsync) {
-                var error = await InitTable(connection).ConfigureAwait(false);
-                if (error != null) {
-                    return new ReadEntitiesResult { Error = error };
-                }
-                await database.CreateTableTypes().ConfigureAwait(false);
-                using var cmd = ReadEntitiesCmd(connection, command.ids, name);
-                return await SQLUtils.ReadEntitiesAsync(cmd, command).ConfigureAwait(false);
-            } else {
-                var sql = new StringBuilder();
-                sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
-                SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.PrefixN);
-                using var cmd = Command(sql.ToString(), connection);
-                return SQLUtils.ReadEntitiesSync(cmd, command);
-            }    
+            try {
+                if (ExecuteAsync) {
+                    var error = await InitTable(connection).ConfigureAwait(false);
+                    if (error != null) {
+                        return new ReadEntitiesResult { Error = error };
+                    }
+                    await database.CreateTableTypes().ConfigureAwait(false);
+                    using var reader = await ReadEntitiesCmd(connection, command.ids, name).ConfigureAwait(false);
+                    return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
+                } else {
+                    var sql = new StringBuilder();
+                    sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
+                    SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.PrefixN);
+                    using var reader = await connection.ExecuteReaderSync(sql.ToString()).ConfigureAwait(false);
+                    return SQLUtils.ReadEntitiesSync(reader, command);
+                }    
+            } catch (SqlException e) {
+                return new ReadEntitiesResult { Error = new TaskExecuteError(e.Message) };
+            }
         }
 
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
@@ -157,12 +162,13 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             var where   = filter.IsTrue ? "(1=1)" : filter.SQLServerFilter();
             var sql     = SQLServerUtils.QueryEntities(command, name, where);
             try {
-                using var cmd = Command(sql, connection);
                 List<EntityValue> entities;
                 if (ExecuteAsync) {
-                    entities = await SQLUtils.QueryEntitiesAsync(cmd).ConfigureAwait(false);
+                    using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
+                    entities = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
                 } else {
-                    entities = SQLUtils.QueryEntitiesSync(cmd);
+                    using var reader = await connection.ExecuteReaderSync(sql).ConfigureAwait(false);
+                    entities = SQLUtils.QueryEntitiesSync(reader);
                 }
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
@@ -176,15 +182,20 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             if (syncConnection is not SyncConnection connection) {
                 return new AggregateEntitiesResult { Error = syncConnection.Error };
             }
-            if (command.type == AggregateType.count) {
-                var filter  = command.GetFilter();
-                var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLServerFilter()}";
-                var sql     = $"SELECT COUNT(*) from {name}{where}";
-                var result  = await Execute(connection, sql).ConfigureAwait(false);
-                if (result.Failed) { return new AggregateEntitiesResult { Error = result.error }; }
-                return new AggregateEntitiesResult { value = (int)result.value };
+            try {
+                if (command.type == AggregateType.count) {
+                    var filter  = command.GetFilter();
+                    var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLServerFilter()}";
+                    var sql     = $"SELECT COUNT(*) from {name}{where}";
+                    var result  = await Execute(connection, sql).ConfigureAwait(false);
+                    if (result.Failed) { return new AggregateEntitiesResult { Error = result.error }; }
+                    return new AggregateEntitiesResult { value = (int)result.value };
+                }
+                return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
             }
-            return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
+            catch (SqlException e) {
+                return new AggregateEntitiesResult { Error = new TaskExecuteError(e.Message) };
+            }
         }
 
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
@@ -196,16 +207,20 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             if (error != null) {
                 return new DeleteEntitiesResult { Error = error };
             }
-            if (command.all == true) {
-                var sql = $"DELETE from {name}";
-                var result = await Execute(connection, sql).ConfigureAwait(false);
-                if (result.Failed) { return new DeleteEntitiesResult { Error = result.error }; }
-                return new DeleteEntitiesResult();    
-            } else {
-                await database.CreateTableTypes().ConfigureAwait(false);
-                using var cmd = DeleteEntitiesCmd(connection, command.ids, name);
-                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-                return new DeleteEntitiesResult();
+            try {
+                if (command.all == true) {
+                    var sql = $"DELETE from {name}";
+                    var result = await Execute(connection, sql).ConfigureAwait(false);
+                    if (result.Failed) { return new DeleteEntitiesResult { Error = result.error }; }
+                    return new DeleteEntitiesResult();    
+                } else {
+                    await database.CreateTableTypes().ConfigureAwait(false);
+                    await DeleteEntitiesCmdAsync(connection, command.ids, name).ConfigureAwait(false);
+                    return new DeleteEntitiesResult();
+                }
+            }
+            catch (SqlException e) {
+                return new DeleteEntitiesResult { Error = new TaskExecuteError(e.Message) };
             }
         }
         

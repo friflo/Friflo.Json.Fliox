@@ -5,7 +5,6 @@
 
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -18,14 +17,14 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     public static partial class SQLServerUtils
     {
         // --- create / upsert using VALUES() in SQL statement
-        internal static DbCommand CreateEntitiesCmd_Values (SyncConnection connection, List<JsonEntity> entities, string table) {
+        internal static async Task CreateEntitiesCmd_Values (SyncConnection connection, List<JsonEntity> entities, string table) {
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {table} ({ID},{DATA}) VALUES\n");
             SQLUtils.AppendValuesSQL(sql, entities, SQLEscape.Default);
-            return Command(sql.ToString(), connection);
+            await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
         }
         
-        internal static DbCommand UpsertEntitiesCmd_Values (SyncConnection connection, List<JsonEntity> entities, string table) {
+        internal static async Task UpsertEntitiesCmd_Values (SyncConnection connection, List<JsonEntity> entities, string table) {
             var sql = new StringBuilder();
             sql.Append(
 $@"MERGE {table} AS target
@@ -39,7 +38,7 @@ WHEN MATCHED THEN
 WHEN NOT MATCHED THEN
     INSERT ({ID}, {DATA})
     VALUES ({ID}, {DATA});");
-            return Command(sql.ToString(), connection);
+            await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
         }
         
         // --- create / upsert using SqlBulkCopy. Fails on insertion if primary key exists
@@ -57,11 +56,11 @@ WHEN NOT MATCHED THEN
             await bulk.WriteToServerAsync(rowArray).ConfigureAwait(false);
         }
         
-        internal static DbCommand DeleteEntitiesCmd_Values (SyncConnection connection, List<JsonKey> ids, string table) {
+        internal static async Task DeleteEntitiesCmd_Values (SyncConnection connection, List<JsonKey> ids, string table) {
             var sql = new StringBuilder();
             sql.Append($"DELETE FROM  {table} WHERE {ID} in\n");
             SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.PrefixN);
-            return Command(sql.ToString(), connection);
+            await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
         }
     }
 }

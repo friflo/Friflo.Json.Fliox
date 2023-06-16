@@ -5,7 +5,6 @@
 
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -17,14 +16,9 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     public static partial class SQLServerUtils
     {
-        internal static SqlCommand Command (string sql, SyncConnection connection) {
-            return new SqlCommand(sql, connection.instance);
-        }
-        
         internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
             try {
-                using var command = new SqlCommand(sql, connection.instance);
-                using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+                using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
                     var value = reader.GetValue(0);
                     return new SQLResult(value); 
@@ -73,14 +67,13 @@ AS CAST(JSON_VALUE({DATA}, '$.{column.name}') AS {type});";
         }
         
         // --- create / upsert using DataTable in SQL statement
-        internal static DbCommand CreateEntitiesCmd (SyncConnection connection, List<JsonEntity> entities, string table) {
+        internal static async Task CreateEntitiesCmdAsync (SyncConnection connection, List<JsonEntity> entities, string table) {
             var sql = $"INSERT INTO {table} ({ID},{DATA}) select {ID}, {DATA} from @rows;";
-            var cmd = Command(sql, connection);
-            AddRows(cmd, entities);
-            return cmd;
+            var p = AddRows(entities);
+            await connection.ExecuteNonQueryAsync(sql, p).ConfigureAwait(false);
         }
         
-        internal static DbCommand UpsertEntitiesCmd (SyncConnection connection, List<JsonEntity> entities, string table) {
+        internal static async Task UpsertEntitiesCmdAsync (SyncConnection connection, List<JsonEntity> entities, string table) {
             var sql = $@"
 MERGE {table} AS target
 USING @rows as source
@@ -90,45 +83,43 @@ WHEN MATCHED THEN
 WHEN NOT MATCHED THEN
     INSERT ({ID}, {DATA})
     VALUES ({ID}, {DATA});";
-            var cmd = Command(sql, connection);
-            AddRows(cmd, entities);
-            return cmd;
+            var p = AddRows(entities);
+            await connection.ExecuteNonQueryAsync(sql, p).ConfigureAwait(false);
         }
 
-        private static void AddRows(SqlCommand cmd, List<JsonEntity> entities) {
-            var p = cmd.Parameters.Add(new SqlParameter("@rows", SqlDbType.Structured));
+        private static SqlParameter AddRows(List<JsonEntity> entities) {
+            var p = new SqlParameter("@rows", SqlDbType.Structured);
             p.Value = SQLUtils.ToDataTable(entities);
             // DataTable requires registering UDT (User defined type) in database before execution:
             // CREATE TYPE KeyValueType AS TABLE({ID} varchar(128), {DATA} varchar(max));
             p.TypeName = "KeyValueType";
+            return p;
         }
         
-        internal static DbCommand DeleteEntitiesCmd (SyncConnection connection, List<JsonKey> ids, string table) {
+        internal static async Task DeleteEntitiesCmdAsync (SyncConnection connection, List<JsonKey> ids, string table) {
             var dataTable = new DataTable();
             dataTable.Columns.Add(ID, typeof(string));
             foreach(var id in ids) {
                 dataTable.Rows.Add(id.AsString());
             }
             var sql     = $"DELETE FROM  {table} WHERE {ID} in (SELECT {ID} FROM @ids);";
-            var cmd     = Command(sql, connection);
-            var p       = cmd.Parameters.Add(new SqlParameter("@ids", SqlDbType.Structured));
+            var p       = new SqlParameter("@ids", SqlDbType.Structured);
             p.Value     = dataTable;
             p.TypeName  = "KeyType";
-            return cmd;
+            await connection.ExecuteNonQueryAsync(sql, p).ConfigureAwait(false);
         }
         
-        internal static DbCommand ReadEntitiesCmd (SyncConnection connection, List<JsonKey> ids, string table) {
+        internal static async Task<SqlDataReader> ReadEntitiesCmd (SyncConnection connection, List<JsonKey> ids, string table) {
             var dataTable = new DataTable();
             dataTable.Columns.Add(ID, typeof(string));
             foreach(var id in ids) {
                 dataTable.Rows.Add(id.AsString());
             }
             var sql     = $"SELECT {ID}, {DATA} FROM {table} WHERE {ID} in (SELECT {ID} FROM @ids);";
-            var cmd     = Command(sql, connection);
-            var p       = cmd.Parameters.Add(new SqlParameter("@ids", SqlDbType.Structured));
+            var p       = new SqlParameter("@ids", SqlDbType.Structured);
             p.Value     = dataTable;
             p.TypeName  = "KeyType";
-            return cmd;
+            return await connection.ExecuteReaderAsync(sql, p).ConfigureAwait(false);
         }
     }
 }
