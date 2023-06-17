@@ -209,6 +209,33 @@
         }
       }
     },
+    "/?cmd=std.Transaction": {
+      "post": {
+        "summary":    "Starts a transaction containing all subsequent <b>SyncTask</b>'s",
+        "tags":       ["commands"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/Transaction"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/TransactionResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/?cmd=std.Host": {
       "post": {
         "summary":    "Returns general information about the Hub like version, host, project and environment name",

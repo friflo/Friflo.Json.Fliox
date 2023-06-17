@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     public sealed class TaskExecuteError
     {
         [Ignore]    internal  readonly  TaskErrorType   type;
-        [Ignore]    internal  readonly  string          message;
+        [Ignore]    public    readonly  string          message;
 
         public      override            string          ToString() => message;
         

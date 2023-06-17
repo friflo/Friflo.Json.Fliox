@@ -133,6 +133,7 @@
         "std.Messages",
         "std.Schema",
         "std.Stats",
+        "std.Transaction",
         "std.Host",
         "std.Cluster",
         "std.User",

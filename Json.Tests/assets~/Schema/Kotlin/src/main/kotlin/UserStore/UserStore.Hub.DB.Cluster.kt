@@ -40,6 +40,21 @@ data class ContainerStats (
 )
 
 @Serializable
+data class Transaction (
+              val command : TransactionCommand,
+)
+
+enum class TransactionCommand {
+    Begin,
+    Commit,
+    Rollback,
+}
+
+@Serializable
+class TransactionResult (
+)
+
+@Serializable
 data class HostParam (
               val memory    : Boolean? = null,
               val gcCollect : Boolean? = null,

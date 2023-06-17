@@ -107,6 +107,19 @@ export class ContainerStats {
     count  : int64;
 }
 
+export class Transaction {
+    command  : TransactionCommand;
+}
+
+export type TransactionCommand =
+    | "Begin"
+    | "Commit"
+    | "Rollback"
+;
+
+export class TransactionResult {
+}
+
 export class HostParam {
     memory?    : boolean | null;
     gcCollect? : boolean | null;

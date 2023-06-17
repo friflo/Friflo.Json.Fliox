@@ -47,6 +47,19 @@ public class ContainerStats {
     long    count;
 }
 
+public class Transaction {
+    TransactionCommand  command;
+}
+
+public enum TransactionCommand {
+    Begin,
+    Commit,
+    Rollback,
+}
+
+public class TransactionResult {
+}
+
 public class HostParam {
     bool? memory;
     bool? gcCollect;

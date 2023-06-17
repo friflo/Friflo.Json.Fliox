@@ -4,6 +4,8 @@
 #if !UNITY_5_3_OR_NEWER || SQLITE
 
 using System;
+using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -50,6 +52,39 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         static SQLiteDatabase() {
             raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+        
+        public override Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command, int taskIndex) {
+            var result = TransactionSync(syncContext, command, taskIndex);
+            return Task.FromResult(result);
+        }
+        
+        private Result<TransactionResult> TransactionSync(SyncContext syncContext, TransactionCommand command, int taskIndex)
+        {
+            switch (command) {
+                case TransactionCommand.Begin: {
+                    if (!SQLiteUtils.Exec(sqliteDB, "BEGIN TRANSACTION", out var error)) {
+                        return Result.Error(error.message); 
+                    }
+                    syncContext.BeginTransaction(taskIndex);
+                    return new TransactionResult();
+                }
+                case TransactionCommand.Commit: {
+                    syncContext.EndTransaction();
+                    if (!SQLiteUtils.Exec(sqliteDB, "COMMIT", out var error)) {
+                        return Result.Error(error.message); 
+                    }
+                    return new TransactionResult();
+                }
+                case TransactionCommand.Rollback: {
+                    syncContext.EndTransaction();
+                    if (!SQLiteUtils.Exec(sqliteDB, "ROLLBACK", out var error)) {
+                        return Result.Error(error.message); 
+                    }
+                    return new TransactionResult();
+                }
+            }
+            return Result.Error($"invalid transaction command {command}");
         }
     }
 

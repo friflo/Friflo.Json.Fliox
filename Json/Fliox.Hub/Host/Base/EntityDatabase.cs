@@ -60,8 +60,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public              DatabaseSchema      Schema          { get; }
         
-        public  virtual     Task<ISyncConnection> GetConnectionAsync()                          => throw new NotImplementedException();
-        public  virtual     void                  ReturnConnection(ISyncConnection connection)  => connection.Dispose();
         /// <summary>A mapping function used to assign a custom container name.</summary>
         /// <remarks>
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
@@ -194,7 +192,18 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new DbMessages { commands = commands, messages = messages };
         }
         #endregion
-
+        
+    #region - sync connection
+        public virtual  Task<ISyncConnection>   GetConnectionAsync()                            => throw new NotImplementedException();
+        public virtual  void                    ReturnConnection(ISyncConnection connection)    => connection.Dispose();
+        #endregion
+        
+    #region - sync transaction
+        public virtual  Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command, int taskIndex) {
+            return Task.FromResult<Result<TransactionResult>>(null);
+        }
+        #endregion
+        
     #region - seed database
         /// <summary>Seed the database with content of the given <paramref name="src"/> database</summary>
         /// <remarks>

@@ -191,6 +191,23 @@
                 "count": { "type": "int64" }
             }
         },
+        "Transaction": {
+            "properties": {
+                "command": { "ref":  "TransactionCommand" }
+            }
+        },
+        "TransactionCommand": {
+            "enum": [
+                "Begin",
+                "Commit",
+                "Rollback"
+            ]
+        },
+        "TransactionResult": {
+            "properties": {
+
+            }
+        },
         "HostParam": {
             "properties": {
                 "memory":    { "type": "boolean", "nullable": true },

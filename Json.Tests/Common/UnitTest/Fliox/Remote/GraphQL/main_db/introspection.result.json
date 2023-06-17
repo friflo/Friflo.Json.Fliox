@@ -1084,6 +1084,26 @@
                     }
                 },
                 {
+                    "name": "std_Transaction",
+                    "description": "/** Starts a transaction containing all subsequent **SyncTask**'s */\n",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "TransactionInput"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "TransactionResult"
+                        }
+                    }
+                },
+                {
                     "name": "std_Host",
                     "description": "/** Returns general information about the Hub like version, host, project and environment name */\n",
                     "args": [
@@ -4366,6 +4386,83 @@
                         }
                     }
                 }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "Transaction",
+            "description": "",
+            "fields": [
+                {
+                    "name": "command",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "TransactionCommand"
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "TransactionInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "command",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "TransactionCommand"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"ENUM",
+            "name": "TransactionCommand",
+            "description": "",
+            "enumValues": [
+                {
+                    "name": "Begin",
+                    "description": ""
+                },
+                {
+                    "name": "Commit",
+                    "description": ""
+                },
+                {
+                    "name": "Rollback",
+                    "description": ""
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "TransactionResult",
+            "description": "",
+            "fields": [
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "TransactionResultInput",
+            "description": "",
+            "inputFields": [
             ]
         },
         {

@@ -73,6 +73,19 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public override     string              ToString() => $"{name} - count: {count}";
     }
     
+    public sealed class Transaction {
+                    public  TransactionCommand  command;
+    }
+    
+    public enum TransactionCommand {
+        Begin       = 1,
+        Commit      = 2,
+        Rollback    = 3,
+    }
+    
+    public sealed class TransactionResult {
+    }
+    
     public sealed class HostParam  {
                     public bool?                memory;
                     public bool?                gcCollect;

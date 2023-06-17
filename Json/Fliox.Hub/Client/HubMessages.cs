@@ -76,35 +76,37 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // Declared only to generate command in Schema
         /// <summary>Echos the given parameter to assure the database is working appropriately. </summary>
-        internal CommandTask<JsonValue> Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
+        internal CommandTask<JsonValue>         Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
 
         // --- commands: database
         /// <summary>Echos the given parameter to assure the database is working appropriately. </summary>
-        public CommandTask<TParam>      Echo<TParam> (TParam param) => send.Command<TParam,TParam>   (param);
+        public CommandTask<TParam>              Echo<TParam> (TParam param)     => send.Command<TParam,TParam>   (param);
         /// <summary>A command that completes after a specified number of milliseconds. </summary>
-        public CommandTask<int>         Delay(int delay)        => send.Command<int,int>                 (delay);
+        public CommandTask<int>                 Delay(int delay)                => send.Command<int,int>(delay);
         /// <summary>List all database containers</summary>
-        public CommandTask<DbContainers>Containers()            => send.Command<DbContainers>            ();
+        public CommandTask<DbContainers>        Containers()                    => send.Command<DbContainers>();
         /// <summary>List all database commands and messages</summary>
-        public CommandTask<DbMessages>  Messages()              => send.Command<DbMessages>              ();
+        public CommandTask<DbMessages>          Messages()                      => send.Command<DbMessages>();
         /// <summary>Return the Schema assigned to the database</summary>
-        public CommandTask<DbSchema>    Schema()                => send.Command<DbSchema>                ();
+        public CommandTask<DbSchema>            Schema()                        => send.Command<DbSchema>();
         /// <summary>Return the number of entities of all containers (or the given container) of the database</summary>
-        public CommandTask<DbStats>     Stats(string param)     => send.Command<DbStats>                 ();
+        public CommandTask<DbStats>             Stats(string param)             => send.Command<DbStats>();
+        /// <summary>Starts a transaction containing all subsequent <see cref="SyncTask"/>'s</summary>
+        public CommandTask<TransactionResult>   Transaction(Transaction param = null)  => send.Command<Transaction, TransactionResult>(param);
         
         // --- commands: host
         /// <summary>Returns general information about the Hub like version, host, project and environment name</summary>
-        public CommandTask<HostInfo>    Host(HostParam param)   => send.Command<HostParam, HostInfo>    (param);
+        public CommandTask<HostInfo>    Host(HostParam param)       => send.Command<HostParam, HostInfo>(param);
         /// <summary>List all databases and their containers hosted by the Hub</summary>
-        public CommandTask<HostCluster> Cluster()               => send.Command<HostCluster>            ();
+        public CommandTask<HostCluster> Cluster()                   => send.Command<HostCluster>();
         
         // --- commands: user
         /// <summary>Return the groups of the current user. Optionally change the groups of the current user</summary>
-        public CommandTask<UserResult>  User(UserParam param)   => send.Command<UserParam,UserResult>  (param);
+        public CommandTask<UserResult>  User(UserParam param)       => send.Command<UserParam,UserResult>(param);
         
         // --- commands: client
         /// <summary>Return client specific infos and adjust general client behavior like <see cref="ClientParam.queueEvents"/></summary>
-        public CommandTask<ClientResult> Client(ClientParam param)=> send.Command<ClientParam, ClientResult>(param);
+        public CommandTask<ClientResult> Client(ClientParam param)  => send.Command<ClientParam, ClientResult>(param);
 
     }
     
@@ -119,6 +121,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public const string Messages    = "std.Messages";
         public const string Schema      = "std.Schema";
         public const string Stats       = "std.Stats";
+        public const string Transaction = "std.Transaction";
+        
         public const string Client      = "std.Client";
 
         // --- host

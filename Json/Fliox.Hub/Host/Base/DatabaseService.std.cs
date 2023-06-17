@@ -20,19 +20,20 @@ namespace Friflo.Json.Fliox.Hub.Host
         private void AddStdCommandHandlers() {
             // add each command handler individually
             // --- database
-            AddCommandHandler      <JsonValue,   JsonValue>     (Std.Echo,          Echo);
-            AddCommandHandlerAsync <int,         int>           (Std.Delay,         Delay);
-            AddCommandHandlerAsync <Empty,       DbContainers>  (Std.Containers,    Containers);
-            AddCommandHandler      <Empty,       DbMessages>    (Std.Messages,      Messages);
-            AddCommandHandler      <Empty,       DbSchema>      (Std.Schema,        Schema);
-            AddCommandHandlerAsync <string,      DbStats>       (Std.Stats,         Stats);
+            AddCommandHandler      <JsonValue,   JsonValue>         (Std.Echo,          Echo);
+            AddCommandHandlerAsync <int,         int>               (Std.Delay,         Delay);
+            AddCommandHandlerAsync <Empty,       DbContainers>      (Std.Containers,    Containers);
+            AddCommandHandler      <Empty,       DbMessages>        (Std.Messages,      Messages);
+            AddCommandHandler      <Empty,       DbSchema>          (Std.Schema,        Schema);
+            AddCommandHandlerAsync <string,      DbStats>           (Std.Stats,         Stats);
+            AddCommandHandlerAsync <Transaction, TransactionResult> (Std.Transaction,   Transaction);
             // --- host
-            AddCommandHandler      <HostParam,   HostInfo>      (Std.HostInfo,      HostInfo);
-            AddCommandHandlerAsync <Empty,       HostCluster>   (Std.HostCluster,   HostCluster);
+            AddCommandHandler      <HostParam,   HostInfo>          (Std.HostInfo,      HostInfo);
+            AddCommandHandlerAsync <Empty,       HostCluster>       (Std.HostCluster,   HostCluster);
             // --- user
-            AddCommandHandlerAsync <UserParam,   UserResult>    (Std.User,          User);
+            AddCommandHandlerAsync <UserParam,   UserResult>        (Std.User,          User);
             // --- client
-            AddCommandHandler      <ClientParam, ClientResult>  (Std.Client,        Client);
+            AddCommandHandler      <ClientParam, ClientResult>      (Std.Client,        Client);
         }
         
         private static Result<JsonValue> Echo (Param<JsonValue> param, MessageContext context) {
@@ -146,6 +147,21 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
+        private static async Task<Result<TransactionResult>> Transaction (Param<Transaction> param, MessageContext context) {
+            if (!param.GetValidate(out var transaction, out var error)) {
+                return Result.Error(error);
+            }
+            var command = transaction?.command ?? TransactionCommand.Begin;
+            switch (command) {
+                case TransactionCommand.Begin:
+                case TransactionCommand.Commit:
+                case TransactionCommand.Rollback:
+                    var db = context.Database;
+                    return await db.Transaction(context.syncContext, command, context.task.intern.index).ConfigureAwait(false);
+            }
+            return Result.Error($"invalid transaction command: {command}");
+        }
+
         private static async Task<Result<HostCluster>> HostCluster (Param<Empty> param, MessageContext context) {
             return await ClusterStore.GetDbList(context).ConfigureAwait(false);
         }

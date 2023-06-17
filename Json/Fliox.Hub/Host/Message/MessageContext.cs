@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         // --- internal / private fields
         [Browse(Never)] internal readonly   SyncContext     syncContext;
-        [Browse(Never)] private  readonly   SyncMessageTask task;
+        [Browse(Never)] internal readonly   SyncMessageTask task;
 
         internal MessageContext(SyncMessageTask task, SyncContext syncContext) {
             this.task           = task;

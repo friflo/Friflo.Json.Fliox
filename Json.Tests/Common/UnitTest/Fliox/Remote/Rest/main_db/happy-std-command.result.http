@@ -61,6 +61,7 @@ GET {{base}}/rest/main_db?cmd=std.Messages
         "std.Messages",
         "std.Schema",
         "std.Stats",
+        "std.Transaction",
         "std.Host",
         "std.Cluster",
         "std.User",

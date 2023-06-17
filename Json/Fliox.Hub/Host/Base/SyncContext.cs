@@ -153,7 +153,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             canceler(); // canceler.Invoke();
         }
         
-        private ISyncConnection connection;
+        private     ISyncConnection     connection;
+        private     SyncTransaction     transaction;
+        internal    SyncTransaction     Transaction => transaction;
+        
+        public async Task<ISyncConnection> GetConnectionAsync () {
+            if (connection != null) {
+                return connection;
+            }
+            return connection = await Database.GetConnectionAsync().ConfigureAwait(false);
+        }
         
         internal void ReturnConnection() {
             if (connection != null && connection.IsOpen) {
@@ -161,12 +170,13 @@ namespace Friflo.Json.Fliox.Hub.Host
                 connection = null;
             }
         }
-
-        public async Task<ISyncConnection> GetConnectionAsync () {
-            if (connection != null) {
-                return connection;
-            }
-            return connection = await Database.GetConnectionAsync().ConfigureAwait(false);
+        
+        public void BeginTransaction (int taskIndex) {
+            transaction = new SyncTransaction(taskIndex);
+        }
+        
+        public void EndTransaction () {
+            transaction = null;
         }
     }
     

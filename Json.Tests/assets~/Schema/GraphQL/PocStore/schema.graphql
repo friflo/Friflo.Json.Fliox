@@ -55,6 +55,7 @@ type Query {
     std_Messages                   : DbMessages!
     std_Schema                     : DbSchema!
     std_Stats                     (param: String) : DbStats!
+    std_Transaction               (param: TransactionInput) : TransactionResult!
     std_Host                      (param: HostParamInput) : HostInfo!
     std_Cluster                    : HostCluster!
     std_User                      (param: UserParamInput) : UserResult!
@@ -385,6 +386,28 @@ type ContainerStats {
 input ContainerStatsInput {
     name  : String!
     count : Int!
+}
+
+type Transaction {
+    command : TransactionCommand!
+}
+
+input TransactionInput {
+    command : TransactionCommand!
+}
+
+enum TransactionCommand {
+    Begin
+    Commit
+    Rollback
+}
+
+type TransactionResult {
+    _: Boolean
+}
+
+input TransactionResultInput {
+    _: Boolean
 }
 
 type HostParam {
