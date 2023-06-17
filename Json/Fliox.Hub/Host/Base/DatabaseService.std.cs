@@ -151,12 +151,20 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (!param.GetValidate(out var transaction, out var error)) {
                 return Result.Error(error);
             }
-            var command = transaction?.command ?? TransactionCommand.Begin;
+            var command     = transaction?.command ?? TransactionCommand.Begin;
+            var db          = context.Database;
+            var curTrans    = context.syncContext.Transaction;
             switch (command) {
                 case TransactionCommand.Begin:
+                    if (curTrans != null) {
+                        return Result.Error("Transaction already started");
+                    }
+                    return await db.Transaction(context.syncContext, command, context.task.intern.index).ConfigureAwait(false);
                 case TransactionCommand.Commit:
                 case TransactionCommand.Rollback:
-                    var db = context.Database;
+                    if (curTrans == null) {
+                        return Result.Error("Missing begin transaction");
+                    }
                     return await db.Transaction(context.syncContext, command, context.task.intern.index).ConfigureAwait(false);
             }
             return Result.Error($"invalid transaction command: {command}");

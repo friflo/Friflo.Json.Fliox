@@ -200,7 +200,24 @@ namespace Friflo.Json.Fliox.Hub.Host
         
     #region - sync transaction
         public virtual  Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command, int taskIndex) {
-            return Task.FromResult<Result<TransactionResult>>(null);
+            var result = TransactionFallback(syncContext, command, taskIndex);
+            return Task.FromResult(result);
+        }
+        
+        private static Result<TransactionResult> TransactionFallback(SyncContext syncContext, TransactionCommand command, int taskIndex) {
+            switch (command) {
+                case TransactionCommand.Begin:
+                    syncContext.BeginTransaction(taskIndex);
+                    return new TransactionResult();
+                case TransactionCommand.Commit:
+                    syncContext.EndTransaction();
+                    return new TransactionResult();
+                case TransactionCommand.Rollback:
+                    syncContext.EndTransaction();
+                    return new TransactionResult();
+                default:
+                    return Result.Error($"invalid transaction command {command}");
+            }
         }
         #endregion
         
