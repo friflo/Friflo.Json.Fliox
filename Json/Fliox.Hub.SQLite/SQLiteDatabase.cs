@@ -54,30 +54,27 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             raw.SetProvider(new SQLite3Provider_e_sqlite3());
         }
         
-        public override Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command, int taskIndex) {
-            var result = TransactionSync(syncContext, command, taskIndex);
+        public override Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command) {
+            var result = TransactionSync(command);
             return Task.FromResult(result);
         }
         
-        private Result<TransactionResult> TransactionSync(SyncContext syncContext, TransactionCommand command, int taskIndex)
+        private Result<TransactionResult> TransactionSync(TransactionCommand command)
         {
             switch (command) {
                 case TransactionCommand.Begin: {
                     if (!SQLiteUtils.Exec(sqliteDB, "BEGIN TRANSACTION", out var error)) {
                         return Result.Error(error.message); 
                     }
-                    syncContext.BeginTransaction(taskIndex);
                     return new TransactionResult();
                 }
                 case TransactionCommand.Commit: {
-                    syncContext.EndTransaction();
                     if (!SQLiteUtils.Exec(sqliteDB, "COMMIT", out var error)) {
                         return Result.Error(error.message); 
                     }
                     return new TransactionResult();
                 }
                 case TransactionCommand.Rollback: {
-                    syncContext.EndTransaction();
                     if (!SQLiteUtils.Exec(sqliteDB, "ROLLBACK", out var error)) {
                         return Result.Error(error.message); 
                     }

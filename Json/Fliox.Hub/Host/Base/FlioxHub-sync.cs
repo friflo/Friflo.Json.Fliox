@@ -69,6 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             syncContext.syncPools?.Reuse();
 
             var response        = SyncResponse.Create(syncContext, taskCount);
+            syncContext.response= response;
             response.database   = syncRequest.database;
             var tasks           = response.tasks;
 

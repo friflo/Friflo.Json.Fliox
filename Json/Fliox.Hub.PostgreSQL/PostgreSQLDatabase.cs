@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             connectionPool.Push(connection);
         }
         
-        public override async Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command, int taskIndex) {
+        public override async Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command) {
             var syncConnection = await syncContext.GetConnectionAsync();
             if (syncConnection is not SyncConnection connection) {
                 return new TransactionResult();
@@ -78,14 +78,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 switch (command) {
                     case TransactionCommand.Begin:
                         await connection.ExecuteNonQueryAsync("BEGIN TRANSACTION;").ConfigureAwait(false);
-                        syncContext.BeginTransaction(taskIndex);
                         return new TransactionResult();
                     case TransactionCommand.Commit:
-                        syncContext.EndTransaction();
                         await connection.ExecuteNonQueryAsync("COMMIT;").ConfigureAwait(false);
                         return new TransactionResult();
                     case TransactionCommand.Rollback:
-                        syncContext.EndTransaction();
                         await connection.ExecuteNonQueryAsync("ROLLBACK;").ConfigureAwait(false);
                         return new TransactionResult();
                     default:

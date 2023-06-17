@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -64,6 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)] internal            EntityDatabase      database;           // not null
         [Browse(Never)] internal            ClientIdValidation  clientIdValidation;
         [Browse(Never)] internal            SyncRequest         request;
+        [Browse(Never)] internal            SyncResponse        response;
         [Browse(Never)] private             MemoryBuffer        memoryBuffer;
         [Browse(Never)] internal            ReaderPool          responseReaderPool;
         
@@ -75,6 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             database            = null;
             clientIdValidation  = default;
             request             = null;
+            response            = null;
             memoryBuffer        = null;
             responseReaderPool  = null;
         }
@@ -155,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private     ISyncConnection     connection;
         private     SyncTransaction     transaction;
-        internal    SyncTransaction     Transaction => transaction;
+        internal    bool                IsTransactionPending => transaction != null;
         
         public async Task<ISyncConnection> GetConnectionAsync () {
             if (connection != null) {
@@ -171,13 +174,45 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        public void BeginTransaction (int taskIndex) {
-            transaction = new SyncTransaction(taskIndex);
-        }
-        
-        public void EndTransaction () {
-            transaction = null;
-        }
+        internal async Task<Result<TransactionResult>> Transaction(TransactionCommand command, int taskIndex) {
+            var db = Database;
+            switch (command)
+            {
+                case TransactionCommand.Begin:
+                    if (transaction != null) {
+                        return Result.Error("Transaction already started");
+                    }
+                    var result = await db.Transaction(this, TransactionCommand.Begin).ConfigureAwait(false);
+                    transaction = new SyncTransaction(taskIndex);
+                    return result;
+                
+                case TransactionCommand.Commit:
+                    if (transaction == null) {
+                        return Result.Error("Missing begin transaction");
+                    }
+                    bool success = true;
+                    for (int index = transaction.taskIndex + 1; index < taskIndex; index++) {
+                        var responseTask = response.tasks[index];
+                        if (responseTask is TaskErrorResult) {
+                            success = false;
+                            break;
+                        }
+                    }
+                    transaction = null;
+                    if (success) {
+                        return await db.Transaction(this, TransactionCommand.Commit).ConfigureAwait(false);    
+                    }
+                    return await db.Transaction(this, TransactionCommand.Rollback).ConfigureAwait(false);
+                   
+                case TransactionCommand.Rollback:
+                    if (transaction == null) {
+                        return Result.Error("Missing begin transaction");
+                    }
+                    transaction = null;
+                    return await db.Transaction(this, TransactionCommand.Rollback).ConfigureAwait(false);
+            }
+            return Result.Error($"invalid transaction command: {command}");
+        } 
     }
     
     public interface IHost { }

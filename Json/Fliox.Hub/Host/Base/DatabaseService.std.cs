@@ -152,22 +152,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return Result.Error(error);
             }
             var command     = transaction?.command ?? TransactionCommand.Begin;
-            var db          = context.Database;
-            var curTrans    = context.syncContext.Transaction;
-            switch (command) {
-                case TransactionCommand.Begin:
-                    if (curTrans != null) {
-                        return Result.Error("Transaction already started");
-                    }
-                    return await db.Transaction(context.syncContext, command, context.task.intern.index).ConfigureAwait(false);
-                case TransactionCommand.Commit:
-                case TransactionCommand.Rollback:
-                    if (curTrans == null) {
-                        return Result.Error("Missing begin transaction");
-                    }
-                    return await db.Transaction(context.syncContext, command, context.task.intern.index).ConfigureAwait(false);
-            }
-            return Result.Error($"invalid transaction command: {command}");
+            var taskIndex   = context.task.intern.index;
+            return await context.syncContext.Transaction(command, taskIndex).ConfigureAwait(false);
         }
 
         private static async Task<Result<HostCluster>> HostCluster (Param<Empty> param, MessageContext context) {

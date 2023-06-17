@@ -73,6 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             syncContext.syncPools?.Reuse();
 
             var response        = SyncResponse.Create(syncContext, taskCount);
+            syncContext.response= response;
             response.database   = syncRequest.database;
             var tasks           = response.tasks;
             
@@ -94,8 +95,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                     Logger.Log(HubLog.Error, message, e);
                 }
             }
-            if (syncContext.Transaction != null) {
-                await db.Transaction(syncContext, TransactionCommand.Commit, -1).ConfigureAwait(false);
+            if (syncContext.IsTransactionPending) {
+                await syncContext.Transaction(TransactionCommand.Commit, taskCount).ConfigureAwait(false);
             }
             syncContext.ReturnConnection();
             PostExecute(syncRequest, response, syncContext);
