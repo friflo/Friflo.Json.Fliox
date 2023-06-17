@@ -20,7 +20,7 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseIndexFromEndExpression
 namespace Friflo.Json.Fliox.Hub.SQLServer
 {
-    public sealed class SQLServerContainer : EntityContainer, ISQLTable
+    internal sealed class SQLServerContainer : EntityContainer, ISQLTable
     {
         private  readonly   TableInfo           tableInfo;
         private  readonly   ContainerInit       init;

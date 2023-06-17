@@ -15,7 +15,7 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
 {
-    public sealed class SQLiteContainer : EntityContainer
+    internal sealed class SQLiteContainer : EntityContainer
     {
         private  readonly   sqlite3         sqliteDB;
         private  readonly   TableInfo       tableInfo;

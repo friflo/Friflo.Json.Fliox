@@ -15,7 +15,7 @@ using static Friflo.Json.Fliox.Hub.Redis.RedisUtils;
 // ReSharper disable UseIndexFromEndExpression
 namespace Friflo.Json.Fliox.Hub.Redis
 {
-    public sealed class RedisHashContainer : EntityContainer
+    internal sealed class RedisHashContainer : EntityContainer
     {
         private  readonly   int             dbIndex;
         private  readonly   RedisKey        nameKey;

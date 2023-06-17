@@ -11,7 +11,7 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
-    public static class MySQLUtils
+    internal static class MySQLUtils
     {
         internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
             try {

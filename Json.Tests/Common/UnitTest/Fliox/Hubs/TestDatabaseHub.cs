@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             return response;
         }
         
-        public TestContainer GetTestContainer(string container) {
+        internal TestContainer GetTestContainer(string container) {
             return (TestContainer) testDatabase.GetOrCreateContainer(new ShortString(container));
         }
     }
@@ -140,7 +140,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     /// Note: The <see cref="TestContainer"/> doesn't modify the underlying <see cref="local"/> <see cref="EntityContainer"/>
     /// to avoid side effects by error tests.
     /// </summary>
-    public class TestContainer : EntityContainer
+    internal class TestContainer : EntityContainer
     {
         private readonly    EntityContainer local;
         public  readonly    Dictionary<string, SimValue>                readEntityErrors    = new Dictionary<string, SimValue>();

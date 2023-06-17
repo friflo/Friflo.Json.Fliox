@@ -14,7 +14,7 @@ using Friflo.Json.Fliox.Utils;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    public sealed class FileContainer : EntityContainer
+    internal sealed class FileContainer : EntityContainer
     {
         private  readonly   string                  folder;
         private  readonly   AsyncReaderWriterLock   rwLock;

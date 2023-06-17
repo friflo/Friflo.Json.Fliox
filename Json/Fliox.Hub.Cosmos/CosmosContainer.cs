@@ -16,7 +16,7 @@ using Microsoft.Azure.Cosmos;
 
 namespace Friflo.Json.Fliox.Hub.Cosmos
 {
-    public sealed class CosmosContainer : EntityContainer
+    internal sealed class CosmosContainer : EntityContainer
     {
         private  readonly   ContainerOptions    options;
         private             Container           cosmosContainer;

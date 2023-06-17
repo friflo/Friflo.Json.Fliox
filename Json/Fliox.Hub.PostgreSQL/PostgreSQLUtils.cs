@@ -11,7 +11,7 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
-    public static class PostgreSQLUtils
+    internal static class PostgreSQLUtils
     {
         internal static async Task<SQLResult> ExecuteAsync(SyncConnection connection, string sql) {
             try {

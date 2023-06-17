@@ -14,7 +14,7 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.SQLServer
 {
-    public static partial class SQLServerUtils
+    internal static partial class SQLServerUtils
     {
         internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
             try {

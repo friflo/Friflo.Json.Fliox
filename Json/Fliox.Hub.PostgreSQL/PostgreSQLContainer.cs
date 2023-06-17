@@ -18,7 +18,7 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
-    public sealed class PostgreSQLContainer : EntityContainer, ISQLTable
+    internal sealed class PostgreSQLContainer : EntityContainer, ISQLTable
     {
         private  readonly   TableInfo       tableInfo;
         private  readonly   ContainerInit   init;

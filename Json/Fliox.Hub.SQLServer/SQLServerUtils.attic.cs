@@ -14,7 +14,7 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.SQLServer
 {
-    public static partial class SQLServerUtils
+    internal static partial class SQLServerUtils
     {
         // --- create / upsert using VALUES() in SQL statement
         internal static async Task CreateEntitiesCmd_Values (SyncConnection connection, List<JsonEntity> entities, string table) {

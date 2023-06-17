@@ -17,7 +17,7 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseIndexFromEndExpression
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
-    public sealed class MySQLContainer : EntityContainer, ISQLTable
+    internal sealed class MySQLContainer : EntityContainer, ISQLTable
     {
         private  readonly   TableInfo       tableInfo;
         private  readonly   ContainerInit   init;

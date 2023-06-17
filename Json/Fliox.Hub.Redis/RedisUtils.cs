@@ -12,7 +12,7 @@ using StackExchange.Redis;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.Redis
 {
-    public static class RedisUtils
+    internal static class RedisUtils
     {
         internal static IDatabase Database (SyncConnection connection, int dbIndex) {
             return connection.instance!.GetDatabase(dbIndex);
