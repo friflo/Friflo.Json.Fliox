@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Provider.Test
     {
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Commit_Implicit(string db) {
-            if (IsSQLite(db) || IsPostgres || IsSQLServer) return;
+            if (IsSQLite(db)) return;
             
             var client  = await GetClient(db);
             client.testMutate.DeleteAll();
@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Commit_Explicit(string db) {
-            if (IsSQLite(db) || IsPostgres || IsSQLServer) return;
+            if (IsSQLite(db)) return;
             
             var client  = await GetClient(db);
             client.testMutate.DeleteAll();
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Rollback(string db) {
-            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsCosmosDB || IsMemory(db) || IsFileSystem) return;
+            if (IsSQLite(db) || IsCosmosDB || IsMemory(db) || IsFileSystem) return;
             
             var client  = await GetClient(db);
             client.testMutate.DeleteAll();
@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Commit_Error(string db) {
-            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsCosmosDB) return;
+            if (IsSQLite(db) || IsCosmosDB) return;
             
             var client  = await GetClient(db);
             
@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Rollback_Error(string db) {
-            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsCosmosDB) return;
+            if (IsSQLite(db) || IsCosmosDB) return;
             
             var client  = await GetClient(db);
             
@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Commit_Nested_Error(string db) {
-            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsCosmosDB) return;
+            if (IsSQLite(db) || IsCosmosDB) return;
             
             var client  = await GetClient(db);
             

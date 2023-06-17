@@ -5,6 +5,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Npgsql;
@@ -66,6 +67,34 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         public override void ReturnConnection(ISyncConnection connection) {
             connectionPool.Push(connection);
+        }
+        
+        public override async Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command, int taskIndex) {
+            var syncConnection = await syncContext.GetConnectionAsync();
+            if (syncConnection is not SyncConnection connection) {
+                return new TransactionResult();
+            }
+            try {
+                switch (command) {
+                    case TransactionCommand.Begin:
+                        await connection.ExecuteNonQueryAsync("BEGIN TRANSACTION;").ConfigureAwait(false);
+                        syncContext.BeginTransaction(taskIndex);
+                        return new TransactionResult();
+                    case TransactionCommand.Commit:
+                        syncContext.EndTransaction();
+                        await connection.ExecuteNonQueryAsync("COMMIT;").ConfigureAwait(false);
+                        return new TransactionResult();
+                    case TransactionCommand.Rollback:
+                        syncContext.EndTransaction();
+                        await connection.ExecuteNonQueryAsync("ROLLBACK;").ConfigureAwait(false);
+                        return new TransactionResult();
+                    default:
+                        return Result.Error($"invalid transaction command {command}");
+                }
+            }
+            catch (NpgsqlException e) {
+                return Result.Error(e.Message);
+            }
         }
     }
 }
