@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
     }
     
-    public class SyncTransaction
+    internal sealed class SyncTransaction
     {
         internal readonly   int         taskIndex;
         
