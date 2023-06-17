@@ -98,20 +98,16 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             if (syncConnection is not SyncConnection connection) {
                 return new TransactionResult();
             }
+            var sql = command switch {
+                TransactionCommand.Begin    => "BEGIN TRANSACTION;",
+                TransactionCommand.Commit   => "COMMIT;",
+                TransactionCommand.Rollback => "ROLLBACK;",
+                _                           => null
+            };
+            if (sql == null) return Result.Error($"invalid transaction command {command}");
             try {
-                switch (command) {
-                    case TransactionCommand.Begin:
-                        await connection.ExecuteNonQueryAsync("BEGIN TRANSACTION;").ConfigureAwait(false);
-                        return new TransactionResult();
-                    case TransactionCommand.Commit:
-                        await connection.ExecuteNonQueryAsync("COMMIT;").ConfigureAwait(false);
-                        return new TransactionResult();
-                    case TransactionCommand.Rollback:
-                        await connection.ExecuteNonQueryAsync("ROLLBACK;").ConfigureAwait(false);
-                        return new TransactionResult();
-                    default:
-                        return Result.Error($"invalid transaction command {command}");
-                }
+                await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+                return new TransactionResult();
             }
             catch (SqlException e) {
                 return Result.Error(e.Message);

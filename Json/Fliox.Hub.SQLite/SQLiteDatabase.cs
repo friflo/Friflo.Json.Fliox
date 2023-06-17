@@ -61,27 +61,17 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         private Result<TransactionResult> TransactionSync(TransactionCommand command)
         {
-            switch (command) {
-                case TransactionCommand.Begin: {
-                    if (!SQLiteUtils.Exec(sqliteDB, "BEGIN TRANSACTION", out var error)) {
-                        return Result.Error(error.message); 
-                    }
-                    return new TransactionResult();
-                }
-                case TransactionCommand.Commit: {
-                    if (!SQLiteUtils.Exec(sqliteDB, "COMMIT", out var error)) {
-                        return Result.Error(error.message); 
-                    }
-                    return new TransactionResult();
-                }
-                case TransactionCommand.Rollback: {
-                    if (!SQLiteUtils.Exec(sqliteDB, "ROLLBACK", out var error)) {
-                        return Result.Error(error.message); 
-                    }
-                    return new TransactionResult();
-                }
+            var sql = command switch {
+                TransactionCommand.Begin    => "BEGIN TRANSACTION;",
+                TransactionCommand.Commit   => "COMMIT;",
+                TransactionCommand.Rollback => "ROLLBACK;",
+                _                           => null
+            };
+            if (sql == null) return Result.Error($"invalid transaction command {command}");
+            if (!SQLiteUtils.Exec(sqliteDB, sql, out var error)) {
+                return Result.Error(error.message); 
             }
-            return Result.Error($"invalid transaction command {command}");
+            return new TransactionResult();
         }
     }
 
