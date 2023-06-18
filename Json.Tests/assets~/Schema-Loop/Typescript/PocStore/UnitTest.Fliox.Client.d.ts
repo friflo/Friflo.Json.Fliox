@@ -4,8 +4,8 @@ import { DbContainers }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbMessages }        from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbSchema }          from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbStats }           from "./Friflo.Json.Fliox.Hub.DB.Cluster";
-import { Transaction }       from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { TransactionResult } from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { TransactionEnd }    from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostParam }         from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostInfo }          from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostCluster }       from "./Friflo.Json.Fliox.Hub.DB.Cluster";
@@ -82,7 +82,9 @@ export interface PocStore {
     /** Return the number of entities of all containers (or the given container) of the database */
     ["std.Stats"]                          (param: string | null) : DbStats;
     /** Starts a transaction containing all subsequent **SyncTask**'s */
-    ["std.Transaction"]                    (param: Transaction | null) : TransactionResult;
+    ["std.TransactionBegin"]               () : TransactionResult;
+    /** Ends a transaction started previously with **TransactionBegin** */
+    ["std.TransactionEnd"]                 (param: TransactionEnd | null) : TransactionResult;
     /** Returns general information about the Hub like version, host, project and environment name */
     ["std.Host"]                           (param: HostParam | null) : HostInfo;
     /** List all databases and their containers hosted by the Hub */

@@ -55,7 +55,8 @@ type Query {
     std_Messages                   : DbMessages!
     std_Schema                     : DbSchema!
     std_Stats                     (param: String) : DbStats!
-    std_Transaction               (param: TransactionInput) : TransactionResult!
+    std_TransactionBegin           : TransactionResult!
+    std_TransactionEnd            (param: TransactionEndInput) : TransactionResult!
     std_Host                      (param: HostParamInput) : HostInfo!
     std_Cluster                    : HostCluster!
     std_User                      (param: UserParamInput) : UserResult!
@@ -388,11 +389,19 @@ input ContainerStatsInput {
     count : Int!
 }
 
-type Transaction {
+type TransactionResult {
+    _: Boolean
+}
+
+input TransactionResultInput {
+    _: Boolean
+}
+
+type TransactionEnd {
     command : TransactionCommand!
 }
 
-input TransactionInput {
+input TransactionEndInput {
     command : TransactionCommand!
 }
 
@@ -400,14 +409,6 @@ enum TransactionCommand {
     Begin
     Commit
     Rollback
-}
-
-type TransactionResult {
-    _: Boolean
-}
-
-input TransactionResultInput {
-    _: Boolean
 }
 
 type HostParam {

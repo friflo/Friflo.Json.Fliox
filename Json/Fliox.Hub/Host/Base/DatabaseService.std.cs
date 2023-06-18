@@ -20,20 +20,21 @@ namespace Friflo.Json.Fliox.Hub.Host
         private void AddStdCommandHandlers() {
             // add each command handler individually
             // --- database
-            AddCommandHandler      <JsonValue,   JsonValue>         (Std.Echo,          Echo);
-            AddCommandHandlerAsync <int,         int>               (Std.Delay,         Delay);
-            AddCommandHandlerAsync <Empty,       DbContainers>      (Std.Containers,    Containers);
-            AddCommandHandler      <Empty,       DbMessages>        (Std.Messages,      Messages);
-            AddCommandHandler      <Empty,       DbSchema>          (Std.Schema,        Schema);
-            AddCommandHandlerAsync <string,      DbStats>           (Std.Stats,         Stats);
-            AddCommandHandlerAsync <Transaction, TransactionResult> (Std.Transaction,   Transaction);
+            AddCommandHandler      <JsonValue,   JsonValue>             (Std.Echo,              Echo);
+            AddCommandHandlerAsync <int,         int>                   (Std.Delay,             Delay);
+            AddCommandHandlerAsync <Empty,       DbContainers>          (Std.Containers,        Containers);
+            AddCommandHandler      <Empty,       DbMessages>            (Std.Messages,          Messages);
+            AddCommandHandler      <Empty,       DbSchema>              (Std.Schema,            Schema);
+            AddCommandHandlerAsync <string,      DbStats>               (Std.Stats,             Stats);
+            AddCommandHandlerAsync <Empty,       TransactionResult>     (Std.TransactionBegin,  TransactionBegin);
+            AddCommandHandlerAsync <TransactionEnd, TransactionResult>  (Std.TransactionEnd,    TransactionEnd);
             // --- host
-            AddCommandHandler      <HostParam,   HostInfo>          (Std.HostInfo,      HostInfo);
-            AddCommandHandlerAsync <Empty,       HostCluster>       (Std.HostCluster,   HostCluster);
+            AddCommandHandler      <HostParam,   HostInfo>              (Std.HostInfo,          HostInfo);
+            AddCommandHandlerAsync <Empty,       HostCluster>           (Std.HostCluster,       HostCluster);
             // --- user
-            AddCommandHandlerAsync <UserParam,   UserResult>        (Std.User,          User);
+            AddCommandHandlerAsync <UserParam,   UserResult>            (Std.User,              User);
             // --- client
-            AddCommandHandler      <ClientParam, ClientResult>      (Std.Client,        Client);
+            AddCommandHandler      <ClientParam, ClientResult>          (Std.Client,            Client);
         }
         
         private static Result<JsonValue> Echo (Param<JsonValue> param, MessageContext context) {
@@ -147,11 +148,21 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        private static async Task<Result<TransactionResult>> Transaction (Param<Transaction> param, MessageContext context) {
+        private static async Task<Result<TransactionResult>> TransactionBegin (Param<Empty> param, MessageContext context) {
+
+            var taskIndex   = context.task.intern.index;
+            var result      = await context.syncContext.Transaction(TransactionCommand.Begin, taskIndex).ConfigureAwait(false);
+            if (result.error == null) {
+                return new TransactionResult();
+            }
+            return Result.Error(result.error);
+        }
+        
+        private static async Task<Result<TransactionResult>> TransactionEnd (Param<TransactionEnd> param, MessageContext context) {
             if (!param.GetValidate(out var transaction, out var error)) {
                 return Result.Error(error);
             }
-            var command     = transaction?.command ?? TransactionCommand.Begin;
+            var command     = transaction?.command ?? TransactionCommand.Commit;
             var taskIndex   = context.task.intern.index;
             var result      = await context.syncContext.Transaction(command, taskIndex).ConfigureAwait(false);
             if (result.error == null) {

@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Provider.Test
             client.testMutate.DeleteAll();
             await client.SyncTasks();
             
-            var begin = client.std.Transaction();
+            var begin = client.std.TransactionBegin();
             client.testMutate.Create(new TestMutate { id = "op-1", val1 = 1, val2 = 1 });
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
             await client.SyncTasks();
@@ -37,10 +37,10 @@ namespace Friflo.Json.Tests.Provider.Test
             client.testMutate.DeleteAll();
             await client.SyncTasks();
             
-            var begin = client.std.Transaction();
+            var begin = client.std.TransactionBegin();
             client.testMutate.Create(new TestMutate { id = "op-1", val1 = 1, val2 = 1 });
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
-            var end = client.std.Transaction(new Transaction { command = TransactionCommand.Commit} );
+            var end = client.std.TransactionEnd(new TransactionEnd { command = TransactionCommand.Commit} );
             await client.SyncTasks();
             NotNull(begin.Result);
             NotNull(end.Result);
@@ -56,10 +56,10 @@ namespace Friflo.Json.Tests.Provider.Test
             client.testMutate.DeleteAll();
             await client.SyncTasks();
             
-            var begin = client.std.Transaction();
+            var begin = client.std.TransactionBegin();
             client.testMutate.Create(new TestMutate { id = "op-1", val1 = 1, val2 = 1 });
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
-            var end = client.std.Transaction(new Transaction { command = TransactionCommand.Rollback} );
+            var end = client.std.TransactionEnd(new TransactionEnd { command = TransactionCommand.Rollback } );
             await client.SyncTasks();
             NotNull(begin.Result);
             NotNull(end.Result);
@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestTransaction_Commit_Error(string db) {
             var client  = await GetClient(db);
             
-            var end = client.std.Transaction(new Transaction { command = TransactionCommand.Commit} );
+            var end = client.std.TransactionEnd();
             await client.TrySyncTasks();
             
             AreEqual("CommandError ~ Missing begin transaction", end.Error.Message);
@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestTransaction_Rollback_Error(string db) {
             var client  = await GetClient(db);
             
-            var end = client.std.Transaction(new Transaction { command = TransactionCommand.Rollback} );
+            var end = client.std.TransactionEnd(new TransactionEnd { command = TransactionCommand.Rollback });
             await client.TrySyncTasks();
             
             AreEqual("CommandError ~ Missing begin transaction", end.Error.Message);
@@ -97,8 +97,8 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestTransaction_Commit_Nested_Error(string db) {
             var client  = await GetClient(db);
             
-            var begin1 = client.std.Transaction();
-            var begin2 = client.std.Transaction();
+            var begin1 = client.std.TransactionBegin();
+            var begin2 = client.std.TransactionBegin();
             await client.TrySyncTasks();
             
             IsTrue(begin1.Success);

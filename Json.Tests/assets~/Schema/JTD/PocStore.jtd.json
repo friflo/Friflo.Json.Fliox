@@ -152,7 +152,12 @@
                 "count": { "type": "int64" }
             }
         },
-        "Transaction": {
+        "TransactionResult": {
+            "properties": {
+
+            }
+        },
+        "TransactionEnd": {
             "properties": {
                 "command": { "ref":  "TransactionCommand" }
             }
@@ -163,11 +168,6 @@
                 "Commit",
                 "Rollback"
             ]
-        },
-        "TransactionResult": {
-            "properties": {
-
-            }
         },
         "HostParam": {
             "properties": {

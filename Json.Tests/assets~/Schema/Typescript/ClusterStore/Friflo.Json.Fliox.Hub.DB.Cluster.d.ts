@@ -16,29 +16,31 @@ export interface ClusterStore {
     schemas     : { [key: string]: DbSchema };
 
     // --- commands
-    ["ModelFiles"]          (param: ModelFilesQuery | null) : ModelFiles[];
+    ["ModelFiles"]               (param: ModelFilesQuery | null) : ModelFiles[];
     /** Echos the given parameter to assure the database is working appropriately. */
-    ["std.Echo"]            (param: any) : any;
+    ["std.Echo"]                 (param: any) : any;
     /** A command that completes after a specified number of milliseconds. */
-    ["std.Delay"]           (param: int32) : int32;
+    ["std.Delay"]                (param: int32) : int32;
     /** List all database containers */
-    ["std.Containers"]      () : DbContainers;
+    ["std.Containers"]           () : DbContainers;
     /** List all database commands and messages */
-    ["std.Messages"]        () : DbMessages;
+    ["std.Messages"]             () : DbMessages;
     /** Return the Schema assigned to the database */
-    ["std.Schema"]          () : DbSchema;
+    ["std.Schema"]               () : DbSchema;
     /** Return the number of entities of all containers (or the given container) of the database */
-    ["std.Stats"]           (param: string | null) : DbStats;
+    ["std.Stats"]                (param: string | null) : DbStats;
     /** Starts a transaction containing all subsequent **SyncTask**'s */
-    ["std.Transaction"]     (param: Transaction | null) : TransactionResult;
+    ["std.TransactionBegin"]     () : TransactionResult;
+    /** Ends a transaction started previously with **TransactionBegin** */
+    ["std.TransactionEnd"]       (param: TransactionEnd | null) : TransactionResult;
     /** Returns general information about the Hub like version, host, project and environment name */
-    ["std.Host"]            (param: HostParam | null) : HostInfo;
+    ["std.Host"]                 (param: HostParam | null) : HostInfo;
     /** List all databases and their containers hosted by the Hub */
-    ["std.Cluster"]         () : HostCluster;
+    ["std.Cluster"]              () : HostCluster;
     /** Return the groups of the current user. Optionally change the groups of the current user */
-    ["std.User"]            (param: UserParam | null) : UserResult;
+    ["std.User"]                 (param: UserParam | null) : UserResult;
     /** Return client specific infos and adjust general client behavior like **queueEvents** */
-    ["std.Client"]          (param: ClientParam | null) : ClientResult;
+    ["std.Client"]               (param: ClientParam | null) : ClientResult;
 }
 
 /** **containers** and **storage** type of a database */
@@ -116,7 +118,10 @@ export class ContainerStats {
     count  : int64;
 }
 
-export class Transaction {
+export class TransactionResult {
+}
+
+export class TransactionEnd {
     command  : TransactionCommand;
 }
 
@@ -125,9 +130,6 @@ export type TransactionCommand =
     | "Commit"
     | "Rollback"
 ;
-
-export class TransactionResult {
-}
 
 export class HostParam {
     memory?    : boolean | null;

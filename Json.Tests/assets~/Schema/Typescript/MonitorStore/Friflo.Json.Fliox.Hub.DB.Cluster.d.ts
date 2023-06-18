@@ -107,7 +107,10 @@ export class ContainerStats {
     count  : int64;
 }
 
-export class Transaction {
+export class TransactionResult {
+}
+
+export class TransactionEnd {
     command  : TransactionCommand;
 }
 
@@ -116,9 +119,6 @@ export type TransactionCommand =
     | "Commit"
     | "Rollback"
 ;
-
-export class TransactionResult {
-}
 
 export class HostParam {
     memory?    : boolean | null;

@@ -71,7 +71,14 @@
             ],
             "additionalProperties": false
         },
-        "Transaction": {
+        "TransactionResult": {
+            "type": "object",
+            "properties": {
+
+            },
+            "additionalProperties": false
+        },
+        "TransactionEnd": {
             "type": "object",
             "properties": {
                 "command": { "$ref": "#/definitions/TransactionCommand" }
@@ -87,13 +94,6 @@
                 "Commit",
                 "Rollback"
             ]
-        },
-        "TransactionResult": {
-            "type": "object",
-            "properties": {
-
-            },
-            "additionalProperties": false
         },
         "HostParam": {
             "type": "object",

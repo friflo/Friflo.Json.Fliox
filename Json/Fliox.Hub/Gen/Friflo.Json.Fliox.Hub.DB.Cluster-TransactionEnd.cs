@@ -5,11 +5,11 @@ using Friflo.Json.Fliox.Hub.DB.Cluster;
 // ReSharper disable InconsistentNaming
 namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
 {
-    static class Gen_Transaction
+    static class Gen_TransactionEnd
     {
         private const int Gen_command = 0;
 
-        private static bool ReadField (ref Transaction obj, PropField field, ref Reader reader) {
+        private static bool ReadField (ref TransactionEnd obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
                 case Gen_command: obj.command = reader.ReadEnum (field, obj.command, out success);  return success;
@@ -17,7 +17,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
             return false;
         }
 
-        private static void Write(ref Transaction obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
+        private static void Write(ref TransactionEnd obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
             writer.WriteEnum (fields[Gen_command], obj.command, ref firstMember);
         }
     }

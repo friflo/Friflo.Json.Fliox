@@ -222,7 +222,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         } 
     }
     
-    public class TransResult {
+    public sealed class TransResult {
         public readonly string              error;
         public readonly TransactionCommand  state;
         

@@ -252,15 +252,33 @@
         }
       }
     },
-    "/?cmd=std.Transaction": {
+    "/?cmd=std.TransactionBegin": {
       "post": {
         "summary":    "Starts a transaction containing all subsequent <b>SyncTask</b>'s",
+        "tags":       ["commands"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/TransactionResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?cmd=std.TransactionEnd": {
+      "post": {
+        "summary":    "Ends a transaction started previously with <b>TransactionBegin</b>",
         "tags":       ["commands"],
         "requestBody": {          
           "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/Transaction"
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/TransactionEnd"
                 }
               }
             }

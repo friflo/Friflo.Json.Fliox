@@ -40,7 +40,11 @@ data class ContainerStats (
 )
 
 @Serializable
-data class Transaction (
+class TransactionResult (
+)
+
+@Serializable
+data class TransactionEnd (
               val command : TransactionCommand,
 )
 
@@ -49,10 +53,6 @@ enum class TransactionCommand {
     Commit,
     Rollback,
 }
-
-@Serializable
-class TransactionResult (
-)
 
 @Serializable
 data class HostParam (
