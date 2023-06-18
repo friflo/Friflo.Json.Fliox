@@ -50,28 +50,44 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return new SQLiteContainer(name.AsString(), this, Pretty);
         }
         
+        public override ISyncConnection GetConnectionSync() {
+            return new SyncConnection(sqliteDB);
+        }
+        
+        public override void ReturnConnection(ISyncConnection connection) { }
+
         static SQLiteDatabase() {
             raw.SetProvider(new SQLite3Provider_e_sqlite3());
         }
         
         public override Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command) {
-            var result = TransactionSync(command);
+            var result = TransactionSync(syncContext, command);
             return Task.FromResult(result);
         }
         
-        private Result<TransactionResult> TransactionSync(TransactionCommand command)
+        private static Result<TransactionResult> TransactionSync(SyncContext syncContext, TransactionCommand command)
         {
-            var sql = command switch {
-                TransactionCommand.Begin    => "BEGIN TRANSACTION;",
-                TransactionCommand.Commit   => "COMMIT;",
-                TransactionCommand.Rollback => "ROLLBACK;",
-                _                           => null
-            };
-            if (sql == null) return Result.Error($"invalid transaction command {command}");
-            if (!SQLiteUtils.Exec(sqliteDB, sql, out var error)) {
-                return Result.Error(error.message); 
+            var syncConnection = (SyncConnection)syncContext.GetConnectionSync();
+            switch (command) {
+                case TransactionCommand.Begin: {
+                    syncConnection.BeginTransaction(out var error);
+                    return error == null ? new Result<TransactionResult>() : Result.Error(error.message);
+                }
+                case TransactionCommand.Commit: {
+                    if (!syncConnection.EndTransaction("COMMIT", out var error)) {
+                        return Result.Error(error.message);
+                    }
+                    return default; 
+                }
+                case TransactionCommand.Rollback: {
+                    if (!syncConnection.EndTransaction("ROLLBACK", out var error)) {
+                        return Result.Error(error.message);
+                    }
+                    return default;
+                }
+                default:
+                    return Result.Error($"invalid transaction command {command}");
             }
-            return new TransactionResult();
         }
     }
 

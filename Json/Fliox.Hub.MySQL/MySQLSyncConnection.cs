@@ -1,7 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-#if !UNITY_5_3_OR_NEWER || POSTGRESQL
+#if !UNITY_5_3_OR_NEWER || MYSQL
 
 using System;
 using System.Data;

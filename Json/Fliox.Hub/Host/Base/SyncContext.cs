@@ -167,6 +167,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             return connection = await Database.GetConnectionAsync().ConfigureAwait(false);
         }
         
+        public ISyncConnection GetConnectionSync () {
+            if (connection != null) {
+                return connection;
+            }
+            return connection = Database.GetConnectionSync();
+        }
+        
         internal void ReturnConnection() {
             if (connection != null && connection.IsOpen) {
                 Database.ReturnConnection(connection);

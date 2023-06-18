@@ -12,12 +12,10 @@ namespace Friflo.Json.Tests.Provider.Test
     public static class Test_5_Transaction
     {
         
-        private static bool SupportTransaction(string db) => IsMySQL(db) || IsMariaDB(db) || IsPostgres(db) || IsSQLServer(db);
+        private static bool SupportTransaction(string db) => IsSQLite(db) || IsMySQL(db) || IsMariaDB(db) || IsPostgres(db) || IsSQLServer(db);
 
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Commit_Implicit(string db) {
-            if (IsSQLite(db)) return;
-            
             var client  = await GetClient(db);
             client.testMutate.DeleteAll();
             await client.SyncTasks();
@@ -35,8 +33,6 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Commit_Explicit(string db) {
-            if (IsSQLite(db)) return;
-            
             var client  = await GetClient(db);
             client.testMutate.DeleteAll();
             await client.SyncTasks();
@@ -56,8 +52,6 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Rollback(string db) {
-            if (IsSQLite(db)) return;
-            
             var client  = await GetClient(db);
             client.testMutate.DeleteAll();
             await client.SyncTasks();
@@ -81,8 +75,6 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Commit_Error(string db) {
-            if (IsSQLite(db)) return;
-            
             var client  = await GetClient(db);
             
             var end = client.std.Transaction(new Transaction { command = TransactionCommand.Commit} );
@@ -93,8 +85,6 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Rollback_Error(string db) {
-            if (IsSQLite(db)) return;
-            
             var client  = await GetClient(db);
             
             var end = client.std.Transaction(new Transaction { command = TransactionCommand.Rollback} );
@@ -105,8 +95,6 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Commit_Nested_Error(string db) {
-            if (IsSQLite(db)) return;
-            
             var client  = await GetClient(db);
             
             var begin1 = client.std.Transaction();

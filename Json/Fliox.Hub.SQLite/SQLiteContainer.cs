@@ -67,10 +67,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
+            var syncConnection = (SyncConnection)syncContext.GetConnectionSync();
             if (!InitTable(out var error)) {
                 return new CreateEntitiesResult { Error = error };
             }
-            using (SQLiteUtils.Transaction(sqliteDB, out error))
+            using (var scope = syncConnection.BeginTransaction(out error))
             {
                 if (error != null) {
                     return new CreateEntitiesResult { Error = error };
@@ -83,6 +84,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return new CreateEntitiesResult { Error = error };
                 }
                 raw.sqlite3_finalize(stmt);
+                if (!scope.EndTransaction("COMMIT TRANSACTION", out error)) {
+                    return new CreateEntitiesResult { Error = error };
+                }
                 return new CreateEntitiesResult();
             }
         }
@@ -95,10 +99,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
 
         public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
+            var syncConnection = (SyncConnection)syncContext.GetConnectionSync();
             if (!InitTable(out var error)) {
                 return new UpsertEntitiesResult { Error = error };
             }
-            using (SQLiteUtils.Transaction(sqliteDB, out error))
+            using (var scope = syncConnection.BeginTransaction(out error))
             {
                 if (error != null) {
                     return new UpsertEntitiesResult { Error = error };
@@ -111,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return new UpsertEntitiesResult { Error = error };
                 }
                 raw.sqlite3_finalize(stmt);
-                if (!SQLiteUtils.Exec(sqliteDB, "END TRANSACTION", out error)) {
+                if (!scope.EndTransaction("COMMIT TRANSACTION", out error)) {
                     return new UpsertEntitiesResult { Error = error };
                 }
                 return new UpsertEntitiesResult();
@@ -225,6 +230,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {
+            var syncConnection = (SyncConnection)syncContext.GetConnectionSync();
             if (!InitTable(out var error)) {
                 return new DeleteEntitiesResult { Error = error };
             }
@@ -235,7 +241,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 }
                 return new DeleteEntitiesResult();
             }
-            using (SQLiteUtils.Transaction(sqliteDB, out error))
+            using (var scope = syncConnection.BeginTransaction(out error))
             {
                 if (error != null) {
                     return new DeleteEntitiesResult { Error = error };
@@ -248,7 +254,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return new DeleteEntitiesResult { Error = error };
                 }
                 raw.sqlite3_finalize(stmt);
-                if (!SQLiteUtils.Exec(sqliteDB, "END TRANSACTION", out error)) {
+                if (!scope.EndTransaction("COMMIT TRANSACTION", out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }
                 return new DeleteEntitiesResult();

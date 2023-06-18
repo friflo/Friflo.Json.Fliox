@@ -209,35 +209,6 @@ GENERATED ALWAYS AS (json_extract({DATA}, '$.{column.name}'));";
             }
             return Error($"exec failed. sql: {sql}, error: {errMsg}", out error);
         }
-        
-        /// <summary>
-        /// BEGIN TRANSACTION.<br/>
-        /// Need to be called in a using statement to END TRANSACTION by calling
-        /// <see cref="TransactionScope.Dispose"/> when leaving the scope.
-        /// </summary>
-        internal static TransactionScope Transaction(sqlite3 db, out TaskExecuteError error) {
-            if (!Exec(db, "BEGIN TRANSACTION", out error)) {
-                return default;
-            }
-            return new TransactionScope(db);
-        }
-        
-        internal readonly struct TransactionScope : IDisposable
-        {
-            private readonly sqlite3 db;
-            
-            internal TransactionScope(sqlite3 db) {
-                this.db = db;
-            }
-
-            public void Dispose() {
-                if (db == null) {
-                    return;
-                }
-                Exec(db, "End TRANSACTION", out _);
-            }
-        }
-       
     }
 }
 
