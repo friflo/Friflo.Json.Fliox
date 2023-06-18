@@ -12,7 +12,7 @@ namespace Friflo.Json.Tests.Provider.Test
     public static class Test_5_Transaction
     {
         
-        private static bool HasTransactionSupport => IsMySQL || IsMariaDB || IsPostgres || IsSQLServer;
+        private static bool SupportTransaction(string db) => IsMySQL(db) || IsMariaDB(db) || IsPostgres(db) || IsSQLServer(db);
 
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Commit_Implicit(string db) {
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Provider.Test
             
             var count = client.testMutate.CountAll();
             await client.SyncTasks();
-            if (HasTransactionSupport) {
+            if (SupportTransaction(db)) {
                 AreEqual(0, count.Result);
                 return;
             }

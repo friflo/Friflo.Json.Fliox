@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_MinObjectList(string db) {
-            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB || IsCosmosDB) return;
+            if (IsSQLite(db) || IsPostgres(db) || IsSQLServer(db) || IsMySQL(db) || IsMariaDB(db) || IsCosmosDB(db)) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectList.Min(o => o.int32) >= 10);
@@ -106,7 +106,7 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestQuery_MaxObjectList(string db) {
-            if (IsSQLite(db) || IsPostgres || IsSQLServer || IsMySQL || IsMariaDB || IsCosmosDB) return;
+            if (IsSQLite(db) || IsPostgres(db) || IsSQLServer(db) || IsMySQL(db) || IsMariaDB(db) || IsCosmosDB(db)) return;
             
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectList.Max(o => o.int32) >= 10);

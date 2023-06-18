@@ -38,14 +38,14 @@ namespace Friflo.Json.Tests.Provider
         private  static  readonly   HashSet<string>                 seededDatabases = new HashSet<string>();
         
         internal static  readonly   string  TEST_DB_PROVIDER;
-        internal static             bool    IsMemory(string db) => db == memory_db;
-        internal static             bool    IsCosmosDB          => TEST_DB_PROVIDER == "cosmos";
-        internal static             bool    IsMySQL             => TEST_DB_PROVIDER == "mysql";
-        internal static             bool    IsMariaDB           => TEST_DB_PROVIDER == "mariadb";
-        internal static             bool    IsPostgres          => TEST_DB_PROVIDER == "postgres";
-        internal static             bool    IsSQLServer         => TEST_DB_PROVIDER == "sqlserver";
-        internal static             bool    IsSQLite(string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
-        internal static             bool    IsFileSystem        => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
+        
+        internal static             bool    IsCosmosDB  (string db) => TEST_DB_PROVIDER == "cosmos"     && db == test_db;
+        internal static             bool    IsMySQL     (string db) => TEST_DB_PROVIDER == "mysql"      && db == test_db;
+        internal static             bool    IsMariaDB   (string db) => TEST_DB_PROVIDER == "mariadb"    && db == test_db;
+        internal static             bool    IsPostgres  (string db) => TEST_DB_PROVIDER == "postgres"   && db == test_db;
+        internal static             bool    IsSQLServer (string db) => TEST_DB_PROVIDER == "sqlserver"  && db == test_db;
+        internal static             bool    IsSQLite    (string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
+        private  static             bool    IsFileSystem            => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
         
         private  static readonly    string  SQLiteFile  = CommonUtils.GetBasePath() + "test_db.sqlite3";
 
