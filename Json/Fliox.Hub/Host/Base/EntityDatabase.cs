@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public virtual  ISyncConnection                 GetConnectionSync()                             => throw new NotImplementedException();
         public virtual  void                            ReturnConnection(ISyncConnection connection)    => connection.Dispose();
         public virtual  Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command) {
-            var result = new Result<TransactionResult>();
+            var result = new Result<TransactionResult>(new TransactionResult());
             return Task.FromResult(result);
         }
         #endregion

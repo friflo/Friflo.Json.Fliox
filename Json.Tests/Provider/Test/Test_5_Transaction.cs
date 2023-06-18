@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Provider.Test
             client.testMutate.Create(new TestMutate { id = "op-1", val1 = 1, val2 = 1 });
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
             await client.SyncTasks();
-            NotNull(begin);
+            NotNull(begin.Result);
             
             var count = client.testMutate.CountAll();
             await client.SyncTasks();
@@ -42,8 +42,8 @@ namespace Friflo.Json.Tests.Provider.Test
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
             var end = client.std.Transaction(new Transaction { command = TransactionCommand.Commit} );
             await client.SyncTasks();
-            NotNull(begin);
-            NotNull(end);
+            NotNull(begin.Result);
+            NotNull(end.Result);
             
             var count = client.testMutate.CountAll();
             await client.SyncTasks();
@@ -61,8 +61,8 @@ namespace Friflo.Json.Tests.Provider.Test
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
             var end = client.std.Transaction(new Transaction { command = TransactionCommand.Rollback} );
             await client.SyncTasks();
-            NotNull(begin);
-            NotNull(end);
+            NotNull(begin.Result);
+            NotNull(end.Result);
             
             var count = client.testMutate.CountAll();
             await client.SyncTasks();

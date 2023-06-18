@@ -71,19 +71,22 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             switch (command) {
                 case TransactionCommand.Begin: {
                     syncConnection.BeginTransaction(out var error);
-                    return error == null ? new Result<TransactionResult>() : Result.Error(error.message);
+                    if (error != null) {
+                        return Result.Error(error.message);
+                    }
+                    return new TransactionResult();
                 }
                 case TransactionCommand.Commit: {
                     if (!syncConnection.EndTransaction("COMMIT", out var error)) {
                         return Result.Error(error.message);
                     }
-                    return default; 
+                    return new TransactionResult();
                 }
                 case TransactionCommand.Rollback: {
                     if (!syncConnection.EndTransaction("ROLLBACK", out var error)) {
                         return Result.Error(error.message);
                     }
-                    return default;
+                    return new TransactionResult();
                 }
                 default:
                     return Result.Error($"invalid transaction command {command}");
