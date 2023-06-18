@@ -44,16 +44,6 @@ class TransactionResult (
 )
 
 @Serializable
-data class TransactionEnd (
-              val command : TransactionCommand,
-)
-
-enum class TransactionCommand {
-    Commit,
-    Rollback,
-}
-
-@Serializable
 data class HostParam (
               val memory    : Boolean? = null,
               val gcCollect : Boolean? = null,

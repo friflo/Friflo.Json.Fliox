@@ -507,19 +507,28 @@
         }
       }
     },
-    "/?cmd=std.TransactionEnd": {
+    "/?cmd=std.TransactionCommit": {
       "post": {
-        "summary":    "Ends a transaction started previously with <b>TransactionBegin</b>",
+        "summary":    "Commit a transaction started previously with <b>TransactionBegin</b>",
         "tags":       ["commands"],
-        "requestBody": {          
-          "content": {
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/TransactionEnd"
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/TransactionResult"
                 }
               }
             }
-        },
+          }
+        }
+      }
+    },
+    "/?cmd=std.TransactionRollback": {
+      "post": {
+        "summary":    "Rollback a transaction started previously with <b>TransactionBegin</b>",
+        "tags":       ["commands"],
         "responses": {
           "200": {             
             "description": "OK",

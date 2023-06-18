@@ -73,15 +73,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public override     string              ToString() => $"{name} - count: {count}";
     }
     
-    public sealed class TransactionEnd {
-                    public  TransactionCommand  command;
-    }
-    
-    public enum TransactionCommand {
-        Commit      = 1,
-        Rollback    = 2,
-    }
-    
     public sealed class TransactionResult {
     }
     

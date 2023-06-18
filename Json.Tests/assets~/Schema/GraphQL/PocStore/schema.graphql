@@ -56,7 +56,8 @@ type Query {
     std_Schema                     : DbSchema!
     std_Stats                     (param: String) : DbStats!
     std_TransactionBegin           : TransactionResult!
-    std_TransactionEnd            (param: TransactionEndInput) : TransactionResult!
+    std_TransactionCommit          : TransactionResult!
+    std_TransactionRollback        : TransactionResult!
     std_Host                      (param: HostParamInput) : HostInfo!
     std_Cluster                    : HostCluster!
     std_User                      (param: UserParamInput) : UserResult!
@@ -395,19 +396,6 @@ type TransactionResult {
 
 input TransactionResultInput {
     _: Boolean
-}
-
-type TransactionEnd {
-    command : TransactionCommand!
-}
-
-input TransactionEndInput {
-    command : TransactionCommand!
-}
-
-enum TransactionCommand {
-    Commit
-    Rollback
 }
 
 type HostParam {

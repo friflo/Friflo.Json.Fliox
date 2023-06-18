@@ -11,33 +11,34 @@ scalar Boolean
 scalar Any
 
 type Query {
-    queryCredentials    (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryCredentialsResult!
-    queryPermissions    (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryPermissionsResult!
-    queryRoles          (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryRolesResult!
-    queryTargets        (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryTargetsResult!
-    readCredentials     (ids: [String!]!, selectAll: Boolean) : [UserCredential]!
-    readPermissions     (ids: [String!]!, selectAll: Boolean) : [UserPermission]!
-    readRoles           (ids: [String!]!, selectAll: Boolean) : [Role]!
-    readTargets         (ids: [String!]!, selectAll: Boolean) : [UserTarget]!
-    countCredentials    (filter: String) : Int
-    countPermissions    (filter: String) : Int
-    countRoles          (filter: String) : Int
-    countTargets        (filter: String) : Int
-    AuthenticateUser    (param: CredentialsInput) : AuthResult!
-    ValidateUserDb       : ValidateUserDbResult!
-    ClearAuthCache       : Boolean!
-    std_Echo            (param: Any!) : Any!
-    std_Delay           (param: Int!) : Int!
-    std_Containers       : DbContainers!
-    std_Messages         : DbMessages!
-    std_Schema           : DbSchema!
-    std_Stats           (param: String) : DbStats!
-    std_TransactionBegin : TransactionResult!
-    std_TransactionEnd  (param: TransactionEndInput) : TransactionResult!
-    std_Host            (param: HostParamInput) : HostInfo!
-    std_Cluster          : HostCluster!
-    std_User            (param: UserParamInput) : UserResult!
-    std_Client          (param: ClientParamInput) : ClientResult!
+    queryCredentials       (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryCredentialsResult!
+    queryPermissions       (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryPermissionsResult!
+    queryRoles             (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryRolesResult!
+    queryTargets           (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryTargetsResult!
+    readCredentials        (ids: [String!]!, selectAll: Boolean) : [UserCredential]!
+    readPermissions        (ids: [String!]!, selectAll: Boolean) : [UserPermission]!
+    readRoles              (ids: [String!]!, selectAll: Boolean) : [Role]!
+    readTargets            (ids: [String!]!, selectAll: Boolean) : [UserTarget]!
+    countCredentials       (filter: String) : Int
+    countPermissions       (filter: String) : Int
+    countRoles             (filter: String) : Int
+    countTargets           (filter: String) : Int
+    AuthenticateUser       (param: CredentialsInput) : AuthResult!
+    ValidateUserDb          : ValidateUserDbResult!
+    ClearAuthCache          : Boolean!
+    std_Echo               (param: Any!) : Any!
+    std_Delay              (param: Int!) : Int!
+    std_Containers          : DbContainers!
+    std_Messages            : DbMessages!
+    std_Schema              : DbSchema!
+    std_Stats              (param: String) : DbStats!
+    std_TransactionBegin    : TransactionResult!
+    std_TransactionCommit   : TransactionResult!
+    std_TransactionRollback : TransactionResult!
+    std_Host               (param: HostParamInput) : HostInfo!
+    std_Cluster             : HostCluster!
+    std_User               (param: UserParamInput) : UserResult!
+    std_Client             (param: ClientParamInput) : ClientResult!
 }
 
 type QueryCredentialsResult {
@@ -361,19 +362,6 @@ type TransactionResult {
 
 input TransactionResultInput {
     _: Boolean
-}
-
-type TransactionEnd {
-    command : TransactionCommand!
-}
-
-input TransactionEndInput {
-    command : TransactionCommand!
-}
-
-enum TransactionCommand {
-    Commit
-    Rollback
 }
 
 type HostParam {

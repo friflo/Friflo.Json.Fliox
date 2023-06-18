@@ -93,9 +93,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CommandTask<DbStats>             Stats(string param)             => send.Command<DbStats>();
         /// <summary>Starts a transaction containing all subsequent <see cref="SyncTask"/>'s</summary>
         public CommandTask<TransactionResult>   TransactionBegin()              => send.Command<TransactionResult>();
-        /// <summary>Ends a transaction started previously with <see cref="TransactionBegin"/></summary>
-        public CommandTask<TransactionResult>   TransactionEnd(TransactionEnd param = null) => send.Command<TransactionEnd, TransactionResult>(param);
-        
+        /// <summary>Commit a transaction started previously with <see cref="TransactionBegin"/></summary>
+        public CommandTask<TransactionResult>   TransactionCommit()             => send.Command<TransactionResult>();
+        /// <summary>Rollback a transaction started previously with <see cref="TransactionBegin"/></summary>
+        public CommandTask<TransactionResult>   TransactionRollback()           => send.Command<TransactionResult>();
+
         // --- commands: host
         /// <summary>Returns general information about the Hub like version, host, project and environment name</summary>
         public CommandTask<HostInfo>    Host(HostParam param)       => send.Command<HostParam, HostInfo>(param);
@@ -117,22 +119,23 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <b>std.*</b>
     internal static class Std  {
         // --- database
-        public const string Echo            = "std.Echo";
-        public const string Delay           = "std.Delay";
-        public const string Containers      = "std.Containers";
-        public const string Messages        = "std.Messages";
-        public const string Schema          = "std.Schema";
-        public const string Stats           = "std.Stats";
-        public const string TransactionBegin= "std.TransactionBegin";
-        public const string TransactionEnd  = "std.TransactionEnd";
+        public const string Echo                = "std.Echo";
+        public const string Delay               = "std.Delay";
+        public const string Containers          = "std.Containers";
+        public const string Messages            = "std.Messages";
+        public const string Schema              = "std.Schema";
+        public const string Stats               = "std.Stats";
+        public const string TransactionBegin    = "std.TransactionBegin";
+        public const string TransactionCommit   = "std.TransactionCommit";
+        public const string TransactionRollback = "std.TransactionRollback";
         
-        public const string Client          = "std.Client";
+        public const string Client              = "std.Client";
 
         // --- host
-        public const string HostInfo        = "std.Host";
-        public const string HostCluster     = "std.Cluster";
+        public const string HostInfo            = "std.Host";
+        public const string HostCluster         = "std.Cluster";
         
         // --- user
-        public const string User            = "std.User";
+        public const string User                = "std.User";
     }
 }

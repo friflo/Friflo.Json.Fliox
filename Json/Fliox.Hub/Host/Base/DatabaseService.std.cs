@@ -20,21 +20,22 @@ namespace Friflo.Json.Fliox.Hub.Host
         private void AddStdCommandHandlers() {
             // add each command handler individually
             // --- database
-            AddCommandHandler      <JsonValue,   JsonValue>             (Std.Echo,              Echo);
-            AddCommandHandlerAsync <int,         int>                   (Std.Delay,             Delay);
-            AddCommandHandlerAsync <Empty,       DbContainers>          (Std.Containers,        Containers);
-            AddCommandHandler      <Empty,       DbMessages>            (Std.Messages,          Messages);
-            AddCommandHandler      <Empty,       DbSchema>              (Std.Schema,            Schema);
-            AddCommandHandlerAsync <string,      DbStats>               (Std.Stats,             Stats);
-            AddCommandHandlerAsync <Empty,       TransactionResult>     (Std.TransactionBegin,  TransactionBegin);
-            AddCommandHandlerAsync <TransactionEnd, TransactionResult>  (Std.TransactionEnd,    TransactionEnd);
+            AddCommandHandler      <JsonValue,   JsonValue>         (Std.Echo,              Echo);
+            AddCommandHandlerAsync <int,         int>               (Std.Delay,             Delay);
+            AddCommandHandlerAsync <Empty,       DbContainers>      (Std.Containers,        Containers);
+            AddCommandHandler      <Empty,       DbMessages>        (Std.Messages,          Messages);
+            AddCommandHandler      <Empty,       DbSchema>          (Std.Schema,            Schema);
+            AddCommandHandlerAsync <string,      DbStats>           (Std.Stats,             Stats);
+            AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionBegin,  TransactionBegin);
+            AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionCommit, TransactionCommit);
+            AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionRollback,TransactionRollback);
             // --- host
-            AddCommandHandler      <HostParam,   HostInfo>              (Std.HostInfo,          HostInfo);
-            AddCommandHandlerAsync <Empty,       HostCluster>           (Std.HostCluster,       HostCluster);
+            AddCommandHandler      <HostParam,   HostInfo>          (Std.HostInfo,          HostInfo);
+            AddCommandHandlerAsync <Empty,       HostCluster>       (Std.HostCluster,       HostCluster);
             // --- user
-            AddCommandHandlerAsync <UserParam,   UserResult>            (Std.User,              User);
+            AddCommandHandlerAsync <UserParam,   UserResult>        (Std.User,              User);
             // --- client
-            AddCommandHandler      <ClientParam, ClientResult>          (Std.Client,            Client);
+            AddCommandHandler      <ClientParam, ClientResult>      (Std.Client,            Client);
         }
         
         private static Result<JsonValue> Echo (Param<JsonValue> param, MessageContext context) {
@@ -149,7 +150,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static async Task<Result<TransactionResult>> TransactionBegin (Param<Empty> param, MessageContext context) {
-
             var taskIndex   = context.task.intern.index;
             var result      = await context.syncContext.Transaction(TransCommand.Begin, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
@@ -158,17 +158,18 @@ namespace Friflo.Json.Fliox.Hub.Host
             return Result.Error(result.error);
         }
         
-        private static async Task<Result<TransactionResult>> TransactionEnd (Param<TransactionEnd> param, MessageContext context) {
-            if (!param.GetValidate(out var transaction, out var error)) {
-                return Result.Error(error);
-            }
-            var command = transaction?.command switch {
-                TransactionCommand.Commit   => TransCommand.Commit,
-                TransactionCommand.Rollback => TransCommand.Rollback,
-                _                           => TransCommand.Commit
-            };
+        private static async Task<Result<TransactionResult>> TransactionCommit (Param<Empty> param, MessageContext context) {
             var taskIndex   = context.task.intern.index;
-            var result      = await context.syncContext.Transaction(command, taskIndex).ConfigureAwait(false);
+            var result      = await context.syncContext.Transaction(TransCommand.Commit, taskIndex).ConfigureAwait(false);
+            if (result.error == null) {
+                return new TransactionResult();
+            }
+            return Result.Error(result.error);
+        }
+        
+        private static async Task<Result<TransactionResult>> TransactionRollback (Param<Empty> param, MessageContext context) {
+            var taskIndex   = context.task.intern.index;
+            var result      = await context.syncContext.Transaction(TransCommand.Rollback, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
                 return new TransactionResult();
             }

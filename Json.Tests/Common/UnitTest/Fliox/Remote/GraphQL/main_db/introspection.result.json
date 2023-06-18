@@ -1097,16 +1097,22 @@
                     }
                 },
                 {
-                    "name": "std_TransactionEnd",
-                    "description": "/** Ends a transaction started previously with **TransactionBegin** */\n",
+                    "name": "std_TransactionCommit",
+                    "description": "/** Commit a transaction started previously with **TransactionBegin** */\n",
                     "args": [
-                        {
-                            "name": "param",
-                            "type": {
-                                "kind":"SCALAR",
-                                "name": "TransactionEndInput"
-                            }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "TransactionResult"
                         }
+                    }
+                },
+                {
+                    "name": "std_TransactionRollback",
+                    "description": "/** Rollback a transaction started previously with **TransactionBegin** */\n",
+                    "args": [
                     ],
                     "type": {
                         "kind":"NON_NULL",
@@ -4415,63 +4421,6 @@
             "name": "TransactionResultInput",
             "description": "",
             "inputFields": [
-            ]
-        },
-        {
-            "kind":"OBJECT",
-            "name": "TransactionEnd",
-            "description": "",
-            "fields": [
-                {
-                    "name": "command",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "TransactionCommand"
-                        }
-                    }
-                }
-            ],
-            "interfaces": [
-            ]
-        },
-        {
-            "kind":"INPUT_OBJECT",
-            "name": "TransactionEndInput",
-            "description": "",
-            "inputFields": [
-                {
-                    "name": "command",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "TransactionCommand"
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "kind":"ENUM",
-            "name": "TransactionCommand",
-            "description": "",
-            "enumValues": [
-                {
-                    "name": "Commit",
-                    "description": ""
-                },
-                {
-                    "name": "Rollback",
-                    "description": ""
-                }
             ]
         },
         {

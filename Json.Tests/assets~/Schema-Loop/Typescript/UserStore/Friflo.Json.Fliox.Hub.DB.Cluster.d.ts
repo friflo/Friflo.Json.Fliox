@@ -61,15 +61,6 @@ export class ContainerStats {
 export class TransactionResult {
 }
 
-export class TransactionEnd {
-    command  : TransactionCommand;
-}
-
-export type TransactionCommand =
-    | "Commit"
-    | "Rollback"
-;
-
 export class HostParam {
     memory?    : boolean | null;
     gcCollect? : boolean | null;

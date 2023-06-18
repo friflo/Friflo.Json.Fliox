@@ -50,15 +50,6 @@ public class ContainerStats {
 public class TransactionResult {
 }
 
-public class TransactionEnd {
-    TransactionCommand  command;
-}
-
-public enum TransactionCommand {
-    Commit,
-    Rollback,
-}
-
 public class HostParam {
     bool? memory;
     bool? gcCollect;

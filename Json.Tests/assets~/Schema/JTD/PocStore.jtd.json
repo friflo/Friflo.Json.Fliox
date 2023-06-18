@@ -157,17 +157,6 @@
 
             }
         },
-        "TransactionEnd": {
-            "properties": {
-                "command": { "ref":  "TransactionCommand" }
-            }
-        },
-        "TransactionCommand": {
-            "enum": [
-                "Commit",
-                "Rollback"
-            ]
-        },
         "HostParam": {
             "properties": {
                 "memory":    { "type": "boolean", "nullable": true },

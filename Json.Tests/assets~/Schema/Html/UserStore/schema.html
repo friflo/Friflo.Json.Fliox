@@ -306,8 +306,6 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'><div><span>DbStats</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'><div><span>ContainerStats</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'><div><span>TransactionResult</span></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionEnd'><div><span>TransactionEnd</span></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'><div><span>TransactionCommand</span><keyword>enum</keyword></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'><div><span>HostParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'><div><span>HostInfo</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'><div><span>HostMemory</span></div></a></li>
@@ -456,10 +454,16 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
             <td><docs>Starts a transaction containing all subsequent <b>SyncTask</b>'s</docs></td>
         </tr>
         <tr>
-            <td><cmd>std.TransactionEnd</cmd></td>
-            <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionEnd'>TransactionEnd</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'>TransactionResult</a></sig></td>
-            <td><oas><a href='../open-api.html#/commands/post__cmd_std_TransactionEnd' target='_blank' title='open std.TransactionEnd API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
-            <td><docs>Ends a transaction started previously with <b>TransactionBegin</b></docs></td>
+            <td><cmd>std.TransactionCommit</cmd></td>
+            <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'>TransactionResult</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_TransactionCommit' target='_blank' title='open std.TransactionCommit API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Commit a transaction started previously with <b>TransactionBegin</b></docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.TransactionRollback</cmd></td>
+            <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'>TransactionResult</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_TransactionRollback' target='_blank' title='open std.TransactionRollback API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Rollback a transaction started previously with <b>TransactionBegin</b></docs></td>
         </tr>
         <tr>
             <td><cmd>std.Host</cmd></td>
@@ -762,28 +766,6 @@ Each JSON Schema is identified by its unique path</docs></td>
         <keyword>class</keyword>
     </h3>
     <table class='fields'>
-    </table>
-    </div>
-    <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.TransactionEnd'>
-        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionEnd'>TransactionEnd</a>
-        <keyword>class</keyword>
-    </h3>
-    <table class='fields'>
-        <tr>
-            <td><field>command</field></td>
-            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'>TransactionCommand</a></type></td>
-        </tr>
-    </table>
-    </div>
-    <div class='type enum'>
-    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'>
-        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'>TransactionCommand</a>
-        <keyword>enum</keyword>
-    </h3>
-    <table>
-        <tr><td>Commit</td><td></td></tr>
-        <tr><td>Rollback</td><td></td></tr>
     </table>
     </div>
     <div class='type'>
