@@ -49,7 +49,6 @@ data class TransactionEnd (
 )
 
 enum class TransactionCommand {
-    Begin,
     Commit,
     Rollback,
 }

@@ -78,9 +78,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     public enum TransactionCommand {
-        Begin       = 1,
-        Commit      = 2,
-        Rollback    = 3,
+        Commit      = 1,
+        Rollback    = 2,
     }
     
     public sealed class TransactionResult {

@@ -280,7 +280,6 @@ input TransactionEndInput {
 }
 
 enum TransactionCommand {
-    Begin
     Commit
     Rollback
 }

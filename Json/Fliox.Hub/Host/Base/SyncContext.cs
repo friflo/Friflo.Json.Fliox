@@ -181,19 +181,19 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        internal async Task<TransResult> Transaction(TransactionCommand command, int taskIndex) {
+        internal async Task<TransResult> Transaction(TransCommand command, int taskIndex) {
             var db = Database;
             switch (command)
             {
-                case TransactionCommand.Begin:
+                case TransCommand.Begin:
                     if (transaction != null) {
                         return new TransResult("Transaction already started");
                     }
-                    var result = await db.Transaction(this, TransactionCommand.Begin).ConfigureAwait(false);
+                    var result = await db.Transaction(this, TransCommand.Begin).ConfigureAwait(false);
                     transaction = new SyncTransaction(taskIndex);
                     return result;
                 
-                case TransactionCommand.Commit:
+                case TransCommand.Commit:
                     if (transaction == null) {
                         return new TransResult("Missing begin transaction");
                     }
@@ -207,30 +207,36 @@ namespace Friflo.Json.Fliox.Hub.Host
                     }
                     transaction = null;
                     if (success) {
-                        return await db.Transaction(this, TransactionCommand.Commit).ConfigureAwait(false);    
+                        return await db.Transaction(this, TransCommand.Commit).ConfigureAwait(false);    
                     }
-                    return await db.Transaction(this, TransactionCommand.Rollback).ConfigureAwait(false);
+                    return await db.Transaction(this, TransCommand.Rollback).ConfigureAwait(false);
                    
-                case TransactionCommand.Rollback:
+                case TransCommand.Rollback:
                     if (transaction == null) {
                         return new TransResult("Missing begin transaction");
                     }
                     transaction = null;
-                    return await db.Transaction(this, TransactionCommand.Rollback).ConfigureAwait(false);
+                    return await db.Transaction(this, TransCommand.Rollback).ConfigureAwait(false);
             }
             return new TransResult($"invalid transaction command: {command}");
         } 
     }
     
+    public enum TransCommand {
+        Begin       = 0,
+        Commit      = 1,
+        Rollback    = 2,
+    }
+    
     public sealed class TransResult {
-        public readonly string              error;
-        public readonly TransactionCommand  state;
+        public readonly string          error;
+        public readonly TransCommand    state;
         
         public TransResult(string error) {
             this.error = error ?? throw new ArgumentNullException(nameof(error));
         }
         
-        public TransResult(TransactionCommand  state) {
+        public TransResult(TransCommand  state) {
             this.state = state;
         }
     }

@@ -115,7 +115,6 @@ export class TransactionEnd {
 }
 
 export type TransactionCommand =
-    | "Begin"
     | "Commit"
     | "Rollback"
 ;

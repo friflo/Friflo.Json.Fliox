@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var begin = client.std.TransactionBegin();
             client.testMutate.Create(new TestMutate { id = "op-1", val1 = 1, val2 = 1 });
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
-            var end = client.std.TransactionEnd(new TransactionEnd { command = TransactionCommand.Commit} );
+            var end = client.std.TransactionEnd(new TransactionEnd { command = TransactionCommand.Commit } );
             await client.SyncTasks();
             NotNull(begin.Result);
             NotNull(end.Result);

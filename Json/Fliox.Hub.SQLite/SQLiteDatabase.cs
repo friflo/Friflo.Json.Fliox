@@ -60,29 +60,29 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             raw.SetProvider(new SQLite3Provider_e_sqlite3());
         }
         
-        public override Task<TransResult> Transaction(SyncContext syncContext, TransactionCommand command) {
+        public override Task<TransResult> Transaction(SyncContext syncContext, TransCommand command) {
             var result = TransactionSync(syncContext, command);
             return Task.FromResult(result);
         }
         
-        private static TransResult TransactionSync(SyncContext syncContext, TransactionCommand command)
+        private static TransResult TransactionSync(SyncContext syncContext, TransCommand command)
         {
             var syncConnection = (SyncConnection)syncContext.GetConnectionSync();
             switch (command) {
-                case TransactionCommand.Begin: {
+                case TransCommand.Begin: {
                     syncConnection.BeginTransaction(out var error);
                     if (error != null) {
                         return new TransResult(error.message);
                     }
                     return new TransResult(command);;
                 }
-                case TransactionCommand.Commit: {
+                case TransCommand.Commit: {
                     if (!syncConnection.EndTransaction("COMMIT", out var error)) {
                         return new TransResult(error.message);
                     }
                     return new TransResult(command);
                 }
-                case TransactionCommand.Rollback: {
+                case TransCommand.Rollback: {
                     if (!syncConnection.EndTransaction("ROLLBACK", out var error)) {
                         return new TransResult(error.message);
                     }

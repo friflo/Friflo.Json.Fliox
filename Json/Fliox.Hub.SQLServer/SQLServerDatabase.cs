@@ -93,15 +93,15 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             tableTypesCreated = true;
         }
         
-        public override async Task<TransResult> Transaction(SyncContext syncContext, TransactionCommand command) {
+        public override async Task<TransResult> Transaction(SyncContext syncContext, TransCommand command) {
             var syncConnection = await syncContext.GetConnectionAsync();
             if (syncConnection is not SyncConnection connection) {
                 return new TransResult(syncConnection.Error.message);
             }
             var sql = command switch {
-                TransactionCommand.Begin    => "BEGIN TRANSACTION;",
-                TransactionCommand.Commit   => "COMMIT;",
-                TransactionCommand.Rollback => "ROLLBACK;",
+                TransCommand.Begin    => "BEGIN TRANSACTION;",
+                TransCommand.Commit   => "COMMIT;",
+                TransCommand.Rollback => "ROLLBACK;",
                 _                           => null
             };
             if (sql == null) return new TransResult($"invalid transaction command {command}");

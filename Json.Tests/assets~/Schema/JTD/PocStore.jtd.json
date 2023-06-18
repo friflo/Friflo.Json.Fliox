@@ -164,7 +164,6 @@
         },
         "TransactionCommand": {
             "enum": [
-                "Begin",
                 "Commit",
                 "Rollback"
             ]

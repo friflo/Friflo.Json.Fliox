@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static async Task<Result<TransactionResult>> TransactionBegin (Param<Empty> param, MessageContext context) {
 
             var taskIndex   = context.task.intern.index;
-            var result      = await context.syncContext.Transaction(TransactionCommand.Begin, taskIndex).ConfigureAwait(false);
+            var result      = await context.syncContext.Transaction(TransCommand.Begin, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
                 return new TransactionResult();
             }
@@ -162,7 +162,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (!param.GetValidate(out var transaction, out var error)) {
                 return Result.Error(error);
             }
-            var command     = transaction?.command ?? TransactionCommand.Commit;
+            var command = transaction?.command switch {
+                TransactionCommand.Commit   => TransCommand.Commit,
+                TransactionCommand.Rollback => TransCommand.Rollback,
+                _                           => TransCommand.Commit
+            };
             var taskIndex   = context.task.intern.index;
             var result      = await context.syncContext.Transaction(command, taskIndex).ConfigureAwait(false);
             if (result.error == null) {

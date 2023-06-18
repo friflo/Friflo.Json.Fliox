@@ -55,7 +55,6 @@ public class TransactionEnd {
 }
 
 public enum TransactionCommand {
-    Begin,
     Commit,
     Rollback,
 }

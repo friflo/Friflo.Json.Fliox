@@ -1084,14 +1084,27 @@
                     }
                 },
                 {
-                    "name": "std_Transaction",
+                    "name": "std_TransactionBegin",
                     "description": "/** Starts a transaction containing all subsequent **SyncTask**'s */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "TransactionResult"
+                        }
+                    }
+                },
+                {
+                    "name": "std_TransactionEnd",
+                    "description": "/** Ends a transaction started previously with **TransactionBegin** */\n",
                     "args": [
                         {
                             "name": "param",
                             "type": {
                                 "kind":"SCALAR",
-                                "name": "TransactionInput"
+                                "name": "TransactionEndInput"
                             }
                         }
                     ],
@@ -4390,7 +4403,23 @@
         },
         {
             "kind":"OBJECT",
-            "name": "Transaction",
+            "name": "TransactionResult",
+            "description": "",
+            "fields": [
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "TransactionResultInput",
+            "description": "",
+            "inputFields": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "TransactionEnd",
             "description": "",
             "fields": [
                 {
@@ -4412,7 +4441,7 @@
         },
         {
             "kind":"INPUT_OBJECT",
-            "name": "TransactionInput",
+            "name": "TransactionEndInput",
             "description": "",
             "inputFields": [
                 {
@@ -4436,10 +4465,6 @@
             "description": "",
             "enumValues": [
                 {
-                    "name": "Begin",
-                    "description": ""
-                },
-                {
                     "name": "Commit",
                     "description": ""
                 },
@@ -4447,22 +4472,6 @@
                     "name": "Rollback",
                     "description": ""
                 }
-            ]
-        },
-        {
-            "kind":"OBJECT",
-            "name": "TransactionResult",
-            "description": "",
-            "fields": [
-            ],
-            "interfaces": [
-            ]
-        },
-        {
-            "kind":"INPUT_OBJECT",
-            "name": "TransactionResultInput",
-            "description": "",
-            "inputFields": [
             ]
         },
         {
