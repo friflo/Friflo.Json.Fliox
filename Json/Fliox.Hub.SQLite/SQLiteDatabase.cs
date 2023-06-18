@@ -60,36 +60,36 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             raw.SetProvider(new SQLite3Provider_e_sqlite3());
         }
         
-        public override Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command) {
+        public override Task<TransResult> Transaction(SyncContext syncContext, TransactionCommand command) {
             var result = TransactionSync(syncContext, command);
             return Task.FromResult(result);
         }
         
-        private static Result<TransactionResult> TransactionSync(SyncContext syncContext, TransactionCommand command)
+        private static TransResult TransactionSync(SyncContext syncContext, TransactionCommand command)
         {
             var syncConnection = (SyncConnection)syncContext.GetConnectionSync();
             switch (command) {
                 case TransactionCommand.Begin: {
                     syncConnection.BeginTransaction(out var error);
                     if (error != null) {
-                        return Result.Error(error.message);
+                        return new TransResult(error.message);
                     }
-                    return new TransactionResult();
+                    return new TransResult(command);;
                 }
                 case TransactionCommand.Commit: {
                     if (!syncConnection.EndTransaction("COMMIT", out var error)) {
-                        return Result.Error(error.message);
+                        return new TransResult(error.message);
                     }
-                    return new TransactionResult();
+                    return new TransResult(command);
                 }
                 case TransactionCommand.Rollback: {
                     if (!syncConnection.EndTransaction("ROLLBACK", out var error)) {
-                        return Result.Error(error.message);
+                        return new TransResult(error.message);
                     }
-                    return new TransactionResult();
+                    return new TransResult(command);
                 }
                 default:
-                    return Result.Error($"invalid transaction command {command}");
+                    return new TransResult($"invalid transaction command {command}");
             }
         }
     }

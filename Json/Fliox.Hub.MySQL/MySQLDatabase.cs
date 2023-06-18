@@ -71,10 +71,10 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             connectionPool.Push(connection);
         }
         
-        public override async Task<Result<TransactionResult>> Transaction(SyncContext syncContext, TransactionCommand command) {
+        public override async Task<TransResult> Transaction(SyncContext syncContext, TransactionCommand command) {
             var syncConnection = await syncContext.GetConnectionAsync();
             if (syncConnection is not SyncConnection connection) {
-                return new TransactionResult();
+                return new TransResult(syncConnection.Error.message);
             }
             var sql = command switch {
                 TransactionCommand.Begin    => "START TRANSACTION;",
@@ -82,13 +82,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 TransactionCommand.Rollback => "ROLLBACK;",
                 _                           => null
             };
-            if (sql == null) return Result.Error($"invalid transaction command {command}");
+            if (sql == null) return new TransResult($"invalid transaction command {command}");
             try {
                 await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
-                return new TransactionResult();
+                return new TransResult(command);
             }
             catch (MySqlException e) {
-                return Result.Error(e.Message);
+                return new TransResult(e.Message);
             }
         }
     }

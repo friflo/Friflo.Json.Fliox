@@ -153,7 +153,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             var command     = transaction?.command ?? TransactionCommand.Begin;
             var taskIndex   = context.task.intern.index;
-            return await context.syncContext.Transaction(command, taskIndex).ConfigureAwait(false);
+            var result      = await context.syncContext.Transaction(command, taskIndex).ConfigureAwait(false);
+            if (result.error == null) {
+                return new TransactionResult();
+            }
+            return Result.Error(result.error);
         }
 
         private static async Task<Result<HostCluster>> HostCluster (Param<Empty> param, MessageContext context) {

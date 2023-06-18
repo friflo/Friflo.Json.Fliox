@@ -181,13 +181,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        internal async Task<Result<TransactionResult>> Transaction(TransactionCommand command, int taskIndex) {
+        internal async Task<TransResult> Transaction(TransactionCommand command, int taskIndex) {
             var db = Database;
             switch (command)
             {
                 case TransactionCommand.Begin:
                     if (transaction != null) {
-                        return Result.Error("Transaction already started");
+                        return new TransResult("Transaction already started");
                     }
                     var result = await db.Transaction(this, TransactionCommand.Begin).ConfigureAwait(false);
                     transaction = new SyncTransaction(taskIndex);
@@ -195,7 +195,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 
                 case TransactionCommand.Commit:
                     if (transaction == null) {
-                        return Result.Error("Missing begin transaction");
+                        return new TransResult("Missing begin transaction");
                     }
                     bool success = true;
                     for (int index = transaction.taskIndex + 1; index < taskIndex; index++) {
@@ -213,13 +213,26 @@ namespace Friflo.Json.Fliox.Hub.Host
                    
                 case TransactionCommand.Rollback:
                     if (transaction == null) {
-                        return Result.Error("Missing begin transaction");
+                        return new TransResult("Missing begin transaction");
                     }
                     transaction = null;
                     return await db.Transaction(this, TransactionCommand.Rollback).ConfigureAwait(false);
             }
-            return Result.Error($"invalid transaction command: {command}");
+            return new TransResult($"invalid transaction command: {command}");
         } 
+    }
+    
+    public class TransResult {
+        public readonly string              error;
+        public readonly TransactionCommand  state;
+        
+        public TransResult(string error) {
+            this.error = error ?? throw new ArgumentNullException(nameof(error));
+        }
+        
+        public TransResult(TransactionCommand  state) {
+            this.state = state;
+        }
     }
     
     public interface IHost { }
