@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
@@ -34,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case MergeEntitiesResult  merge:    return merge.Error  != null || merge.errors  != null;
             }
             return false;
-        } 
+        }
     }
     
     public enum TransCommand {
@@ -53,6 +54,15 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         public TransResult(TransCommand  state) {
             this.state = state;
+        }
+        
+        public static TransactionResult CreateResult(TransCommand command) {
+            var executed = command switch {
+                TransCommand.Commit     => TransactionCommand.Commit,
+                TransCommand.Rollback   => TransactionCommand.Rollback,
+                _                       => throw new InvalidOperationException($"unexpected case: {command}")
+            };
+            return new TransactionResult { executed = executed };
         }
     }
 }

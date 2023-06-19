@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -232,7 +231,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (transResult.state == TransCommand.Commit) {
                 using (var pooled = pool.ObjectMapper.Get()) {
                     var writer      = pooled.instance.writer;
-                    var result      = new TransactionResult(TransCommand.Commit);
+                    var result      = TransResult.CreateResult(TransCommand.Commit);
                     var jsonResult  = writer.WriteAsValue(result);
                     response.tasks[beginTask] = new SendCommandResult { result = jsonResult };
                 }
