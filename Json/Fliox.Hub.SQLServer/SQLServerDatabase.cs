@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
         
         public override async Task<TransResult> Transaction(SyncContext syncContext, TransCommand command) {
-            var syncConnection = await syncContext.GetConnectionAsync();
+            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new TransResult(syncConnection.Error.message);
             }
