@@ -99,10 +99,10 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 return new TransResult(syncConnection.Error.message);
             }
             var sql = command switch {
-                TransCommand.Begin    => "BEGIN TRANSACTION;",
-                TransCommand.Commit   => "COMMIT;",
-                TransCommand.Rollback => "ROLLBACK;",
-                _                           => null
+                TransCommand.Begin      => "BEGIN TRANSACTION;",
+                TransCommand.Commit     => "COMMIT;",
+                TransCommand.Rollback   => "ROLLBACK;",
+                _                       => null
             };
             if (sql == null) return new TransResult($"invalid transaction command {command}");
             try {

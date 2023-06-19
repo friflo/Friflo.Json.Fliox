@@ -77,10 +77,10 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new TransResult(syncConnection.Error.message);
             }
             var sql = command switch {
-                TransCommand.Begin    => "START TRANSACTION;",
-                TransCommand.Commit   => "COMMIT;",
-                TransCommand.Rollback => "ROLLBACK;",
-                _                           => null
+                TransCommand.Begin      => "START TRANSACTION;",
+                TransCommand.Commit     => "COMMIT;",
+                TransCommand.Rollback   => "ROLLBACK;",
+                _                       => null
             };
             if (sql == null) return new TransResult($"invalid transaction command {command}");
             try {
