@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     if (error != null) {
                         return new TransResult(error.message);
                     }
-                    return new TransResult(command);;
+                    return new TransResult(command);
                 }
                 case TransCommand.Commit: {
                     if (!syncConnection.EndTransaction("COMMIT", out var error)) {

@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (sql == null) return new TransResult($"invalid transaction command {command}");
             try {
                 await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
-                return new TransResult(command);;
+                return new TransResult(command);
             }
             catch (NpgsqlException e) {
                 return new TransResult(e.Message);

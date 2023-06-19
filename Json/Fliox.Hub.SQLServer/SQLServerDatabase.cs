@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             if (sql == null) return new TransResult($"invalid transaction command {command}");
             try {
                 await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
-                return new TransResult(command);;
+                return new TransResult(command);
             }
             catch (SqlException e) {
                 return new TransResult(e.Message);
