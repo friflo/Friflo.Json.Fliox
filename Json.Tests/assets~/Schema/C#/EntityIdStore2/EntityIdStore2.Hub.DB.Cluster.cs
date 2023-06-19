@@ -48,6 +48,12 @@ public class ContainerStats {
 }
 
 public class TransactionResult {
+    TransactionCommand  executed;
+}
+
+public enum TransactionCommand {
+    Commit,
+    Rollback,
 }
 
 public class HostParam {

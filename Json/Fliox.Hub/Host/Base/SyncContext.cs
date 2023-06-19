@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -181,44 +182,69 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         internal async Task<TransResult> Transaction(TransCommand command, int taskIndex) {
-            var db = Database;
+            var db      = Database;
+            var trans   = transaction;
             switch (command)
             {
-                case TransCommand.Begin:
-                    if (transaction != null) {
+                case TransCommand.Begin: {
+                    if (trans != null) {
                         return new TransResult("Transaction already started");
                     }
-                    var result = await db.Transaction(this, TransCommand.Begin).ConfigureAwait(false);
                     transaction = new SyncTransaction(taskIndex);
-                    return result;
-                
-                case TransCommand.Commit:
-                    if (transaction == null) {
+                    return await db.Transaction(this, TransCommand.Begin).ConfigureAwait(false);
+                }
+                case TransCommand.Commit: {
+                    if (trans == null) {
                         return new TransResult("Missing begin transaction");
                     }
+                    transaction = null;
                     bool success = true;
-                    for (int index = transaction.taskIndex + 1; index < taskIndex; index++) {
+                    for (int index = trans.beginTask + 1; index < taskIndex; index++) {
                         var responseTask = response.tasks[index];
                         if (responseTask is TaskErrorResult) {
                             success = false;
                             break;
                         }
                     }
-                    transaction = null;
+                    TransResult result;
                     if (success) {
-                        return await db.Transaction(this, TransCommand.Commit).ConfigureAwait(false);    
+                        result = await db.Transaction(this, TransCommand.Commit).ConfigureAwait(false);
+                        if (result.error != null) {
+                            result = await db.Transaction(this, TransCommand.Rollback).ConfigureAwait(false);
+                        }
+                    } else {
+                        result = await db.Transaction(this, TransCommand.Rollback).ConfigureAwait(false);
                     }
-                    return await db.Transaction(this, TransCommand.Rollback).ConfigureAwait(false);
-                   
-                case TransCommand.Rollback:
-                    if (transaction == null) {
+                    UpdateTransactionBeginResult(trans.beginTask, result);
+                    return result;
+                }
+                case TransCommand.Rollback: {
+                    if (trans == null) {
                         return new TransResult("Missing begin transaction");
                     }
                     transaction = null;
-                    return await db.Transaction(this, TransCommand.Rollback).ConfigureAwait(false);
+                    var result = await db.Transaction(this, TransCommand.Rollback).ConfigureAwait(false);
+                    UpdateTransactionBeginResult(trans.beginTask, result);
+                    return result;
+                }
             }
             return new TransResult($"invalid transaction command: {command}");
-        } 
+        }
+        
+        private void UpdateTransactionBeginResult(int beginTask, TransResult transResult) {
+            if (transResult.error != null) {
+                response.tasks[beginTask] = new TaskErrorResult(TaskErrorType.CommandError, transResult.error);
+                return;
+            }
+            if (transResult.state == TransCommand.Commit) {
+                using (var pooled = pool.ObjectMapper.Get()) {
+                    var writer      = pooled.instance.writer;
+                    var result      = new TransactionResult(TransCommand.Commit);
+                    var jsonResult  = writer.WriteAsValue(result);
+                    response.tasks[beginTask] = new SendCommandResult { result = jsonResult };
+                }
+            }
+        }
     }
     
     public interface IHost { }

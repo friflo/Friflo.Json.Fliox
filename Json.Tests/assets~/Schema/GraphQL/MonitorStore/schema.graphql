@@ -265,11 +265,16 @@ input ContainerStatsInput {
 }
 
 type TransactionResult {
-    _: Boolean
+    executed : TransactionCommand!
 }
 
 input TransactionResultInput {
-    _: Boolean
+    executed : TransactionCommand!
+}
+
+enum TransactionCommand {
+    Commit
+    Rollback
 }
 
 type HostParam {

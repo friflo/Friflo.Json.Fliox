@@ -7,10 +7,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     internal sealed class SyncTransaction
     {
-        internal readonly   int         taskIndex;
+        internal readonly   int     beginTask;
         
-        internal SyncTransaction(int taskIndex) {
-            this.taskIndex     = taskIndex;
+        internal SyncTransaction(int beginTask) {
+            this.beginTask     = beginTask;
         }
     }
     

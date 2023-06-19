@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Friflo.Json.Fliox.Hub.Host.SQL;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
@@ -73,7 +74,22 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public override     string              ToString() => $"{name} - count: {count}";
     }
     
-    public sealed class TransactionResult {
+    public class TransactionResult {
+        public TransactionCommand executed;
+        
+        public TransactionResult() { }
+        public TransactionResult(TransCommand command) {
+            executed = command switch {
+                TransCommand.Commit     => TransactionCommand.Commit,
+                TransCommand.Rollback   => TransactionCommand.Rollback,
+                _                       => throw new InvalidOperationException($"unexpected case: {command}")
+            };
+        }
+    }
+
+    public enum TransactionCommand {
+        Commit,
+        Rollback,
     }
     
     public sealed class HostParam  {

@@ -4412,6 +4412,19 @@
             "name": "TransactionResult",
             "description": "",
             "fields": [
+                {
+                    "name": "executed",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "TransactionCommand"
+                        }
+                    }
+                }
             ],
             "interfaces": [
             ]
@@ -4421,6 +4434,34 @@
             "name": "TransactionResultInput",
             "description": "",
             "inputFields": [
+                {
+                    "name": "executed",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "TransactionCommand"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"ENUM",
+            "name": "TransactionCommand",
+            "description": "",
+            "enumValues": [
+                {
+                    "name": "Commit",
+                    "description": ""
+                },
+                {
+                    "name": "Rollback",
+                    "description": ""
+                }
             ]
         },
         {

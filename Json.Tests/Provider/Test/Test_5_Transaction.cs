@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -23,7 +24,7 @@ namespace Friflo.Json.Tests.Provider.Test
             client.testMutate.Create(new TestMutate { id = "op-1", val1 = 1, val2 = 1 });
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
             await client.SyncTasks();
-            NotNull(begin.Result);
+            AreEqual(TransactionCommand.Commit, begin.Result.executed);
             
             var count = client.testMutate.CountAll();
             await client.SyncTasks();
@@ -41,8 +42,8 @@ namespace Friflo.Json.Tests.Provider.Test
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
             var end = client.std.TransactionCommit();
             await client.SyncTasks();
-            NotNull(begin.Result);
-            NotNull(end.Result);
+            AreEqual(TransactionCommand.Commit, begin.Result.executed);
+            AreEqual(TransactionCommand.Commit, end.Result.executed);
             
             var count = client.testMutate.CountAll();
             await client.SyncTasks();
@@ -60,8 +61,8 @@ namespace Friflo.Json.Tests.Provider.Test
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
             var end = client.std.TransactionRollback();
             await client.SyncTasks();
-            NotNull(begin.Result);
-            NotNull(end.Result);
+            AreEqual(TransactionCommand.Rollback, begin.Result.executed);
+            AreEqual(TransactionCommand.Rollback, end.Result.executed);
             
             var count = client.testMutate.CountAll();
             await client.SyncTasks();

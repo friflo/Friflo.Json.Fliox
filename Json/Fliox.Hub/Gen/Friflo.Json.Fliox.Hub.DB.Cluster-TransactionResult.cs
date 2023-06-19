@@ -7,12 +7,18 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
 {
     static class Gen_TransactionResult
     {
+        private const int Gen_executed = 0;
 
         private static bool ReadField (ref TransactionResult obj, PropField field, ref Reader reader) {
+            bool success;
+            switch (field.genIndex) {
+                case Gen_executed: obj.executed = reader.ReadEnum (field, obj.executed, out success);  return success;
+            }
             return false;
         }
 
         private static void Write(ref TransactionResult obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
+            writer.WriteEnum (fields[Gen_executed], obj.executed, ref firstMember);
         }
     }
 }

@@ -154,8 +154,14 @@
         },
         "TransactionResult": {
             "properties": {
-
+                "executed": { "ref":  "TransactionCommand" }
             }
+        },
+        "TransactionCommand": {
+            "enum": [
+                "Commit",
+                "Rollback"
+            ]
         },
         "HostParam": {
             "properties": {

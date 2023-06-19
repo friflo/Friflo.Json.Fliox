@@ -74,9 +74,18 @@
         "TransactionResult": {
             "type": "object",
             "properties": {
-
+                "executed": { "$ref": "#/definitions/TransactionCommand" }
             },
+            "required": [
+                "executed"
+            ],
             "additionalProperties": false
+        },
+        "TransactionCommand": {
+            "enum": [
+                "Commit",
+                "Rollback"
+            ]
         },
         "HostParam": {
             "type": "object",

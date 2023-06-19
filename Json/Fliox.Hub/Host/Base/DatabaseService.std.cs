@@ -149,12 +149,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             var result = new DbStats { containers = containerStats.ToArray() };
             return result;
         }
-        
+
+        /// <summary>
+        /// The returned result will be exchanged by <see cref="SyncContext.UpdateTransactionBeginResult"/>
+        /// after execution of Begin or Rollback.
+        /// </summary>
         private static async Task<Result<TransactionResult>> TransactionBegin (Param<Empty> param, MessageContext context) {
             var taskIndex   = context.task.intern.index;
             var result      = await context.syncContext.Transaction(TransCommand.Begin, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
-                return new TransactionResult();
+                return new TransactionResult(TransCommand.Rollback);
             }
             return Result.Error(result.error);
         }
@@ -163,7 +167,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var taskIndex   = context.task.intern.index;
             var result      = await context.syncContext.Transaction(TransCommand.Commit, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
-                return new TransactionResult();
+                return new TransactionResult(result.state);
             }
             return Result.Error(result.error);
         }
@@ -172,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var taskIndex   = context.task.intern.index;
             var result      = await context.syncContext.Transaction(TransCommand.Rollback, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
-                return new TransactionResult();
+                return new TransactionResult(TransCommand.Rollback);
             }
             return Result.Error(result.error);
         }

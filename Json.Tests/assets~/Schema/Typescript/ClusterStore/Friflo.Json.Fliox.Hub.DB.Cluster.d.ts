@@ -121,7 +121,13 @@ export class ContainerStats {
 }
 
 export class TransactionResult {
+    executed  : TransactionCommand;
 }
+
+export type TransactionCommand =
+    | "Commit"
+    | "Rollback"
+;
 
 export class HostParam {
     memory?    : boolean | null;
