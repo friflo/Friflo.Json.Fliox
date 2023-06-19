@@ -9,7 +9,6 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using System.Data.SqlClient;
-using Friflo.Json.Fliox.Hub.DB.Cluster;
 using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
 
 namespace Friflo.Json.Fliox.Hub.SQLServer
