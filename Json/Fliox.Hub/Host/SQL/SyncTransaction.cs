@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
@@ -14,7 +15,17 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             this.beginTask     = beginTask;
         }
         
-        internal static bool IsTaskError(SyncTaskResult taskResult) {
+        internal static bool HasTaskErrors(List<SyncTaskResult> taskResults, int from, int to) {
+            for (int index = from; index < to; index++) {
+                var taskResult = taskResults[index];
+                if (IsTaskError(taskResult)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        private static bool IsTaskError(SyncTaskResult taskResult) {
             switch (taskResult) {
                 case TaskErrorResult:               return true;
                 case UpsertEntitiesResult upsert:   return upsert.Error != null || upsert.errors != null;

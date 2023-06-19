@@ -198,14 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         return new TransResult("Missing begin transaction");
                     }
                     transaction = null;
-                    bool success = true;
-                    for (int index = trans.beginTask + 1; index < taskIndex; index++) {
-                        var taskResult = response.tasks[index];
-                        if (SyncTransaction.IsTaskError(taskResult)) {
-                            success = false;
-                            break;
-                        }
-                    }
+                    bool success = !SyncTransaction.HasTaskErrors(response.tasks, trans.beginTask + 1, taskIndex);
                     TransResult result;
                     if (success) {
                         result = await db.Transaction(this, TransCommand.Commit).ConfigureAwait(false);
