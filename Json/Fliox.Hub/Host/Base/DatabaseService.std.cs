@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
+using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable once CheckNamespace

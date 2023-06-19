@@ -222,25 +222,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         } 
     }
     
-    public enum TransCommand {
-        Begin       = 0,
-        Commit      = 1,
-        Rollback    = 2,
-    }
-    
-    public sealed class TransResult {
-        public readonly string          error;
-        public readonly TransCommand    state;
-        
-        public TransResult(string error) {
-            this.error = error ?? throw new ArgumentNullException(nameof(error));
-        }
-        
-        public TransResult(TransCommand  state) {
-            this.state = state;
-        }
-    }
-    
     public interface IHost { }
     
     public interface IHttpHost : IHost {
