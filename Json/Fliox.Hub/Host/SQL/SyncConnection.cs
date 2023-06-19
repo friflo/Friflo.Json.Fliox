@@ -34,13 +34,4 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             Error = new TaskExecuteError(exception.Message);
         }
     }
-    
-    internal sealed class SyncTransaction
-    {
-        internal readonly   int         taskIndex;
-        
-        internal SyncTransaction(int taskIndex) {
-            this.taskIndex     = taskIndex;
-        }
-    }
 }
