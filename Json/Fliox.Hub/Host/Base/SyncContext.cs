@@ -200,8 +200,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                     transaction = null;
                     bool success = true;
                     for (int index = trans.beginTask + 1; index < taskIndex; index++) {
-                        var responseTask = response.tasks[index];
-                        if (responseTask is TaskErrorResult) {
+                        var taskResult = response.tasks[index];
+                        if (SyncTransaction.IsTaskError(taskResult)) {
                             success = false;
                             break;
                         }

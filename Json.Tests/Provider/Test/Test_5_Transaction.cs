@@ -74,6 +74,22 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestTransaction_Commit_Rollback(string db) {
+            var client  = await GetClient(db);
+            client.testMutate.DeleteAll();
+            client.testMutate.Create(new TestMutate { id = "op-1", val1 = 1, val2 = 1 });
+            await client.SyncTasks();
+            
+            client      = await GetClient(db);
+            var begin   = client.std.TransactionBegin();
+            var create  = client.testMutate.Create(new TestMutate { id = "op-1", val1 = 2, val2 = 2 });
+            await client.TrySyncTasks();
+
+            IsFalse(create.Success);
+            AreEqual(TransactionCommand.Rollback, begin.Result.executed);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestTransaction_Commit_Error(string db) {
             var client  = await GetClient(db);
             

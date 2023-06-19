@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
@@ -12,6 +13,17 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal SyncTransaction(int beginTask) {
             this.beginTask     = beginTask;
         }
+        
+        internal static bool IsTaskError(SyncTaskResult taskResult) {
+            switch (taskResult) {
+                case TaskErrorResult:               return true;
+                case UpsertEntitiesResult upsert:   return upsert.Error != null || upsert.errors != null;
+                case CreateEntitiesResult create:   return create.Error != null || create.errors != null;
+                case DeleteEntitiesResult delete:   return delete.Error != null || delete.errors != null;
+                case MergeEntitiesResult  merge:    return merge.Error  != null || merge.errors  != null;
+            }
+            return false;
+        } 
     }
     
     public enum TransCommand {
