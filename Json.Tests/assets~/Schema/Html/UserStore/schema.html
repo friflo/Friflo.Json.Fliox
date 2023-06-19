@@ -452,7 +452,9 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
             <td><cmd>std.TransactionBegin</cmd></td>
             <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'>TransactionResult</a></sig></td>
             <td><oas><a href='../open-api.html#/commands/post__cmd_std_TransactionBegin' target='_blank' title='open std.TransactionBegin API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
-            <td><docs>Starts a transaction containing all subsequent <b>SyncTask</b>'s</docs></td>
+            <td><docs>Begin a transaction containing all subsequent <b>SyncTask</b>'s.<br/>
+The transaction ends by either calling <b>SyncTasks</b> or explicit by
+<b>TransactionCommit</b> / <b>TransactionRollback</b></docs></td>
         </tr>
         <tr>
             <td><cmd>std.TransactionCommit</cmd></td>

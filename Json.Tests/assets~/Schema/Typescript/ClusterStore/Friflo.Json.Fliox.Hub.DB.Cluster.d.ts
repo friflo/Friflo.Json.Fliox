@@ -29,7 +29,11 @@ export interface ClusterStore {
     ["std.Schema"]                  () : DbSchema;
     /** Return the number of entities of all containers (or the given container) of the database */
     ["std.Stats"]                   (param: string | null) : DbStats;
-    /** Starts a transaction containing all subsequent **SyncTask**'s */
+    /**
+     * Begin a transaction containing all subsequent **SyncTask**'s.  
+     * The transaction ends by either calling **SyncTasks** or explicit by
+     * **TransactionCommit** / **TransactionRollback**
+     */
     ["std.TransactionBegin"]        () : TransactionResult;
     /** Commit a transaction started previously with **TransactionBegin** */
     ["std.TransactionCommit"]       () : TransactionResult;

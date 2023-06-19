@@ -1085,7 +1085,7 @@
                 },
                 {
                     "name": "std_TransactionBegin",
-                    "description": "/** Starts a transaction containing all subsequent **SyncTask**'s */\n",
+                    "description": "/**\n * Begin a transaction containing all subsequent **SyncTask**'s.  \n * The transaction ends by either calling **SyncTasks** or explicit by\n * **TransactionCommit** / **TransactionRollback**\n */\n",
                     "args": [
                     ],
                     "type": {

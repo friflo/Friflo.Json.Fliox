@@ -52,7 +52,7 @@
                 "std.Stats":                      { "param": { "type": ["string", "null"] }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" },
                     "description": "Return the number of entities of all containers (or the given container) of the database" },
                 "std.TransactionBegin":           { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/TransactionResult" },
-                    "description": "Starts a transaction containing all subsequent <b>SyncTask</b>'s" },
+                    "description": "Begin a transaction containing all subsequent <b>SyncTask</b>'s.<br/>\nThe transaction ends by either calling <b>SyncTasks</b> or explicit by\n<b>TransactionCommit</b> / <b>TransactionRollback</b>" },
                 "std.TransactionCommit":          { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/TransactionResult" },
                     "description": "Commit a transaction started previously with <b>TransactionBegin</b>" },
                 "std.TransactionRollback":        { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/TransactionResult" },
