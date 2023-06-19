@@ -107,7 +107,12 @@ export class ContainerStats {
     count  : int64;
 }
 
+/** return the execution result performed by a transaction. */
 export class TransactionResult {
+    /**
+     * The execution performed by the transaction.  
+     * In case any task in the transaction failed the transaction performs a **Rollback**
+     */
     executed  : TransactionCommand;
 }
 

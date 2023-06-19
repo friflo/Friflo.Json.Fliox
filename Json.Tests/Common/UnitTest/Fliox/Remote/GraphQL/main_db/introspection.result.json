@@ -4410,11 +4410,11 @@
         {
             "kind":"OBJECT",
             "name": "TransactionResult",
-            "description": "",
+            "description": "/** return the execution result performed by a transaction. */\n",
             "fields": [
                 {
                     "name": "executed",
-                    "description": "",
+                    "description": "    /**\n     * The execution performed by the transaction.  \n     * In case any task in the transaction failed the transaction performs a **Rollback**\n     */\n",
                     "args": [
                     ],
                     "type": {
@@ -4432,11 +4432,11 @@
         {
             "kind":"INPUT_OBJECT",
             "name": "TransactionResultInput",
-            "description": "",
+            "description": "/** return the execution result performed by a transaction. */\n",
             "inputFields": [
                 {
                     "name": "executed",
-                    "description": "",
+                    "description": "    /**\n     * The execution performed by the transaction.  \n     * In case any task in the transaction failed the transaction performs a **Rollback**\n     */\n",
                     "args": [
                     ],
                     "type": {

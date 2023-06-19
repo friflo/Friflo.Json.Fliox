@@ -768,10 +768,14 @@ Each JSON Schema is identified by its unique path</docs></td>
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'>TransactionResult</a>
         <keyword>class</keyword>
     </h3>
+    <desc>return the execution result performed by a transaction.
+    </desc>
     <table class='fields'>
         <tr>
             <td><field>executed</field></td>
             <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'>TransactionCommand</a></type></td>
+            <td><docs>The execution performed by the transaction.<br/>
+In case any task in the transaction failed the transaction performs a <b>Rollback</b></docs></td>
         </tr>
     </table>
     </div>
