@@ -231,7 +231,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (transResult.state == TransCommand.Commit) {
                 using (var pooled = pool.ObjectMapper.Get()) {
                     var writer      = pooled.instance.writer;
-                    var result      = TransResult.CreateResult(TransCommand.Commit);
+                    var result      = SyncTransaction.CreateResult(TransCommand.Commit);
                     var jsonResult  = writer.WriteAsValue(result);
                     response.tasks[beginTask] = new SendCommandResult { result = jsonResult };
                 }

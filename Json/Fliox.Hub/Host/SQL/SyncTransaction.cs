@@ -36,6 +36,15 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
             return false;
         }
+        
+        internal static TransactionResult CreateResult(TransCommand command) {
+            var executed = command switch {
+                TransCommand.Commit     => TransactionCommand.Commit,
+                TransCommand.Rollback   => TransactionCommand.Rollback,
+                _                       => throw new InvalidOperationException($"unexpected case: {command}")
+            };
+            return new TransactionResult { executed = executed };
+        }
     }
     
     public enum TransCommand {
@@ -54,15 +63,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         public TransResult(TransCommand  state) {
             this.state = state;
-        }
-        
-        public static TransactionResult CreateResult(TransCommand command) {
-            var executed = command switch {
-                TransCommand.Commit     => TransactionCommand.Commit,
-                TransCommand.Rollback   => TransactionCommand.Rollback,
-                _                       => throw new InvalidOperationException($"unexpected case: {command}")
-            };
-            return new TransactionResult { executed = executed };
         }
     }
 }

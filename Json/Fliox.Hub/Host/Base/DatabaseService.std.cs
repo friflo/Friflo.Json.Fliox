@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var taskIndex   = context.task.intern.index;
             var result      = await context.syncContext.Transaction(TransCommand.Begin, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
-                return TransResult.CreateResult(TransCommand.Rollback);
+                return SyncTransaction.CreateResult(TransCommand.Rollback);
             }
             return Result.Error(result.error);
         }
@@ -167,7 +167,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var taskIndex   = context.task.intern.index;
             var result      = await context.syncContext.Transaction(TransCommand.Commit, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
-                return TransResult.CreateResult(result.state);
+                return SyncTransaction.CreateResult(result.state);
             }
             return Result.Error(result.error);
         }
@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var taskIndex   = context.task.intern.index;
             var result      = await context.syncContext.Transaction(TransCommand.Rollback, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
-                return TransResult.CreateResult(TransCommand.Rollback);
+                return SyncTransaction.CreateResult(TransCommand.Rollback);
             }
             return Result.Error(result.error);
         }
