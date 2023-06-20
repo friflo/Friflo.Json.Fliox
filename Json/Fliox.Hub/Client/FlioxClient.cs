@@ -36,68 +36,71 @@ namespace Friflo.Json.Fliox.Hub.Client
     [TypeMapper(typeof(FlioxClientMatcher))]
     public partial class FlioxClient : IDisposable, IResetable, ILogSource
     {
-    #region - members   
-        // Keep all FlioxClient fields in ClientIntern (_intern) to enhance debugging overview.
-        // Reason:  FlioxClient is extended by application and add multiple EntitySet fields or properties.
-        //          This ensures focus on fields & properties relevant for an application which are:
-        //          Tasks, UserInfo & EntitySet<,> fields
-        // ReSharper disable once InconsistentNaming
-                        internal readonly   ClientReadOnly         _readonly;
-
-        // ReSharper disable once InconsistentNaming
-                        internal            ClientIntern           _intern;        // Use intern struct as first field
-
-        [Browse(Never)] internal readonly   EntitySet[]             entitySets;
-
+    #region - members public
         /// <summary> List of tasks created by its <see cref="FlioxClient"/> methods. These tasks are executed when calling <see cref="SyncTasks"/> </summary>
-                        public              IReadOnlyList<SyncTask> Tasks           => GetTasks();
-
-        // exposed only for access in debugger - not used by internally
-        // ReSharper disable once UnusedMember.Local
-                        private             FlioxHub                Hub             => _readonly.hub;
-                        
-        [Browse(Never)] internal            bool                    writePretty;
-
-        [Browse(Never)] internal            bool                    writeNull;
+                        public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
 
         /// <summary> name of the database the client is attached to </summary>
-        [Browse(Never)] public              string                  DatabaseName    => _readonly.database;
-
-        // ReSharper disable once InconsistentNaming
-        [Browse(Never)] private             StdCommands        _std;
+        [Browse(Never)] public      string                      DatabaseName    => _readonly.database;
 
         /// <summary> access to standard database commands - <see cref="StdCommands"/> </summary>
         // ReSharper disable once InconsistentNaming
-        [Browse(Never)] public              StdCommands         std => _std ??= new StdCommands(this);
+        [Browse(Never)] public      StdCommands                 std             => _std ??= new StdCommands(this);
 
-        /// <summary> Used to send typed messages / commands by classes extending <see cref="FlioxClient"/></summary>
-        [Browse(Never)] protected readonly  SendTask            send;
-        
         [Browse(Never)] public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
 
         /// <summary> general client information: attached database, the number of cached entities and scheduled <see cref="Tasks"/> </summary>
         [Browse(Never)] public      ClientInfo                  ClientInfo      => new ClientInfo(this); 
 
         /// <summary> If true the serialization of entities to JSON is prettified </summary>
-        [Browse(Never)] public      bool                        WritePretty { get => writePretty; set => SetWritePretty(value); }
+        [Browse(Never)] public      bool                        WritePretty     { get => writePretty; set => SetWritePretty(value); }
 
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>        
-        [Browse(Never)] public      bool                        WriteNull   { get => writeNull;   set => SetWriteNull(value); }
+        [Browse(Never)] public      bool                        WriteNull       { get => writeNull;   set => SetWriteNull(value); }
 
-        [Browse(Never)] internal    readonly   Type             type;
-
-        [Browse(Never)] internal    ObjectPool<ObjectMapper>    ObjectMapper            => _readonly.pool.ObjectMapper;
-
-        [Browse(Never)] public      IHubLogger                  Logger                  => _readonly.hubLogger;
+        [Browse(Never)] public      IHubLogger                  Logger          => _readonly.hubLogger;
         
         /// <summary> Return the number of calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
-                        public      int                         GetSyncCount()          => _intern.syncCount;
+                        public      int                         GetSyncCount()  => _intern.syncCount;
 
         /// <summary> Return the number of pending <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> calls </summary>
                         public      int                         GetPendingSyncCount()   => _readonly.pendingSyncs.Count;
         
-        public override             string                      ToString()              => FormatToString();
+        /// <summary> Used to send typed messages / commands by classes extending <see cref="FlioxClient"/></summary>
+        [Browse(Never)] protected readonly  SendTask            send;
+
+        public override             string                      ToString()      => FormatToString();
         
+        #endregion
+        
+    #region - members internal
+        // Keep all FlioxClient fields in ClientIntern (_intern) to enhance debugging overview.
+        // Reason:  FlioxClient is extended by application and add multiple EntitySet fields or properties.
+        //          This ensures focus on fields & properties relevant for an application which are:
+        //          Tasks, UserInfo & EntitySet<,> fields
+        // ReSharper disable once InconsistentNaming
+                        internal readonly   ClientReadOnly  _readonly;
+
+        // ReSharper disable once InconsistentNaming
+                        internal            ClientIntern    _intern;        // Use intern struct as first field
+
+        [Browse(Never)] internal readonly   EntitySet[]     entitySets;
+        
+        // exposed only for access in debugger - not used by internally
+        // ReSharper disable once UnusedMember.Local
+                        private             FlioxHub        Hub             => _readonly.hub;
+                        
+        [Browse(Never)] internal            bool            writePretty;
+
+        [Browse(Never)] internal            bool            writeNull;
+
+        // ReSharper disable once InconsistentNaming
+        [Browse(Never)] private             StdCommands     _std;
+
+        [Browse(Never)] internal readonly   Type            type;
+
+        [Browse(Never)] internal ObjectPool<ObjectMapper>   ObjectMapper            => _readonly.pool.ObjectMapper;
+
         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
         private static class Static {

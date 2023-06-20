@@ -36,37 +36,41 @@ namespace Friflo.Json.Fliox.Hub.Client
     [TypeMapper(typeof(EntitySetMatcher))]
     public readonly struct EntitySet<TKey, T> where T : class
     {
-    #region - Members    
-                        private readonly FlioxClient                client;
-
-        [Browse(Never)] private readonly int                        index;
-        
+    #region - Members public
         /// <summary> If true the serialization of entities to JSON is prettified </summary>
-        [Browse(Never)] public          bool                        WritePretty { get => GetInstance().intern.writePretty;   set => GetInstance().intern.writePretty = value; }
+        [Browse(Never)] public  bool                    WritePretty { get => GetInstance().intern.writePretty;   set => GetInstance().intern.writePretty = value; }
 
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
-        [Browse(Never)] public          bool                        WriteNull   { get => GetInstance().intern.writeNull;     set => GetInstance().intern.writeNull   = value; }
+        [Browse(Never)] public  bool                    WriteNull   { get => GetInstance().intern.writeNull;     set => GetInstance().intern.writeNull   = value; }
         
         /// <summary>
         /// Utility methods for type safe key conversion and generic <typeparamref name="TKey"/> access for entities of type <typeparamref name="T"/>
         /// </summary>
-        [Browse(Never)] public          SetUtils<TKey,T>            Utils       => Static.SetUtils;
+        [Browse(Never)] public  SetUtils<TKey,T>        Utils       => Static.SetUtils;
         
         /// <summary> List of tasks created by its <see cref="EntitySet{TKey,T}"/> methods. These tasks are executed when calling <see cref="FlioxClient.SyncTasks"/> </summary>
         //  Not used internally 
-                        public          IReadOnlyList<SyncTask>     Tasks       => GetInstance().syncSet?.tasks;
+                        public  IReadOnlyList<SyncTask> Tasks       => GetInstance().syncSet?.tasks;
         
         /// <summary> Provide access to the <see cref="LocalEntities{TKey,T}"/> tracked by the <see cref="EntitySet{TKey,T}"/> </summary>
-                        public          LocalEntities<TKey,T>       Local       => GetInstance().Local;
+                        public  LocalEntities<TKey,T>   Local       => GetInstance().Local;
         
-                        private         EntitySetInstance<TKey, T>  Instance    => (EntitySetInstance<TKey, T>)client.entitySets[index];
+                        public  string                  Name        => client._readonly.entityInfos[index].container;
                         
-                        public          string                      Name        => client._readonly.entityInfos[index].container;
-                        
-        [Browse(Never)] public          ShortString                 NameShort   => client._readonly.entityInfos[index].containerShort;
+        [Browse(Never)] public  ShortString             NameShort   => client._readonly.entityInfos[index].containerShort;
 
-                        public override string                      ToString()  => GetString();
+                        public  override string         ToString()  => GetString();
+        #endregion
+                        
+    #region - Members internal
+                        private readonly FlioxClient                client;
+
+        [Browse(Never)] private readonly int                        index;
+
+        private         EntitySetInstance<TKey, T>  Instance    => (EntitySetInstance<TKey, T>)client.entitySets[index];
+                        
         
+                        
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
         private static class Static  {
             internal static  readonly   EntityKeyT<TKey, T>         EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
