@@ -121,8 +121,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// </summary>
         [Ignore]    public  EntityValue[]           entities;
         
-        [Ignore]    public  TaskExecuteError        Error { get; set; }
-        internal override   TaskType                TaskType => TaskType.read;
+        [Ignore]    public  TaskExecuteError        Error       { get; set; }
+        internal override   TaskType                TaskType    => TaskType.read;
+        internal override   bool                    Failed      => Error != null;
         
         /// <summary>
         /// Validate all <see cref="EntityValue.value"/>'s in the result set.

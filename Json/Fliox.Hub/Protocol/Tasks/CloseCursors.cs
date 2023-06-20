@@ -69,6 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class CloseCursorsResult : SyncTaskResult
     {
         public              int             count;
-        internal override   TaskType        TaskType => TaskType.closeCursors;
+        internal override   bool            Failed      => false;
+        internal override   TaskType        TaskType    => TaskType.closeCursors;
     }
 }

@@ -171,6 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 
         
         internal override   TaskType                TaskType    => TaskType.query;
+        internal override   bool                    Failed      => Error != null;
         public   override   string                  ToString()  => $"(container: {container})";
     }
     

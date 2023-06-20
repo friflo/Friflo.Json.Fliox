@@ -75,8 +75,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Ignore]        public  TaskExecuteError    Error { get; set; }
 
         
-        internal override   TaskType                TaskType => TaskType.aggregate;
-        public   override   string                  ToString() => $"(container: {container})";
+        internal override   TaskType                TaskType    => TaskType.aggregate;
+        internal override   bool                    Failed      => Error != null;
+        public   override   string                  ToString()  => $"(container: {container})";
     }
     
     /// <summary>

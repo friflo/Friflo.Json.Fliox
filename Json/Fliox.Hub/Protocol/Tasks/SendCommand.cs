@@ -61,6 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         public              JsonValue       result;
 
-        internal override   TaskType        TaskType => TaskType.command;
+        internal override   TaskType        TaskType    => TaskType.command;
+        internal override   bool            Failed      => false;
     }
 }

@@ -20,8 +20,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>stacktrace in case the error <see cref="type"/> is a <see cref="TaskErrorType.UnhandledException"/></summary>
                     public      string          stacktrace;
 
-        internal override       TaskType        TaskType => TaskType.error;
-        public   override       string          ToString() => $"type: {type}, message: {message}";
+        internal override       TaskType        TaskType    => TaskType.error;
+        internal override       bool            Failed      => true;
+        public   override       string          ToString()  => $"type: {type}, message: {message}";
         
         public TaskErrorResult() {}
         

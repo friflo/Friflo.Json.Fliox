@@ -70,7 +70,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class SubscribeChangesResult : SyncTaskResult
     {
-        internal override   TaskType    TaskType => TaskType.subscribeChanges;
+        internal override   TaskType    TaskType    => TaskType.subscribeChanges;
+        internal override   bool        Failed      => false;
     }
     
 

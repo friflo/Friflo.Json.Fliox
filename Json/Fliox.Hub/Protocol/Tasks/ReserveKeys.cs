@@ -76,8 +76,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
                     public  ReservedKeys?       keys;
         
-        [Ignore]    public  TaskExecuteError    Error { get; set; }
-        internal override   TaskType            TaskType => TaskType.reserveKeys;
+        [Ignore]    public  TaskExecuteError    Error       { get; set; }
+        internal override   TaskType            TaskType    => TaskType.reserveKeys;
+        internal override   bool                Failed      => Error != null;
     }
     
     /// <summary>

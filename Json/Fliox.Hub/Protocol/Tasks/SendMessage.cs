@@ -91,7 +91,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class SendMessageResult : SyncMessageResult
     {
-        internal override   TaskType        TaskType => TaskType.message;
+        internal override   TaskType        TaskType    => TaskType.message;
+        internal override   bool            Failed      => false;
         
         public static SyncMessageResult Create(SyncContext syncContext) {
             return syncContext.syncPools?.messageResultPool.Create() ?? new SendMessageResult();

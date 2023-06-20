@@ -19,23 +19,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal static bool HasTaskErrors(List<SyncTaskResult> taskResults, int from, int to) {
             for (int index = from; index < to; index++) {
                 var taskResult = taskResults[index];
-                if (IsTaskError(taskResult)) {
+                if (taskResult.Failed) {
                     return true;
                 }
             }
             return false;
         }
         
-        private static bool IsTaskError(SyncTaskResult taskResult) {
-            switch (taskResult) {
-                case TaskErrorResult:               return true;
-                case UpsertEntitiesResult upsert:   return upsert.Error != null || upsert.errors != null;
-                case CreateEntitiesResult create:   return create.Error != null || create.errors != null;
-                case DeleteEntitiesResult delete:   return delete.Error != null || delete.errors != null;
-                case MergeEntitiesResult  merge:    return merge.Error  != null || merge.errors  != null;
-            }
-            return false;
-        }
         
         internal static TransactionResult CreateResult(TransCommand command) {
             var executed = command switch {

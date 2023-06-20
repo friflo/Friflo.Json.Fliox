@@ -117,10 +117,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class CreateEntitiesResult : SyncTaskResult, ITaskResultError
     {
-        [Ignore]    public TaskExecuteError    Error { get; set; }
+        [Ignore]    public  TaskExecuteError    Error { get; set; }
         /// <summary>list of entity errors failed to create</summary>
-                    public List<EntityError>   errors;
+                    public  List<EntityError>   errors;
         
-        internal override  TaskType            TaskType => TaskType.create;
+        internal override   TaskType            TaskType    => TaskType.create;
+        internal override   bool                Failed      => Error != null || errors != null;
     }
 }

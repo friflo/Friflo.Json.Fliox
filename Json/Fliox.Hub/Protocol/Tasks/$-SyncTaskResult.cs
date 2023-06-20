@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public abstract class SyncTaskResult
     {
         internal abstract TaskType          TaskType { get; }
+        internal abstract bool              Failed   { get; }
     }
     
     // ReSharper disable InconsistentNaming

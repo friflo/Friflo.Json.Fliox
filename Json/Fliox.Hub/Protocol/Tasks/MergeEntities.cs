@@ -98,6 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>list of entity errors failed to patch</summary>
                     public List<EntityError>    errors;
         
-        internal override  TaskType             TaskType => TaskType.merge;
+        internal override  TaskType             TaskType    => TaskType.merge;
+        internal override   bool                Failed      => Error != null || errors != null;
     }
 }

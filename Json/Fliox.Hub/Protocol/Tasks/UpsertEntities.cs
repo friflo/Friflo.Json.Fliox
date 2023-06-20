@@ -124,6 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return result;
         }
 
-        internal override   TaskType            TaskType => TaskType.upsert;
+        internal override   TaskType            TaskType    => TaskType.upsert;
+        internal override   bool                Failed      => Error != null || errors != null;
     }
 }
