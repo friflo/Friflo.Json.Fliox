@@ -38,10 +38,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
     #region - Members    
                         private readonly FlioxClient                client;
+
         [Browse(Never)] private readonly int                        index;
         
         /// <summary> If true the serialization of entities to JSON is prettified </summary>
         [Browse(Never)] public          bool                        WritePretty { get => GetInstance().intern.writePretty;   set => GetInstance().intern.writePretty = value; }
+
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
         [Browse(Never)] public          bool                        WriteNull   { get => GetInstance().intern.writeNull;     set => GetInstance().intern.writeNull   = value; }
         
@@ -60,6 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         private         EntitySetInstance<TKey, T>  Instance    => (EntitySetInstance<TKey, T>)client.entitySets[index];
                         
                         public          string                      Name        => client._readonly.entityInfos[index].container;
+                        
         [Browse(Never)] public          ShortString                 NameShort   => client._readonly.entityInfos[index].containerShort;
 
                         public override string                      ToString()  => GetString();

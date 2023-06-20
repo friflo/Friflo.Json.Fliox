@@ -42,17 +42,22 @@ namespace Friflo.Json.Fliox.Hub.Client
         //          This ensures focus on fields & properties relevant for an application which are:
         //          Tasks, UserInfo & EntitySet<,> fields
         // ReSharper disable once InconsistentNaming
-                        internal readonly   ClientReadOnly          _readonly;
+                        internal readonly   ClientReadOnly         _readonly;
+
         // ReSharper disable once InconsistentNaming
-                        internal            ClientIntern            _intern;        // Use intern struct as first field
+                        internal            ClientIntern           _intern;        // Use intern struct as first field
+
         [Browse(Never)] internal readonly   EntitySet[]             entitySets;
+
         /// <summary> List of tasks created by its <see cref="FlioxClient"/> methods. These tasks are executed when calling <see cref="SyncTasks"/> </summary>
                         public              IReadOnlyList<SyncTask> Tasks           => GetTasks();
+
         // exposed only for access in debugger - not used by internally
         // ReSharper disable once UnusedMember.Local
                         private             FlioxHub                Hub             => _readonly.hub;
                         
         [Browse(Never)] internal            bool                    writePretty;
+
         [Browse(Never)] internal            bool                    writeNull;
 
         /// <summary> name of the database the client is attached to </summary>
@@ -60,6 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         // ReSharper disable once InconsistentNaming
         [Browse(Never)] private             StdCommands        _std;
+
         /// <summary> access to standard database commands - <see cref="StdCommands"/> </summary>
         // ReSharper disable once InconsistentNaming
         [Browse(Never)] public              StdCommands         std => _std ??= new StdCommands(this);
@@ -68,18 +74,25 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)] protected readonly  SendTask            send;
         
         [Browse(Never)] public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
+
         /// <summary> general client information: attached database, the number of cached entities and scheduled <see cref="Tasks"/> </summary>
         [Browse(Never)] public      ClientInfo                  ClientInfo      => new ClientInfo(this); 
+
         /// <summary> If true the serialization of entities to JSON is prettified </summary>
         [Browse(Never)] public      bool                        WritePretty { get => writePretty; set => SetWritePretty(value); }
-        /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>
+
+        /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>        
         [Browse(Never)] public      bool                        WriteNull   { get => writeNull;   set => SetWriteNull(value); }
+
         [Browse(Never)] internal    readonly   Type             type;
+
         [Browse(Never)] internal    ObjectPool<ObjectMapper>    ObjectMapper            => _readonly.pool.ObjectMapper;
+
         [Browse(Never)] public      IHubLogger                  Logger                  => _readonly.hubLogger;
         
         /// <summary> Return the number of calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
                         public      int                         GetSyncCount()          => _intern.syncCount;
+
         /// <summary> Return the number of pending <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> calls </summary>
                         public      int                         GetPendingSyncCount()   => _readonly.pendingSyncs.Count;
         
