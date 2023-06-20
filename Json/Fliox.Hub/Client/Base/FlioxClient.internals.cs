@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public partial class FlioxClient
     {
+    #region - internal methods
         internal EntitySet  GetSetByName    (in ShortString name)                    => _intern.SetByName[name];
         internal bool       TryGetSetByName (in ShortString name, out EntitySet set) => _intern.SetByName.TryGetValue(name, out set);
         
@@ -509,5 +510,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                     break;
             }
         }
+        #endregion
     }
 }
