@@ -3,7 +3,7 @@
 
 using System;
 using System.Web;
-using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static Friflo.Json.Fliox.Hub.Remote.Rest.RestRequestType;

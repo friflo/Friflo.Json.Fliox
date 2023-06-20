@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -15,6 +14,30 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
+    /// Should not be public. commands are prefix with
+    /// <b>std.*</b>
+    internal static class Std  {
+        // --- database
+        public const string Echo                = "std.Echo";
+        public const string Delay               = "std.Delay";
+        public const string Containers          = "std.Containers";
+        public const string Messages            = "std.Messages";
+        public const string Schema              = "std.Schema";
+        public const string Stats               = "std.Stats";
+        public const string TransactionBegin    = "std.TransactionBegin";
+        public const string TransactionCommit   = "std.TransactionCommit";
+        public const string TransactionRollback = "std.TransactionRollback";
+        
+        public const string Client              = "std.Client";
+
+        // --- host
+        public const string HostInfo            = "std.Host";
+        public const string HostCluster         = "std.Cluster";
+        
+        // --- user
+        public const string User                = "std.User";
+    }
+    
     public partial class DatabaseService
     {
         // ------------------------------ std command handler methods ------------------------------
