@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     [TypeMapper(typeof(EntitySetMatcher))]
     public readonly struct EntitySet<TKey, T> where T : class
     {
-    #region - Members public
+    #region - public properties
         /// <summary> If true the serialization of entities to JSON is prettified </summary>
         [Browse(Never)] public  bool                    WritePretty { get => GetInstance().intern.writePretty;   set => GetInstance().intern.writePretty = value; }
 
@@ -62,13 +62,12 @@ namespace Friflo.Json.Fliox.Hub.Client
                         public  override string         ToString()  => GetString();
         #endregion
                         
-    #region - Members internal
+    #region - internal fields 
                         private readonly FlioxClient                client;
 
         [Browse(Never)] private readonly int                        index;
 
-        private         EntitySetInstance<TKey, T>  Instance    => (EntitySetInstance<TKey, T>)client.entitySets[index];
-                        
+                        private         EntitySetInstance<TKey, T>  Instance    => (EntitySetInstance<TKey, T>)client.entitySets[index];
         
                         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
@@ -92,29 +91,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.client = client;
             this.index  = info.index;
         }
-        
-        private string GetString() {
-            var instance = Instance;
-            if (instance == null) {
-                var container = client._readonly.entityInfos[index].container;
-                return new SetInfo(container).ToString();
-            }
-            return instance.SetInfo.ToString();
-        }
-
-        internal EntitySetInstance<TKey, T> GetInstance() {
-            var instance = client.entitySets[index];
-            if (instance != null) {
-                return (EntitySetInstance<TKey,T>)instance;
-            }
-            ref var entityInfo = ref client._readonly.entityInfos[index];
-            var newInstance = (EntitySetInstance<TKey,T>)entityInfo.containerMember.CreateInstance(entityInfo.container, client);
-            client.entitySets[index] = newInstance;
-            client._intern.SetByName[entityInfo.containerShort] = newInstance;
-            return newInstance;
-        }
         #endregion
-
+        
     #region - Read
         /// <summary>
         /// Create a <see cref="ReadTask{TKey,T}"/> used to read entities <b>by id</b> added with <see cref="ReadTask{TKey,T}.Find"/> subsequently
@@ -625,6 +603,29 @@ namespace Friflo.Json.Fliox.Hub.Client
         {
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             return new RelationPath<TRef>(path);
+        }
+        #endregion
+        
+    #region - Internal methods
+        private string GetString() {
+            var instance = Instance;
+            if (instance == null) {
+                var container = client._readonly.entityInfos[index].container;
+                return new SetInfo(container).ToString();
+            }
+            return instance.SetInfo.ToString();
+        }
+
+        internal EntitySetInstance<TKey, T> GetInstance() {
+            var instance = client.entitySets[index];
+            if (instance != null) {
+                return (EntitySetInstance<TKey,T>)instance;
+            }
+            ref var entityInfo = ref client._readonly.entityInfos[index];
+            var newInstance = (EntitySetInstance<TKey,T>)entityInfo.containerMember.CreateInstance(entityInfo.container, client);
+            client.entitySets[index] = newInstance;
+            client._intern.SetByName[entityInfo.containerShort] = newInstance;
+            return newInstance;
         }
         #endregion
     }
