@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
@@ -31,7 +32,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// Its messages are methods returning a <see cref="MessageTask"/>.<br/>
     /// <see cref="FlioxClient"/> instances can be used in server and client code.<br/>
     /// The <see cref="FlioxClient"/> features and utilization available at
-    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md">Client README.md</a>
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md">Client README.md</a><br/>
+    /// <br/>
+    /// <b>Info</b>:
+    /// A single <see cref="FlioxClient"/> instance support multiple parallel async operations executed with <see cref="SyncTasks"/>.<br/>
+    /// E.g. multiple <see cref="SyncTasks"/> can be called without immediate await and instead using
+    /// <see cref="Task.WhenAll(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})"/> for all <see cref="Task"/>'s. 
     /// </remarks>
     [TypeMapper(typeof(FlioxClientMatcher))]
     public partial class FlioxClient : IDisposable, IResetable, ILogSource
