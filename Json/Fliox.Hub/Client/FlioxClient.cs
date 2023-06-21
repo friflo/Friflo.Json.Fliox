@@ -36,7 +36,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     [TypeMapper(typeof(FlioxClientMatcher))]
     public partial class FlioxClient : IDisposable, IResetable, ILogSource
     {
-    #region - members public
+    #region - public properties 
+    
         /// <summary> List of tasks created by its <see cref="FlioxClient"/> methods. These tasks are executed when calling <see cref="SyncTasks"/> </summary>
                         public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
 
@@ -73,7 +74,25 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         #endregion
         
-    #region - members internal
+    #region - user id, client id, token
+    
+        /// <summary>user id - identifies the user at a Hub</summary>
+        [Browse(Never)] public      string   UserId      { get => _intern.userId.AsString();     set => _intern.userId = new ShortString(value); }
+        
+        /// <summary><see cref="Token"/> - used to authenticate the <see cref="UserId"/> at the Hub</summary>
+        [Browse(Never)] public      string   Token       { get => _intern.token.AsString();      set => _intern.token = new ShortString(value); }
+
+        /// <summary>client id - identifies the client at a Hub</summary>
+        [Browse(Never)] public      string   ClientId    { get => _intern.clientId.AsString();   set => SetClientId(new ShortString(value)); }
+        
+        /// <summary>The tuple of <see cref="UserId"/>, <see cref="Token"/> and <see cref="ClientId"/></summary>
+                        public UserInfo UserInfo    {
+                            get => new UserInfo (_intern.userId, _intern.token, _intern.clientId);
+                            set { _intern.userId = value.userId; _intern.token = value.token; SetClientId(value.clientId); }
+                        }
+        #endregion
+        
+    #region - internal fields 
         // Keep most FlioxClient fields in _readonly / _intern to enhance debugging overview.
         // Reason:  FlioxClient is extended by application classes and add multiple EntitySet<,> fields or properties.
         //          This ensures focus on fields & properties relevant for an application which are:
@@ -150,51 +169,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         #endregion
 
-    #region - user id, client id, token
-        /// <summary>user id - identifies the user at a Hub</summary>
-        [Browse(Never)]
-        public string UserId {
-            get => _intern.userId.AsString();
-            set => _intern.userId = new ShortString(value);
-        }
-        
-        /// <summary><see cref="Token"/> - used to authenticate the <see cref="UserId"/> at the Hub</summary>
-        [Browse(Never)]
-        public string Token {
-            get => _intern.token.AsString();
-            set => _intern.token = new ShortString(value);
-        }
-
-        /// <summary>client id - identifies the client at a Hub</summary>
-        [Browse(Never)]
-        public string ClientId {
-            get => _intern.clientId.AsString();
-            set => SetClientId(new ShortString(value));
-        }
-        
-        private void SetClientId(in ShortString newClientId) {
-            if (newClientId.IsEqual(_intern.clientId))
-                return;
-            if (!_intern.clientId.IsNull()) {
-                _readonly.hub.RemoveEventReceiver(_intern.clientId);
-            }
-            _intern.clientId    = newClientId;
-            if (!_intern.clientId.IsNull()) {
-                _readonly.hub.AddEventReceiver(newClientId, _readonly.eventReceiver);
-            }
-        }
-
-        /// <summary>Is the tuple of <see cref="UserId"/>, <see cref="Token"/> and <see cref="ClientId"/></summary>
-        public UserInfo UserInfo {
-            get => new UserInfo (_intern.userId, _intern.token, _intern.clientId);
-            set {
-                _intern.userId  = value.userId;
-                _intern.token   = value.token;
-                SetClientId      (value.clientId);
-            }
-        }
-        #endregion
-
     #region - detect all patches
         /// <summary>
         /// Detect the <b>Patches</b> made to all tracked entities in all <b>EntitySet</b>s of the client.
@@ -236,17 +210,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </remarks>
         public void SetEventProcessor(EventProcessor eventProcessor) {
             _intern.eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));
-        }
-        
-        /// <summary>
-        /// Set a custom <see cref="SubscriptionProcessor"/> to process subscribed database changes or messages (commands).<br/>
-        /// E.g. notifying other application modules about created, updated, deleted or patches entities.
-        /// To subscribe to database change events use <see cref="EntitySet{TKey,T}.SubscribeChanges"/>.
-        /// To subscribe to message events use <see cref="SubscribeMessage"/>.
-        /// </summary>
-        internal void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
-            var processor = subscriptionProcessor ?? throw new ArgumentNullException(nameof(subscriptionProcessor));
-            _intern.SetSubscriptionProcessor(processor);
         }
         #endregion
 

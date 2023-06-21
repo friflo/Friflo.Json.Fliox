@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -81,6 +82,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             eventProcessor  = DefaultEventProcessor;
         }
 
+        /// <summary>
+        /// Set a custom <see cref="SubscriptionProcessor"/> to process subscribed database changes or messages (commands).<br/>
+        /// E.g. notifying other application modules about created, updated, deleted or patches entities.
+        /// To subscribe to database change events use <see cref="EntitySet{TKey,T}.SubscribeChanges"/>.
+        /// To subscribe to message events use <see cref="SubscribeMessage"/>.
+        /// </summary>
+        [Obsolete]
         internal void SetSubscriptionProcessor(SubscriptionProcessor processor) {
             subscriptionProcessor?.Dispose();
             subscriptionProcessor = processor;

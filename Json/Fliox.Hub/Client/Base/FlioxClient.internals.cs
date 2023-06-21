@@ -56,6 +56,18 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
+        private void SetClientId(in ShortString newClientId) {
+            if (newClientId.IsEqual(_intern.clientId))
+                return;
+            if (!_intern.clientId.IsNull()) {
+                _readonly.hub.RemoveEventReceiver(_intern.clientId);
+            }
+            _intern.clientId    = newClientId;
+            if (!_intern.clientId.IsNull()) {
+                _readonly.hub.AddEventReceiver(newClientId, _readonly.eventReceiver);
+            }
+        }
+        
         internal void AssertSubscription() {
             if (_readonly.eventReceiver == null) {
                 var msg = $"The FlioxHub used by the client don't support PushEvents. hub: {_readonly.hub.GetType().Name}";
