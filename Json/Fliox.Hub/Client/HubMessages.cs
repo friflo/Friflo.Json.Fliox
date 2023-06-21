@@ -1,8 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Client
@@ -41,26 +39,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         protected readonly FlioxClient.SendTask send;
         
         protected HubMessages (FlioxClient client) {
-            var prefix  = GetMessagePrefix();
+            var type    = GetType();
+            var prefix  = HubMessagesUtils.GetMessagePrefix(type);
             send        = new FlioxClient.SendTask(client, prefix);
         }
-        
-        private string GetMessagePrefix() {
-            var     type = GetType();
-            string  prefix;
-            lock (PrefixCache) {
-                if (PrefixCache.TryGetValue(type, out prefix)) {
-                    return prefix;
-                }
-            }
-            var attributes  = type.CustomAttributes;
-            prefix          = HubMessagesUtils.GetMessagePrefix(attributes);
-            lock (PrefixCache) {
-                PrefixCache.TryAdd(type, prefix);    
-            }
-            return prefix;
-        }
-        
-        private static readonly Dictionary<Type, string> PrefixCache = new Dictionary<Type, string>();
     }
 }

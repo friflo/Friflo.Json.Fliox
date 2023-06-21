@@ -10,7 +10,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
 {
     public static class HubMessagesUtils
     {
-        private static readonly Dictionary<Type, MessageInfo[]> MessageInfoCache = new Dictionary<Type, MessageInfo[]>();
+        private static readonly Dictionary<Type, MessageInfo[]> MessageInfoCache    = new Dictionary<Type, MessageInfo[]>();
+        private static readonly Dictionary<Type, string>        PrefixCache         = new Dictionary<Type, string>();
 
         private const string SchemaType  = "Friflo.Json.Fliox.Hub.Client.FlioxClient";
         private const string MessageType = "Friflo.Json.Fliox.Hub.Client.MessageTask";
@@ -124,6 +125,21 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             }
             var doc         = docs.GetDocs(assembly, signature);
             return doc;
+        }
+        
+        public static string GetMessagePrefix(Type type) {
+            string  prefix;
+            lock (PrefixCache) {
+                if (PrefixCache.TryGetValue(type, out prefix)) {
+                    return prefix;
+                }
+            }
+            var attributes  = type.CustomAttributes;
+            prefix          = GetMessagePrefix(attributes);
+            lock (PrefixCache) {
+                PrefixCache.TryAdd(type, prefix);    
+            }
+            return prefix;
         }
         
         public static string GetMessagePrefix(IEnumerable<CustomAttributeData> attributes) {
