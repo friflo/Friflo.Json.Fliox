@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
@@ -36,8 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <br/>
     /// <b>Info</b>:
     /// A single <see cref="FlioxClient"/> instance support multiple parallel async operations executed with <see cref="SyncTasks"/>.<br/>
-    /// E.g. multiple <see cref="SyncTasks"/> can be called without immediate await and instead using
-    /// <see cref="Task.WhenAll(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})"/> for all <see cref="Task"/>'s. 
+    /// E.g. multiple <see cref="SyncTasks"/> can be called without immediate await and instead using <c>Task.WhenAll()</c> for all tasks. 
     /// </remarks>
     [TypeMapper(typeof(FlioxClientMatcher))]
     public partial class FlioxClient : IDisposable, IResetable, ILogSource
