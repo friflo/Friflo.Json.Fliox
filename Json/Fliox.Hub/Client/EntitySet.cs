@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         public  override string         ToString()  => GetString();
         #endregion
                         
-    #region - internal fields 
+    #region - internal fields
                         private readonly FlioxClient                client;
 
         [Browse(Never)] private readonly int                        index;

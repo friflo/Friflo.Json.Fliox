@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     // ---------------------------------- standard commands ----------------------------------
     /// <summary>
-    /// Contains standard database commands. Its commands are prefixed with <b>std.*</b><br/>
+    /// <see cref="StdCommands"/> contains all standard database commands. Its commands are prefixed with <b>std.*</b><br/>
     /// Each method creates a <see cref="CommandTask"/> and they are executed as a request
     /// when calling <see cref="FlioxClient.SyncTasks"/>.
     /// </summary>

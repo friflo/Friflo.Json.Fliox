@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     [TypeMapper(typeof(FlioxClientMatcher))]
     public partial class FlioxClient : IDisposable, IResetable, ILogSource
     {
-    #region - public properties 
+    #region - public properties
     
         /// <summary> List of tasks created by its <see cref="FlioxClient"/> methods. These tasks are executed when calling <see cref="SyncTasks"/> </summary>
                         public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         }
         #endregion
         
-    #region - internal fields 
+    #region - internal fields
         // Keep most FlioxClient fields in _readonly / _intern to enhance debugging overview.
         // Reason:  FlioxClient is extended by application classes and add multiple EntitySet<,> fields or properties.
         //          This ensures focus on fields & properties relevant for an application which are:
@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     // ----------------------------------------- public methods -----------------------------------------
-    #region - initialize    
+    #region - initialize
         /// <summary>
         /// Instantiate a <see cref="FlioxClient"/> for the <paramref name="dbName"/> exposed by the given <paramref name="hub"/>.
         /// If <paramref name="dbName"/> is null the client uses the default database assigned to the <paramref name="hub"/>.
