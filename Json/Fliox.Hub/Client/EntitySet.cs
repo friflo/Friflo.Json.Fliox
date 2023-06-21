@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// This key field is usually named <b>id</b>. Using a different name for the primary key requires the field annotation <b>[Key]</b>.<br/>
     /// Supported <typeparamref name="TKey"/> types are:
     /// <see cref="string"/>, <see cref="long"/>, <see cref="int"/>, <see cref="short"/>, <see cref="byte"/> and <see cref="Guid"/>.
-    /// The type of <typeparamref name="TKey"/> must match the <see cref="Type"/> used for the <b>key</b> field / property in an entity class.
+    /// The type of <typeparamref name="TKey"/> must match the <see cref="Type"/> used for the <b>[Key]</b> field / property in an entity class.
     /// In case of a type mismatch a runtime exceptions is thrown.
     /// </remarks>
     /// <typeparam name="TKey">Entity key type</typeparam>
