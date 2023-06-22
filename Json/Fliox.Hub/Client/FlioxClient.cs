@@ -402,7 +402,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Return the <see cref="Type"/>'s used by the <see cref="EntitySet{TKey,T}"/> members of a <see cref="FlioxClient"/> as entity Type. 
         /// </summary>
         public static Type[] GetEntityTypes(Type clientType)         => ClientEntityUtils.GetEntityTypes(clientType);
-            
+
+        /// <summary>
+        /// Enable creation of strongly typed<see cref="EntitySet{TKey,T}"/>'s
+        /// </summary>
         public static EntitySetInfo[] GetEntitySetInfos (FlioxClient client) {
             var infos   = client._readonly.entityInfos;
             var result  = new EntitySetInfo[infos.Length];
