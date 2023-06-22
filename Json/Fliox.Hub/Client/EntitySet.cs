@@ -85,6 +85,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.index  = index;
         }
         
+        /// <summary>
+        /// Create an <see cref="EntitySet{TKey,T}"/> for the given client.<br/>
+        /// The <see cref="EntitySetInfo"/> can be retrieved from <see cref="FlioxClient.GetEntitySetInfos"/>
+        /// </summary>
         public EntitySet(FlioxClient client, EntitySetInfo info)  {
             if (typeof(TKey) != info.keyType)    throw new ArgumentException($"expect TKey: {typeof(TKey).Name}. was: {info.keyType.Name}");
             if (typeof(T)    != info.entityType) throw new ArgumentException($"expect T: {typeof(T).Name}. was: {info.entityType.Name}");
