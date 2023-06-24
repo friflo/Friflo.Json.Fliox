@@ -24,11 +24,18 @@ namespace Friflo.Json.Fliox.Hub.Host
             hub.EventDispatcher     = new EventDispatcher(dispatching);   // enables Pub-Sub (sending events for subscriptions)
         }
 
-        public static async Task UseUserDB(this FlioxHub hub, EntityDatabase userDB) {
+        public static async Task UseUserDB(
+            this FlioxHub   hub,
+            EntityDatabase  userDB,
+            string          adminToken  = "admin",
+            Users           users       = Users.All)
+        {
             var authenticator   = new UserAuthenticator(userDB);
-            await authenticator.SetAdminPermissions();                                  // optional - enable Hub access with user/token: admin/admin
-            await authenticator.SetClusterPermissions("cluster", Users.All);
-            await authenticator.SubscribeUserDbChanges(hub.EventDispatcher);            // optional - apply user_db changes instantaneously
+            if (adminToken != null) {
+                await authenticator.SetAdminPermissions(adminToken);            // optional - enable Hub access with user/token: admin/admin
+            }
+            await authenticator.SetClusterPermissions("cluster", users);
+            await authenticator.SubscribeUserDbChanges(hub.EventDispatcher);    // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);
             hub.Authenticator       = authenticator;
         }
