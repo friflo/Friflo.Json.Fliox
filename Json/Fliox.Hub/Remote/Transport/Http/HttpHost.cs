@@ -235,5 +235,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
             cx.WriteError("file not found", $"path: {cx.route}", 404);
             cx.handled = true;
         }
+        
+        public static string GetArg(string[] args, string name) {
+            for (int n = 0; n < args.Length; n++) {
+                var arg = args[n];
+                if (arg != name) {
+                    continue;
+                }
+                if (++n < args.Length) {
+                    return args[n]; 
+                }
+                break;
+            }
+            return null;
+        }
     }
 }

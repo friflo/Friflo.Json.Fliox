@@ -12,9 +12,9 @@ using Microsoft.Extensions.Logging;
 namespace DemoHub
 {
     /// <summary>
-    /// Bootstrapping of ASP.NET Core 3, 3.1, 5 and adding the Hub returned by <see cref="Program.CreateHttpHost"/>.
+    /// Bootstrapping of ASP.NET Core 3, 3.1, 5 and adding a <see cref="HttpHost"/>.
     /// </summary> 
-    public class Startup
+    public class StartupAsp3
     {
         internal static void Run(string[] args, HttpHost httpHost)
         {
@@ -27,7 +27,7 @@ namespace DemoHub
                 .ConfigureWebHostDefaults(webBuilder =>
                         webBuilder
                             .ConfigureServices(services => services.AddSingleton(httpHost))
-                            .UseStartup<Startup>()
+                            .UseStartup<StartupAsp3>()
                             // .UseKestrel(options => {options.Listen(IPAddress.Loopback, 8010); }) // use http instead of https
                             .UseKestrel()
                             .UseUrls("http://*:8010") // required for Docker

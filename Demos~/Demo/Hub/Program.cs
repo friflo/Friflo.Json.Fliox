@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Demo;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
@@ -18,7 +17,7 @@ namespace DemoHub
         /// via HTTP and WebSockets. The Hub can be integrated by two different HTTP servers:
         /// <list type="bullet">
         ///   <item> By <see cref="System.Net.HttpListener"/> see <see cref="HttpServer.RunHost"/> </item>
-        ///   <item> By <a href="https://docs.microsoft.com/en-us/aspnet/core/">ASP.NET Core / Kestrel</a> see <see cref="Startup.Configure"/></item>
+        ///   <item> By <a href="https://docs.microsoft.com/en-us/aspnet/core/">ASP.NET Core 6.0 / Kestrel</a> see <see cref="StartupAsp6"/></item>
         /// </list>
         /// The features of a <see cref="HttpHost"/> instance utilized by this blueprint method are listed at
         /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphost">Host README.md</a><br/>
@@ -43,12 +42,13 @@ namespace DemoHub
             httpHost.UseStaticFiles("www");            // optional - add www/example requests
             // await CreateWebRtcServer(httpHost);
             
-            if (args.Contains("HttpListener")) {
-                HttpServer.RunHost("http://+:8010/", httpHost);
-                return;
+            var server = HttpHost.GetArg(args, "--server");
+            switch (server) {
+                case null:
+                case "HttpListener":    HttpServer.RunHost("http://+:8010/", httpHost); return; // HttpListener from BCL
+                case "asp.net3":        StartupAsp3.Run(args, httpHost);                return; // ASP.NET Core 3, 3.1, 5
+                case "asp.net6":        StartupAsp6.Run(args, httpHost);                return; // ASP.NET Core 6
             }
-            // Startup.Run(args, httpHost);   // ASP.NET Core 3, 3.1, 5
-            StartupAsp6.Run(args, httpHost);  // ASP.NET Core 6
         }
         
         /* private static async Task CreateWebRtcServer(HttpHost httpHost) {

@@ -13,7 +13,7 @@ using IServer = Microsoft.AspNetCore.Hosting.Server.IServer;
 namespace DemoHub;
 
 /// <summary>
-/// Bootstrapping of ASP.NET Core 6.0 and adding the Hub returned by <see cref="Program.CreateHttpHost"/>.
+/// Bootstrapping of ASP.NET Core 6.0 and adding a <see cref="HttpHost"/>.
 /// </summary> 
 public static class StartupAsp6
 {
