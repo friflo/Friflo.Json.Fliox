@@ -7,7 +7,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public static class HttpHostExtensions
     {
         public static void UseStaticFiles(this HttpHost httpHost, string folder) {
-            httpHost.AddHandler (new StaticFileHandler(folder));
+            httpHost.AddHandler(new StaticFileHandler(folder));
         }
     }
 }

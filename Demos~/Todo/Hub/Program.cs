@@ -14,7 +14,8 @@ namespace TodoHub
             var hub             = new FlioxHub(database);
             hub.UseClusterDB(); // required by HubExplorer
             hub.UsePubSub();    // optional - enables Pub-Sub
-            var httpHost        = new HttpHost(hub, "/fliox/");
+            // --- create HttpHost
+            var httpHost = new HttpHost(hub, "/fliox/");
             httpHost.UseStaticFiles(HubExplorer.Path);
             HttpServer.RunHost("http://+:8010/", httpHost);
         }

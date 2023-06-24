@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     public static class GraphQLExtensions
     {
         public static void UseGraphQL(this HttpHost httpHost) {
-            httpHost.AddHandler      (new GraphQLHandler());
+            httpHost.AddHandler(new GraphQLHandler());
         }
     }
 }
