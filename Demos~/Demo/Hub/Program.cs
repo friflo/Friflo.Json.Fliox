@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Demo;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
@@ -27,7 +28,7 @@ namespace DemoHub
         public static async Task Main(string[] args)
         {
             var schema      = DatabaseSchema.Create<DemoClient>(); // optional - create TypeSchema from Type
-            var database    = CreateDatabase(schema).AddCommands(new DemoCommands());
+            var database    = CreateDatabase("memory", schema).AddCommands(new DemoCommands());
             var hub         = new FlioxHub(database);
             hub.Info.Set ("DemoHub", "dev", "https://github.com/friflo/Fliox.Examples#demo", "rgb(0 171 145)"); // optional
             hub.UseClusterDB(); // optional - expose info of hosted databases. cluster is required by HubExplorer
@@ -60,18 +61,14 @@ namespace DemoHub
             await rtcServer.AddHost("abc", httpHost);
         } */
         
-        private static readonly bool UseMemoryDbClone = true;
-        
-        private static EntityDatabase CreateDatabase(DatabaseSchema schema)
+        private static EntityDatabase CreateDatabase(string provider, DatabaseSchema schema)
         {
             var fileDb = new FileDatabase("main_db", "../Test/DB/main_db", schema);
-            if (!UseMemoryDbClone)
-                return fileDb;
-            // As the DemoHub is also deployed as a demo service in the internet it uses a memory database
-            // to minimize operation cost and prevent abuse as a free persistent database.   
-            var memoryDB = new MemoryDatabase("main_db", schema);
-            memoryDB.SeedDatabase(fileDb).Wait();
-            return memoryDB;
+            switch (provider) {
+                case "file":    return fileDb;
+                case "memory":  return new MemoryDatabase("main_db", schema).SeedDatabase(fileDb).Result;
+            }
+            throw new InvalidOperationException($"unknown provider: {provider}"); 
         }
     }
 }

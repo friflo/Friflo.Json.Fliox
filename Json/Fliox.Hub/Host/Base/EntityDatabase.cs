@@ -207,7 +207,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <remarks>
         /// If given database has no schema the key name of all entities in all containers need to be "id"
         /// </remarks>
-        public async Task SeedDatabase(EntityDatabase src, int? maxCount = null) {
+        public async Task<EntityDatabase> SeedDatabase(EntityDatabase src, int? maxCount = null) {
             if (Schema == null) throw new InvalidOperationException("SeedDatabase requires a Schema");
             var sharedEnv       = new SharedEnv();
             var memoryBuffer    = new MemoryBuffer(4 * 1024);
@@ -224,6 +224,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             finally {
                 syncContext.ReturnConnection();
             }
+            return this;
         }
         
         private async Task SeedContainer(EntityDatabase src, string container, string keyName, int? maxCount, SyncContext syncContext)

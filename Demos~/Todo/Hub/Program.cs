@@ -9,13 +9,13 @@ namespace TodoHub
     {
         public static void Main()
         {
-            var schema          = DatabaseSchema.Create<TodoClient>();
-            var database        = new FileDatabase("main_db", "../Test/DB/main_db", schema); // uses records stored in 'main_db/jobs' folder
-            var hub             = new FlioxHub(database);
+            var schema      = DatabaseSchema.Create<TodoClient>();
+            var database    = new FileDatabase("main_db", "../Test/DB/main_db", schema); // uses records stored in 'main_db/jobs' folder
+            var hub         = new FlioxHub(database);
             hub.UseClusterDB(); // required by HubExplorer
             hub.UsePubSub();    // optional - enables Pub-Sub
             // --- create HttpHost
-            var httpHost = new HttpHost(hub, "/fliox/");
+            var httpHost    = new HttpHost(hub, "/fliox/");
             httpHost.UseStaticFiles(HubExplorer.Path);
             HttpServer.RunHost("http://+:8010/", httpHost);
         }
