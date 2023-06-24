@@ -16,7 +16,7 @@ namespace TodoHub
             hub.UsePubSub();    // optional - enables Pub-Sub
             // --- create HttpHost
             var httpHost    = new HttpHost(hub, "/fliox/");
-            httpHost.UseStaticFiles(HubExplorer.Path);
+            httpHost.UseStaticFiles(HubExplorer.Path); // HubExplorer nuget: https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer
             HttpServer.RunHost("http://+:8010/", httpHost);
         }
     }

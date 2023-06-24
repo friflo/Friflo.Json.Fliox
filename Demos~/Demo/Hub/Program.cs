@@ -38,7 +38,7 @@ namespace DemoHub
             // --- create HttpHost
             var httpHost = new HttpHost(hub, "/fliox/");
             httpHost.UseGraphQL();
-            httpHost.UseStaticFiles(HubExplorer.Path); // optional - serve static web files of Hub Explorer
+            httpHost.UseStaticFiles(HubExplorer.Path); // optional - HubExplorer nuget: https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer
             httpHost.UseStaticFiles("www");            // optional - add www/example requests
             // await CreateWebRtcServer(httpHost);
             
