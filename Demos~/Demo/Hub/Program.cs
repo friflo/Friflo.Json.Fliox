@@ -26,14 +26,14 @@ namespace DemoHub
         /// </summary>
         public static async Task Main(string[] args)
         {
-            var databaseSchema      = DatabaseSchema.Create<DemoClient>();           // optional - create TypeSchema from Type
-            var database            = CreateDatabase(databaseSchema).AddCommands(new DemoCommands());
-            var hub                 = new FlioxHub(database);
-            hub.Info.Set            ("DemoHub", "dev", "https://github.com/friflo/Fliox.Examples#demo", "rgb(0 171 145)"); // optional
-            hub.UseClusterDB();     // optional - expose info of hosted databases. cluster is required by HubExplorer
-            hub.UseMonitorDB();     // optional - expose monitor stats as extension database
-            hub.UsePubSub();        // optional - enables Pub-Sub (sending events for subscriptions)
-            var userDB              = new FileDatabase("user_db", "../Test/DB/user_db", UserDB.Schema, new UserDBService()) { Pretty = false };
+            var databaseSchema  = DatabaseSchema.Create<DemoClient>();           // optional - create TypeSchema from Type
+            var database        = CreateDatabase(databaseSchema).AddCommands(new DemoCommands());
+            var hub             = new FlioxHub(database);
+            hub.Info.Set ("DemoHub", "dev", "https://github.com/friflo/Fliox.Examples#demo", "rgb(0 171 145)"); // optional
+            hub.UseClusterDB(); // optional - expose info of hosted databases. cluster is required by HubExplorer
+            hub.UseMonitorDB(); // optional - expose monitor stats as extension database
+            hub.UsePubSub();    // optional - enables Pub-Sub (sending events for subscriptions)
+            var userDB = new FileDatabase("user_db", "../Test/DB/user_db", UserDB.Schema, new UserDBService()) { Pretty = false };
             await hub.UseUserDB(userDB);
             // --- create HttpHost
             var httpHost = new HttpHost(hub, "/fliox/");
