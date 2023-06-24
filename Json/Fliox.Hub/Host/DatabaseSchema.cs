@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private             Dictionary<string, JsonValue>           jsonSchemas; // cache schemas after creation
         
-        internal            string                                  Name        => typeSchema.RootType.Name;
+        public              string                                  Name        => typeSchema.RootType.Name;
         internal            string                                  Path        => typeSchema.RootType.Path + ".json";
 
         public   override   string                                  ToString()  => typeSchema.RootType.Name;

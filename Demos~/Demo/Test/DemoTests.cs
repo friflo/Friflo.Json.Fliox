@@ -145,7 +145,7 @@ namespace DemoTest {
         {
             var database        = new MemoryDatabase("test").AddCommands(new DemoCommands());
             var hub             = new FlioxHub(database);
-            hub.EventDispatcher = new EventDispatcher(EventDispatching.Send); // dispatch events directly to simplify test
+            hub.UsePubSub(EventDispatching.Send);    // dispatch events directly to simplify test
             
             // setup subscriber client
             var subClient       = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId = "sub-1" };
@@ -175,7 +175,7 @@ namespace DemoTest {
         {
             var database        = new MemoryDatabase("test").AddCommands(new DemoCommands());
             var hub             = new FlioxHub(database);
-            hub.EventDispatcher = new EventDispatcher(EventDispatching.Send); // dispatch events directly to simplify test
+            hub.UsePubSub(EventDispatching.Send);    // dispatch events directly to simplify test
             
             // setup subscriber client
             var subClient       = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId = "sub-2" };

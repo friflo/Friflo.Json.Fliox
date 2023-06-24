@@ -18,6 +18,11 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
 {
     public static class AspNetCoreExtensions
     {
+        /* public static IWebHostBuilder UseFlioxHost(this IWebHostBuilder hostBuilder, HttpHost httpHost) {
+            hostBuilder.ConfigureServices(services => services.AddSingleton(httpHost));
+            return hostBuilder;
+        } */
+        
         /// <summary>
         /// Execute the request and write the response to the given <paramref name="context"/>.
         /// </summary>

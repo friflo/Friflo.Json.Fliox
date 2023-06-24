@@ -142,9 +142,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public FlioxHub (EntityDatabase database, SharedEnv env = null)
         {
-            sharedEnv       = env  ?? SharedEnv.Default;
-            this.database   = database ?? throw new ArgumentNullException(nameof(database));
-            extensionDbs    = new Dictionary<ShortString, EntityDatabase>(ShortString.Equality);
+            sharedEnv           = env  ?? SharedEnv.Default;
+            this.database       = database ?? throw new ArgumentNullException(nameof(database));
+            extensionDbs        = new Dictionary<ShortString, EntityDatabase>(ShortString.Equality);
+            Info.projectName    = this.database.Schema?.Name;
         }
         
         public virtual void Dispose() { }

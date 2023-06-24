@@ -50,7 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             fileHandler     = new FileHandler(rootFolder);
         }
         
-        public StaticFileHandler (string rootFolder, Type type)
+        [Obsolete]
+        private StaticFileHandler (string rootFolder, Type type)
             : this(GetPath(type, rootFolder))
         { }
 
@@ -63,6 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             fileHandler = new ZipFileHandler(zipStream, baseFolder);
         }
         
+        [Obsolete]
         private static string GetPath(Type type, string path) {
             var assembly = type.Assembly;
             if (assembly == null)

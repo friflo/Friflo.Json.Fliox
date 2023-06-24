@@ -1,13 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Demo;
-using Friflo.Json.Fliox.Hub.DB.Cluster;
-using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.GraphQL;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
 
 namespace DemoHub
@@ -17,13 +14,13 @@ namespace DemoHub
     {
         public static void Main(string[] args)
         {
+            var httpHost = CreateHttpHost().Result;
             if (args.Contains("HttpListener")) {
-                var httpHost = CreateHttpHost().Result;
                 HttpServer.RunHost("http://+:8010/", httpHost);
                 return;
             }
-            // Startup.Run(args);   // ASP.NET Core 3, 3.1, 5
-            StartupAsp6.Run(args);  // ASP.NET Core 6
+            // Startup.Run(args, httpHost);   // ASP.NET Core 3, 3.1, 5
+            StartupAsp6.Run(args, httpHost);  // ASP.NET Core 6
         }
 
         /// <summary>
@@ -38,7 +35,7 @@ namespace DemoHub
         /// <i>Note</i>: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHost"/> instance only accessible from Intranet as they contains sensitive data.
         /// </summary>
-        internal static async Task<HttpHost> CreateHttpHost()
+        private static async Task<HttpHost> CreateHttpHost()
         {
             var databaseSchema      = DatabaseSchema.Create<DemoClient>();           // optional - create TypeSchema from Type
             var database            = CreateDatabase(databaseSchema).AddCommands(new DemoCommands());
@@ -46,23 +43,17 @@ namespace DemoHub
             hub.Info.projectName    = "DemoHub";                                        // optional
             hub.Info.projectWebsite = "https://github.com/friflo/Fliox.Examples#demo";  // optional
             hub.Info.envName        = "dev"; hub.Info.envColor = "rgb(0 171 145)";      // optional
-            hub.AddExtensionDB (new ClusterDB("cluster", hub));     // optional - expose info of hosted databases. cluster is required by Hub Explorer
-            hub.AddExtensionDB (new MonitorDB("monitor", hub));     // optional - expose monitor stats as extension database
-            hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend);   // optional - enables Pub-Sub (sending events for subscriptions)
+            hub.UseClusterDB();     // optional - expose info of hosted databases. cluster is required by Hub Explorer
+            hub.UseMonitorDB();     // optional - expose monitor stats as extension database
+            hub.UsePubSub();        // optional - enables Pub-Sub (sending events for subscriptions)
             
             var userDB              = new FileDatabase("user_db", "../Test/DB/user_db", UserDB.Schema, new UserDBService()) { Pretty = false };
-            var authenticator       = new UserAuthenticator(userDB);
-            await authenticator.SetAdminPermissions();                                  // optional - enable Hub access with user/token: admin/admin
-            await authenticator.SetClusterPermissions("cluster", Users.All);
-            await authenticator.SubscribeUserDbChanges(hub.EventDispatcher);            // optional - apply user_db changes instantaneously
-            hub.AddExtensionDB(userDB);                                                 // optional - expose user_db as extension database
-            hub.Authenticator       = authenticator;                                    // optional - otherwise all tasks are authorized
+            await hub.UseUserDB(userDB);
             
             var httpHost            = new HttpHost(hub, "/fliox/");
-            httpHost.AddHandler      (new GraphQLHandler());
-            httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path)); // optional - serve static web files of Hub Explorer
-            // httpHost.AddHandler      (new StaticFileHandler("www", typeof(Program)));
-            httpHost.AddHandler      (new StaticFileHandler("www") { CacheControl = null });
+            httpHost.UseGraphQL();
+            httpHost.UseStaticFiles (HubExplorer.Path); // optional - serve static web files of Hub Explorer
+            httpHost.UseStaticFiles ("www");            // optional - add www/example requests
             // CreateWebRtcServer(httpHost).Wait();
             return httpHost;
         }

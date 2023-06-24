@@ -1,13 +1,14 @@
 ﻿using System;
 using Friflo.Json.Fliox.Hub.AspNetCore;
+using Friflo.Json.Fliox.Hub.Remote;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using IServer = Microsoft.AspNetCore.Hosting.Server.IServer;
 
 namespace DemoHub;
 
@@ -16,10 +17,8 @@ namespace DemoHub;
 /// </summary> 
 public static class StartupAsp6
 {
-    public static void Run(string[] args)
+    public static void Run(string[] args, HttpHost httpHost)
     {
-        var httpHost    = Program.CreateHttpHost().Result;
-        
         var builder     = WebApplication.CreateBuilder(args);
         builder.WebHost.ConfigureKestrel(options => options.ListenAnyIP(8010));
         var app         = builder.Build();

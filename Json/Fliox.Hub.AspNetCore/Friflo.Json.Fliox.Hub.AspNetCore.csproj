@@ -51,6 +51,7 @@
       <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
       <PackageReference Include="Microsoft.AspNetCore.Http" Version="*" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="*" />
+      <!-- <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="*" /> -->
       <None Include="..\package-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 

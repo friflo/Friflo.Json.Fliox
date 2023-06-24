@@ -1,7 +1,5 @@
-﻿using Friflo.Json.Fliox.Hub.DB.Cluster;
-using Friflo.Json.Fliox.Hub.Explorer;
+﻿using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
 using Todo;
 
@@ -11,24 +9,14 @@ namespace TodoHub
     {
         public static void Main()
         {
-            var httpHost = CreateHttpHost();
-            HttpServer.RunHost("http://+:8010/", httpHost);
-        }
-        
-        /// <summary> blueprint to showcase a minimal feature set of a <see cref="HttpHost"/> </summary>
-        private static HttpHost CreateHttpHost()
-        {
             var schema          = DatabaseSchema.Create<TodoClient>();
             var database        = new FileDatabase("main_db", "../Test/DB/main_db", schema); // uses records stored in 'main_db/jobs' folder
-
             var hub             = new FlioxHub(database);
-            hub.Info.projectName= "TodoHub";
-            hub.AddExtensionDB (new ClusterDB("cluster", hub)); // required by HubExplorer
-            hub.EventDispatcher = new EventDispatcher(EventDispatching.QueueSend);    // optional - enables Pub-Sub
-            
+            hub.UseClusterDB(); // required by HubExplorer
+            hub.UsePubSub();    // optional - enables Pub-Sub
             var httpHost        = new HttpHost(hub, "/fliox/");
-            httpHost.AddHandler (new StaticFileHandler(HubExplorer.Path));
-            return httpHost;
+            httpHost.UseStaticFiles(HubExplorer.Path);
+            HttpServer.RunHost("http://+:8010/", httpHost);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using Friflo.Json.Fliox.Hub.AspNetCore;
+using Friflo.Json.Fliox.Hub.Remote;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -15,16 +16,18 @@ namespace DemoHub
     /// </summary> 
     public class Startup
     {
-        internal static void Run(string[] args)
+        internal static void Run(string[] args, HttpHost httpHost)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args, httpHost).Build().Run();
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args)
+        private static IHostBuilder CreateHostBuilder(string[] args, HttpHost httpHost)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => 
-                        webBuilder.UseStartup<Startup>()
+                .ConfigureWebHostDefaults(webBuilder =>
+                        webBuilder
+                            .ConfigureServices(services => services.AddSingleton(httpHost))
+                            .UseStartup<Startup>()
                             // .UseKestrel(options => {options.Listen(IPAddress.Loopback, 8010); }) // use http instead of https
                             .UseKestrel()
                             .UseUrls("http://*:8010") // required for Docker
@@ -47,8 +50,8 @@ namespace DemoHub
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
-            var httpHost = Program.CreateHttpHost().Result;
-            var startPage = httpHost.GetStartPage(app.ServerFeatures.Get<IServerAddressesFeature>()!.Addresses);
+            var httpHost    = app.ApplicationServices.GetService<HttpHost>();
+            var startPage   = httpHost.GetStartPage(app.ServerFeatures.Get<IServerAddressesFeature>()!.Addresses);
             Console.WriteLine($"Hub Explorer - {startPage}\n");
             httpHost.sharedEnv.Logger = new HubLoggerAspNetCore(loggerFactory);
 
