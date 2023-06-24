@@ -37,9 +37,7 @@ namespace Friflo.Json.Tests.Provider
             await memoryDb.SeedDatabase(fileDb).ConfigureAwait(false);
             
             var hub                 = new FlioxHub(memoryDb, env);
-            hub.Info.projectName    = "Test DB";
-            hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Provider";
-            hub.Info.envName        = "test"; hub.Info.envColor = "rgb(0 140 255)";
+            hub.Info.Set("Test DB", "test", "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Provider", "rgb(0 140 255)");
             hub.AddExtensionDB (fileDb);
 #if !UNITY_5_3_OR_NEWER
             /* var testDb              = Env.CreateTestDatabase("test_db", Env.TEST_DB_PROVIDER);

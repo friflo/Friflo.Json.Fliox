@@ -29,9 +29,7 @@ namespace DemoHub
             var databaseSchema      = DatabaseSchema.Create<DemoClient>();           // optional - create TypeSchema from Type
             var database            = CreateDatabase(databaseSchema).AddCommands(new DemoCommands());
             var hub                 = new FlioxHub(database);
-            hub.Info.projectName    = "DemoHub";                                        // optional
-            hub.Info.projectWebsite = "https://github.com/friflo/Fliox.Examples#demo";  // optional
-            hub.Info.envName        = "dev"; hub.Info.envColor = "rgb(0 171 145)";      // optional
+            hub.Info.Set            ("DemoHub", "dev", "https://github.com/friflo/Fliox.Examples#demo", "rgb(0 171 145)"); // optional
             hub.UseClusterDB();     // optional - expose info of hosted databases. cluster is required by HubExplorer
             hub.UseMonitorDB();     // optional - expose monitor stats as extension database
             hub.UsePubSub();        // optional - enables Pub-Sub (sending events for subscriptions)
