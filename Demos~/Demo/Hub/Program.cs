@@ -42,7 +42,7 @@ namespace DemoHub
             httpHost.UseGraphQL();
             httpHost.UseStaticFiles(HubExplorer.Path); // optional - serve static web files of Hub Explorer
             httpHost.UseStaticFiles("www");            // optional - add www/example requests
-            // CreateWebRtcServer(httpHost).Wait();
+            // await CreateWebRtcServer(httpHost);
             
             if (args.Contains("HttpListener")) {
                 HttpServer.RunHost("http://+:8010/", httpHost);
