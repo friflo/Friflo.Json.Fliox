@@ -8,19 +8,45 @@ using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Host.Event;
 
-
 namespace Friflo.Json.Fliox.Hub.Host
 {
     public static class HubExtensions
     {
+        /// <summary>
+        /// Add the <b>cluster</b> database to the given <paramref name="hub"/> providing meta information about
+        /// hosted databases.<br/>
+        /// <br/>
+        /// This meta information is used by the <b>Hub.Explorer</b> UI to browse hosted databases.<br/>
+        /// The <b>Hub.Explorer</b> UI needs to be added to the <see cref="Remote.HttpHost"/> with
+        /// <br/>
+        /// <code>
+        /// httpHost.UseStaticFiles(HubExplorer.Path); // nuget: https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer
+        /// </code> 
+        /// </summary>
         public static void UseClusterDB(this FlioxHub hub) {
             hub.AddExtensionDB (new ClusterDB("cluster", hub)); // required by HubExplorer
         }
         
+        /// <summary>
+        /// Add the <b>monitor</b> database to the given <paramref name="hub"/> providing access information about
+        /// of the Hub and its databases.<br/>
+        /// <br/>
+        /// Access information:<br/>
+        /// - request and task count executed per user <br/>
+        /// - request and task count executed per client. A user can access without, one or multiple client ids. <br/>
+        /// - events sent to (or buffered for) clients subscribed by these clients. <br/>
+        /// - aggregated access counts of the Hub in the last 30 seconds and 30 minutes.
+        /// </summary>
         public static void UseMonitorDB(this FlioxHub hub) {
             hub.AddExtensionDB (new MonitorDB("monitor", hub));
         }
         
+        /// <summary>
+        /// Assign an <see cref="FlioxHub.EventDispatcher"/> to the given <paramref name="hub"/> to enable <b>Pub-Sub</b>.<br/>
+        /// <br/>
+        /// It enables sending push events to clients for database changes and messages these clients have subscribed. <br/>
+        /// In case of remote database connections <b>WebSockets</b> are used to send push events to clients.
+        /// </summary>
         public static void UsePubSub(this FlioxHub hub, EventDispatching dispatching = EventDispatching.QueueSend) {
             hub.EventDispatcher     = new EventDispatcher(dispatching);   // enables Pub-Sub (sending events for subscriptions)
         }
