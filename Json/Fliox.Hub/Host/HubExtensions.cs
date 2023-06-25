@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
@@ -30,10 +31,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             string          adminToken  = "admin",
             Users           users       = Users.All)
         {
-            var authenticator   = new UserAuthenticator(userDB);
-            if (adminToken != null) {
-                await authenticator.SetAdminPermissions(adminToken);            // optional - enable Hub access with user/token: admin/admin
+            if (userDB.Schema != UserDB.Schema) {
+                throw new ArgumentException("expect database schema: UserDB.Schema", nameof(userDB));
             }
+            if (userDB.service.GetType() != typeof(UserDBService)) {
+                throw new ArgumentException("expect database service: new UserDBService()", nameof(userDB));
+            }
+            var authenticator = new UserAuthenticator(userDB);
+            await authenticator.SetAdminPermissions(adminToken);                // optional - enable Hub access with user/token: admin/admin
             await authenticator.SetClusterPermissions("cluster", users);
             await authenticator.SubscribeUserDbChanges(hub.EventDispatcher);    // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);
