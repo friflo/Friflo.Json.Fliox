@@ -20,6 +20,13 @@ using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
 // ReSharper disable ConvertIfStatementToSwitchStatement
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
+    /// <summary>
+    /// An <see cref="GraphQLHandler"/> provide access to a <see cref="HttpHost"/> using <b>GraphQL</b>
+    /// </summary>
+    /// <remarks>
+    /// For each database a GraphQL schema is generated based on the <see cref="DatabaseSchema"/> assigned to each
+    /// <see cref="EntityDatabase"/>.  
+    /// </remarks>
     public sealed class GraphQLHandler : IRequestHandler
     {
         private readonly    Dictionary<string, QLDatabaseSchema>    dbSchemas;

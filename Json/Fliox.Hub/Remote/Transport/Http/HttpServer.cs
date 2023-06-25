@@ -63,7 +63,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // To give access see: [add urlacl - Win32 apps | Microsoft Docs] https://docs.microsoft.com/en-us/windows/win32/http/add-urlacl
         //     netsh http add urlacl url=http://+:8010/ user=<DOMAIN>\<USER> listen=yes
         //     netsh http delete urlacl http://+:8010/
-        // Get DOMAIN\USER via  PowerShell > $env:UserName / $env:UserDomain 
+        // Get DOMAIN\USER via  PowerShell > $env:UserName / $env:UserDomain
+        /// <summary>
+        /// Start and run a simple HTTP server using the given <paramref name="httpHost"/>
+        /// on the <paramref name="endpoint"/> using a <see cref="HttpListener"/> of the BCL.  
+        /// </summary>
         public static void RunHost(string endpoint, HttpHost httpHost) {
             var server = new HttpServer(endpoint, httpHost);
             server.Start();
