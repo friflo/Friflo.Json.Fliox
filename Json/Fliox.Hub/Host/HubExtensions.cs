@@ -24,7 +24,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// <br/>
         /// <i>Info</i>: to access the <b>cluster</b> database use a <see cref="ClusterStore"/> client.
-
         /// </remarks>
         public static void UseClusterDB(this FlioxHub hub) {
             hub.AddExtensionDB (new ClusterDB("cluster", hub)); // required by HubExplorer
