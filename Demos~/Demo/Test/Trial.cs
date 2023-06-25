@@ -14,7 +14,6 @@ namespace DemoTest {
         // custom entry point to run test snippets with: dotnet run
         internal static async Task Main(string[] args)
         {
-            // await Benchmark.PubSubLatency();
             await QueryRelations(args);
             await SubscribeChanges();
         }
