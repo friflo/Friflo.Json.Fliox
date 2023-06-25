@@ -26,7 +26,7 @@ namespace DemoHub
         /// </summary>
         public static async Task Main(string[] args)
         {
-            var schema      = DatabaseSchema.Create<DemoClient>(); // optional - create TypeSchema from Type
+            var schema      = DatabaseSchema.Create<DemoClient>(); // create TypeSchema from Type
             var database    = CreateDatabase("memory", schema).AddCommands(new DemoCommands());
             var hub         = new FlioxHub(database);
             hub.Info.Set ("DemoHub", "dev", "https://github.com/friflo/Fliox.Examples#demo", "rgb(0 171 145)"); // optional
@@ -51,16 +51,6 @@ namespace DemoHub
             }
         }
         
-        /* private static async Task CreateWebRtcServer(HttpHost httpHost) {
-            var rtcConfig = new SignalingConfig {
-                SignalingHost   = "ws://localhost:8011/fliox/",
-                User            = "admin", Token = "admin",
-                WebRtcConfig    = new WebRtcConfig { IceServerUrls = new [] { "stun:stun.sipsorcery.com" } },
-            };
-            var rtcServer = new RtcServer(rtcConfig);
-            await rtcServer.AddHost("abc", httpHost);
-        } */
-        
         private static EntityDatabase CreateDatabase(string provider, DatabaseSchema schema)
         {
             var fileDb = new FileDatabase("main_db", "../Test/DB/main_db", schema);
@@ -70,5 +60,15 @@ namespace DemoHub
             }
             throw new InvalidOperationException($"unknown provider: {provider}"); 
         }
+        
+        /* private static async Task CreateWebRtcServer(HttpHost httpHost) {
+            var rtcConfig = new SignalingConfig {
+                SignalingHost   = "ws://localhost:8011/fliox/",
+                User            = "admin", Token = "admin",
+                WebRtcConfig    = new WebRtcConfig { IceServerUrls = new [] { "stun:stun.sipsorcery.com" } },
+            };
+            var rtcServer = new RtcServer(rtcConfig);
+            await rtcServer.AddHost("abc", httpHost);
+        } */
     }
 }
