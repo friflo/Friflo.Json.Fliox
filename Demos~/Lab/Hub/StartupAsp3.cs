@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace DemoHub
+namespace LabHub
 {
     /// <summary>
     /// Bootstrapping of ASP.NET Core 3, 3.1, 5 and adding a <see cref="HttpHost"/>.

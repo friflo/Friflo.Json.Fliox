@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+
+        <LangVersion>9.0</LangVersion>
+		<GenerateProgramFile>false</GenerateProgramFile>
+        <!-- EnableDefaultContentItems: false prevents files in DB~/ copied to output directory -->
+        <EnableDefaultContentItems>true</EnableDefaultContentItems>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <NoWarn>1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Json\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
+    </ItemGroup>
+	
+</Project>

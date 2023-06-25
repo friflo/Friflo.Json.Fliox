@@ -15,7 +15,7 @@ namespace DemoHub;
 /// <summary>
 /// Bootstrapping of ASP.NET Core 6.0 and adding a <see cref="HttpHost"/>.
 /// </summary> 
-public static class StartupAsp6
+public static class Startup
 {
     public static void Run(string[] args, HttpHost httpHost)
     {
@@ -38,7 +38,6 @@ public static class StartupAsp6
             var requestContext = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false);
             await context.WriteFlioxResponse(requestContext).ConfigureAwait(false);
         });
-        
         // use app.Start() / app.WaitForShutdown() instead of app.Run() to get startPage
         app.Start();
         var addresses   = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses;

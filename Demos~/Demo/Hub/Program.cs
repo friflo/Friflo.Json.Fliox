@@ -17,7 +17,7 @@ namespace DemoHub
         /// via HTTP and WebSockets. The Hub can be integrated by two different HTTP servers:
         /// <list type="bullet">
         ///   <item> By <see cref="System.Net.HttpListener"/> see <see cref="HttpServer.RunHost"/> </item>
-        ///   <item> By <a href="https://docs.microsoft.com/en-us/aspnet/core/">ASP.NET Core 6.0 / Kestrel</a> see <see cref="StartupAsp6"/></item>
+        ///   <item> By <a href="https://docs.microsoft.com/en-us/aspnet/core/">ASP.NET Core 6.0 / Kestrel</a> see <see cref="Startup"/></item>
         /// </list>
         /// The features of a <see cref="HttpHost"/> instance utilized by this blueprint method are listed at
         /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphost">Host README.md</a><br/>
@@ -40,14 +40,12 @@ namespace DemoHub
             httpHost.UseGraphQL();
             httpHost.UseStaticFiles(HubExplorer.Path); // optional - HubExplorer nuget: https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer
             httpHost.UseStaticFiles("www");            // optional - add www/example requests
-            // await CreateWebRtcServer(httpHost);
             
             var server = HttpHost.GetArg(args, "--server");
             switch (server) {
                 case null:
                 case "HttpListener":    HttpServer.RunHost("http://+:8010/", httpHost); return; // HttpListener from BCL
-                case "asp.net3":        StartupAsp3.Run(args, httpHost);                return; // ASP.NET Core 3, 3.1, 5
-                case "asp.net6":        StartupAsp6.Run(args, httpHost);                return; // ASP.NET Core 6
+                case "asp.net6":        Startup.Run(args, httpHost);                    return; // ASP.NET Core 6
             }
         }
         
@@ -60,15 +58,5 @@ namespace DemoHub
             }
             throw new InvalidOperationException($"unknown provider: {provider}"); 
         }
-        
-        /* private static async Task CreateWebRtcServer(HttpHost httpHost) {
-            var rtcConfig = new SignalingConfig {
-                SignalingHost   = "ws://localhost:8011/fliox/",
-                User            = "admin", Token = "admin",
-                WebRtcConfig    = new WebRtcConfig { IceServerUrls = new [] { "stun:stun.sipsorcery.com" } },
-            };
-            var rtcServer = new RtcServer(rtcConfig);
-            await rtcServer.AddHost("abc", httpHost);
-        } */
     }
 }
