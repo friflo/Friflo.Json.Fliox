@@ -1,9 +1,7 @@
-﻿using System;
-using Friflo.Json.Fliox.Hub.AspNetCore;
+﻿using Friflo.Json.Fliox.Hub.AspNetCore;
 using Friflo.Json.Fliox.Hub.Remote;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 
 namespace DemoHub;
 
@@ -27,9 +25,6 @@ public static class Startup
         app.MapRedirect("/", httpHost);             // optional: add redirect to Hub Explorer at http://localhost:8010
         app.MapHost("/fliox/{*path}", httpHost);    // ASP.NET Core 6.0 integration
         
-        // using app.Start() / app.WaitForShutdown() instead of app.Run() to log start page
-        app.Start();
-        Console.WriteLine($"Hub Explorer - {httpHost.GetStartPage(app.Services)}\n");
-        app.WaitForShutdown();
+        app.RunLogUrl(httpHost);                    // same as app.Run(); + logging of start page
     }
 }

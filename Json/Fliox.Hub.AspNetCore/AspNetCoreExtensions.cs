@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 // Assembly "Fliox.Hub.AspNetCore" uses the 'floating version dependency':
@@ -66,6 +67,17 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
                 await context.WriteFlioxResponse(requestContext).ConfigureAwait(false);
             });
         }
+        
+        /// <summary>
+        /// Same behavior as <c>app.Run();</c><br/>
+        /// Writes the base URL of the <see cref="HttpHost"/> to console log.
+        /// </summary>
+        public static void RunLogUrl(this IHost app, HttpHost httpHost) {
+            app.Start();
+            Console.WriteLine($"Hub Explorer - {httpHost.GetStartPage(app.Services)}\n");
+            app.WaitForShutdown();
+        }
+        
         
         /// <summary>
         /// Execute the request return a RequestContext containing the execution result.
