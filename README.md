@@ -38,7 +38,7 @@ The **DemoHub** .NET project is available at
 | **Query**         request 1M rows, each row 124 byte => response 125MB    | **1.3 sec**                                                                                                 |
 | **Throughput**    request / response WebSocket, 4 concurrent clients      | **27k requests / sec**                                                                                      |
 | **ASP.NET Core**  Hub integration                                         | **1 LOC** [Startup.cs](https://github.com/friflo/Fliox.Examples/blob/main/Demo/Hub/Startup.cs#L28)          |
-| **Minimal Client & Server** with: REST, CRUD, Queries, Pub-Sub & Explorer | **70 LOC** [Client](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Client/TodoClient.cs) & [Server](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Hub/Program.cs) |
+| **Minimal Client & Server** with: REST, CRUD, Queries, Pub-Sub & Explorer | **60 LOC** [Client](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Client/TodoClient.cs) & [Server](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Hub/Program.cs) |
 | &nbsp;           run on Intel(R) Core(TM) i7-4790K CPU 4.00GHz            |                                                                                                |
 
 
