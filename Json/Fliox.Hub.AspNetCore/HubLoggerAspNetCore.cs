@@ -5,7 +5,6 @@
 
 using System;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Friflo.Json.Fliox.Hub.AspNetCore
@@ -15,11 +14,6 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         private readonly ILogger logger;
         
         public HubLoggerAspNetCore(ILoggerFactory loggerFactory) {
-            logger = loggerFactory.CreateLogger<HubLoggerAspNetCore>();
-        }
-        
-        public HubLoggerAspNetCore(IServiceProvider services) {
-            var loggerFactory = services.GetService<ILoggerFactory>();
             logger = loggerFactory.CreateLogger<HubLoggerAspNetCore>();
         }
         

@@ -19,7 +19,7 @@ public static class Startup
         builder.WebHost.ConfigureKestrel(options => options.ListenAnyIP(8010));
         var app         = builder.Build();
 
-        httpHost.sharedEnv.Logger = new HubLoggerAspNetCore(app.Services);
+        httpHost.UseAspNetCoreLogger(app.Services);
         
         app.UseWebSockets();
 

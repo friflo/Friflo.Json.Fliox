@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 // Assembly "Fliox.Hub.AspNetCore" uses the 'floating version dependency':
 //      <PackageReference Include="Microsoft.AspNetCore.Http" Version="*" />
@@ -118,6 +119,11 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         public static string GetStartPage(this HttpHost httpHost, IServiceProvider services) {
             var addresses = services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses;
             return GetStartPage(httpHost, addresses);
+        }
+        
+        public static void UseAspNetCoreLogger(this HttpHost httpHost, IServiceProvider services) {
+            var loggerFactory = services.GetService<ILoggerFactory>();
+            httpHost.sharedEnv.Logger = new HubLoggerAspNetCore(loggerFactory);
         }
     }
     
