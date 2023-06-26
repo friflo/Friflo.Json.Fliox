@@ -11,7 +11,8 @@ namespace Demo
     // As a result integration of these classes in other modules or libraries is comparatively easy.
 
     // ---------------------------------- entity models ----------------------------------
-    public class Article {
+    public class Article
+    {
         [Key]       public  long            id { get; set; }
         ///<summary> Descriptive article name - may use Unicodes like 👕 🍏 🍓 </summary>
         [Required]  public  string          name;
@@ -20,20 +21,23 @@ namespace Demo
                     public  DateTime?       created;
     }
 
-    public class Customer {
+    public class Customer
+    {
         [Key]       public  long            id { get; set; }
         [Required]  public  string          name;
                     public  DateTime?       created;
     }
     
-    public class Employee {
+    public class Employee
+    {
         [Key]       public  long            id { get; set; }
         [Required]  public  string          firstName;
                     public  string          lastName;
                     public  DateTime?       created;
     }
 
-    public class Order {
+    public class Order
+    {
         [Key]       public  long            id { get; set; }
         [Relation(nameof(DemoClient.customers))]
                     public  long            customer;
@@ -41,14 +45,16 @@ namespace Demo
                     public  List<OrderItem> items = new List<OrderItem>();
     }
 
-    public class OrderItem {
+    public class OrderItem
+    {
         [Relation(nameof(DemoClient.articles))]
         [Required]  public  long            article;
                     public  int             amount;
                     public  string          name;
     }
 
-    public class Producer {
+    public class Producer
+    {
         [Key]       public  long            id { get; set; }
         [Required]  public  string          name;
         [Relation(nameof(DemoClient.employees))]
@@ -58,12 +64,14 @@ namespace Demo
     
     
     // ---------------------------- command models - aka DTO's ---------------------------
-    public class Operands {
+    public class Operands
+    {
         public  double      left;
         public  double      right;
     }
     
-    public class Fake {
+    public class Fake
+    {
         /// <summary>if false generated entities are nor added to the <see cref="Records"/> result</summary>
         public  bool?       addResults;
         public  int?        articles;
@@ -73,7 +81,8 @@ namespace Demo
         public  int?        producers;
     }
     
-    public class Counts {
+    public class Counts
+    {
         public  int         articles;
         public  int         customers;
         public  int         employees;
@@ -81,7 +90,8 @@ namespace Demo
         public  int         producers;
     }
     
-    public class Records {
+    public class Records
+    {
         /// <summary>contains a filter that can be used to filter the generated entities in a container</summary>
         public  string      info;
         /// <summary>number of entities generated in each container</summary>
