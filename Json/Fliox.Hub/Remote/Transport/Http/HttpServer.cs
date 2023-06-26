@@ -82,12 +82,22 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Development server configuration:
         /// <list type="bullet">
         ///   <item>enable <b>Pub-Sub</b></item>
-        ///   <item>host static web files in <paramref name="folder"/>. Usually: <c>HubExplorer.Path</c></item>
+        ///   <item>host static web files located in given <paramref name="folder"/>. Usually: <c>HubExplorer.Path</c></item>
         ///   <item>add a <b>cluster</b> database</item>
         ///   <item>add a <b>monitor</b> database</item>
         /// </list>
         /// </summary>
-        public static void RunDevHost(string endpoint, HttpHost httpHost, string folder) {
+        /// <remarks>
+        /// Development server config as code: <br/>
+        /// <code>
+        ///     hub.UsePubSub();
+        ///     hub.UseClusterDB();
+        ///     hub.UseMonitorDB();
+        ///     httpHost.UseStaticFiles(HubExplorer.Path);
+        ///     HttpServer.RunHost("http://+:8010/", httpHost);
+        /// </code>
+        /// </remarks>
+        public static void RunDevHost(string endpoint, HttpHost httpHost, string folder = null) {
             var hub = httpHost.hub;
             hub.UsePubSub();
             hub.UseClusterDB();
