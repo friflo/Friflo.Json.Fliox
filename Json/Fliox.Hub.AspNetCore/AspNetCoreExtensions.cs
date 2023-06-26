@@ -2,12 +2,16 @@
 // See LICENSE file in the project root for full license information.
 #if !UNITY_2020_1_OR_NEWER
 
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.DependencyInjection;
 
 // Assembly "Fliox.Hub.AspNetCore" uses the 'floating version dependency':
 //      <PackageReference Include="Microsoft.AspNetCore.Http" Version="*" />
@@ -105,6 +109,15 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
                 }
             }
             return $"http://localhost{httpHost.baseRoute}";
+        }
+        
+        /// <summary>
+        /// Return the start page url intended to be written to the console to simplify debugging.<br/>
+        /// Like: <c>http://localhost:8010/fliox/</c>
+        /// </summary>
+        public static string GetStartPage(this HttpHost httpHost, IServiceProvider services) {
+            var addresses = services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses;
+            return GetStartPage(httpHost, addresses);
         }
     }
     

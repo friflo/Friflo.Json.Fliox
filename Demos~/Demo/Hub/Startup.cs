@@ -3,12 +3,8 @@ using Friflo.Json.Fliox.Hub.AspNetCore;
 using Friflo.Json.Fliox.Hub.Remote;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace DemoHub;
 
@@ -23,8 +19,7 @@ public static class Startup
         builder.WebHost.ConfigureKestrel(options => options.ListenAnyIP(8010));
         var app         = builder.Build();
 
-        var loggerFactory = app.Services.GetService<ILoggerFactory>();
-        httpHost.sharedEnv.Logger = new HubLoggerAspNetCore(loggerFactory);
+        httpHost.sharedEnv.Logger = new HubLoggerAspNetCore(app.Services);
         
         app.UseWebSockets();
 
@@ -38,11 +33,9 @@ public static class Startup
             var requestContext = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false);
             await context.WriteFlioxResponse(requestContext).ConfigureAwait(false);
         });
-        // use app.Start() / app.WaitForShutdown() instead of app.Run() to get startPage
+        // use app.Start() / app.WaitForShutdown() instead of app.Run() to log start page
         app.Start();
-        var addresses   = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses;
-        var startPage   = httpHost.GetStartPage(addresses);
-        Console.WriteLine($"Hub Explorer - {startPage}\n");
+        Console.WriteLine($"Hub Explorer - {httpHost.GetStartPage(app.Services)}\n");
         app.WaitForShutdown();
     }
 }
