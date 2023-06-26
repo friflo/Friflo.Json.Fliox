@@ -18,11 +18,16 @@ namespace DemoTest {
         private static readonly string          DbPath = GetBasePath() + "Demo/Test/DB/main_db";
         private static readonly DatabaseSchema  Schema = DatabaseSchema.Create<DemoClient>();
 
-        /// <summary>create a <see cref="MemoryDatabase"/> clone for every client to avoid side effects by DB mutations</summary>
-        private static FlioxHub CreateDemoHub()
+        private static EntityDatabase CreateDatabase(string dbName)
         {
-            var cloneDB = CreateMemoryDatabaseClone("main_db", DbPath).AddCommands(new DemoCommands());
-            return new FlioxHub(cloneDB);
+            return new MemoryDatabase(dbName, Schema).AddCommands(new DemoCommands());
+        }
+        
+        /// <summary>Seed temporary test database to avoid side effects by DB mutations</summary>
+        private static void Seed(EntityDatabase database)
+        {
+            var seedDB      = new FileDatabase("source_db", DbPath);
+            database.SeedDatabase(seedDB).Wait();
         }
         
         private static string GetBasePath()
@@ -31,18 +36,12 @@ namespace DemoTest {
             return Path.GetFullPath(baseDir);
         }
     
-        private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath)
-        {
-            var referenceDB = new FileDatabase("source_db", srcDatabasePath);
-            var cloneDB     = new MemoryDatabase(dbName, Schema);
-            cloneDB.SeedDatabase(referenceDB).Wait();
-            return cloneDB;
-        }
-        
         [Test]
         public static async Task QueryOrderRelations()
         {
-            var hub         = CreateDemoHub();
+            var database    = CreateDatabase("main_db");
+            Seed(database);
+            var hub         = new FlioxHub(database);
             var client      = new DemoClient(hub);
             var orders      = client.orders.QueryAll();
             var articles    = orders.ReadRelations(client.articles, o => o.items.Select(a => a.article));
@@ -62,7 +61,7 @@ namespace DemoTest {
         [Test]
         public static async Task CreateEntities()
         {
-            var database    = new MemoryDatabase("test").AddCommands(new DemoCommands());
+            var database    = CreateDatabase("test");
             var hub         = new FlioxHub(database);
             var client      = new DemoClient(hub);
             client.articles.Create (new Article { id = 111, name = "Article-1" });
@@ -85,9 +84,10 @@ namespace DemoTest {
         [Test]
         public static async Task DeleteEntities()
         {
-            var hub         = CreateDemoHub();
+            var database    = CreateDatabase("test");
+            Seed(database);
+            var hub         = new FlioxHub(database);
             var client      = new DemoClient(hub);
-            
             var articles    = client.articles.QueryAll();
             var customers   = client.customers.QueryAll();
             await client.SyncTasks();
@@ -115,7 +115,7 @@ namespace DemoTest {
         [Test]
         public static async Task CreateFakeRecords()
         {
-            var database    = new MemoryDatabase("test").AddCommands(new DemoCommands());
+            var database    = CreateDatabase("test");
             var hub         = new FlioxHub(database);
             var client      = new DemoClient(hub);
             var fake        = new Fake { articles = 1, customers = 2, employees = 3, orders = 4, producers = 5};
@@ -143,7 +143,7 @@ namespace DemoTest {
         [Test]
         public static async Task SubscribeChanges()
         {
-            var database        = new MemoryDatabase("test").AddCommands(new DemoCommands());
+            var database        = CreateDatabase("test");
             var hub             = new FlioxHub(database);
             hub.UsePubSub(EventDispatching.Send);    // dispatch events directly to simplify test
             
@@ -173,7 +173,7 @@ namespace DemoTest {
         [Test]
         public static async Task SubscribeMessage()
         {
-            var database        = new MemoryDatabase("test").AddCommands(new DemoCommands());
+            var database        = CreateDatabase("test");
             var hub             = new FlioxHub(database);
             hub.UsePubSub(EventDispatching.Send);    // dispatch events directly to simplify test
             

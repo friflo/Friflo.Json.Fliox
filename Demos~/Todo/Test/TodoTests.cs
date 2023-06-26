@@ -25,10 +25,10 @@ namespace TodoTest {
             return Path.GetFullPath(baseDir);
         }
     
-        private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath, DatabaseService service = null)
+        private static MemoryDatabase CreateMemoryDatabaseClone(string dbName, string srcDatabasePath)
         {
             var referenceDB = new FileDatabase("source_db", srcDatabasePath);
-            var cloneDB     = new MemoryDatabase(dbName, Schema, service);
+            var cloneDB     = new MemoryDatabase(dbName, Schema);
             cloneDB.SeedDatabase(referenceDB).Wait();
             return cloneDB;
         }
