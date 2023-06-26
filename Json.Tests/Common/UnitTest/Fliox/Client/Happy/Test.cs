@@ -277,7 +277,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        internal static async Task RunServer(IServer server, Func<Task> run) {
+        internal static async Task RunServer(IRemoteServer server, Func<Task> run) {
             server.Start();
             Task runTask = null;
             try {

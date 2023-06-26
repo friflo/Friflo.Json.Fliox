@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     ///     <item>Shutdown server: <see cref="Dispose"/></item>
     /// </list>
     /// </remarks>
-    public sealed class HttpServer : IServer, IDisposable, ILogSource
+    public sealed class HttpServer : IRemoteServer, IDisposable, ILogSource
     {
         private  readonly   HttpListener                    listener;
         private             bool                            running;
@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
 
-        // --- IServer
+        // --- IRemoteServer
         // Http server requires setting permission to run an http server.
         // Otherwise exception is thrown on startup: System.Net.HttpListenerException: permission denied.
         // To give access see: [add urlacl - Win32 apps | Microsoft Docs] https://docs.microsoft.com/en-us/windows/win32/http/add-urlacl

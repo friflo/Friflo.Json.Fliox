@@ -16,7 +16,7 @@ using static Friflo.Json.Fliox.Hub.Remote.TransportUtils;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
 {
-    public sealed class UdpServerSync : IHost, IServer, ILogSource, IDisposable
+    public sealed class UdpServerSync : IHost, IRemoteServer, ILogSource, IDisposable
     {
         internal readonly   FlioxHub                                    hub;
         private  readonly   int                                         recvCount;
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Transport.Udp
             sendQueue.Close();    
         }
         
-        // --- IServer
+        // --- IRemoteServer
         public void     Start   () {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             // socket.SendBufferSize    = 10 * 0x10000;

@@ -3,12 +3,12 @@ using Friflo.Json.Fliox.Hub.AspNetCore;
 using Friflo.Json.Fliox.Hub.Remote;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using IServer = Microsoft.AspNetCore.Hosting.Server.IServer;
 
 namespace DemoHub;
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public interface IServer
+    public interface IRemoteServer
     {
         void    Start();
         /// <summary>
