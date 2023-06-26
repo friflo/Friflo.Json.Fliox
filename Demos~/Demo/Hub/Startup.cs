@@ -18,13 +18,13 @@ public static class Startup
 
         httpHost.UseAspNetCoreLogger(app.Services);
         
-        app.UseWebSockets();    // required for Pub-SUb
+        app.UseWebSockets();                        // required for Pub-SUb
 
         app.MapGet("hello/", () => "Hello World");
           
         app.MapRedirect("/", httpHost);             // optional: add redirect to Hub Explorer at http://localhost:8010
         app.MapHost("/fliox/{*path}", httpHost);    // ASP.NET Core 6.0 integration
         
-        app.RunLogUrl(httpHost);                    // same as app.Run(); + logging of start page
+        app.RunLogUrl(httpHost);                    // same as app.Run(); and logging of base URL
     }
 }
