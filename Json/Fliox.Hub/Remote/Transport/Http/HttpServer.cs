@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -66,12 +67,35 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // Get DOMAIN\USER via  PowerShell > $env:UserName / $env:UserDomain
         /// <summary>
         /// Start and run a simple HTTP server using the given <paramref name="httpHost"/>
-        /// on the <paramref name="endpoint"/> using a <see cref="HttpListener"/> of the BCL.  
+        /// on the <paramref name="endpoint"/> using the <see cref="HttpListener"/> of the BCL.  
         /// </summary>
         public static void RunHost(string endpoint, HttpHost httpHost) {
             var server = new HttpServer(endpoint, httpHost);
             server.Start();
             server.Run();
+        }
+        
+        /// <summary>
+        /// Start and run a simple <b>development</b> HTTP server using the given <paramref name="httpHost"/>
+        /// on the <paramref name="endpoint"/> using the <see cref="HttpListener"/> of the BCL.<br/>
+        /// <br/>
+        /// Development server configuration:
+        /// <list type="bullet">
+        ///   <item>enable <b>Pub-Sub</b></item>
+        ///   <item>host static web files in <paramref name="folder"/>. Usually: <c>HubExplorer.Path</c></item>
+        ///   <item>add a <b>cluster</b> database</item>
+        ///   <item>add a <b>monitor</b> database</item>
+        /// </list>
+        /// </summary>
+        public static void RunDevHost(string endpoint, HttpHost httpHost, string folder) {
+            var hub = httpHost.hub;
+            hub.UsePubSub();
+            hub.UseClusterDB();
+            hub.UseMonitorDB();
+            if (folder != null) {
+                httpHost.UseStaticFiles(folder);
+            }
+            RunHost(endpoint, httpHost);
         }
         
         private static HttpListener CreateHttpListener(string[] endpoints) {
