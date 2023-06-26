@@ -36,6 +36,7 @@ namespace DemoHub
             httpHost.UseStaticFiles("www");            // optional - add www/example requests
             
             Startup.Run(args, httpHost); // ASP.NET Core 6
+            // HttpServer.RunHost("http://+:8010/", httpHost); 
         }
     }
 }
