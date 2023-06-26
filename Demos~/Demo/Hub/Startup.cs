@@ -24,8 +24,8 @@ public static class Startup
 
         app.MapGet("hello/", () => "Hello World");
           
-        app.MapRedirect("/", httpHost); // optional: add redirect to Hub Explorer to use http://localhost:8010 for debugging
-        app.MapHost("/fliox/{*path}", httpHost);
+        app.MapRedirect("/", httpHost);             // optional: add redirect to Hub Explorer at http://localhost:8010
+        app.MapHost("/fliox/{*path}", httpHost);    // ASP.NET Core 6.0 integration
         
         // using app.Start() / app.WaitForShutdown() instead of app.Run() to log start page
         app.Start();
