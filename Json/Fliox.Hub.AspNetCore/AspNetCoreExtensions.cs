@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -41,6 +43,28 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         public static async Task HandleFlioxRequest(this HttpContext context, HttpHost httpHost) {
             var requestContext = await ExecuteFlioxRequest(context, httpHost).ConfigureAwait(false);
             await WriteFlioxResponse(context, requestContext).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Adds a redirect to the <b>Hub Explorer</b> of <paramref name="httpHost"/>
+        /// to the <see cref="IEndpointRouteBuilder"/> that matches HTTP requests for the specified pattern.
+        /// </summary>
+        public static void MapRedirect(this IEndpointRouteBuilder app, string pattern, HttpHost httpHost) {
+            app.MapGet(pattern, async context => {
+                context.Response.Redirect(httpHost.baseRoute, false);
+                await context.Response.WriteAsync("redirect");
+            });
+        }
+        
+        /// <summary>
+        /// Adds the <paramref name="httpHost"/> as a <see cref="RouteEndpoint"/> to the <see cref="IEndpointRouteBuilder"/> that matches HTTP requests
+        /// for the specified pattern.
+        /// </summary>
+        public static void MapHost(this IEndpointRouteBuilder app, string pattern, HttpHost httpHost) {
+            app.Map(pattern, async context =>  {
+                var requestContext = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false);
+                await context.WriteFlioxResponse(requestContext).ConfigureAwait(false);
+            });
         }
         
         /// <summary>
