@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;$(StandardFrameworks)</TargetFrameworks>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <!-- as using Sdk="Microsoft.NET.Sdk.Web". <OutputType> is required to fix error:
              Program does not contain a static 'Main' method suitable for an entry -->
         <OutputType>Library</OutputType>
@@ -53,7 +53,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
-      <FrameworkReference Include="Microsoft.AspNetCore.App" />
+      <!-- <FrameworkReference Include="Microsoft.AspNetCore.App" /> -->
       <!-- <PackageReference Include="Microsoft.Extensions.Logging" Version="*" /> -->
       <!-- <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="*" /> -->
       <None Include="..\package-icon.png" Pack="true" PackagePath="" />
