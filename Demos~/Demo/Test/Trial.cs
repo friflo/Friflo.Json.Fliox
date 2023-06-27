@@ -41,7 +41,7 @@ internal static class Trial
     // changing records in 'articles' trigger the subscription handler in this method.  
     private static async Task SubscribeChanges()
     {
-        var hub         = CreateHub("webrtc");
+        var hub         = CreateHub("ws");
         var client      = new DemoClient(hub) { UserId = "admin", Token = "admin" };
         client.articles.SubscribeChanges(Change.All, (changes, context) => {
             foreach (var entity in changes.Patches) {
