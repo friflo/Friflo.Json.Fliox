@@ -35,8 +35,10 @@ namespace TodoHub
             var client  = new TodoClient(context.Hub); 
             var jobs    = client.jobs.Query(job => job.completed == param.Value);
             await client.SyncTasks();
+
             client.jobs.DeleteRange(jobs.Result);
             await client.SyncTasks();
+            
             return jobs.Result.Count;
         }
     }
