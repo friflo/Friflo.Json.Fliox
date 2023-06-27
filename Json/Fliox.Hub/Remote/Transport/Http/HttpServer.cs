@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -75,6 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             server.Run();
         }
         
+        /*
         /// <summary>
         /// Start and run a simple <b>development</b> HTTP server using the given <paramref name="httpHost"/>
         /// on the <paramref name="endpoint"/> using the <see cref="HttpListener"/> of the BCL.<br/>
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         ///     HttpServer.RunHost("http://+:8010/", httpHost);
         /// </code>
         /// </remarks>
-        public static void RunDevHost(string endpoint, HttpHost httpHost, string folder = null) {
+        private static void RunDevHost(string endpoint, HttpHost httpHost, string folder = null) {
             var hub = httpHost.hub;
             hub.UsePubSub();
             hub.UseClusterDB();
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 httpHost.UseStaticFiles(folder);
             }
             RunHost(endpoint, httpHost);
-        }
+        } */
         
         private static HttpListener CreateHttpListener(string[] endpoints) {
             var listener = new HttpListener();

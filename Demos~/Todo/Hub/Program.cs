@@ -12,8 +12,12 @@ namespace TodoHub
             var schema      = DatabaseSchema.Create<TodoClient>();
             var database    = new FileDatabase("main_db", "../Test/DB/main_db", schema); // uses records stored in 'main_db/jobs' folder
             var hub         = new FlioxHub(database);
+            hub.UseClusterDB(); // required by HubExplorer
+            hub.UsePubSub();    // optional - enables Pub-Sub
+            // --- create HttpHost
             var httpHost    = new HttpHost(hub, "/fliox/");
-            HttpServer.RunDevHost("http://+:8010/", httpHost, HubExplorer.Path);
+            httpHost.UseStaticFiles(HubExplorer.Path); // HubExplorer nuget: https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer
+            HttpServer.RunHost("http://+:8010/", httpHost);
         }
     }
 }
