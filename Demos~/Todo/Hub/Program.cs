@@ -29,6 +29,9 @@ namespace TodoHub
         [CommandHandler]
         private static async Task<Result<int>> ClearCompletedJobs(Param<bool> param, MessageContext context)
         {
+            if (!param.Validate(out string error)) {
+                return Result.Error(error);
+            }
             var client  = new TodoClient(context.Hub); 
             var jobs    = client.jobs.Query(job => job.completed == param.Value);
             await client.SyncTasks();
