@@ -6,7 +6,7 @@
 
         <OutputType>Exe</OutputType>
 
-        <LangVersion>9.0</LangVersion>
+        <LangVersion>10.0</LangVersion>
         <!-- EnableDefaultContentItems: false - default content files (*.json) are visible in IDE's -->
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
     </PropertyGroup>
