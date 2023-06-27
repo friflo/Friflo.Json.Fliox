@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace DemoHub;
 
-/// <summary>
-/// Bootstrapping of ASP.NET Core 6.0 and adding a <see cref="HttpHost"/>.
-/// </summary> 
+/// <summary>Bootstrapping of ASP.NET Core 6.0 and adding a <see cref="HttpHost"/> </summary> 
 public static class Startup
 {
     public static void Run(string[] args, HttpHost httpHost)
