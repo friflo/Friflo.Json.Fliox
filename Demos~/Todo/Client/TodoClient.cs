@@ -16,8 +16,9 @@ namespace Todo
         // --- containers
         public  readonly    EntitySet <long, Job>   jobs;
         
-        // --- messages
-        public MessageTask  TestMessage (string param) => SendMessage  ("TestMessage", param);
+        // --- commands
+        /// <summary>Delete all jobs marked as completed / not completed</summary>
+        public CommandTask<int>  ClearCompletedJobs (bool completed) => send.Command<bool,int>(completed);
 
         public TodoClient(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
     }
