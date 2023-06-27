@@ -3,8 +3,6 @@ using Friflo.Json.Fliox.Hub.AspNetCore;
 using Friflo.Json.Fliox.Hub.Remote;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -45,15 +43,16 @@ namespace LabHub
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
-            var httpHost    = app.ApplicationServices.GetService<HttpHost>();
-            var startPage   = httpHost.GetStartPage(app.ServerFeatures.Get<IServerAddressesFeature>()!.Addresses);
+            var services    = app.ApplicationServices;
+            var httpHost    = services.GetService<HttpHost>();
+            var startPage   = httpHost.GetStartPage(services);
             Console.WriteLine($"Hub Explorer - {startPage}\n");
-            httpHost.sharedEnv.Logger = new HubLoggerAspNetCore(loggerFactory);
+            httpHost.UseAspNetCoreLogger(services);
 
             app.UseRouting();
             app.UseWebSockets();
@@ -61,14 +60,8 @@ namespace LabHub
             app.UseEndpoints(endpoints => {
                 endpoints.MapGet("hello/", () => "Hello World");
                 // add redirect only to enable using http://localhost:8010 for debugging
-                endpoints.MapGet("/", async context => {
-                    context.Response.Redirect(httpHost.baseRoute, false);
-                    await context.Response.WriteAsync("redirect");
-                });
-                endpoints.Map("/fliox/{*path}", async context => {
-                    var requestContext = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false);
-                    await context.WriteFlioxResponse(requestContext).ConfigureAwait(false);
-                });
+                endpoints.MapRedirect("/",          httpHost);
+                endpoints.MapHost("/fliox/{*path}", httpHost);
             });
         }
     }
