@@ -7,19 +7,18 @@
 [![CD](https://github.com/friflo/Friflo.Json.Fliox/workflows/CD/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml) 
 
 
-**.NET** library supporting **simple** and **performant** access to **NoSQL** databases via C# or Web clients.  
+**.NET** library supporting **simple** and **performant** access to **SQL & NoSQL** databases via C# or Web clients.  
 Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
 
-The **ORM** client - Object Relational Mapper - is used to access NoSQL databases via .NET.  
-The **Hub** is a service hosting a set of NoSQL databases via an **ASP.NET Core** server.
+The **ORM** client - Object Relational Mapper - is used to access databases via .NET.  
+The **Hub** is a service hosting a set of databases via an **ASP.NET Core** server.
 
 As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) it has similarities to projects like
 [Entity Framework Core](https://en.wikipedia.org/wiki/Entity_Framework),
 [Ruby on Rails](https://en.wikipedia.org/wiki/Ruby_on_Rails),
 [Django](https://en.wikipedia.org/wiki/Django_(web_framework)) or
 [Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)).  
-Fliox sets its focus on **NoSQL** databases.
-This improves performance and bypass the [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch).
+In case of SQL databases Fliox store entities in JSON columns to avoid [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch).
 
 
 **TL;DR**
@@ -125,7 +124,7 @@ Assembly     Friflo.Json.Fliox.Hub.dll  <a href="https://www.nuget.org/pac
 ### **Client**
 📄   [README.md](Json/Fliox.Hub/Client/README.md)
 
-Fliox clients are strongly typed C# classes used to access NoSQL databases.  
+Fliox clients are strongly typed C# classes used to access SQL or NoSQL databases.  
 They are implemented by creating a class e.g. `MyClient` extending `FlioxClient`.  
 The database containers are represented as properties in the derived class `MyClient`.  
 
@@ -142,7 +141,7 @@ The `MyClient` can be used to declare custom database commands using DTO's as in
 ### **Host**
 📄   [README.md](Json/Fliox.Hub/Host/README.md)
 
-A `HttpHost` instance is used to host multiple NoSQL databases.  
+A `HttpHost` instance is used to host multiple databases.  
 It is designed to be integrated into HTTP servers like **ASP.NET Core**.  
 This enables access to hosted databases via HTTP, WebSocket or UDP supporting the following Web API's:
 - REST
