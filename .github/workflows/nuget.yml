@@ -47,5 +47,9 @@ jobs:
         dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.Cosmos.${{ steps.version.outputs.version-without-v }}.nupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
         dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.Explorer.${{ steps.version.outputs.version-without-v }}.nupkg   --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
         dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.GraphQL.${{ steps.version.outputs.version-without-v }}.nupkg    --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.MySQL.${{ steps.version.outputs.version-without-v }}.nupkg      --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.PostgreSQL.${{ steps.version.outputs.version-without-v }}.nupkg --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.SQLite.${{ steps.version.outputs.version-without-v }}.nupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.SQLServer.${{ steps.version.outputs.version-without-v }}.nupkg  --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
 
     
