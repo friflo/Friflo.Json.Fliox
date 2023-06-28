@@ -31,8 +31,8 @@ namespace LabHub
             // Hub Explorer: http://127.0.0.1:8010/fliox/
             switch (server) {
                 case null:
-                case "HttpListener":    HttpServer.RunHost("http://+:8010/", httpHost); return; // HttpListener from BCL
                 case "asp.net3":        StartupAsp3.Run(args, httpHost);                return; // ASP.NET Core 3, 3.1, 5
+                case "HttpListener":    HttpServer.RunHost("http://+:8010/", httpHost); return; // HttpListener from BCL
             }
         }
         

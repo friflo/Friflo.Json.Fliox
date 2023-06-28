@@ -9,9 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace LabHub
 {
-    /// <summary>
-    /// Bootstrapping of ASP.NET Core 3, 3.1, 5 and adding a <see cref="HttpHost"/>.
-    /// </summary> 
+    /// <summary>Bootstrapping of ASP.NET Core 3, 3.1, 5 and adding a <see cref="HttpHost"/>.</summary> 
     public class StartupAsp3
     {
         internal static void Run(string[] args, HttpHost httpHost)
@@ -43,16 +41,13 @@ namespace LabHub
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, HttpHost httpHost)
         {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
-            var services    = app.ApplicationServices;
-            var httpHost    = services.GetService<HttpHost>();
-            var startPage   = httpHost.GetStartPage(services);
-            Console.WriteLine($"Hub Explorer - {startPage}\n");
-            httpHost.UseAspNetCoreLogger(services);
+            Console.WriteLine($"Hub Explorer - { httpHost.GetStartPage(app.ApplicationServices)}\n");
+            httpHost.UseAspNetCoreLogger(app.ApplicationServices);
 
             app.UseRouting();
             app.UseWebSockets();
