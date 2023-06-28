@@ -87,8 +87,8 @@ Compact list of features supported by Clients and Hubs
     - Queries - LINQ expressions
     - Container relations (associations)
     - Entity validation
-    - Messages & Commands (RPC) using DTO's with validation
-- Pub-Sub
+    - Send messages (event) & commands (RPC) with validation
+    - Pub-Sub - entity changes, messages and commands
 - Hub Explorer - the admin page
 - Monitoring
 - Authentication / Authorization
