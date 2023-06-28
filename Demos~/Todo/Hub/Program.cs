@@ -15,6 +15,7 @@ internal static class  Program
         var database    = new FileDatabase("main_db", "../Test/DB/main_db", schema); // records stored in 'main_db/jobs'
         database.AddCommands(new TodoCommands());
         var hub         = new FlioxHub(database);
+        hub.Info.Set ("TodoHub", "dev", "https://github.com/friflo/Fliox.Examples#todo", "rgb(0 171 145)"); // optional
         hub.UseClusterDB(); // required by HubExplorer
         hub.UsePubSub();    // optional - enables Pub-Sub
         // --- create HttpHost
