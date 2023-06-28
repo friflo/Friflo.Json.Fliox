@@ -35,7 +35,7 @@ internal  static class  Program
         httpHost.UseStaticFiles(HubExplorer.Path); // optional - HubExplorer nuget: https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer
         httpHost.UseStaticFiles("www");            // optional - add www/example requests
         
-        Startup.Run(args, httpHost); // ASP.NET Core 6
-        // HttpServer.RunHost("http://+:8010/", httpHost); 
+        Startup.Run(args, httpHost);                        // ASP.NET Core 6
+        // HttpServer.RunHost("http://+:8010/", httpHost);  // http://127.0.0.1:8010/fliox/
     }
 }

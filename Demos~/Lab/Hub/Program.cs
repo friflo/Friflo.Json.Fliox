@@ -28,6 +28,7 @@ namespace LabHub
             // await CreateWebRtcServer(httpHost);
             
             var server = HttpHost.GetArg(args, "--server");
+            // Hub Explorer: http://127.0.0.1:8010/fliox/
             switch (server) {
                 case null:
                 case "HttpListener":    HttpServer.RunHost("http://+:8010/", httpHost); return; // HttpListener from BCL
