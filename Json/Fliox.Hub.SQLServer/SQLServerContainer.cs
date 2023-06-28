@@ -62,10 +62,14 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             return null;
         }
         
+        private async Task<HashSet<string>> GetColumnNamesAsync(SyncConnection connection) {
+            using var reader = await connection.ExecuteReaderAsync($"SELECT TOP 0 * FROM {name}").ConfigureAwait(false);
+            return await SQLUtils.GetColumnNamesAsync(reader).ConfigureAwait(false);
+        }
+        
         public async Task AddVirtualColumns(ISyncConnection syncConnection) {
-            var connection = (SyncConnection)syncConnection;
-            using var reader    = await connection.ExecuteReaderAsync($"SELECT TOP 0 * FROM {name}").ConfigureAwait(false);
-            var columnNames     = await SQLUtils.GetColumnNamesAsync(reader).ConfigureAwait(false);
+            var connection  = (SyncConnection)syncConnection;
+            var columnNames = await GetColumnNamesAsync (connection).ConfigureAwait(false);
             foreach (var column in tableInfo.columns.Values) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
