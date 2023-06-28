@@ -81,20 +81,22 @@ Compact list of features supported by Clients and Hubs
     - REST API - JSON Schema / OpenAPI
     - GraphQL API
     - Batch API - HTTP, WebSocket & UDP
-- CRUD
-- Queries - LINQ expressions
-- Container relations (associations)
-- Database Schema
-- Code generation
-    - C#, Typescript & Kotlin
-    - JSON Schema, OpenAPI Schema & GraphQL Schema
-    - Schema documentation & class diagram
-- JSON Validation - Records & DTO's
-- Messaging & Commands (RPC) using DTO's
+- Database
+    - CRUD operations
+    - Transactions - Begin, Commit & Rollback - for SQL databases
+    - Schema
+    - Queries - LINQ expressions
+    - Container relations (associations)
+    - Entity validation
+    - Messages & Commands (RPC) using DTO's with validation
 - Pub-Sub
 - Hub Explorer - the admin page
 - Monitoring
 - Authentication / Authorization
+- Code generation
+    - C#, Typescript & Kotlin
+    - JSON Schema, OpenAPI Schema & GraphQL Schema
+    - Schema documentation & class diagram
 
 The features are explained within the topics (= namespaces) below.  
 *Topics*: Client, Host, Hub Explorer, DB - support databases, Protocol, Schema & Mapper.
