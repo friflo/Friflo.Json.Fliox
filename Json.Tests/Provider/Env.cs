@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Provider
         internal static             bool    IsSQLite    (string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
         private  static             bool    IsFileSystem            => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
         
-        private  static readonly    string  SQLiteFile  = CommonUtils.GetBasePath() + "test_db.sqlite3";
+        private  static readonly    string  SQLiteFile  = $"Data Source={CommonUtils.GetBasePath() + "test_db.sqlite3"}";
 
         static Env() {
             TEST_DB_PROVIDER = Environment.GetEnvironmentVariable(nameof(TEST_DB_PROVIDER));
@@ -99,7 +99,8 @@ namespace Friflo.Json.Tests.Provider
                 case memory_db:
                     return new MemoryDatabase("memory_db", schema);
                 case sqlite_db:
-                    return new SQLiteDatabase("sqlite_db", CommonUtils.GetBasePath() + "sqlite_db.sqlite3", schema) {
+                    var connection  = $"Data Source={CommonUtils.GetBasePath() + "sqlite_db.sqlite3"}";
+                    return new SQLiteDatabase("sqlite_db", connection, schema) {
                         Synchronous = true // Synchronous to simplify debugging
                     };
                 case test_db:

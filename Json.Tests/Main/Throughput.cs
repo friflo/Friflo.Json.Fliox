@@ -22,7 +22,8 @@ namespace Friflo.Json.Tests.Main
         
 #if !UNITY_5_3_OR_NEWER || SQLITE
         public static async Task SQLiteThroughput() {
-            var database    = new SQLiteDatabase(TestDB, CommonUtils.GetBasePath() + "test_concurrency_db.sqlite3", null);
+            var connection  = $"Data Source={CommonUtils.GetBasePath() + "test_concurrency_db.sqlite3"}";
+            var database    = new SQLiteDatabase(TestDB, connection, null);
             var hub         = new FlioxHub(database);
             await TestHappy.ConcurrentAccess(hub, 4, 0, 1_000_000, false);
         }

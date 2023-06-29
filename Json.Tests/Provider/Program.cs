@@ -45,8 +45,8 @@ namespace Friflo.Json.Tests.Provider
                 await testDb.SeedDatabase(fileDb).ConfigureAwait(false);
                 hub.AddExtensionDB (testDb);
             } */
-            var sqlitePath          = CommonUtils.GetBasePath() + "sqlite_db.sqlite3";
-            hub.AddExtensionDB      (new SQLiteDatabase     ("sqlite_db",       sqlitePath,         schema));
+            var sqliteConnection    = $"Data Source={CommonUtils.GetBasePath() + "sqlite_db.sqlite3"}";
+            hub.AddExtensionDB      (new SQLiteDatabase     ("sqlite_db",       sqliteConnection,         schema));
             
             var mysqlConnection     = EnvConfig.GetConnectionString("mysql");
             hub.AddExtensionDB      (new MySQLDatabase      ("mysql_db",        mysqlConnection,    schema));

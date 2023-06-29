@@ -33,15 +33,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         public   override   string      StorageType => "SQLite " + SQLiteUtils.GetVersion(sqliteDB);
         
         /// <summary>
-        /// Open or create a database with the given <paramref name="path"/>.<br/>
-        /// Create an Im-Memory <paramref name="path"/> is <c>":memory:"</c><br/>
+        /// Open or create a database with the given <paramref name="connectionString"/>.<br/>
+        /// Create an Im-Memory <paramref name="connectionString"/> with <c>"Data Source=:memory:"</c><br/>
         /// See: <a href="https://www.sqlite.org/inmemorydb.html">SQLite - In-Memory Databases</a>
         /// </summary>
         /// <returns></returns>
-        public SQLiteDatabase(string dbName, string path, DatabaseSchema schema, DatabaseService service = null)
+        public SQLiteDatabase(string dbName, string connectionString, DatabaseSchema schema, DatabaseService service = null)
             : base(dbName, AssertSchema<SQLiteDatabase>(schema), service)
         {
-            var rc = raw.sqlite3_open(path, out sqliteDB);
+            var builder = new SQLiteConnectionStringBuilder(connectionString);
+            var rc = raw.sqlite3_open(builder.DataSource, out sqliteDB);
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"sqlite3_open failed. error: {rc}");
         }
         
