@@ -108,8 +108,9 @@ The features are explained within the topics (= namespaces) below.
 
 ### **Direct database access**
 
-Create a **Console Application** and add the following dependencies:
-
+Create a **Console Application** and add the following dependencies:  
+[![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.svg?label=Hub&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub)
+[![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLite.svg?label=Hub.SQLite&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLite)
 ```
 dotnet add package Friflo.Json.Fliox.Hub
 dotnet add package Friflo.Json.Fliox.Hub.SQLite
@@ -168,7 +169,8 @@ Remote access require two console applications:
 
 #### **1. HTTP Server**
 
-Add dependency to **Hub Explorer** to provide a Web UI
+Add dependency to **Hub Explorer** to host a Web UI to browse databases  
+[![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.Explorer.svg?label=Hub.Explorer&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer)
 
 ```
 dotnet add package Friflo.Json.Fliox.Hub.Explorer
@@ -230,17 +232,17 @@ But for simplicity create a copy for now.
 | Database       | class / nuget        | connection string examples                                               
 | -------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | in-memory      | `MemoryDatabase`     | *none*                                                                   
-| file-system    | `FileDatabase`       | path of root folder                                                      
+| file-system    | `FileDatabase`       | *path of root folder*                                                      
 | **SQLite**     | `SQLiteDatabase`     | `"Data Source=test_db.sqlite3"`   
-|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLite.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLite)          | `dotnet add package Friflo.Json.Fliox.Hub.SQLite`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLite.svg?label=Hub.SQLite&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLite)          | `dotnet add package Friflo.Json.Fliox.Hub.SQLite`
 | **MySQL**      | `MySQLDatabase`      | `"Server=localhost;User ID=root;Password=;Database=test_db;"`
-|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)            | `dotnet add package Friflo.Json.Fliox.Hub.MySQL`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?label=Hub.MySQL&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)            | `dotnet add package Friflo.Json.Fliox.Hub.MySQL`
 | **MariaDB**    | `MariaDBDatabase`    | `"Server=localhost;User ID=root;Password=;Database=test_db;"`
-|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)            | `dotnet add package Friflo.Json.Fliox.Hub.MySQL`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?label=Hub.MySQL&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)            | `dotnet add package Friflo.Json.Fliox.Hub.MySQL`
 | **PostgreSQL** | `PostgreSQLDatabase` | `"Host=localhost;Username=postgres;Password=postgres;Database=test_db;"`
-|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.PostgreSQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.PostgreSQL)  | `dotnet add package Friflo.Json.Fliox.Hub.PostgreSQL`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.PostgreSQL.svg?label=Hub.PostgreSQL&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.PostgreSQL)  | `dotnet add package Friflo.Json.Fliox.Hub.PostgreSQL`
 | **SQL Server** | `SQLServerDatabase`  | `"Data Source=.;Integrated Security=True;Database=test_db"`
-|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLServer.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLServer)    | `dotnet add package Friflo.Json.Fliox.Hub.SQLServer`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLServer.svg?label=Hub.SQLServer&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLServer)    | `dotnet add package Friflo.Json.Fliox.Hub.SQLServer`
 
 <br/>
 
@@ -259,7 +261,7 @@ Build and run a server with [**Gitpod**](https://github.com/friflo/Fliox.Example
 
 Namespace    Friflo.Json.Fliox.Hub.*  
 Assembly     Friflo.Json.Fliox.Hub.dll  <a href="https://www.nuget.org/packages/Friflo.Json.Fliox.Hub">
-  <img src="https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.svg?color=blue" alt="CI" align = "center"/>
+  <img src="https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.svg?label=Hub&color=blue" alt="CI" align = "center"/>
 </a>
 
 ### **Client**
@@ -295,7 +297,7 @@ This `FlioxHub` instance need to be passed to the constructor of the `HttpHost`
 ### **Explorer**
 📄   [README.md](Json/Fliox.Hub.Explorer/README.md)  
 Assembly     Friflo.Json.Fliox.Hub.Explorer.dll  <a href="https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer">
-  <img src="https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.Explorer.svg?color=blue" alt="CI" align = "center"/>
+  <img src="https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.Explorer.svg?label=Hub.Explorer&color=blue" alt="CI" align = "center"/>
 </a>
 
 The Hub Explorer is an admin page used to access
@@ -334,7 +336,7 @@ Instead they are using a `FlioxClient` that is optimized to transform API calls 
 
 Namespace    Friflo.Json.Fliox.*  
 Assembly     Friflo.Json.Fliox.dll  <a href="https://www.nuget.org/packages/Friflo.Json.Fliox">
-  <img src="https://img.shields.io/nuget/v/Friflo.Json.Fliox.svg?color=blue" alt="CI" align = "center"/>
+  <img src="https://img.shields.io/nuget/v/Friflo.Json.Fliox.svg?label=Fliox&color=blue" alt="CI" align = "center"/>
 </a>
 
 
