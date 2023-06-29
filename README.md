@@ -7,6 +7,8 @@
 [![CD](https://github.com/friflo/Friflo.Json.Fliox/workflows/CD/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml) 
 
 
+<span style="color:red">*New*</span> 2023-06-29 • Published database providers for: SQLite, MySQL, MariaDB, PostgreSQL & SQL Server
+
 **.NET** library supporting **simple** and **performant** access to **SQL & NoSQL** databases via C# or Web clients.  
 Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
 
