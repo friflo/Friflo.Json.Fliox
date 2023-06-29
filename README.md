@@ -168,6 +168,12 @@ Remote access require two console applications:
 
 #### **1. HTTP Server**
 
+Add dependency to **Hub Explorer** to provide a Web UI
+
+```
+dotnet add package Friflo.Json.Fliox.Hub.Explorer
+```
+
 Replace the code in 📄 `Program.cs` above to host a database by an <b>ASP.NET Core</b> server.
 
 📄 `Program.cs` *(server)*
