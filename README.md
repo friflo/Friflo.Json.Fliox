@@ -52,6 +52,8 @@ Published project on GitHub 2022-08
 ## 🚩 Content
 
 - [Features](#-features)
+- [Quickstart](#-quickstart)
+- [Providers](#-database-providers)
 - [Examples](#-examples)           ❯  [🚀 friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-content)
 - [Hub](#-hub)
     - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
@@ -102,6 +104,134 @@ The features are explained within the topics (= namespaces) below.
 
 <br/>
 
+## 🌠 **Quickstart**
+
+### **Direct database access**
+
+Create a **Console Application** and add the following dependencies:
+
+```
+dotnet add package Friflo.Json.Fliox.Hub
+dotnet add package Friflo.Json.Fliox.Hub.SQLite
+```
+
+Create a `TodoDB` client to specify the database schema.
+
+📄 `TodoDB.cs`
+```csharp
+public class TodoDB : FlioxClient
+{
+    public readonly EntitySet <long, Job>     jobs;
+
+    public TodoDB(FlioxHub hub, string dbName = null) : base(hub, dbName) { }
+}
+
+public class Job
+{
+    public  long        id;
+    public  string      name;
+    public  bool        completed;
+}
+```
+
+The following code create / open a <b>SQLite</b> database by using `TodoDB` as the database schema.  
+Perform some database operations like: `UpsertRange()` & `Query()`
+
+📄 `Program.cs`
+```csharp
+    var schema      = DatabaseSchema.Create<TodoDB>();
+    var database    = new SQLiteDatabase("todo_db", "Data Source=todo.sqlite3", schema);
+    var hub         = new FlioxHub(database);
+
+    var client      = new TodoDB(hub);
+    client.jobs.UpsertRange(new[] {
+        new Job { id = 1, name = "Buy milk", completed = true },
+        new Job { id = 2, name = "Buy cheese", completed = false }
+    });
+    var jobs = client.jobs.Query(job => job.completed == true);
+    await client.SyncTasks(); // execute UpsertRange & Query task
+    
+    foreach (var job in jobs.Result) {
+        Console.WriteLine($"{job.id}: {job.name}");
+    }
+    // output:  1: Buy milk
+```
+
+<br/>
+
+### **Remote database access**
+
+Remote access require two console applications:
+1. HTTP Server hosting a single / multiple databases
+2. HTTP client to access a hosted database
+
+
+#### **1. HTTP Server**
+
+Replace the code in 📄 `Program.cs` above to host a database by an <b>ASP.NET Core</b> server.
+
+📄 `Program.cs` *(server)*
+```csharp
+    var schema      = DatabaseSchema.Create<TodoDB>();
+    var database    = new SQLiteDatabase("todo_db", "Data Source=todo.sqlite3", schema);
+    var hub         = new FlioxHub(database);
+    
+    hub.UseClusterDB(); // required by HubExplorer
+    hub.UsePubSub();
+    var httpHost    = new HttpHost(hub, "/fliox/");
+    httpHost.UseStaticFiles(HubExplorer.Path); // optional: Hub Explorer Web UI
+    var app         = WebApplication.Create();
+    app.UseWebSockets();
+    app.MapHost("/fliox/{*path}", httpHost);
+    app.Run();
+```
+
+Check the **Hub Explorer** is available at http://localhost:5000/fliox/
+
+
+#### **2. HTTP Client**
+
+Create a second **Console application** to access the hosted database via HTTP.
+
+Add required nuget dependencies
+```
+dotnet add package Friflo.Json.Fliox.Hub
+```
+Copy 📄 TodoDB.cs from above to Console project.  
+*Note:* `TodoDB` and its model classes should be in a separate library project and used by client & server.
+But for simplicity create a copy for now.
+
+📄 `Program.cs` *(client)*
+```csharp
+    var hub     = new WebSocketClientHub("todo_db", "http://localhost:5000/fliox/");
+    var client  = new TodoDB(hub);
+    var jobs    = client.jobs.Query(job => job.completed == true);
+    client.jobs.SubscribeChanges(Change.All, (changes, context) => {
+        Console.WriteLine(changes);
+    });
+    await client.SyncTasks(); // execute Query & SubscribeChanges task
+    
+    foreach (var job in jobs.Result) {
+        Console.WriteLine($"{job.id}: {job.name}");
+    }
+    // output:  1: Buy milk
+```
+
+<br/>
+
+## ⛁ **Database providers**
+
+| Database       | class                | connection string examples                                               | nuget             |
+| -------------- | -------------------- | ------------------------------------------------------------------------ |------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| in-memory      | `MemoryDatabase`     | *none*                                                                   |                                                                                                                                                             |
+| file-system    | `FileDatabase`       | path of base folder                                                      |                                                                                                                                                             |
+| **SQLite**     | `SQLiteDatabase`     | `"Data Source=test_db.sqlite3"`                                          | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLite.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLite)         |
+| **MySQL**      | `MySQLDatabase`      | `"Server=localhost;User ID=root;Password=;Database=test_db;"`            | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)           |
+| **MariaDB**    | `MariaDBDatabase`    | `"Server=localhost;User ID=root;Password=;Database=test_db;"`            | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)           |
+| **PostgreSQL** | `PostgreSQLDatabase` | `"Host=localhost;Username=postgres;Password=postgres;Database=test_db;"` | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.PostgreSQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.PostgreSQL) |
+| **SQL Server** | `SQLServerDatabase`  | `"Data Source=.;Integrated Security=True;Database=test_db"`              | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLServer.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLServer)   |
+
+<br/>
 
 ## 🚀 **Examples**
 📄   [friflo/Fliox.Examples](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-content)
