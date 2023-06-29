@@ -171,7 +171,6 @@ Remote access require two console applications:
 
 Add dependency to **Hub Explorer** to host a Web UI to browse databases  
 [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.Explorer.svg?label=Hub.Explorer&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer)
-
 ```
 dotnet add package Friflo.Json.Fliox.Hub.Explorer
 ```
@@ -201,7 +200,8 @@ Check the **Hub Explorer** is available at http://localhost:5000/fliox/
 
 Create a second **Console application** to access the hosted database via HTTP.
 
-Add required nuget dependencies
+Add required nuget dependencies  
+[![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.svg?label=Hub&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub)
 ```
 dotnet add package Friflo.Json.Fliox.Hub
 ```
