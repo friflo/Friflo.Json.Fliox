@@ -221,15 +221,20 @@ But for simplicity create a copy for now.
 
 ## ⛁ **Database providers**
 
-| Database       | class                | connection string examples                                               | nuget             |
-| -------------- | -------------------- | ------------------------------------------------------------------------ |------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| in-memory      | `MemoryDatabase`     | *none*                                                                   |                                                                                                                                                             |
-| file-system    | `FileDatabase`       | path of base folder                                                      |                                                                                                                                                             |
-| **SQLite**     | `SQLiteDatabase`     | `"Data Source=test_db.sqlite3"`                                          | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLite.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLite)         |
-| **MySQL**      | `MySQLDatabase`      | `"Server=localhost;User ID=root;Password=;Database=test_db;"`            | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)           |
-| **MariaDB**    | `MariaDBDatabase`    | `"Server=localhost;User ID=root;Password=;Database=test_db;"`            | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)           |
-| **PostgreSQL** | `PostgreSQLDatabase` | `"Host=localhost;Username=postgres;Password=postgres;Database=test_db;"` | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.PostgreSQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.PostgreSQL) |
-| **SQL Server** | `SQLServerDatabase`  | `"Data Source=.;Integrated Security=True;Database=test_db"`              | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLServer.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLServer)   |
+| Database       | class / nuget        | connection string examples                                               
+| -------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| in-memory      | `MemoryDatabase`     | *none*                                                                   
+| file-system    | `FileDatabase`       | path of root folder                                                      
+| **SQLite**     | `SQLiteDatabase`     | `"Data Source=test_db.sqlite3"`   
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLite.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLite)          | `dotnet add package Friflo.Json.Fliox.Hub.SQLite`
+| **MySQL**      | `MySQLDatabase`      | `"Server=localhost;User ID=root;Password=;Database=test_db;"`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)            | `dotnet add package Friflo.Json.Fliox.Hub.MySQL`
+| **MariaDB**    | `MariaDBDatabase`    | `"Server=localhost;User ID=root;Password=;Database=test_db;"`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)            | `dotnet add package Friflo.Json.Fliox.Hub.MySQL`
+| **PostgreSQL** | `PostgreSQLDatabase` | `"Host=localhost;Username=postgres;Password=postgres;Database=test_db;"`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.PostgreSQL.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.PostgreSQL)  | `dotnet add package Friflo.Json.Fliox.Hub.PostgreSQL`
+| **SQL Server** | `SQLServerDatabase`  | `"Data Source=.;Integrated Security=True;Database=test_db"`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLServer.svg?color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLServer)    | `dotnet add package Friflo.Json.Fliox.Hub.SQLServer`
 
 <br/>
 
