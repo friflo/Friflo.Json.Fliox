@@ -235,7 +235,8 @@ namespace Friflo.Json.Fliox.Schema.Native
             } else {
                 var keyField = mapper.PropFields?.KeyField?.name;
                 var typeId   = mapper.type.IsEnum ? StandardTypeId.Enum : StandardTypeId.None;
-                typeDef = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace, keyField, typeId, Utf8Buffer);
+                var ns       = nonNullableType.Namespace ?? TypeDef.DefaultNamespace;
+                typeDef = new NativeTypeDef(mapper, nonNullableType.Name, ns, keyField, typeId, Utf8Buffer);
             }
             nativeTypes.Add(nonNullableType, typeDef);
             types.      Add(typeDef);

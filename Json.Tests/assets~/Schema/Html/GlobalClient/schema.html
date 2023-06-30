@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport'     content='width=device-width, initial-scale=1'>
+    <meta name='description'  content='Schema - GlobalClient'>
+    <meta name='color-scheme' content='dark light'>
+    <meta name='generated-by' content='https://github.com/friflo/Friflo.Json.Fliox#schema'>
+    <link rel='icon' href='../../../explorer/img/Json-Fliox-53x43.svg' type='image/x-icon'>
+    <title>GlobalClient - schema</title>
+    <style>
+        :root {
+            --mono-font: 'Consolas', 'Courier New', Courier, monospace;
+            --field:    #9c110e;    --field-border:     #9c110e80;
+            --key:      #d400b8;    --key-border:       #d400b880;
+            --disc:     #2b9aa7;
+            --value:    #1d52a7;
+            --type:     #0f54d6;
+            --keyword:  #6f6f6f;
+            --color:    #000;       --highlight:        #008;
+            --bg:       #fff;       --bg-highlight:     #e8e8ff;
+            --bg2:      #fff;
+            --bg-border:#ccc;
+            --selected: #f0f0f0;    --selected-shadow:  #f0f0f0;    --selected-offset: 0px; --selected-radius: 1px;
+            --link:     #0000ee;
+            --visited:  #551a8b;
+            --oas:      #55cf42;
+        }
+        [data-theme='dark'] {
+            --field:    #a8ddfc;     --field-border:    #a8ddfca0;
+            --key:      #e64bd1;     --key-border:      #e64bd1a0;
+            --disc:     #2b9aa7;
+            --value:    #c7907a;
+            --type:     #5a7eff;
+            --keyword:  #bbb;
+            --color:    #fff;       --highlight:        #fff;
+            --bg:       #000;       --bg-highlight:     #4040c0;
+            --bg2:      #000;
+            --bg-border:#666;
+            --selected: #303030;    --selected-shadow:  #303030;    --selected-offset: 0px; --selected-radius: 1px;
+            --link:   	#d0adf0;
+            --visited:  #9e9eff;
+            --oas:      #009900;
+        }
+        body::after {
+            content: '';
+            background-image: url('../../../explorer/img/paint-splatter-docs.svg'); /* from https://svgsilh.com/ */
+            background-repeat: repeat; background-position: 5% 5%;
+            opacity: 1;
+            top: 0; left: 0; bottom: 0; right: 0;
+            position: absolute;
+            z-index: -1;   
+        }
+        a,         a > *           { color: var(--link) }
+        a:visited, a:visited > *   { color: var(--visited) }
+
+        body {
+            background: var(--bg);            
+            color:      var(--color);
+        }
+        body    {
+                    display: grid;
+                    grid-template-areas: 
+                        'body-head  body-head'
+                        'body-nav   body-docs-border'
+                        'body-nav   body-docs';
+                    grid-template-columns:  max-content 1fr;
+                    grid-template-rows:     40px  10px 1fr;
+                    grid-gap:   0px;
+                    margin:     0;
+                    height:     100vh;
+                    width:      100vw;
+                    font-family: sans-serif
+                }
+        @media print {
+            div.docs  { display: inline-table !important; }
+            div.namespace,
+            div.type  { page-break-inside: avoid; }
+            body {
+                    display: grid;
+                    grid-template-areas:  'body-docs';
+                    font-family: sans-serif
+            }
+        }
+
+        .head       { overflow: hidden; }
+        .nav        { overflow-x: hidden; background: var(--bg2); overflow-y: visisble; scrollbar-width: thin; }
+    /*  .nav::-webkit-scrollbar { width: 6px; display: visible; } no effect */
+        .docs-border{ overflow: auto; background: var(--bg2); }
+        .docs       { overflow: auto; background: var(--bg2);  padding-left: 5px; }
+
+        .title      { margin: 0px 0px 0px 20px; height: 26px; padding: 3px 10px; display: inline-flex; background: var(--bg2); box-shadow: 0px 0px  7px  7px #0000000a; border-top-left-radius: 4px; border-top-right-radius: 4px; cursor: pointer; }
+        .diagram    { margin: 0px 20px;         height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg2); box-shadow: 0px 0px 10px 10px #00000018; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+        .languages  { margin: 0px 20px;         height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg2); box-shadow: 0px 0px 10px 10px #00000018; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+        .toggleTheme{ margin: 5px 20px;         height: 24px; padding: 3px 5px;  display: inline-flex; background: var(--bg2); border-radius: 2px; cursor: pointer;  }
+
+        type        { white-space: nowrap; }
+        predef      { color: var(--type); }
+        keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
+        chapter     { font-size: 13px; font-weight: normal; display: block; margin-left: 30px; margin-top: 10px; }
+        chapter a:link,
+        chapter a:visited { color: var(--keyword); }
+        
+        extends     { font-size: 13px; }
+        cmd         { color: var(--value);    font-family: var(--mono-font); }
+        sig         { white-space: nowrap; }
+        key         { color: var(--key);      font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--key-border);   background: var(--bg); }
+        rel         { color: var(--key);  }
+        rel::before { content: ' ➞ '; }
+
+        ref         { color: var(--field);    font-family: var(--mono-font);  }
+        discUnion   { color: var(--bg);       font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field-border); background: var(--field); }        
+        disc        { color: var(--field);    font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field-border); background: var(--bg); }
+        field       { color: var(--field);    font-family: var(--mono-font); }
+        discriminant{ color: var(--value);    font-family: var(--mono-font); }
+
+        desc        { margin-left: 40px; margin-bottom: 10px; display: block; opacity: 0.7; }
+        docs        { margin-left: 10px; display: block; opacity: 0.7; }
+        code        { white-space: pre; display: block; padding-left: 3px;  padding-right: 3px; font-size: 16px; }
+        oas         { margin-left: 5px; background: var(--oas); font-size: 12px; font-weight: bold; border-radius: 3px; padding: 0px 3px; }
+        oas a:visited,
+        oas a:link  { color: white; }
+
+        .namespace  { margin-bottom: 100px; }
+        div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
+        div.nav ul li ul li a div                  { display: flex; align-items: center; }
+        div.nav ul li ul li a div span             { margin-right: 10px; }
+        div.nav ul li ul li a div *:nth-child(1)   { flex-grow:  1; }
+
+        h2      { margin-right: 30px; font-size: 20px; }
+        h3      { margin-right: 20px; margin-left: 20px;  margin-bottom: 5px; }
+        h2.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
+        h3.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
+
+        a.highlight, a.highlight div    { background-color: var(--bg-highlight) !important; color: var(--highlight) !important; }
+        a                               { text-decoration:  none; }
+        ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
+
+        ul > li > a                     { display: block; }
+        ul > li > a:hover               { background: var(--selected); }
+
+        ul > li > ul > li > a           { display: block; }
+        ul > li > ul > li > a>div > key,
+        ul > li > ul > li > a>div > discUnion,
+        ul > li > ul > li > a>div > disc{ font-size: 12px; }
+        
+        ul > li > ul > li:hover         { background: var(--selected); }
+
+        .namespace                          { scroll-margin-top: 5px; }
+        .type                               { scroll-margin-top: 5px; scroll-margin-bottom: 100px;  } /* enable scrolling to next type without aligning next element on top */
+        div.type table                      { margin-left: 40px; }
+        div.type table td table             { margin-left: 10px; } /* discriminants table */
+        div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
+        div.type table tr td:nth-child(2)   { width: 150px; }
+
+        div.enum table tr td:nth-child(1)   { font-family: var(--mono-font); color: var(--value) }
+        div.enum table tr td:nth-child(2)   { width: auto; }
+
+        .commands tr                        { vertical-align: top; }
+        .fields tr                          { vertical-align: top; }
+    </style>
+    <script>
+        // ----------------- theme dark / light
+        function setTheme (mode) {
+            console.log(`toggleTheme(${mode})`);
+            document.documentElement.setAttribute('data-theme', mode);
+            window.localStorage.setItem('theme', mode);
+        }
+        var toggleTheme = () => {
+            let mode = document.documentElement.getAttribute('data-theme');
+            mode = mode == 'dark' ? 'light' : 'dark'
+            setTheme(mode)
+        }
+        var theme = window.localStorage.getItem('theme');
+        if (!theme) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                theme = 'dark';
+            }
+        }
+        setTheme(theme);
+
+        // ----------------- scrolling / selection highlighting 
+        var docsSelection;
+        function scrollTo(id) {
+            var element = undefined;
+            if (id == '') {
+                element = document.querySelector('.docs').firstElementChild.firstElementChild;
+            }
+            if (!element) {
+                element = document.getElementById(id);
+            }
+            if (element) {
+                docsSelection?.classList.remove('selected');
+                docsSelection = element;
+                element.classList.add('selected');
+                const isChapter = id == 'commands' || id == 'messages' || id == 'containers';
+                const parent    = isChapter ? element : element.parentElement;
+                const block     = element.tagName == 'H3' ? 'nearest' : 'start'; // align only namespace to top
+                parent.scrollIntoView({ behavior: 'smooth', block: block });
+
+                // set focus after scrolling finished. Calling focus() directly cancel the scroll animation
+                const anchors  = element.querySelectorAll(`a`);
+                function scrollFinished() {
+                    docs.onscroll = undefined;
+                    anchors[0].focus();
+                    // console.log('scroll finished');
+                }
+                var scrollTimeout = setTimeout(scrollFinished, 50);
+                docs.onscroll = function () {
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(scrollFinished, 50);
+                }
+            }
+        }
+        // Required to support browser 'go back' 
+        window.addEventListener('hashchange', function(event) {
+            const id = window.location.hash.substring(1);
+            // console.log('hashchange', id);
+            scrollTo(id);
+        });
+        window.addEventListener('click', function(event) {
+            const path      = event.composedPath();
+            const anchor    = path.find(el => el.tagName == 'A');
+            if (!anchor || anchor.target)
+                return;
+            const hash = anchor.hash;
+            if (hash != undefined && hash.startsWith('#')) {
+                event.preventDefault();
+                const id = anchor.hash.substring(1);
+                scrollTo(id);
+                window.history.pushState(null, anchor.href, anchor.href);
+            }
+        });
+
+        // ----------------- highlight hovered links
+        var hoveredLinkHash;
+        var highlightedLinks = [];
+
+        window.addEventListener('mousemove', function(event) {
+            const path      = event.composedPath();
+            const anchor    = path.find(el => el.tagName == 'A');
+            if (anchor) {
+                if (anchor.target)
+                    return;
+                if (hoveredLinkHash == anchor.hash)
+                    return;
+                hoveredLinkHash = anchor.hash;
+                const query = `a[href='${hoveredLinkHash}']`;
+                const links  = document.body.querySelectorAll(query);
+                // console.log(`hovered Link ${links.length} ${hoveredLinkHash}`);
+                for (var link of highlightedLinks)  { link.classList.remove('highlight'); }
+                for (var link of links)             { link.classList.add('highlight'); }
+                highlightedLinks = links
+            } else {
+                if (!hoveredLinkHash)
+                    return;
+                // console.log(`hovered Link NONE`);
+                hoveredLinkHash = undefined;
+                for (var link of highlightedLinks)  { link.classList.remove('highlight'); }
+            }
+        });
+    </script>
+</head>
+
+<body>
+
+<!-- ------------------------------- head ------------------------------- -->
+<div style='grid-area: body-head;' class='head'>
+    <div style='display:flex; margin-left: 10px;'>
+        <div style='align-self: self-end;'>
+            <div style='flex-grow: 1;'></div>
+            <h2 class='title'><a style='color: var(--color)' href='#'>GlobalClient</a></h2>
+        </div>
+        <div class='diagram' style='background-color: #363bff;'>
+            <a style='color: white;' href='class-diagram.html' target='_blank' rel='noopener'>class diagram</a>            
+        </div>
+        <div style='flex-grow: 1;'></div>
+        <div class='languages' style='background-color: #363bff;'>
+            <a style='color: white;' href='../index.html'>Typescript, C#, Kotlin, JSON Schema / OpenAPI</a>
+        </div>
+        <!--  🌣 ☀ 🌞︎ ☾ ☽︎ 🌓︎ 🌘︎ 🌒︎ 🌖︎ 🌚︎ 🌙 🌕 🌞 🌛 🔅 -->
+        <div class='toggleTheme' onclick='toggleTheme()'>☀ 🌘︎</div>
+    </div>
+</div>
+
+<!-- ------------------------------- nav ------------------------------- -->
+<div style='grid-area: body-nav;' class='nav'>
+<ul>
+    <li><a href='#Default'>Default</a>
+        <ul>
+            <li><a href='#Default.GlobalClient'><div><span>GlobalClient</span><keyword>schema</keyword></div></a></li>
+            <li><a href='#Default.GlobalJob'><div><span>GlobalJob</span><key>id</key></div></a></li>
+        </ul>
+    </li>
+    <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
+        <ul>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'><div><span>DbContainers</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbMessages'><div><span>DbMessages</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div><span>DbSchema</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'><div><span>DbStats</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'><div><span>ContainerStats</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'><div><span>TransactionResult</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'><div><span>TransactionCommand</span><keyword>enum</keyword></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'><div><span>HostParam</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'><div><span>HostInfo</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'><div><span>HostMemory</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostGCMemory'><div><span>HostGCMemory</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'><div><span>HostCluster</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'><div><span>UserParam</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'><div><span>UserResult</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RequestCount'><div><span>RequestCount</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'><div><span>ClientParam</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'><div><span>ClientResult</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.SubscriptionEvents'><div><span>SubscriptionEvents</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeSubscription'><div><span>ChangeSubscription</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeType'><div><span>ChangeType</span><keyword>enum</keyword></div></a></li>
+        </ul>
+    </li>
+    <li><a href='#Standard'>Standard</a>
+        <ul>
+            <li><a href='#Standard.int64'><div><span>int64</span></div></a></li>
+            <li><a href='#Standard.DateTime'><div><span>DateTime</span></div></a></li>
+            <li><a href='#Standard.int32'><div><span>int32</span></div></a></li>
+        </ul>
+    </li>
+</ul>
+
+</div>
+
+<!-- ---------------------------- docs-border --------------------------- -->
+<div style='grid-area: body-docs-border;' class='docs-border'></div>
+
+<!-- ------------------------------- docs ------------------------------- -->
+<div id='docs' style='grid-area: body-docs;' class='docs'>
+
+<div class='namespace'>
+    <h2 id='Default'>
+        <a href='#Default'>Default</a> <keyword>namespace</keyword>
+    </h2>
+    <div class='type'>
+    <h3 id='Default.GlobalClient'>
+        <a href='#Default.GlobalClient'>GlobalClient</a>
+        <keyword>schema</keyword><oas><a href='../open-api.html#/' target='_blank' title='open schema API as OpenAPI specification (OAS) in new tab'>OAS</a></oas>
+    </h3>
+    <chapter id='containers'><a href='#containers'>containers</a></chapter>
+    <table class='fields'>
+        <tr>
+            <td><field>jobs</field></td>
+            <td><type><key>id</key> ➞ <a href='#Default.GlobalJob'>GlobalJob</a></type></td>
+            <td><oas><a href='../open-api.html#/jobs' target='_blank' title='open jobs API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+        </tr>
+    </table>
+    <chapter id='commands'><a href='#commands'>commands</a><oas><a href='../open-api.html#/commands' target='_blank' title='open commands API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></chapter>
+    <table class='commands'>
+        <tr>
+            <td><cmd>ClearCompletedJobs</cmd></td>
+            <td><sig>(<keyword>param</keyword>: <predef>boolean</predef>) : <a href='#Standard.int32'>int32</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_ClearCompletedJobs' target='_blank' title='open ClearCompletedJobs API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Delete all jobs marked as completed / not completed</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.Echo</cmd></td>
+            <td><sig>(<keyword>param</keyword>: <predef>any</predef>) : <predef>any</predef></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Echo' target='_blank' title='open std.Echo API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Echos the given parameter to assure the database is working appropriately.</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.Delay</cmd></td>
+            <td><sig>(<keyword>param</keyword>: <a href='#Standard.int32'>int32</a>) : <a href='#Standard.int32'>int32</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Delay' target='_blank' title='open std.Delay API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>A command that completes after a specified number of milliseconds.</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.Containers</cmd></td>
+            <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Containers' target='_blank' title='open std.Containers API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>List all database containers</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.Messages</cmd></td>
+            <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbMessages'>DbMessages</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Messages' target='_blank' title='open std.Messages API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>List all database commands and messages</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.Schema</cmd></td>
+            <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Schema' target='_blank' title='open std.Schema API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Return the Schema assigned to the database</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.Stats</cmd></td>
+            <td><sig>(<keyword>param</keyword>: <predef>string</predef> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Stats' target='_blank' title='open std.Stats API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Return the number of entities of all containers (or the given container) of the database</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.TransactionBegin</cmd></td>
+            <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'>TransactionResult</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_TransactionBegin' target='_blank' title='open std.TransactionBegin API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Begin a transaction containing all subsequent <b>SyncTask</b>'s.<br/>
+The transaction ends by either calling <b>SyncTasks</b> or explicit by
+<b>TransactionCommit</b> / <b>TransactionRollback</b></docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.TransactionCommit</cmd></td>
+            <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'>TransactionResult</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_TransactionCommit' target='_blank' title='open std.TransactionCommit API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Commit a transaction started previously with <b>TransactionBegin</b></docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.TransactionRollback</cmd></td>
+            <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'>TransactionResult</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_TransactionRollback' target='_blank' title='open std.TransactionRollback API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Rollback a transaction started previously with <b>TransactionBegin</b></docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.Host</cmd></td>
+            <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'>HostParam</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'>HostInfo</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Host' target='_blank' title='open std.Host API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Returns general information about the Hub like version, host, project and environment name</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.Cluster</cmd></td>
+            <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'>HostCluster</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Cluster' target='_blank' title='open std.Cluster API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>List all databases and their containers hosted by the Hub</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.User</cmd></td>
+            <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'>UserParam</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'>UserResult</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_User' target='_blank' title='open std.User API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Return the groups of the current user. Optionally change the groups of the current user</docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.Client</cmd></td>
+            <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'>ClientParam</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'>ClientResult</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_Client' target='_blank' title='open std.Client API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Return client specific infos and adjust general client behavior like <b>queueEvents</b></docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Default.GlobalJob'>
+        <a href='#Default.GlobalJob'>GlobalJob</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><key>id</key></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>title</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>short job title / name</docs></td>
+        </tr>
+        <tr>
+            <td><field>completed</field></td>
+            <td><type><predef>boolean</predef> | null</type></td>
+        </tr>
+        <tr>
+            <td><field>created</field></td>
+            <td><type><a href='#Standard.DateTime'>DateTime</a> | null</type></td>
+        </tr>
+        <tr>
+            <td><field>description</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+        </tr>
+    </table>
+    </div>
+</div>
+
+<div class='namespace'>
+    <h2 id='Friflo.Json.Fliox.Hub.DB.Cluster'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a> <keyword>namespace</keyword>
+    </h2>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc><b>containers</b> and <b>storage</b> type of a database
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>id</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>database name</docs></td>
+        </tr>
+        <tr>
+            <td><field>storage</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs><b>storage</b> type. e.g. memory, file-system, ...</docs></td>
+        </tr>
+        <tr>
+            <td><field>containers</field></td>
+            <td><type><predef>string</predef>[]</type></td>
+            <td><docs>list of database <b>containers</b></docs></td>
+        </tr>
+        <tr>
+            <td><field>defaultDB</field></td>
+            <td><type><predef>boolean</predef> | null</type></td>
+            <td><docs>true if the database is the default database of a Hub</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbMessages'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbMessages'>DbMessages</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc><b>commands</b> and <b>messages</b> of a database
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>id</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>database name</docs></td>
+        </tr>
+        <tr>
+            <td><field>commands</field></td>
+            <td><type><predef>string</predef>[]</type></td>
+            <td><docs>list of database <b>commands</b></docs></td>
+        </tr>
+        <tr>
+            <td><field>messages</field></td>
+            <td><type><predef>string</predef>[]</type></td>
+            <td><docs>list of database <b>messages</b></docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>A <b>DbSchema</b> can be assigned to a database to specify its <b>containers</b>, <b>commands</b> and <b>messages</b>.<br/>
+The types used by the Schema are declared within <b>jsonSchemas</b>.<br/>
+The type referenced by the tuple <b>schemaName</b> / <b>schemaPath</b> specify the
+database containers, commands and messages.
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>id</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>database name</docs></td>
+        </tr>
+        <tr>
+            <td><field>schemaName</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>refer a type definition of the JSON Schema referenced with <b>schemaPath</b></docs></td>
+        </tr>
+        <tr>
+            <td><field>schemaPath</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>refer a JSON Schema in <b>jsonSchemas</b></docs></td>
+        </tr>
+        <tr>
+            <td><field>jsonSchemas</field></td>
+            <td><type>key ➞ <predef>any</predef></type></td>
+            <td><docs>map of <b>JSON Schemas</b> each containing a set of type definitions.<br/>
+Each JSON Schema is identified by its unique path</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>list of container statistics. E.g. the number of entities per container
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>containers</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'>ContainerStats</a>[] | null</type></td>
+            <td><docs>list of container statistics - number of entities per container</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'>ContainerStats</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>statistics of a single container. E.g. the number of entities in a container
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>name</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>container name</docs></td>
+        </tr>
+        <tr>
+            <td><field>count</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+            <td><docs>number of entities / records within a container</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'>TransactionResult</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>return the execution result performed by a transaction.
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>executed</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'>TransactionCommand</a></type></td>
+            <td><docs>The execution performed by the transaction.<br/>
+In case any task in the transaction failed the transaction performs a <b>Rollback</b></docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type enum'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'>TransactionCommand</a>
+        <keyword>enum</keyword>
+    </h3>
+    <table>
+        <tr><td>Commit</td><td></td></tr>
+        <tr><td>Rollback</td><td></td></tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'>HostParam</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>memory</field></td>
+            <td><type><predef>boolean</predef> | null</type></td>
+        </tr>
+        <tr>
+            <td><field>gcCollect</field></td>
+            <td><type><predef>boolean</predef> | null</type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'>HostInfo</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>general information about a Hub
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>hostName</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>host name used to identify a specific host in a network.</docs></td>
+        </tr>
+        <tr>
+            <td><field>hostVersion</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>host version</docs></td>
+        </tr>
+        <tr>
+            <td><field>flioxVersion</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>Fliox library version</docs></td>
+        </tr>
+        <tr>
+            <td><field>projectName</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>project name</docs></td>
+        </tr>
+        <tr>
+            <td><field>projectWebsite</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>link to a website describing project and Hub</docs></td>
+        </tr>
+        <tr>
+            <td><field>envName</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>environment name. e.g. 'dev', 'test', 'staging', 'prod'</docs></td>
+        </tr>
+        <tr>
+            <td><field>envColor</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>the color used to display the environment name in GUI's using CSS color format.<br/>
+E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs></td>
+        </tr>
+        <tr>
+            <td><field>pubSub</field></td>
+            <td><type><predef>boolean</predef></type></td>
+            <td><docs>is true if host support Pub-Sub.</docs></td>
+        </tr>
+        <tr>
+            <td><field>routes</field></td>
+            <td><type><predef>string</predef>[]</type></td>
+            <td><docs>routes configures by <b>HttpHost</b> - commonly below <c>/fliox</c></docs></td>
+        </tr>
+        <tr>
+            <td><field>memory</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'>HostMemory</a> | null</type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'>HostMemory</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>totalAllocatedBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>totalMemory</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>gc</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostGCMemory'>HostGCMemory</a> | null</type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.HostGCMemory'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostGCMemory'>HostGCMemory</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>See <a href='https://learn.microsoft.com/en-us/dotnet/api/system.gcmemoryinfo'>GCMemoryInfo</a>
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>highMemoryLoadThresholdBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>totalAvailableMemoryBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>memoryLoadBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>heapSizeBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>fragmentedBytes</field></td>
+            <td><type><a href='#Standard.int64'>int64</a></type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'>HostCluster</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>All <b>databases</b> hosted by Hub
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>databases</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>[]</type></td>
+            <td><docs>list of <b>databases</b> hosted by Hub</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserParam'>UserParam</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>addGroups</field></td>
+            <td><type><predef>string</predef>[] | null</type></td>
+        </tr>
+        <tr>
+            <td><field>removeGroups</field></td>
+            <td><type><predef>string</predef>[] | null</type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.UserResult'>UserResult</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>roles</field></td>
+            <td><type><predef>string</predef>[]</type></td>
+        </tr>
+        <tr>
+            <td><field>groups</field></td>
+            <td><type><predef>string</predef>[]</type></td>
+        </tr>
+        <tr>
+            <td><field>clients</field></td>
+            <td><type><predef>string</predef>[]</type></td>
+        </tr>
+        <tr>
+            <td><field>counts</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RequestCount'>RequestCount</a>[]</type></td>
+            <td><docs>number executed requests and tasks per database</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.RequestCount'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RequestCount'>RequestCount</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>number of requests and tasks executed per database
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>db</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>database name</docs></td>
+        </tr>
+        <tr>
+            <td><field>requests</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><docs>number of executed requests</docs></td>
+        </tr>
+        <tr>
+            <td><field>tasks</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><docs>number of executed tasks</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientParam'>ClientParam</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>ensureClientId</field></td>
+            <td><type><predef>boolean</predef> | null</type></td>
+            <td><docs>Return the client id set in <b>SyncRequest</b> or creates a new one in case is was not set.</docs></td>
+        </tr>
+        <tr>
+            <td><field>queueEvents</field></td>
+            <td><type><predef>boolean</predef> | null</type></td>
+            <td><docs>If <b>false</b> the hub try to send events to a client when the events are emitted.
+Sending events to a disconnected client will never arrive. <br/>
+If <b>true</b> the hub will store all unacknowledged events for a client in a FIFO queue and send them on reconnects.</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ClientResult'>ClientResult</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>queueEvents</field></td>
+            <td><type><predef>boolean</predef></type></td>
+            <td><docs>returns true if the host queue events for the client in case of disconnects</docs></td>
+        </tr>
+        <tr>
+            <td><field>queuedEvents</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><docs>return number of queued events not acknowledged by the client.
+Events are queued only if the client instruct the Hub to queue events by setting <b>queueEvents</b> = true</docs></td>
+        </tr>
+        <tr>
+            <td><field>clientId</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>return the client id set in the <b>SyncRequest</b>. Can be null.<br/>
+A new client id is created in case any task requires a client id and the <b>SyncRequest</b> did not set a client id.<br/>
+E.g. <b>ensureClientId</b> = true or <b>queueEvents</b> = true</docs></td>
+        </tr>
+        <tr>
+            <td><field>subscriptionEvents</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.SubscriptionEvents'>SubscriptionEvents</a> | null</type></td>
+            <td><docs>number of sent or queued client events and its message and change subscriptions</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.SubscriptionEvents'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.SubscriptionEvents'>SubscriptionEvents</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>number of sent or queued client events and its message and change subscriptions
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>seq</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><docs>number of events sent to a client</docs></td>
+        </tr>
+        <tr>
+            <td><field>queued</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><docs>number of queued events not acknowledged by a client</docs></td>
+        </tr>
+        <tr>
+            <td><field>queueEvents</field></td>
+            <td><type><predef>boolean</predef></type></td>
+            <td><docs>true if client is instructed to queue events for reliable event delivery in case of reconnects</docs></td>
+        </tr>
+        <tr>
+            <td><field>connected</field></td>
+            <td><type><predef>boolean</predef></type></td>
+            <td><docs>true if client is connected. Non remote client are always connected</docs></td>
+        </tr>
+        <tr>
+            <td><field>endpoint</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>The endpoint of the client events are sent to.<br/>
+E.g. <c>ws:[::1]:52089</c> for WebSockets, <c>udp:127.0.0.1:60005</c> for UDP or <c>in-process</c></docs></td>
+        </tr>
+        <tr>
+            <td><field>messageSubs</field></td>
+            <td><type><predef>string</predef>[] | null</type></td>
+            <td><docs>message / command subscriptions of a client</docs></td>
+        </tr>
+        <tr>
+            <td><field>changeSubs</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeSubscription'>ChangeSubscription</a>[] | null</type></td>
+            <td><docs>change subscriptions of a client</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.ChangeSubscription'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeSubscription'>ChangeSubscription</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>change subscription for a specific container
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>container</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>name of subscribed container</docs></td>
+        </tr>
+        <tr>
+            <td><field>changes</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeType'>ChangeType</a>[]</type></td>
+            <td><docs>type of subscribed changes like create, upsert, delete and patch</docs></td>
+        </tr>
+        <tr>
+            <td><field>filter</field></td>
+            <td><type><predef>string</predef> | null</type></td>
+            <td><docs>filter to narrow the amount of change events</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type enum'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.ChangeType'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ChangeType'>ChangeType</a>
+        <keyword>enum</keyword>
+    </h3>
+    <desc>Filter type used to specify the type of an entity change</desc>
+    <table>
+        <tr><td>create</td><td><docs>filter change events of created entities.</docs></td></tr>
+        <tr><td>upsert</td><td><docs>filter change events of upserted entities.</docs></td></tr>
+        <tr><td>merge</td><td><docs>filter change events of entity patches.</docs></td></tr>
+        <tr><td>delete</td><td><docs>filter change events of deleted entities.</docs></td></tr>
+    </table>
+    </div>
+</div>
+
+<div class='namespace'>
+    <h2 id='Standard'>
+        <a href='#Standard'>Standard</a> <keyword>namespace</keyword>
+    </h2>
+    <div class='type'>
+    <h3 id='Standard.int64'>
+        <a href='#Standard.int64'>int64</a>
+    </h3>
+    <desc>signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]<br/>number in JavaScript.  Range: [-9007199254740991, 9007199254740991]</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.DateTime'>
+        <a href='#Standard.DateTime'>DateTime</a>
+    </h3>
+    <desc>timestamp as RFC 3339 + milliseconds</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.int32'>
+        <a href='#Standard.int32'>int32</a>
+    </h3>
+    <desc>signed integer 32-bit. Range: [-2147483648, 2147483647]</desc>
+    </div>
+</div>
+
+</div>
+
+</body>
+</html>

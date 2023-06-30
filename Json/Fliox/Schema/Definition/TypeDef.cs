@@ -94,9 +94,12 @@ namespace Friflo.Json.Fliox.Schema.Definition
         /// <summary>Map of class fields if <see cref="TypeDef"/> is a class. Otherwise null</summary>
         private             Dictionary<string,FieldDef> fieldMap;
         internal            SchemaInfo                  schemaInfo;
+        
+        public const string DefaultNamespace = "Default";
 
         
         protected TypeDef (string name, string @namespace, string keyField, StandardTypeId typeId, string doc, in Utf8String nameUtf8) {
+            if (@namespace == null) throw new ArgumentNullException(nameof(@namespace));
             fullName        = @namespace + "#" + name;
             Name            = name;
             this.nameUtf8   = nameUtf8;

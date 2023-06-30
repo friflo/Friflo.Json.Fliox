@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 
@@ -132,24 +133,25 @@ namespace Friflo.Json.Fliox.Schema.Definition
     
     internal sealed class TypeDefKey
     {
-        private readonly    string  @namespace;
         private readonly    string  name;
+        private readonly    string  qualifiedName;
         
         internal TypeDefKey(string @namespace, string name) {
-            this.@namespace = @namespace;
-            this.name       = name;
+            if (@namespace == null) throw new ArgumentNullException(nameof(@namespace));
+            this.qualifiedName  = $"{@namespace}.{name}";
+            this.name           = name;
         }
 
-        public override string ToString() => $"{@namespace}.{name}";
+        public override string ToString() => qualifiedName;
 
         public override int GetHashCode() {
-            return @namespace.GetHashCode() ^ name.GetHashCode();
+            return qualifiedName.GetHashCode();
         }
 
         public override bool Equals(object obj) {
             // ReSharper disable once PossibleNullReferenceException
             var other = (TypeDefKey)obj; // boxes - doesn't matter
-            return @namespace == other.@namespace && name == other.name;
+            return qualifiedName == other.qualifiedName;
         }
     }
 }

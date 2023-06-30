@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         }
         
         public JsonTypeDef (string name, IUtf8Buffer buffer, StandardTypeId typeId) :
-            base (name, null, null, typeId, null, buffer.Add(name))
+            base (name, "Standard", null, typeId, null, buffer.Add(name))
         {
             this.name   = name;
         }

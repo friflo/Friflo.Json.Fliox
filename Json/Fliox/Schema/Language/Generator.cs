@@ -157,7 +157,6 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private string Strip (string ns) {
-            ns  = ns ?? "default";
             foreach (var replacement in replacements) {
                 var search = replacement.@namespace;
                 var pos = ns.IndexOf(search, StringComparison.Ordinal);
