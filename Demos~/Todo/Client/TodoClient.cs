@@ -4,7 +4,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable All
-namespace Todo;
+
 
 /// <summary>
 /// The <see cref="TodoClient"/> offer two functionalities: <br/>
