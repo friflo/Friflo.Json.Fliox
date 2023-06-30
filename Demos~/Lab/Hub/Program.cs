@@ -28,11 +28,11 @@ namespace LabHub
             // await CreateWebRtcServer(httpHost);
             
             var server = HttpHost.GetArg(args, "--server");
-            // Hub Explorer: http://127.0.0.1:8010/fliox/
+            // Hub Explorer: http://localhost:5000/fliox/
             switch (server) {
                 case null:
                 case "asp.net3":        StartupAsp3.Run(args, httpHost);                return; // ASP.NET Core 3, 3.1, 5
-                case "HttpListener":    HttpServer.RunHost("http://+:8010/", httpHost); return; // HttpListener from BCL
+                case "HttpListener":    HttpServer.RunHost("http://localhost:5000/", httpHost); return; // HttpListener from BCL
             }
         }
         

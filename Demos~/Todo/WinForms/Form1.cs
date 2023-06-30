@@ -21,7 +21,7 @@ public partial class Form1 : Form
 
 	private async Task Init()
 	{
-		var hub = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
+		var hub = new WebSocketClientHub("main_db", "ws://localhost:5000/fliox/");
 		client = new TodoClient(hub) { UserId = "admin", Token = "admin" };
 		client.SetEventProcessor(new EventProcessorContext());
 
@@ -51,7 +51,7 @@ public partial class Form1 : Form
 
 	private void openExplorer_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 	{
-		ProcessStartInfo sInfo = new ProcessStartInfo("http://localhost:8010/fliox/") { UseShellExecute = true };
+		ProcessStartInfo sInfo = new ProcessStartInfo("http://localhost:5000/fliox/") { UseShellExecute = true };
 		System.Diagnostics.Process.Start(sInfo);
 	}
 }

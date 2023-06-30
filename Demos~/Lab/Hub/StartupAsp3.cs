@@ -24,9 +24,9 @@ namespace LabHub
                         webBuilder
                             .ConfigureServices(services => services.AddSingleton(httpHost))
                             .UseStartup<StartupAsp3>()
-                            // .UseKestrel(options => {options.Listen(IPAddress.Loopback, 8010); }) // use http instead of https
+                            // .UseKestrel(options => {options.Listen(IPAddress.Loopback, 5000); }) // use http instead of https
                             .UseKestrel()
-                            .UseUrls("http://*:8010") // required for Docker
+                            .UseUrls("http://localhost:5000") // required for Docker
                 ).ConfigureLogging(logging => {
                     // single line logs
                     logging.ClearProviders();
@@ -54,7 +54,7 @@ namespace LabHub
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapGet("hello/", () => "Hello World");
-                // add redirect only to enable using http://localhost:8010 for debugging
+                // add redirect only to enable using http://localhost:5000 for debugging
                 endpoints.MapRedirect("/",          httpHost);
                 endpoints.MapHost("/fliox/{*path}", httpHost);
             });

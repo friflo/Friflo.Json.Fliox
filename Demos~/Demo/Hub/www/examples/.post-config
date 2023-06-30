@@ -1,6 +1,6 @@
 {
   "endpoints": [
-    { "fileMatch": ["*.json"], "url": "http://localhost:8010/" }
+    { "fileMatch": ["*.json"], "url": "http://localhost:5000/" }
   ],
   "headers": {
     "Connection":   "Keep-Alive"

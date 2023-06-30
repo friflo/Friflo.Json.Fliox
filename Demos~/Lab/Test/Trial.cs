@@ -59,8 +59,8 @@ namespace LabTest {
         private static FlioxHub CreateHub(string option)
         {
             switch (option) {
-                case "http":    return new HttpClientHub              ("main_db", "http://localhost:8010/fliox/");
-                case "ws":      return new WebSocketClientHub         ("main_db", "ws://localhost:8010/fliox/");
+                case "http":    return new HttpClientHub              ("main_db", "http://localhost:5000/fliox/");
+                case "ws":      return new WebSocketClientHub         ("main_db", "ws://localhost:5000/fliox/");
                 case "udp":     return new UdpSocketClientHub         ("main_db", "localhost:5000");
             //  case "webrtc":  return new RtcSocketClientHub         ("main_db", "ws://localhost:8011/fliox/?host=abc", new WebRtcConfig { IceServerUrls = new [] { "stun:stun.sipsorcery.com" } });
                 case "file":    return new FlioxHub(new FileDatabase  ("main_db", "./DB/main_db"));

@@ -205,7 +205,7 @@ frames  = number of messages send / received events
         
         private static SocketClientHub CreateClient() {
             switch (SocketType) {
-                case "ws":          return new WebSocketClientHub    ("main_db", "ws://127.0.0.1:8010/fliox/");
+                case "ws":          return new WebSocketClientHub    ("main_db", "ws://127.0.0.1:5000/fliox/");
                 case "udp":         return new UdpSocketClientHub    ("main_db", "127.0.0.1:5000"); 
                 case "udp-sync":    return new UdpSocketSyncClientHub("main_db", "127.0.0.1:5000");
             //  case "webrtc":      return new RtcSocketClientHub    ("main_db", "ws://127.0.0.1:8011/fliox/?host=abc", new WebRtcConfig { IceServerUrls = new [] { "stun:stun.sipsorcery.com" } });

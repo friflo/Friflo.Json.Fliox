@@ -34,7 +34,7 @@ namespace TodoWPF
 
 		private async Task Init()
 		{
-			var hub = new WebSocketClientHub("main_db", "ws://localhost:8010/fliox/");
+			var hub = new WebSocketClientHub("main_db", "ws://localhost:5000/fliox/");
 			client = new TodoClient(hub) { UserId = "admin", Token = "admin" };
 			client.SetEventProcessor(new EventProcessorContext());
 
@@ -71,7 +71,7 @@ namespace TodoWPF
 
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
 		{			
-			ProcessStartInfo sInfo = new ProcessStartInfo("http://localhost:8010/fliox/") { UseShellExecute = true };
+			ProcessStartInfo sInfo = new ProcessStartInfo("http://localhost:5000/fliox/") { UseShellExecute = true };
 			System.Diagnostics.Process.Start(sInfo);
 		}
 	}

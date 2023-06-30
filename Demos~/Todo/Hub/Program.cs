@@ -20,7 +20,7 @@ internal static class  Program
         // --- create HttpHost
         var httpHost    = new HttpHost(hub, "/fliox/");
         httpHost.UseStaticFiles(HubExplorer.Path); // nuget: https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer
-        HttpServer.RunHost("http://+:8010/", httpHost); // http://127.0.0.1:8010/fliox/
+        HttpServer.RunHost("http://localhost:5000/", httpHost); // http://localhost:5000/fliox/
     }
 }
 
