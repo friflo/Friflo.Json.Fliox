@@ -159,6 +159,11 @@ Perform some database operations like: `UpsertRange()` & `Query()`
     // output:  1: Buy milk
 ```
 
+Run the application
+```
+dotnet run
+```
+
 <br/>
 
 ### **Remote database access**
@@ -194,20 +199,32 @@ Replace the code in 📄 `Program.cs` above to host a database by an <b>ASP.NET 
     app.Run();
 ```
 
-Check the **Hub Explorer** is available at http://localhost:5000/fliox/
-
-The C# documentation of `TodoDB` and other model classes can be made available in the Hub Explorer by adding the following xml snippet to the *.csproj.  
-This configuration will copy the *.xml files next to the *.dll files. The server read and add the documentation to schema definition.
-
-```xml
-    <!-- Copy XML files from all PackageReferences to output dir -->
-    <Target Name="_ResolveCopyLocalNuGetPkgXmls" AfterTargets="ResolveReferences">
-        <ItemGroup>
-        <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).xml')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)'!='' and Exists('%(RootDir)%(Directory)%(Filename).xml')" />
-        </ItemGroup>
-    </Target>
+Start the server
+```
+dotnet run
 ```
 
+Check the **Hub Explorer** is available at http://localhost:5000/fliox/
+
+*C# documentation in Hub Explorer*
+
+The C# documentation of `TodoDB` and other model classes can utilized in the Hub Explorer.  
+Therefor add the following xml snippet to the *.csproj. It will copy the *.xml files next to the *.dll files.  
+The server read and add the documentation to schema definition.
+
+```xml
+  <PropertyGroup>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+  <!-- Copy XML files from all PackageReferences to output dir -->
+  <Target Name="_ResolveCopyLocalNuGetPkgXmls" AfterTargets="ResolveReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).xml')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)'!='' and Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+    </ItemGroup>
+  </Target>
+```
+
+<br/>
 
 #### **2. HTTP Client**
 
@@ -236,6 +253,11 @@ But for simplicity create a copy for now.
         Console.WriteLine($"{job.id}: {job.name}");
     }
     // output:  1: Buy milk
+```
+
+Run the client application
+```
+dotnet run
 ```
 
 <br/>
