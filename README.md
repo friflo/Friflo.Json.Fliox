@@ -137,7 +137,7 @@ public class Job
 ```
 
 The following code create / open a <b>SQLite</b> database by using `TodoDB` as the database schema.  
-Perform some database operations like: `UpsertRange()` & `Query()`
+It also perform some database operations like: `UpsertRange()` & `Query()`
 
 📄 `Program.cs`
 ```csharp
@@ -168,14 +168,15 @@ dotnet run
 
 ### **Remote database access**
 
-Remote access require two console applications:
-1. HTTP Server hosting a single / multiple databases
+Remote database access - client / servers setup - require two console applications:
+1. HTTP server hosting a single or multiple databases
 2. HTTP client to access a hosted database
 
 
 #### **1. HTTP Server**
 
-Add dependency to **Hub Explorer** to host a Web UI to browse databases  
+Add dependency to **Hub Explorer** to host a Web UI to browse databases.  
+The **Hub Explorer** is optional but useful for development.  
 [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.Explorer.svg?label=Hub.Explorer&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer)
 ```
 dotnet add package Friflo.Json.Fliox.Hub.Explorer
@@ -199,12 +200,10 @@ Replace the code in 📄 `Program.cs` above to host a database by an <b>ASP.NET 
     app.Run();
 ```
 
-Start the server
+Start the server and check the **Hub Explorer** is available at http://localhost:5000/fliox/
 ```
 dotnet run
 ```
-
-Check the **Hub Explorer** is available at http://localhost:5000/fliox/
 
 *C# documentation in Hub Explorer*
 
