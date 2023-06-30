@@ -111,7 +111,7 @@ The features are explained within the topics (= namespaces) below.
 
 Create a **Console Application** and add the following dependencies:  
 [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.svg?label=Hub&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub)
-[![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLite.svg?label=Hub.SQLite&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLite)
+[![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLite.svg?label=SQLite&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLite)
 ```
 dotnet add package Friflo.Json.Fliox.Hub
 dotnet add package Friflo.Json.Fliox.Hub.SQLite
@@ -235,15 +235,15 @@ But for simplicity create a copy for now.
 | in-memory      | `MemoryDatabase`     | *none*                                                                   
 | file-system    | `FileDatabase`       | *path of root folder*                                                      
 | **SQLite**     | `SQLiteDatabase`     | `"Data Source=test_db.sqlite3"`   
-|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLite.svg?label=Hub.SQLite&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLite)          | `dotnet add package Friflo.Json.Fliox.Hub.SQLite`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLite.svg?label=SQLite&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLite)          | `dotnet add package Friflo.Json.Fliox.Hub.SQLite`
 | **MySQL**      | `MySQLDatabase`      | `"Server=localhost;User ID=root;Password=;Database=test_db;"`
-|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?label=Hub.MySQL&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)            | `dotnet add package Friflo.Json.Fliox.Hub.MySQL`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?label=MySQL&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)            | `dotnet add package Friflo.Json.Fliox.Hub.MySQL`
 | **MariaDB**    | `MariaDBDatabase`    | `"Server=localhost;User ID=root;Password=;Database=test_db;"`
-|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?label=Hub.MySQL&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)            | `dotnet add package Friflo.Json.Fliox.Hub.MySQL`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.MySQL.svg?label=MySQL&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.MySQL)            | `dotnet add package Friflo.Json.Fliox.Hub.MySQL`
 | **PostgreSQL** | `PostgreSQLDatabase` | `"Host=localhost;Username=postgres;Password=postgres;Database=test_db;"`
-|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.PostgreSQL.svg?label=Hub.PostgreSQL&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.PostgreSQL)  | `dotnet add package Friflo.Json.Fliox.Hub.PostgreSQL`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.PostgreSQL.svg?label=PostgreSQL&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.PostgreSQL)  | `dotnet add package Friflo.Json.Fliox.Hub.PostgreSQL`
 | **SQL Server** | `SQLServerDatabase`  | `"Data Source=.;Integrated Security=True;Database=test_db"`
-|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLServer.svg?label=Hub.SQLServer&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLServer)    | `dotnet add package Friflo.Json.Fliox.Hub.SQLServer`
+|                | [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.SQLServer.svg?label=SQLServer&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.SQLServer)    | `dotnet add package Friflo.Json.Fliox.Hub.SQLServer`
 
 <br/>
 
