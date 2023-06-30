@@ -196,6 +196,18 @@ Replace the code in 📄 `Program.cs` above to host a database by an <b>ASP.NET 
 
 Check the **Hub Explorer** is available at http://localhost:5000/fliox/
 
+The C# documentation of `TodoDB` and other model classes can be made available in the Hub Explorer by adding the following xml snippet to the *.csproj.  
+This configuration will copy the *.xml files next to the *.dll files. The server read and add the documentation to schema definition.
+
+```xml
+    <!-- Copy XML files from all PackageReferences to output dir -->
+    <Target Name="_ResolveCopyLocalNuGetPkgXmls" AfterTargets="ResolveReferences">
+        <ItemGroup>
+        <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).xml')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)'!='' and Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+        </ItemGroup>
+    </Target>
+```
+
 
 #### **2. HTTP Client**
 
