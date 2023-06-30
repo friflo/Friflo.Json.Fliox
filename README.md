@@ -207,7 +207,7 @@ dotnet run
 
 *C# documentation in Hub Explorer*
 
-The C# documentation of `TodoDB` and other model classes can utilized in the Hub Explorer.  
+The C# documentation of `TodoDB` and other model classes can be utilized in the Hub Explorer.  
 Therefor add the following xml snippet to the *.csproj. It will copy the *.xml files next to the *.dll files.  
 The server read and add the documentation to schema definition.
 
@@ -254,7 +254,7 @@ But for simplicity create a copy for now.
     // output:  1: Buy milk
 ```
 
-Run the client application
+Ensure the server is running and start the client application
 ```
 dotnet run
 ```
