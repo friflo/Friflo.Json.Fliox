@@ -323,9 +323,10 @@ namespace Friflo.Json.Fliox.Schema.Language
         {
             if (sb.Length > 0)
                 sb.Append(",");
-            var querySb = new StringBuilder();
-            var queryStr = "";
-            var descriptionStr = description == null ? "" : $@"
+            var querySb         = new StringBuilder();
+            var summaryStr      = JsonSchemaGenerator.GetDoc("", summary, "");
+            var queryStr        = "";
+            var descriptionStr  = description == null ? "" : $@"
         ""description"":    ""{description}"","; 
             if (queryParams != null) {
                 foreach (var queryParam in queryParams) {
@@ -345,7 +346,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var responseStr = response.Get();
             var methodStr = $@"
       ""{method}"": {{
-        ""summary"":    ""{summary}"",{descriptionStr}
+        ""summary"":    {summaryStr},{descriptionStr}
         ""tags"":       [""{tag}""],{queryStr}{requestStr}
         ""responses"": {{
           ""200"": {{             

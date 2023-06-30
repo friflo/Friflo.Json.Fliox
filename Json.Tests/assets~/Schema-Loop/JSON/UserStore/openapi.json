@@ -254,9 +254,7 @@
     },
     "/?cmd=std.TransactionBegin": {
       "post": {
-        "summary":    "Begin a transaction containing all subsequent <b>SyncTask</b>'s.<br/>
-The transaction ends by either calling <b>SyncTasks</b> or explicit by
-<b>TransactionCommit</b> / <b>TransactionRollback</b>",
+        "summary":    "Begin a transaction containing all subsequent <b>SyncTask</b>'s.<br/>\nThe transaction ends by either calling <b>SyncTasks</b> or explicit by\n<b>TransactionCommit</b> / <b>TransactionRollback</b>",
         "tags":       ["commands"],
         "responses": {
           "200": {             
