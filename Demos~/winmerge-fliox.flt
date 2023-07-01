@@ -24,6 +24,7 @@ f: \.cache$ ## ??
 f: \.resource$ ## Compiled resource file.
 f: \.xfrm ## ??
 f: \.bak$ ## backup
+f: \.sqlite3
 
 d: \\\.svn$ ## Subversion working copy
 d: \\_svn$  ## Subversion working copy ASP.NET Hack
