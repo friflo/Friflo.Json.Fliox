@@ -7,14 +7,12 @@ This package is part of the project described below.
 **Content**  
 Contains the database provider for [Microsoft SQL Server](https://www.microsoft.com/sql-server)
 
+This package depends on the nuget package: `System.Data.SqlClient`  
+[![nuget](https://img.shields.io/nuget/v/System.Data.SqlClient.svg?label=System.Data.SqlClient&color=blue)](https://www.nuget.org/packages/System.Data.SqlClient)
 
-## Project
+Documentation of the **connection string** used in `SQLServerDatabase()` see:  
+[SqlConnection.ConnectionString - System.Data.SqlClient](https://learn.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlconnection.connectionstring)
 
-**JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
-Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
-
-The **ORM** client - Object Relational Mapper - is used to access NoSQL databases via .NET.  
-The **Hub** is a service hosting a set of NoSQL databases via an **ASP.NET Core** server.
 
 
 ## Links

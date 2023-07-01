@@ -8,14 +8,12 @@ This package is part of the project described below.
 Contains the database provider for [MySQL](https://www.mysql.com/de/), [MariaDB](https://mariadb.org/)
 and MySQL compatible database management systems.
 
+This package depends on the nuget package: `MySqlConnector`  
+[![nuget](https://img.shields.io/nuget/v/MySqlConnector.svg?label=MySqlConnector&color=blue)](https://www.nuget.org/packages/MySqlConnector)
 
-## Project
+Documentation of the **connection string** used in `MySQLDatabase()` & `MariaDBDatabase()` see:  
+[MySQL Connection String Options for .NET/C# - MySqlConnector](https://mysqlconnector.net/connection-options/)
 
-**JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
-Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
-
-The **ORM** client - Object Relational Mapper - is used to access NoSQL databases via .NET.  
-The **Hub** is a service hosting a set of NoSQL databases via an **ASP.NET Core** server.
 
 
 ## Links

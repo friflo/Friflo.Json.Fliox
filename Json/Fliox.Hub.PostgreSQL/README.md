@@ -7,14 +7,11 @@ This package is part of the project described below.
 **Content**  
 Contains the database provider for [PostgreSQL](https://www.postgresql.org/)
 
+This package depends on the nuget package: `Npgsql`  
+[![nuget](https://img.shields.io/nuget/v/Npgsql.svg?label=Npgsql&color=blue)](https://www.nuget.org/packages/Npgsql)
 
-## Project
-
-**JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
-Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
-
-The **ORM** client - Object Relational Mapper - is used to access NoSQL databases via .NET.  
-The **Hub** is a service hosting a set of NoSQL databases via an **ASP.NET Core** server.
+Documentation of the **connection string** used in `SQLServerDatabase()` see:  
+[Connection String Parameters | Npgsql Documentation](https://www.npgsql.org/doc/connection-string-parameters.html)
 
 
 ## Links
