@@ -43,7 +43,7 @@ EFCore, Dapper, NHibernate, LINQ to DB, PetaPoco or ServiceStack.
 - Supports **batching**. Multiple database operations are combined into a single request send to the server.  
   This enables execution of database transactions in a single request and enable non-chatty data communication.
 
-<br/>
+
 
 **TL;DR**
 
@@ -51,24 +51,7 @@ Try the example Hub online running on AWS - [**DemoHub**](http://ec2-18-215-176-
 The **DemoHub** .NET project is available at
 [**🚀 friflo/Fliox.Examples**](https://github.com/friflo/Fliox.Examples/blob/main/README.md#-content).
 
-<br/>
-
-|                    Performance characteristics                            |                                                                                                             |
-| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **RTT**           request / response roundtrip                            | **0.3 ms**                                                                                                  |
-| **Pub-Sub delay** send message ➞ subscriber event                        | **sub millisecond latency**                                                                                 |
-| **Pub-Sub throughput FIFO** 3 subscribers each using a WebSocket          | **50k messages / sec**                                                                                      |
-| **Query**         request 1M rows, each row 124 byte => response 125MB    | **1.3 sec**                                                                                                 |
-| **Throughput**    request / response WebSocket, 4 concurrent clients      | **27k requests / sec**                                                                                      |
-| **ASP.NET Core**  Hub integration                                         | **1 LOC** [Startup.cs](https://github.com/friflo/Fliox.Examples/blob/main/Demo/Hub/Startup.cs#L24)          |
-| **Minimal Client & Server** with: REST, CRUD, Queries, Pub-Sub & Explorer | **60 LOC** [Client](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Client/TodoClient.cs) & [Server](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Hub/Program.cs) |
-| &nbsp;           run on Intel(R) Core(TM) i7-4790K CPU 4.00GHz            |                                                                                                |
-
-
-
 *Note*: JSON Fliox is **not** a UI library. It is designed for simple integration in .NET and Web UI frameworks.
-
-Published project on GitHub 2022-08
 
 <br/>
 
@@ -122,9 +105,20 @@ Compact list of features supported by Clients and Hubs
     - C#, Typescript & Kotlin
     - JSON Schema, OpenAPI Schema & GraphQL Schema
     - Schema documentation & class diagram
+- Compatibility - tested on Windows, maxOS & Linux
 
-The features are explained within the topics (= namespaces) below.  
-*Topics*: Client, Host, Hub Explorer, DB - support databases, Protocol, Schema & Mapper.
+Features are explained in more detail in the sections: [Hub](#-hub) and [Fliox](#-fliox)
+
+|                    Performance characteristics                            |                                                                                                             |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **RTT**           request / response roundtrip                            | **0.3 ms**                                                                                                  |
+| **Pub-Sub delay** send message ➞ subscriber event                        | **sub millisecond latency**                                                                                 |
+| **Pub-Sub throughput FIFO** 3 subscribers each using a WebSocket          | **50k messages / sec**                                                                                      |
+| **Query**         request 1M rows, each row 124 byte => response 125MB    | **1.3 sec**                                                                                                 |
+| **Throughput**    request / response WebSocket, 4 concurrent clients      | **27k requests / sec**                                                                                      |
+| **ASP.NET Core**  Hub integration                                         | **1 LOC** [Startup.cs](https://github.com/friflo/Fliox.Examples/blob/main/Demo/Hub/Startup.cs#L24)          |
+| **Minimal Client & Server** with: REST, CRUD, Queries, Pub-Sub & Explorer | **60 LOC** [Client](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Client/TodoClient.cs) & [Server](https://github.com/friflo/Fliox.Examples/blob/main/Todo/Hub/Program.cs) |
+| &nbsp;           run on Intel(R) Core(TM) i7-4790K CPU 4.00GHz            |                                                                                                |
 
 <br/>
 
@@ -555,7 +549,6 @@ Happy coding!
 ## License
 
 This project is licensed under AGPLv3.  
-Published project on GitHub 2022-08  
 
 friflo JSON Fliox  
 Copyright © 2022   Ullrich Praetz
