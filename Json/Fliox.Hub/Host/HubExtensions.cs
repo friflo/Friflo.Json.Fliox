@@ -86,9 +86,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 throw new ArgumentException("expect database service: new UserDBService()", nameof(userDB));
             }
             var authenticator = new UserAuthenticator(userDB);
-            await authenticator.SetAdminPermissions(adminToken);                // optional - enable Hub access with user/token: admin/admin
-            await authenticator.SetClusterPermissions("cluster", users);
-            await authenticator.SubscribeUserDbChanges(hub.EventDispatcher);    // optional - apply user_db changes instantaneously
+            await authenticator.SetAdminPermissions(adminToken).ConfigureAwait(false);              // optional - enable Hub access with user/token: admin/admin
+            await authenticator.SetClusterPermissions("cluster", users).ConfigureAwait(false);
+            await authenticator.SubscribeUserDbChanges(hub.EventDispatcher).ConfigureAwait(false);  // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);
             hub.Authenticator       = authenticator;
         }

@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         public static void MapRedirect(this IEndpointRouteBuilder app, string pattern, HttpHost httpHost) {
             app.MapGet(pattern, async context => {
                 context.Response.Redirect(httpHost.baseRoute, false);
-                await context.Response.WriteAsync("redirect");
+                await context.Response.WriteAsync("redirect").ConfigureAwait(false);
             });
         }
         
