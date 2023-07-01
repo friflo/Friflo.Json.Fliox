@@ -99,14 +99,17 @@ internal static class Trial
         Console.WriteLine("\n wait for events ... (exit with: CTRL + C)\n note: generate events by clicking 'Save' on a record in the Hub Explorer\n");
         await Task.Delay(3_600_000); // wait 1 hour
     }
+    
+    private static readonly DatabaseSchema Schema = DatabaseSchema.Create<TodoClient>();
         
     private static FlioxHub CreateHub(string option)
-    {            
+    {
         switch (option) {
-            case "http":    return new HttpClientHub("main_db", "http://localhost:5000/fliox/");
-            case "ws":      return new WebSocketClientHub("main_db", "ws://localhost:5000/fliox/");
-            case "file":    return new FlioxHub(new FileDatabase("main_db", "./DB/main_db"));
-            case "memory":  return new FlioxHub(new MemoryDatabase("main_db"));
+            case "http":    return new HttpClientHub                ("todo_db", "http://localhost:5000/fliox/");
+            case "ws":      return new WebSocketClientHub           ("todo_db", "ws://localhost:5000/fliox/");
+            case "memory":  return new FlioxHub(new MemoryDatabase  ("todo_db", Schema));
+            case "file":    return new FlioxHub(new FileDatabase    ("todo_db", "../Test/DB/main_db",       Schema));
+            case "sqlite":  return new FlioxHub(new SQLiteDatabase  ("todo_db", "Data Source=todo.sqlite3", Schema));
         }
         throw new InvalidOperationException($"unknown option: '{option}' use: [http, ws, file, memory]");
     }
