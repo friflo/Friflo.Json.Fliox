@@ -128,7 +128,7 @@ The features are explained within the topics (= namespaces) below.
 
 <br/>
 
-## 🌠 **Quickstart**
+## ⏩ **Quickstart**
 
 ### **Direct database access**
 
