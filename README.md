@@ -207,7 +207,7 @@ Start the server and check the **Hub Explorer** is available at http://localhost
 dotnet run
 ```
 
-*C# documentation in Hub Explorer*
+*C# documentation in Hub Explorer (optional)*
 
 The C# documentation of `TodoClient` and other model classes can be utilized in the Hub Explorer.  
 Therefor add the following xml snippet to the *.csproj. It will copy the *.xml files next to the *.dll files.  
