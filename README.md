@@ -18,8 +18,10 @@ As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) it
 [Entity Framework Core](https://en.wikipedia.org/wiki/Entity_Framework),
 [Ruby on Rails](https://en.wikipedia.org/wiki/Ruby_on_Rails),
 [Django](https://en.wikipedia.org/wiki/Django_(web_framework)) or
-[Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)).  
-In case of SQL databases Fliox store entities in JSON columns to avoid [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch).
+[Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)).
+
+In case of SQL databases Fliox store entities in JSON columns.  
+This enable schema changes without database migrations and avoid [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch).
 
 
 **TL;DR**
