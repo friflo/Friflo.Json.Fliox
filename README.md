@@ -8,7 +8,7 @@
 
 ![new](docs/images/new.svg) • Published database providers for: SQLite, MySQL, MariaDB, PostgreSQL & SQL Server. 
 
-**.NET** library supporting **simple** and **performant** access to **SQL & NoSQL** databases via C# or Web clients.  
+**.NET** library supporting **simple** and **performant** access to **SQL & NoSQL** databases via .NET or Web clients.  
 Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
 
 The **ORM** client - Object Relational Mapper - is used to access databases via .NET.  
@@ -20,9 +20,27 @@ As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) it
 [Django](https://en.wikipedia.org/wiki/Django_(web_framework)) or
 [Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)).
 
-In case of SQL databases Fliox store entities in JSON columns.  
-This enable schema changes without database migrations and avoid [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch).
+<br/>
 
+### **Unique Features**
+
+As of writing this the list below show unique features not supported by other ORMs like:  
+EFCore, Dapper, NHibernate, LINQ to DB, PetaPoco or ServiceStack.
+
+- Fliox store entities in **JSON columns** by all SQL database providers.  
+  This enable schema changes without database migrations and avoid [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch).
+
+- Fliox clients - .NET and JS - can also be used on **user devices** by using a HTTP or WebSocket remote connection.  
+  Using the listed ORMs above would require to disclose the database credentials to the public.  
+
+- Fliox clients can be used in **web applications** (JS/WASM) by using HTTP.  
+  Not supported by the mentioned ORMs as they require proprietary - non HTTP based - protocols. 
+
+- Support **Pub-Sub** to receive push events for subscribed database changes like: create, update, delete & merge.
+
+- Provide a Web UI - the **Hub Explorer** - to explore databases using a web browser.
+
+<br/>
 
 **TL;DR**
 
