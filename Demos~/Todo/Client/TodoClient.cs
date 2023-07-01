@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
@@ -27,10 +26,7 @@ public class TodoClient : FlioxClient
 public class Job
 {
     [Key]       public  long        id { get; set; }
-    ///<summary> short job title / name </summary>
     [Required]  public  string      title;
                 public  bool?       completed;
-                public  DateTime?   created;
-                public  string      description;
 }
 

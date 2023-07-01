@@ -1,6 +1,5 @@
 {
     "id": 1,
     "title": "buy milk",
-    "completed": false,
-    "created": "2022-05-02T13:40:00.000Z"
+    "completed": false
 }

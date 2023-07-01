@@ -3,6 +3,7 @@ using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.SQLite;
 
 namespace TodoHub;
 
@@ -11,10 +12,10 @@ internal static class  Program
     public static void Main()
     {
         var schema      = DatabaseSchema.Create<TodoClient>();
-        var database    = new FileDatabase("main_db", "../Test/DB/main_db", schema); // records stored in 'main_db/jobs'
+        var database    = new SQLiteDatabase("todo_db", "Data Source=todo.sqlite3", schema);
         database.AddCommands(new TodoCommands());
         var hub         = new FlioxHub(database);
-        hub.Info.Set ("TodoHub", "dev", "https://github.com/friflo/Fliox.Examples#todo", "rgb(0 171 145)"); // optional
+        hub.Info.Set ("TodoHub", "dev", "https://github.com/friflo/Fliox.Examples/tree/main/Todo", "rgb(0 171 145)"); // optional
         hub.UseClusterDB(); // required by HubExplorer
         hub.UsePubSub();    // optional - enables Pub-Sub
         // --- create HttpHost

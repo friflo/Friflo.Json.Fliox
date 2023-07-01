@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\Json\Fliox.Hub.Explorer\Friflo.Json.Fliox.Hub.Explorer.csproj" />
+      <ProjectReference Include="..\..\..\Json\Fliox.Hub.SQLite\Friflo.Json.Fliox.Hub.SQLite.csproj" />
       <ProjectReference Include="..\Client\Todo.csproj" />
     </ItemGroup>
 </Project>

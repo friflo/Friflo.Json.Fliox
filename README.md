@@ -119,44 +119,46 @@ dotnet add package Friflo.Json.Fliox.Hub
 dotnet add package Friflo.Json.Fliox.Hub.SQLite
 ```
 
-Create a `TodoDB` client to specify the database schema.
+Create a `TodoClient` client to specify the database schema.
 
-📄 `TodoDB.cs`
+📄 `TodoClient.cs`
 ```csharp
-public class TodoDB : FlioxClient
+public class TodoClient : FlioxClient
 {
-    public readonly EntitySet <long, Job>     jobs;
-
-    public TodoDB(FlioxHub hub, string dbName = null) : base(hub, dbName) { }
+    // --- containers
+    public  readonly    EntitySet <long, Job>   jobs;
+    
+    public TodoClient(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
 }
 
+// ---------------------------------- entity models ----------------------------------
 public class Job
 {
-    public  long        id;
-    public  string      name;
-    public  bool        completed;
+    [Key]       public  long        id { get; set; }
+    [Required]  public  string      title;
+                public  bool?       completed;
 }
 ```
 
-The following code create / open a <b>SQLite</b> database by using `TodoDB` as the database schema.  
+The following code create / open a <b>SQLite</b> database by using `TodoClient` as the database schema.  
 It also perform some database operations like: `UpsertRange()` & `Query()`
 
 📄 `Program.cs`
 ```csharp
-    var schema      = DatabaseSchema.Create<TodoDB>();
+    var schema      = DatabaseSchema.Create<TodoClient>();
     var database    = new SQLiteDatabase("todo_db", "Data Source=todo.sqlite3", schema);
     var hub         = new FlioxHub(database);
 
-    var client      = new TodoDB(hub);
+    var client      = new TodoClient(hub);
     client.jobs.UpsertRange(new[] {
-        new Job { id = 1, name = "Buy milk", completed = true },
-        new Job { id = 2, name = "Buy cheese", completed = false }
+        new Job { id = 1, title = "Buy milk", completed = true },
+        new Job { id = 2, title = "Buy cheese", completed = false }
     });
     var jobs = client.jobs.Query(job => job.completed == true);
     await client.SyncTasks(); // execute UpsertRange & Query task
-    
+
     foreach (var job in jobs.Result) {
-        Console.WriteLine($"{job.id}: {job.name}");
+        Console.WriteLine($"{job.id}: {job.title}");
     }
     // output:  1: Buy milk
 ```
@@ -188,18 +190,16 @@ Replace the code in 📄 `Program.cs` above to host a database by an <b>ASP.NET 
 
 📄 `Program.cs` *(server)*
 ```csharp
-    var schema      = DatabaseSchema.Create<TodoDB>();
+    var schema      = DatabaseSchema.Create<TodoClient>();
     var database    = new SQLiteDatabase("todo_db", "Data Source=todo.sqlite3", schema);
     var hub         = new FlioxHub(database);
-    
+    hub.Info.Set ("TodoHub", "dev", "https://github.com/friflo/Fliox.Examples/tree/main/Todo", "rgb(0 171 145)"); // optional
     hub.UseClusterDB(); // required by HubExplorer
-    hub.UsePubSub();
+    hub.UsePubSub();    // optional - enables Pub-Sub
+    // --- create HttpHost
     var httpHost    = new HttpHost(hub, "/fliox/");
-    httpHost.UseStaticFiles(HubExplorer.Path); // optional: Hub Explorer Web UI
-    var app         = WebApplication.Create();
-    app.UseWebSockets();
-    app.MapHost("/fliox/{*path}", httpHost);
-    app.Run();
+    httpHost.UseStaticFiles(HubExplorer.Path); // nuget: https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer
+    HttpServer.RunHost("http://localhost:5000/", httpHost); // http://localhost:5000/fliox/
 ```
 
 Start the server and check the **Hub Explorer** is available at http://localhost:5000/fliox/
@@ -209,7 +209,7 @@ dotnet run
 
 *C# documentation in Hub Explorer*
 
-The C# documentation of `TodoDB` and other model classes can be utilized in the Hub Explorer.  
+The C# documentation of `TodoClient` and other model classes can be utilized in the Hub Explorer.  
 Therefor add the following xml snippet to the *.csproj. It will copy the *.xml files next to the *.dll files.  
 The server read and add the documentation to schema definition.
 
@@ -236,24 +236,26 @@ Add required nuget dependencies
 ```
 dotnet add package Friflo.Json.Fliox.Hub
 ```
-Copy 📄 TodoDB.cs from above to Console project.  
-*Note:* `TodoDB` and its model classes should be in a separate library project and used by client & server.
+Copy 📄 TodoClient.cs from above to Console project.  
+*Note:* `TodoClient` and its model classes should be in a separate library project and used by client & server.
 But for simplicity create a copy for now.
 
 📄 `Program.cs` *(client)*
 ```csharp
-    var hub     = new WebSocketClientHub("todo_db", "http://localhost:5000/fliox/");
-    var client  = new TodoDB(hub);
+    var hub     = new WebSocketClientHub("todo_db", "ws://localhost:5000/fliox/");
+    var client  = new TodoClient(hub);
     var jobs    = client.jobs.Query(job => job.completed == true);
     client.jobs.SubscribeChanges(Change.All, (changes, context) => {
         Console.WriteLine(changes);
     });
     await client.SyncTasks(); // execute Query & SubscribeChanges task
-    
+
     foreach (var job in jobs.Result) {
-        Console.WriteLine($"{job.id}: {job.name}");
+        Console.WriteLine($"{job.id}: {job.title}");
     }
     // output:  1: Buy milk
+    Console.WriteLine("\n wait for events ... (exit with: CTRL + C)\n note: generate events by clicking 'Save' on a record in the Hub Explorer\n");
+    await Task.Delay(3_600_000); // wait 1 hour
 ```
 
 Ensure the server is running and start the client application
