@@ -40,6 +40,9 @@ EFCore, Dapper, NHibernate, LINQ to DB, PetaPoco or ServiceStack.
 
 - Provide a Web UI - the **Hub Explorer** - to explore databases using a web browser.
 
+- Supports batching database operations. Multiple operations are combined into a single request send to the server.  
+  This enables execution of database transactions in a single request and enable non-chatty data communication.
+
 <br/>
 
 **TL;DR**
