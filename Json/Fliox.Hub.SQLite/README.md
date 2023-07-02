@@ -7,28 +7,40 @@ This package is part of the project described below.
 **Content**  
 Contains the database provider for [SQLite](https://sqlite.org/)
 
+This package depends on the nuget packages of **SQLitePCLRaw**.  
+[![nuget](https://img.shields.io/nuget/v/SQLitePCLRaw.core.svg?label=SQLitePCLRaw.core&color=blue)](https://www.nuget.org/packages/SQLitePCLRaw.core)  
+[![nuget](https://img.shields.io/nuget/v/SQLitePCLRaw.provider.e_sqlite3.svg?label=SQLitePCLRaw.provider.e_sqlite3&color=blue)](https://www.nuget.org/packages/SQLitePCLRaw.provider.e_sqlite3)  
+[![nuget](https://img.shields.io/nuget/v/SQLitePCLRaw.lib.e_sqlite3.svg?label=SQLitePCLRaw.lib.e_sqlite3&color=blue)](https://www.nuget.org/packages/SQLitePCLRaw.lib.e_sqlite3)  
+
+
+The **connection string** parameters used in SQLiteDatabase() are:
+
+| Parameter     | Description                                                  |
+| ------------- | ------------------------------------------------------------ |
+| `Data Source` | Path to SQLite file. Use `:memory:` to use in-memory storage |
+
+Examples:  
+`"Data Source=test_db.sqlite3"`  
+`"Data Source=:memory:"`
+
+The class `SQLiteConnectionStringBuilder` can be used to parse or create a connection string.
+
+<br/>
 
 ## Unity
 
 * Add **`SQLITE`** to  
   **Unity > Edit > Player | Other Settings | Script Compilation | Scripting Define Symbols**
 
-* Add SQLite dependencies to Plugins folder:
+* Add the **SQLitePCLRaw** dependencies listed above to Plugins folder:
 
-|  dependency                           | nuget                                                             |
-|-------------------------------------- | ----------------------------------------------------------------- |
-| `SQLitePCLRaw.core.dll`               | https://www.nuget.org/packages/SQLitePCLRaw.core                  |
-| `SQLitePCLRaw.provider.e_sqlite3.dll` | https://www.nuget.org/packages/SQLitePCLRaw.provider.e_sqlite3    |
-| `e_sqlite3.dll`                       | https://www.nuget.org/packages/SQLitePCLRaw.lib.e_sqlite3         |
+<br/>
 
 ## Project
 
-**JSON Fliox** is a **.NET** library supporting **simple** and **efficient** access to **NoSQL** databases via C# or Web clients.  
-Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
+**JSON Fliox** is a .NET library supporting simple and performant access to SQL & NoSQL databases via .NET or Web clients. 
 
-The **ORM** client - Object Relational Mapper - is used to access NoSQL databases via .NET.  
-The **Hub** is a service hosting a set of NoSQL databases via an **ASP.NET Core** server.
-
+<br/>
 
 ## Links
 
