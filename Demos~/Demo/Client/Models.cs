@@ -13,7 +13,7 @@ namespace Demo;
 // ---------------------------------- entity models ----------------------------------
 public class Article
 {
-    [Key]       public  long            id { get; set; }
+    [Key]       public  long            id;
     ///<summary> Descriptive article name - may use Unicodes like 👕 🍏 🍓 </summary>
     [Required]  public  string          name;
     [Relation(nameof(DemoClient.producers))]
@@ -23,14 +23,14 @@ public class Article
 
 public class Customer
 {
-    [Key]       public  long            id { get; set; }
+    [Key]       public  long            id;
     [Required]  public  string          name;
                 public  DateTime?       created;
 }
 
 public class Employee
 {
-    [Key]       public  long            id { get; set; }
+    [Key]       public  long            id;
     [Required]  public  string          firstName;
                 public  string          lastName;
                 public  DateTime?       created;
@@ -38,7 +38,7 @@ public class Employee
 
 public class Order
 {
-    [Key]       public  long            id { get; set; }
+    [Key]       public  long            id;
     [Relation(nameof(DemoClient.customers))]
                 public  long            customer;
                 public  DateTime        created;
@@ -55,7 +55,7 @@ public class OrderItem
 
 public class Producer
 {
-    [Key]       public  long            id { get; set; }
+    [Key]       public  long            id;
     [Required]  public  string          name;
     [Relation(nameof(DemoClient.employees))]
                 public  List<long>      employees;

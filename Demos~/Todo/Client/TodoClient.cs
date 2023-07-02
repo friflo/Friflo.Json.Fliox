@@ -25,8 +25,8 @@ public class TodoClient : FlioxClient
 // ---------------------------------- entity models ----------------------------------
 public class Job
 {
-    [Key]       public  long        id { get; set; }
-    [Required]  public  string      title;
-                public  bool?       completed;
+    [Key]       public  long    id;
+    [Required]  public  string  title;
+                public  bool?   completed;
 }
 
