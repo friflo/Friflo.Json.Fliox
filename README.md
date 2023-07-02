@@ -188,8 +188,8 @@ dotnet run
 ### **Remote database access**
 
 Remote database access - client / servers setup - require two console applications:
-1. HTTP server hosting a single or multiple databases
-2. HTTP client to access a hosted database
+1. [HTTP server](#1-http-server)  to host a single - or multiple - databases
+2. [HTTP client](#2-http-client)  to access a hosted database
 
 
 #### **1. HTTP Server**
