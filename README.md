@@ -8,11 +8,11 @@
 
 ![new](docs/images/new.svg) • Published database providers for: SQLite, MySQL, MariaDB, PostgreSQL & SQL Server. 
 
-**.NET** library supporting **simple** and **performant** access to **SQL & NoSQL** databases via .NET or Web clients.  
-Its **ORM** enables **Schema** creation. Its **Hub** serve hosted databases using these schemas via HTTP.
+An **ORM** for **.NET** supporting **simple** and **performant** access to **SQL & NoSQL** databases using C# or Web clients.  
+Database access is realized by creating a single class to query, create, update or delete table / container records.  
 
-The **ORM** client - Object Relational Mapper - is used to access databases via .NET.  
-The **Hub** is a service hosting a set of databases via an **ASP.NET Core** server.
+This class - a **`FlioxClient`** - provide type safety and support validation, batching, transactions and messaging.  
+A **`FlioxHub`** can be used to serve hosted databases via HTTP using **ASP.NET Core** or an **HttpListener**.
 
 As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) it has similarities to projects like
 [Entity Framework Core](https://en.wikipedia.org/wiki/Entity_Framework),
@@ -22,7 +22,7 @@ As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) it
 
 <br/>
 
-### **Unique Features**
+### **Unique ORM Features**
 
 As of writing this the list below show unique features not supported by other ORMs like:  
 EFCore, Dapper, NHibernate, LINQ to DB, PetaPoco or ServiceStack.
