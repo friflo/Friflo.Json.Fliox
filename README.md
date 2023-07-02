@@ -18,7 +18,7 @@ As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) it
 [Entity Framework Core](https://en.wikipedia.org/wiki/Entity_Framework),
 [Ruby on Rails](https://en.wikipedia.org/wiki/Ruby_on_Rails),
 [Django](https://en.wikipedia.org/wiki/Django_(web_framework)) or
-[Hibernate](https://de.wikipedia.org/wiki/Hibernate_(Framework)).
+[Hibernate](https://en.wikipedia.org/wiki/Hibernate_(framework)).
 
 <br/>
 
