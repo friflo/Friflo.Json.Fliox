@@ -105,7 +105,7 @@ Compact list of features supported by Clients and Hubs
     - C#, Typescript & Kotlin
     - JSON Schema, OpenAPI Schema & GraphQL Schema
     - Schema documentation & class diagram
-- Compatibility - tested on Windows, maxOS & Linux
+- Compatibility - tested on Windows, macOS & Linux
 
 Features are explained in more detail in the sections: [Hub](#-hub) and [Fliox](#-fliox)
 
@@ -195,7 +195,7 @@ Remote database access - client / servers setup - require two console applicatio
 #### **1. HTTP Server**
 
 Add dependency to **Hub Explorer** to host a Web UI to browse databases.  
-The **Hub Explorer** is optional but useful for development.  
+The **Hub Explorer** is optional but speedup development. It contains the static files for the Web UI.  
 [![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.Explorer.svg?label=Hub.Explorer&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer)
 ```
 dotnet add package Friflo.Json.Fliox.Hub.Explorer
