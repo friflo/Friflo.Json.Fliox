@@ -1,9 +1,12 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+#if !UNITY_5_3_OR_NEWER
+
 using Friflo.Json.Fliox.Hub.SQLite;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+
 
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.SQLite
@@ -22,3 +25,5 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.SQLite
         }
     }
 }
+
+#endif
