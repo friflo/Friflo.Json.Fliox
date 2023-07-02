@@ -201,7 +201,7 @@ The **Hub Explorer** is optional but speedup development. It contains the static
 dotnet add package Friflo.Json.Fliox.Hub.Explorer
 ```
 
-Replace the code in 📄 `Program.cs` above to host a database by an <b>ASP.NET Core</b> server.
+Replace the code in 📄 `Program.cs` above to host a database by an HTTP server.
 
 📄 `Program.cs` *(server)*
 ```csharp
@@ -214,6 +214,7 @@ Replace the code in 📄 `Program.cs` above to host a database by an <b>ASP.NET 
     // --- create HttpHost
     var httpHost    = new HttpHost(hub, "/fliox/");
     httpHost.UseStaticFiles(HubExplorer.Path); // nuget: https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.Explorer
+    
     HttpServer.RunHost("http://localhost:5000/", httpHost); // http://localhost:5000/fliox/
 ```
 
@@ -221,6 +222,31 @@ Start the server and check the **Hub Explorer** is available at http://localhost
 ```
 dotnet run
 ```
+
+**ASP.NET Core integration**
+
+ASP.NET Core integration requires the nuget package.  
+[![nuget](https://img.shields.io/nuget/v/Friflo.Json.Fliox.Hub.AspNetCore.svg?label=AspNetCore&color=blue)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub.AspNetCore)
+```
+dotnet add package Friflo.Json.Fliox.Hub.AspNetCore
+```
+
+Integration into an existing `WebApplication` `app` is enabled adding
+
+```csharp
+    app.MapHost("/fliox/{*path}", httpHost);`
+```
+
+Or create an `WebApplication` from scratch by replacing `HttpServer.RunHost()` in the snippet above by
+
+```csharp
+    var app = WebApplication.Create();
+    app.MapRedirect("/", httpHost);
+    app.MapHost("/fliox/{*path}", httpHost);
+    app.Run();
+```
+
+<br/>
 
 *C# documentation in Hub Explorer (optional)*
 
