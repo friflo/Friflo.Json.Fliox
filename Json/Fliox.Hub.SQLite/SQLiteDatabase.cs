@@ -27,6 +27,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         public              bool            AutoCreateTables        { get; init; } = true;
         public              bool            AutoAddVirtualColumns   { get; init; } = true;
         
+        /// <summary>
+        /// could use a single SyncConnection - an sqlite3 handle - for all database operation
+        /// but read throughput is significant higher if using a handle per thread 
+        /// </summary>
         private  readonly   ConnectionPool<SyncConnection> connectionPool; 
         private  readonly   string          filePath;
         
@@ -60,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             var rc = raw.sqlite3_open_v2(filePath, out sqlite3 sqliteDB, flags, null);
             if (rc != raw.SQLITE_OK) {
-                return new SyncConnectionError($"sqlite3_open failed. error: {rc}");
+                return new SyncConnectionError($"sqlite3_open_v2 failed. error: {rc}");
             }
             var connection = new SyncConnection(sqliteDB);
             if (!SQLiteUtils.Exec(connection, "PRAGMA journal_mode = WAL;", out var error)) {
