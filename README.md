@@ -14,11 +14,11 @@ Database access is realized by creating a single class to query, create, update 
 This class - a **`FlioxClient`** - provide type safety and support validation, batching, transactions and messaging.  
 A **`FlioxHub`** can be used to serve hosted databases via HTTP using **ASP.NET Core** or an **HttpListener**.
 
-As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) it has similarities to projects like
-[Entity Framework Core](https://en.wikipedia.org/wiki/Entity_Framework),
-[Ruby on Rails](https://en.wikipedia.org/wiki/Ruby_on_Rails),
-[Django](https://en.wikipedia.org/wiki/Django_(web_framework)) or
-[Hibernate](https://en.wikipedia.org/wiki/Hibernate_(framework)).
+As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping)![](docs/images/ext.svg) it has similarities to projects like
+[Entity Framework Core](https://en.wikipedia.org/wiki/Entity_Framework)![](docs/images/ext.svg),
+[Ruby on Rails](https://en.wikipedia.org/wiki/Ruby_on_Rails)![](docs/images/ext.svg),
+[Django](https://en.wikipedia.org/wiki/Django_(web_framework))![](docs/images/ext.svg) or
+[Hibernate](https://en.wikipedia.org/wiki/Hibernate_(framework))![](docs/images/ext.svg).
 
 <br/>
 
@@ -28,7 +28,7 @@ As of writing this the list below show unique features not supported by other OR
 EFCore, Dapper, NHibernate, LINQ to DB, PetaPoco or ServiceStack.
 
 - Fliox store entities in **JSON columns** by all SQL database providers.  
-  This enable schema changes without database migrations and avoid [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch).
+  This enable schema changes without database migrations and avoid [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch)![](docs/images/ext.svg).
 
 - Create automatically common **REST route handlers** `GET`, `PUT`, `PATCH`, `DELETE` to execute [LINQ query filters](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md#query-filter)  
   and CRUD operations (bulk or single resource) for each table using ASP.NET Core.
@@ -476,7 +476,7 @@ The API is available at [**fliox-docs API Reference**](https://github.com/friflo
 The goal of the library, its components and API is to be easy digestible for software developers.  
 The properties describe the characteristics of this project - at least what it aims for.  
 These properties are targeted to the needs of users using the library.  
-They fit mostly the aspects described in [CUPID-for joyful coding](https://dannorth.net/2022/02/10/cupid-for-joyful-coding/).
+They fit mostly the aspects described in [CUPID-for joyful coding](https://dannorth.net/2022/02/10/cupid-for-joyful-coding/)![](docs/images/ext.svg).
 
 Topics of the CUPID properties focused by this project are
 - Composable
