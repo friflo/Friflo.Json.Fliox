@@ -13,6 +13,7 @@ namespace Friflo.Json.Tests.Main
     public static class Throughput
     {
         private const string TestDB = "test_db";
+        private static readonly DatabaseSchema Schema = DatabaseSchema.Create<SimpleStore>();
         
         public static async Task MemoryDbThroughput() {
             var database    = new MemoryDatabase(TestDB);
@@ -23,7 +24,7 @@ namespace Friflo.Json.Tests.Main
 #if !UNITY_5_3_OR_NEWER || SQLITE
         public static async Task SQLiteThroughput() {
             var connection  = $"Data Source={CommonUtils.GetBasePath() + "test_concurrency_db.sqlite3"}";
-            var database    = new SQLiteDatabase(TestDB, connection, null);
+            var database    = new SQLiteDatabase(TestDB, connection, Schema) { Synchronous = true };
             var hub         = new FlioxHub(database);
             await TestHappy.ConcurrentAccess(hub, 4, 0, 1_000_000, false);
         }

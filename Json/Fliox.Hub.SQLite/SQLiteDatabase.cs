@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using SQLitePCL;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
@@ -27,10 +29,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         public              bool        AutoCreateTables        { get; init; } = true;
         public              bool        AutoAddVirtualColumns   { get; init; } = true;
         
-        internal readonly   sqlite3     sqliteDB;
-
+        private  readonly   ConnectionPool<SyncConnection> connectionPool; 
+        private  readonly   string      filePath;
         
-        public   override   string      StorageType => "SQLite " + SQLiteUtils.GetVersion(sqliteDB);
+        public   override   string      StorageType             => "SQLite";
         
         /// <summary>
         /// Open or create a database with the given <paramref name="connectionString"/>.<br/>
@@ -41,9 +43,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         public SQLiteDatabase(string dbName, string connectionString, DatabaseSchema schema, DatabaseService service = null)
             : base(dbName, AssertSchema<SQLiteDatabase>(schema), service)
         {
-            var builder = new SQLiteConnectionStringBuilder(connectionString);
-            var rc = raw.sqlite3_open(builder.DataSource, out sqliteDB);
-            if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"sqlite3_open failed. error: {rc}");
+            var builder     = new SQLiteConnectionStringBuilder(connectionString);
+            connectionPool  = new ConnectionPool<SyncConnection>();
+            filePath        = builder.DataSource;
         }
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
@@ -51,10 +53,21 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override ISyncConnection GetConnectionSync() {
+            if (connectionPool.TryPop(out var syncConnection)) {
+                return syncConnection;
+            }
+            var rc = raw.sqlite3_open(filePath, out sqlite3 sqliteDB);
+            if (rc != raw.SQLITE_OK) {
+                var msg     = $"sqlite3_open failed. error: {rc}";
+                var error   = new TaskExecuteError(TaskErrorType.DatabaseError, msg);
+                return new SyncConnectionError(error);
+            }
             return new SyncConnection(sqliteDB);
         }
         
-        public override void ReturnConnection(ISyncConnection connection) { }
+        public override void ReturnConnection(ISyncConnection connection) {
+            connectionPool.Push(connection);
+        }
 
         static SQLiteDatabase() {
             raw.SetProvider(new SQLite3Provider_e_sqlite3());
@@ -67,23 +80,26 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         private static TransResult TransactionSync(SyncContext syncContext, TransCommand command)
         {
-            var syncConnection = (SyncConnection)syncContext.GetConnectionSync();
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new TransResult(syncConnection.Error.message);
+            }
             switch (command) {
                 case TransCommand.Begin: {
-                    syncConnection.BeginTransaction(out var error);
+                    connection.BeginTransaction(out var error);
                     if (error != null) {
                         return new TransResult(error.message);
                     }
                     return new TransResult(command);
                 }
                 case TransCommand.Commit: {
-                    if (!syncConnection.EndTransaction("COMMIT", out var error)) {
+                    if (!connection.EndTransaction("COMMIT", out var error)) {
                         return new TransResult(error.message);
                     }
                     return new TransResult(command);
                 }
                 case TransCommand.Rollback: {
-                    if (!syncConnection.EndTransaction("ROLLBACK", out var error)) {
+                    if (!connection.EndTransaction("ROLLBACK", out var error)) {
                         return new TransResult(error.message);
                     }
                     return new TransResult(command);

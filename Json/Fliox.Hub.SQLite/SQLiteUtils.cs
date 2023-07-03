@@ -38,8 +38,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return false;
         }
         
-        internal static bool Execute(sqlite3 db, string sql, out TaskExecuteError error) {
-            var rc = raw.sqlite3_prepare_v3(db, sql, 0, out var stmt);
+        internal static bool Execute(SyncConnection connection, string sql, out TaskExecuteError error) {
+            var rc = raw.sqlite3_prepare_v3(connection.sqliteDB, sql, 0, out var stmt);
             if (rc != raw.SQLITE_OK) {
                 return Error($"prepare failed. sql: ${sql}, error: {rc}", out error);
             }
@@ -51,9 +51,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return Success(out error);
         }
         
-        internal static HashSet<string> GetColumnNames(sqlite3 db, string table) {
+        internal static HashSet<string> GetColumnNames(SyncConnection connection, string table) {
             var sql = $"SELECT * FROM {table} LIMIT 0";
-            Prepare(db, sql, out var stmt, out var error);
+            Prepare(connection, sql, out var stmt, out var error);
             var count   = raw.sqlite3_column_count(stmt);
             var result = Helper.CreateHashSet<string>(count);
             for (int n = 0; n < count; n++) {
@@ -64,13 +64,13 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return result;
         }
         
-        internal static void AddVirtualColumn(sqlite3 db, string table, ColumnInfo column) {
+        internal static void AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
             var type = ConvertContext.GetSqlType(column.typeId);
             var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN ""{column.name}"" {type}
 GENERATED ALWAYS AS (json_extract({DATA}, '$.{column.name}'));";
-            Execute(db, sql, out _);
+            Execute(connection, sql, out _);
         }
         
         internal static bool ReadValues(
@@ -194,16 +194,16 @@ GENERATED ALWAYS AS (json_extract({DATA}, '$.{column.name}'));";
             return Success(out error);
         }
         
-        internal static bool Prepare(sqlite3 db, string sql, out sqlite3_stmt stmt, out TaskExecuteError error) {
-            var rc  = raw.sqlite3_prepare_v3(db, sql, 0, out stmt);
+        internal static bool Prepare(SyncConnection connection, string sql, out sqlite3_stmt stmt, out TaskExecuteError error) {
+            var rc  = raw.sqlite3_prepare_v3(connection.sqliteDB, sql, 0, out stmt);
             if (rc == raw.SQLITE_OK) {
                 return Success(out error);
             }
             return Error($"prepare failed. sql: {sql}, error: {rc}", out error);
         }
         
-        internal static bool Exec(sqlite3 db, string sql, out TaskExecuteError error) {
-            var rc = raw.sqlite3_exec(db, sql, null, 0, out var errMsg);
+        internal static bool Exec(SyncConnection connection, string sql, out TaskExecuteError error) {
+            var rc = raw.sqlite3_exec(connection.sqliteDB, sql, null, 0, out var errMsg);
             if (rc == raw.SQLITE_OK) {
                 return Success(out error);
             }

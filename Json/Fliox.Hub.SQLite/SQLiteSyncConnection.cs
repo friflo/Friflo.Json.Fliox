@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 {
     internal sealed class SyncConnection : ISyncConnection
     {
-        private readonly    sqlite3 sqliteDB;
+        internal readonly   sqlite3 sqliteDB;
         private             int     transactionDepth;
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         internal TransactionScope BeginTransaction(out TaskExecuteError error) {
             transactionDepth++;
             if (transactionDepth == 1) {
-                SQLiteUtils.Exec(sqliteDB, "BEGIN TRANSACTION", out error);
+                SQLiteUtils.Exec(this, "BEGIN TRANSACTION", out error);
             } else {
                 error = null;
             }
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (transactionDepth <= 0) throw new InvalidOperationException("expect transactionDepth > 0");
             transactionDepth--;
             if (transactionDepth == 0) {
-                return SQLiteUtils.Exec(sqliteDB, sql, out error);
+                return SQLiteUtils.Exec(this, sql, out error);
             }
             error = null;
             return true;

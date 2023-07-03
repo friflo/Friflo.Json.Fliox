@@ -17,7 +17,6 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 {
     internal sealed class SQLiteContainer : EntityContainer
     {
-        private  readonly   sqlite3         sqliteDB;
         private  readonly   TableInfo       tableInfo;
         private  readonly   ContainerInit   init;
         private  readonly   bool            synchronous;
@@ -28,34 +27,33 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         {
             init        = new ContainerInit(database);
             tableInfo   = new TableInfo (database, name);
-            sqliteDB    = database.sqliteDB;
             synchronous = database.Synchronous;
             Pretty      = pretty;
         }
 
-        private bool InitTable(out TaskExecuteError error) {
+        private bool InitTable(SyncConnection connection, out TaskExecuteError error) {
             error = null;
             if (init.CreateTable) {
                 var sql = $"CREATE TABLE IF NOT EXISTS {name} ({ID} TEXT PRIMARY KEY, {DATA} TEXT NOT NULL);";
-                if (!SQLiteUtils.Execute(sqliteDB, sql, out error)) {
+                if (!SQLiteUtils.Execute(connection, sql, out error)) {
                     return false;
                 }
                 init.tableCreated = true;
             }
             if (init.AddVirtualColumns) {
-                AddVirtualColumns();
+                AddVirtualColumns(connection);
                 init.virtualColumnsAdded = true;
             }
             return true;
         }
         
-        private void AddVirtualColumns() {
-            var columnNames = SQLiteUtils.GetColumnNames(sqliteDB, name);
+        private void AddVirtualColumns(SyncConnection connection) {
+            var columnNames = SQLiteUtils.GetColumnNames(connection, name);
             foreach (var column in tableInfo.columns.Values) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
                 }
-                SQLiteUtils.AddVirtualColumn(sqliteDB, name, column);
+                SQLiteUtils.AddVirtualColumn(connection, name, column);
             }
         }
         
@@ -67,17 +65,20 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
-            var syncConnection = (SyncConnection)syncContext.GetConnectionSync();
-            if (!InitTable(out var error)) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new CreateEntitiesResult { Error = syncConnection.Error };
+            }
+            if (!InitTable(connection, out var error)) {
                 return new CreateEntitiesResult { Error = error };
             }
-            using (var scope = syncConnection.BeginTransaction(out error))
+            using (var scope = connection.BeginTransaction(out error))
             {
                 if (error != null) {
                     return new CreateEntitiesResult { Error = error };
                 }
                 var sql = $@"INSERT INTO {name} VALUES(?,?)";
-                if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
+                if (!SQLiteUtils.Prepare(connection, sql, out var stmt, out error)) {
                     return new CreateEntitiesResult { Error = error };
                 }
                 if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
@@ -99,17 +100,20 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
 
         public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
-            var syncConnection = (SyncConnection)syncContext.GetConnectionSync();
-            if (!InitTable(out var error)) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new UpsertEntitiesResult { Error = syncConnection.Error };
+            }
+            if (!InitTable(connection, out var error)) {
                 return new UpsertEntitiesResult { Error = error };
             }
-            using (var scope = syncConnection.BeginTransaction(out error))
+            using (var scope = connection.BeginTransaction(out error))
             {
                 if (error != null) {
                     return new UpsertEntitiesResult { Error = error };
                 }
                 var sql = $@"INSERT INTO {name} VALUES(?,?) ON CONFLICT({ID}) DO UPDATE SET {DATA}=excluded.{DATA}";
-                if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
+                if (!SQLiteUtils.Prepare(connection, sql, out var stmt, out error)) {
                     return new UpsertEntitiesResult { Error = error };
                 }
                 if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
@@ -131,11 +135,15 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
 
         public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
-            if (!InitTable(out var error)) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new ReadEntitiesResult { Error = syncConnection.Error };
+            }
+            if (!InitTable(connection, out var error)) {
                 return new ReadEntitiesResult { Error = error };
             }
             var sql = $"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in (?)";
-            if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
+            if (!SQLiteUtils.Prepare(connection, sql, out var stmt, out error)) {
                 return new ReadEntitiesResult { Error = error };
             }
             var values = new List<EntityValue>();
@@ -153,7 +161,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext) {
-            if (!InitTable(out var error)) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new QueryEntitiesResult { Error = syncConnection.Error };
+            }
+            if (!InitTable(connection, out var error)) {
                 return new QueryEntitiesResult { Error = error };
             }
             sqlite3_stmt    stmt;
@@ -172,7 +184,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
                 var limit   = command.limit == null ? "" : $" LIMIT {command.limit}";
                 sql         = $"SELECT {ID}, {DATA} FROM {name}{where}{limit}";
-                if (!SQLiteUtils.Prepare(sqliteDB, sql, out stmt, out error)) {
+                if (!SQLiteUtils.Prepare(connection, sql, out stmt, out error)) {
                     return new QueryEntitiesResult { Error = error, sql = sql };
                 }
             }
@@ -200,14 +212,18 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         private AggregateEntitiesResult AggregateEntities (AggregateEntities command, SyncContext syncContext) {
-            if (!InitTable(out var error)) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new AggregateEntitiesResult { Error = syncConnection.Error };
+            }
+            if (!InitTable(connection, out var error)) {
                 return new AggregateEntitiesResult { Error = error };
             }
             if (command.type == AggregateType.count) {
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
-                if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
+                if (!SQLiteUtils.Prepare(connection, sql, out var stmt, out error)) {
                     return new AggregateEntitiesResult { Error = error };
                 }
                 var rc      = raw.sqlite3_step(stmt);
@@ -230,24 +246,27 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {
-            var syncConnection = (SyncConnection)syncContext.GetConnectionSync();
-            if (!InitTable(out var error)) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new DeleteEntitiesResult { Error = syncConnection.Error };
+            }
+            if (!InitTable(connection, out var error)) {
                 return new DeleteEntitiesResult { Error = error };
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
-                if (!SQLiteUtils.Exec(sqliteDB, sql, out error)) {
+                if (!SQLiteUtils.Exec(connection, sql, out error)) {
                     return new DeleteEntitiesResult { Error = error };    
                 }
                 return new DeleteEntitiesResult();
             }
-            using (var scope = syncConnection.BeginTransaction(out error))
+            using (var scope = connection.BeginTransaction(out error))
             {
                 if (error != null) {
                     return new DeleteEntitiesResult { Error = error };
                 }
                 var sql = $"DELETE from {name} WHERE {ID} in (?)";
-                if (!SQLiteUtils.Prepare(sqliteDB, sql, out var stmt, out error)) {
+                if (!SQLiteUtils.Prepare(connection, sql, out var stmt, out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }
                 if (!SQLiteUtils.AppendKeys(stmt, command.ids, out error)) {
