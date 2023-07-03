@@ -33,11 +33,11 @@ EFCore, Dapper, NHibernate, LINQ to DB, PetaPoco or ServiceStack.
 - Create automatically common **REST route handlers** `GET`, `PUT`, `PATCH`, `DELETE` to execute [query filters](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md#query-filter)  
   and CRUD operations (bulk or single resource) for each table using ASP.NET Core.
 
-- Fliox clients - .NET and JS - can also be used on **user devices** by using a HTTP or WebSocket connection.  
+- `FlioxClient`'s can be used **client-side** on user devices by using a HTTP or WebSocket connection.  
   Using the listed ORMs above require to disclose the database credentials to the public.  
 
-- Fliox clients can be used in **web applications** (JS/WASM) by using HTTP.  
-  Not supported by the mentioned ORMs as they require proprietary - non HTTP based - protocols. 
+- `FlioxClient`'s can also be used in **web applications** (JS/WASM) using HTTP or WebSocket's.  
+  Not supported by the mentioned ORMs as they require proprietary - non HTTP based - protocols.
 
 - Support **Pub-Sub** to receive push events for subscribed database changes like: create, update, delete & merge.
 
