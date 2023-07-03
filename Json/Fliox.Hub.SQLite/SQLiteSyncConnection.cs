@@ -17,14 +17,23 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         private             int     transactionDepth;
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
-        public  void                Dispose()   { }
         public  bool                IsOpen      => true;
         
         internal SyncConnection(sqlite3 sqliteDB, object writeLock) {
             this.sqliteDB   = sqliteDB;
             this.writeLock  = writeLock;
         }
-        
+
+        public void Dispose() {
+            if (sqliteDB.IsClosed) {
+                return;
+            }
+            var rc = raw.sqlite3_close_v2(sqliteDB);
+            if (rc !=  raw.SQLITE_OK) {
+                Console.Error.WriteLine($"sqlite3_close_v2 failed. error: {rc}");
+            }
+        }
+
         /// <summary>
         /// BEGIN TRANSACTION.<br/>
         /// Need to be called in a using statement to COMMIT TRANSACTION by calling
