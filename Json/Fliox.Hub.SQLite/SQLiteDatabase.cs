@@ -32,6 +32,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         /// but read throughput is significant higher if using a handle per thread 
         /// </summary>
         private  readonly   ConnectionPool<SyncConnection> connectionPool; 
+        private  readonly   object          writeLock = new object();
         private  readonly   string          filePath;
         
         public   override   string          StorageType             => "SQLite";
@@ -66,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (rc != raw.SQLITE_OK) {
                 return new SyncConnectionError($"sqlite3_open_v2 failed. error: {rc}");
             }
-            var connection = new SyncConnection(sqliteDB);
+            var connection = new SyncConnection(sqliteDB, writeLock);
             if (!SQLiteUtils.Exec(connection, "PRAGMA journal_mode = WAL;", out var error)) {
                 return new SyncConnectionError($"PRAGMA journal_mode = WAL failed. error: {error}");
             }

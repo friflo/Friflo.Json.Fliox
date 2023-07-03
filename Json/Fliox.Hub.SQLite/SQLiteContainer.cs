@@ -72,8 +72,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!InitTable(connection, out var error)) {
                 return new CreateEntitiesResult { Error = error };
             }
-            using (var scope = connection.BeginTransaction(out error))
-            {
+            lock (connection.writeLock) {
+                using var scope = connection.BeginTransaction(out error);
                 if (error != null) {
                     return new CreateEntitiesResult { Error = error };
                 }
@@ -107,8 +107,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!InitTable(connection, out var error)) {
                 return new UpsertEntitiesResult { Error = error };
             }
-            using (var scope = connection.BeginTransaction(out error))
-            {
+            lock (connection.writeLock) {
+                using var scope = connection.BeginTransaction(out error);
                 if (error != null) {
                     return new UpsertEntitiesResult { Error = error };
                 }
@@ -260,8 +260,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 }
                 return new DeleteEntitiesResult();
             }
-            using (var scope = connection.BeginTransaction(out error))
-            {
+            lock (connection.writeLock) {
+                using var scope = connection.BeginTransaction(out error);
                 if (error != null) {
                     return new DeleteEntitiesResult { Error = error };
                 }

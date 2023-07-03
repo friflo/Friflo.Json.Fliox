@@ -13,14 +13,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     internal sealed class SyncConnection : ISyncConnection
     {
         internal readonly   sqlite3 sqliteDB;
+        internal readonly   object  writeLock;
         private             int     transactionDepth;
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   { }
         public  bool                IsOpen      => true;
         
-        internal SyncConnection(sqlite3 sqliteDB) {
-            this.sqliteDB = sqliteDB;
+        internal SyncConnection(sqlite3 sqliteDB, object writeLock) {
+            this.sqliteDB   = sqliteDB;
+            this.writeLock  = writeLock;
         }
         
         /// <summary>
