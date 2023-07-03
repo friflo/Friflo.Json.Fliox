@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using StackExchange.Redis;
 
 namespace Friflo.Json.Fliox.Hub.Redis
@@ -44,8 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
                 return new SyncConnection(instance);
             }
             catch (RedisException e) {
-                var error = new TaskExecuteError(TaskErrorType.DatabaseError, e.Message);
-                return new SyncConnectionError(error);
+                return new SyncConnectionError(e.Message);
             }
         }
         

@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Host.Utils;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using SQLitePCL;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
@@ -24,15 +22,15 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         /// <a href="https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods/">
         /// Should I expose asynchronous wrappers for synchronous methods? - .NET Parallel Programming</a>
         /// </summary>
-        public              bool        Synchronous             { get; init; } = false;
-        public              bool        AutoCreateDatabase      { get; init; } = true;
-        public              bool        AutoCreateTables        { get; init; } = true;
-        public              bool        AutoAddVirtualColumns   { get; init; } = true;
+        public              bool            Synchronous             { get; init; } = false;
+        public              bool            AutoCreateDatabase      { get; init; } = true;
+        public              bool            AutoCreateTables        { get; init; } = true;
+        public              bool            AutoAddVirtualColumns   { get; init; } = true;
         
         private  readonly   ConnectionPool<SyncConnection> connectionPool; 
-        private  readonly   string      filePath;
+        private  readonly   string          filePath;
         
-        public   override   string      StorageType             => "SQLite";
+        public   override   string          StorageType             => "SQLite";
         
         /// <summary>
         /// Open or create a database with the given <paramref name="connectionString"/>.<br/>
@@ -56,17 +54,23 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
             }
-            var rc = raw.sqlite3_open(filePath, out sqlite3 sqliteDB);
-            if (rc != raw.SQLITE_OK) {
-                var msg     = $"sqlite3_open failed. error: {rc}";
-                var error   = new TaskExecuteError(TaskErrorType.DatabaseError, msg);
-                return new SyncConnectionError(error);
+            var flags = raw.SQLITE_OPEN_READWRITE;
+            if (AutoCreateDatabase) {
+                flags |=  raw.SQLITE_OPEN_CREATE;
             }
-            return new SyncConnection(sqliteDB);
+            var rc = raw.sqlite3_open_v2(filePath, out sqlite3 sqliteDB, flags, null);
+            if (rc != raw.SQLITE_OK) {
+                return new SyncConnectionError($"sqlite3_open failed. error: {rc}");
+            }
+            var connection = new SyncConnection(sqliteDB);
+            if (!SQLiteUtils.Exec(connection, "PRAGMA journal_mode = WAL;", out var error)) {
+                return new SyncConnectionError($"PRAGMA journal_mode = WAL failed. error: {error}");
+            }
+            return connection;
         }
         
-        public override void ReturnConnection(ISyncConnection connection) {
-            connectionPool.Push(connection);
+        public override void ReturnConnection(ISyncConnection syncConnection) {
+            connectionPool.Push(syncConnection);
         }
 
         static SQLiteDatabase() {

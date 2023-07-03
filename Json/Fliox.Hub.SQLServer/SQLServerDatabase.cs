@@ -7,7 +7,6 @@ using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using System.Data.SqlClient;
 using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
 
@@ -72,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     await Task.Delay(1000).ConfigureAwait(false);
                 }
             }
-            return new SyncConnectionError(new TaskExecuteError("timeout open newly created database"));
+            return new SyncConnectionError("timeout open newly created database");
         }
         
         public override void ReturnConnection(ISyncConnection connection) {

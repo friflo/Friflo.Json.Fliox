@@ -36,4 +36,4 @@ yarn.lock
 
 # macos
 .DS_Store
-*.sqlite3
+*.sqlite3*

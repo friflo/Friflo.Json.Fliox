@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
@@ -28,6 +29,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         public SyncConnectionError(TaskExecuteError error) {
             Error = error ?? throw new ArgumentNullException(nameof(error));
+        }
+        
+        public SyncConnectionError(string error) {
+            Error = new TaskExecuteError(TaskErrorType.DatabaseError, error);
         }
         
         public SyncConnectionError(Exception exception) {
