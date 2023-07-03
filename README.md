@@ -30,6 +30,9 @@ EFCore, Dapper, NHibernate, LINQ to DB, PetaPoco or ServiceStack.
 - Fliox store entities in **JSON columns** by all SQL database providers.  
   This enable schema changes without database migrations and avoid [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch).
 
+- Create automatically common **REST route handlers** `GET`, `PUT`, `PATCH`, `DELETE` to execute [query filters](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md#query-filter)  
+  and CRUD operations (bulk or single resource) for each table using ASP.NET Core.
+
 - Fliox clients - .NET and JS - can also be used on **user devices** by using a HTTP or WebSocket connection.  
   Using the listed ORMs above require to disclose the database credentials to the public.  
 
