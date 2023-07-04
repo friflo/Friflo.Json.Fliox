@@ -330,6 +330,14 @@ dotnet run
 
 The **connection string** of each provider is documented in its nuget `README`
 
+Example snippet to create a database using SQLite looks like:
+
+```csharp
+    var connection  = "Data Source=todo_db.sqlite3";
+    var schema      = DatabaseSchema.Create<TodoClient>();
+    var database    = new SQLiteDatabase("todo_db", connection, schema);
+```
+
 <br/>
 
 ## 🚀 **Examples**
