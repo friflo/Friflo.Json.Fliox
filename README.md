@@ -93,7 +93,7 @@ Compact list of features supported by Clients and Hubs
     - GraphQL API
     - Batch API - HTTP, WebSocket & UDP
 - Database
-    - CRUD operations
+    - CRUD operations - bulk and single resource
     - Transactions - Begin, Commit & Rollback - for SQL databases
     - Schema
     - Queries - LINQ expressions
@@ -108,7 +108,7 @@ Compact list of features supported by Clients and Hubs
     - C#, Typescript & Kotlin
     - JSON Schema, OpenAPI Schema & GraphQL Schema
     - Schema documentation & class diagram
-- Compatibility - tested on Windows, macOS & Linux
+- Compatibility - tested on Windows, macOS, Linux & Unity 2021 or higher
 
 Features are explained in more detail in the sections: [Hub](#-hub) and [Fliox](#-fliox)
 
