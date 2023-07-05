@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         private void AddVirtualColumns(SyncConnection connection) {
             var columnNames = SQLiteUtils.GetColumnNames(connection, name);
-            foreach (var column in tableInfo.columns.Values) {
+            foreach (var column in tableInfo.columns) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
                 }

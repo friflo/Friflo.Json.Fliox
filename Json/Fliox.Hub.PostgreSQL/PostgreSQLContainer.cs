@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         public async Task AddVirtualColumns(ISyncConnection syncConnection) {
             var connection  = (SyncConnection)syncConnection;
             var columnNames = await GetColumnNamesAsync(connection).ConfigureAwait(false);
-            foreach (var column in tableInfo.columns.Values) {
+            foreach (var column in tableInfo.columns) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
                 }
