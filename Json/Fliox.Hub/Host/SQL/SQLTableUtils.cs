@@ -32,8 +32,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             using var pooled    = entityProcessor.Get();
             var processor       = pooled.instance;
 
-            var rowValues       = new RowValue[columns.Length];
-            var context         = new TableContext(rowValues, tableInfo, processor);
+            var rowCells        = new RowCell[columns.Length];
+            var context         = new TableContext(rowCells, tableInfo, processor);
             
             // var escaped = new StringBuilder();
             var isFirstRow = true;
@@ -46,28 +46,47 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 var firstValue = true;
                 for (int n = 0; n < columns.Length; n++) {
                     if (firstValue) firstValue = false; else sb.Append(',');
-                    var value = rowValues[n].str ?? "NULL";
-                    sb.Append(value);
-                    rowValues[n] = default;
+                    var cell = rowCells[n];
+                    switch (cell.type) {
+                        case JsonEvent.None:
+                        case JsonEvent.ValueNull:
+                            sb.Append("NULL");
+                            break;
+                        case JsonEvent.ValueString:
+                            sb.Append('\'');
+                            cell.value.AppendTo(sb);
+                            sb.Append('\'');
+                            break;
+                        case JsonEvent.ValueNumber:
+                            cell.value.AppendTo(sb);
+                            break;                        
+                    }
+                    rowCells[n] = default;
                 }
                 sb.Append(')');
             }
         }
     }
 
-    internal struct RowValue
+    internal struct RowCell
     {
-        internal string str;
+        internal ShortString    value;
+        internal JsonEvent      type;
+
+        public override string ToString() => $"{value}: {type}";
     }
 
     internal class TableContext
     {
         private readonly    EntityProcessor    processor;
-        private readonly    RowValue[]         rowValues;
-        private readonly    TableInfo           tableInfo;
+        private readonly    RowCell[]          rowCells;
+        private readonly    TableInfo          tableInfo;
         
-        internal TableContext(RowValue[] rowValues, TableInfo tableInfo, EntityProcessor processor) {
-            this.rowValues  = rowValues;
+        private static readonly ShortString True    = new ShortString("TRUE");
+        private static readonly ShortString False   = new ShortString("FALSE");
+        
+        internal TableContext(RowCell[] rowCells, TableInfo tableInfo, EntityProcessor processor) {
+            this.rowCells   = rowCells;
             this.tableInfo  = tableInfo;
             this.processor  = processor;
         }
@@ -80,19 +99,24 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             while (true) {
                 switch (ev) {
                     case JsonEvent.ValueString: {
-                        var column = tableInfo.GetColumnOrdinal(ref parser);
-                        rowValues[column.ordinal].str = $"'{parser.value.AsString()}'"; 
+                        var column      = tableInfo.GetColumnOrdinal(ref parser);
+                        ref var cell    = ref rowCells[column.ordinal];
+                        cell.value      = new ShortString(parser.value, null);
+                        cell.type       = JsonEvent.ValueString;
                         break;
                     }
                     case JsonEvent.ValueNumber: {
-                        var column = tableInfo.GetColumnOrdinal(ref parser);
-                        rowValues[column.ordinal].str = parser.value.AsString();
+                        var column      = tableInfo.GetColumnOrdinal(ref parser);
+                        ref var cell    = ref rowCells[column.ordinal];
+                        cell.value      = new ShortString(parser.value, null);
+                        cell.type       = JsonEvent.ValueNumber;
                         break;
                     }
                     case JsonEvent.ValueBool: {
-                        var value = parser.boolValue ? "TRUE" : "FALSE";
-                        var column = tableInfo.GetColumnOrdinal(ref parser);
-                        rowValues[column.ordinal].str = value;
+                        var column      = tableInfo.GetColumnOrdinal(ref parser);
+                        ref var cell    = ref rowCells[column.ordinal];
+                        cell.value      = parser.boolValue ? True : False;
+                        cell.type       = JsonEvent.ValueBool;
                         break;
                     }
                     case JsonEvent.ArrayStart:
