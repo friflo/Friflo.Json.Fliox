@@ -21,6 +21,12 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public delegate string CustomContainerName(string name);
     
+    public enum TableType
+    {
+        JsonColumn      = 0,
+        MemberColumns   = 1,
+    }
+    
     /// <summary>
     /// <see cref="EntityDatabase"/> is the abstraction for specific database adapter / implementation e.g. a
     /// <see cref="MemoryDatabase"/> or <see cref="FileDatabase"/>.

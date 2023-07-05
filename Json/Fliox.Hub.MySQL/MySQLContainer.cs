@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         private  readonly   ContainerInit   init;
         public   override   bool            Pretty      { get; }
         private  readonly   MySQLProvider   provider;
+        private  readonly   TableType       tableType;
         
         internal MySQLContainer(string name, MySQLDatabase database, bool pretty)
             : base(name, database)
@@ -32,23 +33,45 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             tableInfo   = new TableInfo (database, name);
             Pretty      = pretty;
             provider    = database.Provider;
+            tableType   = database.TableType;
         }
         
         public async Task<TaskExecuteError> InitTable(ISyncConnection connection) {
             if (init.CreateTable) {
-                // [MySQL :: MySQL 8.0 Reference Manual :: 11.7 Data Type Storage Requirements] https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html
-                var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSON);";
-                var result = await Execute((SyncConnection)connection, sql).ConfigureAwait(false);
+                var result = await CreateTable((SyncConnection)connection);
                 if (result.Failed) {
                     return result.error;
                 }
                 init.tableCreated = true;
             }
-            if (init.AddVirtualColumns) {
+            if (tableType == TableType.JsonColumn && init.AddVirtualColumns) {
                 await AddVirtualColumns(connection).ConfigureAwait(false);
                 init.virtualColumnsAdded = true;
             }
             return null;
+        }
+        
+        private async Task<SQLResult> CreateTable(SyncConnection connection) {
+            if (tableType == TableType.JsonColumn) {
+                // [MySQL :: MySQL 8.0 Reference Manual :: 11.7 Data Type Storage Requirements] https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html
+                var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSON);";
+                return await Execute((SyncConnection)connection, sql).ConfigureAwait(false);
+            }
+            var sb = new StringBuilder();
+            sb.Append($"CREATE TABLE if not exists {name} (");
+            foreach (var column in tableInfo.columns) {
+                sb.Append(column.name);
+                sb.Append(' ');
+                var type = ConvertContext.GetSqlType(column.typeId, provider);
+                sb.Append(type);
+                if (column.isPrimaryKey) {
+                    sb.Append(" PRIMARY KEY");
+                }
+                sb.Append(',');
+            }
+            sb.Length -= 1;
+            sb.Append(");");
+            return await Execute(connection, sb.ToString()).ConfigureAwait(false);
         }
         
         private async Task<HashSet<string>> GetColumnNamesAsync(SyncConnection connection) {
@@ -80,8 +103,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new CreateEntitiesResult();
             }
             var sql = new StringBuilder();
-            sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
-            SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
+            if (tableType == TableType.MemberColumns) {
+                sql.Append($"INSERT INTO {name}");
+                SQLTableUtils.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext.EntityProcessor);
+            } else {
+                sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
+                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
+            }
             try {
                 await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
             } catch (MySqlException e) {

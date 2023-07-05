@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public              bool            AutoCreateDatabase      { get; init; } = true;
         public              bool            AutoCreateTables        { get; init; } = true;
         public              bool            AutoAddVirtualColumns   { get; init; } = true;
+        public              TableType       TableType               { get; init; } = TableType.JsonColumn;
         private  readonly   ConnectionPool<SyncConnection> connectionPool; 
         
         private  readonly   string          connectionString;

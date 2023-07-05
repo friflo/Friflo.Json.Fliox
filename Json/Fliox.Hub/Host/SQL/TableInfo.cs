@@ -9,17 +9,19 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     public sealed class ColumnInfo
     {
         public readonly     int             ordinal;
+        public readonly     bool            isPrimaryKey;
         public readonly     string          name;
         public readonly     string          memberName;
         public readonly     StandardTypeId  typeId;
 
         public override     string          ToString() => $"{name} [{ordinal}] : {typeId}";
 
-        public ColumnInfo (int ordinal, string name, string memberName, StandardTypeId typeId) {
-            this.ordinal    = ordinal;
-            this.name       = name;
-            this.memberName = memberName;
-            this.typeId     = typeId;
+        public ColumnInfo (int ordinal, string name, string memberName, StandardTypeId typeId, bool isPrimaryKey) {
+            this.ordinal        = ordinal;
+            this.name           = name;
+            this.memberName     = memberName;
+            this.typeId         = typeId;
+            this.isPrimaryKey   = isPrimaryKey;
         }
     }
     
@@ -82,7 +84,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 }
                 var isScalar    = !field.isArray && !field.isDictionary;
                 if (isScalar) {
-                    var column = new ColumnInfo(columnMap.Count, fieldPath, field.name, typeId);
+                    var isPrimaryKey = type.KeyField == field;
+                    var column = new ColumnInfo(columnMap.Count, fieldPath, field.name, typeId, isPrimaryKey);
                     columnList.Add(column);
                     columnMap.Add(fieldPath, column);
                     indexMap.Add(fieldPath, column);
