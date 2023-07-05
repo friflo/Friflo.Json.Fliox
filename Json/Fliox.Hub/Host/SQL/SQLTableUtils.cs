@@ -39,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             
             // var escaped = new StringBuilder();
             var sb = processor.sb;
+            sb.Clear();
             var isFirstRow = true;
             foreach (var entity in entities)
             {
@@ -70,6 +71,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 sb.AppendChar(')');
             }
             sb2.Append(sb.AsString());
+            if ((escape & SQLEscape.BackSlash) != 0) {
+                sb2.Replace("\\", "\\\\", 0, sb2.Length);
+            }
         }
     }
 
