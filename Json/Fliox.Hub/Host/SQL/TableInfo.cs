@@ -28,9 +28,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     public readonly struct ObjectInfo
     {
-        public readonly     string          name;
-        public readonly     ColumnInfo[]    columns;
-        public readonly     ObjectInfo[]    objects;
+        private readonly    string          name;
+        public  readonly    ColumnInfo[]    columns;
+        public  readonly    ObjectInfo[]    objects;
 
         public override     string          ToString() => name ?? "(Root)";
 
@@ -48,7 +48,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         // --- internal
         private  readonly   string                          container;
         private  readonly   Dictionary<string, ColumnInfo>  columnMap;
+        // ReSharper disable once CollectionNeverQueried.Local
         private  readonly   Dictionary<string, ColumnInfo>  indexMap;
+        // ReSharper disable once NotAccessedField.Local
         private  readonly   ObjectInfo                      root;
 
         public   override   string                          ToString() => container;
@@ -68,8 +70,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
         
         internal ColumnInfo GetColumnOrdinal(ref Utf8JsonParser parser) {
-            var path = parser.GetPath();
-           return columnMap[path];
+            var path = parser.GetPath(); // TODO optimize - avoid string creation 
+            return columnMap[path];
         }
         
         private ObjectInfo AddTypeFields(TypeDef type, string prefix, string name) {
