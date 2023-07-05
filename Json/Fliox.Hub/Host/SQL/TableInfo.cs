@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
@@ -64,6 +65,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 var column = pair.Value;
                 columns[column.ordinal] = column;
             }
+        }
+        
+        internal ColumnInfo GetColumnOrdinal(ref Utf8JsonParser parser) {
+            var path = parser.GetPath();
+           return columnMap[path];
         }
         
         private ObjectInfo AddTypeFields(TypeDef type, string prefix, string name) {

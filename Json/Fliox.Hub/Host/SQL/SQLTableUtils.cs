@@ -22,42 +22,56 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         {
             sb.Append(" (");
             var isFirst = true;
-            foreach (var column in tableInfo.columns) {
+            var columns = tableInfo.columns;
+            foreach (var column in columns) {
                 if (isFirst) isFirst = false; else sb.Append(',');
                 sb.Append(column.name);
             }
-            sb.Append(") VALUES\n");
+            sb.Append(")\nVALUES");
             
             using var pooled    = entityProcessor.Get();
             var processor       = pooled.instance;
-            var context         = new TableContext(sb, escape, processor);
+
+            var rowValues       = new RowValue[columns.Length];
+            var context         = new TableContext(rowValues, tableInfo, processor);
             
             // var escaped = new StringBuilder();
-            isFirst = true;
+            var isFirstRow = true;
             foreach (var entity in entities)
             {
-                if (isFirst) isFirst = false; else sb.Append(',');
+                if (isFirstRow) isFirstRow = false; else sb.Append(',');
                 sb.Append('(');
                 processor.parser.InitParser(entity.value);
                 context.Traverse();
-                sb.Length -= 1; // remove last comma separator,
+                var firstValue = true;
+                for (int n = 0; n < columns.Length; n++) {
+                    if (firstValue) firstValue = false; else sb.Append(',');
+                    var value = rowValues[n].str ?? "NULL";
+                    sb.Append(value);
+                    rowValues[n] = default;
+                }
                 sb.Append(')');
             }
         }
     }
-    
+
+    internal struct RowValue
+    {
+        internal string str;
+    }
+
     internal class TableContext
     {
-        private readonly StringBuilder      sb;
-        private readonly SQLEscape          escape;
-        private readonly EntityProcessor    processor;
+        private readonly    EntityProcessor    processor;
+        private readonly    RowValue[]         rowValues;
+        private readonly    TableInfo           tableInfo;
         
-        internal TableContext(StringBuilder sb, SQLEscape escape, EntityProcessor processor) {
-            this.sb         = sb;
-            this.escape     = escape;
+        internal TableContext(RowValue[] rowValues, TableInfo tableInfo, EntityProcessor processor) {
+            this.rowValues  = rowValues;
+            this.tableInfo  = tableInfo;
             this.processor  = processor;
         }
-            
+        
         internal void Traverse()
         {
             ref var parser = ref processor.parser;
@@ -65,23 +79,25 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var ev = parser.Event;
             while (true) {
                 switch (ev) {
-                    case JsonEvent.ValueString:
-                        sb.Append('\'');
-                        sb.Append(parser.value.AsString());
-                        sb.Append("',");
+                    case JsonEvent.ValueString: {
+                        var column = tableInfo.GetColumnOrdinal(ref parser);
+                        rowValues[column.ordinal].str = $"'{parser.value.AsString()}'"; 
                         break;
-                    case JsonEvent.ValueNumber:
-                        sb.Append(parser.value.AsString());
-                        sb.Append(',');
+                    }
+                    case JsonEvent.ValueNumber: {
+                        var column = tableInfo.GetColumnOrdinal(ref parser);
+                        rowValues[column.ordinal].str = parser.value.AsString();
                         break;
-                    case JsonEvent.ValueBool:
-                        var value = parser.boolValue ? "TRUE," : "FALSE,";
-                        sb.Append(value);
+                    }
+                    case JsonEvent.ValueBool: {
+                        var value = parser.boolValue ? "TRUE" : "FALSE";
+                        var column = tableInfo.GetColumnOrdinal(ref parser);
+                        rowValues[column.ordinal].str = value;
                         break;
+                    }
                     case JsonEvent.ArrayStart:
                         break;
                     case JsonEvent.ValueNull:
-                        sb.Append("NULL,");
                         break;
                     case JsonEvent.ObjectStart:
                         Traverse();

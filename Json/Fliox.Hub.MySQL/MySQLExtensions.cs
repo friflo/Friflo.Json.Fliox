@@ -53,12 +53,12 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case StandardTypeId.Int64:      return "bigint";
                 case StandardTypeId.Float:      return "float";
                 case StandardTypeId.Double:     return "double precision";
-                case StandardTypeId.Boolean:    return "text";
+                case StandardTypeId.Boolean:    return "varchar(255)";
                 case StandardTypeId.DateTime:
                 case StandardTypeId.Guid:
                 case StandardTypeId.BigInteger:
                 case StandardTypeId.String:
-                case StandardTypeId.Enum:       return "text";
+                case StandardTypeId.Enum:       return "varchar(255)";
             }
             throw new NotSupportedException($"column type: {typeId}");
         }

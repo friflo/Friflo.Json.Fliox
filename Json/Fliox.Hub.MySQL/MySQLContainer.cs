@@ -131,8 +131,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new UpsertEntitiesResult();
             }
             var sql = new StringBuilder();
-            sql.Append($"REPLACE INTO {name} ({ID},{DATA}) VALUES\n");
-            SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
+            if (tableType == TableType.MemberColumns) {
+                sql.Append($"REPLACE INTO {name}");
+                SQLTableUtils.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext.EntityProcessor);
+            } else {
+                sql.Append($"REPLACE INTO {name} ({ID},{DATA}) VALUES\n");
+                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
+            }
             try {
                 await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
             } catch (MySqlException e) {
