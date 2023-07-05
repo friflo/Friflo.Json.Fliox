@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (tableType == TableType.JsonColumn) {
                 // [MySQL :: MySQL 8.0 Reference Manual :: 11.7 Data Type Storage Requirements] https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html
                 var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSON);";
-                return await Execute((SyncConnection)connection, sql).ConfigureAwait(false);
+                return await Execute(connection, sql).ConfigureAwait(false);
             }
             var sb = new StringBuilder();
             sb.Append($"CREATE TABLE if not exists {name} (");
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 sql.Append($"INSERT INTO {name}");
                 SQLTableUtils.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext.EntityProcessor);
             } else {
-                sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
+                sql.Append($"INSERT INTO {name} ({ID},{DATA})\nVALUES ");
                 SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
             }
             try {
@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 sql.Append($"REPLACE INTO {name}");
                 SQLTableUtils.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext.EntityProcessor);
             } else {
-                sql.Append($"REPLACE INTO {name} ({ID},{DATA}) VALUES\n");
+                sql.Append($"REPLACE INTO {name} ({ID},{DATA})\nVALUES");
                 SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
             }
             try {
@@ -221,8 +221,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();
-                sql.Append($"DELETE FROM  {name} WHERE {ID} in\n");
-                
+                var id = tableType == TableType.MemberColumns ? tableInfo.keyColumn.name : ID;
+                sql.Append($"DELETE FROM  {name} WHERE {id} in\n");
                 SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.BackSlash);
                 try {
                     await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
