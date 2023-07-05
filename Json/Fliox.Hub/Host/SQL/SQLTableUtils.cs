@@ -13,79 +13,84 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public static class SQLTableUtils
     {
+        private static readonly Bytes Null    = new Bytes("NULL");
+        
         public static void AppendColumnValues(
-            StringBuilder               sb,
+            StringBuilder               sb2,
             List<JsonEntity>            entities,
             SQLEscape                   escape,
             TableInfo                   tableInfo,
-            ObjectPool<EntityProcessor> entityProcessor)
+            ObjectPool<SQLConverter>    sqlConverter)
         {
-            sb.Append(" (");
+            sb2.Append(" (");
             var isFirst = true;
             var columns = tableInfo.columns;
             foreach (var column in columns) {
-                if (isFirst) isFirst = false; else sb.Append(',');
-                sb.Append(column.name);
+                if (isFirst) isFirst = false; else sb2.Append(',');
+                sb2.Append(column.name);
             }
-            sb.Append(")\nVALUES");
+            sb2.Append(")\nVALUES");
             
-            using var pooled    = entityProcessor.Get();
+            using var pooled    = sqlConverter.Get();
             var processor       = pooled.instance;
 
             var rowCells        = new RowCell[columns.Length];
             var context         = new TableContext(rowCells, tableInfo, processor);
             
             // var escaped = new StringBuilder();
+            var sb = processor.sb;
             var isFirstRow = true;
             foreach (var entity in entities)
             {
-                if (isFirstRow) isFirstRow = false; else sb.Append(',');
-                sb.Append('(');
+                if (isFirstRow) isFirstRow = false; else sb.AppendChar(',');
+                sb.AppendChar('(');
+                processor.buffer.Clear();
                 processor.parser.InitParser(entity.value);
                 context.Traverse();
                 var firstValue = true;
                 for (int n = 0; n < columns.Length; n++) {
-                    if (firstValue) firstValue = false; else sb.Append(',');
+                    if (firstValue) firstValue = false; else sb.AppendChar(',');
                     var cell = rowCells[n];
                     switch (cell.type) {
                         case JsonEvent.None:
                         case JsonEvent.ValueNull:
-                            sb.Append("NULL");
+                            sb.AppendBytes(Null);
                             break;
                         case JsonEvent.ValueString:
-                            sb.Append('\'');
-                            cell.value.AppendTo(sb);
-                            sb.Append('\'');
+                            sb.AppendChar('\'');
+                            sb.AppendBytes(cell.value);
+                            sb.AppendChar('\'');
                             break;
                         case JsonEvent.ValueNumber:
-                            cell.value.AppendTo(sb);
+                            sb.AppendBytes(cell.value);
                             break;                        
                     }
                     rowCells[n] = default;
                 }
-                sb.Append(')');
+                sb.AppendChar(')');
             }
+            sb2.Append(sb.AsString());
         }
     }
 
     internal struct RowCell
     {
-        internal ShortString    value;
-        internal JsonEvent      type;
+        internal Bytes      value;
+        internal JsonEvent  type;
 
         public override string ToString() => $"{value}: {type}";
     }
 
     internal class TableContext
     {
-        private readonly    EntityProcessor    processor;
-        private readonly    RowCell[]          rowCells;
-        private readonly    TableInfo          tableInfo;
+        private readonly    SQLConverter    processor;
+        private readonly    RowCell[]       rowCells;
+        private readonly    TableInfo       tableInfo;
         
-        private static readonly ShortString True    = new ShortString("TRUE");
-        private static readonly ShortString False   = new ShortString("FALSE");
+        private static readonly Bytes True    = new Bytes("TRUE");
+        private static readonly Bytes False   = new Bytes("FALSE");
         
-        internal TableContext(RowCell[] rowCells, TableInfo tableInfo, EntityProcessor processor) {
+        internal TableContext(RowCell[] rowCells, TableInfo tableInfo, SQLConverter processor) {
             this.rowCells   = rowCells;
             this.tableInfo  = tableInfo;
             this.processor  = processor;
@@ -99,17 +104,25 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             while (true) {
                 switch (ev) {
                     case JsonEvent.ValueString: {
-                        var column      = tableInfo.GetColumnOrdinal(ref parser);
-                        ref var cell    = ref rowCells[column.ordinal];
-                        cell.value      = new ShortString(parser.value, null);
-                        cell.type       = JsonEvent.ValueString;
+                        var column          = tableInfo.GetColumnOrdinal(ref parser);
+                        ref var cell        = ref rowCells[column.ordinal];
+                        processor.buffer.AppendBytes(parser.value);
+                        cell.value.buffer   = processor.buffer.buffer;
+                        var end             = processor.buffer.end;
+                        cell.value.end      = end;
+                        cell.value.start    = end - parser.value.Len; 
+                        cell.type           = JsonEvent.ValueString;
                         break;
                     }
                     case JsonEvent.ValueNumber: {
-                        var column      = tableInfo.GetColumnOrdinal(ref parser);
-                        ref var cell    = ref rowCells[column.ordinal];
-                        cell.value      = new ShortString(parser.value, null);
-                        cell.type       = JsonEvent.ValueNumber;
+                        var column          = tableInfo.GetColumnOrdinal(ref parser);
+                        ref var cell        = ref rowCells[column.ordinal];
+                        processor.buffer.AppendBytes(parser.value);
+                        cell.value.buffer   = processor.buffer.buffer;
+                        var end             = processor.buffer.end;
+                        cell.value.end      = end;
+                        cell.value.start    = end - parser.value.Len; 
+                        cell.type           = JsonEvent.ValueNumber;
                         break;
                     }
                     case JsonEvent.ValueBool: {

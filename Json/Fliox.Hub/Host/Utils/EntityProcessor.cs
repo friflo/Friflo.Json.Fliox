@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     /// </summary>
     public sealed class EntityProcessor : IDisposable
     {
-        public              Utf8JsonParser          parser;
+        private             Utf8JsonParser          parser;
         private             Bytes                   idKey       = new Bytes(16);
         private             Bytes                   defaultKey  = new Bytes("id");
         private             bool                    foundKey;

@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sql = new StringBuilder();
             if (tableType == TableType.MemberColumns) {
                 sql.Append($"INSERT INTO {name}");
-                SQLTableUtils.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext.EntityProcessor);
+                SQLTableUtils.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext.SQLConverter);
             } else {
                 sql.Append($"INSERT INTO {name} ({ID},{DATA})\nVALUES ");
                 SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sql = new StringBuilder();
             if (tableType == TableType.MemberColumns) {
                 sql.Append($"REPLACE INTO {name}");
-                SQLTableUtils.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext.EntityProcessor);
+                SQLTableUtils.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext.SQLConverter);
             } else {
                 sql.Append($"REPLACE INTO {name} ({ID},{DATA})\nVALUES");
                 SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
