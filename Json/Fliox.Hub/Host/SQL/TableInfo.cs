@@ -29,34 +29,38 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     public sealed class ObjectInfo
     {
-        private readonly    Bytes           memberName;
-        private readonly    ColumnInfo[]    columns;
-        private readonly    ObjectInfo[]    objects;
+        private readonly    string                              name;
+        private readonly    ColumnInfo[]                        columns;
+        private readonly    ObjectInfo[]                        objects;
+        private readonly    Dictionary<BytesHash,ColumnInfo>    columnMap;
+        private readonly    Dictionary<BytesHash,ObjectInfo>    objectMap;
 
-        public override     string          ToString() => memberName.AsString();
+        public override     string                              ToString() => name;
 
         public ObjectInfo (string name, ColumnInfo[] columns, ObjectInfo[] objects) {
-            this.memberName = new Bytes(name);
+            this.name       = name;
             this.columns    = columns;
             this.objects    = objects;
+            columnMap       = new Dictionary<BytesHash, ColumnInfo>(columns.Length, BytesHash.Equality);
+            foreach (var column in columns) {
+                columnMap.Add(new BytesHash(new Bytes(column.name)), column);
+            }
+            objectMap       = new Dictionary<BytesHash, ObjectInfo>(objects.Length, BytesHash.Equality);
+            foreach (var obj in objects) {
+                objectMap.Add(new BytesHash(new Bytes(obj.name)), obj);
+            }
         }
         
         public ColumnInfo FindColumn(in Bytes name) {
-            foreach (var column in columns) {
-                if (name.IsEqual(column.memberName)) {
-                    return column;
-                }
-            }
-            return null;
+            var key = new BytesHash(name);
+            columnMap.TryGetValue(key, out var result);
+            return result;
         }
         
         public ObjectInfo FindObject(in Bytes name) {
-            foreach (var obj in objects) {
-                if (name.IsEqual(obj.memberName)) {
-                    return obj;
-                }
-            }
-            return null;
+            var key = new BytesHash(name);
+            objectMap.TryGetValue(key, out var result);
+            return result;
         }
     }
     
