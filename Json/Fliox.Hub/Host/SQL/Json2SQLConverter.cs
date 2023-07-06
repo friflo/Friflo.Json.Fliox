@@ -31,7 +31,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var columns = tableInfo.columns;
             foreach (var column in columns) {
                 if (isFirst) isFirst = false; else sb.Append(',');
+                sb.Append('`');
                 sb.Append(column.name);
+                sb.Append('`');
             }
             sb.Append(")\nVALUES\n");
 
@@ -81,6 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         break;
                     }
                     case JsonEvent.ArrayStart:
+                        parser.SkipTree(); // TODO implementation skipped for now
                         break;
                     case JsonEvent.ValueNull:
                         break;

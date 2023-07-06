@@ -60,8 +60,9 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sb = new StringBuilder();
             sb.Append($"CREATE TABLE if not exists {name} (");
             foreach (var column in tableInfo.columns) {
+                sb.Append('`');
                 sb.Append(column.name);
-                sb.Append(' ');
+                sb.Append("` ");
                 var type = ConvertContext.GetSqlType(column.typeId, provider);
                 sb.Append(type);
                 if (column.isPrimaryKey) {
@@ -169,7 +170,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 using var reader = await connection.ExecuteReaderAsync(sql.ToString()).ConfigureAwait(false);
                 if (tableType == TableType.MemberColumns) {
                     using var pooled = syncContext.SQL2JsonConverter.Get();
-                    return await pooled.instance.ReadEntitiesAsync(reader).ConfigureAwait(false);
+                    var entities = await pooled.instance.ReadEntitiesAsync(reader).ConfigureAwait(false);
+                    return new ReadEntitiesResult { entities = entities.ToArray() };
                 } else {
                     return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
                 }
@@ -192,7 +194,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sql     = SQLUtils.QueryEntitiesSQL(command, name, where);
             try {
                 using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
-                var entities        = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
+                List<EntityValue> entities;
+                if (tableType == TableType.MemberColumns) {
+                    using var pooled = syncContext.SQL2JsonConverter.Get();
+                    entities    = await pooled.instance.ReadEntitiesAsync(reader).ConfigureAwait(false);
+                } else {
+                    entities    = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
+                }
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
             catch (MySqlException e) {

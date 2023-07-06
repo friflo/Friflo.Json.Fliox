@@ -2,9 +2,11 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
@@ -22,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sb.Append(')');
         }
 
-        public async Task<ReadEntitiesResult> ReadEntitiesAsync(DbDataReader reader)
+        public async Task<List<EntityValue>> ReadEntitiesAsync(DbDataReader reader)
         {
             while (await reader.ReadAsync().ConfigureAwait(false)) {
                 var id      = reader.GetString(0);
@@ -32,8 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
             return null;
         }
-        
-        
+
         public void Dispose() {
             
         }
