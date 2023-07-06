@@ -590,4 +590,4 @@ Happy coding!
 This project is licensed under AGPLv3.  
 
 friflo JSON Fliox  
-Copyright © 2022   Ullrich Praetz
+Copyright © 2023   Ullrich Praetz

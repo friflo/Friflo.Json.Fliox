@@ -2,8 +2,8 @@
 
 - dependencies
     - no 3rd party dependencies
-    - small size of Fliox assemblies (*.dll) ~ 850 kb in total, 350 kb zipped  
-      source code: library 47k LOC, unit tests: 18k LOC
+    - small size of required Fliox assemblies (*.dll) ~ 1250 kb in total, 430 kb zipped  
+      source code: library 67k LOC, unit tests: 25k LOC
 - target for optimal performance
     - maximize throughput, minimize latency, minimize heap allocations and boxing
     - enable task batching as a unit-of-work
