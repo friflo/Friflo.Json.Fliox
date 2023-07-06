@@ -12,8 +12,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     {
         public   readonly   int             ordinal;
         public   readonly   bool            isPrimaryKey;
-        public   readonly   string          name;
-        internal readonly   Bytes           memberName;
+        public   readonly   string          name;           // path: sub.title
+        internal readonly   string          memberName;     // leaf: title
         public   readonly   StandardTypeId  typeId;
 
         public override     string          ToString() => $"{name} [{ordinal}] : {typeId}";
@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public ColumnInfo (int ordinal, string name, string memberName, StandardTypeId typeId, bool isPrimaryKey) {
             this.ordinal        = ordinal;
             this.name           = name;
-            this.memberName     = new Bytes(memberName);
+            this.memberName     = memberName;
             this.typeId         = typeId;
             this.isPrimaryKey   = isPrimaryKey;
         }
@@ -29,25 +29,25 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     public sealed class ObjectInfo
     {
-        private readonly    string                              name;
+        private readonly    string                              memberName;
         private readonly    ColumnInfo[]                        columns;
         private readonly    ObjectInfo[]                        objects;
         private readonly    Dictionary<BytesHash,ColumnInfo>    columnMap;
         private readonly    Dictionary<BytesHash,ObjectInfo>    objectMap;
 
-        public override     string                              ToString() => name;
+        public override     string                              ToString() => memberName;
 
-        public ObjectInfo (string name, ColumnInfo[] columns, ObjectInfo[] objects) {
-            this.name       = name;
+        public ObjectInfo (string memberName, ColumnInfo[] columns, ObjectInfo[] objects) {
+            this.memberName = memberName;
             this.columns    = columns;
             this.objects    = objects;
             columnMap       = new Dictionary<BytesHash, ColumnInfo>(columns.Length, BytesHash.Equality);
             foreach (var column in columns) {
-                columnMap.Add(new BytesHash(new Bytes(column.name)), column);
+                columnMap.Add(new BytesHash(new Bytes(column.memberName)), column);
             }
             objectMap       = new Dictionary<BytesHash, ObjectInfo>(objects.Length, BytesHash.Equality);
             foreach (var obj in objects) {
-                objectMap.Add(new BytesHash(new Bytes(obj.name)), obj);
+                objectMap.Add(new BytesHash(new Bytes(obj.memberName)), obj);
             }
         }
         
