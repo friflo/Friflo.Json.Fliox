@@ -32,30 +32,30 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (isFirst) isFirst = false; else sb.Append(',');
                 sb.Append(column.name);
             }
-            sb.Append(")\nVALUES");
+            sb.Append(")\nVALUES\n");
             
             using var pooled    = sqlConverter.Get();
-            var processor       = pooled.instance;
+            var converter       = pooled.instance;
             var rowCells        = new RowCell[columns.Length];
-            var context         = new TableContext(rowCells, processor);
+            var context         = new TableContext(rowCells, converter);
             
             // var escaped = new StringBuilder();
             var isFirstRow = true;
             foreach (var entity in entities)
             {
-                if (isFirstRow) isFirstRow = false; else sb.Append(',');
-                processor.buffer.Clear();
+                if (isFirstRow) isFirstRow = false; else sb.Append(",\n");
+                converter.buffer.Clear();
                 
-                processor.parser.InitParser(entity.value);
-                var ev = processor.parser.NextEvent();
+                converter.parser.InitParser(entity.value);
+                var ev = converter.parser.NextEvent();
                 if (ev != JsonEvent.ObjectStart) throw new InvalidOperationException("expect object");
                 context.Traverse(tableInfo.root);
                 
-                AddRowValues(sb, rowCells);
+                AddRowValues(sb, rowCells, converter);
             }
         }
         
-        private static void AddRowValues(StringBuilder sb, RowCell[] rowCells)
+        private static void AddRowValues(StringBuilder sb, RowCell[] rowCells, SQLConverter converter)
         {
             sb.Append('(');
             var firstValue = true;
@@ -68,10 +68,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         sb.Append(Null);
                         break;
                     case JsonEvent.ValueString:
-                        AppendString(sb, cell.value);
+                        AppendString(sb, cell.value, converter);
                         break;
                     case JsonEvent.ValueNumber:
-                        AppendNumber(sb, cell.value);
+                        AppendBytes(sb, cell.value);
                         break;
                     default:
                         throw new InvalidOperationException($"unexpected cell.type: {cell.type}");
@@ -81,12 +81,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sb.Append(')');
         }
         
-        private static void AppendString(StringBuilder sb, in Bytes value) {
+        private static void AppendString(StringBuilder sb, in Bytes value, SQLConverter converter) {
             sb.Append('\'');
-            var end = value.end;
-            var buf = value.buffer;
-            for (int n = value.start; n < end; n++) {
-                var c = (char)buf[n];
+            var len = converter.GetChars(value, out var chars);
+            for (int n = 0; n < len; n++) {
+                var c = chars[n];
                 switch (c) {
                     case '\'':  sb.Append("\\'");   break;
                     case '\\':  sb.Append("\\\\");  break;
@@ -96,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sb.Append('\'');
         }
         
-        private static void AppendNumber(StringBuilder sb, in Bytes value) {
+        private static void AppendBytes(StringBuilder sb, in Bytes value) {
             var end = value.end;
             var buf = value.buffer;
             for (int n = value.start; n < end; n++) {

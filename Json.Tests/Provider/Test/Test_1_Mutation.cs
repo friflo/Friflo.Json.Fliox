@@ -94,15 +94,16 @@ namespace Friflo.Json.Tests.Provider.Test
             var client      = await GetClient(db, false);
             var deleteAll   = client.testMutate.DeleteAll();
             var entities    = new List<TestMutate> {
-                new TestMutate { id = $"upsert-quote",  str = "quote-\'" },
-                new TestMutate { id = $"upsert-escape", str = "escape-\\-\b-\f-\n-\r-\t-" }
+                new TestMutate { id = $"upsert-quote",   str = "quote-\'" },
+                new TestMutate { id = $"upsert-escape",  str = "escape-\\-\b-\f-\n-\r-\t-" },
+                new TestMutate { id = $"upsert-unicode", str = "unicode-☀🌎♥👋" }
             };
             var upsert      = client.testMutate.UpsertRange(entities);
             var countAll    = client.testMutate.CountAll();
             await client.SyncTasks();
             
             IsTrue(upsert.Success);
-            AreEqual(2, countAll.Result);
+            AreEqual(3, countAll.Result);
             IsTrue(deleteAll.Success);
         }
         
