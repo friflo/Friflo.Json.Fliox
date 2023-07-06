@@ -118,6 +118,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     {
         internal Bytes      value;
         internal JsonEvent  type;
+        
+        internal void SetValue(in Bytes value, int len) {
+            this.value.buffer   = value.buffer;
+            var end             = value.end;
+            this.value.end      = end;
+            this.value.start    = end - len; 
+        }
 
         public override string ToString() => type == JsonEvent.None ? "None" : $"{value}: {type}";
     }
@@ -142,25 +149,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 var ev = processor.parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString: {
-                        var column          = objInfo.FindColumn(parser.key);
-                        ref var cell        = ref rowCells[column.ordinal];
+                        var column      = objInfo.FindColumn(parser.key);
+                        ref var cell    = ref rowCells[column.ordinal];
                         processor.buffer.AppendBytes(parser.value);
-                        cell.value.buffer   = processor.buffer.buffer;
-                        var end             = processor.buffer.end;
-                        cell.value.end      = end;
-                        cell.value.start    = end - parser.value.Len; 
-                        cell.type           = JsonEvent.ValueString;
+                        cell.SetValue(processor.buffer, parser.value.Len);
+                        cell.type       = JsonEvent.ValueString;
                         break;
                     }
                     case JsonEvent.ValueNumber: {
-                        var column          = objInfo.FindColumn(parser.key);
-                        ref var cell        = ref rowCells[column.ordinal];
+                        var column      = objInfo.FindColumn(parser.key);
+                        ref var cell    = ref rowCells[column.ordinal];
                         processor.buffer.AppendBytes(parser.value);
-                        cell.value.buffer   = processor.buffer.buffer;
-                        var end             = processor.buffer.end;
-                        cell.value.end      = end;
-                        cell.value.start    = end - parser.value.Len; 
-                        cell.type           = JsonEvent.ValueNumber;
+                        cell.SetValue(processor.buffer, parser.value.Len);
+                        cell.type       = JsonEvent.ValueNumber;
                         break;
                     }
                     case JsonEvent.ValueBool: {
