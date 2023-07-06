@@ -1,12 +1,14 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Utils;
 
+// ReSharper disable SuggestBaseTypeForParameter
 // ReSharper disable UseIndexFromEndExpression
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.Host.SQL
@@ -35,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var processor       = pooled.instance;
 
             var rowCells        = new RowCell[columns.Length];
-            var context         = new TableContext(rowCells, tableInfo, processor);
+            var context         = new TableContext(rowCells, processor);
             
             // var escaped = new StringBuilder();
             var sb = processor.sb;
@@ -46,33 +48,42 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (isFirstRow) isFirstRow = false; else sb.AppendChar(',');
                 sb.AppendChar('(');
                 processor.buffer.Clear();
+                
                 processor.parser.InitParser(entity.value);
-                context.Traverse();
-                var firstValue = true;
-                for (int n = 0; n < columns.Length; n++) {
-                    if (firstValue) firstValue = false; else sb.AppendChar(',');
-                    var cell = rowCells[n];
-                    switch (cell.type) {
-                        case JsonEvent.None:
-                        case JsonEvent.ValueNull:
-                            sb.AppendBytes(Null);
-                            break;
-                        case JsonEvent.ValueString:
-                            sb.AppendChar('\'');
-                            sb.AppendBytes(cell.value);
-                            sb.AppendChar('\'');
-                            break;
-                        case JsonEvent.ValueNumber:
-                            sb.AppendBytes(cell.value);
-                            break;                        
-                    }
-                    rowCells[n] = default;
-                }
+                var ev = processor.parser.NextEvent();
+                if (ev != JsonEvent.ObjectStart) throw new InvalidOperationException("expect object");
+                context.Traverse(tableInfo.root);
+                
+                AddRowValues(ref sb, rowCells);
                 sb.AppendChar(')');
             }
             sb2.Append(sb.AsString());
             if ((escape & SQLEscape.BackSlash) != 0) {
                 sb2.Replace("\\", "\\\\", 0, sb2.Length);
+            }
+        }
+        
+        private static void AddRowValues(ref Bytes sb, RowCell[] rowCells)
+        {
+            var firstValue = true;
+            for (int n = 0; n < rowCells.Length; n++) {
+                if (firstValue) firstValue = false; else sb.AppendChar(',');
+                var cell = rowCells[n];
+                switch (cell.type) {
+                    case JsonEvent.None:
+                    case JsonEvent.ValueNull:
+                        sb.AppendBytes(Null);
+                        break;
+                    case JsonEvent.ValueString:
+                        sb.AppendChar('\'');
+                        sb.AppendBytes(cell.value);
+                        sb.AppendChar('\'');
+                        break;
+                    case JsonEvent.ValueNumber:
+                        sb.AppendBytes(cell.value);
+                        break;                        
+                }
+                cell.type = JsonEvent.None;
             }
         }
     }
@@ -89,18 +100,16 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     {
         private readonly    SQLConverter    processor;
         private readonly    RowCell[]       rowCells;
-        private readonly    TableInfo       tableInfo;
         
         private static readonly Bytes True    = new Bytes("TRUE");
         private static readonly Bytes False   = new Bytes("FALSE");
         
-        internal TableContext(RowCell[] rowCells, TableInfo tableInfo, SQLConverter processor) {
+        internal TableContext(RowCell[] rowCells, SQLConverter processor) {
             this.rowCells   = rowCells;
-            this.tableInfo  = tableInfo;
             this.processor  = processor;
         }
         
-        internal void Traverse()
+        internal void Traverse(ObjectInfo objInfo)
         {
             ref var parser = ref processor.parser;
             processor.parser.NextEvent();
@@ -108,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             while (true) {
                 switch (ev) {
                     case JsonEvent.ValueString: {
-                        var column          = tableInfo.GetColumnOrdinal(ref parser);
+                        var column          = objInfo.FindColumn(parser.key);
                         ref var cell        = ref rowCells[column.ordinal];
                         processor.buffer.AppendBytes(parser.value);
                         cell.value.buffer   = processor.buffer.buffer;
@@ -119,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         break;
                     }
                     case JsonEvent.ValueNumber: {
-                        var column          = tableInfo.GetColumnOrdinal(ref parser);
+                        var column          = objInfo.FindColumn(parser.key);
                         ref var cell        = ref rowCells[column.ordinal];
                         processor.buffer.AppendBytes(parser.value);
                         cell.value.buffer   = processor.buffer.buffer;
@@ -130,10 +139,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         break;
                     }
                     case JsonEvent.ValueBool: {
-                        var column      = tableInfo.GetColumnOrdinal(ref parser);
-                        ref var cell    = ref rowCells[column.ordinal];
-                        cell.value      = parser.boolValue ? True : False;
-                        cell.type       = JsonEvent.ValueBool;
+                        var column          = objInfo.FindColumn(parser.key);
+                        ref var cell        = ref rowCells[column.ordinal];
+                        cell.value          = parser.boolValue ? True : False;
+                        cell.type           = JsonEvent.ValueBool;
                         break;
                     }
                     case JsonEvent.ArrayStart:
@@ -141,7 +150,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     case JsonEvent.ValueNull:
                         break;
                     case JsonEvent.ObjectStart:
-                        Traverse();
+                        var obj = objInfo.FindObject(parser.key);
+                        if (obj != null) {
+                            Traverse(obj);
+                        } else {
+                            parser.SkipTree();
+                        }
                         break;
                     case JsonEvent.EOF:
                     case JsonEvent.ObjectEnd:

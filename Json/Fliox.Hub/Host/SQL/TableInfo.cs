@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Schema.Definition;
 
+// ReSharper disable LoopCanBeConvertedToQuery
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public sealed class ColumnInfo
@@ -12,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public readonly     int             ordinal;
         public readonly     bool            isPrimaryKey;
         public readonly     string          name;
-        public readonly     string          memberName;
+        public readonly     Bytes           memberName;
         public readonly     StandardTypeId  typeId;
 
         public override     string          ToString() => $"{name} [{ordinal}] : {typeId}";
@@ -20,24 +21,42 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public ColumnInfo (int ordinal, string name, string memberName, StandardTypeId typeId, bool isPrimaryKey) {
             this.ordinal        = ordinal;
             this.name           = name;
-            this.memberName     = memberName;
+            this.memberName     = new Bytes(memberName);
             this.typeId         = typeId;
             this.isPrimaryKey   = isPrimaryKey;
         }
     }
     
-    public readonly struct ObjectInfo
+    public sealed class ObjectInfo
     {
-        private readonly    string          name;
-        public  readonly    ColumnInfo[]    columns;
-        public  readonly    ObjectInfo[]    objects;
+        private readonly    Bytes           memberName;
+        private readonly    ColumnInfo[]    columns;
+        private readonly    ObjectInfo[]    objects;
 
-        public override     string          ToString() => name ?? "(Root)";
+        public override     string          ToString() => memberName.AsString();
 
         public ObjectInfo (string name, ColumnInfo[] columns, ObjectInfo[] objects) {
-            this.name       = name;
+            this.memberName = new Bytes(name);
             this.columns    = columns;
             this.objects    = objects;
+        }
+        
+        public ColumnInfo FindColumn(in Bytes name) {
+            foreach (var column in columns) {
+                if (name.IsEqual(column.memberName)) {
+                    return column;
+                }
+            }
+            return null;
+        }
+        
+        public ObjectInfo FindObject(in Bytes name) {
+            foreach (var obj in objects) {
+                if (name.IsEqual(obj.memberName)) {
+                    return obj;
+                }
+            }
+            return null;
         }
     }
     
@@ -51,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         // ReSharper disable once CollectionNeverQueried.Local
         private  readonly   Dictionary<string, ColumnInfo>  indexMap;
         // ReSharper disable once NotAccessedField.Local
-        private  readonly   ObjectInfo                      root;
+        public   readonly   ObjectInfo                      root;
 
         public   override   string                          ToString() => container;
 
@@ -60,18 +79,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             columnMap       = new Dictionary<string, ColumnInfo>();
             indexMap        = new Dictionary<string, ColumnInfo>();
             var type        = database.Schema.typeSchema.RootType.FindField(container).type;
-            root            = AddTypeFields(type, null, null);
+            root            = AddTypeFields(type, null, "(Root)");
             keyColumn       = columnMap[type.KeyField.name];
             columns         = new ColumnInfo[columnMap.Count];
             foreach (var pair in columnMap) {
                 var column = pair.Value;
                 columns[column.ordinal] = column;
             }
-        }
-        
-        internal ColumnInfo GetColumnOrdinal(ref Utf8JsonParser parser) {
-            var path = parser.GetPath(); // TODO optimize - avoid string creation 
-            return columnMap[path];
         }
         
         private ObjectInfo AddTypeFields(TypeDef type, string prefix, string name) {
