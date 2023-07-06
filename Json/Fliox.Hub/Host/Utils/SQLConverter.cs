@@ -12,11 +12,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
     public sealed class SQLConverter : IDisposable
     {
-        internal        Utf8JsonParser  parser;
-        internal        Bytes           buffer      = new Bytes(256);
-        private         char[]          charBuffer  = new char[32];
+        private     Utf8JsonParser  parser;
+        private     Bytes           buffer      = new Bytes(256);
+        private     char[]          charBuffer  = new char[32];
+        private     RowCell[]       rowCells;
 
-        private const   string          Null        = "NULL";
+        private const           string  Null    = "NULL";
+        private static readonly Bytes   True    = new Bytes("TRUE");
+        private static readonly Bytes   False   = new Bytes("FALSE");
 
         public void AppendColumnValues(
             StringBuilder       sb,
@@ -33,9 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             }
             sb.Append(")\nVALUES\n");
 
-            var rowCells        = new RowCell[columns.Length];
-            var context         = new TableContext(rowCells, this);
-            
+            rowCells    = new RowCell[columns.Length];
             // var escaped = new StringBuilder();
             var isFirstRow = true;
             foreach (var entity in entities)
@@ -46,9 +47,57 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 parser.InitParser(entity.value);
                 var ev = parser.NextEvent();
                 if (ev != JsonEvent.ObjectStart) throw new InvalidOperationException("expect object");
-                context.Traverse(tableInfo.root);
+                Traverse(tableInfo.root);
                 
                 AddRowValues(sb, rowCells, this);
+            }
+        }
+        
+        private void Traverse(ObjectInfo objInfo)
+        {
+            while (true) {
+                var ev = parser.NextEvent();
+                switch (ev) {
+                    case JsonEvent.ValueString: {
+                        var column      = objInfo.FindColumn(parser.key);
+                        ref var cell    = ref rowCells[column.ordinal];
+                        buffer.AppendBytes(parser.value);
+                        cell.SetValue(buffer, parser.value.Len);
+                        cell.type       = JsonEvent.ValueString;
+                        break;
+                    }
+                    case JsonEvent.ValueNumber: {
+                        var column      = objInfo.FindColumn(parser.key);
+                        ref var cell    = ref rowCells[column.ordinal];
+                        buffer.AppendBytes(parser.value);
+                        cell.SetValue(buffer, parser.value.Len);
+                        cell.type       = JsonEvent.ValueNumber;
+                        break;
+                    }
+                    case JsonEvent.ValueBool: {
+                        var column          = objInfo.FindColumn(parser.key);
+                        ref var cell        = ref rowCells[column.ordinal];
+                        cell.value          = parser.boolValue ? True : False;
+                        cell.type           = JsonEvent.ValueBool;
+                        break;
+                    }
+                    case JsonEvent.ArrayStart:
+                        break;
+                    case JsonEvent.ValueNull:
+                        break;
+                    case JsonEvent.ObjectStart:
+                        var obj = objInfo.FindObject(parser.key);
+                        if (obj != null) {
+                            Traverse(obj);
+                        } else {
+                            parser.SkipTree();
+                        }
+                        break;
+                    case JsonEvent.ObjectEnd:
+                        return;
+                    default:
+                        throw new InvalidOperationException($"unexpected state: {ev}");
+                }
             }
         }
         
@@ -127,68 +176,5 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         }
 
         public override string ToString() => type == JsonEvent.None ? "None" : $"{value}: {type}";
-    }
-
-    internal class TableContext
-    {
-        private readonly    SQLConverter    processor;
-        private readonly    RowCell[]       rowCells;
-        
-        private static readonly Bytes True    = new Bytes("TRUE");
-        private static readonly Bytes False   = new Bytes("FALSE");
-        
-        internal TableContext(RowCell[] rowCells, SQLConverter processor) {
-            this.rowCells   = rowCells;
-            this.processor  = processor;
-        }
-        
-        internal void Traverse(ObjectInfo objInfo)
-        {
-            ref var parser = ref processor.parser;
-            while (true) {
-                var ev = processor.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ValueString: {
-                        var column      = objInfo.FindColumn(parser.key);
-                        ref var cell    = ref rowCells[column.ordinal];
-                        processor.buffer.AppendBytes(parser.value);
-                        cell.SetValue(processor.buffer, parser.value.Len);
-                        cell.type       = JsonEvent.ValueString;
-                        break;
-                    }
-                    case JsonEvent.ValueNumber: {
-                        var column      = objInfo.FindColumn(parser.key);
-                        ref var cell    = ref rowCells[column.ordinal];
-                        processor.buffer.AppendBytes(parser.value);
-                        cell.SetValue(processor.buffer, parser.value.Len);
-                        cell.type       = JsonEvent.ValueNumber;
-                        break;
-                    }
-                    case JsonEvent.ValueBool: {
-                        var column          = objInfo.FindColumn(parser.key);
-                        ref var cell        = ref rowCells[column.ordinal];
-                        cell.value          = parser.boolValue ? True : False;
-                        cell.type           = JsonEvent.ValueBool;
-                        break;
-                    }
-                    case JsonEvent.ArrayStart:
-                        break;
-                    case JsonEvent.ValueNull:
-                        break;
-                    case JsonEvent.ObjectStart:
-                        var obj = objInfo.FindObject(parser.key);
-                        if (obj != null) {
-                            Traverse(obj);
-                        } else {
-                            parser.SkipTree();
-                        }
-                        break;
-                    case JsonEvent.ObjectEnd:
-                        return;
-                    default:
-                        throw new InvalidOperationException($"unexpected state: {ev}");
-                }
-            }
-        }
     }
 }
