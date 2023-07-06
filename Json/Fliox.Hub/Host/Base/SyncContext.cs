@@ -40,6 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public  ObjectPool<ObjectMapper>        ObjectMapper        => pool.ObjectMapper;
         public  ObjectPool<EntityProcessor>     EntityProcessor     => pool.EntityProcessor;
         public  ObjectPool<Json2SQLConverter>   Json2SQLConverter   => pool.Json2SQLConverter;
+        public  ObjectPool<SQL2JsonConverter>   SQL2JsonConverter   => pool.SQL2JsonConverter;
         public  MemoryBuffer                    MemoryBuffer        => memoryBuffer;
         public  SyncRequest                     Request             => request;
         public  IHost                           Host                { get => host; init => host = value ?? throw new ArgumentNullException(nameof(Host)); }

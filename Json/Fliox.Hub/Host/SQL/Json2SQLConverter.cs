@@ -5,10 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Hub.Host.SQL;
 
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-namespace Friflo.Json.Fliox.Hub.Host.Utils
+namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public sealed class Json2SQLConverter : IDisposable
     {

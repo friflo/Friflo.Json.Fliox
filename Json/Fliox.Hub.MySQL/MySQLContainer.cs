@@ -158,11 +158,21 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new ReadEntitiesResult { Error = error };
             }
             var sql = new StringBuilder();
-            sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
+            if (tableType == TableType.MemberColumns) {
+                sql.Append("SELECT "); SQL2JsonConverter.AppendColumnNames(sql, tableInfo);
+                sql.Append($" FROM {name} WHERE {ID} in\n");
+            } else {
+                sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
+            }
             SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.BackSlash);
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql.ToString()).ConfigureAwait(false);
-                return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
+                if (tableType == TableType.MemberColumns) {
+                    using var pooled = syncContext.SQL2JsonConverter.Get();
+                    return await pooled.instance.ReadEntitiesAsync(reader).ConfigureAwait(false);
+                } else {
+                    return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
+                }
             } catch (MySqlException e) {
                 return new ReadEntitiesResult { Error = DatabaseError(e.Message) };    
             }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Pools;
@@ -38,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal    ObjectPool<TypeValidator>       TypeValidator       { get; }
         internal    ObjectPool<MemoryBuffer>        MemoryBuffer        { get; }
         internal    ObjectPool<Json2SQLConverter>   Json2SQLConverter   { get; }
+        internal    ObjectPool<SQL2JsonConverter>   SQL2JsonConverter   { get; }
         /// <summary>
         /// Enable pooling instances of the given Type <typeparamref name="T"/>. In case no cached instance of <typeparamref name="T"/>
         /// is available the <paramref name="factory"/> method is called to create a new instance.
@@ -68,6 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             ReaderPool          = new ObjectPool<ReaderPool>        (() => new ReaderPool(typeStore));
             EntityProcessor     = new ObjectPool<EntityProcessor>   (() => new EntityProcessor());
             Json2SQLConverter   = new ObjectPool<Json2SQLConverter> (() => new Json2SQLConverter());
+            SQL2JsonConverter   = new ObjectPool<SQL2JsonConverter> (() => new SQL2JsonConverter());
             TypeValidator       = new ObjectPool<TypeValidator>     (() => new TypeValidator());
             MemoryBuffer        = new ObjectPool<MemoryBuffer>      (() => new MemoryBuffer(4 * 1024));
         }
@@ -81,6 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             ReaderPool.         Dispose();
             EntityProcessor.    Dispose();
             Json2SQLConverter.  Dispose();
+            SQL2JsonConverter.  Dispose();
             TypeValidator.      Dispose();
             MemoryBuffer.       Dispose();
             foreach (var pair in poolMap) {
