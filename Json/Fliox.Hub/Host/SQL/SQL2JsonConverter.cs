@@ -6,13 +6,18 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public sealed class SQL2JsonConverter : IDisposable
     {
+        private     Utf8JsonWriter  writer;
+        private     DbDataReader    reader;
+        private     ReadCell[]      cells;
+        
         public static void AppendColumnNames(StringBuilder sb, TableInfo tableInfo) {
             sb.Append('(');
             var isFirst = true;
@@ -24,19 +29,85 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sb.Append(')');
         }
 
-        public async Task<List<EntityValue>> ReadEntitiesAsync(DbDataReader reader)
+        public async Task<List<EntityValue>> ReadEntitiesAsync(DbDataReader reader, TableInfo tableInfo)
         {
+            var columns = tableInfo.columns;
+            cells       = new ReadCell[columns.Length];
+            this.reader = reader;
+            var result  = new List<EntityValue>();
             while (await reader.ReadAsync().ConfigureAwait(false)) {
-                var id      = reader.GetString(0);
-                var data    = reader.GetString(1);
-                var key     = new JsonKey(id);
-                var value   = new JsonValue(data);
+                writer.InitSerializer();
+                foreach (var column in columns) {
+                    ReadCell(column, ref cells[column.ordinal]);
+                }
+                Traverse(tableInfo.root);
+                result.Add(new EntityValue(new JsonKey(), new JsonValue(writer.json)));
             }
-            return null;
+            this.reader = null; 
+            return result;
+        }
+        
+        private void ReadCell(ColumnInfo column, ref ReadCell cell)
+        {
+            var ordinal = column.ordinal;
+            switch (column.typeId) {
+                case StandardTypeId.Boolean:    cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return;
+                case StandardTypeId.String:     cell.str = reader.GetString     (ordinal);  return;
+                    
+                case StandardTypeId.Uint8:      cell.lng = reader.GetByte       (ordinal);  return;
+                case StandardTypeId.Int16:      cell.lng = reader.GetInt16      (ordinal);  return;
+                case StandardTypeId.Int32:      cell.lng = reader.GetInt32      (ordinal);  return;
+                case StandardTypeId.Int64:      cell.lng = reader.GetInt64      (ordinal);  return;
+                //
+                case StandardTypeId.Float:      cell.dbl = reader.GetFloat      (ordinal);  return;
+                case StandardTypeId.Double:     cell.dbl = reader.GetDouble     (ordinal);  return;
+                //
+                case StandardTypeId.BigInteger: cell.str = reader.GetString     (ordinal);  return;
+                case StandardTypeId.DateTime:
+                    var dateTime                         = reader.GetDateTime   (ordinal);
+                    cell.str = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+                    return;
+                case StandardTypeId.Guid:           
+                    var guid                             = reader.GetGuid       (ordinal);
+                    cell.str = guid.ToString();
+                    return;
+            }
+        }
+        
+        private void Traverse(ObjectInfo obj) {
+            writer.ObjectStart();
+            foreach (var column in obj.columns) {
+                ref var cell    = ref cells[column.ordinal];
+                var key         = column.nameBytes;
+                switch (column.typeId) {
+                    case StandardTypeId.Boolean:    writer.MemberBln(key, cell.lng != 0);   break;
+                    case StandardTypeId.String:     writer.MemberStr(key, cell.str);        break;
+                    //
+                    case StandardTypeId.Uint8:
+                    case StandardTypeId.Int16:
+                    case StandardTypeId.Int32:
+                    case StandardTypeId.Int64:      writer.MemberLng(key, cell.lng);        break;
+                    //
+                    case StandardTypeId.Float:
+                    case StandardTypeId.Double:
+                                                    writer.MemberDbl(key, cell.dbl);        break;
+                    case StandardTypeId.BigInteger:
+                    case StandardTypeId.Guid:
+                                                    writer.MemberStr(key, cell.str);        break;
+                }
+            }
+            writer.ObjectEnd();            
         }
 
         public void Dispose() {
-            
+            writer.Dispose();
         }
+    }
+    
+    internal struct ReadCell
+    {
+        internal string str;
+        internal long   lng;
+        internal double dbl;
     }
 }

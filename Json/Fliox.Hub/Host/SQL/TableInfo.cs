@@ -14,6 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public   readonly   bool            isPrimaryKey;
         public   readonly   string          name;           // path: sub.title
         internal readonly   string          memberName;     // leaf: title
+        internal readonly   Bytes           nameBytes;      // leaf: title
         public   readonly   StandardTypeId  typeId;
 
         public override     string          ToString() => $"{name} [{ordinal}] : {typeId}";
@@ -22,6 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             this.ordinal        = ordinal;
             this.name           = name;
             this.memberName     = memberName;
+            this.nameBytes      = new Bytes(name);
             this.typeId         = typeId;
             this.isPrimaryKey   = isPrimaryKey;
         }
@@ -29,11 +31,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     public sealed class ObjectInfo
     {
-        private readonly    string                              memberName;
-        private readonly    ColumnInfo[]                        columns;
-        private readonly    ObjectInfo[]                        objects;
-        private readonly    Dictionary<BytesHash,ColumnInfo>    columnMap;
-        private readonly    Dictionary<BytesHash,ObjectInfo>    objectMap;
+        private  readonly   string                              memberName;
+        internal readonly   ColumnInfo[]                        columns;
+        private  readonly   ObjectInfo[]                        objects;
+        private  readonly   Dictionary<BytesHash,ColumnInfo>    columnMap;
+        private  readonly   Dictionary<BytesHash,ObjectInfo>    objectMap;
 
         public override     string                              ToString() => memberName;
 
@@ -99,7 +101,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             foreach (var field in fields) {
                 var fieldPath   = prefix == null ? field.name : prefix + "." + field.name;
                 var fieldType   = field.type;
-                if (fieldType.IsClass) {
+                var isScalar    = !field.isArray && !field.isDictionary;
+                if (isScalar && fieldType.IsClass) {
                     var obj = AddTypeFields(fieldType, fieldPath, field.name);
                     objectList.Add(obj);
                     continue;
@@ -108,7 +111,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (typeId == StandardTypeId.None) {
                     continue;
                 }
-                var isScalar    = !field.isArray && !field.isDictionary;
                 if (isScalar) {
                     var isPrimaryKey = type.KeyField == field;
                     var column = new ColumnInfo(columnMap.Count, fieldPath, field.name, typeId, isPrimaryKey);

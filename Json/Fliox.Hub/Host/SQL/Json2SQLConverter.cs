@@ -118,6 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     case JsonEvent.ValueString:
                         AppendString(sb, cell.value, converter);
                         break;
+                    case JsonEvent.ValueBool:
                     case JsonEvent.ValueNumber:
                         AppendBytes(sb, cell.value);
                         break;
