@@ -44,7 +44,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 var value       = new JsonValue(writer.json.AsArray()); // TODO - use MemoryBuffer to avoid array creation
                 result.Add(new EntityValue(key, value));
             }
-            this.reader = null; 
+            this.reader = null;
+            cells       = null;
             return result;
         }
         
