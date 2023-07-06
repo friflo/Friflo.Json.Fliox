@@ -10,7 +10,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     {
         public              Utf8JsonParser      parser;
         public              Bytes               buffer  = new Bytes(256);
-        public              Bytes               sb      = new Bytes(256);
         
         public void Dispose() {
             parser.Dispose();

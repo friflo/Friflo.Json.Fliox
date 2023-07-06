@@ -16,23 +16,23 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public static class SQLTableUtils
     {
-        private static readonly Bytes Null    = new Bytes("NULL");
-        
+        private const string Null = "NULL";
+
         public static void AppendColumnValues(
-            StringBuilder               sb2,
+            StringBuilder               sb,
             List<JsonEntity>            entities,
             SQLEscape                   escape,
             TableInfo                   tableInfo,
             ObjectPool<SQLConverter>    sqlConverter)
         {
-            sb2.Append(" (");
+            sb.Append(" (");
             var isFirst = true;
             var columns = tableInfo.columns;
             foreach (var column in columns) {
-                if (isFirst) isFirst = false; else sb2.Append(',');
-                sb2.Append(column.name);
+                if (isFirst) isFirst = false; else sb.Append(',');
+                sb.Append(column.name);
             }
-            sb2.Append(")\nVALUES");
+            sb.Append(")\nVALUES");
             
             using var pooled    = sqlConverter.Get();
             var processor       = pooled.instance;
@@ -40,12 +40,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var context         = new TableContext(rowCells, processor);
             
             // var escaped = new StringBuilder();
-            var sb = processor.sb;
-            sb.Clear();
             var isFirstRow = true;
             foreach (var entity in entities)
             {
-                if (isFirstRow) isFirstRow = false; else sb.AppendChar(',');
+                if (isFirstRow) isFirstRow = false; else sb.Append(',');
                 processor.buffer.Clear();
                 
                 processor.parser.InitParser(entity.value);
@@ -53,40 +51,57 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (ev != JsonEvent.ObjectStart) throw new InvalidOperationException("expect object");
                 context.Traverse(tableInfo.root);
                 
-                AddRowValues(ref sb, rowCells);
-            }
-            sb2.Append(sb.AsString());
-            if ((escape & SQLEscape.BackSlash) != 0) {
-                sb2.Replace("\\", "\\\\", 0, sb2.Length);
+                AddRowValues(sb, rowCells);
             }
         }
         
-        private static void AddRowValues(ref Bytes sb, RowCell[] rowCells)
+        private static void AddRowValues(StringBuilder sb, RowCell[] rowCells)
         {
-            sb.AppendChar('(');
+            sb.Append('(');
             var firstValue = true;
             for (int n = 0; n < rowCells.Length; n++) {
-                if (firstValue) firstValue = false; else sb.AppendChar(',');
+                if (firstValue) firstValue = false; else sb.Append(',');
                 ref var cell = ref rowCells[n];
                 switch (cell.type) {
                     case JsonEvent.None:
                     case JsonEvent.ValueNull:
-                        sb.AppendBytes(Null);
+                        sb.Append(Null);
                         break;
                     case JsonEvent.ValueString:
-                        sb.AppendChar('\'');
-                        sb.AppendBytes(cell.value);
-                        sb.AppendChar('\'');
+                        AppendString(sb, cell.value);
                         break;
                     case JsonEvent.ValueNumber:
-                        sb.AppendBytes(cell.value);
+                        AppendNumber(sb, cell.value);
                         break;
                     default:
                         throw new InvalidOperationException($"unexpected cell.type: {cell.type}");
                 }
                 cell.type = JsonEvent.None;
             }
-            sb.AppendChar(')');
+            sb.Append(')');
+        }
+        
+        private static void AppendString(StringBuilder sb, in Bytes value) {
+            sb.Append('\'');
+            var end = value.end;
+            var buf = value.buffer;
+            for (int n = value.start; n < end; n++) {
+                var c = (char)buf[n];
+                switch (c) {
+                    case '\'':  sb.Append("\\'");   break;
+                    case '\\':  sb.Append("\\\\");  break;
+                    default:    sb.Append(c);       break;
+                }
+            }
+            sb.Append('\'');
+        }
+        
+        private static void AppendNumber(StringBuilder sb, in Bytes value) {
+            var end = value.end;
+            var buf = value.buffer;
+            for (int n = value.start; n < end; n++) {
+                sb.Append((char)buf[n]);
+            }
         }
     }
 
