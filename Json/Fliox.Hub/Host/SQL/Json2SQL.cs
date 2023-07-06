@@ -9,7 +9,7 @@ using Friflo.Json.Burst;
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
-    public sealed class Json2SQLConverter : IDisposable
+    public sealed class Json2SQL : IDisposable
     {
         private     Utf8JsonParser  parser;
         private     Bytes           buffer      = new Bytes(256);
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
         }
         
-        private static void AddRowValues(StringBuilder sb, RowCell[] rowCells, Json2SQLConverter converter)
+        private static void AddRowValues(StringBuilder sb, RowCell[] rowCells, Json2SQL converter)
         {
             sb.Append('(');
             var firstValue = true;
@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sb.Append(')');
         }
         
-        private static void AppendString(StringBuilder sb, in Bytes value, Json2SQLConverter converter) {
+        private static void AppendString(StringBuilder sb, in Bytes value, Json2SQL converter) {
             sb.Append('\'');
             var len = converter.GetChars(value, out var chars);
             for (int n = 0; n < len; n++) {

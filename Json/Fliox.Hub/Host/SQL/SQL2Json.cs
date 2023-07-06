@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
-    public sealed class SQL2JsonConverter : IDisposable
+    public sealed class SQL2Json : IDisposable
     {
         private     Utf8JsonWriter  writer;
         private     DbDataReader    reader;

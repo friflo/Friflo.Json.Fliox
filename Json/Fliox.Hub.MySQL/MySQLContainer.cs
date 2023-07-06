@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = new StringBuilder();
             if (tableType == TableType.MemberColumns) {
-                using var pooled = syncContext.Json2SQLConverter.Get();
+                using var pooled = syncContext.Json2SQL.Get();
                 sql.Append($"INSERT INTO {name}");
                 pooled.instance.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo);
             } else {
@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = new StringBuilder();
             if (tableType == TableType.MemberColumns) {
-                using var pooled = syncContext.Json2SQLConverter.Get();
+                using var pooled = syncContext.Json2SQL.Get();
                 sql.Append($"REPLACE INTO {name}");
                 pooled.instance.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo);
             } else {
@@ -161,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = new StringBuilder();
             if (tableType == TableType.MemberColumns) {
-                sql.Append("SELECT "); SQL2JsonConverter.AppendColumnNames(sql, tableInfo);
+                sql.Append("SELECT "); SQL2Json.AppendColumnNames(sql, tableInfo);
                 sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
             } else {
                 sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql.ToString()).ConfigureAwait(false);
                 if (tableType == TableType.MemberColumns) {
-                    using var pooled = syncContext.SQL2JsonConverter.Get();
+                    using var pooled = syncContext.SQL2Json.Get();
                     var entities = await pooled.instance.ReadEntitiesAsync(reader, tableInfo).ConfigureAwait(false);
                     var array    = KeyValueUtils.EntityListToArray(entities, command.ids);
                     return new ReadEntitiesResult { entities = array };
@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 List<EntityValue> entities;
                 if (tableType == TableType.MemberColumns) {
-                    using var pooled = syncContext.SQL2JsonConverter.Get();
+                    using var pooled = syncContext.SQL2Json.Get();
                     entities    = await pooled.instance.ReadEntitiesAsync(reader, tableInfo).ConfigureAwait(false);
                 } else {
                     entities    = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
