@@ -19,14 +19,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private     ReadCell[]      cells;
         
         public static void AppendColumnNames(StringBuilder sb, TableInfo tableInfo) {
-            sb.Append('(');
             var isFirst = true;
             var columns = tableInfo.columns;
             foreach (var column in columns) {
                 if (isFirst) isFirst = false; else sb.Append(',');
                 sb.Append(column.name);
             }
-            sb.Append(')');
         }
 
         public async Task<List<EntityValue>> ReadEntitiesAsync(DbDataReader reader, TableInfo tableInfo)
@@ -41,7 +39,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     ReadCell(column, ref cells[column.ordinal]);
                 }
                 Traverse(tableInfo.root);
-                result.Add(new EntityValue(new JsonKey(), new JsonValue(writer.json)));
+                var keyColumn   = tableInfo.keyColumn;
+                var key         = cells[keyColumn.ordinal].AsKey(keyColumn.typeId);
+                var value       = new JsonValue(writer.json.AsArray()); // TODO - use MemoryBuffer to avoid array creation
+                result.Add(new EntityValue(key, value));
             }
             this.reader = null; 
             return result;
@@ -109,5 +110,23 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal string str;
         internal long   lng;
         internal double dbl;
+        
+        internal JsonKey AsKey(StandardTypeId  typeId)
+        {
+            switch (typeId) {
+                case StandardTypeId.String:     return new JsonKey(str);
+                    
+                case StandardTypeId.Uint8:      return new JsonKey(lng);
+                case StandardTypeId.Int16:      return new JsonKey(lng);
+                case StandardTypeId.Int32:      return new JsonKey(lng);
+                case StandardTypeId.Int64:      return new JsonKey(lng);
+                //
+                case StandardTypeId.BigInteger: return new JsonKey(str);
+                case StandardTypeId.DateTime:   return new JsonKey(str);
+                case StandardTypeId.Guid:       return new JsonKey(str);
+                default:
+                    throw new NotSupportedException($"primary key type not supported: {typeId}");
+            }
+        }
     }
 }

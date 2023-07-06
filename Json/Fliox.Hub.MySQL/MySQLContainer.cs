@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using MySqlConnector;
@@ -171,7 +172,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 if (tableType == TableType.MemberColumns) {
                     using var pooled = syncContext.SQL2JsonConverter.Get();
                     var entities = await pooled.instance.ReadEntitiesAsync(reader, tableInfo).ConfigureAwait(false);
-                    return new ReadEntitiesResult { entities = entities.ToArray() };
+                    var array    = KeyValueUtils.EntityListToArray(entities, command.ids);
+                    return new ReadEntitiesResult { entities = array };
                 } else {
                     return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
                 }
