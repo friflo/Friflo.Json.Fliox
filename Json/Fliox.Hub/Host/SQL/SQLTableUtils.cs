@@ -8,6 +8,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Utils;
 
+// ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 // ReSharper disable SuggestBaseTypeForParameter
 // ReSharper disable UseIndexFromEndExpression
 // ReSharper disable UseAwaitUsing
@@ -45,7 +46,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             foreach (var entity in entities)
             {
                 if (isFirstRow) isFirstRow = false; else sb.AppendChar(',');
-                sb.AppendChar('(');
                 processor.buffer.Clear();
                 
                 processor.parser.InitParser(entity.value);
@@ -54,7 +54,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 context.Traverse(tableInfo.root);
                 
                 AddRowValues(ref sb, rowCells);
-                sb.AppendChar(')');
             }
             sb2.Append(sb.AsString());
             if ((escape & SQLEscape.BackSlash) != 0) {
@@ -64,6 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         private static void AddRowValues(ref Bytes sb, RowCell[] rowCells)
         {
+            sb.AppendChar('(');
             var firstValue = true;
             for (int n = 0; n < rowCells.Length; n++) {
                 if (firstValue) firstValue = false; else sb.AppendChar(',');
@@ -80,10 +80,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         break;
                     case JsonEvent.ValueNumber:
                         sb.AppendBytes(cell.value);
-                        break;                        
+                        break;
+                    default:
+                        throw new InvalidOperationException($"unexpected cell.type: {cell.type}");
                 }
                 cell.type = JsonEvent.None;
             }
+            sb.AppendChar(')');
         }
     }
 
@@ -155,9 +158,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                             parser.SkipTree();
                         }
                         break;
-                    case JsonEvent.EOF:
                     case JsonEvent.ObjectEnd:
                         return;
+                    default:
+                        throw new InvalidOperationException($"unexpected state: {ev}");
                 }
             }
         }
