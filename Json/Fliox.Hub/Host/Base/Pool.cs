@@ -26,18 +26,18 @@ namespace Friflo.Json.Fliox.Hub.Host
         // Note: Pool does not expose sharedEnv.TypeStore by intention to avoid side effects by unexpected usage. 
         private   readonly  ConcurrentDictionary<Type, IDisposable>   poolMap = new ConcurrentDictionary<Type, IDisposable>(); // object = SharedPool<T>
 
-        internal    ObjectPool<JsonPatcher>     JsonPatcher     { get; }
-        internal    ObjectPool<JsonMerger>      JsonMerger      { get; }
-        internal    ObjectPool<ScalarSelector>  ScalarSelector  { get; }
-        internal    ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
+        internal    ObjectPool<JsonPatcher>         JsonPatcher         { get; }
+        internal    ObjectPool<JsonMerger>          JsonMerger          { get; }
+        internal    ObjectPool<ScalarSelector>      ScalarSelector      { get; }
+        internal    ObjectPool<JsonEvaluator>       JsonEvaluator       { get; }
         /// <summary> Returned <see cref="Mapper.ObjectMapper"/> doesn't throw Read() exceptions. To handle errors its
         /// <see cref="Mapper.ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
-        internal    ObjectPool<ObjectMapper>    ObjectMapper    { get; }
-        internal    ObjectPool<ReaderPool>      ReaderPool      { get; }
-        internal    ObjectPool<EntityProcessor> EntityProcessor { get; }
-        internal    ObjectPool<TypeValidator>   TypeValidator   { get; }
-        internal    ObjectPool<MemoryBuffer>    MemoryBuffer    { get; }
-        internal    ObjectPool<SQLConverter>    SQLConverter    { get; }
+        internal    ObjectPool<ObjectMapper>        ObjectMapper        { get; }
+        internal    ObjectPool<ReaderPool>          ReaderPool          { get; }
+        internal    ObjectPool<EntityProcessor>     EntityProcessor     { get; }
+        internal    ObjectPool<TypeValidator>       TypeValidator       { get; }
+        internal    ObjectPool<MemoryBuffer>        MemoryBuffer        { get; }
+        internal    ObjectPool<Json2SQLConverter>   Json2SQLConverter   { get; }
         /// <summary>
         /// Enable pooling instances of the given Type <typeparamref name="T"/>. In case no cached instance of <typeparamref name="T"/>
         /// is available the <paramref name="factory"/> method is called to create a new instance.
@@ -60,29 +60,29 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         internal Pool(TypeStore typeStore) {
-            JsonPatcher     = new ObjectPool<JsonPatcher>       (() => new JsonPatcher());
-            JsonMerger      = new ObjectPool<JsonMerger>        (() => new JsonMerger());
-            ScalarSelector  = new ObjectPool<ScalarSelector>    (() => new ScalarSelector());
-            JsonEvaluator   = new ObjectPool<JsonEvaluator>     (() => new JsonEvaluator());
-            ObjectMapper    = new ObjectPool<ObjectMapper>      (() => new ObjectMapper(typeStore),  m => m.ErrorHandler = ObjectReader.NoThrow);
-            ReaderPool      = new ObjectPool<ReaderPool>        (() => new ReaderPool(typeStore));
-            EntityProcessor = new ObjectPool<EntityProcessor>   (() => new EntityProcessor());
-            SQLConverter    = new ObjectPool<SQLConverter>      (() => new SQLConverter());
-            TypeValidator   = new ObjectPool<TypeValidator>     (() => new TypeValidator());
-            MemoryBuffer    = new ObjectPool<MemoryBuffer>      (() => new MemoryBuffer(4 * 1024));
+            JsonPatcher         = new ObjectPool<JsonPatcher>       (() => new JsonPatcher());
+            JsonMerger          = new ObjectPool<JsonMerger>        (() => new JsonMerger());
+            ScalarSelector      = new ObjectPool<ScalarSelector>    (() => new ScalarSelector());
+            JsonEvaluator       = new ObjectPool<JsonEvaluator>     (() => new JsonEvaluator());
+            ObjectMapper        = new ObjectPool<ObjectMapper>      (() => new ObjectMapper(typeStore),  m => m.ErrorHandler = ObjectReader.NoThrow);
+            ReaderPool          = new ObjectPool<ReaderPool>        (() => new ReaderPool(typeStore));
+            EntityProcessor     = new ObjectPool<EntityProcessor>   (() => new EntityProcessor());
+            Json2SQLConverter   = new ObjectPool<Json2SQLConverter> (() => new Json2SQLConverter());
+            TypeValidator       = new ObjectPool<TypeValidator>     (() => new TypeValidator());
+            MemoryBuffer        = new ObjectPool<MemoryBuffer>      (() => new MemoryBuffer(4 * 1024));
         }
         
         internal void Dispose() {
-            JsonPatcher.    Dispose();
-            JsonMerger.     Dispose();
-            ScalarSelector. Dispose();
-            JsonEvaluator.  Dispose();
-            ObjectMapper.   Dispose();
-            ReaderPool.     Dispose();
-            EntityProcessor.Dispose();
-            SQLConverter.   Dispose();
-            TypeValidator.  Dispose();
-            MemoryBuffer.   Dispose();
+            JsonPatcher.        Dispose();
+            JsonMerger.         Dispose();
+            ScalarSelector.     Dispose();
+            JsonEvaluator.      Dispose();
+            ObjectMapper.       Dispose();
+            ReaderPool.         Dispose();
+            EntityProcessor.    Dispose();
+            Json2SQLConverter.  Dispose();
+            TypeValidator.      Dispose();
+            MemoryBuffer.       Dispose();
             foreach (var pair in poolMap) {
                 var pool = pair.Value;
                 pool.Dispose();

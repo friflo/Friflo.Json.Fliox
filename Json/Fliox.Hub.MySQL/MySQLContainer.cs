@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = new StringBuilder();
             if (tableType == TableType.MemberColumns) {
-                using var pooled = syncContext.SQLConverter.Get();
+                using var pooled = syncContext.Json2SQLConverter.Get();
                 sql.Append($"INSERT INTO {name}");
                 pooled.instance.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo);
             } else {
@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = new StringBuilder();
             if (tableType == TableType.MemberColumns) {
-                using var pooled = syncContext.SQLConverter.Get();
+                using var pooled = syncContext.Json2SQLConverter.Get();
                 sql.Append($"REPLACE INTO {name}");
                 pooled.instance.AppendColumnValues(sql, command.entities, SQLEscape.BackSlash, tableInfo);
             } else {
