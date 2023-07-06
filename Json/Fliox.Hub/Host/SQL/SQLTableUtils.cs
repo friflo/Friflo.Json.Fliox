@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var firstValue = true;
             for (int n = 0; n < rowCells.Length; n++) {
                 if (firstValue) firstValue = false; else sb.AppendChar(',');
-                var cell = rowCells[n];
+                ref var cell = ref rowCells[n];
                 switch (cell.type) {
                     case JsonEvent.None:
                     case JsonEvent.ValueNull:
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal Bytes      value;
         internal JsonEvent  type;
 
-        public override string ToString() => $"{value}: {type}";
+        public override string ToString() => type == JsonEvent.None ? "None" : $"{value}: {type}";
     }
 
     internal class TableContext
