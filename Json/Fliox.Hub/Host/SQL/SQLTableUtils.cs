@@ -35,7 +35,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             
             using var pooled    = sqlConverter.Get();
             var processor       = pooled.instance;
-
             var rowCells        = new RowCell[columns.Length];
             var context         = new TableContext(rowCells, processor);
             
@@ -112,9 +111,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal void Traverse(ObjectInfo objInfo)
         {
             ref var parser = ref processor.parser;
-            processor.parser.NextEvent();
-            var ev = parser.Event;
             while (true) {
+                var ev = processor.parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString: {
                         var column          = objInfo.FindColumn(parser.key);
@@ -161,7 +159,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     case JsonEvent.ObjectEnd:
                         return;
                 }
-                ev = processor.parser.NextEvent();
             }
         }
     }

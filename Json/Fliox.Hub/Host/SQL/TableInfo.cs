@@ -10,11 +10,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public sealed class ColumnInfo
     {
-        public readonly     int             ordinal;
-        public readonly     bool            isPrimaryKey;
-        public readonly     string          name;
-        public readonly     Bytes           memberName;
-        public readonly     StandardTypeId  typeId;
+        public   readonly   int             ordinal;
+        public   readonly   bool            isPrimaryKey;
+        public   readonly   string          name;
+        internal readonly   Bytes           memberName;
+        public   readonly   StandardTypeId  typeId;
 
         public override     string          ToString() => $"{name} [{ordinal}] : {typeId}";
 
