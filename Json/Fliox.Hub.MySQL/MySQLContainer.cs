@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new QueryEntitiesResult { Error = error };
             }
             var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "TRUE" : filter.MySQLFilter(provider);
+            var where   = filter.IsTrue ? "TRUE" : filter.MySQLFilter(provider, tableType);
             var sql     = SQLUtils.QueryEntitiesSQL(command, name, where, tableInfo);
             try {
                 using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
@@ -210,7 +210,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             if (command.type == AggregateType.count) {
                 var filter  = command.GetFilter();
-                var where   = filter.IsTrue ? "" : $" WHERE {filter.MySQLFilter(provider)}";
+                var where   = filter.IsTrue ? "" : $" WHERE {filter.MySQLFilter(provider, tableType)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
 
                 var result  = await Execute(connection, sql).ConfigureAwait(false);

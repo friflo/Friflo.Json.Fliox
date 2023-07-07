@@ -21,9 +21,12 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public delegate string CustomContainerName(string name);
     
+    /// <summary>Specify the column schema of an SQL table</summary>
     public enum TableType
     {
+        /// <summary>store a document in a single JSON column</summary>
         JsonColumn      = 0,
+        /// <summary>store each member of a document in a separate typed column</summary>
         MemberColumns   = 1,
     }
     

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
@@ -23,14 +24,14 @@ namespace Friflo.Json.Fliox.Hub.MySQL
     
     public static class MySQLExtensions
     {
-        public static string MySQLFilter  (this FilterOperation op) => MySQLFilter(op, MY_SQL);
-        public static string MariaDBFilter(this FilterOperation op) => MySQLFilter(op, MARIA_DB);
+        public static string MySQLFilter  (this FilterOperation op, TableType tableType) => MySQLFilter(op, MY_SQL,   tableType);
+        public static string MariaDBFilter(this FilterOperation op, TableType tableType) => MySQLFilter(op, MARIA_DB, tableType);
 
-        internal static string MySQLFilter(this FilterOperation op, MySQLProvider provider) {
+        internal static string MySQLFilter(this FilterOperation op, MySQLProvider provider, TableType tableType) {
             var filter      = (Filter)op;
             var args        = new FilterArgs(filter);
             args.AddArg(filter.arg, DATA);
-            var cx          = new ConvertContext (args, provider);
+            var cx          = new ConvertContext (args, provider, tableType);
             var result      = cx.Traverse(filter.body);
             return result;
         }
@@ -39,10 +40,12 @@ namespace Friflo.Json.Fliox.Hub.MySQL
     internal sealed class ConvertContext {
         private readonly   FilterArgs       args;
         private readonly   MySQLProvider    provider;
+        private readonly   TableType        tableType;
         
-        internal ConvertContext (FilterArgs args, MySQLProvider provider) {
+        internal ConvertContext (FilterArgs args, MySQLProvider provider, TableType tableType) {
             this.args       = args;
             this.provider   = provider;
+            this.tableType  = tableType;
         }
         
         internal static string GetSqlType(StandardTypeId typeId, MySQLProvider provider) {
@@ -71,6 +74,9 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             switch (operation.Type) {
                 case FIELD: {
                     var field       = (Field)operation;
+                    if (tableType == TableType.MemberColumns) {
+                        return GetColumn(field);
+                    }
                     var arg  = args.GetArg(field);
                     var path = GetFieldPath(field);
                     var arrayField  = args.GetArrayField(field);
@@ -383,6 +389,15 @@ $@"NOT EXISTS(
             }
             var path = field.name.Substring(field.arg.Length + 1);
             return $"$.{path}";
+        }
+        
+        private static string GetColumn(Field field) {
+            var name = field.name;
+            if (field.arg == name) {
+                //return "$";
+                throw new NotSupportedException("GetColum()");
+            }
+            return $"`{name.Substring(field.arg.Length + 1)}`";
         }
     }
 }
