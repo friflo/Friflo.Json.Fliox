@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         
         public async Task<TaskExecuteError> InitTable(ISyncConnection connection) {
             if (init.CreateTable) {
-                var result = await CreateTable((SyncConnection)connection);
+                var result = await CreateTable((SyncConnection)connection).ConfigureAwait(false);
                 if (result.Failed) {
                     return result.error;
                 }
