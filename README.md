@@ -281,8 +281,10 @@ Add required nuget dependencies
 dotnet add package Friflo.Json.Fliox.Hub
 ```
 Copy 📄 TodoClient.cs from above to Console project.  
-*Note:* `TodoClient` and its model classes should be in a separate library project and used by client & server.
-But for simplicity create a copy for now.
+
+- *Note:* The intention is to implement the `TodoClient` and its model classes in a separate library project.  
+  Client & server applications reference this library as their dependency.  
+  But for simplicity create a copy in the client application for now.
 
 📄 `Program.cs` *(client)*
 ```csharp
