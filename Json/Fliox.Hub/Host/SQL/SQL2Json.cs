@@ -18,15 +18,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private     DbDataReader    reader;
         private     ReadCell[]      cells;
         
-        public static void AppendColumnNames(StringBuilder sb, TableInfo tableInfo) {
-            var isFirst = true;
-            var columns = tableInfo.columns;
-            foreach (var column in columns) {
-                if (isFirst) isFirst = false; else sb.Append(',');
-                sb.Append(column.name);
-            }
-        }
-
         public async Task<List<EntityValue>> ReadEntitiesAsync(DbDataReader reader, TableInfo tableInfo)
         {
             var columns = tableInfo.columns;

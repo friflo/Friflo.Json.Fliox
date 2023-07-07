@@ -13,6 +13,15 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public static class SQLTable
     {
+        public static void AppendColumnNames(StringBuilder sb, TableInfo tableInfo) {
+            var isFirst = true;
+            var columns = tableInfo.columns;
+            foreach (var column in columns) {
+                if (isFirst) isFirst = false; else sb.Append(',');
+                sb.Append(column.name);
+            }
+        }
+        
         public static void AppendValuesSQL(
             StringBuilder       sb,
             List<JsonEntity>    entities,
