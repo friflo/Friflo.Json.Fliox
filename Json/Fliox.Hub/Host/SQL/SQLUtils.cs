@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var tableType   = tableInfo.tableType;
             var id          = tableType == TableType.MemberColumns ? tableInfo.keyColumn.name : ID;
             var cursorStart = command.cursor == null ? "" : $"{id} < '{command.cursor}' AND ";
-            var cursorDesc  = command.maxCount == null ? "" : $" ORDER BY {ID} DESC";
+            var cursorDesc  = command.maxCount == null ? "" : $" ORDER BY {id} DESC";
             string limit;
             if (command.maxCount != null) {
                 limit       = $" LIMIT {command.maxCount}";
