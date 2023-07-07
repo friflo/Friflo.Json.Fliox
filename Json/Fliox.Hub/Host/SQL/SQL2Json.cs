@@ -17,6 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private     Utf8JsonWriter  writer;
         private     DbDataReader    reader;
         private     ReadCell[]      cells;
+        private     byte[]          buffer = new byte[16];
         
         public async Task<List<EntityValue>> ReadEntitiesAsync(DbDataReader reader, TableInfo tableInfo)
         {
@@ -45,6 +46,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var ordinal = column.ordinal;
             cell.isNull = reader.IsDBNull(ordinal);
             if (cell.isNull) {
+                return;
+            }
+            if (column.columnType == ColumnType.Array) {
+                cell.str = reader.GetString(ordinal);
                 return;
             }
             switch (column.typeId) {
@@ -81,6 +86,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     continue;
                 }
                 cell.isNull = true;
+                if (column.columnType == ColumnType.Array) {
+                    var bytes = String2Bytes(cell.str);
+                    writer.MemberArr(key, bytes);
+                    break;
+                }
                 switch (column.typeId) {
                     case StandardTypeId.Boolean:    writer.MemberBln(key, cell.lng != 0);   break;
                     case StandardTypeId.String:     writer.MemberStr(key, cell.str);        break;
@@ -99,6 +109,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 }
             }
             writer.ObjectEnd();            
+        }
+        
+        private Bytes String2Bytes (string value) {
+            var max = Encoding.UTF8.GetMaxByteCount(value.Length);
+            if (max > buffer.Length) buffer = new byte[max];
+            int len = Encoding.UTF8.GetBytes(value, 0, value.Length, buffer, 0);
+            return new Bytes{ buffer = buffer, start = 0, end = len };
         }
 
         public void Dispose() {

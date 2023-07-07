@@ -118,9 +118,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     continue;
                 }
                 var typeId      = fieldType.TypeId;
-                /* if (typeId == StandardTypeId.None) {
-                    continue;
-                } */
                 if (tableType == TableType.JsonColumn && !isScalar) {
                     continue;
                 }

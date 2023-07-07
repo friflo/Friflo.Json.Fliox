@@ -143,6 +143,14 @@ namespace Friflo.Json.Burst
             json.AppendStr32(@null);
         }
         
+        /// <summary>Writes a key/value pair where the value is JSON</summary>
+        public void MemberArr(in Bytes key, in Bytes jsonValue) {
+            AssertMember();
+            AddSeparator();
+            AppendKeyBytes(ref json, in key);
+            json.AppendBytes(jsonValue);
+        }
+        
  
         
     }

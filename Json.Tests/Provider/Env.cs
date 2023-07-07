@@ -41,11 +41,11 @@ namespace Friflo.Json.Tests.Provider
         
         private static              bool    IsProvider  (string db1, string db2) => TEST_DB_PROVIDER == db1 || TEST_DB_PROVIDER == db2;
         
-        internal static             bool    IsCosmosDB  (string db) => TEST_DB_PROVIDER == "cosmos"     && db == test_db;
-        internal static             bool    IsMySQL     (string db) => IsProvider("mysql", "mysql_mc")  && db == test_db;
-        internal static             bool    IsMariaDB   (string db) => TEST_DB_PROVIDER == "mariadb"    && db == test_db;
-        internal static             bool    IsPostgres  (string db) => TEST_DB_PROVIDER == "postgres"   && db == test_db;
-        internal static             bool    IsSQLServer (string db) => TEST_DB_PROVIDER == "sqlserver"  && db == test_db;
+        internal static             bool    IsCosmosDB  (string db) => TEST_DB_PROVIDER == "cosmos"         && db == test_db;
+        internal static             bool    IsMySQL     (string db) => IsProvider("mysql", "mysql_mc")      && db == test_db;
+        internal static             bool    IsMariaDB   (string db) => IsProvider("mariadb", "mariadb_mc")  && db == test_db;
+        internal static             bool    IsPostgres  (string db) => TEST_DB_PROVIDER == "postgres"       && db == test_db;
+        internal static             bool    IsSQLServer (string db) => TEST_DB_PROVIDER == "sqlserver"      && db == test_db;
         internal static             bool    IsSQLite    (string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
         private  static             bool    IsFileSystem            => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
         
@@ -126,6 +126,7 @@ namespace Friflo.Json.Tests.Provider
                 case "mysql":       return new MySQLDatabase        (db, connection, schema);
                 case "mysql_mc":    return new MySQLDatabase        (db, connection, schema) { TableType = TableType.MemberColumns };
                 case "mariadb":     return new MariaDBDatabase      (db, connection, schema);
+                case "mariadb_mc":  return new MariaDBDatabase      (db, connection, schema) { TableType = TableType.MemberColumns };
                 case "postgres":    return new PostgreSQLDatabase   (db, connection, schema);
                 case "sqlserver":   return new SQLServerDatabase    (db, connection, schema);
                 case "redis":       return new RedisHashDatabase    (db, connection, schema);

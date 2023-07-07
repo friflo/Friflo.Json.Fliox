@@ -76,16 +76,20 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         internal string Traverse(Operation operation) {
             switch (operation.Type) {
                 case FIELD: {
+                    // TODO - simplify
                     var field       = (Field)operation;
+                    var path        = GetFieldPath(field);
+                    var arrayField  = args.GetArrayField(field);
                     if (tableType == TableType.MemberColumns) {
+                        if (arrayField != null) {
+                            return $"JSON_VALUE({arrayField.array}, '{path}')";
+                        }
                         return GetColumn(field);
                     }
-                    var arg  = args.GetArg(field);
-                    var path = GetFieldPath(field);
-                    var arrayField  = args.GetArrayField(field);
                     if (arrayField != null) {
                         return $"JSON_VALUE({arrayField.array}, '{path}')";
                     }
+                    var arg  = args.GetArg(field);
                     return $"JSON_VALUE({arg},'{path}')";
                 }
                 
@@ -308,22 +312,15 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             using var scope     = args.AddArg(arg);
             using var array     = args.AddArrayField(arg, arrayTable);
             var operand         = Traverse(any.predicate);
-            string arrayPath    = GetFieldPath(any.field);
-            switch (provider) {
-                case MY_SQL: return
+            var column          = tableType == TableType.JsonColumn ? DATA : GetColumn(any.field);
+            var arrayPath       = tableType == TableType.JsonColumn ? GetFieldPath(any.field) : "$";
+            var select          = provider == MY_SQL ? "1" : column;
+            return
 $@"FALSE OR EXISTS(
-    SELECT 1
-    FROM JSON_TABLE({DATA}, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
+    SELECT {select}
+    FROM JSON_TABLE({column}, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
     WHERE {operand}
 )";
-                case MARIA_DB: return
-$@"EXISTS(
-    SELECT {DATA}
-    FROM JSON_TABLE({DATA}, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
-    WHERE {operand}
-)"; 
-            }
-            throw new InvalidOperationException("invalid provider");
         }
         
         private string TraverseAll (All all) {
@@ -332,22 +329,15 @@ $@"EXISTS(
             using var scope     = args.AddArg(arg);
             using var array     = args.AddArrayField(arg, arrayTable);
             var operand         = Traverse(all.predicate);
-            string arrayPath    = GetFieldPath(all.field);
-            switch (provider) {
-case MY_SQL: return
+            var column          = tableType == TableType.JsonColumn ? DATA : GetColumn(all.field);
+            var arrayPath       = tableType == TableType.JsonColumn ? GetFieldPath(all.field) : "$";
+            var select          = provider == MY_SQL ? "1" : column;
+            return
 $@"NOT EXISTS(
-    SELECT 1
-    FROM JSON_TABLE({DATA}, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
+    SELECT {select}
+    FROM JSON_TABLE({column}, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
     WHERE NOT ({operand})
 )";
-case MARIA_DB: return
-$@"NOT EXISTS(
-    SELECT {DATA}
-    FROM JSON_TABLE({DATA}, '{arrayPath}[*]' COLUMNS({arrayTable} JSON PATH '$')) as jt
-    WHERE NOT ({operand})
-)";
-            }
-            throw new InvalidOperationException("invalid provider");
         }
         
         private string True()  => tableType == TableType.MemberColumns ? "true"  : provider == MY_SQL ? "'true'"  : "true";
