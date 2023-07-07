@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     {
         public static string QueryEntitiesSQL(QueryEntities command, string table, string filter, TableInfo tableInfo) {
             var tableType   = tableInfo.tableType;
-            var id          = tableType == TableType.MemberColumns ? tableInfo.keyColumn.name : ID;
+            var id          = tableType == TableType.Relational ? tableInfo.keyColumn.name : ID;
             var cursorStart = command.cursor == null ? "" : $"{id} < '{command.cursor}' AND ";
             var cursorDesc  = command.maxCount == null ? "" : $" ORDER BY {id} DESC";
             string limit;
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             } else {
                 limit       = command.limit == null ? "" : $" LIMIT {command.limit}";
             }
-            if (tableType == TableType.MemberColumns) {
+            if (tableType == TableType.Relational) {
                 var sql = new StringBuilder();
                 sql.Append("SELECT ");
                 SQLTable.AppendColumnNames(sql, tableInfo);

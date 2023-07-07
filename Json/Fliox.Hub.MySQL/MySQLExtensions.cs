@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     var field       = (Field)operation;
                     var path        = GetFieldPath(field);
                     var arrayField  = args.GetArrayField(field);
-                    if (tableType == TableType.MemberColumns) {
+                    if (tableType == TableType.Relational) {
                         if (arrayField != null) {
                             return $"JSON_VALUE({arrayField.array}, '{path}')";
                         }
@@ -340,8 +340,8 @@ $@"NOT EXISTS(
 )";
         }
         
-        private string True()  => tableType == TableType.MemberColumns ? "true"  : provider == MY_SQL ? "'true'"  : "true";
-        private string False() => tableType == TableType.MemberColumns ? "false" : provider == MY_SQL ? "'false'" : "false";
+        private string True()  => tableType == TableType.Relational ? "true"  : provider == MY_SQL ? "'true'"  : "true";
+        private string False() => tableType == TableType.Relational ? "false" : provider == MY_SQL ? "'false'" : "false";
         
         private string ToBoolean(string operand) {
             if (provider == MY_SQL) {

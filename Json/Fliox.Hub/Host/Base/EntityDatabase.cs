@@ -25,9 +25,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     public enum TableType
     {
         /// <summary>store a document in a single JSON column</summary>
-        JsonColumn      = 0,
+        JsonColumn  = 0,
         /// <summary>store each member of a document in a separate typed column</summary>
-        MemberColumns   = 1,
+        Relational  = 1,
     }
     
     /// <summary>

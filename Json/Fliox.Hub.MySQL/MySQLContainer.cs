@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new CreateEntitiesResult();
             }
             var sql = new StringBuilder();
-            if (tableType == TableType.MemberColumns) {
+            if (tableType == TableType.Relational) {
                 sql.Append($"INSERT INTO {name}");
                 SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext);
             } else {
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new UpsertEntitiesResult();
             }
             var sql = new StringBuilder();
-            if (tableType == TableType.MemberColumns) {
+            if (tableType == TableType.Relational) {
                 sql.Append($"REPLACE INTO {name}");
                 SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext);
             } else {
@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new ReadEntitiesResult { Error = error };
             }
             var sql = new StringBuilder();
-            if (tableType == TableType.MemberColumns) {
+            if (tableType == TableType.Relational) {
                 sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
                 sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
             } else {
@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.BackSlash);
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql.ToString()).ConfigureAwait(false);
-                if (tableType == TableType.MemberColumns) {
+                if (tableType == TableType.Relational) {
                     return await SQLTable.ReadEntitiesAsync(reader, command, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
                     return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
@@ -191,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             try {
                 using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 List<EntityValue> entities;
-                if (tableType == TableType.MemberColumns) {
+                if (tableType == TableType.Relational) {
                     entities    = await SQLTable.QueryEntitiesAsync(reader, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
                     entities    = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
@@ -236,7 +236,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();
-                var id = tableType == TableType.MemberColumns ? tableInfo.keyColumn.name : ID;
+                var id = tableType == TableType.Relational ? tableInfo.keyColumn.name : ID;
                 sql.Append($"DELETE FROM  {name} WHERE {id} in\n");
                 SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.BackSlash);
                 try {

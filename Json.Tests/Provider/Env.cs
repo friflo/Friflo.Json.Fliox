@@ -116,7 +116,7 @@ namespace Friflo.Json.Tests.Provider
         }
         
         /// <summary>
-        /// suffix <b>_mc</b> is uses <see cref="TableType.MemberColumns"/> 
+        /// suffix <b>_mc</b> is uses <see cref="TableType.Relational"/> 
         /// </summary>
         private static EntityDatabase CreateTestDatabase(string db, string provider, DatabaseSchema schema)
         {
@@ -124,9 +124,9 @@ namespace Friflo.Json.Tests.Provider
             switch (provider) {
                 case "sqlite":      return new SQLiteDatabase       (db, SQLiteFile, schema);
                 case "mysql":       return new MySQLDatabase        (db, connection, schema);
-                case "mysql_mc":    return new MySQLDatabase        (db, connection, schema) { TableType = TableType.MemberColumns };
+                case "mysql_mc":    return new MySQLDatabase        (db, connection, schema) { TableType = TableType.Relational };
                 case "mariadb":     return new MariaDBDatabase      (db, connection, schema);
-                case "mariadb_mc":  return new MariaDBDatabase      (db, connection, schema) { TableType = TableType.MemberColumns };
+                case "mariadb_mc":  return new MariaDBDatabase      (db, connection, schema) { TableType = TableType.Relational };
                 case "postgres":    return new PostgreSQLDatabase   (db, connection, schema);
                 case "sqlserver":   return new SQLServerDatabase    (db, connection, schema);
                 case "redis":       return new RedisHashDatabase    (db, connection, schema);
