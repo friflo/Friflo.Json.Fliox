@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case StandardTypeId.Int64:      return "bigint";
                 case StandardTypeId.Float:      return "float";
                 case StandardTypeId.Double:     return "double precision";
-                case StandardTypeId.Boolean:    return "varchar(255)";
+                case StandardTypeId.Boolean:    return "tinyint";
                 case StandardTypeId.DateTime:
                 case StandardTypeId.Guid:
                 case StandardTypeId.BigInteger:
@@ -99,9 +99,9 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     var longLiteral = (LongLiteral)operation;
                     return longLiteral.value.ToString();
                 case TRUE:
-                    return provider == MY_SQL ? "'true'" : "true";
+                    return True();
                 case FALSE:
-                    return provider == MY_SQL ? "'false'" : "false";
+                    return False();
                 case NULL:
                     return "null";
                 
@@ -346,6 +346,9 @@ $@"NOT EXISTS(
             }
             throw new InvalidOperationException("invalid provider");
         }
+        
+        private string True()  => tableType == TableType.MemberColumns ? "true"  : provider == MY_SQL ? "'true'"  : "true";
+        private string False() => tableType == TableType.MemberColumns ? "false" : provider == MY_SQL ? "'false'" : "false";
         
         private string ToBoolean(string operand) {
             if (provider == MY_SQL) {

@@ -43,6 +43,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private void ReadCell(ColumnInfo column, ref ReadCell cell)
         {
             var ordinal = column.ordinal;
+            cell.isNull = reader.IsDBNull(ordinal);
+            if (cell.isNull) {
+                return;
+            }
             switch (column.typeId) {
                 case StandardTypeId.Boolean:    cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return;
                 case StandardTypeId.String:     cell.str = reader.GetString     (ordinal);  return;
@@ -72,6 +76,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             foreach (var column in obj.columns) {
                 ref var cell    = ref cells[column.ordinal];
                 var key         = column.nameBytes;
+                if (cell.isNull) {
+                    writer.MemberNul(key); // could omit writing a member with value null
+                    continue;
+                }
+                cell.isNull = true;
                 switch (column.typeId) {
                     case StandardTypeId.Boolean:    writer.MemberBln(key, cell.lng != 0);   break;
                     case StandardTypeId.String:     writer.MemberStr(key, cell.str);        break;
@@ -99,9 +108,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     internal struct ReadCell
     {
-        internal string str;
-        internal long   lng;
-        internal double dbl;
+        internal    bool    isNull;
+        internal    string  str;
+        internal    long    lng;
+        internal    double  dbl;
         
         internal JsonKey AsKey(StandardTypeId  typeId)
         {
