@@ -39,8 +39,10 @@ namespace Friflo.Json.Tests.Provider
         
         internal static  readonly   string  TEST_DB_PROVIDER;
         
+        private static              bool    IsProvider  (string db1, string db2) => TEST_DB_PROVIDER == db1 || TEST_DB_PROVIDER == db2;
+        
         internal static             bool    IsCosmosDB  (string db) => TEST_DB_PROVIDER == "cosmos"     && db == test_db;
-        internal static             bool    IsMySQL     (string db) => TEST_DB_PROVIDER == "mysql"      && db == test_db;
+        internal static             bool    IsMySQL     (string db) => IsProvider("mysql", "mysql_mc")  && db == test_db;
         internal static             bool    IsMariaDB   (string db) => TEST_DB_PROVIDER == "mariadb"    && db == test_db;
         internal static             bool    IsPostgres  (string db) => TEST_DB_PROVIDER == "postgres"   && db == test_db;
         internal static             bool    IsSQLServer (string db) => TEST_DB_PROVIDER == "sqlserver"  && db == test_db;
@@ -113,12 +115,16 @@ namespace Friflo.Json.Tests.Provider
             }
         }
         
+        /// <summary>
+        /// suffix <b>_mc</b> is uses <see cref="TableType.MemberColumns"/> 
+        /// </summary>
         private static EntityDatabase CreateTestDatabase(string db, string provider, DatabaseSchema schema)
         {
             var connection = EnvConfig.GetConnectionString(provider);
             switch (provider) {
                 case "sqlite":      return new SQLiteDatabase       (db, SQLiteFile, schema);
                 case "mysql":       return new MySQLDatabase        (db, connection, schema);
+                case "mysql_mc":    return new MySQLDatabase        (db, connection, schema) { TableType = TableType.MemberColumns };
                 case "mariadb":     return new MariaDBDatabase      (db, connection, schema);
                 case "postgres":    return new PostgreSQLDatabase   (db, connection, schema);
                 case "sqlserver":   return new SQLServerDatabase    (db, connection, schema);

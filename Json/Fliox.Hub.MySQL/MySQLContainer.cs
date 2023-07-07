@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             : base(name, database)
         {
             init        = new ContainerInit(database);
-            tableInfo   = new TableInfo (database, name, tableType);
+            tableInfo   = new TableInfo (database, name, database.TableType);
             Pretty      = pretty;
             provider    = database.Provider;
             tableType   = database.TableType;
