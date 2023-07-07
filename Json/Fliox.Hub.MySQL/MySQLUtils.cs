@@ -5,6 +5,7 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
+using Friflo.Json.Fliox.Schema.Definition;
 using MySqlConnector;
 using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
@@ -41,21 +42,20 @@ GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
                     return;
                 }
                 case MySQLProvider.MY_SQL: {
-/* var sql =    
-$@"SELECT COUNT(*)
-FROM `INFORMATION_SCHEMA`.`COLUMNS`
-WHERE `TABLE_NAME`= '{table}' AND `COLUMN_NAME` = '{colName}';";
-                    var result = await Execute(connection, sql).ConfigureAwait(false);
-                    if (result.Failed) {
-                        return;
-                    }
-                    if ((long)result.value != 0)
-                        return;
-*/
-
+    var asStr  = $"(JSON_VALUE({DATA}, '$.{colName}'))";
+    if (column.typeId == StandardTypeId.Boolean) {
+        asStr =
+$@"(
+            case when {asStr} = 'true'
+                 then 1
+                 when {asStr} = 'false'
+                 then 0
+            end)";
+    }
+    
 var sql = $@"ALTER TABLE {table}
 ADD COLUMN `{colName}` {type}
-GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
+GENERATED ALWAYS AS {asStr} VIRTUAL;";
                     await Execute(connection, sql).ConfigureAwait(false);
                     return;
                 }
