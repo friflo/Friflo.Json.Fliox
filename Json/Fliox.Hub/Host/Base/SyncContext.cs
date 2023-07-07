@@ -32,18 +32,17 @@ namespace Friflo.Json.Fliox.Hub.Host
     public sealed class SyncContext
     {
         // --- public
-        public  FlioxHub                        Hub                 => hub;
-        public  ShortString                     ClientId            => clientId;
-        public  User                            User                => authState.user;
-        public  bool                            Authenticated       => authState.authenticated;
-        public  EntityDatabase                  Database            => database;                // not null
-        public  ObjectPool<ObjectMapper>        ObjectMapper        => pool.ObjectMapper;
-        public  ObjectPool<EntityProcessor>     EntityProcessor     => pool.EntityProcessor;
-        public  ObjectPool<Json2SQL>            Json2SQL            => pool.Json2SQL;
-        public  ObjectPool<SQL2Json>            SQL2Json            => pool.SQL2Json;
-        public  MemoryBuffer                    MemoryBuffer        => memoryBuffer;
-        public  SyncRequest                     Request             => request;
-        public  IHost                           Host                { get => host; init => host = value ?? throw new ArgumentNullException(nameof(Host)); }
+                        public  FlioxHub        Hub             => hub;
+                        public  ShortString     ClientId        => clientId;
+                        public  User            User            => authState.user;
+                        public  bool            Authenticated   => authState.authenticated;
+                        public  EntityDatabase  Database        => database;                // not null
+                        public  MemoryBuffer    MemoryBuffer    => memoryBuffer;
+                        public  SyncRequest     Request         => request;
+                        public  IHost           Host            { get => host; init => host = value ?? throw new ArgumentNullException(nameof(Host)); }
+        // --- public utils
+        [Browse(Never)] public  ObjectPool<ObjectMapper>    ObjectMapper    => pool.ObjectMapper;
+        [Browse(Never)] public  ObjectPool<EntityProcessor> EntityProcessor => pool.EntityProcessor;
 
         public override     string                      ToString()      => GetString();
         // --- internal / private by intention
