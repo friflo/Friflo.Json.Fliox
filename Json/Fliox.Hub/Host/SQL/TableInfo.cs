@@ -8,6 +8,12 @@ using Friflo.Json.Fliox.Schema.Definition;
 // ReSharper disable LoopCanBeConvertedToQuery
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
+    public enum ColumnType
+    {
+        Scalar  = 0,
+        Array   = 1
+    }
+    
     public sealed class ColumnInfo
     {
         public   readonly   int             ordinal;
@@ -16,15 +22,17 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal readonly   string          memberName;     // leaf: title
         internal readonly   Bytes           nameBytes;      // leaf: title
         public   readonly   StandardTypeId  typeId;
+        public   readonly   ColumnType      columnType;
 
         public override     string          ToString() => $"{name} [{ordinal}] : {typeId}";
 
-        public ColumnInfo (int ordinal, string name, string memberName, StandardTypeId typeId, bool isPrimaryKey) {
+        internal ColumnInfo (int ordinal, string name, string memberName, StandardTypeId typeId, ColumnType type, bool isPrimaryKey) {
             this.ordinal        = ordinal;
             this.name           = name;
             this.memberName     = memberName;
             this.nameBytes      = new Bytes(name);
             this.typeId         = typeId;
+            this.columnType     = type;
             this.isPrimaryKey   = isPrimaryKey;
         }
     }
@@ -110,16 +118,23 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     continue;
                 }
                 var typeId      = fieldType.TypeId;
-                if (typeId == StandardTypeId.None) {
+                /* if (typeId == StandardTypeId.None) {
+                    continue;
+                } */
+                if (tableType == TableType.JsonColumn && !isScalar) {
                     continue;
                 }
-                if (isScalar) {
-                    var isPrimaryKey = type.KeyField == field;
-                    var column = new ColumnInfo(columnMap.Count, fieldPath, field.name, typeId, isPrimaryKey);
-                    columnList.Add(column);
-                    columnMap.Add(fieldPath, column);
-                    indexMap.Add(fieldPath, column);
+                var columnType = ColumnType.Scalar;
+                if (field.isArray) {
+                    columnType = ColumnType.Array;
+                } else if (field.isDictionary) {
+                    continue;
                 }
+                var isPrimaryKey = type.KeyField == field;
+                var column = new ColumnInfo(columnMap.Count, fieldPath, field.name, typeId, columnType, isPrimaryKey);
+                columnList.Add(column);
+                columnMap.Add(fieldPath, column);
+                indexMap.Add(fieldPath, column);
             }
             return new ObjectInfo(name, columnList.ToArray(), objectList.ToArray());
         }

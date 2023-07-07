@@ -34,8 +34,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             this.args       = args;
         }
         
-        internal static string GetSqlType(StandardTypeId typeId) {
-            switch (typeId) {
+        internal static string GetSqlType(ColumnInfo column) {
+            switch (column.columnType) {
+                case ColumnType.Array:          return "text"; // JSON column
+            }
+            switch (column.typeId) {
                 case StandardTypeId.Uint8:
                 case StandardTypeId.Int16:
                 case StandardTypeId.Int32:
@@ -49,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case StandardTypeId.String:
                 case StandardTypeId.Enum:       return "text";
             }
-            throw new NotSupportedException($"column type: {typeId}");
+            throw new NotSupportedException($"column type: {column.typeId}");
         }
 
         /// <summary>

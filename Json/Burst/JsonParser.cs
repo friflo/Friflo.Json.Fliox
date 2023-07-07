@@ -169,6 +169,11 @@ namespace Friflo.Json.Burst
         public int          MaxDepth => maxDepth;
         public void         SetMaxDepth(int value) { this.maxDepth = value; }
         
+        public void AppendInputSlice(ref Bytes dst, int start, int end) {
+            var slice = new Bytes { buffer = buf.buffer, start = start, end = end };
+            dst.AppendBytes(slice);
+        }
+        
         enum ErrorType {
             JsonError,
             Assertion,

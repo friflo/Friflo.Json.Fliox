@@ -82,9 +82,17 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         cell.type           = JsonEvent.ValueBool;
                         break;
                     }
-                    case JsonEvent.ArrayStart:
+                    case JsonEvent.ArrayStart: {
+                        var column          = objInfo.FindColumn(parser.key);
+                        ref var cell        = ref rowCells[column.ordinal];
+                        var start = parser.Position - 1;
                         parser.SkipTree(); // TODO implementation skipped for now
+                        var end = parser.Position;
+                        parser.AppendInputSlice(ref buffer, start, end);
+                        cell.SetValue(buffer, end - start);
+                        cell.type           = JsonEvent.ArrayStart;
                         break;
+                    }
                     case JsonEvent.ValueNull:
                         break;
                     case JsonEvent.ObjectStart:
@@ -121,6 +129,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     case JsonEvent.ValueBool:
                     case JsonEvent.ValueNumber:
                         AppendBytes(sb, cell.value);
+                        break;
+                    case JsonEvent.ArrayStart:
+                        sb.Append('\'');
+                        AppendBytes(sb, cell.value);
+                        sb.Append('\'');
                         break;
                     default:
                         throw new InvalidOperationException($"unexpected cell.type: {cell.type}");

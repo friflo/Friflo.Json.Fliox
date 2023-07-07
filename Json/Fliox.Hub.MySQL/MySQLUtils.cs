@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
         
         internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column, MySQLProvider provider) {
-            var type = ConvertContext.GetSqlType(column.typeId, provider);
+            var type = ConvertContext.GetSqlType(column, provider);
             var colName = column.name; 
             switch (provider) {
                 case MySQLProvider.MARIA_DB: {

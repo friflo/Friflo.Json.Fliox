@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         internal static void AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
-            var type = ConvertContext.GetSqlType(column.typeId);
+            var type = ConvertContext.GetSqlType(column);
             var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN ""{column.name}"" {type}

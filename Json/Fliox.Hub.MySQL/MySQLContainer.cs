@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 sb.Append('`');
                 sb.Append(column.name);
                 sb.Append("` ");
-                var type = ConvertContext.GetSqlType(column.typeId, provider);
+                var type = ConvertContext.GetSqlType(column, provider);
                 sb.Append(type);
                 if (column.isPrimaryKey) {
                     sb.Append(" PRIMARY KEY");

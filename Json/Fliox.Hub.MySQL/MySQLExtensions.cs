@@ -48,8 +48,11 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             this.tableType  = tableType;
         }
         
-        internal static string GetSqlType(StandardTypeId typeId, MySQLProvider provider) {
-            switch (typeId) {
+        internal static string GetSqlType(ColumnInfo column, MySQLProvider provider) {
+            switch (column.columnType) {
+                case ColumnType.Array:          return "JSON"; // JSON column
+            }
+            switch (column.typeId) {
                 case StandardTypeId.Uint8:      return "tinyint";
                 case StandardTypeId.Int16:      return "smallint";
                 case StandardTypeId.Int32:      return "integer";
@@ -63,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case StandardTypeId.String:
                 case StandardTypeId.Enum:       return "varchar(255)";
             }
-            throw new NotSupportedException($"column type: {typeId}");
+            throw new NotSupportedException($"column type: {column.typeId}");
         }
         
         /// <summary>
