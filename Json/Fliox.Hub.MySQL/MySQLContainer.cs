@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             : base(name, database)
         {
             init        = new ContainerInit(database);
-            tableInfo   = new TableInfo (database, name);
+            tableInfo   = new TableInfo (database, name, tableType);
             Pretty      = pretty;
             provider    = database.Provider;
             tableType   = database.TableType;
@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var filter  = command.GetFilter();
             var where   = filter.IsTrue ? "TRUE" : filter.MySQLFilter(provider);
-            var sql     = SQLUtils.QueryEntitiesSQL(command, name, where);
+            var sql     = SQLUtils.QueryEntitiesSQL(command, name, where, tableInfo);
             try {
                 using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 List<EntityValue> entities;

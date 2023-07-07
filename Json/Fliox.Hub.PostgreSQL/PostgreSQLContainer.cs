@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             var filter  = command.GetFilter();
             var where   = filter.IsTrue ? "TRUE" : filter.PostgresFilter(entityType);
-            var sql     = SQLUtils.QueryEntitiesSQL(command, name, where);
+            var sql     = SQLUtils.QueryEntitiesSQL(command, name, where, tableInfo);
             try {
                 using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 var entities        = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);

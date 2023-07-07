@@ -70,6 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     {
         public   readonly   ColumnInfo[]                    columns;
         public   readonly   ColumnInfo                      keyColumn;
+        public   readonly   TableType                       tableType;
         // --- internal
         private  readonly   string                          container;
         private  readonly   Dictionary<string, ColumnInfo>  columnMap;
@@ -80,7 +81,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 
         public   override   string                          ToString() => container;
 
-        public TableInfo(EntityDatabase database, string container) {
+        public TableInfo(EntityDatabase database, string container, TableType tableType = TableType.JsonColumn) {
+            this.tableType  = tableType;
             this.container  = container;
             columnMap       = new Dictionary<string, ColumnInfo>();
             indexMap        = new Dictionary<string, ColumnInfo>();
