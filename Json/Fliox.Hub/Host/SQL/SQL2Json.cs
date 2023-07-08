@@ -16,13 +16,16 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     {
         private     Utf8JsonWriter  writer;
         private     DbDataReader    reader;
-        private     ReadCell[]      cells;
-        private     byte[]          buffer = new byte[16];
+        private     ReadCell[]      cells   = new ReadCell[4];
+        private     byte[]          buffer  = new byte[16];
         
         public async Task<List<EntityValue>> ReadEntitiesAsync(DbDataReader reader, TableInfo tableInfo)
         {
             var columns = tableInfo.columns;
-            cells       = new ReadCell[columns.Length];
+            var colLen  = columns.Length;
+            if (colLen > cells.Length) {
+                cells = new ReadCell[colLen];    
+            }
             this.reader = reader;
             var result  = new List<EntityValue>();
             while (await reader.ReadAsync().ConfigureAwait(false))
@@ -43,7 +46,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 result.Add(new EntityValue(key, value));
             }
             this.reader = null;
-            cells       = null;
             return result;
         }
         
