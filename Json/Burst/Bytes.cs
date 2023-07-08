@@ -453,12 +453,11 @@ namespace Friflo.Json.Burst
             buffer[end++] = (byte)c1;
         }
         
-        public void AppendGuid (in Guid guid, char[] buf) {
+        public void AppendGuid (in Guid guid, Span<char> buf) {
 #if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
             AppendString(guid.ToString());
 #else
-            var dest = new Span<char>(buf);
-            if (!guid.TryFormat(dest, out var len))
+            if (!guid.TryFormat(buf, out var len))
                 throw new InvalidOperationException($"Guid.TryFormat failed: {guid}");
             EnsureCapacity(len);
             int thisEnd = end;

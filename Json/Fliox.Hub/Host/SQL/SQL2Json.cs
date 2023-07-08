@@ -75,10 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     var dateTime                         = reader.GetDateTime   (ordinal);
                     cell.str = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
                     return;
-                case StandardTypeId.Guid:           
-                    var guid                             = reader.GetGuid       (ordinal);
-                    cell.str = guid.ToString();
-                    return;
+                case StandardTypeId.Guid:       cell.guid= reader.GetGuid       (ordinal);  return;
                 case StandardTypeId.Enum:       cell.str = reader.GetString     (ordinal);  return;
                 default:
                     throw new InvalidOperationException($"unexpected typeId: {column.typeId}");
@@ -120,21 +117,21 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 return;
             }
             switch (column.typeId) {
-                case StandardTypeId.Boolean:    writer.MemberBln(key, cell.lng != 0);   break;
-                case StandardTypeId.String:     writer.MemberStr(key, cell.str);        break;
+                case StandardTypeId.Boolean:    writer.MemberBln    (key, cell.lng != 0);   break;
+                case StandardTypeId.String:     writer.MemberStr    (key, cell.str);        break;
                 //
                 case StandardTypeId.Uint8:
                 case StandardTypeId.Int16:
                 case StandardTypeId.Int32:
-                case StandardTypeId.Int64:      writer.MemberLng(key, cell.lng);        break;
+                case StandardTypeId.Int64:      writer.MemberLng    (key, cell.lng);        break;
                 //
                 case StandardTypeId.Float:
-                case StandardTypeId.Double:     writer.MemberDbl(key, cell.dbl);        break;
+                case StandardTypeId.Double:     writer.MemberDbl    (key, cell.dbl);        break;
                 //
-                case StandardTypeId.BigInteger:
+                case StandardTypeId.Guid:       writer.MemberGuid   (key,cell.guid);        break;
                 case StandardTypeId.DateTime:
-                case StandardTypeId.Guid:
-                case StandardTypeId.Enum:       writer.MemberStr(key, cell.str);        break;
+                case StandardTypeId.BigInteger:
+                case StandardTypeId.Enum:       writer.MemberStr    (key, cell.str);        break;
                 default:
                     throw new InvalidOperationException($"unexpected typeId: {column.typeId}");
             }
@@ -177,6 +174,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal    string  str;
         internal    long    lng;
         internal    double  dbl;
+        internal    Guid    guid;
         
         internal JsonKey AsKey(StandardTypeId  typeId)
         {
@@ -190,7 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 //
                 case StandardTypeId.BigInteger: return new JsonKey(str);
                 case StandardTypeId.DateTime:   return new JsonKey(str);
-                case StandardTypeId.Guid:       return new JsonKey(str);
+                case StandardTypeId.Guid:       return new JsonKey(guid);
                 default:
                     throw new NotSupportedException($"primary key type not supported: {typeId}");
             }

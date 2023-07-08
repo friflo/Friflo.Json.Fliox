@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 
+using System;
 
 namespace Friflo.Json.Burst
 {
@@ -149,6 +150,17 @@ namespace Friflo.Json.Burst
             AddSeparator();
             AppendKeyBytes(ref json, in key);
             json.AppendBytes(jsonValue);
+        }
+        
+        /// <summary>Writes a key/value pair where the value is JSON</summary>
+        public void MemberGuid(in Bytes key, in Guid guid) {
+            AssertMember();
+            AddSeparator();
+            AppendKeyBytes(ref json, in key);
+            Span<char> chars = stackalloc char[Bytes.GuidLength]; 
+            json.AppendChar('\"');
+            json.AppendGuid(guid, chars);
+            json.AppendChar('\"');
         }
         
  
