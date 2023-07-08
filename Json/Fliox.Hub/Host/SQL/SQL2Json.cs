@@ -90,6 +90,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         WriteColumn(column);
                         break;
                     case ObjectInfo objectMember:
+                        if (!HasNonNullMembers(objectMember)) {
+                            writer.MemberNul(objectMember.nameBytes);
+                            continue;
+                        }
                         writer.MemberObjectStart(objectMember.nameBytes);
                         Traverse(objectMember);
                         writer.ObjectEnd();
@@ -127,6 +131,24 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case StandardTypeId.BigInteger:
                 case StandardTypeId.Guid:       writer.MemberStr(key, cell.str);        break;
             }
+        }
+        
+        private bool HasNonNullMembers(ObjectInfo obj) {
+            foreach (var member in obj.members) {
+                switch (member) {
+                    case ColumnInfo column:
+                        if (!cells[column.ordinal].isNull) {
+                            return true;
+                        }
+                        break;
+                    case ObjectInfo objectMember:
+                        if (HasNonNullMembers(objectMember)) {
+                            return true;
+                        }
+                        break;
+                }
+            }
+            return false;
         }
         
         private Bytes String2Bytes (string value)
