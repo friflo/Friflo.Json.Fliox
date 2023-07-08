@@ -79,6 +79,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     var guid                             = reader.GetGuid       (ordinal);
                     cell.str = guid.ToString();
                     return;
+                case StandardTypeId.Enum:       cell.str = reader.GetString     (ordinal);  return;
+                default:
+                    throw new InvalidOperationException($"unexpected typeId: {column.typeId}");
             }
         }
         
@@ -129,7 +132,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case StandardTypeId.Double:     writer.MemberDbl(key, cell.dbl);        break;
                 //
                 case StandardTypeId.BigInteger:
-                case StandardTypeId.Guid:       writer.MemberStr(key, cell.str);        break;
+                case StandardTypeId.DateTime:
+                case StandardTypeId.Guid:
+                case StandardTypeId.Enum:       writer.MemberStr(key, cell.str);        break;
+                default:
+                    throw new InvalidOperationException($"unexpected typeId: {column.typeId}");
             }
         }
         
