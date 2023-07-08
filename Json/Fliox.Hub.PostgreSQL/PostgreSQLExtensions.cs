@@ -46,8 +46,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case StandardTypeId.Float:      return "float";
                 case StandardTypeId.Double:     return "double precision";
                 case StandardTypeId.Boolean:    return "boolean";
+                case StandardTypeId.Guid:       return "UUID";
                 case StandardTypeId.DateTime:
-                case StandardTypeId.Guid:
                 case StandardTypeId.BigInteger:
                 case StandardTypeId.String:
                 case StandardTypeId.Enum:       return "text";
