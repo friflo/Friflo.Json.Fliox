@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (column.columnType == ColumnType.Array) {
                     var bytes = String2Bytes(cell.str);
                     writer.MemberArr(key, bytes);
-                    break;
+                    continue;
                 }
                 switch (column.typeId) {
                     case StandardTypeId.Boolean:    writer.MemberBln(key, cell.lng != 0);   break;
