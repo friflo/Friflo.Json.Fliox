@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Provider.Env;
@@ -132,6 +133,25 @@ namespace Friflo.Json.Tests.Provider.Test
             var result = range.Result;
             NotNull(result);
             AreEqual(2, result.Count);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_11_ReadWrite(string db) {
+            var client  = await GetClient(db);
+            var w1      = new TestReadWrite {
+                id          = "rw-1",
+                guid        = Guid.NewGuid(),
+                // dateTime = DateTime.Now
+            };
+            client.testReadWrite.Upsert(w1);
+            await client.SyncTasks();
+            
+            var read    = client.testReadWrite.Read();
+            var r1      = read.Find(w1.id);
+            await client.SyncTasks();
+            
+            AreEqual(w1.guid,       r1.Result.guid);
+            // AreEqual(w1.dateTime,   r1.Result.dateTime);
         }
     }
 }
