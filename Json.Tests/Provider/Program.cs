@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
@@ -38,6 +40,7 @@ namespace Friflo.Json.Tests.Provider
             var fileDb      = new FileDatabase("file_db", Env.TestDbFolder, Schema);
             var memoryDb    = new MemoryDatabase("memory_db", Schema);
             await memoryDb.SeedDatabase(fileDb).ConfigureAwait(false);
+            memoryDb.AddCommands(new TestDBCommands());
             
             var hub         = new FlioxHub(memoryDb, env);
             hub.Info.Set("Test DB", "test", "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Provider", "rgb(0 140 255)");
@@ -47,7 +50,7 @@ namespace Friflo.Json.Tests.Provider
 
             hub.AddExtensionDB  (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
             hub.EventDispatcher = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)
-            
+
             var httpHost        = new HttpHost(hub, "/fliox/", env)       { CacheControl = cache };
             httpHost.AddHandler (new StaticFileHandler(HubExplorer.Path) { CacheControl = cache }); // optional - serve static web files of Hub Explorer
             return httpHost;
@@ -86,20 +89,44 @@ namespace Friflo.Json.Tests.Provider
 #endif
         }
         
-        public static async Task DropDatabase() {
+        public static async Task DropDatabases() {
             var hub = new FlioxHub(new MemoryDatabase("main"));
             AddDatabases(hub, Schema);
-            var databases = hub.GetDatabases().Values;
-            foreach (var database in databases) {
-                var name = database.name;
+            await DropDatabase(hub, null);
+        }
+        
+        internal static async Task<List<string>> DropDatabase(FlioxHub hub, string dbName)
+        {
+            IEnumerable<string> databases = (dbName == null) ? hub.GetDatabases().Keys : new [] { dbName};
+            var result = new List<string>();
+            foreach (var name in databases) {
+                if (!hub.TryGetDatabase(name, out var database)) {
+                    var msg = $"drop database '{name}' ({database.StorageType}) error: database not found";
+                    result.Add(msg);
+                    continue;
+                }
                 try {
                     await database.DropDatabase();
-                    Console.WriteLine($"drop database '{name}' ({database.StorageType}) successful");
+                    var msg = $"drop database '{name}' ({database.StorageType}) successful";
+                    result.Add(msg);
+                    Console.WriteLine(msg);
                 }
                 catch (Exception e) {
-                    Console.WriteLine($"drop database '{name}' ({database.StorageType}) error: {e.Message}");
+                    var msg = $"drop database '{name}' ({database.StorageType}) error: {e.Message}";
+                    result.Add(msg);
+                    Console.WriteLine(msg);
                 }
             }
+            return result;
+        }
+    }
+    
+    public class TestDBCommands : IServiceCommands
+    {
+        // [CommandHandler("DropDatabase")]
+        private async Task<List<string>> DropDatabase(Param<string> param, MessageContext context)
+        {
+            return await Program.DropDatabase(context.Hub, param.Value);
         }
     }
 }

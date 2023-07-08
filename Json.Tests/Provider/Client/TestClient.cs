@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
@@ -18,6 +19,9 @@ namespace Friflo.Json.Tests.Provider.Client
         public readonly EntitySet <int,    TestIntKeyEntity>    testIntKey;
         public readonly EntitySet <Guid,   TestGuidKeyEntity>   testGuidKey;
         public readonly EntitySet <string, TestKeyName>         testKeyName;
+        
+        /// <summary> count records added to containers within the last param seconds. default 60</summary>
+        public CommandTask<List<String>>      DropDatabase (string param)    => send.Command<string, List<String>>    (param);
 
         public TestClient(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
     }

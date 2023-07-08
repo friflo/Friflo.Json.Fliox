@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Main
                         await Provider.Program.Run();
                         break;
                     case Module.DropDatabase:
-                        await Provider.Program.DropDatabase();
+                        await Provider.Program.DropDatabases();
                         break;
 #if NET6_0_OR_GREATER
                     case Module.FlioxServerAspNetCore:
