@@ -111,6 +111,17 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 return new TransResult(e.Message);
             }
         }
+        
+        public override async Task DropDatabase() {
+            var builder = new SqlConnectionStringBuilder(connectionString);
+            var db      = builder.InitialCatalog;
+            builder.Remove("Database");
+            var connection = new SqlConnection(builder.ConnectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+            var sql = $"drop database {db};";
+            using var command = new SqlCommand(sql, connection);
+            await command.ExecuteReaderAsync().ConfigureAwait(false);
+        }
     }
 }
 

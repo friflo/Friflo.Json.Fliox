@@ -88,6 +88,17 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new TransResult(e.Message);
             }
         }
+        
+        public override async Task DropDatabase() {
+            var builder = new NpgsqlConnectionStringBuilder(connectionString);
+            var db      = builder.Database;
+            builder.Remove("Database");
+            var connection = new NpgsqlConnection(builder.ConnectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+            var sql = $"drop database {db};";
+            using var command = new NpgsqlCommand(sql, connection);
+            await command.ExecuteReaderAsync().ConfigureAwait(false);
+        }
     }
 }
 
