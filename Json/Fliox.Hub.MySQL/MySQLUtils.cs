@@ -42,23 +42,30 @@ GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
                     return;
                 }
                 case MySQLProvider.MY_SQL: {
-    var asStr  = $"(JSON_VALUE({DATA}, '$.{colName}'))";
-    if (column.typeId == StandardTypeId.Boolean) {
-        asStr =
-$@"(
-            case when {asStr} = 'true'
-                 then 1
-                 when {asStr} = 'false'
-                 then 0
-            end)";
-    }
-    
+                    var asStr  = GetColumnType(column);
 var sql = $@"ALTER TABLE {table}
 ADD COLUMN `{colName}` {type}
 GENERATED ALWAYS AS {asStr} VIRTUAL;";
                     await Execute(connection, sql).ConfigureAwait(false);
                     return;
                 }
+            }
+        }
+        
+        private static string GetColumnType(ColumnInfo column) {
+            var colName = column.name;
+            var asStr   = $"(JSON_VALUE({DATA}, '$.{colName}'))";
+            switch (column.typeId) {
+                case StandardTypeId.Boolean:
+                    return
+         $@"(
+            case when {asStr} = 'true'
+                 then 1
+                 when {asStr} = 'false'
+                 then 0
+            end)";
+                default:
+                    return asStr;
             }
         }
         

@@ -140,7 +140,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var w1      = new TestReadWrite {
                 id          = "rw-1",
-                guid        = Guid.NewGuid(),
+                guid        = new Guid("ea8c4fbc-f908-4da5-bf8b-c347dfb62055"),
                 // dateTime = DateTime.Now
             };
             client.testReadWrite.Upsert(w1);
