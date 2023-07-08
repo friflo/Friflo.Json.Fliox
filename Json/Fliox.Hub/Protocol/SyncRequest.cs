@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -46,6 +47,30 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         [Ignore]   internal SyncRequestIntern       intern;
         
         internal override   MessageType             MessageType => MessageType.sync;
+
+        public   override   string                  ToString()  => GetString();
+        
+        private string GetString() {
+            var sb = new StringBuilder();
+            if (database.IsNull()) {
+                sb.Append("(default db)");    
+            } else {
+                database.AppendTo(sb);
+            }
+            sb.Append(": ");
+            if (tasks.Count == 0) {
+                sb.Append("no tasks");
+            } else {
+                foreach (var task in tasks) {
+                    sb.Append(task.TaskType);
+                    sb.Append(" - ");
+                    sb.Append(task.TaskName);
+                    sb.Append(", ");
+                }
+                sb.Length -= 2;
+            }
+            return sb.ToString(); 
+        }
     }
     
     /// <summary>
