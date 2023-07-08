@@ -29,14 +29,14 @@ namespace Friflo.Json.Tests.Provider
         }
         
         private static async Task<HttpHost> CreateHttpHost() {
-            var env                 = new SharedEnv();
-            string      cache       = null;
-            var schema              = DatabaseSchema.Create<TestClient>();
-            var fileDb              = new FileDatabase("file_db", Env.TestDbFolder, schema);
-            var memoryDb            = new MemoryDatabase("memory_db", schema);
+            var env         = new SharedEnv();
+            string cache    = null;
+            var schema      = DatabaseSchema.Create<TestClient>();
+            var fileDb      = new FileDatabase("file_db", Env.TestDbFolder, schema);
+            var memoryDb    = new MemoryDatabase("memory_db", schema);
             await memoryDb.SeedDatabase(fileDb).ConfigureAwait(false);
             
-            var hub                 = new FlioxHub(memoryDb, env);
+            var hub         = new FlioxHub(memoryDb, env);
             hub.Info.Set("Test DB", "test", "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Provider", "rgb(0 140 255)");
             hub.AddExtensionDB (fileDb);
 #if !UNITY_5_3_OR_NEWER
@@ -45,29 +45,35 @@ namespace Friflo.Json.Tests.Provider
                 await testDb.SeedDatabase(fileDb).ConfigureAwait(false);
                 hub.AddExtensionDB (testDb);
             } */
-            var sqliteConnection    = $"Data Source={CommonUtils.GetBasePath() + "sqlite_db.sqlite3"}";
-            hub.AddExtensionDB      (new SQLiteDatabase     ("sqlite_db",       sqliteConnection,         schema));
+            var sqlite          = $"Data Source={CommonUtils.GetBasePath() + "sqlite_db.sqlite3"}";
+            hub.AddExtensionDB  (new SQLiteDatabase     ("sqlite_db",       sqlite,   schema));
             
-            var mysqlConnection     = EnvConfig.GetConnectionString("mysql");
-            hub.AddExtensionDB      (new MySQLDatabase      ("mysql_db",        mysqlConnection,    schema));
+            var mysql           = EnvConfig.GetConnectionString("mysql");
+            hub.AddExtensionDB  (new MySQLDatabase      ("mysql_db",        mysql,    schema));
             
-            var mariadbConnection   = EnvConfig.GetConnectionString("mariadb");
-            hub.AddExtensionDB      (new MariaDBDatabase    ("maria_db",        mariadbConnection,  schema));
+            var mysqlRel        = EnvConfig.GetConnectionString("mysql_mc");
+            hub.AddExtensionDB  (new MySQLDatabase      ("mysql_rel",       mysqlRel,schema) { TableType = TableType.Relational });
             
-            var postgresConnection  = EnvConfig.GetConnectionString("postgres");
-            hub.AddExtensionDB      (new PostgreSQLDatabase ("postgres_db",     postgresConnection, schema));
+            var mariadb         = EnvConfig.GetConnectionString("mariadb");
+            hub.AddExtensionDB  (new MariaDBDatabase    ("maria_db",        mariadb,  schema));
             
-            var sqlServerConnection = EnvConfig.GetConnectionString("sqlserver");
-            hub.AddExtensionDB      (new SQLServerDatabase  ("sqlserver_db",    sqlServerConnection,schema));
+            var mariadbRel      = EnvConfig.GetConnectionString("mariadb_mc");
+            hub.AddExtensionDB  (new MariaDBDatabase    ("maria_mc",        mariadbRel, schema) { TableType = TableType.Relational } );
+            
+            var postgres        = EnvConfig.GetConnectionString("postgres");
+            hub.AddExtensionDB  (new PostgreSQLDatabase ("postgres_db",     postgres, schema));
+            
+            var sqlServer       = EnvConfig.GetConnectionString("sqlserver");
+            hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_db",    sqlServer,schema));
 
-            var redisConnection     = EnvConfig.GetConnectionString("redis");
-            hub.AddExtensionDB      (new RedisHashDatabase  ("redis_db",        redisConnection,    schema));
+            var redis           = EnvConfig.GetConnectionString("redis");
+            hub.AddExtensionDB  (new RedisHashDatabase  ("redis_db",        redis,    schema));
 #endif
-            hub.AddExtensionDB       (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
-            hub.EventDispatcher     = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)
+            hub.AddExtensionDB  (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
+            hub.EventDispatcher = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)
             
-            var httpHost            = new HttpHost(hub, "/fliox/", env)       { CacheControl = cache };
-            httpHost.AddHandler      (new StaticFileHandler(HubExplorer.Path) { CacheControl = cache }); // optional - serve static web files of Hub Explorer
+            var httpHost        = new HttpHost(hub, "/fliox/", env)       { CacheControl = cache };
+            httpHost.AddHandler (new StaticFileHandler(HubExplorer.Path) { CacheControl = cache }); // optional - serve static web files of Hub Explorer
             return httpHost;
         }
     }
