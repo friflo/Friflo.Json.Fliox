@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             this.ordinal        = ordinal;
             this.name           = name;
             this.memberName     = memberName;
-            this.nameBytes      = new Bytes(name);
+            this.nameBytes      = new Bytes(memberName);
             this.typeId         = typeId;
             this.columnType     = type;
             this.isPrimaryKey   = isPrimaryKey;
