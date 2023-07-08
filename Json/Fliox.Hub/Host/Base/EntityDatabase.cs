@@ -200,6 +200,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return new DbMessages { commands = commands, messages = messages };
         }
+        
+        public virtual Task DropDatabase() => throw new NotSupportedException($"DropDatabase() not supported");
+        
         #endregion
         
     #region - sync connection

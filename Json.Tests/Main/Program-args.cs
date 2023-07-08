@@ -13,6 +13,7 @@ namespace Friflo.Json.Tests.Main
         {
             TestServer,
             TestDB,
+            DropDatabase,
             FlioxServerAspNetCore,
             ListenEvents,
             //
@@ -56,6 +57,9 @@ namespace Friflo.Json.Tests.Main
                         break;
                     case Module.TestDB:
                         await Provider.Program.Run();
+                        break;
+                    case Module.DropDatabase:
+                        await Provider.Program.DropDatabase();
                         break;
 #if NET6_0_OR_GREATER
                     case Module.FlioxServerAspNetCore:

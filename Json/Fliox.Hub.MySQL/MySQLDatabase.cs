@@ -91,6 +91,17 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new TransResult(e.Message);
             }
         }
+        
+        public override async Task DropDatabase() {
+            var builder = new MySqlConnectionStringBuilder(connectionString);
+            var db      = builder.Database;
+            builder.Remove("Database");
+            var connection = new MySqlConnection(builder.ConnectionString);
+            await connection.OpenAsync().ConfigureAwait(false);
+            var sql = $"drop database {db};";
+            using var command = new MySqlCommand(sql, connection);
+            await command.ExecuteReaderAsync().ConfigureAwait(false);
+        }
     }
     
     public sealed class MariaDBDatabase : MySQLDatabase

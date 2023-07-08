@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
@@ -28,17 +29,31 @@ namespace Friflo.Json.Tests.Provider
             server.Run();
         }
         
+        private static readonly DatabaseSchema Schema      = DatabaseSchema.Create<TestClient>();
+        
         private static async Task<HttpHost> CreateHttpHost() {
             var env         = new SharedEnv();
             string cache    = null;
-            var schema      = DatabaseSchema.Create<TestClient>();
-            var fileDb      = new FileDatabase("file_db", Env.TestDbFolder, schema);
-            var memoryDb    = new MemoryDatabase("memory_db", schema);
+
+            var fileDb      = new FileDatabase("file_db", Env.TestDbFolder, Schema);
+            var memoryDb    = new MemoryDatabase("memory_db", Schema);
             await memoryDb.SeedDatabase(fileDb).ConfigureAwait(false);
             
             var hub         = new FlioxHub(memoryDb, env);
             hub.Info.Set("Test DB", "test", "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Provider", "rgb(0 140 255)");
             hub.AddExtensionDB (fileDb);
+            
+            AddDatabases(hub, Schema);
+
+            hub.AddExtensionDB  (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
+            hub.EventDispatcher = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)
+            
+            var httpHost        = new HttpHost(hub, "/fliox/", env)       { CacheControl = cache };
+            httpHost.AddHandler (new StaticFileHandler(HubExplorer.Path) { CacheControl = cache }); // optional - serve static web files of Hub Explorer
+            return httpHost;
+        }
+        
+        private static void AddDatabases(FlioxHub hub, DatabaseSchema schema) {
 #if !UNITY_5_3_OR_NEWER
             /* var testDb              = Env.CreateTestDatabase("test_db", Env.TEST_DB_PROVIDER);
             if (testDb != null) {
@@ -69,12 +84,22 @@ namespace Friflo.Json.Tests.Provider
             var redis           = EnvConfig.GetConnectionString("redis");
             hub.AddExtensionDB  (new RedisHashDatabase  ("redis_db",        redis,    schema));
 #endif
-            hub.AddExtensionDB  (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
-            hub.EventDispatcher = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)
-            
-            var httpHost        = new HttpHost(hub, "/fliox/", env)       { CacheControl = cache };
-            httpHost.AddHandler (new StaticFileHandler(HubExplorer.Path) { CacheControl = cache }); // optional - serve static web files of Hub Explorer
-            return httpHost;
+        }
+        
+        public static async Task DropDatabase() {
+            var hub = new FlioxHub(new MemoryDatabase("main"));
+            AddDatabases(hub, Schema);
+            var databases = hub.GetDatabases().Values;
+            foreach (var database in databases) {
+                var name = database.name;
+                try {
+                    await database.DropDatabase();
+                    Console.WriteLine($"drop database '{name}' ({database.StorageType}) successful");
+                }
+                catch (Exception e) {
+                    Console.WriteLine($"drop database '{name}' ({database.StorageType}) error: {e.Message}");
+                }
+            }
         }
     }
 }
