@@ -25,12 +25,18 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             cells       = new ReadCell[columns.Length];
             this.reader = reader;
             var result  = new List<EntityValue>();
-            while (await reader.ReadAsync().ConfigureAwait(false)) {
-                writer.InitSerializer();
+            while (await reader.ReadAsync().ConfigureAwait(false))
+            {
+                // --- read table columns
                 foreach (var column in columns) {
                     ReadCell(column, ref cells[column.ordinal]);
                 }
+                // --- create JSON entity
+                writer.InitSerializer();
+                writer.ObjectStart();
                 Traverse(tableInfo.root);
+                writer.ObjectEnd();
+                
                 var keyColumn   = tableInfo.keyColumn;
                 var key         = cells[keyColumn.ordinal].AsKey(keyColumn.typeId);
                 var value       = new JsonValue(writer.json.AsArray()); // TODO - use MemoryBuffer to avoid array creation
@@ -76,42 +82,55 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
         }
         
-        private void Traverse(ObjectInfo obj) {
-            writer.ObjectStart();
-            foreach (var column in obj.columns) {
-                ref var cell    = ref cells[column.ordinal];
-                var key         = column.nameBytes;
-                if (cell.isNull) {
-                    writer.MemberNul(key); // could omit writing a member with value null
-                    continue;
-                }
-                cell.isNull = true;
-                if (column.columnType == ColumnType.Array) {
-                    var bytes = String2Bytes(cell.str);
-                    writer.MemberArr(key, bytes);
-                    continue;
-                }
-                switch (column.typeId) {
-                    case StandardTypeId.Boolean:    writer.MemberBln(key, cell.lng != 0);   break;
-                    case StandardTypeId.String:     writer.MemberStr(key, cell.str);        break;
-                    //
-                    case StandardTypeId.Uint8:
-                    case StandardTypeId.Int16:
-                    case StandardTypeId.Int32:
-                    case StandardTypeId.Int64:      writer.MemberLng(key, cell.lng);        break;
-                    //
-                    case StandardTypeId.Float:
-                    case StandardTypeId.Double:
-                                                    writer.MemberDbl(key, cell.dbl);        break;
-                    case StandardTypeId.BigInteger:
-                    case StandardTypeId.Guid:
-                                                    writer.MemberStr(key, cell.str);        break;
+        private void Traverse(ObjectInfo obj)
+        {
+            foreach (var member in obj.members) {
+                switch (member) {
+                    case ColumnInfo column:
+                        WriteColumn(column);
+                        break;
+                    case ObjectInfo objectMember:
+                        writer.MemberObjectStart(objectMember.nameBytes);
+                        Traverse(objectMember);
+                        writer.ObjectEnd();
+                        break;
                 }
             }
-            writer.ObjectEnd();            
         }
         
-        private Bytes String2Bytes (string value) {
+        private void WriteColumn(ColumnInfo column)
+        {
+            ref var cell    = ref cells[column.ordinal];
+            var key         = column.nameBytes;
+            if (cell.isNull) {
+                writer.MemberNul(key); // could omit writing a member with value null
+                return;
+            }
+            cell.isNull = true;
+            if (column.columnType == ColumnType.Array) {
+                var bytes = String2Bytes(cell.str);
+                writer.MemberArr(key, bytes);
+                return;
+            }
+            switch (column.typeId) {
+                case StandardTypeId.Boolean:    writer.MemberBln(key, cell.lng != 0);   break;
+                case StandardTypeId.String:     writer.MemberStr(key, cell.str);        break;
+                //
+                case StandardTypeId.Uint8:
+                case StandardTypeId.Int16:
+                case StandardTypeId.Int32:
+                case StandardTypeId.Int64:      writer.MemberLng(key, cell.lng);        break;
+                //
+                case StandardTypeId.Float:
+                case StandardTypeId.Double:     writer.MemberDbl(key, cell.dbl);        break;
+                //
+                case StandardTypeId.BigInteger:
+                case StandardTypeId.Guid:       writer.MemberStr(key, cell.str);        break;
+            }
+        }
+        
+        private Bytes String2Bytes (string value)
+        {
             var max = Encoding.UTF8.GetMaxByteCount(value.Length);
             if (max > buffer.Length) buffer = new byte[max];
             int len = Encoding.UTF8.GetBytes(value, 0, value.Length, buffer, 0);
