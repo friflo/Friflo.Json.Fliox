@@ -7,6 +7,8 @@
         <AssemblyVersion>0.0.0.0</AssemblyVersion>
         <FileVersion>0.0.0.0</FileVersion>
         <LangVersion>9.0</LangVersion>
+        <Authors>Ullrich Praetz</Authors>
+        <Description>PostgreSQL database provider for Fliox Hub</Description>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
         <PackageLicenseUrl></PackageLicenseUrl>
         <Copyright>Ullrich Praetz</Copyright>

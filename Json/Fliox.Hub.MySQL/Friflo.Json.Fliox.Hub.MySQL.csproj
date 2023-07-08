@@ -7,13 +7,13 @@
         <AssemblyVersion>0.0.0.0</AssemblyVersion>
         <FileVersion>0.0.0.0</FileVersion>
         <LangVersion>9.0</LangVersion>
+        <Authors>Ullrich Praetz</Authors>
+        <Description>MySQL / MariaDB database provider for Fliox Hub</Description>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
         <PackageLicenseUrl></PackageLicenseUrl>
         <Copyright>Ullrich Praetz</Copyright>
         <RepositoryUrl>https://github.com/friflo/Friflo.Json.Fliox</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <Title>Fliox Hub database Provider for: MySQL, MariaDB and other MySQL compatible databases</Title>
-        <Authors>Ullrich Praetz</Authors>
         <PackageIcon>package-icon.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
