@@ -62,6 +62,13 @@ namespace Friflo.Json.Fliox.Mapper.Map
             Utf8JsonWriter.AppendEscString(ref bytes, str);
         }
         
+        public void WriteDateTime(in DateTime dateTime) {
+            Span<char> chars = stackalloc char[Bytes.DateTimeLength]; 
+            bytes.AppendChar('"');
+            bytes.AppendDateTime(dateTime, chars);
+            bytes.AppendChar('"');
+        }
+        
         public void WriteJsonKey(in JsonKey value) {
             var obj = value.keyObj;
             if (obj != JsonKey.STRING_SHORT) {

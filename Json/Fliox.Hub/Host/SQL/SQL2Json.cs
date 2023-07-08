@@ -71,10 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case StandardTypeId.Double:     cell.dbl = reader.GetDouble     (ordinal);  return;
                 //
                 case StandardTypeId.BigInteger: cell.str = reader.GetString     (ordinal);  return;
-                case StandardTypeId.DateTime:
-                    var dateTime                         = reader.GetDateTime   (ordinal);
-                    cell.str = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
-                    return;
+                case StandardTypeId.DateTime:   cell.date= reader.GetDateTime   (ordinal);  return;
                 case StandardTypeId.Guid:       cell.guid= reader.GetGuid       (ordinal);  return;
                 case StandardTypeId.Enum:       cell.str = reader.GetString     (ordinal);  return;
                 default:
@@ -129,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case StandardTypeId.Double:     writer.MemberDbl    (key, cell.dbl);        break;
                 //
                 case StandardTypeId.Guid:       writer.MemberGuid   (key,cell.guid);        break;
-                case StandardTypeId.DateTime:
+                case StandardTypeId.DateTime:   writer.MemberDate   (key,cell.date);        break;
                 case StandardTypeId.BigInteger:
                 case StandardTypeId.Enum:       writer.MemberStr    (key, cell.str);        break;
                 default:
@@ -170,11 +167,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     internal struct ReadCell
     {
-        internal    bool    isNull;
-        internal    string  str;
-        internal    long    lng;
-        internal    double  dbl;
-        internal    Guid    guid;
+        internal    bool        isNull;
+        internal    string      str;
+        internal    long        lng;
+        internal    double      dbl;
+        internal    Guid        guid;
+        internal    DateTime    date;
         
         internal JsonKey AsKey(StandardTypeId  typeId)
         {
@@ -187,7 +185,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case StandardTypeId.Int64:      return new JsonKey(lng);
                 //
                 case StandardTypeId.BigInteger: return new JsonKey(str);
-                case StandardTypeId.DateTime:   return new JsonKey(str);
                 case StandardTypeId.Guid:       return new JsonKey(guid);
                 default:
                     throw new NotSupportedException($"primary key type not supported: {typeId}");

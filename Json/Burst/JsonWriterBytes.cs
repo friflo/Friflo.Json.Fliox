@@ -152,7 +152,7 @@ namespace Friflo.Json.Burst
             json.AppendBytes(jsonValue);
         }
         
-        /// <summary>Writes a key/value pair where the value is JSON</summary>
+        /// <summary>Writes a key/value pair where the value is Guid</summary>
         public void MemberGuid(in Bytes key, in Guid guid) {
             AssertMember();
             AddSeparator();
@@ -160,6 +160,17 @@ namespace Friflo.Json.Burst
             Span<char> chars = stackalloc char[Bytes.GuidLength]; 
             json.AppendChar('\"');
             json.AppendGuid(guid, chars);
+            json.AppendChar('\"');
+        }
+        
+        /// <summary>Writes a key/value pair where the value is DateTime</summary>
+        public void MemberDate(in Bytes key, in DateTime dateTime) {
+            AssertMember();
+            AddSeparator();
+            AppendKeyBytes(ref json, in key);
+            Span<char> chars = stackalloc char[Bytes.DateTimeLength]; 
+            json.AppendChar('\"');
+            json.AppendDateTime(dateTime, chars);
             json.AppendChar('\"');
         }
         

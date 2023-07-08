@@ -28,8 +28,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
 
         public override void Write(ref Writer writer, DateTime value) {
-            var str = ToRFC_3339(value);
-            writer.WriteString(str);
+            writer.WriteDateTime(value);
         }
 
         // ReSharper disable once RedundantAssignment
@@ -44,8 +43,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             return slot;
         }
         
+        /// <summary>uses same format as <see cref="Bytes.AppendDateTime"/></summary>
         public static string ToRFC_3339(in DateTime value) {
-            return value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+            return value.ToUniversalTime().ToString(Bytes.DateTimeFormat);
         }
     }
     
@@ -60,8 +60,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void Write(ref Writer writer, DateTime? value) {
             if (value.HasValue) {
-                var str = DateTimeMapper.ToRFC_3339(value.Value);
-                writer.WriteString(str);
+                writer.WriteDateTime(value.Value);
             } else {
                 writer.AppendNull();
             }

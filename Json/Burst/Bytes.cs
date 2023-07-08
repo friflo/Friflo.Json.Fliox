@@ -189,7 +189,10 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public const int GuidLength = 36; // 12345678-1234-1234-1234-123456789abc
+        public const int    GuidLength     = 36; // 12345678-1234-1234-1234-123456789abc
+
+        public const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss.fffZ";
+        public const int    DateTimeLength = 24;
 
         public static bool TryParseGuid(in ReadOnlySpan<byte> bytes, out Guid guid) {
             int len = bytes.Length;
@@ -459,6 +462,22 @@ namespace Friflo.Json.Burst
 #else
             if (!guid.TryFormat(buf, out var len))
                 throw new InvalidOperationException($"Guid.TryFormat failed: {guid}");
+            EnsureCapacity(len);
+            int thisEnd = end;
+            for (int n = 0; n < len; n++) {
+                buffer[thisEnd + n] = (byte)buf[n];
+            }
+            end += len;
+#endif
+        }
+        
+        public void AppendDateTime (in DateTime dateTime, Span<char> buf) {
+            var utc = dateTime.ToUniversalTime();
+#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
+            AppendString(utc.ToString(Bytes.DateTimeFormat));
+#else
+            if (!utc.TryFormat(buf, out var len, DateTimeFormat))
+                throw new InvalidOperationException($"DateTime.TryFormat failed: {dateTime}");
             EnsureCapacity(len);
             int thisEnd = end;
             for (int n = 0; n < len; n++) {
