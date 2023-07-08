@@ -97,11 +97,11 @@ namespace Friflo.Json.Tests.Provider
         
         internal static async Task<List<string>> DropDatabase(FlioxHub hub, string dbName)
         {
-            IEnumerable<string> databases = (dbName == null) ? hub.GetDatabases().Keys : new [] { dbName};
+            IEnumerable<string> databases = (dbName == null) ? hub.GetDatabases().Keys : new [] { dbName };
             var result = new List<string>();
             foreach (var name in databases) {
                 if (!hub.TryGetDatabase(name, out var database)) {
-                    var msg = $"drop database '{name}' ({database.StorageType}) error: database not found";
+                    var msg = $"drop database '{name}' error: database not found";
                     result.Add(msg);
                     continue;
                 }
@@ -123,9 +123,12 @@ namespace Friflo.Json.Tests.Provider
     
     public class TestDBCommands : IServiceCommands
     {
-        // [CommandHandler("DropDatabase")]
-        private async Task<List<string>> DropDatabase(Param<string> param, MessageContext context)
+        [CommandHandler("DropDatabase")]
+        private async Task<Result<List<string>>> DropDatabase(Param<string> param, MessageContext context)
         {
+            if (!param.Validate(out var error)) {
+                return Result.Error(error);
+            }
             return await Program.DropDatabase(context.Hub, param.Value);
         }
     }

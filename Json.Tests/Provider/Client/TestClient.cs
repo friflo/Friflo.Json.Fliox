@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Provider.Client
         public readonly EntitySet <Guid,   TestGuidKeyEntity>   testGuidKey;
         public readonly EntitySet <string, TestKeyName>         testKeyName;
         
-        /// <summary> count records added to containers within the last param seconds. default 60</summary>
+        /// <summary>Drop the given database or all is param is null</summary>
         public CommandTask<List<String>>      DropDatabase (string param)    => send.Command<string, List<String>>    (param);
 
         public TestClient(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
