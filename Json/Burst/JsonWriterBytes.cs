@@ -105,7 +105,7 @@ namespace Friflo.Json.Burst
         /// <summary>
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// </summary>
-        public void MemberStr(in Bytes key, string value) {
+        public void MemberStr(in Bytes key, in ReadOnlySpan<char> value) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref json, in key);

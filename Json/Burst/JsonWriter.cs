@@ -175,18 +175,12 @@ namespace Friflo.Json.Burst
 
         //         Tight loop! Avoid calling any trivial method
         // --- comment to enable source alignment in WinMerge
-        public static void AppendEscString(ref Bytes dst, string src) {
-            int maxByteLen = Utf8.GetMaxByteCount(src.Length) + 2; // + 2 * '"'
+        public static void AppendEscString(ref Bytes dst, in ReadOnlySpan<char> span) {
+            int maxByteLen = Utf8.GetMaxByteCount(span.Length) + 2; // + 2 * '"'
             dst.EnsureCapacityAbs(dst.end + maxByteLen);
-#if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
-            var span = src;
-#else
-            ReadOnlySpan<char> span = src;
-#endif
-            int end     = src.Length;
+            int end = span.Length;
             
             ref var dstArr = ref dst.buffer; // could be without ref
-            var srcSpan = span;
             
             // --- bounds checks degrade performance => used managed arrays
             // fixed (byte* dstArr = &dst.buffer.array[0])
@@ -195,7 +189,7 @@ namespace Friflo.Json.Burst
                 dstArr[dst.end++] = (byte) '"';
 
                 for (int index = 0; index < end; index++) {
-                    int uni = srcSpan[index];
+                    int uni = span[index];
                     int surrogate = uni - HighSurrogateStart;
                     // Is surrogate?
                     if (0 <= surrogate && surrogate < SurrogateEnd - HighSurrogateStart) {
@@ -203,15 +197,15 @@ namespace Friflo.Json.Burst
                         if (surrogate < HighSurrogateLimit) {
                             // found high surrogate.
                             if (index < end - 1) {
-                                int lowSurrogate = srcSpan[++index] - LowSurrogateStart;
+                                int lowSurrogate = span[++index] - LowSurrogateStart;
                                 if (0 <= lowSurrogate && lowSurrogate < HighSurrogateLimit) {
                                     // found low surrogate.
                                     uni = surrogate * 0x400 + lowSurrogate + SupplementaryPlanesStart;
                                 } else {
-                                    throw new ArgumentException("Invalid high surrogate. " + src);
+                                    throw new ArgumentException("Invalid high surrogate. " + span.ToString());
                                 }
                             } else {
-                                throw new ArgumentException("Unexpected high surrogate at string end. " + src);
+                                throw new ArgumentException("Unexpected high surrogate at string end. " + span.ToString());
                             }
                         } else {
                             throw new ArgumentException("Unexpected low surrogate at index: " + index);

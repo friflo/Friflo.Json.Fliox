@@ -16,8 +16,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     {
         private     Utf8JsonWriter  writer;
         private     DbDataReader    reader;
-        private     ReadCell[]      cells   = new ReadCell[4];  // reused
-        private     byte[]          buffer  = new byte[16];     // reused
+        private     ReadCell[]      cells       = new ReadCell[4];  // reused
+        private     byte[]          buffer      = new byte[16];     // reused
+        private     char[]          charBuf     = new char[16];     // reused
+        private     int             charPos;
         
         public async Task<List<EntityValue>> ReadEntitiesAsync(DbDataReader reader, TableInfo tableInfo)
         {
@@ -31,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 // --- read table columns
+                charPos = 0;
                 foreach (var column in columns) {
                     ReadCell(column, ref cells[column.ordinal]);
                 }
@@ -57,12 +60,15 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 return;
             }
             if (column.columnType == ColumnType.Array) {
-                cell.str = reader.GetString(ordinal);
+                GetString(ref cell.chars, ordinal);
                 return;
             }
             switch (column.typeId) {
                 case StandardTypeId.Boolean:    cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return;
-                case StandardTypeId.String:     cell.str = reader.GetString     (ordinal);  return;
+                
+                case StandardTypeId.String:     
+                case StandardTypeId.Enum:
+                case StandardTypeId.BigInteger: GetString(ref cell.chars, ordinal);         return;
                     
                 case StandardTypeId.Uint8:      cell.lng = reader.GetByte       (ordinal);  return;
                 case StandardTypeId.Int16:      cell.lng = reader.GetInt16      (ordinal);  return;
@@ -72,13 +78,24 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case StandardTypeId.Float:      cell.dbl = reader.GetFloat      (ordinal);  return;
                 case StandardTypeId.Double:     cell.dbl = reader.GetDouble     (ordinal);  return;
                 //
-                case StandardTypeId.BigInteger: cell.str = reader.GetString     (ordinal);  return;
                 case StandardTypeId.DateTime:   cell.date= reader.GetDateTime   (ordinal);  return;
                 case StandardTypeId.Guid:       cell.guid= reader.GetGuid       (ordinal);  return;
-                case StandardTypeId.Enum:       cell.str = reader.GetString     (ordinal);  return;
                 default:
                     throw new InvalidOperationException($"unexpected typeId: {column.typeId}");
             }
+        }
+        
+        private void GetString(ref Chars chars, int ordinal) {
+            var len = (int)reader.GetChars(ordinal, 0, null, 0, 0);
+            if (len > charBuf.Length - charPos) {
+                charBuf = new char[len];
+                charPos = 0;
+            }
+            reader.GetChars(ordinal, 0, charBuf, charPos, len);
+            chars.start = charPos;
+            chars.len  = len;
+            chars.buf  = charBuf;
+            charPos += len;
         }
         
         private void Traverse(ObjectInfo obj)
@@ -111,26 +128,27 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
             cell.isNull = true;
             if (column.columnType == ColumnType.Array) {
-                var bytes = String2Bytes(cell.str);
+                var bytes = Chars2Bytes(cell.chars);
                 writer.MemberArr(key, bytes);
                 return;
             }
             switch (column.typeId) {
-                case StandardTypeId.Boolean:    writer.MemberBln    (key, cell.lng != 0);   break;
-                case StandardTypeId.String:     writer.MemberStr    (key, cell.str);        break;
+                case StandardTypeId.Boolean:    writer.MemberBln    (key, cell.lng != 0);       break;
+                //
+                case StandardTypeId.String:
+                case StandardTypeId.Enum:
+                case StandardTypeId.BigInteger: writer.MemberStr    (key, cell.chars.AsSpan()); break;
                 //
                 case StandardTypeId.Uint8:
                 case StandardTypeId.Int16:
                 case StandardTypeId.Int32:
-                case StandardTypeId.Int64:      writer.MemberLng    (key, cell.lng);        break;
+                case StandardTypeId.Int64:      writer.MemberLng    (key, cell.lng);            break;
                 //
                 case StandardTypeId.Float:
-                case StandardTypeId.Double:     writer.MemberDbl    (key, cell.dbl);        break;
+                case StandardTypeId.Double:     writer.MemberDbl    (key, cell.dbl);            break;
                 //
-                case StandardTypeId.Guid:       writer.MemberGuid   (key,cell.guid);        break;
-                case StandardTypeId.DateTime:   writer.MemberDate   (key,cell.date);        break;
-                case StandardTypeId.BigInteger:
-                case StandardTypeId.Enum:       writer.MemberStr    (key, cell.str);        break;
+                case StandardTypeId.Guid:       writer.MemberGuid   (key,cell.guid);            break;
+                case StandardTypeId.DateTime:   writer.MemberDate   (key,cell.date);            break;
                 default:
                     throw new InvalidOperationException($"unexpected typeId: {column.typeId}");
             }
@@ -154,11 +172,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return false;
         }
         
-        private Bytes String2Bytes (string value)
+        private Bytes Chars2Bytes (in Chars value)
         {
-            var max = Encoding.UTF8.GetMaxByteCount(value.Length);
+            var max = Encoding.UTF8.GetMaxByteCount(value.len);
             if (max > buffer.Length) buffer = new byte[max];
-            int len = Encoding.UTF8.GetBytes(value, 0, value.Length, buffer, 0);
+            int len = Encoding.UTF8.GetBytes(value.buf, value.start, value.len, buffer, 0);
             return new Bytes{ buffer = buffer, start = 0, end = len };
         }
 
@@ -170,7 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     internal struct ReadCell
     {
         internal    bool        isNull;
-        internal    string      str;
+        internal    Chars       chars;
         internal    long        lng;
         internal    double      dbl;
         internal    Guid        guid;
@@ -179,18 +197,28 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal JsonKey AsKey(StandardTypeId  typeId)
         {
             switch (typeId) {
-                case StandardTypeId.String:     return new JsonKey(str);
-                    
+                case StandardTypeId.String:     return new JsonKey(new string(chars.AsSpan()));
                 case StandardTypeId.Uint8:      return new JsonKey(lng);
                 case StandardTypeId.Int16:      return new JsonKey(lng);
                 case StandardTypeId.Int32:      return new JsonKey(lng);
                 case StandardTypeId.Int64:      return new JsonKey(lng);
                 //
-                case StandardTypeId.BigInteger: return new JsonKey(str);
                 case StandardTypeId.Guid:       return new JsonKey(guid);
                 default:
                     throw new NotSupportedException($"primary key type not supported: {typeId}");
             }
+        }
+    }
+    
+    internal struct Chars {
+        internal    char[]  buf;
+        internal    int     start;
+        internal    int     len;
+
+        public override string ToString() => new string(AsSpan());
+
+        internal ReadOnlySpan<char> AsSpan() {
+            return new ReadOnlySpan<char>(buf, start, len);
         }
     }
 }
