@@ -141,21 +141,25 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestRead_11_ReadWrite(string db) {
             var client1  = await GetClient(db);
-            var w1      = new TestReadWrite {
-                id          = "rw-1",
-                guid        = new Guid("ea8c4fbc-f908-4da5-bf8b-c347dfb62055"),
-                dateTime    = DateTime.Parse("2023-07-09 10:00:30.123456Z")
-            };
-            client1.testReadWrite.Upsert(w1);
+            var w1      = new TestReadWrite { id = "w1", guid       = new Guid("ea8c4fbc-f908-4da5-bf8b-c347dfb62055") };
+            var w2      = new TestReadWrite { id = "w2", dateTime   = DateTime.Parse("2023-07-09 00:00:00Z") };
+            var w3      = new TestReadWrite { id = "w3", dateTime   = DateTime.Parse("2023-07-09 10:00:30.123456Z") };
+            var w4      = new TestReadWrite { id = "w4", dateTime   = DateTime.Parse("2023-07-09 23:59:59.999999Z") };
+            client1.testReadWrite.UpsertRange(new [] { w1, w2, w3, w4 });
             await client1.SyncTasks();
             
             var client2  = await GetClient(db);
             var read    = client2.testReadWrite.Read();
             var r1      = read.Find(w1.id);
+            var r2      = read.Find(w2.id);
+            var r3      = read.Find(w3.id);
+            var r4      = read.Find(w4.id);
             await client2.SyncTasks();
             
             AreEqual(w1.guid,       r1.Result.guid);
-            AreEqual(w1.dateTime,   r1.Result.dateTime);
+            AreEqual(w2.dateTime,   r2.Result.dateTime);
+            AreEqual(w3.dateTime,   r3.Result.dateTime);
+            AreEqual(w4.dateTime,   r4.Result.dateTime);
         }
     }
 }

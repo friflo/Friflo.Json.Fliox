@@ -59,7 +59,7 @@ GENERATED ALWAYS AS {asStr} VIRTUAL;";
             var asStr   = $"(JSON_VALUE({DATA}, '$.{colName}'))";
             switch (column.typeId) {
                 case StandardTypeId.DateTime:
-                    return $"(STR_TO_DATE({asStr}, '%Y-%m-%dT%h:%i:%s.%fZ'))";
+                    return $"(STR_TO_DATE(TRIM(TRAILING 'Z' FROM {asStr}), '%Y-%m-%dT%H:%i:%s.%f'))";
                 case StandardTypeId.Boolean:
                     if (provider == MySQLProvider.MY_SQL) {
                         return $"(case when {asStr} = 'true' then 1 when {asStr} = 'false' then 0 end)";

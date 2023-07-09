@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Provider.Client
     
     public class TestReadWrite {
         [Key]       public  string          id;
-                    public  Guid            guid;
-                    public  DateTime        dateTime;
+                    public  Guid?           guid;
+                    public  DateTime?       dateTime;
     }
 }
