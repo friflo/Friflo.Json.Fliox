@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Schema.Definition;
 
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 namespace Friflo.Json.Fliox.Hub.Host.SQL
@@ -14,6 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private     Utf8JsonParser  parser;
         private     Bytes           buffer      = new Bytes(256);
         private     char[]          charBuffer  = new char[32];
+        private     ColumnInfo[]    columns;
         private     RowCell[]       rowCells;
 
         private const           string  Null    = "NULL";
@@ -28,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         {
             sb.Append(" (");
             var isFirst = true;
-            var columns = tableInfo.columns;
+            columns = tableInfo.columns;
             foreach (var column in columns) {
                 if (isFirst) isFirst = false; else sb.Append(',');
                 sb.Append('`');
@@ -50,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (ev != JsonEvent.ObjectStart) throw new InvalidOperationException("expect object");
                 Traverse(tableInfo.root);
                 
-                AddRowValues(sb, rowCells, this);
+                AddRowValues(sb);
             }
         }
         
@@ -111,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
         }
         
-        private static void AddRowValues(StringBuilder sb, RowCell[] rowCells, Json2SQL converter)
+        private void AddRowValues(StringBuilder sb)
         {
             sb.Append('(');
             var firstValue = true;
@@ -124,7 +126,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         sb.Append(Null);
                         break;
                     case JsonEvent.ValueString:
-                        AppendString(sb, cell.value, converter);
+                        if (columns[n].typeId == StandardTypeId.DateTime) {
+                            AppendDateTime(sb, ref cell.value);
+                        } else {
+                            AppendString(sb, cell.value);
+                        }
                         break;
                     case JsonEvent.ValueBool:
                     case JsonEvent.ValueNumber:
@@ -143,9 +149,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sb.Append(')');
         }
         
-        private static void AppendString(StringBuilder sb, in Bytes value, Json2SQL converter) {
+        private void AppendString(StringBuilder sb, in Bytes value) {
             sb.Append('\'');
-            var len = converter.GetChars(value, out var chars);
+            var len = GetChars(value, out var chars);
             for (int n = 0; n < len; n++) {
                 var c = chars[n];
                 switch (c) {
@@ -155,6 +161,21 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 }
             }
             sb.Append('\'');
+        }
+        
+        private void AppendDateTime(StringBuilder sb, ref Bytes bytes) {
+            var start   = bytes.start;
+            var buf     = bytes.buffer;
+            var len     = bytes.Len;
+            // convert  "2022-01-01T00:00:00.000Z"
+            // to       "2022-01-01 00:00:00.000"
+            if (buf[bytes.end -1] == 'Z') {
+                bytes.end--;
+            }
+            if (len > 10) {
+                buf[start + 10] = (byte)' ';
+            }
+            AppendString(sb, bytes);
         }
         
         private static void AppendBytes(StringBuilder sb, in Bytes value) {

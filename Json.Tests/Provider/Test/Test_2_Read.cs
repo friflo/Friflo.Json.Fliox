@@ -137,18 +137,19 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestRead_11_ReadWrite(string db) {
-            var client  = await GetClient(db);
+            var client1  = await GetClient(db);
             var w1      = new TestReadWrite {
                 id          = "rw-1",
                 guid        = new Guid("ea8c4fbc-f908-4da5-bf8b-c347dfb62055"),
-                // dateTime = DateTime.Now
+                // dateTime    = DateTime.Now
             };
-            client.testReadWrite.Upsert(w1);
-            await client.SyncTasks();
+            client1.testReadWrite.Upsert(w1);
+            await client1.SyncTasks();
             
-            var read    = client.testReadWrite.Read();
+            var client2  = await GetClient(db);
+            var read    = client2.testReadWrite.Read();
             var r1      = read.Find(w1.id);
-            await client.SyncTasks();
+            await client2.SyncTasks();
             
             AreEqual(w1.guid,       r1.Result.guid);
             // AreEqual(w1.dateTime,   r1.Result.dateTime);

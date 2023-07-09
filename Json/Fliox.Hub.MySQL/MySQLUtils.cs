@@ -56,14 +56,10 @@ GENERATED ALWAYS AS {asStr} VIRTUAL;";
             var colName = column.name;
             var asStr   = $"(JSON_VALUE({DATA}, '$.{colName}'))";
             switch (column.typeId) {
+                // case StandardTypeId.DateTime:
+                //    return $"(CONVERT({asStr}, DATETIME(3)))";
                 case StandardTypeId.Boolean:
-                    return
-         $@"(
-            case when {asStr} = 'true'
-                 then 1
-                 when {asStr} = 'false'
-                 then 0
-            end)";
+                    return $"(case when {asStr} = 'true' then 1 when {asStr} = 'false' then 0 end)";
                 default:
                     return asStr;
             }
