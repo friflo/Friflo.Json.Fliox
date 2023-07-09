@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private void GetString(ref Chars chars, int ordinal) {
             var len = (int)reader.GetChars(ordinal, 0, null, 0, 0);
             if (len > charBuf.Length - charPos) {
-                charBuf = new char[len];
+                charBuf = new char[len + charBuf.Length]; // ensure buffer is only growing
                 charPos = 0;
             }
             reader.GetChars(ordinal, 0, charBuf, charPos, len);
