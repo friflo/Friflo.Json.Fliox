@@ -65,7 +65,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public void WriteDateTime(in DateTime dateTime) {
             Span<char> chars = stackalloc char[Bytes.DateTimeLength]; 
             bytes.AppendChar('"');
-            bytes.AppendDateTime(dateTime, chars);
+            var utc = dateTime.ToUniversalTime();
+            bytes.AppendDateTime(utc, chars);
             bytes.AppendChar('"');
         }
         

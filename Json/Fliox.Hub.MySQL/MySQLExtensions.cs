@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case StandardTypeId.Double:     return "double precision";
                 case StandardTypeId.Boolean:    return "tinyint";
                 case StandardTypeId.Guid:       return provider == MY_SQL ? "varchar(36)" : "UUID";
-                case StandardTypeId.DateTime:   // return "DATETIME(3)";
+                case StandardTypeId.DateTime:   return "DATETIME(6)";
                 case StandardTypeId.BigInteger:
                 case StandardTypeId.String:
                 case StandardTypeId.Enum:       return "varchar(255)";

@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 /child              {DiffChild} != {DiffChild}
 /child/childVal     1 != 2
 /child/bigInt       111 != 222
-/child/dateTime     2021-03-18T16:30:00.000Z != 2021-03-18T16:40:00.000Z
+/child/dateTime     2021-03-18T16:30:00Z != 2021-03-18T16:40:00Z
 "; 
                     AreEqual(expect, diffText);
                     

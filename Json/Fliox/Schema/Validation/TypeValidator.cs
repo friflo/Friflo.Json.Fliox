@@ -21,9 +21,12 @@ namespace Friflo.Json.Fliox.Schema.Validation
         private  readonly   Regex           guid;
         
         public              bool            qualifiedTypeErrors;
+        
+        // RegEx Tester:    http://regexstorm.net/tester  (C# .NET)
+        // ISO 8601:        https://en.wikipedia.org/wiki/ISO_8601
 
-        // RFC 3339 + milliseconds
-        private  static readonly Regex  DateTime    = new Regex(@"\b^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$\b",           RegexOptions.Compiled);
+        /// <summary>ISO 8601 (RFC 3339) using optional fractions of a second. See <see cref="Bytes.DateTimeFormat"/></summary>
+        private  static readonly Regex  DateTime    = new Regex(@"\b^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(.\d{1,6})?Z$\b",      RegexOptions.Compiled);
         private  static readonly Regex  BigInt      = new Regex(@"\b^-?[0-9]+$\b",                                                  RegexOptions.Compiled);
         private  static readonly Regex  Guid        = new Regex(@"\b^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$\b",RegexOptions.Compiled);
 

@@ -135,13 +135,16 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(2, result.Count);
         }
         
+        /// <summary>
+        /// DateTime format: <see cref="Burst.Bytes.DateTimeFormat"/> 
+        /// </summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestRead_11_ReadWrite(string db) {
             var client1  = await GetClient(db);
             var w1      = new TestReadWrite {
                 id          = "rw-1",
                 guid        = new Guid("ea8c4fbc-f908-4da5-bf8b-c347dfb62055"),
-                // dateTime    = DateTime.Now
+                dateTime    = DateTime.Parse("2023-07-09 10:00:30.123456Z")
             };
             client1.testReadWrite.Upsert(w1);
             await client1.SyncTasks();
@@ -152,7 +155,7 @@ namespace Friflo.Json.Tests.Provider.Test
             await client2.SyncTasks();
             
             AreEqual(w1.guid,       r1.Result.guid);
-            // AreEqual(w1.dateTime,   r1.Result.dateTime);
+            AreEqual(w1.dateTime,   r1.Result.dateTime);
         }
     }
 }

@@ -29,20 +29,22 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
         }
         
-        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column, MySQLProvider provider) {
-            var type = ConvertContext.GetSqlType(column, provider);
+        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column, MySQLProvider provider)
+        {
+            var type    = ConvertContext.GetSqlType(column, provider);
             var colName = column.name; 
+            var asStr   = GetColumnType(column, provider);
+            
             switch (provider) {
                 case MySQLProvider.MARIA_DB: {
 var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN IF NOT EXISTS `{colName}` {type}
-GENERATED ALWAYS AS (JSON_VALUE({DATA}, '$.{colName}')) VIRTUAL;";
+GENERATED ALWAYS AS {asStr} VIRTUAL;";
                     await Execute(connection, sql).ConfigureAwait(false);
                     return;
                 }
                 case MySQLProvider.MY_SQL: {
-                    var asStr  = GetColumnType(column);
 var sql = $@"ALTER TABLE {table}
 ADD COLUMN `{colName}` {type}
 GENERATED ALWAYS AS {asStr} VIRTUAL;";
@@ -52,14 +54,17 @@ GENERATED ALWAYS AS {asStr} VIRTUAL;";
             }
         }
         
-        private static string GetColumnType(ColumnInfo column) {
+        private static string GetColumnType(ColumnInfo column, MySQLProvider provider) {
             var colName = column.name;
             var asStr   = $"(JSON_VALUE({DATA}, '$.{colName}'))";
             switch (column.typeId) {
-                // case StandardTypeId.DateTime:
-                //    return $"(CONVERT({asStr}, DATETIME(3)))";
+                case StandardTypeId.DateTime:
+                    return $"(STR_TO_DATE({asStr}, '%Y-%m-%dT%h:%i:%s.%fZ'))";
                 case StandardTypeId.Boolean:
-                    return $"(case when {asStr} = 'true' then 1 when {asStr} = 'false' then 0 end)";
+                    if (provider == MySQLProvider.MY_SQL) {
+                        return $"(case when {asStr} = 'true' then 1 when {asStr} = 'false' then 0 end)";
+                    }
+                    return asStr;
                 default:
                     return asStr;
             }
