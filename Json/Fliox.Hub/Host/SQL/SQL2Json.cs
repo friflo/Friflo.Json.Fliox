@@ -197,7 +197,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal JsonKey AsKey(StandardTypeId  typeId)
         {
             switch (typeId) {
-                case StandardTypeId.String:     return new JsonKey(new string(chars.AsSpan()));
+                case StandardTypeId.String:     return new JsonKey(chars.GetString());
                 case StandardTypeId.Uint8:      return new JsonKey(lng);
                 case StandardTypeId.Int16:      return new JsonKey(lng);
                 case StandardTypeId.Int32:      return new JsonKey(lng);
@@ -215,10 +215,14 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal    int     start;
         internal    int     len;
 
-        public override string ToString() => new string(AsSpan());
+        public override string ToString() => GetString();
 
         internal ReadOnlySpan<char> AsSpan() {
             return new ReadOnlySpan<char>(buf, start, len);
+        }
+        
+        internal string GetString() {
+            return AsSpan().ToString();
         }
     }
 }
