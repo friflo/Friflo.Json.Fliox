@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         // --- WriteUtils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteString(string str) {
-            Utf8JsonWriter.AppendEscString(ref bytes, str);
+            Utf8JsonWriter.AppendEscString(ref bytes, str.AsSpan());
         }
         
         public void WriteDateTime(in DateTime dateTime) {
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             var obj = value.keyObj;
             if (obj != JsonKey.STRING_SHORT) {
                 var str = (string)obj;
-                Utf8JsonWriter.AppendEscString(ref bytes, str);
+                Utf8JsonWriter.AppendEscString(ref bytes, str.AsSpan());
                 return;
             }
             int valueLength = value.GetShortLength() + 2; // <value> + 2 * "
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public void WriteShortString(in ShortString value) {
             var str = value.str;
             if (str != null) {
-                Utf8JsonWriter.AppendEscString(ref bytes, str);
+                Utf8JsonWriter.AppendEscString(ref bytes, str.AsSpan());
                 return;
             }
             int valueLength = value.GetShortLength() + 2; // <value> + 2 * "

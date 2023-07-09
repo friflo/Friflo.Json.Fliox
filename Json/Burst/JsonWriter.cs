@@ -257,7 +257,7 @@ namespace Friflo.Json.Burst
         }
 
         private void AppendKeyString(ref Bytes dst, Str32 key) {
-            AppendEscString(ref dst, key);
+            AppendEscString(ref dst, key.AsSpan());
             if (!pretty) {
                 dst.AppendChar(':');
             } else {
@@ -341,7 +341,7 @@ namespace Friflo.Json.Burst
             AssertMember();
             AddSeparator();
             AppendKeyString(ref json, key);
-            AppendEscString(ref json, value);
+            AppendEscString(ref json, value.AsSpan());
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
@@ -427,7 +427,7 @@ namespace Friflo.Json.Burst
         public void ElementStr(string value) {
             AssertElement();
             AddSeparator();
-            AppendEscString(ref json, value);
+            AppendEscString(ref json, value.AsSpan());
         }
 
         /// <summary>Write an array element of type <see cref="double"/></summary>
