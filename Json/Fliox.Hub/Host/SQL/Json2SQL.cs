@@ -13,10 +13,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     public sealed class Json2SQL : IDisposable
     {
         private     Utf8JsonParser  parser;
-        private     Bytes           buffer      = new Bytes(256);
-        private     char[]          charBuffer  = new char[32];
         private     ColumnInfo[]    columns;
-        private     RowCell[]       rowCells;
+        private     Bytes           buffer      = new Bytes(256);   // reused
+        private     char[]          charBuffer  = new char[32];     // reused
+        private     RowCell[]       rowCells    = new RowCell[4];   // reused
 
         private const           string  Null    = "NULL";
         private static readonly Bytes   True    = new Bytes("TRUE");
@@ -39,7 +39,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
             sb.Append(")\nVALUES\n");
 
-            rowCells    = new RowCell[columns.Length];
+            var columnCount = columns.Length;
+            if (columnCount > rowCells.Length) {
+                rowCells = new RowCell[columnCount];
+            }
             // var escaped = new StringBuilder();
             var isFirstRow = true;
             foreach (var entity in entities)
@@ -52,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (ev != JsonEvent.ObjectStart) throw new InvalidOperationException("expect object");
                 Traverse(tableInfo.root);
                 
-                AddRowValues(sb);
+                AddRowValues(sb, columnCount);
             }
         }
         
@@ -113,11 +116,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
         }
         
-        private void AddRowValues(StringBuilder sb)
+        private void AddRowValues(StringBuilder sb, int columnCount)
         {
             sb.Append('(');
             var firstValue = true;
-            for (int n = 0; n < rowCells.Length; n++) {
+            for (int n = 0; n < columnCount; n++) {
                 if (firstValue) firstValue = false; else sb.Append(',');
                 ref var cell = ref rowCells[n];
                 switch (cell.type) {

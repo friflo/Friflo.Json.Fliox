@@ -16,8 +16,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     {
         private     Utf8JsonWriter  writer;
         private     DbDataReader    reader;
-        private     ReadCell[]      cells   = new ReadCell[4];
-        private     byte[]          buffer  = new byte[16];
+        private     ReadCell[]      cells   = new ReadCell[4];  // reused
+        private     byte[]          buffer  = new byte[16];       // reused
         
         public async Task<List<EntityValue>> ReadEntitiesAsync(DbDataReader reader, TableInfo tableInfo)
         {
