@@ -136,9 +136,7 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         // ------------------------------- test reading common types -------------------------------
-        /// <summary>
-        /// DateTime format: <see cref="Burst.Bytes.DateTimeFormat"/> 
-        /// </summary>
+        /// <summary> DateTime format: <see cref="Burst.Bytes.DateTimeFormat"/></summary>
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestRead_20_Guid(string db) {
             var client1 = await GetClient(db);
@@ -146,9 +144,9 @@ namespace Friflo.Json.Tests.Provider.Test
             client1.testReadTypes.Upsert(g1);
             await client1.SyncTasks();
             
-            var client2  = await GetClient(db);
+            var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
-            var g1Read      = read.Find(g1.id);
+            var g1Read  = read.Find(g1.id);
             await client2.SyncTasks();
             
             AreEqual(g1.guid,       g1Read.Result.guid);
@@ -156,14 +154,14 @@ namespace Friflo.Json.Tests.Provider.Test
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestRead_21_DateTime(string db) {
-            var client1  = await GetClient(db);
+            var client1 = await GetClient(db);
             var dt1     = new TestReadTypes { id = "dt1", dateTime = DateTime.Parse("2023-07-09 00:00:00Z") };
             var dt2     = new TestReadTypes { id = "dt2", dateTime = DateTime.Parse("2023-07-09 10:00:30.123456Z") };
             var dt3     = new TestReadTypes { id = "dt3", dateTime = DateTime.Parse("2023-07-09 23:59:59.999999Z") };
             client1.testReadTypes.UpsertRange(new [] { dt1, dt2, dt3 });
             await client1.SyncTasks();
             
-            var client2  = await GetClient(db);
+            var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var dt1Read = read.Find(dt1.id);
             var dt2Read = read.Find(dt2.id);

@@ -191,10 +191,13 @@ namespace Friflo.Json.Burst
         
         public const int    GuidLength     = 36; // 12345678-1234-1234-1234-123456789abc
 
-        // --- validate date-time formats
-        // 2023-07-09T09:27:24Z
-        // 2023-07-09T09:27:24.1Z
-        // 2023-07-09T09:27:24.123456Z
+        /// <summary>
+        /// JSON DateTime are serialized as ISO 8601 UTC - suffix Z for Zulu. E.g<br/>
+        /// <c>2023-07-09T09:27:24Z</c><br/>
+        /// <c>2023-07-09T09:27:24.1Z</c><br/>
+        /// <c>2023-07-09T09:27:24.123456Z</c><br/>
+        /// See: https://en.wikipedia.org/wiki/ISO_8601
+        /// </summary>
         public const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss.FFFFFFZ";
         public const int    DateTimeLength = 30;
 
