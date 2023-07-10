@@ -102,8 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     case JsonEvent.ObjectStart:
                         var obj = objInfo.FindObject(parser.key);
                         if (obj != null) {
-                            ref var cell = ref rowCells[obj.ordinal];
-                            cell.type = JsonEvent.ObjectStart;
+                            rowCells[obj.ordinal].type = JsonEvent.ObjectStart;
                             Traverse(obj);
                         } else {
                             parser.SkipTree();
