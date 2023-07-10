@@ -175,7 +175,53 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestRead_22_IntArray(string db) {
+        public static async Task TestRead_22_IntTypes(string db) {
+            var client1 = await GetClient(db);
+            var obj     = new ComponentType {
+                i64 = long  .MaxValue,
+                i32 = int   .MaxValue,
+                i16 = short .MaxValue,
+                u8  = byte  .MaxValue, // 255
+            };
+            var int1      = new TestReadTypes { id = "int1", obj = obj };
+            client1.testReadTypes.Upsert(int1);
+            await client1.SyncTasks();
+            
+            var client2 = await GetClient(db);
+            var read    = client2.testReadTypes.Read();
+            var int1Read = read.Find(int1.id);
+            await client2.SyncTasks();
+            
+            var result = int1Read.Result.obj;
+            AreEqual(obj.i64, result.i64);
+            AreEqual(obj.i32, result.i32);
+            AreEqual(obj.i16, result.i16);
+            AreEqual(obj.u8,  result.u8);
+        }
+        
+        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_23_FloatTypes(string db) {
+            var client1 = await GetClient(db);
+            var obj     = new ComponentType {
+                f64 = double.MaxValue,
+                f32 = float .MaxValue
+            };
+            var flt1      = new TestReadTypes { id = "flt1", obj = obj };
+            client1.testReadTypes.Upsert(flt1);
+            await client1.SyncTasks();
+            
+            var client2 = await GetClient(db);
+            var read    = client2.testReadTypes.Read();
+            var flt1Read = read.Find(flt1.id);
+            await client2.SyncTasks();
+            
+            var result = flt1Read.Result.obj;
+            AreEqual(obj.f64, result.f64);
+            AreEqual(obj.f32, result.f32);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_24_IntArray(string db) {
             var client1 = await GetClient(db);
             var i1      = new TestReadTypes { id = "i1", intArray = new [] { 42 } };
             client1.testReadTypes.Upsert(i1);
@@ -190,9 +236,9 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestRead_23_ObjectList(string db) {
+        public static async Task TestRead_25_ObjectList(string db) {
             var client1 = await GetClient(db);
-            var o1      = new TestReadTypes { id = "o1", objList = new List<ComponentType> { new() { str = "abc", integer = 42 }  } };
+            var o1      = new TestReadTypes { id = "o1", objList = new List<ComponentType> { new() { str = "abc" }  } };
             client1.testReadTypes.Upsert(o1);
             await client1.SyncTasks();
             
@@ -202,14 +248,13 @@ namespace Friflo.Json.Tests.Provider.Test
             await client2.SyncTasks();
             
             AreEqual("abc", o1Read.Result.objList[0].str);
-            AreEqual(42,    o1Read.Result.objList[0].integer);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestRead_24_ClassMember(string db) {
+        public static async Task TestRead_26_ClassMember(string db) {
             var client1 = await GetClient(db);
-            var c1      = new TestReadTypes { id = "c1", component = new ComponentType { str = "abc-☀🌎♥👋" } };
-            var c2      = new TestReadTypes { id = "c2", component = null };
+            var c1      = new TestReadTypes { id = "c1", obj = new ComponentType { str = "abc-☀🌎♥👋" } };
+            var c2      = new TestReadTypes { id = "c2", obj = null };
             client1.testReadTypes.UpsertRange(new [] { c1, c2 });
             await client1.SyncTasks();
             
@@ -219,8 +264,8 @@ namespace Friflo.Json.Tests.Provider.Test
             var c2Read  = read.Find(c2.id);
             await client2.SyncTasks();
             
-            AreEqual("abc-☀🌎♥👋", c1Read.Result.component.str);
-            IsNull(c2Read.Result.component);
+            AreEqual("abc-☀🌎♥👋", c1Read.Result.obj.str);
+            IsNull(c2Read.Result.obj);
         }
     }
 }

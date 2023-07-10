@@ -92,11 +92,16 @@ namespace Friflo.Json.Tests.Provider.Client
                     /// When using <see cref="TableType.Relational"/> each field is stored in a separate column.<br/>
                     /// If component is null all its column values are null
                     /// </summary>
-                    public  ComponentType       component;
+                    public  ComponentType       obj;
     }
     
     public class ComponentType {
                     public  string          str;
-                    public  int?            integer;
+                    public  long?           i64;
+                    public  int?            i32;
+                    public  short?          i16;
+                    public  byte?           u8;
+                    public  double?         f64;
+                    public  float?          f32;
     }
 }

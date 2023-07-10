@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         internal static string GetSqlType(StandardTypeId typeId) {
             switch (typeId) {
-                case StandardTypeId.Uint8:      return "smallint";
+                case StandardTypeId.Uint8:      return "smallint";  // no byte type (0-255) available
                 case StandardTypeId.Int16:      return "smallint";
                 case StandardTypeId.Int32:      return "integer";
                 case StandardTypeId.Int64:      return "bigint";

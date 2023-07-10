@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case ColumnType.Array:          return "JSON"; // JSON column
             }
             switch (column.typeId) {
-                case StandardTypeId.Uint8:      return "tinyint";
+                case StandardTypeId.Uint8:      return "tinyint unsigned";
                 case StandardTypeId.Int16:      return "smallint";
                 case StandardTypeId.Int32:      return "integer";
                 case StandardTypeId.Int64:      return "bigint";
