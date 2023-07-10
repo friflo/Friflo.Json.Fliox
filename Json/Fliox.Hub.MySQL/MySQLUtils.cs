@@ -5,7 +5,6 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Schema.Definition;
 using MySqlConnector;
 using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
@@ -57,10 +56,10 @@ GENERATED ALWAYS AS {asStr} VIRTUAL;";
         private static string GetColumnType(ColumnInfo column, MySQLProvider provider) {
             var colName = column.name;
             var asStr   = $"(JSON_VALUE({DATA}, '$.{colName}'))";
-            switch (column.typeId) {
-                case StandardTypeId.DateTime:
+            switch (column.type) {
+                case ColumnType.DateTime:
                     return $"(STR_TO_DATE(TRIM(TRAILING 'Z' FROM {asStr}), '%Y-%m-%dT%H:%i:%s.%f'))";
-                case StandardTypeId.Boolean:
+                case ColumnType.Boolean:
                     if (provider == MySQLProvider.MY_SQL) {
                         return $"(case when {asStr} = 'true' then 1 when {asStr} = 'false' then 0 end)";
                     }

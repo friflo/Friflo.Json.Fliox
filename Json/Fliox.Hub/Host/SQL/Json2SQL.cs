@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Schema.Definition;
 
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 namespace Friflo.Json.Fliox.Hub.Host.SQL
@@ -129,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         sb.Append(Null);
                         break;
                     case JsonEvent.ValueString:
-                        if (columns[n].typeId == StandardTypeId.DateTime) {
+                        if (columns[n].type == ColumnType.DateTime) {
                             AppendDateTime(sb, ref cell.value);
                         } else {
                             AppendString(sb, cell.value);

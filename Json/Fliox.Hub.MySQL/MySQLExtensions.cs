@@ -7,7 +7,6 @@ using System.Globalization;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using static Friflo.Json.Fliox.Hub.MySQL.MySQLProvider;
@@ -49,24 +48,22 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
         
         internal static string GetSqlType(ColumnInfo column, MySQLProvider provider) {
-            switch (column.columnType) {
-                case ColumnType.Array:          return "JSON"; // JSON column
+            switch (column.type) {
+                case ColumnType.Uint8:      return "tinyint unsigned";
+                case ColumnType.Int16:      return "smallint";
+                case ColumnType.Int32:      return "integer";
+                case ColumnType.Int64:      return "bigint";
+                case ColumnType.Float:      return "float";
+                case ColumnType.Double:     return "double precision";
+                case ColumnType.Boolean:    return "tinyint";
+                case ColumnType.Guid:       return provider == MY_SQL ? "varchar(36)" : "UUID";
+                case ColumnType.DateTime:   return "DATETIME(6)";
+                case ColumnType.BigInteger:
+                case ColumnType.String:
+                case ColumnType.Enum:       return "varchar(255)";
+                case ColumnType.Array:      return "JSON"; // JSON column
             }
-            switch (column.typeId) {
-                case StandardTypeId.Uint8:      return "tinyint unsigned";
-                case StandardTypeId.Int16:      return "smallint";
-                case StandardTypeId.Int32:      return "integer";
-                case StandardTypeId.Int64:      return "bigint";
-                case StandardTypeId.Float:      return "float";
-                case StandardTypeId.Double:     return "double precision";
-                case StandardTypeId.Boolean:    return "tinyint";
-                case StandardTypeId.Guid:       return provider == MY_SQL ? "varchar(36)" : "UUID";
-                case StandardTypeId.DateTime:   return "DATETIME(6)";
-                case StandardTypeId.BigInteger:
-                case StandardTypeId.String:
-                case StandardTypeId.Enum:       return "varchar(255)";
-            }
-            throw new NotSupportedException($"column type: {column.typeId}");
+            throw new NotSupportedException($"column type: {column.type}");
         }
         
         /// <summary>

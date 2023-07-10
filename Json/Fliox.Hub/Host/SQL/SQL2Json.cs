@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
@@ -44,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 writer.ObjectEnd();
                 
                 var keyColumn   = tableInfo.keyColumn;
-                var key         = cells[keyColumn.ordinal].AsKey(keyColumn.typeId);
+                var key         = cells[keyColumn.ordinal].AsKey(keyColumn.type);
                 var value       = new JsonValue(writer.json.AsArray()); // TODO - use MemoryBuffer to avoid array creation
                 result.Add(new EntityValue(key, value));
             }
@@ -59,29 +58,27 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             if (cell.isNull) {
                 return;
             }
-            if (column.columnType == ColumnType.Array) {
-                GetString(ref cell.chars, ordinal);
-                return;
-            }
-            switch (column.typeId) {
-                case StandardTypeId.Boolean:    cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return;
+            switch (column.type) {
+                case ColumnType.Boolean:    cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return;
                 
-                case StandardTypeId.String:     
-                case StandardTypeId.Enum:
-                case StandardTypeId.BigInteger: GetString(ref cell.chars, ordinal);         return;
+                case ColumnType.String:     
+                case ColumnType.Enum:
+                case ColumnType.BigInteger: GetString(ref cell.chars, ordinal);         return;
                     
-                case StandardTypeId.Uint8:      cell.lng = reader.GetByte       (ordinal);  return;
-                case StandardTypeId.Int16:      cell.lng = reader.GetInt16      (ordinal);  return;
-                case StandardTypeId.Int32:      cell.lng = reader.GetInt32      (ordinal);  return;
-                case StandardTypeId.Int64:      cell.lng = reader.GetInt64      (ordinal);  return;
+                case ColumnType.Uint8:      cell.lng = reader.GetByte       (ordinal);  return;
+                case ColumnType.Int16:      cell.lng = reader.GetInt16      (ordinal);  return;
+                case ColumnType.Int32:      cell.lng = reader.GetInt32      (ordinal);  return;
+                case ColumnType.Int64:      cell.lng = reader.GetInt64      (ordinal);  return;
                 //
-                case StandardTypeId.Float:      cell.dbl = reader.GetFloat      (ordinal);  return;
-                case StandardTypeId.Double:     cell.dbl = reader.GetDouble     (ordinal);  return;
+                case ColumnType.Float:      cell.dbl = reader.GetFloat      (ordinal);  return;
+                case ColumnType.Double:     cell.dbl = reader.GetDouble     (ordinal);  return;
                 //
-                case StandardTypeId.DateTime:   cell.date= reader.GetDateTime   (ordinal);  return;
-                case StandardTypeId.Guid:       cell.guid= reader.GetGuid       (ordinal);  return;
+                case ColumnType.DateTime:   cell.date= reader.GetDateTime   (ordinal);  return;
+                case ColumnType.Guid:       cell.guid= reader.GetGuid       (ordinal);  return;
+                //
+                case ColumnType.Array:      GetString(ref cell.chars, ordinal);         return;
                 default:
-                    throw new InvalidOperationException($"unexpected typeId: {column.typeId}");
+                    throw new InvalidOperationException($"unexpected type: {column.type}");
             }
         }
         
@@ -127,30 +124,29 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 return;
             }
             cell.isNull = true;
-            if (column.columnType == ColumnType.Array) {
-                var bytes = Chars2Bytes(cell.chars);
-                writer.MemberArr(key, bytes);
-                return;
-            }
-            switch (column.typeId) {
-                case StandardTypeId.Boolean:    writer.MemberBln    (key, cell.lng != 0);       break;
+            switch (column.type) {
+                case ColumnType.Boolean:    writer.MemberBln    (key, cell.lng != 0);       break;
                 //
-                case StandardTypeId.String:
-                case StandardTypeId.Enum:
-                case StandardTypeId.BigInteger: writer.MemberStr    (key, cell.chars.AsSpan()); break;
+                case ColumnType.String:
+                case ColumnType.Enum:
+                case ColumnType.BigInteger: writer.MemberStr    (key, cell.chars.AsSpan()); break;
                 //
-                case StandardTypeId.Uint8:
-                case StandardTypeId.Int16:
-                case StandardTypeId.Int32:
-                case StandardTypeId.Int64:      writer.MemberLng    (key, cell.lng);            break;
+                case ColumnType.Uint8:
+                case ColumnType.Int16:
+                case ColumnType.Int32:
+                case ColumnType.Int64:      writer.MemberLng    (key, cell.lng);            break;
                 //
-                case StandardTypeId.Float:
-                case StandardTypeId.Double:     writer.MemberDbl    (key, cell.dbl);            break;
+                case ColumnType.Float:
+                case ColumnType.Double:     writer.MemberDbl    (key, cell.dbl);            break;
                 //
-                case StandardTypeId.Guid:       writer.MemberGuid   (key, cell.guid);           break;
-                case StandardTypeId.DateTime:   writer.MemberDate   (key, cell.date);           break;
+                case ColumnType.Guid:       writer.MemberGuid   (key, cell.guid);           break;
+                case ColumnType.DateTime:   writer.MemberDate   (key, cell.date);           break;
+                case ColumnType.Array:
+                    var bytes = Chars2Bytes(cell.chars);
+                    writer.MemberArr(key, bytes);
+                    return;
                 default:
-                    throw new InvalidOperationException($"unexpected typeId: {column.typeId}");
+                    throw new InvalidOperationException($"unexpected type: {column.type}");
             }
         }
         
@@ -194,16 +190,16 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal    Guid        guid;
         internal    DateTime    date;
         
-        internal JsonKey AsKey(StandardTypeId  typeId)
+        internal JsonKey AsKey(ColumnType  typeId)
         {
             switch (typeId) {
-                case StandardTypeId.String:     return new JsonKey(chars.GetString());
-                case StandardTypeId.Uint8:      return new JsonKey(lng);
-                case StandardTypeId.Int16:      return new JsonKey(lng);
-                case StandardTypeId.Int32:      return new JsonKey(lng);
-                case StandardTypeId.Int64:      return new JsonKey(lng);
+                case ColumnType.String:     return new JsonKey(chars.GetString());
+                case ColumnType.Uint8:      return new JsonKey(lng);
+                case ColumnType.Int16:      return new JsonKey(lng);
+                case ColumnType.Int32:      return new JsonKey(lng);
+                case ColumnType.Int64:      return new JsonKey(lng);
                 //
-                case StandardTypeId.Guid:       return new JsonKey(guid);
+                case ColumnType.Guid:       return new JsonKey(guid);
                 default:
                     throw new NotSupportedException($"primary key type not supported: {typeId}");
             }

@@ -8,10 +8,33 @@ using Friflo.Json.Fliox.Schema.Definition;
 // ReSharper disable LoopCanBeConvertedToQuery
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
+    /// <summary>
+    /// Same value ids as in <see cref="StandardTypeId"/> + enum value <see cref="Array"/>
+    /// </summary>
     public enum ColumnType
     {
-        Scalar  = 0,
-        Array   = 1
+        None        = 0,
+        //
+        Boolean     = 1,
+        String      = 2,
+        // --- integer
+        Uint8       = 3,
+        Int16       = 4,
+        Int32       = 5,
+        Int64       = 6,
+        // --- floating point
+        Float       = 7,
+        Double      = 8,
+        // --- specialized
+        BigInteger  = 9,
+        DateTime    = 10,
+        Guid        = 11,
+        JsonValue   = 12,
+        JsonKey     = 13,
+        JsonEntity  = 15,
+        Enum        = 16,
+        //
+        Array       = 17
     }
     
     public interface IObjectMember { }
@@ -23,18 +46,16 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public   readonly   string          name;           // path: sub.title
         internal readonly   string          memberName;     // leaf: title
         internal readonly   Bytes           nameBytes;      // leaf: title
-        public   readonly   StandardTypeId  typeId;
-        public   readonly   ColumnType      columnType;
+        public   readonly   ColumnType      type;
 
-        public override     string          ToString() => $"{name} [{ordinal}] : {typeId}";
+        public override     string          ToString() => $"{name} [{ordinal}] : {type}";
 
-        internal ColumnInfo (int ordinal, string name, string memberName, StandardTypeId typeId, ColumnType type, bool isPrimaryKey) {
+        internal ColumnInfo (int ordinal, string name, string memberName, ColumnType type, bool isPrimaryKey) {
             this.ordinal        = ordinal;
             this.name           = name;
             this.memberName     = memberName;
             this.nameBytes      = new Bytes(memberName);
-            this.typeId         = typeId;
-            this.columnType     = type;
+            this.type           = type;
             this.isPrimaryKey   = isPrimaryKey;
         }
     }
@@ -123,18 +144,17 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     memberList.Add(obj);
                     continue;
                 }
-                var typeId      = fieldType.TypeId;
+                var columnType = (ColumnType)fieldType.TypeId;
                 if (tableType == TableType.JsonColumn && !isScalar) {
                     continue;
                 }
-                var columnType = ColumnType.Scalar;
                 if (field.isArray) {
                     columnType = ColumnType.Array;
                 } else if (field.isDictionary) {
                     continue;
                 }
                 var isPrimaryKey = type.KeyField == field;
-                var column = new ColumnInfo(columnMap.Count, fieldPath, field.name, typeId, columnType, isPrimaryKey);
+                var column = new ColumnInfo(columnMap.Count, fieldPath, field.name, columnType, isPrimaryKey);
                 columnList.Add(column);
                 memberList.Add(column);
                 columnMap.Add(fieldPath, column);

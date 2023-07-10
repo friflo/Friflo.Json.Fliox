@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
         
         internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
-            var type = ConvertContext.GetSqlType(column.typeId);
+            var type = ConvertContext.GetSqlType(column.type);
             var sql =
 $@"ALTER TABLE {table}
 ADD ""{column.name}""

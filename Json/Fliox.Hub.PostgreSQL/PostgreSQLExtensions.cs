@@ -37,20 +37,20 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         private const string DblType = "::double precision";
         
-        internal static string GetSqlType(StandardTypeId typeId) {
+        internal static string GetSqlType(ColumnType typeId) {
             switch (typeId) {
-                case StandardTypeId.Uint8:      return "smallint";  // no byte type (0-255) available
-                case StandardTypeId.Int16:      return "smallint";
-                case StandardTypeId.Int32:      return "integer";
-                case StandardTypeId.Int64:      return "bigint";
-                case StandardTypeId.Float:      return "float";
-                case StandardTypeId.Double:     return "double precision";
-                case StandardTypeId.Boolean:    return "boolean";
-                case StandardTypeId.Guid:       return "UUID";
-                case StandardTypeId.DateTime:
-                case StandardTypeId.BigInteger:
-                case StandardTypeId.String:
-                case StandardTypeId.Enum:       return "text";
+                case ColumnType.Uint8:      return "smallint";  // no byte type (0-255) available
+                case ColumnType.Int16:      return "smallint";
+                case ColumnType.Int32:      return "integer";
+                case ColumnType.Int64:      return "bigint";
+                case ColumnType.Float:      return "float";
+                case ColumnType.Double:     return "double precision";
+                case ColumnType.Boolean:    return "boolean";
+                case ColumnType.Guid:       return "UUID";
+                case ColumnType.DateTime:
+                case ColumnType.BigInteger:
+                case ColumnType.String:
+                case ColumnType.Enum:       return "text";
             }
             throw new NotSupportedException($"column type: {typeId}");
         }
@@ -338,7 +338,7 @@ $@"jsonb_typeof({arrayPath}) <> 'array'
         private string GetCast(Operation op) {
             if (op is Field field) {
                 var fieldType   = GetFieldType(entityType, field.name);
-                var type        = GetSqlType(fieldType.TypeId);
+                var type        = GetSqlType((ColumnType)fieldType.TypeId);
                 if (type != "text") {
                     return "::" + type;
                 }

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using static Friflo.Json.Fliox.Transform.OpType;
@@ -35,24 +34,22 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         internal static string GetSqlType(ColumnInfo column) {
-            switch (column.columnType) {
-                case ColumnType.Array:          return "text"; // JSON column
+            switch (column.type) {
+                case ColumnType.Uint8:
+                case ColumnType.Int16:
+                case ColumnType.Int32:
+                case ColumnType.Int64:      return "integer";
+                case ColumnType.Float:
+                case ColumnType.Double:     return "real";
+                case ColumnType.Boolean:    return "text";
+                case ColumnType.DateTime:
+                case ColumnType.Guid:
+                case ColumnType.BigInteger:
+                case ColumnType.String:
+                case ColumnType.Enum:       return "text";
+                case ColumnType.Array:      return "text"; // JSON column
             }
-            switch (column.typeId) {
-                case StandardTypeId.Uint8:
-                case StandardTypeId.Int16:
-                case StandardTypeId.Int32:
-                case StandardTypeId.Int64:      return "integer";
-                case StandardTypeId.Float:
-                case StandardTypeId.Double:     return "real";
-                case StandardTypeId.Boolean:    return "text";
-                case StandardTypeId.DateTime:
-                case StandardTypeId.Guid:
-                case StandardTypeId.BigInteger:
-                case StandardTypeId.String:
-                case StandardTypeId.Enum:       return "text";
-            }
-            throw new NotSupportedException($"column type: {column.typeId}");
+            throw new NotSupportedException($"column type: {column.type}");
         }
 
         /// <summary>

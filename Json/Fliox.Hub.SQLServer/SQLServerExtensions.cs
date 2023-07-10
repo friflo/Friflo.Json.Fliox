@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using static Friflo.Json.Fliox.Transform.OpType;
@@ -32,20 +31,20 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             this.args = args;
         }
         
-        internal static string GetSqlType(StandardTypeId typeId) {
+        internal static string GetSqlType(ColumnType typeId) {
             switch (typeId) {
-                case StandardTypeId.Uint8:      return "smallint"; // no byte type (0-255) available
-                case StandardTypeId.Int16:      return "smallint";
-                case StandardTypeId.Int32:      return "int";
-                case StandardTypeId.Int64:      return "bigint";
-                case StandardTypeId.Float:      return "float";
-                case StandardTypeId.Double:     return "double precision";
-                case StandardTypeId.Boolean:    return "nvarchar(max)";
-                case StandardTypeId.Guid:       return "uniqueidentifier";
-                case StandardTypeId.DateTime:
-                case StandardTypeId.BigInteger:
-                case StandardTypeId.String:
-                case StandardTypeId.Enum:       return "nvarchar(max)";
+                case ColumnType.Uint8:      return "smallint"; // no byte type (0-255) available
+                case ColumnType.Int16:      return "smallint";
+                case ColumnType.Int32:      return "int";
+                case ColumnType.Int64:      return "bigint";
+                case ColumnType.Float:      return "float";
+                case ColumnType.Double:     return "double precision";
+                case ColumnType.Boolean:    return "nvarchar(max)";
+                case ColumnType.Guid:       return "uniqueidentifier";
+                case ColumnType.DateTime:
+                case ColumnType.BigInteger:
+                case ColumnType.String:
+                case ColumnType.Enum:       return "nvarchar(max)";
             }
             throw new NotSupportedException($"column type: {typeId}");
         }

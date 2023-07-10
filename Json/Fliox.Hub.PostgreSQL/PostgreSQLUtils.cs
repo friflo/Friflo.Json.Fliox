@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
-            var type = ConvertContext.GetSqlType(column.typeId);
+            var type = ConvertContext.GetSqlType(column.type);
             var path = ConvertContext.ConvertPath(DATA, column.name, 0);
             var sql =
 $@"ALTER TABLE {table}
