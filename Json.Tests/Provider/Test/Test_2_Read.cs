@@ -172,5 +172,38 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(dt2.dateTime,   dt2Read.Result.dateTime);
             AreEqual(dt3.dateTime,   dt3Read.Result.dateTime);
         }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_22_IntArray(string db) {
+            var client1 = await GetClient(db);
+            var i1      = new TestReadTypes { id = "i1", intArray = new [] { 42 } };
+            client1.testReadTypes.Upsert(i1);
+            await client1.SyncTasks();
+            
+            var client2 = await GetClient(db);
+            var read    = client2.testReadTypes.Read();
+            var i1Read  = read.Find(i1.id);
+            await client2.SyncTasks();
+            
+            AreEqual(42, i1Read.Result.intArray[0]);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_23_ClassMember(string db) {
+            var client1 = await GetClient(db);
+            var c1      = new TestReadTypes { id = "c1", component = new ComponentType { str = "abc-☀🌎♥👋" } };
+            var c2      = new TestReadTypes { id = "c2", component = null };
+            client1.testReadTypes.UpsertRange(new [] { c1, c2 });
+            await client1.SyncTasks();
+            
+            var client2 = await GetClient(db);
+            var read    = client2.testReadTypes.Read();
+            var c1Read  = read.Find(c1.id);
+            var c2Read  = read.Find(c2.id);
+            await client2.SyncTasks();
+            
+            AreEqual("abc-☀🌎♥👋", c1Read.Result.component.str);
+            IsNull(c2Read.Result.component);
+        }
     }
 }

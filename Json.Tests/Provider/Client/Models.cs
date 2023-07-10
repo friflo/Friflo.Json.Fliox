@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable All
 namespace Friflo.Json.Tests.Provider.Client
@@ -83,5 +84,17 @@ namespace Friflo.Json.Tests.Provider.Client
         [Key]       public  string          id;
                     public  Guid?           guid;
                     public  DateTime?       dateTime;
+                    /// <summary>Stored in a JSON column when using <see cref="TableType.Relational"/></summary>
+                    public  int[]           intArray;
+                    /// <summary>
+                    /// When using <see cref="TableType.Relational"/> each field is stored in a separate column.<br/>
+                    /// If component is null all its column values are null
+                    /// </summary>
+                    public  ComponentType   component;
+    }
+    
+    public class ComponentType {
+                    public  string          str;
+                    public  int?            integer;
     }
 }
