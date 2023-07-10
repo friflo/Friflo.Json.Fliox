@@ -6,7 +6,7 @@
             "type": "integer", "minimum": -9223372036854775808, "maximum": 9223372036854775807
         },
         "DateTime": {
-            "type": "string", "format": "date-time", "default": "2022-01-01T00:00:00.000Z"
+            "type": "string", "format": "date-time", "default": "2023-01-01T00:00:00Z"
         },
         "int32": {
             "type": "integer", "minimum": -2147483648, "maximum": 2147483647

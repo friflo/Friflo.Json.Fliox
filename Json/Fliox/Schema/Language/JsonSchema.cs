@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.Float,       "\"type\": \"number\"" );
                 
             AddType (map, standard.BigInteger,  "\"type\": \"string\", \"pattern\": \"^-?[0-9]+$\"" ); // https://www.regextester.com/
-            AddType (map, standard.DateTime,    "\"type\": \"string\", \"format\": \"date-time\", \"default\": \"2022-01-01T00:00:00.000Z\"" );
+            AddType (map, standard.DateTime,    "\"type\": \"string\", \"format\": \"date-time\", \"default\": \"2023-01-01T00:00:00Z\"" );
             AddType (map, standard.Guid,        "\"type\": \"string\", \"pattern\": \"^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$\"" );
             AddType (map, standard.JsonKey,     "\"oneOf\": [{ \"type\": \"string\" }, { \"type\": \"integer\" }]");
             
