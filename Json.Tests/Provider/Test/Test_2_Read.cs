@@ -204,7 +204,7 @@ namespace Friflo.Json.Tests.Provider.Test
         // [Test]
         public static void TestFloatConversion() {
             {
-                var f64 = 1e308;
+                double f64 = 1e308;
                 var str = f64.ToString(CultureInfo.InvariantCulture);
                 var result = double.Parse(str);
                 AreEqual(f64, result);
@@ -234,7 +234,7 @@ namespace Friflo.Json.Tests.Provider.Test
             
             var result = flt1Read.Result.obj;
             AreEqual(obj.f32, result.f32);
-            // AreEqual(obj.f64, result.f64); // TODO
+            AreEqual(obj.f64, result.f64);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]

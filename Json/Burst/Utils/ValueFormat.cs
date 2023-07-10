@@ -13,6 +13,9 @@ namespace Friflo.Json.Burst.Utils
 #endif
     public struct ValueFormat : IDisposable
     {
+        // need to fit longest string created by double.ToString(). E.g. "-1.9007199254740992e+308"
+        // 9007199254740992 = max mantissa 2^53
+        private char[]      charBuf;    
         private ValueArray<int> digit;
         private Str32       @true;
         private Str32       @false;
@@ -24,8 +27,10 @@ namespace Friflo.Json.Burst.Utils
         private static readonly int maxDigit = 20;
 
         public void InitTokenFormat() {
-            if (!digit.IsCreated())
-                digit = new ValueArray<int>(maxDigit);
+            if (!digit.IsCreated()) {
+                digit   = new ValueArray<int>(maxDigit);
+                charBuf = new char[32];
+            }
             @true =         "true";
             @false =        "false";
             infinity =      "Infinity";
@@ -130,8 +135,37 @@ namespace Friflo.Json.Burst.Utils
                 return 0.0;
             return PowTable[powNeutral + exp];
         }
+        
+        public void AppendFlt (ref Bytes dst, double val) {
+            var chars   = charBuf;
+            if (!val.TryFormat(chars, out int len, null, CultureInfo.InvariantCulture)) {
+                throw new InvalidOperationException($"format float failed. value: {val}");
+            }
+            dst.EnsureCapacity(len);
+            var buf     = dst.buffer;
+            var start   = dst.end;
+            for (int i = 0; i < len; i++) {
+                buf[start + i] = (byte)chars[i];
+            }
+            dst.end += len;
+        }
+        
+        public void AppendDbl (ref Bytes dst, double val) {
+            var chars   = charBuf;
+            if (!val.TryFormat(chars, out int len, null, CultureInfo.InvariantCulture)) {
+                throw new InvalidOperationException($"format double failed. value: {val}");
+            }
+            dst.EnsureCapacity(len);
+            var buf     = dst.buffer;
+            var start   = dst.end;
+            for (int i = 0; i < len; i++) {
+                buf[start + i] = (byte)chars[i];
+            }
+            dst.end += len;
+        }
     
-        public void AppendFlt (ref Bytes dst, float val)
+        /// <summary>replaced by <see cref="AppendFlt"/></summary>
+        public void AppendFltOld (ref Bytes dst, float val)
         {
             if (val == 0.0f) {
                 dst.AppendStr32(zero);
@@ -174,8 +208,9 @@ namespace Friflo.Json.Burst.Utils
             WriteDecimal (ref dst, sigShifted, shiftExp10, negative);
     //      System.out.println("string:     " + this);
         }
-            
-        public void AppendDbl (ref Bytes dst, double val)
+        
+        /// <summary>replaced by <see cref="AppendDbl"/></summary>
+        public void AppendDblOld (ref Bytes dst, double val)
         {
             if (val == 0.0) {
                 dst.AppendStr32(zero);

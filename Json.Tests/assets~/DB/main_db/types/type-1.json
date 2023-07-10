@@ -14,9 +14,9 @@
     "int32Null": null,
     "int64": 0,
     "int64Null": null,
-    "float32": 0.0,
+    "float32": 0,
     "float32Null": null,
-    "float64": 0.0,
+    "float64": 0,
     "float64Null": null,
     "pocStruct": {
         "value": 0

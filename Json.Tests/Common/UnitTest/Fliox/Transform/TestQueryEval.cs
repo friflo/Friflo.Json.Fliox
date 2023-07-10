@@ -278,7 +278,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("hello",   eval.Eval("{}", stringLiteral.Lambda()));
             } {
                 var doubleLiteral   = new DoubleLiteral(42.0);
-                AssertJson(mapper, doubleLiteral, "{'op':'double','value':42.0}");
+                AssertJson(mapper, doubleLiteral, "{'op':'double','value':42}");
                 AreEqual(42.0,      eval.Eval("{}", doubleLiteral.Lambda()));
             } {
                 var longLiteral   = new LongLiteral(42);
@@ -313,11 +313,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(3,         eval.Eval("{}", log.Lambda()));
             } {
                 var sqrt    = new Sqrt(new DoubleLiteral(9));
-                AssertJson(mapper, sqrt, "{'op':'sqrt','value':{'op':'double','value':9.0}}");
+                AssertJson(mapper, sqrt, "{'op':'sqrt','value':{'op':'double','value':9}}");
                 AreEqual(3,         eval.Eval("{}", sqrt.Lambda()));
             } {
                 var negate  = new Negate(new DoubleLiteral(1));
-                AssertJson(mapper, negate, "{'op':'negate','value':{'op':'double','value':1.0}}");
+                AssertJson(mapper, negate, "{'op':'negate','value':{'op':'double','value':1}}");
                 AreEqual(-1,        eval.Eval("{}", negate.Lambda()));
             }
             
