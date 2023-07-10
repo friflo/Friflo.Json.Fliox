@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Provider.Client;
@@ -189,7 +190,23 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task TestRead_23_ClassMember(string db) {
+        public static async Task TestRead_23_ObjectList(string db) {
+            var client1 = await GetClient(db);
+            var o1      = new TestReadTypes { id = "o1", objList = new List<ComponentType> { new() { str = "abc", integer = 42 }  } };
+            client1.testReadTypes.Upsert(o1);
+            await client1.SyncTasks();
+            
+            var client2 = await GetClient(db);
+            var read    = client2.testReadTypes.Read();
+            var o1Read  = read.Find(o1.id);
+            await client2.SyncTasks();
+            
+            AreEqual("abc", o1Read.Result.objList[0].str);
+            AreEqual(42,    o1Read.Result.objList[0].integer);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_24_ClassMember(string db) {
             var client1 = await GetClient(db);
             var c1      = new TestReadTypes { id = "c1", component = new ComponentType { str = "abc-☀🌎♥👋" } };
             var c2      = new TestReadTypes { id = "c2", component = null };

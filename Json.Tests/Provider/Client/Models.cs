@@ -81,16 +81,18 @@ namespace Friflo.Json.Tests.Provider.Client
     }
     
     public class TestReadTypes {
-        [Key]       public  string          id;
-                    public  Guid?           guid;
-                    public  DateTime?       dateTime;
+        [Key]       public  string              id;
+                    public  Guid?               guid;
+                    public  DateTime?           dateTime;
                     /// <summary>Stored in a JSON column when using <see cref="TableType.Relational"/></summary>
-                    public  int[]           intArray;
+                    public  int[]               intArray;
+                    /// <summary>Stored in a JSON column when using <see cref="TableType.Relational"/></summary>
+                    public  List<ComponentType> objList;
                     /// <summary>
                     /// When using <see cref="TableType.Relational"/> each field is stored in a separate column.<br/>
                     /// If component is null all its column values are null
                     /// </summary>
-                    public  ComponentType   component;
+                    public  ComponentType       component;
     }
     
     public class ComponentType {
