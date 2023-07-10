@@ -65,12 +65,22 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         internal static void AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
-            var type = ConvertContext.GetSqlType(column);
+            var type    = ConvertContext.GetSqlType(column);
+            var asStr   = GetColumnAs(column);
             var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN ""{column.name}"" {type}
-GENERATED ALWAYS AS (json_extract({DATA}, '$.{column.name}'));";
+GENERATED ALWAYS AS ({asStr});";
             Execute(connection, sql, out _);
+        }
+        
+        private static string GetColumnAs(ColumnInfo column) {
+            switch (column.type) {
+                case ColumnType.Object:
+                    return $"iif(json_extract({DATA}, '$.{column.name}') is null, 0, 1)";
+                default:
+                    return $"json_extract({DATA}, '$.{column.name}')";
+            }
         }
         
         internal static bool ReadValues(
