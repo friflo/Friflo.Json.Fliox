@@ -114,9 +114,9 @@ namespace Friflo.Json.Burst.Utils
         // alternative: exp2 * log(2)   = exp10 * log (10)
         // readonly static double log2b = Math. Log (2) / Math. Log (10); // ~ 0.3
     
-        private readonly static int         powNeutral = 323;   // 324: =>  0.0
-        private readonly static int         powMax   = 309; // 309: => +Infity
-        private readonly static double[]    PowTable = CreatePowTable ();
+        private static readonly int         powNeutral = 323;   // 324: =>  0.0
+        private static readonly int         powMax   = 309; // 309: => +Infity
+        private static readonly double[]    PowTable = CreatePowTable ();
     
         private static double[] CreatePowTable ()
         {
@@ -137,10 +137,14 @@ namespace Friflo.Json.Burst.Utils
         }
         
         public void AppendFlt (ref Bytes dst, double val) {
-            var chars   = charBuf;
+#if NETSTANDARD2_0
+            var chars = val.ToString(CultureInfo.InvariantCulture).AsSpan(); 
+#else
+            var chars = charBuf;
             if (!val.TryFormat(chars, out int len, null, CultureInfo.InvariantCulture)) {
                 throw new InvalidOperationException($"format float failed. value: {val}");
             }
+#endif
             dst.EnsureCapacity(len);
             var buf     = dst.buffer;
             var start   = dst.end;
@@ -151,10 +155,14 @@ namespace Friflo.Json.Burst.Utils
         }
         
         public void AppendDbl (ref Bytes dst, double val) {
-            var chars   = charBuf;
+#if NETSTANDARD2_0
+            var chars = val.ToString(CultureInfo.InvariantCulture).AsSpan(); 
+#else
+            var chars = charBuf;
             if (!val.TryFormat(chars, out int len, null, CultureInfo.InvariantCulture)) {
                 throw new InvalidOperationException($"format double failed. value: {val}");
             }
+#endif
             dst.EnsureCapacity(len);
             var buf     = dst.buffer;
             var start   = dst.end;
