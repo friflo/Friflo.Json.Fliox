@@ -147,8 +147,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case StandardTypeId.Float:
                 case StandardTypeId.Double:     writer.MemberDbl    (key, cell.dbl);            break;
                 //
-                case StandardTypeId.Guid:       writer.MemberGuid   (key,cell.guid);            break;
-                case StandardTypeId.DateTime:   writer.MemberDate   (key,cell.date);            break;
+                case StandardTypeId.Guid:       writer.MemberGuid   (key, cell.guid);           break;
+                case StandardTypeId.DateTime:   writer.MemberDate   (key, cell.date);           break;
                 default:
                     throw new InvalidOperationException($"unexpected typeId: {column.typeId}");
             }
