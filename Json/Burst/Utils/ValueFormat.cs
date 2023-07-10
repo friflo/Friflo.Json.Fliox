@@ -138,7 +138,8 @@ namespace Friflo.Json.Burst.Utils
         
         public void AppendFlt (ref Bytes dst, double val) {
 #if NETSTANDARD2_0
-            var chars = val.ToString(CultureInfo.InvariantCulture).AsSpan(); 
+            var chars   = val.ToString(CultureInfo.InvariantCulture).AsSpan();
+            var len     = chars.Length;
 #else
             var chars = charBuf;
             if (!val.TryFormat(chars, out int len, null, CultureInfo.InvariantCulture)) {
@@ -156,7 +157,8 @@ namespace Friflo.Json.Burst.Utils
         
         public void AppendDbl (ref Bytes dst, double val) {
 #if NETSTANDARD2_0
-            var chars = val.ToString(CultureInfo.InvariantCulture).AsSpan(); 
+            var chars   = val.ToString(CultureInfo.InvariantCulture).AsSpan();
+            var len     = chars.Length;
 #else
             var chars = charBuf;
             if (!val.TryFormat(chars, out int len, null, CultureInfo.InvariantCulture)) {
