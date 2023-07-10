@@ -28,13 +28,23 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
-            var type = ConvertContext.GetSqlType(column.type);
-            var path = ConvertContext.ConvertPath(DATA, column.name, 0);
+            var type    = ConvertContext.GetSqlType(column.type);
+            var asStr   = GetColumnAs(column);
             var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN IF NOT EXISTS ""{column.name}"" {type} NULL
-GENERATED ALWAYS AS (({path})::{type}) STORED;";
+GENERATED ALWAYS AS (({asStr})::{type}) STORED;";
             await ExecuteAsync(connection, sql).ConfigureAwait(false);
+        }
+        
+        private static string GetColumnAs(ColumnInfo column) {
+            var asStr   = ConvertContext.ConvertPath(DATA, column.name, 0);
+            switch (column.type) {
+                case ColumnType.Object:
+                    return $"({asStr} is not null)";
+                default:
+                    return asStr;
+            }
         }
         
         internal static async Task CreateDatabaseIfNotExistsAsync(string connectionString) {

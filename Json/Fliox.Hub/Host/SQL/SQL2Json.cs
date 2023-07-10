@@ -77,6 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case ColumnType.Guid:       cell.guid= reader.GetGuid       (ordinal);  return;
                 //
                 case ColumnType.Array:      GetString(ref cell.chars, ordinal);         return;
+                case ColumnType.Object:     cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return;
                 default:
                     throw new InvalidOperationException($"unexpected type: {column.type}");
             }
@@ -103,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         WriteColumn(column);
                         break;
                     case ObjectInfo objectMember:
-                        if (!HasNonNullMembers(objectMember)) {
+                        if (cells[objectMember.ordinal].isNull) {
                             writer.MemberNul(objectMember.nameBytes);
                             continue;
                         }
@@ -141,31 +142,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 //
                 case ColumnType.Guid:       writer.MemberGuid   (key, cell.guid);           break;
                 case ColumnType.DateTime:   writer.MemberDate   (key, cell.date);           break;
-                case ColumnType.Array:
-                    var bytes = Chars2Bytes(cell.chars);
-                    writer.MemberArr(key, bytes);
-                    return;
+                case ColumnType.Array:      writer.MemberArr(key, Chars2Bytes(cell.chars)); break;
                 default:
                     throw new InvalidOperationException($"unexpected type: {column.type}");
             }
-        }
-        
-        private bool HasNonNullMembers(ObjectInfo obj) {
-            foreach (var member in obj.members) {
-                switch (member) {
-                    case ColumnInfo column:
-                        if (!cells[column.ordinal].isNull) {
-                            return true;
-                        }
-                        break;
-                    case ObjectInfo objectMember:
-                        if (HasNonNullMembers(objectMember)) {
-                            return true;
-                        }
-                        break;
-                }
-            }
-            return false;
         }
         
         private Bytes Chars2Bytes (in Chars value)

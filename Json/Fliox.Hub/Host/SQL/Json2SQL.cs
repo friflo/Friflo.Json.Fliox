@@ -102,6 +102,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     case JsonEvent.ObjectStart:
                         var obj = objInfo.FindObject(parser.key);
                         if (obj != null) {
+                            ref var cell = ref rowCells[obj.ordinal];
+                            cell.type = JsonEvent.ObjectStart;
                             Traverse(obj);
                         } else {
                             parser.SkipTree();
@@ -142,6 +144,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         sb.Append('\'');
                         AppendBytes(sb, cell.value);
                         sb.Append('\'');
+                        break;
+                    case JsonEvent.ObjectStart:
+                        sb.Append('1');
                         break;
                     default:
                         throw new InvalidOperationException($"unexpected cell.type: {cell.type}");
@@ -214,6 +219,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             this.value.start    = end - len; 
         }
 
-        public override string ToString() => type == JsonEvent.None ? "None" : $"{value}: {type}";
+        public override string ToString() {
+            switch (type) {
+                case JsonEvent.None:        return "None";
+                case JsonEvent.ObjectStart: return "Object";
+                default:                    return $"{value}: {type}";
+            }
+        }
     }
 }

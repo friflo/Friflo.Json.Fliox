@@ -48,6 +48,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case ColumnType.String:
                 case ColumnType.Enum:       return "text";
                 case ColumnType.Array:      return "text"; // JSON column
+                case ColumnType.Object:     return "tinyint";
             }
             throw new NotSupportedException($"column type: {column.type}");
         }

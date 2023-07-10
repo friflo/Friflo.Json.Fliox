@@ -271,18 +271,21 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestRead_26_ClassMember(string db) {
             var client1 = await GetClient(db);
             var c1      = new TestReadTypes { id = "c1", obj = new ComponentType { str = "abc-☀🌎♥👋" } };
-            var c2      = new TestReadTypes { id = "c2", obj = null };
-            client1.testReadTypes.UpsertRange(new [] { c1, c2 });
+            var c2      = new TestReadTypes { id = "c2", obj = new ComponentType() };
+            var c3      = new TestReadTypes { id = "c3", obj = null };
+            client1.testReadTypes.UpsertRange(new [] { c1, c2, c3 });
             await client1.SyncTasks();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var c1Read  = read.Find(c1.id);
             var c2Read  = read.Find(c2.id);
+            var c3Read  = read.Find(c3.id);
             await client2.SyncTasks();
             
             AreEqual("abc-☀🌎♥👋", c1Read.Result.obj.str);
-            IsNull(c2Read.Result.obj);
+            NotNull (c2Read.Result.obj);
+            IsNull  (c3Read.Result.obj);
         }
     }
 }

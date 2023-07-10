@@ -34,7 +34,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         JsonEntity  = 15,
         Enum        = 16,
         //
-        Array       = 17
+        Array       = 17,
+        Object      = 18
     }
     
     public interface IObjectMember { }
@@ -64,6 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     {
         private  readonly   string                              memberName;
         internal readonly   Bytes                               nameBytes;  // leaf
+        internal readonly   int                                 ordinal;
         //
         private  readonly   Dictionary<BytesHash,ColumnInfo>    columnMap;  // columns in SQL table
         //
@@ -72,7 +74,14 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 
         public override     string                              ToString() => memberName;
 
-        public ObjectInfo (string memberName, List<ColumnInfo> columns, List<ObjectInfo> objects, List<IObjectMember> members) {
+        public ObjectInfo (
+            string              memberName,
+            List<ColumnInfo>    columns,
+            List<ObjectInfo>    objects,
+            List<IObjectMember> members,
+            int                 ordinal)
+        {
+            this.ordinal    = ordinal;
             nameBytes       = new Bytes(memberName);
             this.memberName = memberName;
             this.members    = members.ToArray();
@@ -120,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             columnMap       = new Dictionary<string, ColumnInfo>();
             indexMap        = new Dictionary<string, ColumnInfo>();
             var type        = database.Schema.typeSchema.RootType.FindField(container).type;
-            root            = AddTypeFields(type, null, "(Root)");
+            root            = AddTypeFields(type, null, "(Root)", -1);
             keyColumn       = columnMap[type.KeyField.name];
             columns         = new ColumnInfo[columnMap.Count];
             foreach (var pair in columnMap) {
@@ -129,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
         }
         
-        private ObjectInfo AddTypeFields(TypeDef type, string prefix, string name) {
+        private ObjectInfo AddTypeFields(TypeDef type, string prefix, string name, int objOrdinal) {
             var fields      = type.Fields;
             var columnList  = new List<ColumnInfo>();
             var objectList  = new List<ObjectInfo>();
@@ -139,7 +148,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 var fieldType   = field.type;
                 var isScalar    = !field.isArray && !field.isDictionary;
                 if (isScalar && fieldType.IsClass) {
-                    var obj = AddTypeFields(fieldType, fieldPath, field.name);
+                    var objField = new ColumnInfo(columnMap.Count, fieldPath, field.name, ColumnType.Object, false);
+                    columnMap.Add(fieldPath, objField);
+                    var obj = AddTypeFields(fieldType, fieldPath, field.name, objField.ordinal);
                     objectList.Add(obj);
                     memberList.Add(obj);
                     continue;
@@ -160,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 columnMap.Add(fieldPath, column);
                 indexMap.Add(fieldPath, column);
             }
-            return new ObjectInfo(name, columnList, objectList, memberList);
+            return new ObjectInfo(name, columnList, objectList, memberList, objOrdinal);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         {
             var type    = ConvertContext.GetSqlType(column, provider);
             var colName = column.name; 
-            var asStr   = GetColumnType(column, provider);
+            var asStr   = GetColumnAs(column, provider);
             
             switch (provider) {
                 case MySQLProvider.MARIA_DB: {
@@ -53,10 +53,15 @@ GENERATED ALWAYS AS {asStr} VIRTUAL;";
             }
         }
         
-        private static string GetColumnType(ColumnInfo column, MySQLProvider provider) {
+        private static string GetColumnAs(ColumnInfo column, MySQLProvider provider) {
             var colName = column.name;
             var asStr   = $"(JSON_VALUE({DATA}, '$.{colName}'))";
             switch (column.type) {
+                case ColumnType.Object:
+                    if (provider == MySQLProvider.MY_SQL) {
+                        return $"(!ISNULL(JSON_VALUE({DATA}, '$.{colName}')))";    
+                    }
+                    return $"(!ISNULL(JSON_QUERY({DATA}, '$.{colName}')))";
                 case ColumnType.DateTime:
                     return $"(STR_TO_DATE(TRIM(TRAILING 'Z' FROM {asStr}), '%Y-%m-%dT%H:%i:%s.%f'))";
                 case ColumnType.Boolean:

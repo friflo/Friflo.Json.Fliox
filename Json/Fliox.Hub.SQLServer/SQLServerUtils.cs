@@ -31,12 +31,22 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         }
         
         internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
-            var type = ConvertContext.GetSqlType(column.type);
+            var asStr = GetColumnAs(column);
             var sql =
 $@"ALTER TABLE {table}
 ADD ""{column.name}""
-AS CAST(JSON_VALUE({DATA}, '$.{column.name}') AS {type});";
+AS ({asStr});";
             await Execute(connection, sql).ConfigureAwait(false);
+        }
+        
+        private static string GetColumnAs(ColumnInfo column) {
+            switch (column.type) {
+                case ColumnType.Object:
+                    return $"IIF(JSON_QUERY({DATA}, '$.{column.name}') is null, 0, 1)";
+                default:
+                    var type  = ConvertContext.GetSqlType(column.type);
+                    return $"CAST(JSON_VALUE({DATA}, '$.{column.name}') AS {type})";
+            }
         }
         
         internal static async Task CreateDatabaseIfNotExistsAsync(string connectionString) {

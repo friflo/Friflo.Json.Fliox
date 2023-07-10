@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         
         internal static string GetSqlType(ColumnType typeId) {
             switch (typeId) {
-                case ColumnType.Uint8:      return "smallint"; // no byte type (0-255) available
+                case ColumnType.Uint8:      return "tinyint";
                 case ColumnType.Int16:      return "smallint";
                 case ColumnType.Int32:      return "int";
                 case ColumnType.Int64:      return "bigint";
@@ -45,6 +45,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 case ColumnType.BigInteger:
                 case ColumnType.String:
                 case ColumnType.Enum:       return "nvarchar(max)";
+                case ColumnType.Array:      return "nvarchar(max)"; // JSON column
+                case ColumnType.Object:     return "tinyint";
             }
             throw new NotSupportedException($"column type: {typeId}");
         }

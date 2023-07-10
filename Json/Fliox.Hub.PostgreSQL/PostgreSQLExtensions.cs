@@ -51,6 +51,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case ColumnType.BigInteger:
                 case ColumnType.String:
                 case ColumnType.Enum:       return "text";
+                case ColumnType.Array:      return "JSONB"; // JSON column
+                case ColumnType.Object:     return "boolean";
             }
             throw new NotSupportedException($"column type: {typeId}");
         }

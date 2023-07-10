@@ -62,6 +62,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case ColumnType.String:
                 case ColumnType.Enum:       return "varchar(255)";
                 case ColumnType.Array:      return "JSON"; // JSON column
+                case ColumnType.Object:     return "tinyint";
             }
             throw new NotSupportedException($"column type: {column.type}");
         }
