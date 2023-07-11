@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     await Task.Delay(1000).ConfigureAwait(false);
                 }
             }
-            throw new EntityDatabaseException("timeout open newly created database");
+            throw new PrepareDatabaseException("timeout open newly created database");
         }
         
         public override async Task DropDatabaseAsync() {

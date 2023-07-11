@@ -30,8 +30,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         Relational  = 1,
     }
     
-    public class EntityDatabaseException : Exception {
-        public EntityDatabaseException(string message) : base (message) { } 
+    public class PrepareDatabaseException : Exception {
+        public PrepareDatabaseException(string message) : base (message) { } 
     }
     
     /// <summary>
@@ -151,12 +151,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (!connection.IsOpen) {
                 try {
                     if ((options & Prepare.CreateDatabase) == 0) {
-                        throw new EntityDatabaseException(connection.Error.message);
+                        throw new PrepareDatabaseException(connection.Error.message);
                     }
                     await CreateDatabaseAsync().ConfigureAwait(false);
                     connection = await GetConnectionAsync().ConfigureAwait(false);
                 } catch (Exception e) {
-                    throw new EntityDatabaseException(e.Message);
+                    throw new PrepareDatabaseException(e.Message);
                 }
             }
             var containerNames = Schema.GetContainers();
@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 foreach (var table in tables) {
                     var result = await table.CreateTable(connection).ConfigureAwait(false);
                     if (result.Failed) {
-                        throw new EntityDatabaseException(result.error);
+                        throw new PrepareDatabaseException(result.error);
                     }      
                 }
             }
@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 foreach (var table in tables) {
                     var result = await table.AddVirtualColumns(connection).ConfigureAwait(false);
                     if (result.Failed) {
-                        throw new EntityDatabaseException(result.error);
+                        throw new PrepareDatabaseException(result.error);
                     }      
                 }
             }
