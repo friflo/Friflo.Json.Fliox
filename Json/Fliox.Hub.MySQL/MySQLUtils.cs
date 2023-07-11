@@ -3,6 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER || MYSQL
 
+using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using MySqlConnector;
@@ -28,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
         }
         
-        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column, MySQLProvider provider)
+        internal static async Task<SQLResult> AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column, MySQLProvider provider)
         {
             var type    = ConvertContext.GetSqlType(column, provider);
             var colName = column.name; 
@@ -40,17 +41,16 @@ var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN IF NOT EXISTS `{colName}` {type}
 GENERATED ALWAYS AS {asStr} VIRTUAL;";
-                    await Execute(connection, sql).ConfigureAwait(false);
-                    return;
+                    return await Execute(connection, sql).ConfigureAwait(false);
                 }
                 case MySQLProvider.MY_SQL: {
 var sql = $@"ALTER TABLE {table}
 ADD COLUMN `{colName}` {type}
 GENERATED ALWAYS AS {asStr} VIRTUAL;";
-                    await Execute(connection, sql).ConfigureAwait(false);
-                    return;
+                    return await Execute(connection, sql).ConfigureAwait(false);
                 }
             }
+            throw new InvalidOperationException($"invalid provider {provider}");
         }
         
         private static string GetColumnAs(ColumnInfo column, MySQLProvider provider) {

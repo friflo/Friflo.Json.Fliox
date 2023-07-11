@@ -48,8 +48,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     init.tableCreated = true;
                 }
                 if (init.AddVirtualColumns) {
-                    await AddVirtualColumns(connection).ConfigureAwait(false);
+                    var error = await AddVirtualColumns(connection).ConfigureAwait(false);
                     init.virtualColumnsAdded = true;
+                    if (error != null) {
+                        return error;
+                    }
                 }
                 return null;
             } catch (NpgsqlException e) {
@@ -62,15 +65,19 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             return await SQLUtils.GetColumnNamesAsync(reader).ConfigureAwait(false);
         }
         
-        public async Task AddVirtualColumns(ISyncConnection syncConnection) {
+        public async Task<TaskExecuteError> AddVirtualColumns(ISyncConnection syncConnection) {
             var connection  = (SyncConnection)syncConnection;
             var columnNames = await GetColumnNamesAsync(connection).ConfigureAwait(false);
             foreach (var column in tableInfo.columns) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
                 }
-                await AddVirtualColumn(connection, name, column).ConfigureAwait(false);
+                var result = await AddVirtualColumn(connection, name, column).ConfigureAwait(false);
+                if (result.Failed) {
+                    return result.error;
+                }
             }
+            return null;
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {

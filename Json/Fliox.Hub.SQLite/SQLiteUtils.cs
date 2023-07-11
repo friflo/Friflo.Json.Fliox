@@ -64,14 +64,15 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return result;
         }
         
-        internal static void AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
+        internal static TaskExecuteError AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
             var type    = ConvertContext.GetSqlType(column);
             var asStr   = GetColumnAs(column);
             var sql =
 $@"ALTER TABLE {table}
 ADD COLUMN ""{column.name}"" {type}
 GENERATED ALWAYS AS ({asStr});";
-            Execute(connection, sql, out _);
+            Execute(connection, sql, out var error);
+            return error;
         }
         
         private static string GetColumnAs(ColumnInfo column) {

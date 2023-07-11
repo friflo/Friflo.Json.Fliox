@@ -30,13 +30,13 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
         }
         
-        internal static async Task AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
+        internal static async Task<SQLResult> AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
             var asStr = GetColumnAs(column);
             var sql =
 $@"ALTER TABLE {table}
 ADD ""{column.name}""
 AS ({asStr});";
-            await Execute(connection, sql).ConfigureAwait(false);
+            return await Execute(connection, sql).ConfigureAwait(false);
         }
         
         private static string GetColumnAs(ColumnInfo column) {
