@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     if ((options & Prepare.CreateDatabase) == 0) {
                         throw new EntityDatabaseException(connection.Error.message);
                     }
-                    await CreateNewAsync().ConfigureAwait(false);
+                    await CreateDatabaseAsync().ConfigureAwait(false);
                     connection = await GetConnectionAsync().ConfigureAwait(false);
                 } catch (Exception e) {
                     throw new EntityDatabaseException(e.Message);
@@ -165,8 +165,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             return this;
         }
         
-        protected   virtual Task    CreateNewAsync() => Task.CompletedTask;
-        public      virtual Task    DropDatabase()   => throw new NotSupportedException($"DropDatabase() not supported");
+        protected   virtual Task    CreateDatabaseAsync()   => Task.CompletedTask;
+        public      virtual Task    DropDatabaseAsync()     => throw new NotSupportedException($"DropDatabaseAsync() not supported");
         
         public EntityDatabase AddCommands(IServiceCommands commands) {
             if (!service.AddAttributedHandlers(commands, out var error)) {

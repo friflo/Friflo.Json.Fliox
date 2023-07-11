@@ -70,11 +70,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
         }
         
-        protected override async Task CreateNewAsync() {
+        protected override async Task CreateDatabaseAsync() {
             await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
         }
         
-        public override async Task DropDatabase() {
+        public override async Task DropDatabaseAsync() {
             var builder = new NpgsqlConnectionStringBuilder(connectionString);
             var db      = builder.Database;
             builder.Remove("Database");

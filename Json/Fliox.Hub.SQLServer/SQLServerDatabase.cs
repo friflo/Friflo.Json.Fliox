@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
         }
         
-        protected override async Task CreateNewAsync() {
+        protected override async Task CreateDatabaseAsync() {
             await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
 
             var end = DateTime.Now + new TimeSpan(0, 0, 0, 10, 0);
@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             throw new EntityDatabaseException("timeout open newly created database");
         }
         
-        public override async Task DropDatabase() {
+        public override async Task DropDatabaseAsync() {
             var builder = new SqlConnectionStringBuilder(connectionString);
             var db      = builder.InitialCatalog;
             builder.Remove("Database");

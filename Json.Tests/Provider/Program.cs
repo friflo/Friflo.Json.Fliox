@@ -111,7 +111,7 @@ namespace Friflo.Json.Tests.Provider
                     continue;
                 }
                 try {
-                    await database.DropDatabase();
+                    await database.DropDatabaseAsync();
                     var msg = $"drop database '{name}' ({database.StorageType}) successful";
                     result.Add(msg);
                     Console.WriteLine(msg);
