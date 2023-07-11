@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using System.Data.SqlClient;
+using System.Text;
+using Friflo.Json.Fliox.Hub.Host;
 using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
 // ReSharper disable UseAwaitUsing
@@ -104,6 +106,32 @@ WHEN NOT MATCHED THEN
             // CREATE TYPE KeyValueType AS TABLE({ID} varchar(128), {DATA} varchar(max));
             p.TypeName = "KeyValueType";
             return p;
+        }
+        
+        internal static async Task UpsertRelationalValues (
+            SyncConnection      connection,
+            List<JsonEntity>    entities,
+            TableInfo           tableInfo,
+            SyncContext         syncContext)
+        {
+            var sql = new StringBuilder();
+            var id = tableInfo.tableType == TableType.JsonColumn ? ID : tableInfo.keyColumn.name;
+            sql.Append(
+$@"MERGE {tableInfo.container} AS target
+USING (VALUES");
+            SQLUtils.AppendValuesSQL(sql, entities, SQLEscape.Default);
+            sql.Append(
+                $@") AS source ({ID}, {DATA})
+ON source.{id} = target.{id}
+WHEN MATCHED THEN
+    UPDATE SET target.{DATA} = source.{DATA}
+WHEN NOT MATCHED THEN
+    INSERT (");
+            SQLTable.AppendColumnNames(sql, tableInfo);
+            sql.Append(')');
+            using var pooled = syncContext.Json2SQL.Get();
+            pooled.instance.AppendColumnValues(sql, entities, SQLEscape.BackSlash, tableInfo);
+            await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
         }
         
         internal static async Task DeleteEntitiesCmdAsync (SyncConnection connection, List<JsonKey> ids, string table) {

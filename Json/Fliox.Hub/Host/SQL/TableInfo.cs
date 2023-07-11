@@ -113,8 +113,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public   readonly   ColumnInfo[]                    columns;
         public   readonly   ColumnInfo                      keyColumn;
         public   readonly   TableType                       tableType;
+        public   readonly   string                          container;
         // --- internal
-        private  readonly   string                          container;
         private  readonly   Dictionary<string, ColumnInfo>  columnMap;
         // ReSharper disable once CollectionNeverQueried.Local
         private  readonly   Dictionary<string, ColumnInfo>  indexMap;

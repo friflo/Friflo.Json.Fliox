@@ -28,16 +28,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             TableInfo           tableInfo)
         {
             sb.Append(" (");
-            var isFirst = true;
-            columns = tableInfo.columns;
-            foreach (var column in columns) {
-                if (isFirst) isFirst = false; else sb.Append(',');
-                sb.Append('`');
-                sb.Append(column.name);
-                sb.Append('`');
-            }
+            SQLTable.AppendColumnNames(sb, tableInfo);
             sb.Append(")\nVALUES\n");
-
+            columns         = tableInfo.columns;
             var columnCount = columns.Length;
             if (columnCount > rowCells.Length) {
                 rowCells = new RowCell[columnCount];

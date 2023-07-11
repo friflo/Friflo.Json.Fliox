@@ -145,8 +145,13 @@ CREATE TABLE dbo.{name}";
                 return new UpsertEntitiesResult();
             }
             try {
-                await database.CreateTableTypes().ConfigureAwait(false);
-                await UpsertEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
+                if (tableType == TableType.Relational) {
+                    // SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext);
+                    await UpsertRelationalValues(connection, command.entities, tableInfo, syncContext).ConfigureAwait(false);
+                } else {
+                    await database.CreateTableTypes().ConfigureAwait(false);
+                    await UpsertEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
+                }
             } catch (SqlException e) {
                 return new UpsertEntitiesResult { Error = new TaskExecuteError(e.Message) };
             }
