@@ -17,8 +17,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     public interface ISQLTable
     {
-        Task<SQLResult>  CreateTable         (ISyncConnection connection);
-        Task<SQLResult>  AddVirtualColumns   (ISyncConnection connection);
+        Task<SQLResult> CreateTable         (ISyncConnection connection);
+        Task<SQLResult> AddVirtualColumns   (ISyncConnection connection);
+        Task<SQLResult> AddColumns          (ISyncConnection connection);
     }
     
     public static class SQLTable

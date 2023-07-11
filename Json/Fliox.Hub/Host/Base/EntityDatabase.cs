@@ -184,6 +184,14 @@ namespace Friflo.Json.Fliox.Hub.Host
                     }      
                 }
             }
+            if ((options & Prepare.AddColumns) != 0) {
+                foreach (var table in tables) {
+                    var result = await table.AddColumns(connection).ConfigureAwait(false);
+                    if (result.Failed) {
+                        throw new PrepareDatabaseException(result.error);
+                    }      
+                }
+            }
             return this;
         }
         

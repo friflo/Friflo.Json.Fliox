@@ -69,6 +69,18 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
             return new SQLResult();
         }
         
+        public async Task<SQLResult> AddColumns (ISyncConnection syncConnection) {
+            var connection  = (SyncConnection)syncConnection;
+            var columnNames = await GetColumnNamesAsync (connection).ConfigureAwait(false);
+            foreach (var column in tableInfo.columns) {
+                if (columnNames.Contains(column.name)) {
+                    continue;
+                }
+                // ...
+            }
+            return new SQLResult();
+        }
+        
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {

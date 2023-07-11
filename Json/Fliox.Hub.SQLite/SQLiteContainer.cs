@@ -53,6 +53,18 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return Task.FromResult<SQLResult>(new SQLResult());
         }
         
+        public Task<SQLResult> AddColumns (ISyncConnection syncConnection) {
+            var connection  = (SyncConnection)syncConnection;
+            var columnNames = SQLiteUtils.GetColumnNames(connection, name);
+            foreach (var column in tableInfo.columns) {
+                if (columnNames.Contains(column.name)) {
+                    continue;
+                }
+                // ...
+            }
+            return Task.FromResult<SQLResult>(new SQLResult());
+        }
+        
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
             if (synchronous) {
                 return CreateEntities(command, syncContext);
