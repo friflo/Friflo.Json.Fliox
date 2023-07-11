@@ -138,12 +138,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// In a production environment this method should be called from a migration script - not from a service.
         /// </summary>
         /// <remarks>
-        /// The <paramref name="options"/> define which database operations are executed.
+        /// <i>Note</i>: <see cref="PrepareAsync"/> support only additive database operations to prevent data loss.<br/>
+        /// Dropping tables or columns need to be done with appropriate database tools.<br/>
+        /// <br/> 
+        /// The parameter <paramref name="options"/> define which database operations are executed.
         /// <list type="bullet">
         ///     <item>Create a database if not exist</item>
         ///     <item>Create tables which not exist</item>
-        ///     <item>Add virtual columns if using a database with <see cref="TableType.JsonColumn"/> tables</item>
-        ///     <item>Add columns if using a database with <see cref="TableType.Relational"/> tables</item>
+        ///     <item>Add missing virtual columns if using a database with <see cref="TableType.JsonColumn"/> tables</item>
+        ///     <item>Add missing columns if using a database with <see cref="TableType.Relational"/> tables</item>
         /// </list>
         /// </remarks>
         public async Task<EntityDatabase> PrepareAsync(Prepare options = Prepare.All) {
