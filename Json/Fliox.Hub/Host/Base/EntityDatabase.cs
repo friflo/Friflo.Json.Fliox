@@ -34,12 +34,19 @@ namespace Friflo.Json.Fliox.Hub.Host
         public EntityDatabaseException(string message) : base (message) { } 
     }
     
+    /// <summary>
+    /// A set of options used in <see cref="EntityDatabase.PrepareAsync"/><br/>
+    /// </summary>
     [Flags]
     public enum Prepare
     {
+        /// <summary>Create a database if not exists</summary>
         CreateDatabase      = 1,
+        /// <summary>Create all tables missing in the database</summary>
         CreateTables        = 2,
+        /// <summary>Create missing virtual - computed - columns for a database with <see cref="TableType.JsonColumn"/></summary>
         AddVirtualColumns   = 3,
+        /// <summary>Create missing columns for a database with <see cref="TableType.JsonColumn"/></summary>
         AddColumns          = 4,
         //
         All = CreateDatabase | CreateTables | AddVirtualColumns | AddColumns
@@ -124,6 +131,21 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
+        /// <summary>
+        /// Prepare a ready-for-use database.<br/>
+        /// <br/>
+        /// This method is intended for development to create a database and update its tables based on its <see cref="Schema"/>.<br/>
+        /// In a production environment this method should be called from a migration script - not from a service.
+        /// </summary>
+        /// <remarks>
+        /// The <paramref name="options"/> define which database operations are executed.
+        /// <list type="bullet">
+        ///     <item>Create a database if not exist</item>
+        ///     <item>Create tables which not exist</item>
+        ///     <item>Add virtual columns if using a database with <see cref="TableType.JsonColumn"/> tables</item>
+        ///     <item>Add columns if using a database with <see cref="TableType.Relational"/> tables</item>
+        /// </list>
+        /// </remarks>
         public async Task<EntityDatabase> PrepareAsync(Prepare options = Prepare.All) {
             var connection = await GetConnectionAsync().ConfigureAwait(false);
             if (!connection.IsOpen) {
