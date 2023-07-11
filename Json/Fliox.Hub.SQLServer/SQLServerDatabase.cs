@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     public sealed class SQLServerDatabase : EntityDatabase, ISQLDatabase
     {
         public              bool            Pretty                  { get; init; } = false;
+        public              TableType       TableType               { get; init; } = TableType.JsonColumn;
         
         private  readonly   string          connectionString;
         private             bool            tableTypesCreated;

@@ -44,7 +44,7 @@ AS ({asStr});";
                 case ColumnType.Object:
                     return $"IIF(JSON_QUERY({DATA}, '$.{column.name}') is null, 0, 1)";
                 default:
-                    var type  = ConvertContext.GetSqlType(column.type);
+                    var type  = ConvertContext.GetSqlType(column);
                     return $"CAST(JSON_VALUE({DATA}, '$.{column.name}') AS {type})";
             }
         }

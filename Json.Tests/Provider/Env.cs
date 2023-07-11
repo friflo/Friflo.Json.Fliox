@@ -123,15 +123,16 @@ namespace Friflo.Json.Tests.Provider
         {
             var connection = EnvConfig.GetConnectionString(provider);
             switch (provider) {
-                case "sqlite":      return new SQLiteDatabase       (db, SQLiteFile, schema);
-                case "mysql":       return new MySQLDatabase        (db, connection, schema);
-                case "mysql_mc":    return new MySQLDatabase        (db, connection, schema) { TableType = TableType.Relational };
-                case "mariadb":     return new MariaDBDatabase      (db, connection, schema);
-                case "mariadb_mc":  return new MariaDBDatabase      (db, connection, schema) { TableType = TableType.Relational };
-                case "postgres":    return new PostgreSQLDatabase   (db, connection, schema);
-                case "sqlserver":   return new SQLServerDatabase    (db, connection, schema);
-                case "redis":       return new RedisHashDatabase    (db, connection, schema);
-                case "cosmos":      return new CosmosDatabase       (db, connection, schema);
+                case "sqlite":          return new SQLiteDatabase       (db, SQLiteFile, schema);
+                case "mysql":           return new MySQLDatabase        (db, connection, schema);
+                case "mysql_mc":        return new MySQLDatabase        (db, connection, schema) { TableType = TableType.Relational };
+                case "mariadb":         return new MariaDBDatabase      (db, connection, schema);
+                case "mariadb_mc":      return new MariaDBDatabase      (db, connection, schema) { TableType = TableType.Relational };
+                case "postgres":        return new PostgreSQLDatabase   (db, connection, schema);
+                case "sqlserver":       return new SQLServerDatabase    (db, connection, schema);
+                case "sqlserver_rel":   return new SQLServerDatabase    (db, connection, schema) { TableType = TableType.Relational };
+                case "redis":           return new RedisHashDatabase    (db, connection, schema);
+                case "cosmos":          return new CosmosDatabase       (db, connection, schema);
             }
             throw new ArgumentException($"invalid provider: {provider}");
         }

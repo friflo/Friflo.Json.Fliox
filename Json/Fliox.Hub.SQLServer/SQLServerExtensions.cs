@@ -31,8 +31,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             this.args = args;
         }
         
-        internal static string GetSqlType(ColumnType typeId) {
-            switch (typeId) {
+        internal static string GetSqlType(ColumnInfo column) {
+            switch (column.type) {
                 case ColumnType.Uint8:      return "tinyint";
                 case ColumnType.Int16:      return "smallint";
                 case ColumnType.Int32:      return "int";
@@ -44,11 +44,11 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 case ColumnType.DateTime:
                 case ColumnType.BigInteger:
                 case ColumnType.String:
-                case ColumnType.Enum:       return "nvarchar(max)";
+                case ColumnType.Enum:       return "nvarchar(255)"; // TODO - used 255 to enable using as PK  
                 case ColumnType.Array:      return "nvarchar(max)"; // JSON column
                 case ColumnType.Object:     return "tinyint";
             }
-            throw new NotSupportedException($"column type: {typeId}");
+            throw new NotSupportedException($"column type: {column.type}");
         }
         
         /// <summary>

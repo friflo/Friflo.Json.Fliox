@@ -25,6 +25,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         private  readonly   TableInfo           tableInfo;
         public   override   bool                Pretty      { get; }
         private  readonly   SQLServerDatabase   database;
+        private  readonly   TableType           tableType;
         
         // [Maximum capacity specifications for SQL Server - SQL Server | Microsoft Learn]
         // https://learn.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server?view=sql-server-ver16
@@ -35,18 +36,44 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         internal SQLServerContainer(string name, SQLServerDatabase database, bool pretty)
             : base(name, database)
         {
-            tableInfo       = new TableInfo (database, name);
+            tableInfo       = new TableInfo (database, name, database.TableType);
             Pretty          = pretty;
             this.database   = database;
+            tableType       = database.TableType;
         }
         
-        public async Task<SQLResult> CreateTable(ISyncConnection connection) {
-            var sql =
+        public async Task<SQLResult> CreateTable(ISyncConnection syncConnection) {
+            var connection = (SyncConnection)syncConnection;
+            if (tableType == TableType.JsonColumn) {
+                var sql =
 $@"IF NOT EXISTS (
     SELECT * FROM sys.tables t JOIN sys.schemas s ON (t.schema_id = s.schema_id)
     WHERE s.name = 'dbo' AND t.name = '{name}')
 CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
-            return await Execute((SyncConnection)connection, sql).ConfigureAwait(false);
+                return await Execute(connection, sql).ConfigureAwait(false);
+            } else {
+                var sql =
+$@"IF NOT EXISTS (
+    SELECT * FROM sys.tables t JOIN sys.schemas s ON (t.schema_id = s.schema_id)
+    WHERE s.name = 'dbo' AND t.name = '{name}')
+CREATE TABLE dbo.{name}";
+                var sb = new StringBuilder();
+                sb.Append($"{sql} (");
+                foreach (var column in tableInfo.columns) {
+                    sb.Append('[');
+                    sb.Append(column.name);
+                    sb.Append("] ");
+                    var type = ConvertContext.GetSqlType(column);
+                    sb.Append(type);
+                    if (column.isPrimaryKey) {
+                        sb.Append(" PRIMARY KEY");
+                    }
+                    sb.Append(',');
+                }
+                sb.Length -= 1;
+                sb.Append(");");
+                return await Execute(connection, sb.ToString()).ConfigureAwait(false);
+            }
         }
         
         private async Task<HashSet<string>> GetColumnNamesAsync(SyncConnection connection) {
@@ -55,6 +82,9 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         }
         
         public async Task<SQLResult> AddVirtualColumns(ISyncConnection syncConnection) {
+            if (tableType != TableType.JsonColumn) {
+                return default;
+            }
             var connection  = (SyncConnection)syncConnection;
             var columnNames = await GetColumnNamesAsync (connection).ConfigureAwait(false);
             foreach (var column in tableInfo.columns) {
@@ -70,13 +100,21 @@ CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
         }
         
         public async Task<SQLResult> AddColumns (ISyncConnection syncConnection) {
+            if (tableType != TableType.Relational) {
+                return default;
+            }
             var connection  = (SyncConnection)syncConnection;
             var columnNames = await GetColumnNamesAsync (connection).ConfigureAwait(false);
             foreach (var column in tableInfo.columns) {
                 if (columnNames.Contains(column.name)) {
                     continue;
                 }
-                // ...
+                var type    = ConvertContext.GetSqlType(column);
+                var sql     = $"ALTER TABLE {name} ADD [{column.name}] {type};";
+                var result  = await Execute(connection, sql).ConfigureAwait(false);
+                if (result.Failed) {
+                    return result;
+                }
             }
             return new SQLResult();
         }
