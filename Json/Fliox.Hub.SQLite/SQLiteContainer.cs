@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             Pretty      = pretty;
         }
 
-        public Task<SQLResult> InitTable(ISyncConnection syncConnection) {
+        public Task<SQLResult> CreateTable(ISyncConnection syncConnection) {
             var connection = (SyncConnection)syncConnection;
             var sql = $"CREATE TABLE IF NOT EXISTS {name} ({ID} TEXT PRIMARY KEY, {DATA} TEXT NOT NULL);";
             if (!SQLiteUtils.Execute(connection, sql, out var error)) {

@@ -34,11 +34,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             tableType   = database.TableType;
         }
         
-        public async Task<SQLResult> InitTable(ISyncConnection connection) {
-            return await CreateTable((SyncConnection)connection).ConfigureAwait(false);
-        }
-        
-        private async Task<SQLResult> CreateTable(SyncConnection connection) {
+        public async Task<SQLResult> CreateTable(ISyncConnection syncConnection) {
+            var connection = (SyncConnection)syncConnection;
             if (tableType == TableType.JsonColumn) {
                 // [MySQL :: MySQL 8.0 Reference Manual :: 11.7 Data Type Storage Requirements] https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html
                 var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSON);";

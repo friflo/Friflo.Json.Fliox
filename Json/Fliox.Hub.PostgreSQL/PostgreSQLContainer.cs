@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             entityType      = types[name];
         }
         
-        public async Task<SQLResult> InitTable(ISyncConnection connection) {
+        public async Task<SQLResult> CreateTable(ISyncConnection connection) {
             try {
                 // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
                 // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."

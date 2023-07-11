@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             this.database   = database;
         }
         
-        public async Task<SQLResult> InitTable(ISyncConnection connection) {
+        public async Task<SQLResult> CreateTable(ISyncConnection connection) {
             var sql =
 $@"IF NOT EXISTS (
     SELECT * FROM sys.tables t JOIN sys.schemas s ON (t.schema_id = s.schema_id)

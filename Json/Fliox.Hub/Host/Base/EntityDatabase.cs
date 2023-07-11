@@ -148,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             if ((options & Prepare.CreateTables) != 0) {
                 foreach (var table in tables) {
-                    var result = await table.InitTable(connection).ConfigureAwait(false);
+                    var result = await table.CreateTable(connection).ConfigureAwait(false);
                     if (result.Failed) {
                         throw new EntityDatabaseException(result.error);
                     }      
