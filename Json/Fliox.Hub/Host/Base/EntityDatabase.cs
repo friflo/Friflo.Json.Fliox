@@ -30,6 +30,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         Relational  = 1,
     }
     
+    public class EntityDatabaseException : Exception {
+        public EntityDatabaseException(string message) : base (message) { } 
+    }
+    
     /// <summary>
     /// <see cref="EntityDatabase"/> is the abstraction for specific database adapter / implementation e.g. a
     /// <see cref="MemoryDatabase"/> or <see cref="FileDatabase"/>.
@@ -108,6 +112,33 @@ namespace Friflo.Json.Fliox.Hub.Host
                 container.Value.Dispose();
             }
         }
+        
+        public async Task<EntityDatabase> CreateAsync() {
+            var connection = await GetConnectionAsync().ConfigureAwait(false);
+            if (!connection.IsOpen) {
+                try {
+                    await CreateNewAsync().ConfigureAwait(false);
+                    connection = await GetConnectionAsync().ConfigureAwait(false);
+                } catch (Exception e) {
+                    throw new EntityDatabaseException(e.Message);
+                }
+            }
+            var containerNames = Schema.GetContainers();
+            foreach (var containerName in containerNames) {
+                var container = CreateContainer(new ShortString(containerName), this);
+                if (container is not ISQLTable table) {
+                    continue;
+                }
+                var error = await table.InitTable(connection).ConfigureAwait(false);
+                if (error != null) {
+                    throw new EntityDatabaseException(error.message);
+                }
+            }
+            return this;
+        }
+        
+        protected   virtual Task    CreateNewAsync() => Task.CompletedTask;
+        public      virtual Task    DropDatabase()   => throw new NotSupportedException($"DropDatabase() not supported");
         
         public EntityDatabase AddCommands(IServiceCommands commands) {
             if (!service.AddAttributedHandlers(commands, out var error)) {
@@ -201,12 +232,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new DbMessages { commands = commands, messages = messages };
         }
         
-        public virtual Task DropDatabase() => throw new NotSupportedException($"DropDatabase() not supported");
-        
         #endregion
         
     #region - sync connection
-        public virtual  Task<ISyncConnection>   GetConnectionAsync()                            => throw new NotImplementedException();
+        public virtual  Task<ISyncConnection>   GetConnectionAsync()                            => Task.FromResult<ISyncConnection>(new DefaultSyncConnection());
         public virtual  ISyncConnection         GetConnectionSync()                             => throw new NotImplementedException();
         public virtual  void                    ReturnConnection(ISyncConnection connection)    => connection.Dispose();
         public virtual  Task<TransResult>       Transaction(SyncContext syncContext, TransCommand command) {

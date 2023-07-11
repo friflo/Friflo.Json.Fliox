@@ -21,7 +21,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
     internal sealed class MySQLContainer : EntityContainer, ISQLTable
     {
         private  readonly   TableInfo       tableInfo;
-        private  readonly   ContainerInit   init;
         public   override   bool            Pretty      { get; }
         private  readonly   MySQLProvider   provider;
         private  readonly   TableType       tableType;
@@ -29,7 +28,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         internal MySQLContainer(string name, MySQLDatabase database, bool pretty)
             : base(name, database)
         {
-            init        = new ContainerInit(database);
             tableInfo   = new TableInfo (database, name, database.TableType);
             Pretty      = pretty;
             provider    = database.Provider;
@@ -37,16 +35,12 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
         
         public async Task<TaskExecuteError> InitTable(ISyncConnection connection) {
-            if (init.CreateTable) {
-                var result = await CreateTable((SyncConnection)connection).ConfigureAwait(false);
-                if (result.Failed) {
-                    return result.error;
-                }
-                init.tableCreated = true;
+            var result = await CreateTable((SyncConnection)connection).ConfigureAwait(false);
+            if (result.Failed) {
+                return result.error;
             }
-            if (tableType == TableType.JsonColumn && init.AddVirtualColumns) {
+            if (tableType == TableType.JsonColumn) {
                 var error = await AddVirtualColumns(connection).ConfigureAwait(false);
-                init.virtualColumnsAdded = true;
                 if (error != null) {
                     return error;
                 }
@@ -103,10 +97,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (syncConnection is not SyncConnection connection) {
                 return new CreateEntitiesResult { Error = syncConnection.Error };
             }
-            var error = await InitTable(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new CreateEntitiesResult { Error = error };
-            }
             if (command.entities.Count == 0) {
                 return new CreateEntitiesResult();
             }
@@ -130,10 +120,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new UpsertEntitiesResult { Error = syncConnection.Error };
-            }
-            var error = await InitTable(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new UpsertEntitiesResult { Error = error };
             }
             if (command.entities.Count == 0) {
                 return new UpsertEntitiesResult();
@@ -159,10 +145,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
-            var error = await InitTable(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new ReadEntitiesResult { Error = error };
-            }
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
                 sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
@@ -187,10 +169,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
-            }
-            var error = await InitTable(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new QueryEntitiesResult { Error = error };
             }
             var filter  = command.GetFilter();
             var where   = filter.IsTrue ? "TRUE" : filter.MySQLFilter(provider, tableType);
@@ -231,10 +209,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new DeleteEntitiesResult { Error = syncConnection.Error };
-            }
-            var error = await InitTable(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new DeleteEntitiesResult { Error = error };
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";

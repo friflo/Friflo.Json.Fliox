@@ -22,13 +22,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
     internal sealed class PostgreSQLContainer : EntityContainer, ISQLTable
     {
         private  readonly   TableInfo       tableInfo;
-        private  readonly   ContainerInit   init;
         private  readonly   TypeDef         entityType;
         
         internal PostgreSQLContainer(string name, PostgreSQLDatabase database)
             : base(name, database)
         {
-            init            = new ContainerInit(database);
             tableInfo       = new TableInfo (database, name);
             var types       = database.Schema.typeSchema.GetEntityTypes();
             entityType      = types[name];
@@ -36,23 +34,17 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         public async Task<TaskExecuteError> InitTable(ISyncConnection connection) {
             try {
-                if (init.CreateTable) {
-                    // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
-                    // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
-                    // set to 255 as for all SQL databases
-                    var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
-                    var result = await ExecuteAsync((SyncConnection)connection, sql).ConfigureAwait(false);
-                    if (result.Failed) {
-                        return result.error;
-                    }
-                    init.tableCreated = true;
+                // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
+                // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
+                // set to 255 as for all SQL databases
+                var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
+                var result = await ExecuteAsync((SyncConnection)connection, sql).ConfigureAwait(false);
+                if (result.Failed) {
+                    return result.error;
                 }
-                if (init.AddVirtualColumns) {
-                    var error = await AddVirtualColumns(connection).ConfigureAwait(false);
-                    init.virtualColumnsAdded = true;
-                    if (error != null) {
-                        return error;
-                    }
+                var error = await AddVirtualColumns(connection).ConfigureAwait(false);
+                if (error != null) {
+                    return error;
                 }
                 return null;
             } catch (NpgsqlException e) {
@@ -85,10 +77,6 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (syncConnection is not SyncConnection connection) {
                 return new CreateEntitiesResult { Error = syncConnection.Error };
             }
-            var error = await InitTable(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new CreateEntitiesResult { Error = error };
-            }
             if (command.entities.Count == 0) {
                 return new CreateEntitiesResult();
             }
@@ -107,10 +95,6 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new UpsertEntitiesResult { Error = syncConnection.Error };
-            }
-            var error = await InitTable(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new UpsertEntitiesResult { Error = error };
             }
             if (command.entities.Count == 0) {
                 return new UpsertEntitiesResult();
@@ -132,10 +116,6 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
-            var error = await InitTable(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new ReadEntitiesResult { Error = error };
-            }
             var sql = new StringBuilder();
             sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
             SQLUtils.AppendKeysSQL(sql,  command.ids, SQLEscape.Default);
@@ -151,10 +131,6 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
-            }
-            var error = await InitTable(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new QueryEntitiesResult { Error = error };
             }
             var filter  = command.GetFilter();
             var where   = filter.IsTrue ? "TRUE" : filter.PostgresFilter(entityType);
@@ -189,10 +165,6 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new DeleteEntitiesResult { Error = syncConnection.Error};
-            }
-            var error = await InitTable(connection).ConfigureAwait(false);
-            if (error != null) {
-                return new DeleteEntitiesResult { Error = error };
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";

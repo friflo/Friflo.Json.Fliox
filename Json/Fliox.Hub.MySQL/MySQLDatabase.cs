@@ -15,9 +15,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
     public class MySQLDatabase : EntityDatabase, ISQLDatabase
     {
         public              bool            Pretty                  { get; init; } = false;
-        public              bool            AutoCreateDatabase      { get; init; } = true;
-        public              bool            AutoCreateTables        { get; init; } = true;
-        public              bool            AutoAddVirtualColumns   { get; init; } = true;
         public              TableType       TableType               { get; init; } = TableType.JsonColumn;
         private  readonly   ConnectionPool<SyncConnection> connectionPool; 
         
@@ -42,26 +39,10 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
             }
-            Exception openException;
             try {
                 var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
                 return new SyncConnection(connection);                
-            } catch (Exception e) {
-                openException = e;
-            }
-            if (!AutoCreateDatabase) {
-                return new SyncConnectionError(openException);
-            }
-            try {
-                await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
-            } catch (Exception e) {
-                return new SyncConnectionError(e);
-            }
-            try {
-                var connection = new MySqlConnection(connectionString);
-                await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);
             } catch (Exception e) {
                 return new SyncConnectionError(e);
             }
@@ -92,6 +73,10 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
         }
         
+        protected override async Task CreateNewAsync() {
+            await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
+        }
+
         public override async Task DropDatabase() {
             var builder = new MySqlConnectionStringBuilder(connectionString);
             var db      = builder.Database;

@@ -14,9 +14,6 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public sealed class PostgreSQLDatabase : EntityDatabase, ISQLDatabase
     {
-        public              bool        AutoCreateDatabase      { get; init; } = true;
-        public              bool        AutoCreateTables        { get; init; } = true;
-        public              bool        AutoAddVirtualColumns   { get; init; } = true;
         
         private  readonly   string      connectionString;
         private  readonly   ConnectionPool<SyncConnection> connectionPool;
@@ -39,26 +36,10 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
             }
-            Exception openException;
             try {
                 var connection = new NpgsqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
                 return new SyncConnection(connection);                
-            } catch (Exception e) {
-                openException = e;
-            }
-            if (!AutoCreateDatabase) {
-                return new SyncConnectionError(openException);
-            }
-            try {
-                await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
-            } catch (Exception e) {
-                return new SyncConnectionError(e);
-            }
-            try {
-                var connection = new NpgsqlConnection(connectionString);
-                await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);
             } catch (Exception e) {
                 return new SyncConnectionError(e);
             }
@@ -87,6 +68,10 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             catch (NpgsqlException e) {
                 return new TransResult(e.Message);
             }
+        }
+        
+        protected override async Task CreateNewAsync() {
+            await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
         }
         
         public override async Task DropDatabase() {

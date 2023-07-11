@@ -23,9 +23,6 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         /// Should I expose asynchronous wrappers for synchronous methods? - .NET Parallel Programming</a>
         /// </summary>
         public              bool            Synchronous             { get; init; } = false;
-        public              bool            AutoCreateDatabase      { get; init; } = true;
-        public              bool            AutoCreateTables        { get; init; } = true;
-        public              bool            AutoAddVirtualColumns   { get; init; } = true;
         
         /// <summary>
         /// could use a single SyncConnection - an sqlite3 handle - for all database operation
@@ -55,14 +52,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return new SQLiteContainer(name.AsString(), this, Pretty);
         }
         
+        public override  Task<ISyncConnection>   GetConnectionAsync() {
+            var result = GetConnectionSync();
+            return Task.FromResult(result);
+        }
+
         public override ISyncConnection GetConnectionSync() {
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
             }
-            var flags = raw.SQLITE_OPEN_READWRITE;
-            if (AutoCreateDatabase) {
-                flags |=  raw.SQLITE_OPEN_CREATE;
-            }
+            var flags = raw.SQLITE_OPEN_READWRITE | raw.SQLITE_OPEN_CREATE;
             var rc = raw.sqlite3_open_v2(filePath, out sqlite3 sqliteDB, flags, null);
             if (rc != raw.SQLITE_OK) {
                 return new SyncConnectionError($"sqlite3_open_v2 failed. error: {rc}");

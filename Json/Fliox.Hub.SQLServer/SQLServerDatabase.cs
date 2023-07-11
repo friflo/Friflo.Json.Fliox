@@ -15,9 +15,6 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     public sealed class SQLServerDatabase : EntityDatabase, ISQLDatabase
     {
         public              bool            Pretty                  { get; init; } = false;
-        public              bool            AutoCreateDatabase      { get; init; } = true;
-        public              bool            AutoCreateTables        { get; init; } = true;
-        public              bool            AutoAddVirtualColumns   { get; init; } = true;
         
         private  readonly   string          connectionString;
         private             bool            tableTypesCreated;
@@ -42,36 +39,13 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
             }
-            Exception openException;
-            SqlConnection connection= null;
             try {
-                connection = new SqlConnection(connectionString);
+                var connection = new SqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
                 return new SyncConnection(connection);   
             } catch (SqlException e) {
-                connection?.Dispose();
-                openException = e;
-            }
-            if (!AutoCreateDatabase) {
-                return new SyncConnectionError(openException);
-            }
-            try {
-                await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
-            } catch (Exception e) {
-                connection?.Dispose();
                 return new SyncConnectionError(e);
             }
-            var end = DateTime.Now + new TimeSpan(0, 0, 0, 10, 0);
-            while (DateTime.Now < end) {
-                try {
-                    connection = new SqlConnection(connectionString);
-                    await connection.OpenAsync().ConfigureAwait(false);
-                    return new SyncConnection(connection);
-                } catch (SqlException) {
-                    await Task.Delay(1000).ConfigureAwait(false);
-                }
-            }
-            return new SyncConnectionError("timeout open newly created database");
         }
         
         public override void ReturnConnection(ISyncConnection connection) {
@@ -110,6 +84,22 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             catch (SqlException e) {
                 return new TransResult(e.Message);
             }
+        }
+        
+        protected override async Task CreateNewAsync() {
+            await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
+
+            var end = DateTime.Now + new TimeSpan(0, 0, 0, 10, 0);
+            while (DateTime.Now < end) {
+                try {
+                    var connection = new SqlConnection(connectionString);
+                    await connection.OpenAsync().ConfigureAwait(false);
+                    return;
+                } catch (SqlException) {
+                    await Task.Delay(1000).ConfigureAwait(false);
+                }
+            }
+            throw new EntityDatabaseException("timeout open newly created database");
         }
         
         public override async Task DropDatabase() {

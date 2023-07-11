@@ -332,6 +332,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return result;
         }
+        
+        public async Task CreateDatabases() {
+            var databases = GetDatabases().Values;
+            var tasks = new List<Task>();
+            foreach (var db in databases) {
+                var task = db.CreateAsync();
+                tasks.Add(task);
+            }
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+        }
         #endregion
     }
 }

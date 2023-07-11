@@ -47,6 +47,7 @@ namespace Friflo.Json.Tests.Provider
             hub.AddExtensionDB (fileDb);
             
             AddDatabases(hub, Schema);
+            await hub.CreateDatabases().ConfigureAwait(false);
 
             hub.AddExtensionDB  (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
             hub.EventDispatcher = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)
@@ -84,10 +85,14 @@ namespace Friflo.Json.Tests.Provider
             var sqlServer       = EnvConfig.GetConnectionString("sqlserver");
             hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_db",    sqlServer,schema));
 
-            var redis           = EnvConfig.GetConnectionString("redis");
-            hub.AddExtensionDB  (new RedisHashDatabase  ("redis_db",        redis,    schema));
+            if (UseRedis) {
+                var redis           = EnvConfig.GetConnectionString("redis");
+                hub.AddExtensionDB  (new RedisHashDatabase  ("redis_db",        redis,    schema));
+            }
 #endif
         }
+        
+        private static bool UseRedis = false;
         
         public static async Task DropDatabases() {
             var hub = new FlioxHub(new MemoryDatabase("main"));
