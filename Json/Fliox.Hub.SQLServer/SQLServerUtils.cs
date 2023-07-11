@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 return default;
             }
             catch (SqlException e) {
-                return SQLResult.Error(e);
+                return SQLResult.CreateError(e);
             }
         }
         

@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return default;
             }
             catch (MySqlException e) {
-                return SQLResult.Error(e);
+                return SQLResult.CreateError(e);
             }
         }
         

@@ -270,11 +270,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return new SQLResult(value);
         }
         
-        public static SQLResult Error(string message) {
+        public static SQLResult CreateError(string message) {
             return new SQLResult(message);
         }
         
-        public static SQLResult Error(Exception e) {
+        public static SQLResult CreateError(Exception e) {
             return new SQLResult(e.Message);
         }
 

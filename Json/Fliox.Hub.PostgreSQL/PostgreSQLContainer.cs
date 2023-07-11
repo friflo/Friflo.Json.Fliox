@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
                 return await ExecuteAsync((SyncConnection)connection, sql).ConfigureAwait(false);
             } catch (NpgsqlException e) {
-                return SQLResult.Error(e);
+                return SQLResult.CreateError(e);
             }
         }
         

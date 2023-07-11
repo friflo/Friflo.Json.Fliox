@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         private static bool SQLError(string msg, out SQLResult error) {
-            error = SQLResult.Error(msg);
+            error = SQLResult.CreateError(msg);
             return false;
         }
         
