@@ -11,6 +11,16 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
+    public interface ISQLDatabase
+    {
+    }
+    
+    public interface ISQLTable
+    {
+        Task<SQLResult>  CreateTable         (ISyncConnection connection);
+        Task<SQLResult>  AddVirtualColumns   (ISyncConnection connection);
+    }
+    
     public static class SQLTable
     {
         public static void AppendColumnNames(StringBuilder sb, TableInfo tableInfo) {
