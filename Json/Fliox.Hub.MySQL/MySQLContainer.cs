@@ -34,18 +34,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             tableType   = database.TableType;
         }
         
-        public async Task<TaskExecuteError> InitTable(ISyncConnection connection) {
-            var result = await CreateTable((SyncConnection)connection).ConfigureAwait(false);
-            if (result.Failed) {
-                return result.error;
-            }
-            if (tableType == TableType.JsonColumn) {
-                var error = await AddVirtualColumns(connection).ConfigureAwait(false);
-                if (error != null) {
-                    return error;
-                }
-            }
-            return null;
+        public async Task<SQLResult> InitTable(ISyncConnection connection) {
+            return await CreateTable((SyncConnection)connection).ConfigureAwait(false);
         }
         
         private async Task<SQLResult> CreateTable(SyncConnection connection) {
@@ -77,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return await SQLUtils.GetColumnNamesAsync(reader).ConfigureAwait(false);
         }
         
-        public async Task<TaskExecuteError> AddVirtualColumns(ISyncConnection syncConnection) {
+        public async Task<SQLResult> AddVirtualColumns(ISyncConnection syncConnection) {
             var connection  = (SyncConnection)syncConnection;
             var columnNames = await GetColumnNamesAsync(connection).ConfigureAwait(false);
             foreach (var column in tableInfo.columns) {
@@ -86,10 +76,10 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 }
                 var result = await AddVirtualColumn(connection, name, column, provider).ConfigureAwait(false);
                 if (result.Failed) {
-                    return result.error;
+                    return result;
                 }
             }
-            return null;
+            return new SQLResult();
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
@@ -199,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
 
                 var result  = await Execute(connection, sql).ConfigureAwait(false);
-                if (result.Failed) { return new AggregateEntitiesResult { Error = result.error }; }
+                if (result.Failed) { return new AggregateEntitiesResult { Error = result.TaskError() }; }
                 return new AggregateEntitiesResult { value = (long)result.value };
             }
             return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
@@ -213,7 +203,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
                 var result = await Execute(connection, sql).ConfigureAwait(false);
-                if (result.Failed) { return new DeleteEntitiesResult { Error = result.error }; }
+                if (result.Failed) { return new DeleteEntitiesResult { Error = result.TaskError() }; }
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();

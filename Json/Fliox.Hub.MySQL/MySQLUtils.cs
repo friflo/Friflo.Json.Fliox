@@ -19,13 +19,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
                     var value = reader.GetValue(0);
-                    return new SQLResult(value); 
+                    return SQLResult.Success(value); 
                     // Console.WriteLine($"MySQL version: {value}");
                 }
                 return default;
             }
             catch (MySqlException e) {
-                return new SQLResult(e.Message);
+                return SQLResult.Error(e);
             }
         }
         

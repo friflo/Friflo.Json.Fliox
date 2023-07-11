@@ -34,6 +34,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         public EntityDatabaseException(string message) : base (message) { } 
     }
     
+    [Flags]
+    public enum Prepare
+    {
+        CreateDatabase      = 1,
+        CreateTables        = 2,
+        AddVirtualColumns   = 3,
+        AddColumns          = 4,
+        //
+        All = CreateDatabase | CreateTables | AddVirtualColumns | AddColumns
+    }
+    
     /// <summary>
     /// <see cref="EntityDatabase"/> is the abstraction for specific database adapter / implementation e.g. a
     /// <see cref="MemoryDatabase"/> or <see cref="FileDatabase"/>.
@@ -113,10 +124,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        public async Task<EntityDatabase> CreateAsync() {
+        public async Task<EntityDatabase> PrepareAsync(Prepare options = Prepare.All) {
             var connection = await GetConnectionAsync().ConfigureAwait(false);
             if (!connection.IsOpen) {
                 try {
+                    if ((options & Prepare.CreateDatabase) == 0) {
+                        throw new EntityDatabaseException(connection.Error.message);
+                    }
                     await CreateNewAsync().ConfigureAwait(false);
                     connection = await GetConnectionAsync().ConfigureAwait(false);
                 } catch (Exception e) {
@@ -124,14 +138,28 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
             }
             var containerNames = Schema.GetContainers();
+            var tables = new List<ISQLTable>();
             foreach (var containerName in containerNames) {
                 var container = CreateContainer(new ShortString(containerName), this);
                 if (container is not ISQLTable table) {
                     continue;
                 }
-                var error = await table.InitTable(connection).ConfigureAwait(false);
-                if (error != null) {
-                    throw new EntityDatabaseException(error.message);
+                tables.Add(table);
+            }
+            if ((options & Prepare.CreateTables) != 0) {
+                foreach (var table in tables) {
+                    var result = await table.InitTable(connection).ConfigureAwait(false);
+                    if (result.Failed) {
+                        throw new EntityDatabaseException(result.error);
+                    }      
+                }
+            }
+            if ((options & Prepare.AddVirtualColumns) != 0) {
+                foreach (var table in tables) {
+                    var result = await table.AddVirtualColumns(connection).ConfigureAwait(false);
+                    if (result.Failed) {
+                        throw new EntityDatabaseException(result.error);
+                    }      
                 }
             }
             return this;

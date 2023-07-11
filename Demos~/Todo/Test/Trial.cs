@@ -23,7 +23,7 @@ internal static class Trial
     private static async Task DirectDatabaseExample() {
         var schema      = DatabaseSchema.Create<TodoClient>();
         var database    = new SQLiteDatabase("todo_db", "Data Source=todo.sqlite3", schema);
-        await database.CreateAsync().ConfigureAwait(false);
+        await database.PrepareAsync().ConfigureAwait(false);
         var hub         = new FlioxHub(database);
 
         var client      = new TodoClient(hub);

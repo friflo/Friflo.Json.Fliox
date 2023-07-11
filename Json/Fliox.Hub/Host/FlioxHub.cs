@@ -337,7 +337,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var databases = GetDatabases().Values;
             var tasks = new List<Task>();
             foreach (var db in databases) {
-                var task = db.CreateAsync();
+                var task = db.PrepareAsync();
                 tasks.Add(task);
             }
             await Task.WhenAll(tasks).ConfigureAwait(false);

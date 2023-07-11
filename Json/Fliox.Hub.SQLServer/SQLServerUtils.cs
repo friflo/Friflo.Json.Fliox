@@ -21,12 +21,12 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
                     var value = reader.GetValue(0);
-                    return new SQLResult(value); 
+                    return SQLResult.Success(value); 
                 }
                 return default;
             }
             catch (SqlException e) {
-                return new SQLResult(e.Message);
+                return SQLResult.Error(e);
             }
         }
         

@@ -18,12 +18,12 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
                     var value = reader.GetValue(0);
-                    return new SQLResult(value); 
+                    return SQLResult.Success(value); 
                 }
                 return default;
             }
             catch (NpgsqlException e) {
-                return new SQLResult(e);
+                return SQLResult.Error(e);
             }
         }
         

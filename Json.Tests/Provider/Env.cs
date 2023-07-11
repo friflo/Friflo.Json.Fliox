@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Provider
             if (!hubs.TryGetValue(db, out var hub)) {
                 var schema      = SeedSource.Schema;
                 var database    = CreateDatabase(db, schema);
-                await database.CreateAsync().ConfigureAwait(false);
+                await database.PrepareAsync().ConfigureAwait(false);
                 hub = new FlioxHub(database);
                 hubs.Add(db, hub);
             }

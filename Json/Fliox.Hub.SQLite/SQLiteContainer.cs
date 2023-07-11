@@ -29,32 +29,28 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             Pretty      = pretty;
         }
 
-        public Task<TaskExecuteError> InitTable(ISyncConnection syncConnection) {
+        public Task<SQLResult> InitTable(ISyncConnection syncConnection) {
             var connection = (SyncConnection)syncConnection;
             var sql = $"CREATE TABLE IF NOT EXISTS {name} ({ID} TEXT PRIMARY KEY, {DATA} TEXT NOT NULL);";
             if (!SQLiteUtils.Execute(connection, sql, out var error)) {
                 return Task.FromResult(error);
             }
-            error = AddVirtualColumns(connection).Result; // Result is safe. Method execute synchronous
-            if (error != null) {
-                return Task.FromResult(error);
-            }
-            return Task.FromResult<TaskExecuteError>(null);
+            return Task.FromResult<SQLResult>(default);
         }
         
-        public Task<TaskExecuteError> AddVirtualColumns(ISyncConnection syncConnection) {
+        public Task<SQLResult> AddVirtualColumns(ISyncConnection syncConnection) {
             var connection = (SyncConnection)syncConnection;
             var columnNames = SQLiteUtils.GetColumnNames(connection, name);
             foreach (var column in tableInfo.columns) {
                 if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
                     continue;
                 }
-                var error = SQLiteUtils.AddVirtualColumn(connection, name, column);
-                if (error != null) {
-                    return Task.FromResult(error);
+                var result = SQLiteUtils.AddVirtualColumn(connection, name, column);
+                if (result.Failed) {
+                    return Task.FromResult(result);
                 }
             }
-            return Task.FromResult<TaskExecuteError>(null);
+            return Task.FromResult<SQLResult>(new SQLResult());
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {

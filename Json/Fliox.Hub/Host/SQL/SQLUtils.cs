@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -257,18 +258,34 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
     public readonly struct SQLResult
     {
-        public  readonly    object              value;
-        public  readonly    TaskExecuteError    error;
-        public              bool                Failed => error != null;
+        public  readonly    object  value;
+        public  readonly    string  error;
+        public              bool    Failed => error != null;
         
-        public SQLResult(object value) {
+        public  TaskExecuteError TaskError() {
+            return new TaskExecuteError (error);
+        }
+        
+        public static SQLResult Success(object value) {
+            return new SQLResult(value);
+        }
+        
+        public static SQLResult Error(string message) {
+            return new SQLResult(message);
+        }
+        
+        public static SQLResult Error(Exception e) {
+            return new SQLResult(e.Message);
+        }
+
+        private SQLResult(object value) {
             this.value  = value;
             error       = null;
         }
         
-        public SQLResult(Exception e) {
+        private SQLResult(string message) {
             value       = null;
-            error       = new TaskExecuteError(e.Message);
+            error       = message;
         }
     }
 }

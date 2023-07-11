@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     public interface ISQLTable
     {
-        Task<TaskExecuteError>  InitTable           (ISyncConnection connection);
-        Task<TaskExecuteError>  AddVirtualColumns   (ISyncConnection connection);
+        Task<SQLResult>  InitTable           (ISyncConnection connection);
+        Task<SQLResult>  AddVirtualColumns   (ISyncConnection connection);
     }
 }

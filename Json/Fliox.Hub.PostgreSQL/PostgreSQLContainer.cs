@@ -32,23 +32,15 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             entityType      = types[name];
         }
         
-        public async Task<TaskExecuteError> InitTable(ISyncConnection connection) {
+        public async Task<SQLResult> InitTable(ISyncConnection connection) {
             try {
                 // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
                 // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
                 // set to 255 as for all SQL databases
                 var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
-                var result = await ExecuteAsync((SyncConnection)connection, sql).ConfigureAwait(false);
-                if (result.Failed) {
-                    return result.error;
-                }
-                var error = await AddVirtualColumns(connection).ConfigureAwait(false);
-                if (error != null) {
-                    return error;
-                }
-                return null;
+                return await ExecuteAsync((SyncConnection)connection, sql).ConfigureAwait(false);
             } catch (NpgsqlException e) {
-                return new TaskExecuteError(e.Message);
+                return SQLResult.Error(e);
             }
         }
         
@@ -57,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             return await SQLUtils.GetColumnNamesAsync(reader).ConfigureAwait(false);
         }
         
-        public async Task<TaskExecuteError> AddVirtualColumns(ISyncConnection syncConnection) {
+        public async Task<SQLResult> AddVirtualColumns(ISyncConnection syncConnection) {
             var connection  = (SyncConnection)syncConnection;
             var columnNames = await GetColumnNamesAsync(connection).ConfigureAwait(false);
             foreach (var column in tableInfo.columns) {
@@ -66,10 +58,10 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 }
                 var result = await AddVirtualColumn(connection, name, column).ConfigureAwait(false);
                 if (result.Failed) {
-                    return result.error;
+                    return result;
                 }
             }
-            return null;
+            return new SQLResult();
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
@@ -154,7 +146,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter(entityType)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
                 var result  = await ExecuteAsync(connection, sql).ConfigureAwait(false);
-                if (result.Failed) { return new AggregateEntitiesResult { Error = result.error }; }
+                if (result.Failed) { return new AggregateEntitiesResult { Error = result.TaskError() }; }
                 return new AggregateEntitiesResult { value = (long)result.value };
             }
             return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
@@ -169,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
                 var result = await ExecuteAsync(connection, sql).ConfigureAwait(false);
-                if (result.Failed) { return new DeleteEntitiesResult { Error = result.error }; }
+                if (result.Failed) { return new DeleteEntitiesResult { Error = result.TaskError() }; }
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();
