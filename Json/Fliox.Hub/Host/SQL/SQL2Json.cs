@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case ColumnType.Guid:       cell.guid= reader.GetGuid       (ordinal);  return;
                 //
                 case ColumnType.Array:      GetString(ref cell.chars, ordinal);         return;
-                case ColumnType.Object:     cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return;
+                case ColumnType.Object:     cell.lng = reader.GetByte       (ordinal);  return; // used as boolean: != 0 => object is not null
                 default:
                     throw new InvalidOperationException($"unexpected type: {column.type}");
             }

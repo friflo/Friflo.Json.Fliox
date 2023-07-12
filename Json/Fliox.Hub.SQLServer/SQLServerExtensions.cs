@@ -37,11 +37,11 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 case ColumnType.Int16:      return "smallint";
                 case ColumnType.Int32:      return "int";
                 case ColumnType.Int64:      return "bigint";
-                case ColumnType.Float:      return "float";
-                case ColumnType.Double:     return "double precision";
+                case ColumnType.Float:      return "float(24)";     // 24 bits for mantissa
+                case ColumnType.Double:     return "float(53)";     // 53 bits for mantissa
                 case ColumnType.Boolean:    return "tinyint";
                 case ColumnType.Guid:       return "uniqueidentifier";
-                case ColumnType.DateTime:
+                case ColumnType.DateTime:   return "datetime2";     // datetime2 = datetime + 6 digits for fraction
                 case ColumnType.BigInteger:
                 case ColumnType.String:
                 case ColumnType.Enum:       return "nvarchar(255)"; // TODO - used 255 to enable using as PK  
