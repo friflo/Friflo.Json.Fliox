@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (ev != JsonEvent.ObjectStart) throw new InvalidOperationException("expect object");
                 Traverse(tableInfo.root);
                 
-                AddRowValues(sb, columnCount);
+                AddRowValues(sb, columnCount, escape);
             }
         }
         
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
         }
         
-        private void AddRowValues(StringBuilder sb, int columnCount)
+        private void AddRowValues(StringBuilder sb, int columnCount, SQLEscape escape)
         {
             sb.Append('(');
             var firstValue = true;
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         if (columns[n].type == ColumnType.DateTime) {
                             AppendDateTime(sb, ref cell.value);
                         } else {
-                            AppendString(sb, cell.value);
+                            AppendString(sb, cell.value, escape);
                         }
                         break;
                     case JsonEvent.ValueBool:
@@ -145,15 +145,28 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sb.Append(')');
         }
         
-        private void AppendString(StringBuilder sb, in Bytes value) {
+        private void AppendString(StringBuilder sb, in Bytes value, SQLEscape escape) {
+            if ((escape & SQLEscape.PrefixN) != 0) {
+                sb.Append('N');
+            }
             sb.Append('\'');
             var len = GetChars(value, out var chars);
-            for (int n = 0; n < len; n++) {
-                var c = chars[n];
-                switch (c) {
-                    case '\'':  sb.Append("\\'");   break;
-                    case '\\':  sb.Append("\\\\");  break;
-                    default:    sb.Append(c);       break;
+            if ((escape & SQLEscape.BackSlash) != 0) {
+                for (int n = 0; n < len; n++) {
+                    var c = chars[n];
+                    switch (c) {
+                        case '\'':  sb.Append("\\'");   break;
+                        case '\\':  sb.Append("\\\\");  break;
+                        default:    sb.Append(c);       break;
+                    }
+                }
+            } else {
+                for (int n = 0; n < len; n++) {
+                    var c = chars[n];
+                    switch (c) {
+                        case '\'':  sb.Append("''");   break;
+                        default:    sb.Append(c);       break;
+                    }
                 }
             }
             sb.Append('\'');
@@ -171,7 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             if (len > 10) {
                 buf[start + 10] = (byte)' ';
             }
-            AppendString(sb, bytes);
+            AppendString(sb, bytes, SQLEscape.Default);
         }
         
         private static void AppendBytes(StringBuilder sb, in Bytes value) {

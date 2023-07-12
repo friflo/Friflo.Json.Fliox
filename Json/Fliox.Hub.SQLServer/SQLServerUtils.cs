@@ -136,7 +136,7 @@ $@"MERGE {tableInfo.container} AS t USING (
 VALUES
 ");
             using var pooled = syncContext.Json2SQL.Get();
-            pooled.instance.AppendColumnValues(sql, entities, SQLEscape.BackSlash, tableInfo);
+            pooled.instance.AppendColumnValues(sql, entities, SQLEscape.PrefixN, tableInfo);
             sql.Append($@") AS s (");
             SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
             sql.Append($@")
