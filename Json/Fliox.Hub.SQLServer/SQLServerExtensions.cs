@@ -366,7 +366,7 @@ $@"NOT EXISTS(
         }
         
         private static bool IsScalarField(Field field) {
-            return !field.name.Contains('.');
+            return field.name.IndexOf('.') == -1;
         }
     }
 }
