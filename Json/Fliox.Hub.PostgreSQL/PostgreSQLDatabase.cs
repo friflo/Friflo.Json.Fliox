@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         private  readonly   string      connectionString;
         private  readonly   ConnectionPool<SyncConnection> connectionPool;
         
-        public   override   string      StorageType => "PostgreSQL";
+        public   override   string      StorageType => "PostgreSQL - " + TableType;
         
         public PostgreSQLDatabase(string dbName, string  connectionString, DatabaseSchema schema, DatabaseService service = null)
             : base(dbName, AssertSchema<PostgreSQLDatabase>(schema), service)

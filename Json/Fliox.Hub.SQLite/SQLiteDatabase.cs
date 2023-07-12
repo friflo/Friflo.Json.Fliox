@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         private  readonly   object          writeLock = new object();
         private  readonly   string          filePath;
         
-        public   override   string          StorageType             => "SQLite";
+        public   override   string          StorageType             => "SQLite - " + TableType;
         
         /// <summary>
         /// Open or create a database with the given <paramref name="connectionString"/>.<br/>
