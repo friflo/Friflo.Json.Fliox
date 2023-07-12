@@ -126,7 +126,11 @@ CREATE TABLE dbo.{name}";
                 return new CreateEntitiesResult();
             }
             try {
-                await CreateEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
+                if (tableType == TableType.Relational) {
+                    await CreateRelationalValues(connection, command.entities, tableInfo, syncContext).ConfigureAwait(false);
+                } else {
+                    await CreateEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
+                }
             } catch (SqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
             }

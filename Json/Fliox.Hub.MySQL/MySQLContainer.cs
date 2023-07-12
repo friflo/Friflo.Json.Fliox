@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
-                sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
+                sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo, '`', '`');
                 sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
             } else {
                 sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");

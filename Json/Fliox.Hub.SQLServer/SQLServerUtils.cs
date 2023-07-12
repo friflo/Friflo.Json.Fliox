@@ -108,6 +108,21 @@ WHEN NOT MATCHED THEN
             return p;
         }
         
+        internal static async Task CreateRelationalValues (
+            SyncConnection      connection,
+            List<JsonEntity>    entities,
+            TableInfo           tableInfo,
+            SyncContext         syncContext)
+        {
+            var sql = new StringBuilder();
+            sql.Append($"INSERT INTO {tableInfo.container} (");
+            SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+            sql.Append(")\nVALUES\n");
+            using var pooled = syncContext.Json2SQL.Get();
+            pooled.instance.AppendColumnValues(sql, entities, SQLEscape.BackSlash, tableInfo);
+            await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
+        }
+        
         internal static async Task UpsertRelationalValues (
             SyncConnection      connection,
             List<JsonEntity>    entities,
@@ -115,7 +130,7 @@ WHEN NOT MATCHED THEN
             SyncContext         syncContext)
         {
             var sql = new StringBuilder();
-            var id = tableInfo.tableType == TableType.JsonColumn ? ID : tableInfo.keyColumn.name;
+            var id  = tableInfo.tableType == TableType.JsonColumn ? ID : tableInfo.keyColumn.name;
             sql.Append(
 $@"MERGE {tableInfo.container} AS target
 USING (VALUES");
@@ -127,7 +142,7 @@ WHEN MATCHED THEN
     UPDATE SET target.{DATA} = source.{DATA}
 WHEN NOT MATCHED THEN
     INSERT (");
-            SQLTable.AppendColumnNames(sql, tableInfo);
+            SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
             sql.Append(')');
             using var pooled = syncContext.Json2SQL.Get();
             pooled.instance.AppendColumnValues(sql, entities, SQLEscape.BackSlash, tableInfo);

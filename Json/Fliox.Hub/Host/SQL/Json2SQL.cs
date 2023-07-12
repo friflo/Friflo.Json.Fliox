@@ -27,9 +27,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             SQLEscape           escape,
             TableInfo           tableInfo)
         {
-            sb.Append(" (");
-            SQLTable.AppendColumnNames(sb, tableInfo);
-            sb.Append(")\nVALUES\n");
             columns         = tableInfo.columns;
             var columnCount = columns.Length;
             if (columnCount > rowCells.Length) {
