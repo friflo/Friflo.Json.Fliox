@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Provider
             hub.AddExtensionDB (fileDb);
             
             AddDatabases(hub, Schema);
-            await hub.SetupDatabases().ConfigureAwait(false);
+            await hub.SetupDatabasesAsync().ConfigureAwait(false);
 
             hub.AddExtensionDB  (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
             hub.EventDispatcher = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)

@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     }
     
     /// <summary>
-    /// A set of options used in <see cref="EntityDatabase.SetupAsync"/><br/>
+    /// A set of options used in <see cref="EntityDatabase.SetupDatabaseAsync"/><br/>
     /// </summary>
     [Flags]
     public enum Setup
@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// In a production environment this method should be called from a migration script - not from a service.
         /// </summary>
         /// <remarks>
-        /// <i>Note</i>: <see cref="SetupAsync"/> support only additive database operations to prevent data loss.<br/>
+        /// <i>Note</i>: <see cref="SetupDatabaseAsync"/> support only additive database operations to prevent data loss.<br/>
         /// Dropping tables or columns need to be done with appropriate database tools.<br/>
         /// <br/> 
         /// The parameter <paramref name="options"/> define which database operations are executed.
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///     <item>Add missing columns if using a database with <see cref="TableType.Relational"/> tables</item>
         /// </list>
         /// </remarks>
-        public async Task<EntityDatabase> SetupAsync(Setup options = Setup.All) {
+        public async Task<EntityDatabase> SetupDatabaseAsync(Setup options = Setup.All) {
             var connection = await GetConnectionAsync().ConfigureAwait(false);
             if (!connection.IsOpen) {
                 try {
