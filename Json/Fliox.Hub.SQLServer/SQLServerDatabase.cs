@@ -18,7 +18,6 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         public              TableType       TableType               { get; init; } = TableType.JsonColumn;
         
         private  readonly   string          connectionString;
-        private             bool            tableTypesCreated;
         
         private  readonly   ConnectionPool<SyncConnection> connectionPool;
 
@@ -53,17 +52,13 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             connectionPool.Push(connection);
         }
 
-        internal async Task CreateTableTypes() {
-            if (tableTypesCreated) {
-                return;
-            }
-            var connection = (SyncConnection)await GetConnectionAsync().ConfigureAwait(false);
+        private static async Task CreateTableTypes(ISyncConnection synConnection) {
+            var connection = (SyncConnection)synConnection;
             var sql = $"IF TYPE_ID(N'KeyValueType') IS NULL CREATE TYPE KeyValueType AS TABLE({SQLServerContainer.ColumnId}, {SQLServerContainer.ColumnData});";
             await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
 
             sql = $"IF TYPE_ID(N'KeyType') IS NULL CREATE TYPE KeyType AS TABLE({SQLServerContainer.ColumnId});";
             await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
-            tableTypesCreated = true;
         }
         
         public override async Task<TransResult> Transaction(SyncContext syncContext, TransCommand command) {
@@ -93,8 +88,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             var end = DateTime.Now + new TimeSpan(0, 0, 0, 10, 0);
             while (DateTime.Now < end) {
                 try {
-                    var connection = new SqlConnection(connectionString);
-                    await connection.OpenAsync().ConfigureAwait(false);
+                    var connection = await GetConnectionAsync().ConfigureAwait(false);
+                    await CreateTableTypes(connection).ConfigureAwait(false);
                     return;
                 } catch (SqlException) {
                     await Task.Delay(1000).ConfigureAwait(false);

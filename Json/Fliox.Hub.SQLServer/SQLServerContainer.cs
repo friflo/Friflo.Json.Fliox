@@ -24,7 +24,6 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     {
         private  readonly   TableInfo           tableInfo;
         public   override   bool                Pretty      { get; }
-        private  readonly   SQLServerDatabase   database;
         private  readonly   TableType           tableType;
         
         // [Maximum capacity specifications for SQL Server - SQL Server | Microsoft Learn]
@@ -38,7 +37,6 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         {
             tableInfo       = new TableInfo (database, name, database.TableType);
             Pretty          = pretty;
-            this.database   = database;
             tableType       = database.TableType;
         }
         
@@ -128,7 +126,6 @@ CREATE TABLE dbo.{name}";
                 return new CreateEntitiesResult();
             }
             try {
-                await database.CreateTableTypes().ConfigureAwait(false);
                 await CreateEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
             } catch (SqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
@@ -149,7 +146,6 @@ CREATE TABLE dbo.{name}";
                     // SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext);
                     await UpsertRelationalValues(connection, command.entities, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
-                    await database.CreateTableTypes().ConfigureAwait(false);
                     await UpsertEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
                 }
             } catch (SqlException e) {
@@ -172,7 +168,6 @@ CREATE TABLE dbo.{name}";
             }
             try {
                 if (ExecuteAsync) {
-                    await database.CreateTableTypes().ConfigureAwait(false);
                     using var reader = await ReadEntitiesCmd(connection, command.ids, name).ConfigureAwait(false);
                     return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
                 } else {
@@ -244,7 +239,6 @@ CREATE TABLE dbo.{name}";
                     if (result.Failed) { return new DeleteEntitiesResult { Error = result.TaskError() }; }
                     return new DeleteEntitiesResult();    
                 } else {
-                    await database.CreateTableTypes().ConfigureAwait(false);
                     await DeleteEntitiesCmdAsync(connection, command.ids, name).ConfigureAwait(false);
                     return new DeleteEntitiesResult();
                 }
