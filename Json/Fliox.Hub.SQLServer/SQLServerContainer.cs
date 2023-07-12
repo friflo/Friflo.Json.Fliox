@@ -199,7 +199,7 @@ CREATE TABLE dbo.{name}";
             }
             var filter  = command.GetFilter();
             var where   = filter.IsTrue ? "(1=1)" : filter.SQLServerFilter();
-            var sql     = SQLServerUtils.QueryEntities(command, name, where);
+            var sql     = SQLServerUtils.QueryEntities(command, name, where, tableInfo);
             try {
                 List<EntityValue> entities;
                 if (ExecuteAsync) {

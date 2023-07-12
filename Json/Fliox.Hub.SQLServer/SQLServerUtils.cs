@@ -68,14 +68,32 @@ AS ({asStr});";
             return builder.ToString();
         }
         
-        public static string QueryEntities(QueryEntities command, string table, string filter) {
+        public static string QueryEntities(QueryEntities command, string table, string filter, TableInfo tableInfo) {
+            var tableType   = tableInfo.tableType;
             if (command.maxCount == null) {
                 var top = command.limit == null ? "" : $" TOP {command.limit}";
+                if (tableType == TableType.Relational) {
+                    var sql = new StringBuilder();
+                    sql.Append($"SELECT{top} ");
+                    SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+                    sql.Append($" FROM {table} WHERE {filter}");
+                    return sql.ToString();
+                }
                 return $"SELECT{top} {ID}, {DATA} FROM {table} WHERE {filter}";
+            } else {
+                var cursorStart = command.cursor == null ? "" : $"{ID} < '{command.cursor}' AND ";
+                var cursorDesc  = command.maxCount == null ? "" : $" ORDER BY {ID} DESC";
+                var sql = new StringBuilder();
+                sql.Append("SELECT ");
+                if (tableType == TableType.Relational) {
+                    SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+                } else {
+                    sql.Append($"{ID}, {DATA}");
+                    // return $"SELECT {ID}, {DATA} FROM {table} WHERE {cursorStart}{filter}{cursorDesc} OFFSET 0 ROWS FETCH FIRST {command.maxCount} ROWS ONLY";
+                }
+                sql.Append($" FROM {table} WHERE {cursorStart}{filter}{cursorDesc} OFFSET 0 ROWS FETCH FIRST {command.maxCount} ROWS ONLY");
+                return sql.ToString();
             }
-            var cursorStart = command.cursor == null ? "" : $"{ID} < '{command.cursor}' AND ";
-            var cursorDesc  = command.maxCount == null ? "" : $" ORDER BY {ID} DESC";
-            return $"SELECT {ID}, {DATA} FROM {table} WHERE {cursorStart}{filter}{cursorDesc} OFFSET 0 ROWS FETCH FIRST {command.maxCount} ROWS ONLY";
         }
         
         // --- create / upsert using DataTable in SQL statement
