@@ -70,20 +70,23 @@ namespace Friflo.Json.Tests.Provider
             var mysql           = EnvConfig.GetConnectionString("mysql");
             hub.AddExtensionDB  (new MySQLDatabase      ("mysql_db",        mysql,    schema));
             
-            var mysqlRel        = EnvConfig.GetConnectionString("mysql_mc");
+            var mysqlRel        = EnvConfig.GetConnectionString("mysql_rel");
             hub.AddExtensionDB  (new MySQLDatabase      ("mysql_rel",       mysqlRel,schema) { TableType = TableType.Relational });
             
             var mariadb         = EnvConfig.GetConnectionString("mariadb");
             hub.AddExtensionDB  (new MariaDBDatabase    ("maria_db",        mariadb,  schema));
             
-            var mariadbRel      = EnvConfig.GetConnectionString("mariadb_mc");
-            hub.AddExtensionDB  (new MariaDBDatabase    ("maria_mc",        mariadbRel, schema) { TableType = TableType.Relational } );
+            var mariadbRel      = EnvConfig.GetConnectionString("mariadb_rel");
+            hub.AddExtensionDB  (new MariaDBDatabase    ("mariadb_rel",     mariadbRel, schema) { TableType = TableType.Relational } );
             
             var postgres        = EnvConfig.GetConnectionString("postgres");
             hub.AddExtensionDB  (new PostgreSQLDatabase ("postgres_db",     postgres, schema));
             
             var sqlServer       = EnvConfig.GetConnectionString("sqlserver");
             hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_db",    sqlServer,schema));
+
+            var sqlServerRel    = EnvConfig.GetConnectionString("sqlserver_rel");
+            hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_rel",   sqlServerRel,schema) { TableType = TableType.Relational } );
 
             if (UseRedis) {
                 var redis           = EnvConfig.GetConnectionString("redis");
