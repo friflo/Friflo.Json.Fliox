@@ -132,20 +132,32 @@ WHEN NOT MATCHED THEN
             var sql = new StringBuilder();
             var id  = tableInfo.tableType == TableType.JsonColumn ? ID : tableInfo.keyColumn.name;
             sql.Append(
-$@"MERGE {tableInfo.container} AS target
-USING (VALUES");
-            SQLUtils.AppendValuesSQL(sql, entities, SQLEscape.Default);
-            sql.Append(
-                $@") AS source ({ID}, {DATA})
-ON source.{id} = target.{id}
+$@"MERGE {tableInfo.container} AS t USING (
+VALUES
+");
+            using var pooled = syncContext.Json2SQL.Get();
+            pooled.instance.AppendColumnValues(sql, entities, SQLEscape.BackSlash, tableInfo);
+            sql.Append($@") AS s (");
+            SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+            sql.Append($@")
+ON s.{id} = t.{id}
 WHEN MATCHED THEN
-    UPDATE SET target.{DATA} = source.{DATA}
+    UPDATE SET");
+            foreach (var column in tableInfo.columns) {
+                sql.Append(" t.[");
+                sql.Append(column.name);
+                sql.Append("]=s.[");
+                sql.Append(column.name);
+                sql.Append("],");
+            }
+            sql.Length -= 1;
+            sql.Append($@"
 WHEN NOT MATCHED THEN
     INSERT (");
             SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
-            sql.Append(')');
-            using var pooled = syncContext.Json2SQL.Get();
-            pooled.instance.AppendColumnValues(sql, entities, SQLEscape.BackSlash, tableInfo);
+            sql.Append(")\n    VALUES(");
+            SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+            sql.Append(");");
             await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
         }
         

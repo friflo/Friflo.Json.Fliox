@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (isFirst) {
                     isFirst = false;   
                 } else {
-                    sb.Append(',');
+                    sb.Append(",\n");
                 }
                 sb.Append("('");
                 entity.key.AppendTo(escaped);

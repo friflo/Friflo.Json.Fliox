@@ -147,7 +147,6 @@ CREATE TABLE dbo.{name}";
             }
             try {
                 if (tableType == TableType.Relational) {
-                    // SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext);
                     await UpsertRelationalValues(connection, command.entities, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
                     await UpsertEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
