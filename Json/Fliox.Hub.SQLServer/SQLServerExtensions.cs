@@ -325,7 +325,9 @@ $@"NOT EXISTS(
         
         private static string ToBoolean(string operand) {
             switch (operand) {
+                case "1":
                 case "'true'":  return "(1=1)";
+                case "0":
                 case "'false'": return "(1=0)";
                 default:        return operand;
             }
