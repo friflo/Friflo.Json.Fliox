@@ -241,10 +241,16 @@ CREATE TABLE dbo.{name}";
                     var result = await Execute(connection, sql).ConfigureAwait(false);
                     if (result.Failed) { return new DeleteEntitiesResult { Error = result.TaskError() }; }
                     return new DeleteEntitiesResult();    
-                } else {
-                    await DeleteEntitiesCmdAsync(connection, command.ids, name).ConfigureAwait(false);
-                    return new DeleteEntitiesResult();
                 }
+                if (tableType == TableType.Relational) {
+                    var sql = new StringBuilder();
+                    sql.Append($"DELETE FROM  {name} WHERE [{tableInfo.keyColumn.name}] in\n");
+                    SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.PrefixN);
+                    await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
+                } else { 
+                    await DeleteEntitiesCmdAsync(connection, command.ids, name).ConfigureAwait(false);
+                }
+                return new DeleteEntitiesResult();
             }
             catch (SqlException e) {
                 return new DeleteEntitiesResult { Error = new TaskExecuteError(e.Message) };
