@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     var arrayField  = args.GetArrayField(field);
                     if (tableType == TableType.Relational) {
                         if (arrayField != null) {
-                            return $"JSON_VALUE({arrayField.array}, '{path}')";
+                            return "value";
                         }
                         return GetColumn(field);
                     }
@@ -296,11 +296,12 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             using var scope     = args.AddArg(arg);
             using var array     = args.AddArrayField(arg, arrayTable);
             var operand         = Traverse(any.predicate);
-            string arrayPath    = GetFieldPath(any.field);
+            var column          = tableType == TableType.JsonColumn ? DATA : GetColumn(any.field);
+            string arrayPath    = tableType == TableType.JsonColumn ? GetFieldPath(any.field) : "$";
             return
 $@"EXISTS(
     SELECT 1
-    FROM openjson({DATA}, '{arrayPath}')
+    FROM openjson({column}, '{arrayPath}')
     WHERE {operand}
 )";
         }
@@ -311,11 +312,12 @@ $@"EXISTS(
             using var scope     = args.AddArg(arg);
             using var array     = args.AddArrayField(arg, arrayTable);
             var operand         = Traverse(all.predicate);
-            string arrayPath    = GetFieldPath(all.field);
+            var column          = tableType == TableType.JsonColumn ? DATA : GetColumn(all.field);
+            string arrayPath    = tableType == TableType.JsonColumn ? GetFieldPath(all.field) : "$";
             return
 $@"NOT EXISTS(
     SELECT 1
-    FROM openjson({DATA}, '{arrayPath}')
+    FROM openjson({column}, '{arrayPath}')
     WHERE NOT ({operand})
 )";
         }
