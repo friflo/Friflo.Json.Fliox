@@ -173,13 +173,20 @@ CREATE TABLE dbo.{name}";
                 if (ExecuteAsync) {
                     using var reader = await ReadEntitiesCmd(connection, command.ids, name).ConfigureAwait(false);
                     return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
+                }
+                var sql = new StringBuilder();
+                if (tableType == TableType.Relational) {
+                    sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+                    sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
+                    SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.PrefixN);
+                    using var reader = await connection.ExecuteReaderSync(sql.ToString()).ConfigureAwait(false);
+                    return await SQLTable.ReadEntitiesAsync(reader, command, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
-                    var sql = new StringBuilder();
                     sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
                     SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.PrefixN);
                     using var reader = await connection.ExecuteReaderSync(sql.ToString()).ConfigureAwait(false);
                     return SQLUtils.ReadEntitiesSync(reader, command);
-                }    
+                }
             } catch (SqlException e) {
                 return new ReadEntitiesResult { Error = new TaskExecuteError(e.Message) };
             }
@@ -200,7 +207,11 @@ CREATE TABLE dbo.{name}";
                     entities = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
                 } else {
                     using var reader = await connection.ExecuteReaderSync(sql).ConfigureAwait(false);
-                    entities = SQLUtils.QueryEntitiesSync(reader);
+                    if (tableType == TableType.Relational) {
+                        entities = await SQLTable.QueryEntitiesAsync(reader, tableInfo, syncContext).ConfigureAwait(false);
+                    } else {
+                        entities = SQLUtils.QueryEntitiesSync(reader);
+                    }
                 }
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }

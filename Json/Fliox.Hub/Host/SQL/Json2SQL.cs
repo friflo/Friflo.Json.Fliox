@@ -18,8 +18,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private     RowCell[]       rowCells    = new RowCell[4];   // reused
 
         private const           string  Null    = "NULL";
-        private static readonly Bytes   True    = new Bytes("TRUE");
-        private static readonly Bytes   False   = new Bytes("FALSE");
+        private static readonly Bytes   True    = new Bytes("1");
+        private static readonly Bytes   False   = new Bytes("0");
 
         public void AppendColumnValues(
             StringBuilder       sb,

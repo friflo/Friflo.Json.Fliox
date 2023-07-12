@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 case ColumnType.Int64:      return "bigint";
                 case ColumnType.Float:      return "float";
                 case ColumnType.Double:     return "double precision";
-                case ColumnType.Boolean:    return "nvarchar(max)";
+                case ColumnType.Boolean:    return "tinyint";
                 case ColumnType.Guid:       return "uniqueidentifier";
                 case ColumnType.DateTime:
                 case ColumnType.BigInteger:
