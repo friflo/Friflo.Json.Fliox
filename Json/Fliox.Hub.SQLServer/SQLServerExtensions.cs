@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     internal sealed class ConvertContext {
         private readonly   FilterArgs       args;
         private readonly   TableType        tableType;
-        
+
         internal ConvertContext (FilterArgs args, TableType tableType) {
             this.args       = args;
             this.tableType  = tableType;
@@ -67,7 +67,10 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     var arrayField  = args.GetArrayField(field);
                     if (tableType == TableType.Relational) {
                         if (arrayField != null) {
-                            return "value";
+                            if (IsScalarField(field)) {
+                                return "value";
+                            }
+                            return $"JSON_VALUE(value, '{path}')";
                         }
                         return GetColumn(field);
                     }
@@ -360,6 +363,10 @@ $@"NOT EXISTS(
                 throw new NotSupportedException("GetColum()");
             }
             return $"[{name.Substring(field.arg.Length + 1)}]";
+        }
+        
+        private static bool IsScalarField(Field field) {
+            return !field.name.Contains('.');
         }
     }
 }
