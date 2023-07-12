@@ -59,12 +59,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 return;
             }
             switch (column.type) {
-                case ColumnType.Boolean:    cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return;
-                
+                case ColumnType.Boolean:    cell.lng = reader.GetByte       (ordinal);  return;
+                //
                 case ColumnType.String:     
                 case ColumnType.Enum:
-                case ColumnType.BigInteger: GetString(ref cell.chars, ordinal);         return;
-                    
+                case ColumnType.BigInteger: GetString(ref cell.chars,        ordinal);  return;
+                //
                 case ColumnType.Uint8:      cell.lng = reader.GetByte       (ordinal);  return;
                 case ColumnType.Int16:      cell.lng = reader.GetInt16      (ordinal);  return;
                 case ColumnType.Int32:      cell.lng = reader.GetInt32      (ordinal);  return;
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case ColumnType.DateTime:   cell.date= reader.GetDateTime   (ordinal);  return;
                 case ColumnType.Guid:       cell.guid= reader.GetGuid       (ordinal);  return;
                 //
-                case ColumnType.Array:      GetString(ref cell.chars, ordinal);         return;
+                case ColumnType.Array:      GetString(ref cell.chars,        ordinal);  return;
                 case ColumnType.Object:     cell.lng = reader.GetByte       (ordinal);  return; // used as boolean: != 0 => object is not null
                 default:
                     throw new InvalidOperationException($"unexpected type: {column.type}");

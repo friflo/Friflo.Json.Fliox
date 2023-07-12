@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
@@ -14,11 +15,11 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     public static class SQLServerExtensions
     {
-        public static string SQLServerFilter(this FilterOperation op) {
+        public static string SQLServerFilter(this FilterOperation op, TableType tableType) {
             var filter      = (Filter)op;
             var args        = new FilterArgs(filter);
             args.AddArg(filter.arg, DATA);
-            var cx          = new ConvertContext (args);
+            var cx          = new ConvertContext (args, tableType);
             var result      = cx.Traverse(filter.body);
             return result;
         }
@@ -26,9 +27,11 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     
     internal sealed class ConvertContext {
         private readonly   FilterArgs       args;
+        private readonly   TableType        tableType;
         
-        internal ConvertContext (FilterArgs args) {
-            this.args = args;
+        internal ConvertContext (FilterArgs args, TableType tableType) {
+            this.args       = args;
+            this.tableType  = tableType;
         }
         
         internal static string GetSqlType(ColumnInfo column) {
@@ -59,9 +62,15 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             switch (operation.Type) {
                 case FIELD: {
                     var field       = (Field)operation;
-                    var arg  = args.GetArg(field);
-                    var path = GetFieldPath(field);
+                    var path        = GetFieldPath(field);
+                    var arg         = args.GetArg(field);
                     var arrayField  = args.GetArrayField(field);
+                    if (tableType == TableType.Relational) {
+                        if (arrayField != null) {
+                            return $"JSON_VALUE({arrayField.array}, '{path}')";
+                        }
+                        return GetColumn(field);
+                    }
                     if (arrayField != null) {
                         if (arg == field.name) { return "value"; }
                         return $"JSON_VALUE(value, '{path}')";
@@ -82,9 +91,9 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     var longLiteral = (LongLiteral)operation;
                     return longLiteral.value.ToString();
                 case TRUE:
-                    return "'true'";
+                    return True();
                 case FALSE:
-                    return "'false'";
+                    return False();
                 case NULL:
                     return "null";
                 
@@ -311,6 +320,9 @@ $@"NOT EXISTS(
 )";
         }
         
+        private string True()  => tableType == TableType.Relational ? "1" : "'true'";
+        private string False() => tableType == TableType.Relational ? "0" : "'false'";
+        
         private static string ToBoolean(string operand) {
             switch (operand) {
                 case "'true'":  return "(1=1)";
@@ -335,6 +347,15 @@ $@"NOT EXISTS(
             }
             var path = field.name.Substring(field.arg.Length + 1);
             return $"$.{path}";
+        }
+        
+        private static string GetColumn(Field field) {
+            var name = field.name;
+            if (field.arg == name) {
+                //return "$";
+                throw new NotSupportedException("GetColum()");
+            }
+            return $"[{name.Substring(field.arg.Length + 1)}]";
         }
     }
 }

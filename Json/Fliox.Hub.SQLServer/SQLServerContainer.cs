@@ -198,7 +198,7 @@ CREATE TABLE dbo.{name}";
                 return new QueryEntitiesResult { Error = syncConnection.Error };
             }
             var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "(1=1)" : filter.SQLServerFilter();
+            var where   = filter.IsTrue ? "(1=1)" : filter.SQLServerFilter(tableType);
             var sql     = SQLServerUtils.QueryEntities(command, name, where, tableInfo);
             try {
                 List<EntityValue> entities;
@@ -228,7 +228,7 @@ CREATE TABLE dbo.{name}";
             try {
                 if (command.type == AggregateType.count) {
                     var filter  = command.GetFilter();
-                    var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLServerFilter()}";
+                    var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLServerFilter(tableType)}";
                     var sql     = $"SELECT COUNT(*) from {name}{where}";
                     var result  = await Execute(connection, sql).ConfigureAwait(false);
                     if (result.Failed) { return new AggregateEntitiesResult { Error = result.TaskError() }; }
