@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// <summary>
-        /// Prepare a ready-to-use database.<br/>
+        /// Create a ready-to-use database or modify the schema of an existing database.<br/>
         /// <br/>
         /// This method is intended for development to create a database and update its tables based on its <see cref="Schema"/>.<br/>
         /// In a production environment this method should be called from a migration script - not from a service.
