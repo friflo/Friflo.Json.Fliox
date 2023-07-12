@@ -333,11 +333,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        public async Task CreateDatabases() {
+        public async Task SetupDatabases(Setup options = Setup.All) {
             var databases = GetDatabases().Values;
             var tasks = new List<Task>();
             foreach (var db in databases) {
-                var task = db.PrepareAsync();
+                var task = db.SetupAsync(options);
                 tasks.Add(task);
             }
             await Task.WhenAll(tasks).ConfigureAwait(false);

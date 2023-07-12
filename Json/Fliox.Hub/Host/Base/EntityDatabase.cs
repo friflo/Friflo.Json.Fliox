@@ -35,10 +35,10 @@ namespace Friflo.Json.Fliox.Hub.Host
     }
     
     /// <summary>
-    /// A set of options used in <see cref="EntityDatabase.PrepareAsync"/><br/>
+    /// A set of options used in <see cref="EntityDatabase.SetupAsync"/><br/>
     /// </summary>
     [Flags]
-    public enum Prepare
+    public enum Setup
     {
         /// <summary>Create a database if not exists</summary>
         CreateDatabase      = 1,
@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// In a production environment this method should be called from a migration script - not from a service.
         /// </summary>
         /// <remarks>
-        /// <i>Note</i>: <see cref="PrepareAsync"/> support only additive database operations to prevent data loss.<br/>
+        /// <i>Note</i>: <see cref="SetupAsync"/> support only additive database operations to prevent data loss.<br/>
         /// Dropping tables or columns need to be done with appropriate database tools.<br/>
         /// <br/> 
         /// The parameter <paramref name="options"/> define which database operations are executed.
@@ -149,11 +149,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///     <item>Add missing columns if using a database with <see cref="TableType.Relational"/> tables</item>
         /// </list>
         /// </remarks>
-        public async Task<EntityDatabase> PrepareAsync(Prepare options = Prepare.All) {
+        public async Task<EntityDatabase> SetupAsync(Setup options = Setup.All) {
             var connection = await GetConnectionAsync().ConfigureAwait(false);
             if (!connection.IsOpen) {
                 try {
-                    if ((options & Prepare.CreateDatabase) == 0) {
+                    if ((options & Setup.CreateDatabase) == 0) {
                         throw new PrepareDatabaseException(connection.Error.message);
                     }
                     await CreateDatabaseAsync().ConfigureAwait(false);
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
                 tables.Add(table);
             }
-            if ((options & Prepare.CreateTables) != 0) {
+            if ((options & Setup.CreateTables) != 0) {
                 foreach (var table in tables) {
                     var result = await table.CreateTable(connection).ConfigureAwait(false);
                     if (result.Failed) {
@@ -179,7 +179,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     }      
                 }
             }
-            if ((options & Prepare.AddVirtualColumns) != 0) {
+            if ((options & Setup.AddVirtualColumns) != 0) {
                 foreach (var table in tables) {
                     var result = await table.AddVirtualColumns(connection).ConfigureAwait(false);
                     if (result.Failed) {
@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     }      
                 }
             }
-            if ((options & Prepare.AddColumns) != 0) {
+            if ((options & Setup.AddColumns) != 0) {
                 foreach (var table in tables) {
                     var result = await table.AddColumns(connection).ConfigureAwait(false);
                     if (result.Failed) {
