@@ -15,6 +15,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     public sealed class SQLiteDatabase : EntityDatabase, ISQLDatabase
     {
         public              bool        Pretty      { get; init; } = false;
+        public              TableType   TableType   { get; init; } = TableType.Relational;
+        
         /// <summary>Set the execution mode of SQLite database commands.<br/>
         /// If true database commands are executed synchronously otherwise asynchronously.<br/>
         /// <br/>

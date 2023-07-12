@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
     public class MySQLDatabase : EntityDatabase, ISQLDatabase
     {
         public              bool            Pretty                  { get; init; } = false;
-        public              TableType       TableType               { get; init; } = TableType.JsonColumn;
+        public              TableType       TableType               { get; init; } = TableType.Relational;
         private  readonly   ConnectionPool<SyncConnection> connectionPool; 
         
         private  readonly   string          connectionString;

@@ -65,28 +65,28 @@ namespace Friflo.Json.Tests.Provider
                 hub.AddExtensionDB (testDb);
             } */
             var sqlite          = $"Data Source={CommonUtils.GetBasePath() + "sqlite_db.sqlite3"}";
-            hub.AddExtensionDB  (new SQLiteDatabase     ("sqlite_db",       sqlite,   schema));
+            hub.AddExtensionDB  (new SQLiteDatabase     ("sqlite_db",       sqlite,   schema) { TableType = TableType.JsonColumn });
             
             var mysql           = EnvConfig.GetConnectionString("mysql");
-            hub.AddExtensionDB  (new MySQLDatabase      ("mysql_db",        mysql,    schema));
+            hub.AddExtensionDB  (new MySQLDatabase      ("mysql_db",        mysql,    schema) { TableType = TableType.JsonColumn });
             
             var mysqlRel        = EnvConfig.GetConnectionString("mysql_rel");
-            hub.AddExtensionDB  (new MySQLDatabase      ("mysql_rel",       mysqlRel,schema) { TableType = TableType.Relational });
+            hub.AddExtensionDB  (new MySQLDatabase      ("mysql_rel",       mysqlRel,schema));
             
             var mariadb         = EnvConfig.GetConnectionString("mariadb");
-            hub.AddExtensionDB  (new MariaDBDatabase    ("maria_db",        mariadb,  schema));
+            hub.AddExtensionDB  (new MariaDBDatabase    ("maria_db",        mariadb,  schema) { TableType = TableType.JsonColumn });
             
             var mariadbRel      = EnvConfig.GetConnectionString("mariadb_rel");
-            hub.AddExtensionDB  (new MariaDBDatabase    ("mariadb_rel",     mariadbRel, schema) { TableType = TableType.Relational } );
+            hub.AddExtensionDB  (new MariaDBDatabase    ("mariadb_rel",     mariadbRel, schema));
             
             var postgres        = EnvConfig.GetConnectionString("postgres");
-            hub.AddExtensionDB  (new PostgreSQLDatabase ("postgres_db",     postgres, schema));
+            hub.AddExtensionDB  (new PostgreSQLDatabase ("postgres_db",     postgres, schema) { TableType = TableType.JsonColumn });
             
             var sqlServer       = EnvConfig.GetConnectionString("sqlserver");
-            hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_db",    sqlServer,schema));
+            hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_db",    sqlServer,schema) { TableType = TableType.JsonColumn });
 
             var sqlServerRel    = EnvConfig.GetConnectionString("sqlserver_rel");
-            hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_rel",   sqlServerRel,schema) { TableType = TableType.Relational } );
+            hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_rel",   sqlServerRel,schema));
 
             if (UseRedis) {
                 var redis           = EnvConfig.GetConnectionString("redis");

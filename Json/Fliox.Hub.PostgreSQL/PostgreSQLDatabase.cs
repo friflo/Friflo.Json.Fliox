@@ -14,6 +14,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public sealed class PostgreSQLDatabase : EntityDatabase, ISQLDatabase
     {
+        public              TableType   TableType               { get; init; } = TableType.Relational;
         
         private  readonly   string      connectionString;
         private  readonly   ConnectionPool<SyncConnection> connectionPool;
