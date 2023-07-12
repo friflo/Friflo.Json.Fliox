@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         
         private  readonly   ConnectionPool<SyncConnection> connectionPool;
 
-        public   override   string          StorageType => "Microsoft SQL Server";
+        public   override   string          StorageType => "Microsoft SQL Server - " + TableType;
         
         public SQLServerDatabase(string dbName, string connectionString, DatabaseSchema schema, DatabaseService service = null)
             : base(dbName, AssertSchema<SQLServerDatabase>(schema), service)
