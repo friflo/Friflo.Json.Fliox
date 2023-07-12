@@ -108,7 +108,9 @@ Compact list of features supported by Clients and Hubs
     - C#, Typescript & Kotlin
     - JSON Schema, OpenAPI Schema & GraphQL Schema
     - Schema documentation & class diagram
-- Compatibility - tested on Windows, macOS, Linux & Unity 2021 or higher
+- Compatibility
+    - Frameworks: .NET, .NET Core, .NET Framework and .NET Standard
+    - tested on Windows, macOS, Linux & Unity 2021 or higher
 
 Features are explained in more detail in the sections: [Hub](#-hub) and [Fliox](#-fliox)
 
