@@ -39,15 +39,15 @@ namespace Friflo.Json.Tests.Provider
         
         internal static  readonly   string  TEST_DB_PROVIDER;
         
-        private static              bool    IsProvider  (string db1, string db2) => TEST_DB_PROVIDER == db1 || TEST_DB_PROVIDER == db2;
+        private  static bool    IsProvider  (string db1, string db2) => TEST_DB_PROVIDER == db1 || TEST_DB_PROVIDER == db2;
         
-        internal static             bool    IsCosmosDB  (string db) => TEST_DB_PROVIDER == "cosmos"         && db == test_db;
-        internal static             bool    IsMySQL     (string db) => IsProvider("mysql", "mysql_mc")      && db == test_db;
-        internal static             bool    IsMariaDB   (string db) => IsProvider("mariadb", "mariadb_mc")  && db == test_db;
-        internal static             bool    IsPostgres  (string db) => TEST_DB_PROVIDER == "postgres"       && db == test_db;
-        internal static             bool    IsSQLServer (string db) => TEST_DB_PROVIDER == "sqlserver"      && db == test_db;
-        internal static             bool    IsSQLite    (string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
-        private  static             bool    IsFileSystem            => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
+        internal static bool    IsCosmosDB  (string db) => TEST_DB_PROVIDER == "cosmos"             && db == test_db;
+        internal static bool    IsMySQL     (string db) => IsProvider("mysql", "mysql_mc")          && db == test_db;
+        internal static bool    IsMariaDB   (string db) => IsProvider("mariadb", "mariadb_mc")      && db == test_db;
+        internal static bool    IsPostgres  (string db) => TEST_DB_PROVIDER == "postgres"           && db == test_db;
+        internal static bool    IsSQLServer (string db) => IsProvider("sqlserver", "sqlserver_rel") && db == test_db;
+        internal static bool    IsSQLite    (string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
+        private  static bool    IsFileSystem            => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
         
         private  static readonly    string  SQLiteFile  = $"Data Source={CommonUtils.GetBasePath() + "test_db.sqlite3"}";
 

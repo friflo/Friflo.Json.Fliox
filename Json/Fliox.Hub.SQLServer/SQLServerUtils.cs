@@ -81,8 +81,9 @@ AS ({asStr});";
                 }
                 return $"SELECT{top} {ID}, {DATA} FROM {table} WHERE {filter}";
             } else {
-                var cursorStart = command.cursor == null ? "" : $"{ID} < '{command.cursor}' AND ";
-                var cursorDesc  = command.maxCount == null ? "" : $" ORDER BY {ID} DESC";
+                var id = tableType == TableType.Relational ? tableInfo.keyColumn.name : ID;
+                var cursorStart = command.cursor == null ? "" : $"{id} < '{command.cursor}' AND ";
+                var cursorDesc  = command.maxCount == null ? "" : $" ORDER BY {id} DESC";
                 var sql = new StringBuilder();
                 sql.Append("SELECT ");
                 if (tableType == TableType.Relational) {
