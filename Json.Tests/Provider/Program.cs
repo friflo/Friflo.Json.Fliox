@@ -82,6 +82,9 @@ namespace Friflo.Json.Tests.Provider
             var postgres        = EnvConfig.GetConnectionString("postgres");
             hub.AddExtensionDB  (new PostgreSQLDatabase ("postgres_db",     postgres, schema) { TableType = TableType.JsonColumn });
             
+            var postgresRel     = EnvConfig.GetConnectionString("postgres_rel");
+            hub.AddExtensionDB  (new PostgreSQLDatabase ("postgres_rel",    postgresRel, schema));
+            
             var sqlServer       = EnvConfig.GetConnectionString("sqlserver");
             hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_db",    sqlServer,schema) { TableType = TableType.JsonColumn });
 

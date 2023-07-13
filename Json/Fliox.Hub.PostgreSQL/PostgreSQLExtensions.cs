@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case ColumnType.Double:     return "double precision";
                 case ColumnType.Boolean:    return "boolean";
                 case ColumnType.Guid:       return "UUID";
-                case ColumnType.DateTime:   return "text"; // return "timestamptz(6)";
+                case ColumnType.DateTime:   return "timestamp";
                 case ColumnType.BigInteger:
                 case ColumnType.String:
                 case ColumnType.Enum:       return "text";

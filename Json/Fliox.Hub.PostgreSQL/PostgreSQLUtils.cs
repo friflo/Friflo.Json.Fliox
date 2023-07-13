@@ -40,6 +40,8 @@ GENERATED ALWAYS AS (({asStr})::{type}) STORED;";
         private static string GetColumnAs(ColumnInfo column) {
             var asStr   = ConvertContext.ConvertPath(DATA, column.name, 0);
             switch (column.type) {
+                case ColumnType.DateTime:
+                    return $"(text2ts{asStr})";
                 case ColumnType.Object:
                     return $"({asStr} is not null)";
                 default:
