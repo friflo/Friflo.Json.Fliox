@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case ColumnType.DateTime:   return "DATETIME(6)";
                 case ColumnType.BigInteger:
                 case ColumnType.String:
-                case ColumnType.Enum:       return "varchar(255)";
+                case ColumnType.Enum:       return column.isPrimaryKey ? "varchar(255)" : "text"; // used 255 to enable using as PK
                 case ColumnType.Array:      return "JSON"; // JSON column
                 case ColumnType.Object:     return "tinyint";
             }
