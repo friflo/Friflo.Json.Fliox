@@ -179,7 +179,7 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestRead_22_IntTypes(string db) {
             var client1 = await GetClient(db);
             var obj     = new ComponentType {
-                i64 = long  .MaxValue,
+                i64 = 9223372036854775000, // instead long.MaxValue used a value which can also be handled by JS clients
                 i32 = int   .MaxValue,
                 i16 = short .MaxValue,
                 u8  = byte  .MaxValue, // 255
