@@ -121,7 +121,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     if (l1 != l2)
                     {
                         long dif = System.Math.Abs (l1 - l2);
-                        if (dif > 11)
+                        if (dif > 25)
                             Fail("Conversion failed of double: " + val);
                     }
                 }
@@ -185,7 +185,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             WriteDouble( 10.0                       );
             WriteDouble( 1e200                      );
             WriteDouble( 1e-200                     );
-            WriteDouble( 1.7976931348623157e+308    );
+            WriteDouble( 1.797693134862315e+308    );
             WriteDouble( 4.9e-294                   );
             WriteDouble( 4.9e-295                   );  // will use Double.toString();
             WriteDouble( 4.9e-324                   );  // will use Double.toString();

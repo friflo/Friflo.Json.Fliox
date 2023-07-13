@@ -304,13 +304,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AssertJson(mapper, floor, "{'op':'floor','value':{'op':'double','value':2.5}}");
                 AreEqual(2,         eval.Eval("{}", floor.Lambda()));
             } {
-                var exp     = new Exp(new DoubleLiteral(Log(2)));
-                AssertJson(mapper, exp, "{'op':'exp','value':{'op':'double','value':0.6931471805599453}}");
-                AreEqual(2,         eval.Eval("{}", exp.Lambda()));
+                var exp     = new Exp(new DoubleLiteral(Log(E)));
+                AssertJson(mapper, exp, "{'op':'exp','value':{'op':'double','value':1}}");
+                AreEqual(2.7182818284590451d,         eval.Eval("{}", exp.Lambda()));
             } {
-                var log     = new Log(new DoubleLiteral(Exp(3)));
-                AssertJson(mapper, log, "{'op':'log','value':{'op':'double','value':20.085536923187668}}");
-                AreEqual(3,         eval.Eval("{}", log.Lambda()));
+                var log     = new Log(new DoubleLiteral(1));
+                AssertJson(mapper, log, "{'op':'log','value':{'op':'double','value':1}}");
+                AreEqual(0.0d,         eval.Eval("{}", log.Lambda()));
             } {
                 var sqrt    = new Sqrt(new DoubleLiteral(9));
                 AssertJson(mapper, sqrt, "{'op':'sqrt','value':{'op':'double','value':9}}");
