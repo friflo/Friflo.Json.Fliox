@@ -39,14 +39,16 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             StringBuilder       sb,
             List<JsonEntity>    entities,
             SQLEscape           escape,
+            char                colStart,
+            char                colEnd,
             TableInfo           tableInfo,
             SyncContext         syncContext)
         {
             using var pooled = syncContext.pool.Json2SQL.Get();
             sb.Append(" (");
-            AppendColumnNames(sb, tableInfo, '`', '`');
+            AppendColumnNames(sb, tableInfo, colStart, colEnd);
             sb.Append(")\nVALUES\n");
-            pooled.instance.AppendColumnValues(sb, entities, SQLEscape.BackSlash, tableInfo);
+            pooled.instance.AppendColumnValues(sb, entities, escape, tableInfo);
         }
         
         public static async Task<ReadEntitiesResult> ReadEntitiesAsync(

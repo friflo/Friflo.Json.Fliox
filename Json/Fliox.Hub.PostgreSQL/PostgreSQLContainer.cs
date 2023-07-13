@@ -23,22 +23,43 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
     {
         private  readonly   TableInfo       tableInfo;
         private  readonly   TypeDef         entityType;
+        private  readonly   TableType       tableType;
         
         internal PostgreSQLContainer(string name, PostgreSQLDatabase database)
             : base(name, database)
         {
-            tableInfo       = new TableInfo (database, name);
+            tableInfo       = new TableInfo (database, name, database.TableType);
             var types       = database.Schema.typeSchema.GetEntityTypes();
             entityType      = types[name];
+            tableType       = database.TableType;
         }
         
-        public async Task<SQLResult> CreateTable(ISyncConnection connection) {
+        public async Task<SQLResult> CreateTable(ISyncConnection syncConnection) {
+            var connection = (SyncConnection)syncConnection;
             try {
-                // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
-                // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
-                // set to 255 as for all SQL databases
-                var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
-                return await ExecuteAsync((SyncConnection)connection, sql).ConfigureAwait(false);
+                if (tableType == TableType.JsonColumn) {
+                    // [PostgreSQL primary key length limit - Stack Overflow] https://stackoverflow.com/questions/4539443/postgresql-primary-key-length-limit
+                    // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
+                    // set to 255 as for all SQL databases
+                    var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
+                    return await ExecuteAsync((SyncConnection)connection, sql).ConfigureAwait(false);
+                }
+                var sb = new StringBuilder();
+                sb.Append($"CREATE TABLE if not exists {name} (");
+                foreach (var column in tableInfo.columns) {
+                    sb.Append('"');
+                    sb.Append(column.name);
+                    sb.Append("\" ");
+                    var type = ConvertContext.GetSqlType(column.type);
+                    sb.Append(type);
+                    if (column.isPrimaryKey) {
+                        sb.Append(" PRIMARY KEY");
+                    }
+                    sb.Append(',');
+                }
+                sb.Length -= 1;
+                sb.Append(");");
+                return await ExecuteAsync(connection, sb.ToString()).ConfigureAwait(false);
             } catch (NpgsqlException e) {
                 return SQLResult.CreateError(e);
             }
@@ -85,8 +106,13 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new CreateEntitiesResult();
             }
             var sql = new StringBuilder();
-            sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
-            SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
+            if (tableType == TableType.Relational) {
+                sql.Append($"INSERT INTO {name}");
+                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.Default, '"', '"', tableInfo, syncContext);
+            } else {
+                sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
+                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
+            }
             try {
                 await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
             } catch (NpgsqlException e) {
@@ -104,9 +130,20 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new UpsertEntitiesResult();
             }
             var sql = new StringBuilder();
-            sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
-            SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
-            sql.Append($"\nON CONFLICT({ID}) DO UPDATE SET {DATA} = excluded.{DATA};");
+            if (tableType == TableType.Relational) {
+                sql.Append($"INSERT INTO {name}");
+                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.Default, '"', '"', tableInfo, syncContext);
+                sql.Append($"\nON CONFLICT(\"{tableInfo.keyColumn.name}\") DO UPDATE SET "); // {DATA} = excluded.{DATA};");
+                foreach (var column in tableInfo.columns) {
+                    sql.Append('"'); sql.Append(column.name); sql.Append("\"=excluded.\""); sql.Append(column.name); sql.Append("\", ");
+                }
+                sql.Length -= 2;
+                sql.Append(';');
+            } else {
+                sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
+                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
+                sql.Append($"\nON CONFLICT({ID}) DO UPDATE SET {DATA} = excluded.{DATA};");
+            }
             try {
                 await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
             } catch (NpgsqlException e) {
@@ -177,7 +214,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new DeleteEntitiesResult();    
             } else {
                 var sql = new StringBuilder();
-                sql.Append($"DELETE FROM  {name} WHERE {ID} in\n");
+                var id = tableType == TableType.Relational ? tableInfo.keyColumn.name : ID;
+                sql.Append($"DELETE FROM  {name} WHERE {id} in\n");
                 SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.Default);
                 try {
                     await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);

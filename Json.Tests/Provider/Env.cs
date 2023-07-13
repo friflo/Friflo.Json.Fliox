@@ -129,6 +129,7 @@ namespace Friflo.Json.Tests.Provider
                 case "mariadb":         return new MariaDBDatabase      (db, connection, schema) { TableType = TableType.JsonColumn };
                 case "mariadb_rel":     return new MariaDBDatabase      (db, connection, schema);
                 case "postgres":        return new PostgreSQLDatabase   (db, connection, schema) { TableType = TableType.JsonColumn };
+                case "postgres_rel":    return new PostgreSQLDatabase   (db, connection, schema);
                 case "sqlserver":       return new SQLServerDatabase    (db, connection, schema) { TableType = TableType.JsonColumn };
                 case "sqlserver_rel":   return new SQLServerDatabase    (db, connection, schema);
                 case "redis":           return new RedisHashDatabase    (db, connection, schema);
