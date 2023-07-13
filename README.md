@@ -8,7 +8,7 @@
 
 ![new](docs/images/new.svg) • Published database providers for: SQLite, MySQL, MariaDB, PostgreSQL & SQL Server. 
 
-An **ORM** for **.NET** supporting **simple** and **performant** access to **SQL & NoSQL** databases using C# or Web clients.  
+A client / server **ORM** for **.NET** for **SQL & NoSQL** databases with focus on Web apps and performance.  
 Database access is realized by creating a single class to query, create, update or delete table / container records.  
 
 This class - a **`FlioxClient`** - provide type safety and support validation, batching, transactions and messaging.  
