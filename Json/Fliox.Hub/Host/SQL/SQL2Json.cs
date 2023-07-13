@@ -13,15 +13,17 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public sealed class SQL2Json : IDisposable
     {
-        private     Utf8JsonWriter  writer;
-        private     DbDataReader    reader;
-        private     ReadCell[]      cells       = new ReadCell[4];  // reused
+        public      Utf8JsonWriter  writer;
+        public      DbDataReader    reader;
+        public      ReadCell[]      cells       = new ReadCell[4];  // reused
         private     byte[]          buffer      = new byte[16];     // reused
         private     char[]          charBuf     = new char[16];     // reused
         private     int             charPos;
+        private     ISQL2JsonMapper mapper;
         
         public async Task<List<EntityValue>> ReadEntitiesAsync(DbDataReader reader, TableInfo tableInfo)
         {
+            mapper      = tableInfo.mapper;
             var columns = tableInfo.columns;
             var colLen  = columns.Length;
             if (colLen > cells.Length) {
@@ -34,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 // --- read table columns
                 charPos = 0;
                 foreach (var column in columns) {
-                    ReadCell(column, ref cells[column.ordinal]);
+                    mapper.ReadCell(this, column, ref cells[column.ordinal]);
                 }
                 // --- create JSON entity
                 writer.InitSerializer();
@@ -51,39 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return result;
         }
         
-        private void ReadCell(ColumnInfo column, ref ReadCell cell)
-        {
-            var ordinal = column.ordinal;
-            cell.isNull = reader.IsDBNull(ordinal);
-            if (cell.isNull) {
-                return;
-            }
-            switch (column.type) {
-                case ColumnType.Boolean:    cell.lng = reader.GetByte       (ordinal);  return;
-                //
-                case ColumnType.String:     
-                case ColumnType.Enum:
-                case ColumnType.BigInteger: GetString(ref cell.chars,        ordinal);  return;
-                //
-                case ColumnType.Uint8:      cell.lng = reader.GetByte       (ordinal);  return;
-                case ColumnType.Int16:      cell.lng = reader.GetInt16      (ordinal);  return;
-                case ColumnType.Int32:      cell.lng = reader.GetInt32      (ordinal);  return;
-                case ColumnType.Int64:      cell.lng = reader.GetInt64      (ordinal);  return;
-                //
-                case ColumnType.Float:      cell.dbl = reader.GetFloat      (ordinal);  return;
-                case ColumnType.Double:     cell.dbl = reader.GetDouble     (ordinal);  return;
-                //
-                case ColumnType.DateTime:   cell.date= reader.GetDateTime   (ordinal);  return;
-                case ColumnType.Guid:       cell.guid= reader.GetGuid       (ordinal);  return;
-                //
-                case ColumnType.Array:      GetString(ref cell.chars,        ordinal);  return;
-                case ColumnType.Object:     cell.lng = reader.GetByte       (ordinal);  return; // used as boolean: != 0 => object is not null
-                default:
-                    throw new InvalidOperationException($"unexpected type: {column.type}");
-            }
-        }
-        
-        private void GetString(ref Chars chars, int ordinal) {
+        public void GetString(ref Chars chars, int ordinal) {
             var len = (int)reader.GetChars(ordinal, 0, null, 0, 0);
             if (len > charBuf.Length - charPos) {
                 charBuf = new char[len + charBuf.Length]; // ensure buffer is only growing
@@ -101,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             foreach (var member in obj.members) {
                 switch (member) {
                     case ColumnInfo column:
-                        WriteColumn(column);
+                        mapper.WriteColumn(this, column);
                         break;
                     case ObjectInfo objectMember:
                         if (cells[objectMember.ordinal].isNull) {
@@ -116,43 +86,19 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
         }
         
-        private void WriteColumn(ColumnInfo column)
-        {
-            ref var cell    = ref cells[column.ordinal];
-            var key         = column.nameBytes;
-            if (cell.isNull) {
-                writer.MemberNul(key); // could omit writing a member with value null
-                return;
-            }
-            cell.isNull = true;
-            switch (column.type) {
-                case ColumnType.Boolean:    writer.MemberBln    (key, cell.lng != 0);       break;
-                //
-                case ColumnType.String:
-                case ColumnType.Enum:
-                case ColumnType.BigInteger: writer.MemberStr    (key, cell.chars.AsSpan()); break;
-                //
-                case ColumnType.Uint8:
-                case ColumnType.Int16:
-                case ColumnType.Int32:
-                case ColumnType.Int64:      writer.MemberLng    (key, cell.lng);            break;
-                //
-                case ColumnType.Float:
-                case ColumnType.Double:     writer.MemberDbl    (key, cell.dbl);            break;
-                //
-                case ColumnType.Guid:       writer.MemberGuid   (key, cell.guid);           break;
-                case ColumnType.DateTime:   writer.MemberDate   (key, cell.date);           break;
-                case ColumnType.Array:      writer.MemberArr(key, Chars2Bytes(cell.chars)); break;
-                default:
-                    throw new InvalidOperationException($"unexpected type: {column.type}");
-            }
-        }
-        
-        private Bytes Chars2Bytes (in Chars value)
+        public Bytes Chars2Bytes (in Chars value)
         {
             var max = Encoding.UTF8.GetMaxByteCount(value.len);
             if (max > buffer.Length) buffer = new byte[max];
             int len = Encoding.UTF8.GetBytes(value.buf, value.start, value.len, buffer, 0);
+            return new Bytes{ buffer = buffer, start = 0, end = len };
+        }
+        
+        public Bytes String2Bytes (string value)
+        {
+            var max = Encoding.UTF8.GetMaxByteCount(value.Length);
+            if (max > buffer.Length) buffer = new byte[max];
+            int len = Encoding.UTF8.GetBytes(value, 0, value.Length, buffer, 0);
             return new Bytes{ buffer = buffer, start = 0, end = len };
         }
 
@@ -161,14 +107,15 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
     }
     
-    internal struct ReadCell
+    public struct ReadCell
     {
-        internal    bool        isNull;
-        internal    Chars       chars;
-        internal    long        lng;
-        internal    double      dbl;
-        internal    Guid        guid;
-        internal    DateTime    date;
+        public      bool        isNull;
+        public      Chars       chars;
+        public      string      str;
+        public      long        lng;
+        public      double      dbl;
+        public      Guid        guid;
+        public      DateTime    date;
         
         internal JsonKey AsKey(ColumnType  typeId)
         {
@@ -186,14 +133,14 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
     }
     
-    internal struct Chars {
+    public struct Chars {
         internal    char[]  buf;
         internal    int     start;
         internal    int     len;
 
         public override string ToString() => GetString();
 
-        internal ReadOnlySpan<char> AsSpan() {
+        public ReadOnlySpan<char> AsSpan() {
             return new ReadOnlySpan<char>(buf, start, len);
         }
         

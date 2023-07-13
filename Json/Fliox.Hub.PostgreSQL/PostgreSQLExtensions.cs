@@ -43,11 +43,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case ColumnType.Int16:      return "smallint";
                 case ColumnType.Int32:      return "integer";
                 case ColumnType.Int64:      return "bigint";
-                case ColumnType.Float:      return "float";
+                case ColumnType.Float:      return "real";
                 case ColumnType.Double:     return "double precision";
                 case ColumnType.Boolean:    return "boolean";
                 case ColumnType.Guid:       return "UUID";
-                case ColumnType.DateTime:
+                case ColumnType.DateTime:   return "text"; // return "timestamptz(6)";
                 case ColumnType.BigInteger:
                 case ColumnType.String:
                 case ColumnType.Enum:       return "text";

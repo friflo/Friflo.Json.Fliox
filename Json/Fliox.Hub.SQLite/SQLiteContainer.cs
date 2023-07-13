@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         internal SQLiteContainer(string name, SQLiteDatabase database, bool pretty)
             : base(name, database)
         {
-            tableInfo   = new TableInfo (database, name);
+            tableInfo   = new TableInfo (database, name, SQL2JsonMapper.Instance);
             synchronous = database.Synchronous;
             Pretty      = pretty;
         }

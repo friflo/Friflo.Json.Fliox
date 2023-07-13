@@ -35,9 +35,9 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         internal SQLServerContainer(string name, SQLServerDatabase database, bool pretty)
             : base(name, database)
         {
-            tableInfo       = new TableInfo (database, name, database.TableType);
-            Pretty          = pretty;
-            tableType       = database.TableType;
+            tableInfo   = new TableInfo (database, name, SQL2JsonMapper.Instance, database.TableType);
+            Pretty      = pretty;
+            tableType   = database.TableType;
         }
         
         public async Task<SQLResult> CreateTable(ISyncConnection syncConnection) {

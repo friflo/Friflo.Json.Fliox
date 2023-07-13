@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public   readonly   bool            isPrimaryKey;
         public   readonly   string          name;           // path: sub.title
         internal readonly   string          memberName;     // leaf: title
-        internal readonly   Bytes           nameBytes;      // leaf: title
+        public   readonly   Bytes           nameBytes;      // leaf: title
         public   readonly   ColumnType      type;
 
         public override     string          ToString() => $"{name} [{ordinal}] : {type}";
@@ -114,6 +114,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public   readonly   ColumnInfo                      keyColumn;
         public   readonly   TableType                       tableType;
         public   readonly   string                          container;
+        public   readonly   ISQL2JsonMapper                 mapper;
         // --- internal
         private  readonly   Dictionary<string, ColumnInfo>  columnMap;
         // ReSharper disable once CollectionNeverQueried.Local
@@ -123,7 +124,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 
         public   override   string                          ToString() => container;
 
-        public TableInfo(EntityDatabase database, string container, TableType tableType = TableType.JsonColumn) {
+        public TableInfo(EntityDatabase database, string container, ISQL2JsonMapper mapper, TableType tableType = TableType.JsonColumn) {
+            this.mapper     = mapper;
             this.tableType  = tableType;
             this.container  = container;
             columnMap       = new Dictionary<string, ColumnInfo>();

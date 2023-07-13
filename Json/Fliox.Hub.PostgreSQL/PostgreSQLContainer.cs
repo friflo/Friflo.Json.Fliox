@@ -28,10 +28,10 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         internal PostgreSQLContainer(string name, PostgreSQLDatabase database)
             : base(name, database)
         {
-            tableInfo       = new TableInfo (database, name, database.TableType);
-            var types       = database.Schema.typeSchema.GetEntityTypes();
-            entityType      = types[name];
-            tableType       = database.TableType;
+            tableInfo   = new TableInfo (database, name, PostgresSQL2Json.Instance, database.TableType);
+            var types   = database.Schema.typeSchema.GetEntityTypes();
+            entityType  = types[name];
+            tableType   = database.TableType;
         }
         
         public async Task<SQLResult> CreateTable(ISyncConnection syncConnection) {
@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
                 sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo, '"', '"');
-                sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
+                sql.Append($" FROM {name} WHERE \"{tableInfo.keyColumn.name}\" in\n");
             } else {
                 sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
             }
