@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 case ColumnType.DateTime:   return "datetime2";     // datetime2 = datetime + 6 digits for fraction
                 case ColumnType.BigInteger:
                 case ColumnType.String:
-                case ColumnType.Enum:       return column.isPrimaryKey ? "nvarchar(255)" : "nvarchar(max)"; // TODO - used 255 to enable using as PK
+                case ColumnType.Enum:       return column.isPrimaryKey ? "nvarchar(255)" : "nvarchar(max)"; // used 255 to enable using as PK
                 case ColumnType.Array:      return "nvarchar(max)"; // JSON column
                 case ColumnType.Object:     return "tinyint";
             }
