@@ -68,20 +68,20 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             switch (operation.Type) {
                 case FIELD: {
                     var field       = (Field)operation;
-                    var path        = GetFieldPath(field);
                     var arrayField  = args.GetArrayField(field);
                     if (tableType == TableType.Relational) {
                         if (arrayField != null) {
-                            return $"JSON_VALUE({arrayField.array}, '{path}')";
+                            var path = ConvertPath(arrayField.array, field.name, 1); 
+                            return $"({path})";
                         }
                         return GetColumn(field);
                     }
                     if (arrayField != null) {
-                        path = GetArrayPath(arrayField.array, field);
+                        var path = GetArrayPath(arrayField.array, field);
                         return path;
                     } else {
                         var arg     = args.GetArg(field);
-                        path    = ConvertPath(arg, field.name, 1); // todo check using GetFieldPath() instead
+                        var path    = ConvertPath(arg, field.name, 1); // todo check using GetFieldPath() instead
                         return path;
                     }
                 }
@@ -312,7 +312,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var fieldType       = GetFieldType(entityType, any.field.name);
             var cx              = new ConvertContext (args, fieldType, tableType);
             var operand         = cx.Traverse(any.predicate);
-            string arrayPath    = GetFieldPath(any.field);
+            string arrayPath    = tableType == TableType.JsonColumn ? GetFieldPath(any.field) : GetColumn(any.field);
             var result =
 $@"jsonb_typeof({arrayPath}) = 'array'
   AND EXISTS(
@@ -331,7 +331,7 @@ $@"jsonb_typeof({arrayPath}) = 'array'
             var fieldType       = GetFieldType(entityType, all.field.name);
             var cx              = new ConvertContext (args, fieldType, tableType);
             var operand         = cx.Traverse(all.predicate);
-            string arrayPath    = GetFieldPath(all.field);
+            string arrayPath    = tableType == TableType.JsonColumn ? GetFieldPath(all.field) : GetColumn(all.field);
             var result =
 $@"jsonb_typeof({arrayPath}) <> 'array'
   OR NOT EXISTS(

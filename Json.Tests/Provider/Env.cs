@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Provider
         internal static bool    IsMySQL     (string db) => IsProvider("mysql",     "mysql_rel")     && db == test_db;
         internal static bool    IsMariaDB   (string db) => IsProvider("mariadb",   "mariadb_rel")   && db == test_db;
         internal static bool    IsSQLServer (string db) => IsProvider("sqlserver", "sqlserver_rel") && db == test_db;
-        internal static bool    IsPostgres  (string db) => TEST_DB_PROVIDER == "postgres"           && db == test_db;
+        internal static bool    IsPostgres  (string db) => IsProvider("postgres",  "postgres_rel")  && db == test_db;
         internal static bool    IsSQLite    (string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
         private  static bool    IsFileSystem            => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
         
