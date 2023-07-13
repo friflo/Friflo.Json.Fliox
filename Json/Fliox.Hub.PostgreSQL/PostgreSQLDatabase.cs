@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Host.SQL;
 using Npgsql;
 using static Friflo.Json.Fliox.Hub.PostgreSQL.PostgreSQLUtils;
 
+// ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public sealed class PostgreSQLDatabase : EntityDatabase, ISQLDatabase
@@ -79,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var builder = new NpgsqlConnectionStringBuilder(connectionString);
             var db      = builder.Database;
             builder.Remove("Database");
-            var connection = new NpgsqlConnection(builder.ConnectionString);
+            using var connection = new NpgsqlConnection(builder.ConnectionString);
             await connection.OpenAsync().ConfigureAwait(false);
             var sql = $"drop database {db};";
             using var command = new NpgsqlCommand(sql, connection);

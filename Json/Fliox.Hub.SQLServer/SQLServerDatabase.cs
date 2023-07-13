@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Host.SQL;
 using System.Data.SqlClient;
 using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
 
+// ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     public sealed class SQLServerDatabase : EntityDatabase, ISQLDatabase
@@ -102,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             var builder = new SqlConnectionStringBuilder(connectionString);
             var db      = builder.InitialCatalog;
             builder.Remove("Database");
-            var connection = new SqlConnection(builder.ConnectionString);
+            using var connection = new SqlConnection(builder.ConnectionString);
             await connection.OpenAsync().ConfigureAwait(false);
             var sql = $"drop database {db};";
             using var command = new SqlCommand(sql, connection);

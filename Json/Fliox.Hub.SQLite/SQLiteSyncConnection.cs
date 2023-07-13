@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  bool                IsOpen      => true;
+        public  void                ClearPool() { }
         
         internal SyncConnection(sqlite3 sqliteDB, object writeLock) {
             this.sqliteDB   = sqliteDB;

@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance.Dispose();
         public  bool                IsOpen      => instance.State == ConnectionState.Open;
+        public  void                ClearPool() => SqlConnection.ClearPool(instance);
         
         public SyncConnection (SqlConnection instance) {
             this.instance = instance ?? throw new ArgumentNullException(nameof(instance));

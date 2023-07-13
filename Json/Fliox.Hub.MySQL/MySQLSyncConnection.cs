@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance.Dispose();
         public  bool                IsOpen      => instance.State == ConnectionState.Open;
+        public  void                ClearPool() => MySqlConnection.ClearPool(instance);
         
         public SyncConnection (MySqlConnection instance) {
             this.instance = instance ?? throw new ArgumentNullException(nameof(instance));

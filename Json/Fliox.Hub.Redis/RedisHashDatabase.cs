@@ -59,6 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance.Dispose();
         public  bool                IsOpen      => instance.IsConnected;
+        public  void                ClearPool() { }
         
         public SyncConnection (ConnectionMultiplexer instance) {
             this.instance = instance ?? throw new ArgumentNullException(nameof(instance));

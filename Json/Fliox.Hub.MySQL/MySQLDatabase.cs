@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Host.SQL;
 using MySqlConnector;
 using static Friflo.Json.Fliox.Hub.MySQL.MySQLUtils;
 
+// ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
     public class MySQLDatabase : EntityDatabase, ISQLDatabase
@@ -81,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var builder = new MySqlConnectionStringBuilder(connectionString);
             var db      = builder.Database;
             builder.Remove("Database");
-            var connection = new MySqlConnection(builder.ConnectionString);
+            using var connection = new MySqlConnection(builder.ConnectionString);
             await connection.OpenAsync().ConfigureAwait(false);
             var sql = $"drop database {db};";
             using var command = new MySqlCommand(sql, connection);

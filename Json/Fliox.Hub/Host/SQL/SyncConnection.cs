@@ -20,6 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public  TaskExecuteError    Error    { get; }
         public  bool                IsOpen   { get; }
         public  void                Dispose();
+        public  void                ClearPool();
     }
     
     public class DefaultSyncConnection : ISyncConnection
@@ -27,12 +28,14 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public  TaskExecuteError    Error    => null;
         public  bool                IsOpen   => true;
         public  void                Dispose() {}
+        public  void                ClearPool() {}
     }
     
     public sealed class SyncConnectionError : ISyncConnection {
         public  TaskExecuteError    Error   { get; }
         public  bool                IsOpen  => false;
         public  void                Dispose() { }
+        public  void                ClearPool() {}
         
         public SyncConnectionError(TaskExecuteError error) {
             Error = error ?? throw new ArgumentNullException(nameof(error));

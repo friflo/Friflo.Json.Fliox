@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance.Close();
         public  bool                IsOpen      => instance.State == ConnectionState.Open;
+        public  void                ClearPool() => NpgsqlConnection.ClearPool(instance);
         
         public SyncConnection (NpgsqlConnection instance) {
             this.instance = instance ?? throw new ArgumentNullException(nameof(instance));

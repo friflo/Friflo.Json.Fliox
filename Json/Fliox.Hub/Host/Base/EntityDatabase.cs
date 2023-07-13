@@ -150,18 +150,31 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </list>
         /// </remarks>
         public async Task<EntityDatabase> SetupDatabaseAsync(Setup options = Setup.All) {
-            var connection = await GetConnectionAsync().ConfigureAwait(false);
-            if (!connection.IsOpen) {
-                try {
-                    if ((options & Setup.CreateDatabase) == 0) {
-                        throw new PrepareDatabaseException(connection.Error.message);
+            ISyncConnection connection = null;
+            try {
+                connection = await GetConnectionAsync().ConfigureAwait(false);
+                if (!connection.IsOpen) {
+                    try {
+                        if ((options & Setup.CreateDatabase) == 0) {
+                            throw new PrepareDatabaseException(connection.Error.message);
+                        }
+                        await CreateDatabaseAsync().ConfigureAwait(false);
+                        connection = await GetConnectionAsync().ConfigureAwait(false);
+                    } catch (Exception e) {
+                        throw new PrepareDatabaseException(e.Message);
                     }
-                    await CreateDatabaseAsync().ConfigureAwait(false);
-                    connection = await GetConnectionAsync().ConfigureAwait(false);
-                } catch (Exception e) {
-                    throw new PrepareDatabaseException(e.Message);
                 }
+                await SetupInternal(options, connection).ConfigureAwait(false);
             }
+            finally {
+                connection?.Dispose();
+                connection?.ClearPool();
+            }
+            return this;
+        }
+        
+        private async Task SetupInternal(Setup options, ISyncConnection connection)
+        {
             if (this is ISQLDatabase sqlDatabase) {
                 await sqlDatabase.CreateFunctions(connection).ConfigureAwait(false);
             }
@@ -198,7 +211,6 @@ namespace Friflo.Json.Fliox.Hub.Host
                     }      
                 }
             }
-            return this;
         }
         
         protected   virtual Task    CreateDatabaseAsync()   => Task.CompletedTask;
