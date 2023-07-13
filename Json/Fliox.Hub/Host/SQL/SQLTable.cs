@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public interface ISQLDatabase
     {
+        Task CreateFunctions                (ISyncConnection connection);
     }
     
     public interface ISQLTable

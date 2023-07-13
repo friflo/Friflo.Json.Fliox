@@ -73,22 +73,6 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         protected override async Task CreateDatabaseAsync() {
             await CreateDatabaseIfNotExistsAsync(connectionString).ConfigureAwait(false);
-            await CreateText2Ts();
-        }
-        
-        private async Task CreateText2Ts() {
-            if (TableType != TableType.JsonColumn) {
-                return;
-            }
-            // [Why isn't it possible to cast to a timestamp in an index in PostgreSQL? - Database Administrators Stack Exchange]
-            // https://dba.stackexchange.com/questions/250627/why-isnt-it-possible-to-cast-to-a-timestamp-in-an-index-in-postgresql
-            const string sql =
-@"CREATE or REPLACE FUNCTION text2ts(text) RETURNS timestamp without time zone
-    LANGUAGE sql IMMUTABLE AS $$SELECT CASE WHEN $1 ~ '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$'
-        THEN CAST($1 AS timestamp without time zone)
-        END$$;";
-            var syncConnection = (SyncConnection)await GetConnectionAsync().ConfigureAwait(false);
-            await syncConnection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
         }
         
         public override async Task DropDatabaseAsync() {
@@ -100,6 +84,25 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var sql = $"drop database {db};";
             using var command = new NpgsqlCommand(sql, connection);
             await command.ExecuteReaderAsync().ConfigureAwait(false);
+        }
+        
+        public async Task CreateFunctions(ISyncConnection connection) {
+            await CreateText2Ts(connection).ConfigureAwait(false);
+        }
+        
+        private async Task CreateText2Ts(ISyncConnection synConnection) {
+            if (TableType != TableType.JsonColumn) {
+                return;
+            }
+            // [Why isn't it possible to cast to a timestamp in an index in PostgreSQL? - Database Administrators Stack Exchange]
+            // https://dba.stackexchange.com/questions/250627/why-isnt-it-possible-to-cast-to-a-timestamp-in-an-index-in-postgresql
+            const string sql =
+                @"CREATE or REPLACE FUNCTION text2ts(text) RETURNS timestamp without time zone
+    LANGUAGE sql IMMUTABLE AS $$SELECT CASE WHEN $1 ~ '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$'
+        THEN CAST($1 AS timestamp without time zone)
+        END$$;";
+            var connection = (SyncConnection)synConnection;
+            await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
         }
     }
 }

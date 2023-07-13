@@ -108,6 +108,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             using var command = new SqlCommand(sql, connection);
             await command.ExecuteReaderAsync().ConfigureAwait(false);
         }
+        
+        public Task CreateFunctions(ISyncConnection connection) => Task.CompletedTask;
     }
 }
 

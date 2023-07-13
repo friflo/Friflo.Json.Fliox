@@ -162,6 +162,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                     throw new PrepareDatabaseException(e.Message);
                 }
             }
+            if (this is ISQLDatabase sqlDatabase) {
+                await sqlDatabase.CreateFunctions(connection).ConfigureAwait(false);
+            }
             var containerNames = Schema.GetContainers();
             var tables = new List<ISQLTable>();
             foreach (var containerName in containerNames) {

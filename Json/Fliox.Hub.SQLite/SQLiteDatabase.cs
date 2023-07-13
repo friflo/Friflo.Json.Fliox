@@ -118,6 +118,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return new TransResult($"invalid transaction command {command}");
             }
         }
+        
+        public Task CreateFunctions(ISyncConnection connection) => Task.CompletedTask;
     }
 
     
