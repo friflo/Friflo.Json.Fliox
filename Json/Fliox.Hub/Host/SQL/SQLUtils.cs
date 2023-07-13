@@ -7,7 +7,6 @@ using System.Data;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -47,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             if (tableType == TableType.Relational) {
                 var sql = new StringBuilder();
                 sql.Append("SELECT ");
-                SQLTable.AppendColumnNames(sql, tableInfo, '`', '`');
+                SQLTable.AppendColumnNames(sql, tableInfo);
                 sql.Append($" FROM {table} WHERE {cursorStart}{filter}{cursorDesc}{limit}");
                 return sql.ToString();
             }

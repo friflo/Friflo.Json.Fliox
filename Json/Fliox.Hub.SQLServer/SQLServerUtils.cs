@@ -75,7 +75,7 @@ AS ({asStr});";
                 if (tableType == TableType.Relational) {
                     var sql = new StringBuilder();
                     sql.Append($"SELECT{top} ");
-                    SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+                    SQLTable.AppendColumnNames(sql, tableInfo);
                     sql.Append($" FROM {table} WHERE {filter}");
                     return sql.ToString();
                 }
@@ -87,7 +87,7 @@ AS ({asStr});";
                 var sql = new StringBuilder();
                 sql.Append("SELECT ");
                 if (tableType == TableType.Relational) {
-                    SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+                    SQLTable.AppendColumnNames(sql, tableInfo);
                 } else {
                     sql.Append($"{ID}, {DATA}");
                     // return $"SELECT {ID}, {DATA} FROM {table} WHERE {cursorStart}{filter}{cursorDesc} OFFSET 0 ROWS FETCH FIRST {command.maxCount} ROWS ONLY";
@@ -135,7 +135,7 @@ WHEN NOT MATCHED THEN
         {
             var sql = new StringBuilder();
             sql.Append($"INSERT INTO {tableInfo.container} (");
-            SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+            SQLTable.AppendColumnNames(sql, tableInfo);
             sql.Append(")\nVALUES\n");
             using var pooled = syncContext.Json2SQL.Get();
             pooled.instance.AppendColumnValues(sql, entities, SQLEscape.BackSlash, tableInfo);
@@ -157,7 +157,7 @@ VALUES
             using var pooled = syncContext.Json2SQL.Get();
             pooled.instance.AppendColumnValues(sql, entities, SQLEscape.PrefixN, tableInfo);
             sql.Append($@") AS s (");
-            SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+            SQLTable.AppendColumnNames(sql, tableInfo);
             sql.Append($@")
 ON s.{id} = t.{id}
 WHEN MATCHED THEN
@@ -173,9 +173,9 @@ WHEN MATCHED THEN
             sql.Append($@"
 WHEN NOT MATCHED THEN
     INSERT (");
-            SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+            SQLTable.AppendColumnNames(sql, tableInfo);
             sql.Append(")\n    VALUES(");
-            SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+            SQLTable.AppendColumnNames(sql, tableInfo);
             sql.Append(");");
             await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
         }

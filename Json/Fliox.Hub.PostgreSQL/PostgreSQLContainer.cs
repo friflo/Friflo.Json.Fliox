@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         internal PostgreSQLContainer(string name, PostgreSQLDatabase database)
             : base(name, database)
         {
-            tableInfo   = new TableInfo (database, name, PostgresSQL2Json.Instance, database.TableType);
+            tableInfo   = new TableInfo (database, name, PostgresSQL2Json.Instance, '"', '"', database.TableType);
             var types   = database.Schema.typeSchema.GetEntityTypes();
             entityType  = types[name];
             tableType   = database.TableType;
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     // "The maximum length for a value in a B-tree index, which includes primary keys, is one third of the size of a buffer page, by default floor(8192/3) = 2730 bytes."
                     // set to 255 as for all SQL databases
                     var sql = $"CREATE TABLE if not exists {name} ({ID} VARCHAR(255) PRIMARY KEY, {DATA} JSONB);";
-                    return await ExecuteAsync((SyncConnection)connection, sql).ConfigureAwait(false);
+                    return await ExecuteAsync(connection, sql).ConfigureAwait(false);
                 }
                 var sb = new StringBuilder();
                 sb.Append($"CREATE TABLE if not exists {name} (");
@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
                 sql.Append($"INSERT INTO {name}");
-                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool, '"', '"', tableInfo, syncContext);
+                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool, tableInfo, syncContext);
             } else {
                 sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
                 SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool);
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
                 sql.Append($"INSERT INTO {name}");
-                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool, '"', '"', tableInfo, syncContext);
+                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool, tableInfo, syncContext);
                 sql.Append($"\nON CONFLICT(\"{tableInfo.keyColumn.name}\") DO UPDATE SET "); // {DATA} = excluded.{DATA};");
                 foreach (var column in tableInfo.columns) {
                     sql.Append('"'); sql.Append(column.name); sql.Append("\"=excluded.\""); sql.Append(column.name); sql.Append("\", ");
@@ -159,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
-                sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo, '"', '"');
+                sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
                 sql.Append($" FROM {name} WHERE \"{tableInfo.keyColumn.name}\" in\n");
             } else {
                 sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");

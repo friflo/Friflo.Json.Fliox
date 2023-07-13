@@ -121,10 +121,21 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private  readonly   Dictionary<string, ColumnInfo>  indexMap;
         // ReSharper disable once NotAccessedField.Local
         public   readonly   ObjectInfo                      root;
+        public   readonly   char                            colStart;
+        public   readonly   char                            colEnd;
 
         public   override   string                          ToString() => container;
 
-        public TableInfo(EntityDatabase database, string container, ISQL2JsonMapper mapper, TableType tableType = TableType.JsonColumn) {
+        public TableInfo(
+            EntityDatabase  database,
+            string          container,
+            ISQL2JsonMapper mapper,
+            char            colStart,
+            char            colEnd,
+            TableType       tableType = TableType.JsonColumn)
+        {
+            this.colStart   = colStart;
+            this.colEnd     = colEnd;
             this.mapper     = mapper;
             this.tableType  = tableType;
             this.container  = container;

@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         internal SQLServerContainer(string name, SQLServerDatabase database, bool pretty)
             : base(name, database)
         {
-            tableInfo   = new TableInfo (database, name, SQL2JsonMapper.Instance, database.TableType);
+            tableInfo   = new TableInfo (database, name, SQL2JsonMapper.Instance,  '[', ']', database.TableType);
             Pretty      = pretty;
             tableType   = database.TableType;
         }
@@ -176,7 +176,7 @@ CREATE TABLE dbo.{name}";
                 }
                 var sql = new StringBuilder();
                 if (tableType == TableType.Relational) {
-                    sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo, '[', ']');
+                    sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
                     sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
                     SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.PrefixN);
                     using var reader = await connection.ExecuteReaderSync(sql.ToString()).ConfigureAwait(false);

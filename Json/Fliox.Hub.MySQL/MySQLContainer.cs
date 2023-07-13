@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         internal MySQLContainer(string name, MySQLDatabase database, bool pretty)
             : base(name, database)
         {
-            tableInfo   = new TableInfo (database, name, SQL2JsonMapper.Instance, database.TableType);
+            tableInfo   = new TableInfo (database, name, SQL2JsonMapper.Instance, '`', '`', database.TableType);
             Pretty      = pretty;
             provider    = database.Provider;
             tableType   = database.TableType;
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
                 sql.Append($"INSERT INTO {name}");
-                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash, '`', '`', tableInfo, syncContext);
+                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext);
             } else {
                 sql.Append($"INSERT INTO {name} ({ID},{DATA})\nVALUES ");
                 SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
                 sql.Append($"REPLACE INTO {name}");
-                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash, '`', '`', tableInfo, syncContext);
+                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext);
             } else {
                 sql.Append($"REPLACE INTO {name} ({ID},{DATA})\nVALUES");
                 SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
-                sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo, '`', '`');
+                sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
                 sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
             } else {
                 sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");

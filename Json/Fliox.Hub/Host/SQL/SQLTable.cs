@@ -24,14 +24,14 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     public static class SQLTable
     {
-        public static void AppendColumnNames(StringBuilder sb, TableInfo tableInfo, char colStart, char colEnd) {
+        public static void AppendColumnNames(StringBuilder sb, TableInfo tableInfo) {
             var isFirst = true;
             var columns = tableInfo.columns;
             foreach (var column in columns) {
                 if (isFirst) isFirst = false; else sb.Append(',');
-                sb.Append(colStart);
+                sb.Append(tableInfo.colStart);
                 sb.Append(column.name);
-                sb.Append(colEnd);
+                sb.Append(tableInfo.colEnd);
             }
         }
         
@@ -39,14 +39,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             StringBuilder       sb,
             List<JsonEntity>    entities,
             SQLEscape           escape,
-            char                colStart,
-            char                colEnd,
             TableInfo           tableInfo,
             SyncContext         syncContext)
         {
             using var pooled = syncContext.pool.Json2SQL.Get();
             sb.Append(" (");
-            AppendColumnNames(sb, tableInfo, colStart, colEnd);
+            AppendColumnNames(sb, tableInfo);
             sb.Append(")\nVALUES\n");
             pooled.instance.AppendColumnValues(sb, entities, escape, tableInfo);
         }
