@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             ref var writer  = ref sql2Json.writer;
             var key         = column.nameBytes;
             if (cell.isNull) {
-                writer.MemberNul(key); // could omit writing a member with value null
+                // writer.MemberNul(key); // omit writing member with value null
                 return;
             }
             cell.isNull = true;

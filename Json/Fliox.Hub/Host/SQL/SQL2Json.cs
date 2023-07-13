@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         break;
                     case ObjectInfo objectMember:
                         if (cells[objectMember.ordinal].isNull) {
-                            writer.MemberNul(objectMember.nameBytes);
+                            // writer.MemberNul(objectMember.nameBytes); // omit writing member with value null
                             continue;
                         }
                         writer.MemberObjectStart(objectMember.nameBytes);
