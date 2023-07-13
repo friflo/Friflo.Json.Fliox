@@ -333,6 +333,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
+        /// <summary>
+        /// Utility methods calling <see cref="EntityDatabase.SetupDatabaseAsync"/> for the main and extension databases.<br/>
+        /// <b>Note:</b> This method is intended for use during development. See docs at <see cref="EntityDatabase.SetupDatabaseAsync"/>
+        /// </summary>
         public async Task SetupDatabasesAsync(Setup options = Setup.All) {
             var databases = GetDatabases().Values;
             var tasks = new List<Task>();
