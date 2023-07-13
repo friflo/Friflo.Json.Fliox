@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
@@ -16,11 +17,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     public static class PostgreSQLExtensions
     {
-        public static string PostgresFilter(this FilterOperation op, TypeDef entityType) {
+        public static string PostgresFilter(this FilterOperation op, TypeDef entityType, TableType tableType) {
             var filter      = (Filter)op;
             var args        = new FilterArgs(filter);
             args.AddArg(filter.arg, DATA);
-            var cx          = new ConvertContext (args, entityType);
+            var cx          = new ConvertContext (args, entityType, tableType);
             var result      = cx.Traverse(filter.body);
             return result;
         }
@@ -29,9 +30,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
     internal sealed class ConvertContext {
         private readonly   FilterArgs       args;
         private readonly   TypeDef          entityType;
+        private readonly   TableType        tableType;
         
-        internal ConvertContext (FilterArgs args, TypeDef entityType) {
-            this.args = args;
+        internal ConvertContext (FilterArgs args, TypeDef entityType, TableType tableType) {
+            this.args       = args;
+            this.tableType  = tableType;
             this.entityType = entityType ?? throw new InvalidOperationException(nameof(entityType));
         }
         
@@ -65,13 +68,20 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             switch (operation.Type) {
                 case FIELD: {
                     var field       = (Field)operation;
+                    var path        = GetFieldPath(field);
                     var arrayField  = args.GetArrayField(field);
+                    if (tableType == TableType.Relational) {
+                        if (arrayField != null) {
+                            return $"JSON_VALUE({arrayField.array}, '{path}')";
+                        }
+                        return GetColumn(field);
+                    }
                     if (arrayField != null) {
-                        var path = GetArrayPath(arrayField.array, field);
+                        path = GetArrayPath(arrayField.array, field);
                         return path;
                     } else {
                         var arg     = args.GetArg(field);
-                        var path    = ConvertPath(arg, field.name, 1); // todo check using GetFieldPath() instead
+                        path    = ConvertPath(arg, field.name, 1); // todo check using GetFieldPath() instead
                         return path;
                     }
                 }
@@ -288,7 +298,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         private string TraverseCount (CountWhere countWhere) {
             string arg          = countWhere.arg;
             using var scope     = args.AddArg(arg);
-            var cx              = new ConvertContext (args, null);
+            var cx              = new ConvertContext (args, null, tableType);
             var operand         = cx.Traverse(countWhere.predicate);
             string fieldName    = Traverse(countWhere.field);
             return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
@@ -300,7 +310,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             using var scope     = args.AddArg(arg);
             using var array     = args.AddArrayField(arg, arrayTable);
             var fieldType       = GetFieldType(entityType, any.field.name);
-            var cx              = new ConvertContext (args, fieldType);
+            var cx              = new ConvertContext (args, fieldType, tableType);
             var operand         = cx.Traverse(any.predicate);
             string arrayPath    = GetFieldPath(any.field);
             var result =
@@ -319,7 +329,7 @@ $@"jsonb_typeof({arrayPath}) = 'array'
             using var scope     = args.AddArg(arg);
             using var array     = args.AddArrayField(arg, arrayTable);
             var fieldType       = GetFieldType(entityType, all.field.name);
-            var cx              = new ConvertContext (args, fieldType);
+            var cx              = new ConvertContext (args, fieldType, tableType);
             var operand         = cx.Traverse(all.predicate);
             string arrayPath    = GetFieldPath(all.field);
             var result =
@@ -420,6 +430,15 @@ $@"jsonb_typeof({arrayPath}) <> 'array'
             }
             sb.Append(')');
             return sb.ToString();
+        }
+        
+        private static string GetColumn(Field field) {
+            var name = field.name;
+            if (field.arg == name) {
+                //return "$";
+                throw new NotSupportedException("GetColum()");
+            }
+            return $"\"{name.Substring(field.arg.Length + 1)}\"";
         }
     }
 }

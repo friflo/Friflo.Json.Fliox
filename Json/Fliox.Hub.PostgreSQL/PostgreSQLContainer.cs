@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new QueryEntitiesResult { Error = syncConnection.Error };
             }
             var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "TRUE" : filter.PostgresFilter(entityType);
+            var where   = filter.IsTrue ? "TRUE" : filter.PostgresFilter(entityType, tableType);
             var sql     = SQLUtils.QueryEntitiesSQL(command, name, where, tableInfo);
             try {
                 using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
@@ -206,7 +206,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             if (command.type == AggregateType.count) {
                 var filter  = command.GetFilter();
-                var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter(entityType)}";
+                var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter(entityType, tableType)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
                 var result  = await ExecuteAsync(connection, sql).ConfigureAwait(false);
                 if (result.Failed) { return new AggregateEntitiesResult { Error = result.TaskError() }; }

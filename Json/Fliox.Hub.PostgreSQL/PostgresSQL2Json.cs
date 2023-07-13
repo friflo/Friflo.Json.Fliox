@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return;
             }
             switch (column.type) {
-                case ColumnType.Boolean:    cell.lng = reader.GetByte       (ordinal);          return;
+                case ColumnType.Boolean:    cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return;
                 //
                 case ColumnType.String:     
                 case ColumnType.Enum:
