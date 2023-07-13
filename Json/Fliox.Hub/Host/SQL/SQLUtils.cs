@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         Default     = 0,
         BackSlash   = 1,
         PrefixN     = 2,
+        HasBool     = 4
     }
     
     public static class SQLName

@@ -108,10 +108,10 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
                 sql.Append($"INSERT INTO {name}");
-                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.Default, '"', '"', tableInfo, syncContext);
+                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool, '"', '"', tableInfo, syncContext);
             } else {
                 sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
-                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
+                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool);
             }
             try {
                 await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
                 sql.Append($"INSERT INTO {name}");
-                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.Default, '"', '"', tableInfo, syncContext);
+                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool, '"', '"', tableInfo, syncContext);
                 sql.Append($"\nON CONFLICT(\"{tableInfo.keyColumn.name}\") DO UPDATE SET "); // {DATA} = excluded.{DATA};");
                 foreach (var column in tableInfo.columns) {
                     sql.Append('"'); sql.Append(column.name); sql.Append("\"=excluded.\""); sql.Append(column.name); sql.Append("\", ");
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 sql.Append(';');
             } else {
                 sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
-                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.Default);
+                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool);
                 sql.Append($"\nON CONFLICT({ID}) DO UPDATE SET {DATA} = excluded.{DATA};");
             }
             try {
@@ -158,11 +158,20 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
             var sql = new StringBuilder();
-            sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
+            if (tableType == TableType.Relational) {
+                sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo, '"', '"');
+                sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
+            } else {
+                sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
+            }
             SQLUtils.AppendKeysSQL(sql,  command.ids, SQLEscape.Default);
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql.ToString()).ConfigureAwait(false);
-                return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
+                if (tableType == TableType.Relational) {
+                    return await SQLTable.ReadEntitiesAsync(reader, command, tableInfo, syncContext).ConfigureAwait(false);
+                } else {
+                    return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
+                }
             } catch (NpgsqlException e) {
                 return new ReadEntitiesResult { Error = new TaskExecuteError(e.Message) };
             }
@@ -178,7 +187,12 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             var sql     = SQLUtils.QueryEntitiesSQL(command, name, where, tableInfo);
             try {
                 using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
-                var entities        = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
+                List<EntityValue> entities;
+                if (tableType == TableType.Relational) {
+                    entities = await SQLTable.QueryEntitiesAsync(reader, tableInfo, syncContext).ConfigureAwait(false);
+                } else {
+                    entities = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
+                }
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             } catch (NpgsqlException e) {
                 return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message), sql = sql };

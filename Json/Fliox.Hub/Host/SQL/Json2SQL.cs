@@ -16,10 +16,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private     Bytes           buffer      = new Bytes(256);   // reused
         private     char[]          charBuffer  = new char[32];     // reused
         private     RowCell[]       rowCells    = new RowCell[4];   // reused
+        private     bool            hasBool;
 
-        private const           string  Null    = "NULL";
-        private static readonly Bytes   True    = new Bytes("1");
-        private static readonly Bytes   False   = new Bytes("0");
+        private const   string  Null    = "NULL";
+        private const   char    One     = '1';
+        private const   char    Zero    = '0';
+        private const   string  True    = "true";
+        private const   string  False   = "false";
 
         public void AppendColumnValues(
             StringBuilder       sb,
@@ -28,6 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             TableInfo           tableInfo)
         {
             columns         = tableInfo.columns;
+            hasBool         = (escape & SQLEscape.HasBool) != 0;
             var columnCount = columns.Length;
             if (columnCount > rowCells.Length) {
                 rowCells = new RowCell[columnCount];
@@ -72,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     case JsonEvent.ValueBool: {
                         var column          = objInfo.FindColumn(parser.key);
                         ref var cell        = ref rowCells[column.ordinal];
-                        cell.value          = parser.boolValue ? True : False;
+                        cell.boolean        = parser.boolValue;
                         cell.type           = JsonEvent.ValueBool;
                         break;
                     }
@@ -126,6 +130,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         }
                         break;
                     case JsonEvent.ValueBool:
+                        AppendBool(sb, cell.boolean);
+                        break;
                     case JsonEvent.ValueNumber:
                         AppendBytes(sb, cell.value);
                         break;
@@ -135,7 +141,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         sb.Append('\'');
                         break;
                     case JsonEvent.ObjectStart:
-                        sb.Append('1');
+                        if (hasBool) {
+                            sb.Append(True);
+                        } else {
+                            sb.Append(One);
+                        }
                         break;
                     default:
                         throw new InvalidOperationException($"unexpected cell.type: {cell.type}");
@@ -187,6 +197,22 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             AppendString(sb, bytes, SQLEscape.Default);
         }
         
+        private void AppendBool(StringBuilder sb, bool value) {
+            if (hasBool) {
+                if (value) {
+                    sb.Append(True);
+                } else {
+                    sb.Append(False);
+                }
+            } else {
+                if (value) {
+                    sb.Append(One);
+                } else {
+                    sb.Append(Zero);
+                }
+            }
+        }
+        
         private static void AppendBytes(StringBuilder sb, in Bytes value) {
             var end = value.end;
             var buf = value.buffer;
@@ -212,6 +238,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     internal struct RowCell
     {
         internal Bytes      value;
+        internal bool       boolean;
         internal JsonEvent  type;
         
         internal void SetValue(in Bytes value, int len) {
