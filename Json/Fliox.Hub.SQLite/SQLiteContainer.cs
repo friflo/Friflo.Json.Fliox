@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER || SQLITE
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -19,15 +18,21 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 {
     internal sealed class SQLiteContainer : EntityContainer, ISQLTable
     {
+        // --- public
         private  readonly   TableInfo       tableInfo;
         private  readonly   bool            synchronous;
         public   override   bool            Pretty      { get; }
+        // --- private
         private  readonly   TableType       tableType;
+        private  readonly   ColumnInfo[]    columns;
+        private  readonly   ColumnInfo      keyColumn;
         
         internal SQLiteContainer(string name, SQLiteDatabase database, bool pretty)
             : base(name, database)
         {
             tableInfo   = new TableInfo (database, name, SQL2JsonMapper.Instance, '"', '"', database.TableType);
+            columns     = tableInfo.columns;
+            keyColumn   = tableInfo.keyColumn;
             synchronous = database.Synchronous;
             Pretty      = pretty;
             tableType   = database.TableType;
@@ -41,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             var sb = new StringBuilder();
             sb.Append($"CREATE TABLE if not exists {name} (");
-            foreach (var column in tableInfo.columns) {
+            foreach (var column in columns) {
                 var type = ConvertContext.GetSqlType(column);
                 sb.Append($"`{column.name}` {type}");
                 if (column.isPrimaryKey) {
@@ -61,8 +66,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             var connection = (SyncConnection)syncConnection;
             var columnNames = SQLiteUtils.GetColumnNames(connection, name);
-            foreach (var column in tableInfo.columns) {
-                if (column == tableInfo.keyColumn || columnNames.Contains(column.name)) {
+            foreach (var column in columns) {
+                if (column == keyColumn || columnNames.Contains(column.name)) {
                     continue;
                 }
                 var result = SQLiteUtils.AddVirtualColumn(connection, name, column);
@@ -79,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             var connection  = (SyncConnection)syncConnection;
             var columnNames = SQLiteUtils.GetColumnNames(connection, name);
-            foreach (var column in tableInfo.columns) {
+            foreach (var column in columns) {
                 if (columnNames.Contains(column.name)) {
                     continue;
                 }
@@ -90,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return Task.FromResult(result);
                 }
             }
-            return Task.FromResult<SQLResult>(new SQLResult());
+            return Task.FromResult(new SQLResult());
         }
         
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
@@ -158,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     sql.Append($"INSERT INTO {name} VALUES(");
                     for (int n = 0; n < tableInfo.columns.Length; n++) sql.Append("?,");
                     sql.Length--;
-                    sql.Append($") ON CONFLICT([{tableInfo.keyColumn.name}]) DO UPDATE SET ");
+                    sql.Append($") ON CONFLICT([{keyColumn.name}]) DO UPDATE SET ");
                     foreach (var column in tableInfo.columns) {
                         sql.Append($"[{column.name}]=excluded.[{column.name}], ");
                     }
@@ -306,7 +311,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (error != null) {
                     return new DeleteEntitiesResult { Error = error };
                 }
-                var id = tableType == TableType.Relational ? tableInfo.keyColumn.name : ID;
+                var id = tableType == TableType.Relational ? keyColumn.name : ID;
                 var sql = $"DELETE from {name} WHERE [{id}] in (?)";
                 if (!SQLiteUtils.Prepare(connection, sql, out var stmt, out error)) {
                     return new DeleteEntitiesResult { Error = error };
