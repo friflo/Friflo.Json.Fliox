@@ -161,7 +161,8 @@ GENERATED ALWAYS AS ({asStr});";
             out TaskExecuteError    error)
         {
             using var pooled = syncContext.Json2SQL.Get();
-            pooled.instance.AppendColumnValues(null, entities, SQLEscape.Default, tableInfo);
+            // var writer = new Json2SQLWriter (sql, SQLEscape.Default);
+            pooled.instance.AppendColumnValues(null, entities, tableInfo);
             error = default;
             return false;
         }

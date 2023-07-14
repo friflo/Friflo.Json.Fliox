@@ -137,8 +137,9 @@ WHEN NOT MATCHED THEN
             sql.Append($"INSERT INTO {tableInfo.container} (");
             SQLTable.AppendColumnNames(sql, tableInfo);
             sql.Append(")\nVALUES\n");
-            using var pooled = syncContext.Json2SQL.Get();
-            pooled.instance.AppendColumnValues(sql, entities, SQLEscape.BackSlash, tableInfo);
+            using var pooled    = syncContext.Json2SQL.Get();
+            var writer          = new Json2SQLWriter(pooled.instance, sql, SQLEscape.BackSlash);
+            pooled.instance.AppendColumnValues(writer, entities, tableInfo);
             await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
         }
         
@@ -154,8 +155,9 @@ WHEN NOT MATCHED THEN
 $@"MERGE {tableInfo.container} AS t USING (
 VALUES
 ");
-            using var pooled = syncContext.Json2SQL.Get();
-            pooled.instance.AppendColumnValues(sql, entities, SQLEscape.PrefixN, tableInfo);
+            using var pooled    = syncContext.Json2SQL.Get();
+            var writer          = new Json2SQLWriter (pooled.instance, sql, SQLEscape.PrefixN);
+            pooled.instance.AppendColumnValues(writer, entities, tableInfo);
             sql.Append($@") AS s (");
             SQLTable.AppendColumnNames(sql, tableInfo);
             sql.Append($@")

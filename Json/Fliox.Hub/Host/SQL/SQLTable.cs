@@ -47,7 +47,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sb.Append(" (");
             AppendColumnNames(sb, tableInfo);
             sb.Append(")\nVALUES\n");
-            pooled.instance.AppendColumnValues(sb, entities, escape, tableInfo);
+            var writer = new Json2SQLWriter (pooled.instance, sb, escape);
+            pooled.instance.AppendColumnValues(writer, entities, tableInfo);
         }
         
         public static async Task<ReadEntitiesResult> ReadEntitiesAsync(
