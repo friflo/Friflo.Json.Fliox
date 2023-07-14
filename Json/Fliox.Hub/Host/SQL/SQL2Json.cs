@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public              Utf8JsonWriter      writer;
         public              ReadCell[]          cells       = new ReadCell[4];  // reused
         // --- private
+        private             Bytes               bytesBuf    = new Bytes(8);     // reused
         private             byte[]              buffer      = new byte[16];     // reused
         private             char[]              charBuf     = new char[16];     // reused
         private             int                 charPos;
@@ -43,22 +44,34 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 
             var keyColumn   = tableInfo.keyColumn;
             var key         = cells[keyColumn.ordinal].AsKey(keyColumn.type);
-            var value       = new JsonValue(writer.json.AsArray()); // TODO - use MemoryBuffer to avoid array creation
+            var value       = new JsonValue(writer.json.AsArray()); // TODO - OPTIMIZE: use MemoryBuffer to avoid array creation
             result.Add(new EntityValue(key, value));
-            charPos = 0;
+            charPos         = 0;
+            bytesBuf.start  = 0;
+            bytesBuf.end    = 0;
         }
         
-        public void GetString(DbDataReader reader, ref Chars chars, int ordinal) {
+        public void GetString(DbDataReader reader, ref ReadCell cell, int ordinal) {
             var len = (int)reader.GetChars(ordinal, 0, null, 0, 0);
             if (len > charBuf.Length - charPos) {
                 charBuf = new char[len + charBuf.Length]; // ensure buffer is only growing
                 charPos = 0;
             }
             reader.GetChars(ordinal, 0, charBuf, charPos, len);
-            chars.start = charPos;
-            chars.len  = len;
-            chars.buf  = charBuf;
+            cell.chars.start    = charPos;
+            cell.chars.len      = len;
+            cell.chars.buf      = charBuf;
+            cell.isCharString   = true;
             charPos += len;
+        }
+        
+        public void CopyBytes(in ReadOnlySpan<byte> bytes, ref ReadCell cell) {
+            var start = bytesBuf.end;
+            bytesBuf.AppendBytesSpan(bytes);
+            cell.bytes.buffer   = bytesBuf.buffer;
+            cell.bytes.start    = start;
+            cell.bytes.end      = bytesBuf.end;
+            cell.isCharString   = false;
         }
         
         private void Traverse(ObjectInfo obj)
@@ -105,17 +118,24 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     public struct ReadCell
     {
         public      bool        isNull;
-        public      Chars       chars;
+        internal    Chars       chars;
+        public      Bytes       bytes;
+        internal    bool        isCharString;
         public      string      str;
         public      long        lng;
         public      double      dbl;
         public      Guid        guid;
         public      DateTime    date;
         
-        internal JsonKey AsKey(ColumnType  typeId)
+        public      ReadOnlySpan<char> CharsSpan() => chars.AsSpan();
+        public      ReadOnlySpan<byte> BytesSpan() => bytes.AsSpan();
+        
+        internal JsonKey AsKey(ColumnType typeId)
         {
             switch (typeId) {
-                case ColumnType.String:     return new JsonKey(chars.GetString());
+                case ColumnType.String:     return isCharString
+                                                ? new JsonKey(chars.GetString())  // TODO - OPTIMIZE
+                                                : new JsonKey(bytes.AsSpan(), default);
                 case ColumnType.Uint8:      return new JsonKey(lng);
                 case ColumnType.Int16:      return new JsonKey(lng);
                 case ColumnType.Int32:      return new JsonKey(lng);
@@ -135,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 
         public override string ToString() => GetString();
 
-        public ReadOnlySpan<char> AsSpan() {
+        internal ReadOnlySpan<char> AsSpan() {
             return new ReadOnlySpan<char>(buf, start, len);
         }
         

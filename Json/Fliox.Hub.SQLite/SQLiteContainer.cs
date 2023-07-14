@@ -219,12 +219,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!SQLiteUtils.Prepare(connection, sql.ToString(), out var stmt, out var error)) {
                 return new ReadEntitiesResult { Error = error };
             }
-            var values = new List<EntityValue>(); // TODO remove
+            List<EntityValue> values;
             if (tableType == TableType.Relational) {
                 using var pooled = syncContext.SQL2Json.Get();
                 var mapper  = new SQLiteSQL2Json(pooled.instance, stmt, tableInfo);
-                values      = mapper.ReadEntities(tableInfo);
+                mapper.ReadEntities(tableInfo);
+                values = pooled.instance.result;
             } else {
+                values = new List<EntityValue>(); // TODO - OPTIMIZE
                 if (!SQLiteUtils.ReadById(stmt, command.ids, values, syncContext.MemoryBuffer, out error)) {
                     return new ReadEntitiesResult { Error = error };
                 }
@@ -272,14 +274,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return new QueryEntitiesResult { Error = error, sql = sql };
                 }
             }
-            var values = new List<EntityValue>();   // TODO remove
+            List<EntityValue> values;
             if (tableType == TableType.Relational) {
                 using var pooled = syncContext.SQL2Json.Get();
                 var mapper  = new SQLiteSQL2Json(pooled.instance, stmt, tableInfo);
-                if (!mapper.ReadValues(maxCount, values, syncContext.MemoryBuffer, out var readError)) {
+                if (!mapper.ReadValues(maxCount, out var readError)) {
                     return new QueryEntitiesResult { Error = readError, sql = sql };
                 }
+                values =  pooled.instance.result;
             } else {
+                values = new List<EntityValue>();   // TODO remove
                 if (!SQLiteUtils.ReadValues(stmt, maxCount, values, syncContext.MemoryBuffer, out var readError)) {
                     return new QueryEntitiesResult { Error = readError, sql = sql };
                 }

@@ -478,6 +478,29 @@ namespace Friflo.Json.Burst
 #endif
         }
         
+        public static bool TryParseDateTime(in ReadOnlySpan<byte> bytes, out DateTime dateTime) {
+            int len = bytes.Length;
+            if (len > DateTimeLength) {
+                dateTime = new DateTime();
+                return false;
+            }
+#if NETSTANDARD2_0
+            unsafe {
+                fixed (byte* ptr = bytes) {
+                    // GetString(ReadOnlySpan<byte> bytes) not available in netstandard2.0
+                    var str = Encoding.UTF8.GetString(ptr, bytes.Length);
+                    return DateTime.TryParse(str, out dateTime);
+                }
+            }
+#else
+            Span<char> span = stackalloc char[len];
+            for (int n = 0; n < len; n++) {
+                span[n] = (char)bytes[n];
+            }
+            return DateTime.TryParse(span, out dateTime);
+#endif
+        }
+        
         public void AppendDateTime (in DateTime dateTime, Span<char> buf) {
 #if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
             AppendString(dateTime.ToString(Bytes.DateTimeFormat));

@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Friflo.Json.Fliox.Utils;
 using SQLitePCL;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
 {
     public class SQLiteSQL2Json : ISQL2JsonMapper
     {
-        private readonly    sqlite3_stmt    stmt;
-        private readonly    SQL2Json        sql2Json;
-        private readonly    TableInfo       tableInfo;
+        private readonly    sqlite3_stmt        stmt;
+        private readonly    SQL2Json            sql2Json;
+        private readonly    TableInfo           tableInfo;
         
         public SQLiteSQL2Json(SQL2Json sql2Json, sqlite3_stmt stmt, TableInfo tableInfo) {
             this.sql2Json   = sql2Json;
@@ -21,8 +21,6 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         internal bool ReadValues(
             int?                    maxCount,                     
-            List<EntityValue>       values,
-            MemoryBuffer            buffer,
             out TaskExecuteError    error)
         {
             int count   = 0;
@@ -61,17 +59,39 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         private void ReadCell(ColumnInfo column, ref ReadCell cell) {
             switch (column.type) {
                 case ColumnType.Boolean:
-                    cell.lng = raw.sqlite3_column_int(stmt, column.ordinal);
-                    break;
                 case ColumnType.Uint8:
                 case ColumnType.Int16:
                 case ColumnType.Int32:
                 case ColumnType.Int64:
+                case ColumnType.Object:
                     cell.lng = raw.sqlite3_column_int64(stmt, column.ordinal);
                     break;
-                case ColumnType.String:
-                    var data = raw.sqlite3_column_blob(stmt, column.ordinal);
+                case ColumnType.Float:
+                case ColumnType.Double:
+                    cell.dbl = raw.sqlite3_column_double(stmt, column.ordinal);
                     break;
+                case ColumnType.Guid: {
+                    var data = raw.sqlite3_column_blob(stmt, column.ordinal);
+                    if (!Bytes.TryParseGuid(data, out cell.guid)) {
+                        throw new InvalidOperationException("invalid guid");
+                    }
+                    break;
+                }
+                case ColumnType.DateTime: {
+                    var data = raw.sqlite3_column_blob(stmt, column.ordinal);
+                    if (!Bytes.TryParseDateTime(data, out cell.date)) {
+                        throw new InvalidOperationException("invalid datetime");
+                    }
+                    break;
+                }
+                case ColumnType.BigInteger:
+                case ColumnType.String:
+                case ColumnType.Enum:
+                case ColumnType.Array: {
+                    var data = raw.sqlite3_column_blob(stmt, column.ordinal);
+                    sql2Json.CopyBytes(data, ref cell);
+                    break;
+                }
             }
         }
         
@@ -86,23 +106,23 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             cell.isNull = true;
             switch (column.type) {
-                case ColumnType.Boolean:    writer.MemberBln    (key, cell.lng != 0);               break;
+                case ColumnType.Boolean:    writer.MemberBln    (key, cell.lng != 0);   break;
                 //
                 case ColumnType.String:
                 case ColumnType.Enum:
-                case ColumnType.BigInteger: writer.MemberStr    (key, cell.chars.AsSpan());         break;
+                case ColumnType.BigInteger: writer.MemberStr    (key, cell.bytes);      break;
                 //
                 case ColumnType.Uint8:
                 case ColumnType.Int16:
                 case ColumnType.Int32:
-                case ColumnType.Int64:      writer.MemberLng    (key, cell.lng);                    break;
+                case ColumnType.Int64:      writer.MemberLng    (key, cell.lng);        break;
                 //
                 case ColumnType.Float:
-                case ColumnType.Double:     writer.MemberDbl    (key, cell.dbl);                    break;
+                case ColumnType.Double:     writer.MemberDbl    (key, cell.dbl);        break;
                 //
-                case ColumnType.Guid:       writer.MemberGuid   (key, cell.guid);                   break;
-                case ColumnType.DateTime:   writer.MemberDate   (key, cell.date);                   break;
-                case ColumnType.Array:      writer.MemberArr(key, sql2Json.String2Bytes(cell.str)); break;
+                case ColumnType.Guid:       writer.MemberGuid   (key, cell.guid);       break;
+                case ColumnType.DateTime:   writer.MemberDate   (key, cell.date);       break;
+                case ColumnType.Array:      writer.MemberArr    (key, cell.bytes);      break;
                 default:
                     throw new InvalidOperationException($"unexpected type: {column.type}");
             }

@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 //
                 case ColumnType.String:     
                 case ColumnType.Enum:
-                case ColumnType.BigInteger: sql2Json.GetString(reader, ref cell.chars, ordinal);        return;
+                case ColumnType.BigInteger: sql2Json.GetString(reader, ref cell, ordinal);      return;
                 //
                 case ColumnType.Uint8:      cell.lng = reader.GetByte       (ordinal);          return;
                 case ColumnType.Int16:      cell.lng = reader.GetInt16      (ordinal);          return;
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 //
                 case ColumnType.String:
                 case ColumnType.Enum:
-                case ColumnType.BigInteger: writer.MemberStr    (key, cell.chars.AsSpan());         break;
+                case ColumnType.BigInteger: writer.MemberStr    (key, cell.CharsSpan());         break;
                 //
                 case ColumnType.Uint8:
                 case ColumnType.Int16:
