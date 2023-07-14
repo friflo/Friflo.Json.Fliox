@@ -130,10 +130,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     break;
                 }
                 case ColumnType.DateTime: {
-                    var data = raw.sqlite3_column_blob(stmt, column.ordinal);
-                    if (!Bytes.TryParseDateTime(data, out cell.date)) {
+                    var text     = raw.sqlite3_column_blob(stmt, column.ordinal);
+                    if (!Bytes.TryParseDateTime(text, out var dateTime)) {
                         throw new InvalidOperationException("invalid datetime");
                     }
+                    cell.date = dateTime.ToUniversalTime();
                     break;
                 }
                 case ColumnType.BigInteger:
