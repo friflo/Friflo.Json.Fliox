@@ -127,9 +127,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public      Guid        guid;
         public      DateTime    date;
         
-        public      ReadOnlySpan<char> CharsSpan() => chars.AsSpan();
-        public      ReadOnlySpan<byte> BytesSpan() => bytes.AsSpan();
-        
+        public          ReadOnlySpan<char>  CharsSpan() => chars.AsSpan();
+        public          ReadOnlySpan<byte>  BytesSpan() => bytes.AsSpan();
+
         internal JsonKey AsKey(ColumnType typeId)
         {
             switch (typeId) {

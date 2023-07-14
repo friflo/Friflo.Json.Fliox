@@ -212,7 +212,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             var sql = new StringBuilder();
             if (tableType == TableType.Relational) {
                 sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
-                sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
+                sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in (?)");
             } else {
                 sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in (?)");    
             }
@@ -220,14 +220,15 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 return new ReadEntitiesResult { Error = error };
             }
             List<EntityValue> values;
+            var buffer = syncContext.MemoryBuffer;
             if (tableType == TableType.Relational) {
                 using var pooled = syncContext.SQL2Json.Get();
                 var mapper  = new SQLiteSQL2Json(pooled.instance, stmt, tableInfo);
-                mapper.ReadEntities(tableInfo);
+                mapper.ReadEntities(command.ids, buffer);
                 values = pooled.instance.result;
             } else {
                 values = new List<EntityValue>(); // TODO - OPTIMIZE
-                if (!SQLiteUtils.ReadById(stmt, command.ids, values, syncContext.MemoryBuffer, out error)) {
+                if (!SQLiteUtils.ReadById(stmt, command.ids, values, buffer, out error)) {
                     return new ReadEntitiesResult { Error = error };
                 }
             }

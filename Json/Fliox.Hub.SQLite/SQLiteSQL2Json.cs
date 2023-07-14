@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Utils;
 using SQLitePCL;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
@@ -31,7 +32,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 var rc = raw.sqlite3_step(stmt);
                 if (rc == raw.SQLITE_ROW) {
                     for (int n = 0; n < columns.Length; n++) {
-                        ReadCell(columns[n], ref cells[n]);
+                        var column = columns[n]; 
+                        if (raw.sqlite3_column_type(stmt, column.ordinal) == raw.SQLITE_NULL) {
+                            continue;
+                        } 
+                        ReadCell(column, ref cells[n]);
                     }
                     sql2Json.AddRow();
                 } else if (rc == raw.SQLITE_DONE) {
@@ -43,20 +48,61 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return SQLiteUtils.Success(out error);
         }
         
-        public List<EntityValue> ReadEntities(TableInfo tableInfo)
+        private static int BindKey(sqlite3_stmt stmt, in JsonKey key, ref Bytes bytes) {
+            var encoding = key.GetEncoding();
+            switch (encoding) {
+                case JsonKeyEncoding.LONG:
+                    return raw.sqlite3_bind_int64(stmt, 1, key.AsLong());
+                case JsonKeyEncoding.STRING:
+                    return raw.sqlite3_bind_text (stmt, 1, key.AsString());
+                case JsonKeyEncoding.STRING_SHORT:
+                case JsonKeyEncoding.GUID:
+                    key.ToBytes(ref bytes);
+                    return raw.sqlite3_bind_text (stmt, 1, bytes.AsSpan());
+                default:
+                    throw new InvalidOperationException("unhandled case");
+            }
+        }
+        
+        public void ReadEntities(List<JsonKey> keys, MemoryBuffer buffer)
         {
-            /* sql2Json.InitMapper(this, tableInfo);
-            while (await reader.ReadAsync().ConfigureAwait(false))
-            {
-                foreach (var column in tableInfo.columns) {
-                    ReadCell(sql2Json, column, ref sql2Json.cells[column.ordinal]);
+            var columns = tableInfo.columns;
+            var cells   = sql2Json.cells;
+            var values  = sql2Json.result;
+            var bytes   = new Bytes(36);        // TODO - OPTIMIZE: reuse
+            sql2Json.InitMapper(this, tableInfo);
+            foreach (var key in keys) {
+                var rc  = BindKey(stmt, key, ref bytes);
+                if (rc != raw.SQLITE_OK) {
+                    return; // return Error($"bind key failed. error: {rc}, key: {key}", out error);
                 }
-                sql2Json.AddRow();
-            } */
-            return sql2Json.result;
+                rc = raw.sqlite3_step(stmt);
+                switch (rc) {
+                    case raw.SQLITE_DONE: 
+                        values.Add(new EntityValue(key));
+                        break;
+                    case raw.SQLITE_ROW:
+                        for (int n = 0; n < columns.Length; n++) {
+                            var column = columns[n];
+                            ReadCell(column, ref cells[n]);
+                        }
+                        sql2Json.AddRow();
+                        var data    = raw.sqlite3_column_blob(stmt, 1);
+                        var value   = buffer.Add(data);
+                        values.Add(new EntityValue(key, value));
+                        break;
+                    default:
+                        return; // return Error($"step failed. error: {rc}, key: {key}", out error);
+                }
+                rc = raw.sqlite3_reset(stmt);
+                if (rc != raw.SQLITE_OK) {
+                    return; // return Error($"reset failed. error: {rc}, key: {key}", out error);
+                }
+            }
         }
     
-        private void ReadCell(ColumnInfo column, ref ReadCell cell) {
+        private void ReadCell(ColumnInfo column, ref ReadCell cell)
+        {
             switch (column.type) {
                 case ColumnType.Boolean:
                 case ColumnType.Uint8:
