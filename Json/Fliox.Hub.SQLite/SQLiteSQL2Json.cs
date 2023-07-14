@@ -1,3 +1,8 @@
+// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
+#if !UNITY_5_3_OR_NEWER || SQLITE
+
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
@@ -186,3 +191,5 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
     }
 }
+
+#endif
