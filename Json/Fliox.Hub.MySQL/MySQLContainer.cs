@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         internal MySQLContainer(string name, MySQLDatabase database, bool pretty)
             : base(name, database)
         {
-            tableInfo   = new TableInfo (database, name, SQL2JsonMapper.Instance, '`', '`', database.TableType);
+            tableInfo   = new TableInfo (database, name, '`', '`', database.TableType);
             Pretty      = pretty;
             provider    = database.Provider;
             tableType   = database.TableType;

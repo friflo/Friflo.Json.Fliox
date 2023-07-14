@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         internal SQLiteContainer(string name, SQLiteDatabase database, bool pretty)
             : base(name, database)
         {
-            tableInfo   = new TableInfo (database, name, SQL2JsonMapper.Instance, '"', '"', database.TableType);
+            tableInfo   = new TableInfo (database, name, '"', '"', database.TableType);
             columns     = tableInfo.columns;
             keyColumn   = tableInfo.keyColumn;
             synchronous = database.Synchronous;
@@ -127,8 +127,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (!SQLiteUtils.Prepare(connection, sql.ToString(), out var stmt, out error)) {
                     return new CreateEntitiesResult { Error = error };
                 }
-                if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
-                    return new CreateEntitiesResult { Error = error };
+                if (tableType == TableType.Relational) {
+                    if (!SQLiteUtils.AppendColumnValues(stmt, command.entities, tableInfo, syncContext, out error)) {
+                        return new CreateEntitiesResult { Error = error };
+                    }
+                } else {
+                    if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
+                        return new CreateEntitiesResult { Error = error };
+                    }
                 }
                 raw.sqlite3_finalize(stmt);
                 if (!scope.EndTransaction("COMMIT TRANSACTION", out error)) {

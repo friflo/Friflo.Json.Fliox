@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -28,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         internal PostgreSQLContainer(string name, PostgreSQLDatabase database)
             : base(name, database)
         {
-            tableInfo   = new TableInfo (database, name, PostgresSQL2Json.Instance, '"', '"', database.TableType);
+            tableInfo   = new TableInfo (database, name, '"', '"', database.TableType);
             var types   = database.Schema.typeSchema.GetEntityTypes();
             entityType  = types[name];
             tableType   = database.TableType;
@@ -168,7 +169,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql.ToString()).ConfigureAwait(false);
                 if (tableType == TableType.Relational) {
-                    return await SQLTable.ReadEntitiesAsync(reader, command, tableInfo, syncContext).ConfigureAwait(false);
+                    using var pooled = syncContext.SQL2Json.Get();
+                    var mapper   = new PostgresSQL2Json(reader);
+                    var entities = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo).ConfigureAwait(false);
+                    var array    = KeyValueUtils.EntityListToArray(entities, command.ids);
+                    return new ReadEntitiesResult { entities = array };
                 } else {
                     return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
                 }
@@ -189,7 +194,9 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 List<EntityValue> entities;
                 if (tableType == TableType.Relational) {
-                    entities = await SQLTable.QueryEntitiesAsync(reader, tableInfo, syncContext).ConfigureAwait(false);
+                    using var pooled = syncContext.SQL2Json.Get();
+                    var mapper  = new PostgresSQL2Json(reader);
+                    entities    = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo).ConfigureAwait(false);
                 } else {
                     entities = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
                 }

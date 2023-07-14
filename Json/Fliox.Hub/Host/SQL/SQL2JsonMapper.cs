@@ -2,6 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
@@ -11,17 +15,32 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     /// </summary>
     public interface ISQL2JsonMapper
     {
-        void ReadCell   (SQL2Json sql2Json, ColumnInfo column, ref ReadCell cell);
         void WriteColumn(SQL2Json sql2Json, ColumnInfo column);
     }
     
     public class SQL2JsonMapper : ISQL2JsonMapper
     {
-        public static readonly SQL2JsonMapper Instance = new SQL2JsonMapper();
-    
+        private readonly    DbDataReader    reader;
+        
+        public SQL2JsonMapper(DbDataReader reader) {
+            this.reader = reader;
+        }
+        
+        internal async Task<List<EntityValue>> ReadEntitiesAsync(SQL2Json sql2Json, TableInfo tableInfo)
+        {
+            sql2Json.InitMapper(this, tableInfo);
+            while (await reader.ReadAsync().ConfigureAwait(false))
+            {
+                foreach (var column in tableInfo.columns) {
+                    ReadCell(sql2Json, column, ref sql2Json.cells[column.ordinal]);
+                }
+                sql2Json.AddRow();
+            }
+            return sql2Json.result;
+        }
+
         public void ReadCell(SQL2Json sql2Json, ColumnInfo column, ref ReadCell cell) {
             var ordinal = column.ordinal;
-            var reader = sql2Json.reader;
             cell.isNull = reader.IsDBNull(ordinal);
             if (cell.isNull) {
                 return;
@@ -31,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 //
                 case ColumnType.String:     
                 case ColumnType.Enum:
-                case ColumnType.BigInteger: sql2Json.GetString(ref cell.chars,   ordinal);  return;
+                case ColumnType.BigInteger: sql2Json.GetString(reader, ref cell.chars,   ordinal);  return;
                 //
                 case ColumnType.Uint8:      cell.lng = reader.GetByte           (ordinal);  return;
                 case ColumnType.Int16:      cell.lng = reader.GetInt16          (ordinal);  return;
@@ -44,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case ColumnType.DateTime:   cell.date= reader.GetDateTime       (ordinal);  return;
                 case ColumnType.Guid:       cell.guid= reader.GetGuid           (ordinal);  return;
                 //
-                case ColumnType.Array:      sql2Json.GetString(ref cell.chars,   ordinal);  return;
+                case ColumnType.Array:      sql2Json.GetString(reader, ref cell.chars,   ordinal);  return;
                 case ColumnType.Object:     cell.lng = reader.GetByte           (ordinal);  return; // used as boolean: != 0 => object is not null
                 default:
                     throw new InvalidOperationException($"unexpected type: {column.type}");

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
-using System.Threading.Tasks;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
@@ -13,47 +12,43 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public sealed class SQL2Json : IDisposable
     {
-        public      Utf8JsonWriter  writer;
-        public      DbDataReader    reader;
-        public      ReadCell[]      cells       = new ReadCell[4];  // reused
-        private     byte[]          buffer      = new byte[16];     // reused
-        private     char[]          charBuf     = new char[16];     // reused
-        private     int             charPos;
-        private     ISQL2JsonMapper mapper;
+        public  readonly    List<EntityValue>   result = new List<EntityValue>();
+        public              Utf8JsonWriter      writer;
+        public              ReadCell[]          cells       = new ReadCell[4];  // reused
+        // --- private
+        private             byte[]              buffer      = new byte[16];     // reused
+        private             char[]              charBuf     = new char[16];     // reused
+        private             int                 charPos;
+        private             ISQL2JsonMapper     mapper;
+        private             TableInfo           tableInfo;
         
-        public async Task<List<EntityValue>> ReadEntitiesAsync(DbDataReader reader, TableInfo tableInfo)
-        {
-            mapper      = tableInfo.mapper;
-            var columns = tableInfo.columns;
-            var colLen  = columns.Length;
+        public void InitMapper(ISQL2JsonMapper mapper, TableInfo tableInfo) {
+            this.tableInfo  = tableInfo;
+            this.mapper     = mapper;
+            var columns     = tableInfo.columns;
+            var colLen      = columns.Length;
             if (colLen > cells.Length) {
-                cells = new ReadCell[colLen];    
+                cells = new ReadCell[colLen];
             }
-            this.reader = reader;
-            var result  = new List<EntityValue>();
-            while (await reader.ReadAsync().ConfigureAwait(false))
-            {
-                // --- read table columns
-                charPos = 0;
-                foreach (var column in columns) {
-                    mapper.ReadCell(this, column, ref cells[column.ordinal]);
-                }
-                // --- create JSON entity
-                writer.InitSerializer();
-                writer.ObjectStart();
-                Traverse(tableInfo.root);
-                writer.ObjectEnd();
-                
-                var keyColumn   = tableInfo.keyColumn;
-                var key         = cells[keyColumn.ordinal].AsKey(keyColumn.type);
-                var value       = new JsonValue(writer.json.AsArray()); // TODO - use MemoryBuffer to avoid array creation
-                result.Add(new EntityValue(key, value));
-            }
-            this.reader = null;
-            return result;
+            result.Clear();
+            charPos = 0;
         }
         
-        public void GetString(ref Chars chars, int ordinal) {
+        public void AddRow() {
+            // --- create JSON entity
+            writer.InitSerializer();
+            writer.ObjectStart();
+            Traverse(tableInfo.root);
+            writer.ObjectEnd();
+                
+            var keyColumn   = tableInfo.keyColumn;
+            var key         = cells[keyColumn.ordinal].AsKey(keyColumn.type);
+            var value       = new JsonValue(writer.json.AsArray()); // TODO - use MemoryBuffer to avoid array creation
+            result.Add(new EntityValue(key, value));
+            charPos = 0;
+        }
+        
+        public void GetString(DbDataReader reader, ref Chars chars, int ordinal) {
             var len = (int)reader.GetChars(ordinal, 0, null, 0, 0);
             if (len > charBuf.Length - charPos) {
                 charBuf = new char[len + charBuf.Length]; // ensure buffer is only growing

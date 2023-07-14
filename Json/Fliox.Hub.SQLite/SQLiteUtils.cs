@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -150,6 +151,19 @@ GENERATED ALWAYS AS ({asStr});";
                 raw.sqlite3_reset(stmt);
             }
             return Success(out error);
+        }
+        
+        internal static bool AppendColumnValues(
+            sqlite3_stmt            stmt,
+            List<JsonEntity>        entities,
+            TableInfo               tableInfo,
+            SyncContext             syncContext,
+            out TaskExecuteError    error)
+        {
+            using var pooled = syncContext.Json2SQL.Get();
+            pooled.instance.AppendColumnValues(null, entities, SQLEscape.Default, tableInfo);
+            error = default;
+            return false;
         }
         
         internal static bool ReadById(
