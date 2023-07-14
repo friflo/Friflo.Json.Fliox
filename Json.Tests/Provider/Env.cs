@@ -46,10 +46,11 @@ namespace Friflo.Json.Tests.Provider
         internal static bool    IsMariaDB   (string db) => IsProvider("mariadb",   "mariadb_rel")   && db == test_db;
         internal static bool    IsSQLServer (string db) => IsProvider("sqlserver", "sqlserver_rel") && db == test_db;
         internal static bool    IsPostgres  (string db) => IsProvider("postgres",  "postgres_rel")  && db == test_db;
-        internal static bool    IsSQLite    (string db) => TEST_DB_PROVIDER == "sqlite" || db == sqlite_db;
+        internal static bool    IsSQLite    (string db) => IsProvider("sqlite",    "sqlite_rel")    || db == sqlite_db;
         private  static bool    IsFileSystem            => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
         
-        private  static readonly    string  SQLiteFile  = $"Data Source={CommonUtils.GetBasePath() + "test_db.sqlite3"}";
+        private  static readonly    string  SQLite      = $"Data Source={CommonUtils.GetBasePath() + "test_db.sqlite3"}";
+        private  static readonly    string  SQLiteRel   = $"Data Source={CommonUtils.GetBasePath() + "test_rel.sqlite3"}";
 
         static Env() {
             TEST_DB_PROVIDER = Environment.GetEnvironmentVariable(nameof(TEST_DB_PROVIDER));
@@ -123,7 +124,8 @@ namespace Friflo.Json.Tests.Provider
         {
             var connection = EnvConfig.GetConnectionString(provider);
             switch (provider) {
-                case "sqlite":          return new SQLiteDatabase       (db, SQLiteFile, schema) { TableType = TableType.JsonColumn };
+                case "sqlite":          return new SQLiteDatabase       (db, SQLite,     schema) { TableType = TableType.JsonColumn };
+                case "sqlite_rel":      return new SQLiteDatabase       (db, SQLiteRel,  schema);
                 case "mysql":           return new MySQLDatabase        (db, connection, schema) { TableType = TableType.JsonColumn };
                 case "mysql_rel":       return new MySQLDatabase        (db, connection, schema);
                 case "mariadb":         return new MariaDBDatabase      (db, connection, schema) { TableType = TableType.JsonColumn };
