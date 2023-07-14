@@ -105,6 +105,7 @@ namespace Friflo.Json.Tests.Provider
                 case sqlite_db:
                     var connection  = $"Data Source={CommonUtils.GetBasePath() + "sqlite_db.sqlite3"}";
                     return new SQLiteDatabase("sqlite_db", connection, schema) {
+                        TableType   = TableType.JsonColumn,
                         Synchronous = true // Synchronous to simplify debugging
                     };
                 case test_db:

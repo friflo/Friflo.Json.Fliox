@@ -4,6 +4,7 @@
 #if !UNITY_5_3_OR_NEWER || SQLITE
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -109,8 +110,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (error != null) {
                     return new CreateEntitiesResult { Error = error };
                 }
-                var sql = $@"INSERT INTO {name} VALUES(?,?)";
-                if (!SQLiteUtils.Prepare(connection, sql, out var stmt, out error)) {
+                var sql = new StringBuilder();
+                if (tableType == TableType.Relational) {
+                    sql.Append($"INSERT INTO {name} VALUES(");
+                    for (int n = 0; n < tableInfo.columns.Length; n++) sql.Append("?,");
+                    sql.Length--;
+                    sql.Append(')');
+                } else {
+                    sql.Append($@"INSERT INTO {name} VALUES(?,?)");
+                }
+                if (!SQLiteUtils.Prepare(connection, sql.ToString(), out var stmt, out error)) {
                     return new CreateEntitiesResult { Error = error };
                 }
                 if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
@@ -136,13 +145,28 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (syncConnection is not SyncConnection connection) {
                 return new UpsertEntitiesResult { Error = syncConnection.Error };
             }
+            if (command.entities.Count == 0) {
+                return new UpsertEntitiesResult();
+            }
             lock (connection.writeLock) {
                 using var scope = connection.BeginTransaction(out var error);
                 if (error != null) {
                     return new UpsertEntitiesResult { Error = error };
                 }
-                var sql = $@"INSERT INTO {name} VALUES(?,?) ON CONFLICT({ID}) DO UPDATE SET {DATA}=excluded.{DATA}";
-                if (!SQLiteUtils.Prepare(connection, sql, out var stmt, out error)) {
+                var sql = new StringBuilder();
+                if (tableType == TableType.Relational) {
+                    sql.Append($"INSERT INTO {name} VALUES(");
+                    for (int n = 0; n < tableInfo.columns.Length; n++) sql.Append("?,");
+                    sql.Length--;
+                    sql.Append($") ON CONFLICT([{tableInfo.keyColumn.name}]) DO UPDATE SET ");
+                    foreach (var column in tableInfo.columns) {
+                        sql.Append($"[{column.name}]=excluded.[{column.name}], ");
+                    }
+                    sql.Length -= 2;
+                } else {
+                    sql.Append($"INSERT INTO {name} VALUES(?,?) ON CONFLICT({ID}) DO UPDATE SET {DATA}=excluded.{DATA}");
+                }
+                if (!SQLiteUtils.Prepare(connection, sql.ToString(), out var stmt, out error)) {
                     return new UpsertEntitiesResult { Error = error };
                 }
                 if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
@@ -282,7 +306,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (error != null) {
                     return new DeleteEntitiesResult { Error = error };
                 }
-                var sql = $"DELETE from {name} WHERE {ID} in (?)";
+                var id = tableType == TableType.Relational ? tableInfo.keyColumn.name : ID;
+                var sql = $"DELETE from {name} WHERE [{id}] in (?)";
                 if (!SQLiteUtils.Prepare(connection, sql, out var stmt, out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }
