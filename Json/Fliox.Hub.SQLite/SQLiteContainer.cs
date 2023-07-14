@@ -4,6 +4,7 @@
 #if !UNITY_5_3_OR_NEWER || SQLITE
 
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -25,9 +26,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         internal SQLiteContainer(string name, SQLiteDatabase database, bool pretty)
             : base(name, database)
         {
-            tableInfo   = new TableInfo (database, name, SQL2JsonMapper.Instance, '"', '"');
+            tableInfo   = new TableInfo (database, name, SQL2JsonMapper.Instance, '"', '"', database.TableType);
             synchronous = database.Synchronous;
             Pretty      = pretty;
+            tableType   = database.TableType;
         }
 
         public Task<SQLResult> CreateTable(ISyncConnection syncConnection) {
@@ -36,10 +38,26 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 var sql = $"CREATE TABLE IF NOT EXISTS {name} ({ID} TEXT PRIMARY KEY, {DATA} TEXT NOT NULL);";
                 return Task.FromResult(SQLiteUtils.Execute(connection, sql));
             }
-            return Task.FromResult<SQLResult>(default);
+            var sb = new StringBuilder();
+            sb.Append($"CREATE TABLE if not exists {name} (");
+            foreach (var column in tableInfo.columns) {
+                var type = ConvertContext.GetSqlType(column);
+                sb.Append($"`{column.name}` {type}");
+                if (column.isPrimaryKey) {
+                    sb.Append(" PRIMARY KEY");
+                }
+                sb.Append(',');
+            }
+            sb.Length -= 1;
+            sb.Append(");");
+            var result = SQLiteUtils.Execute(connection, sb.ToString());
+            return Task.FromResult(result);
         }
         
         public Task<SQLResult> AddVirtualColumns(ISyncConnection syncConnection) {
+            if (tableType != TableType.JsonColumn) {
+                return Task.FromResult(new SQLResult());
+            }
             var connection = (SyncConnection)syncConnection;
             var columnNames = SQLiteUtils.GetColumnNames(connection, name);
             foreach (var column in tableInfo.columns) {
@@ -51,17 +69,25 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return Task.FromResult(result);
                 }
             }
-            return Task.FromResult<SQLResult>(new SQLResult());
+            return Task.FromResult(new SQLResult());
         }
         
         public Task<SQLResult> AddColumns (ISyncConnection syncConnection) {
+            if (tableType != TableType.Relational) {
+                return Task.FromResult<SQLResult>(default);
+            }
             var connection  = (SyncConnection)syncConnection;
             var columnNames = SQLiteUtils.GetColumnNames(connection, name);
             foreach (var column in tableInfo.columns) {
                 if (columnNames.Contains(column.name)) {
                     continue;
                 }
-                // ...
+                var type    = ConvertContext.GetSqlType(column);
+                var sql     = $"ALTER TABLE {name} ADD `{column.name}` {type};";
+                var result  = SQLiteUtils.Execute(connection, sql);
+                if (result.Failed) {
+                    return Task.FromResult(result);
+                }
             }
             return Task.FromResult<SQLResult>(new SQLResult());
         }

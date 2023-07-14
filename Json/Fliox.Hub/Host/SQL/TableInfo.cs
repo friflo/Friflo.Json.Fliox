@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             ISQL2JsonMapper mapper,
             char            colStart,
             char            colEnd,
-            TableType       tableType = TableType.JsonColumn)
+            TableType       tableType)
         {
             this.colStart   = colStart;
             this.colEnd     = colEnd;
