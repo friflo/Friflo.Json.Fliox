@@ -29,12 +29,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return version;
         }
         
-        private static bool Success(out TaskExecuteError error) {
+        internal static bool Success(out TaskExecuteError error) {
             error = null;
             return true;
         }
         
-        private static bool Error(string msg, out TaskExecuteError error) {
+        internal static bool Error(string msg, out TaskExecuteError error) {
             error = new TaskExecuteError(TaskErrorType.DatabaseError, msg);
             return false;
         }

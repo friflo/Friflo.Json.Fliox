@@ -209,13 +209,25 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
-            var sql = $"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in (?)";
-            if (!SQLiteUtils.Prepare(connection, sql, out var stmt, out var error)) {
+            var sql = new StringBuilder();
+            if (tableType == TableType.Relational) {
+                sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
+                sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
+            } else {
+                sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in (?)");    
+            }
+            if (!SQLiteUtils.Prepare(connection, sql.ToString(), out var stmt, out var error)) {
                 return new ReadEntitiesResult { Error = error };
             }
-            var values = new List<EntityValue>();
-            if (!SQLiteUtils.ReadById(stmt, command.ids, values, syncContext.MemoryBuffer, out error)) {
-                return new ReadEntitiesResult { Error = error };
+            var values = new List<EntityValue>(); // TODO remove
+            if (tableType == TableType.Relational) {
+                using var pooled = syncContext.SQL2Json.Get();
+                var mapper  = new SQLiteSQL2Json(pooled.instance, stmt, tableInfo);
+                values      = mapper.ReadEntities(tableInfo);
+            } else {
+                if (!SQLiteUtils.ReadById(stmt, command.ids, values, syncContext.MemoryBuffer, out error)) {
+                    return new ReadEntitiesResult { Error = error };
+                }
             }
             return new ReadEntitiesResult { entities = values.ToArray() };
         }
@@ -247,14 +259,30 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
                 var limit   = command.limit == null ? "" : $" LIMIT {command.limit}";
-                sql         = $"SELECT {ID}, {DATA} FROM {name}{where}{limit}";
+                var sqlSb   = new StringBuilder();
+                if (tableType == TableType.Relational) {
+                    sqlSb.Append("SELECT ");
+                    SQLTable.AppendColumnNames(sqlSb, tableInfo);
+                    sqlSb.Append($" FROM {name}{where}{limit}");
+                } else {
+                    sqlSb.Append($"SELECT {ID}, {DATA} FROM {name}{where}{limit}");    
+                }
+                sql = sqlSb.ToString();
                 if (!SQLiteUtils.Prepare(connection, sql, out stmt, out var error)) {
                     return new QueryEntitiesResult { Error = error, sql = sql };
                 }
             }
-            var values = new List<EntityValue>();
-            if (!SQLiteUtils.ReadValues(stmt, maxCount, values, syncContext.MemoryBuffer, out var readError)) {
-                return new QueryEntitiesResult { Error = readError, sql = sql };
+            var values = new List<EntityValue>();   // TODO remove
+            if (tableType == TableType.Relational) {
+                using var pooled = syncContext.SQL2Json.Get();
+                var mapper  = new SQLiteSQL2Json(pooled.instance, stmt, tableInfo);
+                if (!mapper.ReadValues(maxCount, values, syncContext.MemoryBuffer, out var readError)) {
+                    return new QueryEntitiesResult { Error = readError, sql = sql };
+                }
+            } else {
+                if (!SQLiteUtils.ReadValues(stmt, maxCount, values, syncContext.MemoryBuffer, out var readError)) {
+                    return new QueryEntitiesResult { Error = readError, sql = sql };
+                }
             }
             var result = new QueryEntitiesResult { entities = values.ToArray(), sql = sql };
             if (maxCount != null) {
