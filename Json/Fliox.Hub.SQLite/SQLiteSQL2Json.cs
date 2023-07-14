@@ -25,16 +25,17 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             MemoryBuffer            buffer,
             out TaskExecuteError    error)
         {
+            sql2Json.InitMapper(this, tableInfo, buffer);
             int count   = 0;
             var columns = tableInfo.columns;
             var cells   = sql2Json.cells;
-            sql2Json.InitMapper(this, tableInfo, buffer);
             while (true) {
                 var rc = raw.sqlite3_step(stmt);
                 if (rc == raw.SQLITE_ROW) {
                     for (int n = 0; n < columns.Length; n++) {
-                        var column = columns[n]; 
+                        var column      = columns[n];
                         if (raw.sqlite3_column_type(stmt, column.ordinal) == raw.SQLITE_NULL) {
+                            cells[n].isNull = true;
                             continue;
                         } 
                         ReadCell(column, ref cells[n]);
@@ -68,11 +69,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         public void ReadEntities(List<JsonKey> keys, MemoryBuffer buffer)
         {
+            sql2Json.InitMapper(this, tableInfo, buffer);
             var columns = tableInfo.columns;
             var cells   = sql2Json.cells;
-            var values  = sql2Json.result;
             var bytes   = new Bytes(36);        // TODO - OPTIMIZE: reuse
-            sql2Json.InitMapper(this, tableInfo, buffer);
+
             foreach (var key in keys) {
                 var rc  = BindKey(stmt, key, ref bytes);
                 if (rc != raw.SQLITE_OK) {
@@ -81,17 +82,18 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 rc = raw.sqlite3_step(stmt);
                 switch (rc) {
                     case raw.SQLITE_DONE: 
-                        values.Add(new EntityValue(key));
+                        sql2Json.result.Add(new EntityValue(key));
                         break;
                     case raw.SQLITE_ROW:
                         for (int n = 0; n < columns.Length; n++) {
                             var column = columns[n];
+                            if (raw.sqlite3_column_type(stmt, column.ordinal) == raw.SQLITE_NULL) {
+                                cells[n].isNull = true;
+                                continue;
+                            } 
                             ReadCell(column, ref cells[n]);
                         }
                         sql2Json.AddRow();
-                        var data    = raw.sqlite3_column_blob(stmt, 1);
-                        var value   = buffer.Add(data);
-                        values.Add(new EntityValue(key, value));
                         break;
                     default:
                         return; // return Error($"step failed. error: {rc}, key: {key}", out error);
@@ -106,6 +108,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     
         private void ReadCell(ColumnInfo column, ref ReadCell cell)
         {
+            cell.isNull = false;
             switch (column.type) {
                 case ColumnType.Boolean:
                 case ColumnType.Uint8:

@@ -35,7 +35,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 cells = new ReadCell[colLen];
             }
             result.Clear();
-            charPos = 0;
+            charPos         = 0;
+            bytesBuf.start  = 0;
+            bytesBuf.end    = 0;
         }
         
         public void Cleanup() {
@@ -142,9 +144,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         internal JsonKey AsKey(ColumnType typeId)
         {
             switch (typeId) {
-                case ColumnType.String:     return isCharString
-                                                ? new JsonKey(chars.GetString())  // TODO - OPTIMIZE
-                                                : new JsonKey(bytes.AsSpan(), default);
+                case ColumnType.String:     if (isCharString) {
+                                                return new JsonKey(chars.GetString());   // TODO - OPTIMIZE
+                                            }
+                                            return new JsonKey(bytes.AsSpan(), default);
                 case ColumnType.Uint8:      return new JsonKey(lng);
                 case ColumnType.Int16:      return new JsonKey(lng);
                 case ColumnType.Int32:      return new JsonKey(lng);
