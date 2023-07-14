@@ -47,14 +47,15 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
         
         public void AddRow() {
+            var keyColumn   = tableInfo.keyColumn;
+            var key         = cells[keyColumn.ordinal].AsKey(keyColumn.type);
+            
             // --- create JSON entity
             writer.InitSerializer();
             writer.ObjectStart();
             Traverse(tableInfo.root);
             writer.ObjectEnd();
-                
-            var keyColumn   = tableInfo.keyColumn;
-            var key         = cells[keyColumn.ordinal].AsKey(keyColumn.type);
+            
             var value       = memBuf.Add(new JsonValue(writer.json));
             result.Add(new EntityValue(key, value));
             charPos         = 0;
@@ -140,6 +141,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         public          ReadOnlySpan<char>  CharsSpan() => chars.AsSpan();
         public          ReadOnlySpan<byte>  BytesSpan() => bytes.AsSpan();
+
+        public override string              ToString() => isNull ? "null" : "not null";
 
         internal JsonKey AsKey(ColumnType typeId)
         {

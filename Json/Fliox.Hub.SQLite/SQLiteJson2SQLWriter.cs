@@ -28,6 +28,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 switch (cell.type) {
                     case JsonEvent.None:
                     case JsonEvent.ValueNull:
+                        raw.sqlite3_bind_null(stmt, column.ordinal + 1);
                         break;
                     case JsonEvent.ValueString:
                         WriteBytes(column, cell);
