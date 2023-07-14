@@ -7,6 +7,7 @@ using System.Data.Common;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
@@ -22,10 +23,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private             int                 charPos;
         private             ISQL2JsonMapper     mapper;
         private             TableInfo           tableInfo;
+        private             MemoryBuffer        memBuf;
         
-        public void InitMapper(ISQL2JsonMapper mapper, TableInfo tableInfo) {
+        public void InitMapper(ISQL2JsonMapper mapper, TableInfo tableInfo, MemoryBuffer memoryBuffer) {
             this.tableInfo  = tableInfo;
             this.mapper     = mapper;
+            this.memBuf     = memoryBuffer;
             var columns     = tableInfo.columns;
             var colLen      = columns.Length;
             if (colLen > cells.Length) {
@@ -33,6 +36,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
             result.Clear();
             charPos = 0;
+        }
+        
+        public void Cleanup() {
+            mapper      = null;
+            tableInfo   = null;
+            memBuf      = null;
         }
         
         public void AddRow() {
@@ -44,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 
             var keyColumn   = tableInfo.keyColumn;
             var key         = cells[keyColumn.ordinal].AsKey(keyColumn.type);
-            var value       = new JsonValue(writer.json.AsArray()); // TODO - OPTIMIZE: use MemoryBuffer to avoid array creation
+            var value       = memBuf.Add(new JsonValue(writer.json));
             result.Add(new EntityValue(key, value));
             charPos         = 0;
             bytesBuf.start  = 0;

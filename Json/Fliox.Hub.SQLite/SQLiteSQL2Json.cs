@@ -22,12 +22,13 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         internal bool ReadValues(
             int?                    maxCount,                     
+            MemoryBuffer            buffer,
             out TaskExecuteError    error)
         {
             int count   = 0;
             var columns = tableInfo.columns;
             var cells   = sql2Json.cells;
-            sql2Json.InitMapper(this, tableInfo);
+            sql2Json.InitMapper(this, tableInfo, buffer);
             while (true) {
                 var rc = raw.sqlite3_step(stmt);
                 if (rc == raw.SQLITE_ROW) {
@@ -45,6 +46,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return SQLiteUtils.Error("step failed", out error);
                 }
             }
+            sql2Json.Cleanup();
             return SQLiteUtils.Success(out error);
         }
         
@@ -70,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             var cells   = sql2Json.cells;
             var values  = sql2Json.result;
             var bytes   = new Bytes(36);        // TODO - OPTIMIZE: reuse
-            sql2Json.InitMapper(this, tableInfo);
+            sql2Json.InitMapper(this, tableInfo, buffer);
             foreach (var key in keys) {
                 var rc  = BindKey(stmt, key, ref bytes);
                 if (rc != raw.SQLITE_OK) {
@@ -99,6 +101,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return; // return Error($"reset failed. error: {rc}, key: {key}", out error);
                 }
             }
+            sql2Json.Cleanup();
         }
     
         private void ReadCell(ColumnInfo column, ref ReadCell cell)

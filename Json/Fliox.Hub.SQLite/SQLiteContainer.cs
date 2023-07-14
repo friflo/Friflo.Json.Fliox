@@ -275,17 +275,18 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return new QueryEntitiesResult { Error = error, sql = sql };
                 }
             }
+            var buffer = syncContext.MemoryBuffer;
             List<EntityValue> values;
             if (tableType == TableType.Relational) {
                 using var pooled = syncContext.SQL2Json.Get();
                 var mapper  = new SQLiteSQL2Json(pooled.instance, stmt, tableInfo);
-                if (!mapper.ReadValues(maxCount, out var readError)) {
+                if (!mapper.ReadValues(maxCount, buffer, out var readError)) {
                     return new QueryEntitiesResult { Error = readError, sql = sql };
                 }
                 values =  pooled.instance.result;
             } else {
                 values = new List<EntityValue>();   // TODO remove
-                if (!SQLiteUtils.ReadValues(stmt, maxCount, values, syncContext.MemoryBuffer, out var readError)) {
+                if (!SQLiteUtils.ReadValues(stmt, maxCount, values, buffer, out var readError)) {
                     return new QueryEntitiesResult { Error = readError, sql = sql };
                 }
             }

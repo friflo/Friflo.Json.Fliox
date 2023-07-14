@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
@@ -15,9 +16,9 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             this.reader = reader;
         }
         
-        public async Task<List<EntityValue>> ReadEntitiesAsync(SQL2Json sql2Json, TableInfo tableInfo)
+        public async Task<List<EntityValue>> ReadEntitiesAsync(SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer)
         {
-            sql2Json.InitMapper(this, tableInfo);
+            sql2Json.InitMapper(this, tableInfo, buffer);
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 foreach (var column in tableInfo.columns) {
@@ -25,6 +26,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 }
                 sql2Json.AddRow();
             }
+            sql2Json.Cleanup();
             return sql2Json.result;
         }
     

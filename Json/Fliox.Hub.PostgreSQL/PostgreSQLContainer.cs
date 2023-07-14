@@ -171,7 +171,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 if (tableType == TableType.Relational) {
                     using var pooled = syncContext.SQL2Json.Get();
                     var mapper   = new PostgresSQL2Json(reader);
-                    var entities = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo).ConfigureAwait(false);
+                    var buffer   = syncContext.MemoryBuffer;
+                    var entities = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
                     var array    = KeyValueUtils.EntityListToArray(entities, command.ids);
                     return new ReadEntitiesResult { entities = array };
                 } else {
@@ -196,7 +197,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 if (tableType == TableType.Relational) {
                     using var pooled = syncContext.SQL2Json.Get();
                     var mapper  = new PostgresSQL2Json(reader);
-                    entities    = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo).ConfigureAwait(false);
+                    var buffer  = syncContext.MemoryBuffer;
+                    entities    = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
                 } else {
                     entities = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
                 }

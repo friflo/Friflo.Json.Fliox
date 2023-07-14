@@ -59,7 +59,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         {
             using var pooled = syncContext.pool.SQL2Json.Get();
             var mapper   = new SQL2JsonMapper(reader);
-            var entities = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo).ConfigureAwait(false);
+            var buffer   = syncContext.MemoryBuffer;
+            var entities = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
             var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
             return new ReadEntitiesResult { entities = array };
         }
@@ -71,7 +72,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         {
             using var pooled = syncContext.pool.SQL2Json.Get();
             var mapper   = new SQL2JsonMapper(reader);
-            return await mapper.ReadEntitiesAsync(pooled.instance, tableInfo).ConfigureAwait(false);
+            var buffer   = syncContext.MemoryBuffer;
+            return await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
         }
     }
 }
