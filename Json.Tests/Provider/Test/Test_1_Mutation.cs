@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var deleteAll   = client.testMutate.DeleteAll();
             var entities    = new List<TestMutate>();
             for (int n = 0; n < 3; n++) {
-                var entity = new TestMutate { id = $"upsert-{n}", val1 = n, val2    = n };
+                var entity = new TestMutate { id = $"upsert-{n}", val1 = n, val2 = n };
                 entities.Add(entity);
             }
             var upsert      = client.testMutate.UpsertRange(entities);
@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var deleteAll   = client.testMutate.DeleteAll();
             var entities    = new List<TestMutate>();
             for (int n = 0; n < 3; n++) {
-                var entity = new TestMutate { id = $"upsert-{n}", val1 = n, val2    = n };
+                var entity = new TestMutate { id = $"upsert-{n}", val1 = n, val2 = n };
                 entities.Add(entity);
             }
             var upsert      = client.testMutate.UpsertRange(entities);
@@ -117,7 +117,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var deleteAll   = client.testMutate.DeleteAll();
             var entities    = new List<TestMutate>();
             for (int n = 0; n < 3; n++) {
-                var entity = new TestMutate { id = $"create-{n}", val1 = n, val2    = n };
+                var entity = new TestMutate { id = $"create-{n}", val1 = n, val2 = n };
                 entities.Add(entity);
             }
             var create      = client.testMutate.CreateRange(entities);

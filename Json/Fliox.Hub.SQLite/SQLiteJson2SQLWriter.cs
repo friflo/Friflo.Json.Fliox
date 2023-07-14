@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                         WriteBytes(column, cell);
                         break;
                     case JsonEvent.ValueBool:
-                        raw.sqlite3_bind_int(stmt, column.ordinal, cell.boolean ? 1 : 0);
+                        raw.sqlite3_bind_int(stmt, column.ordinal + 1, cell.boolean ? 1 : 0);
                         break;
                     case JsonEvent.ValueNumber:
                         WriteNumber(column, cell);
@@ -42,18 +42,24 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                         WriteBytes(column, cell);
                         break;
                     case JsonEvent.ObjectStart:
-                        raw.sqlite3_bind_int(stmt, column.ordinal, cell.boolean ? 1 : 0);
+                        raw.sqlite3_bind_int(stmt, column.ordinal + 1, cell.boolean ? 1 : 0);
                         break;
                     default:
                         throw new InvalidOperationException($"unexpected cell.type: {cell.type}");
                 }
                 cell.type = JsonEvent.None;
             }
+            var rc = raw.sqlite3_step(stmt);
+            if (rc != raw.SQLITE_DONE) {
+                // return Error($"step failed. error: {rc}, key: {key}", out error);
+                throw new InvalidOperationException($"AddRowValues() step error: {rc}");
+            }
+            raw.sqlite3_reset(stmt);
         }
         
         private void WriteBytes(ColumnInfo column, in RowCell cell) {
             var span    = cell.value.AsSpan();
-            var rc      = raw.sqlite3_bind_text(stmt, column.ordinal, span);
+            var rc      = raw.sqlite3_bind_text(stmt, column.ordinal + 1, span);
             if (rc != raw.SQLITE_OK) {
                 throw new InvalidOperationException($"WriteBytes(). error: {rc}");
             }
@@ -65,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (!success) {
                     throw new InvalidOperationException($"Json2SQL error: {json2Sql.parseError}");
                 }
-                var rc = raw.sqlite3_bind_double(stmt, column.ordinal, value);
+                var rc = raw.sqlite3_bind_double(stmt, column.ordinal + 1, value);
                 if (rc != raw.SQLITE_OK) {
                     throw new InvalidOperationException($"WriteNumber(). error: {rc}");
                 }
@@ -74,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (!success) {
                     throw new InvalidOperationException($"Json2SQL error: {json2Sql.parseError}");
                 }
-                var rc = raw.sqlite3_bind_int64(stmt, column.ordinal, value);
+                var rc = raw.sqlite3_bind_int64(stmt, column.ordinal + 1, value);
                 if (rc != raw.SQLITE_OK) {
                     throw new InvalidOperationException($"WriteNumber(). error: {rc}");
                 }
