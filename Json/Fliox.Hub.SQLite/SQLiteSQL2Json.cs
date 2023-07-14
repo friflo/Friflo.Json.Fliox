@@ -41,6 +41,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                         ReadCell(column, ref cells[n]);
                     }
                     sql2Json.AddRow();
+                    count++;
+                    if (maxCount != null && count >= maxCount) {
+                        return SQLiteUtils.Success(out error);
+                    }
                 } else if (rc == raw.SQLITE_DONE) {
                     break;
                 } else {
