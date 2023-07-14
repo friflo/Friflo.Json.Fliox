@@ -296,11 +296,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             using var scope     = args.AddArg(arg);
             using var array     = args.AddArrayField(arg, arrayTable);
             var operand         = Traverse(any.predicate);
-            string arrayPath    = GetFieldPath(any.field);
+            var column          = tableType == TableType.JsonColumn ? DATA : GetColumn(any.field);
+            var arrayPath       = tableType == TableType.JsonColumn ? GetFieldPath(any.field) : "$";
             return
 $@"EXISTS(
     SELECT 1
-    FROM json_each({DATA}, '{arrayPath}') as {arrayTable}
+    FROM json_each({column}, '{arrayPath}') as {arrayTable}
     WHERE {operand}
 )";
         }
@@ -311,11 +312,12 @@ $@"EXISTS(
             using var scope     = args.AddArg(arg);
             using var array     = args.AddArrayField(arg, arrayTable);
             var operand         = Traverse(all.predicate);
-            string arrayPath    = GetFieldPath(all.field);
+            var column          = tableType == TableType.JsonColumn ? DATA : GetColumn(all.field);
+            var arrayPath       = tableType == TableType.JsonColumn ? GetFieldPath(all.field) : "$";
             return
 $@"NOT EXISTS(
     SELECT 1
-    FROM json_each({DATA}, '{arrayPath}') as {arrayTable}
+    FROM json_each({column}, '{arrayPath}') as {arrayTable}
     WHERE NOT ({operand})
 )";
         }
