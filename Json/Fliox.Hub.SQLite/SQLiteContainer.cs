@@ -20,6 +20,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         private  readonly   TableInfo       tableInfo;
         private  readonly   bool            synchronous;
         public   override   bool            Pretty      { get; }
+        private  readonly   TableType       tableType;
         
         internal SQLiteContainer(string name, SQLiteDatabase database, bool pretty)
             : base(name, database)
@@ -31,9 +32,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 
         public Task<SQLResult> CreateTable(ISyncConnection syncConnection) {
             var connection = (SyncConnection)syncConnection;
-            var sql = $"CREATE TABLE IF NOT EXISTS {name} ({ID} TEXT PRIMARY KEY, {DATA} TEXT NOT NULL);";
-            if (!SQLiteUtils.Execute(connection, sql, out var error)) {
-                return Task.FromResult(error);
+            if (tableType == TableType.JsonColumn) {
+                var sql = $"CREATE TABLE IF NOT EXISTS {name} ({ID} TEXT PRIMARY KEY, {DATA} TEXT NOT NULL);";
+                return Task.FromResult(SQLiteUtils.Execute(connection, sql));
             }
             return Task.FromResult<SQLResult>(default);
         }

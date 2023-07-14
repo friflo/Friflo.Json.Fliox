@@ -38,23 +38,17 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return false;
         }
         
-        private static bool SQLError(string msg, out SQLResult error) {
-            error = SQLResult.CreateError(msg);
-            return false;
-        }
-        
-        internal static bool Execute(SyncConnection connection, string sql, out SQLResult error) {
+        internal static SQLResult Execute(SyncConnection connection, string sql) {
             var rc = raw.sqlite3_prepare_v3(connection.sqliteDB, sql, 0, out var stmt);
             if (rc != raw.SQLITE_OK) {
-                return SQLError($"prepare failed. sql: ${sql}, error: {rc}", out error);
+                return SQLResult.CreateError($"prepare failed. sql: ${sql}, error: {rc}");
             }
             rc = raw.sqlite3_step(stmt);
             if (rc != raw.SQLITE_DONE) {
-                return SQLError($"step failed. sql: ${sql}, error: {rc}", out error);
+                return SQLResult.CreateError($"step failed. sql: ${sql}, error: {rc}");
             }
             raw.sqlite3_finalize(stmt);
-            error = new SQLResult();
-            return true;
+            return new SQLResult();
         }
         
         internal static HashSet<string> GetColumnNames(SyncConnection connection, string table) {
@@ -77,8 +71,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 $@"ALTER TABLE {table}
 ADD COLUMN ""{column.name}"" {type}
 GENERATED ALWAYS AS ({asStr});";
-            Execute(connection, sql, out var error);
-            return error;
+            return Execute(connection, sql);
         }
         
         private static string GetColumnAs(ColumnInfo column) {
