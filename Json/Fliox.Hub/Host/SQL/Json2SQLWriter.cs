@@ -43,10 +43,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
             var firstValue  = true;
             var columns     = json2Sql.columns;
+            var cells       = json2Sql.rowCells;
             sb.Append('(');
             for (int n = 0; n < columnCount; n++) {
                 if (firstValue) firstValue = false; else sb.Append(',');
-                ref var cell = ref json2Sql.rowCells[n];
+                ref var cell = ref cells[n];
                 switch (cell.type) {
                     case JsonEvent.None:
                     case JsonEvent.ValueNull:

@@ -24,9 +24,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         public void AddRowValues(int columnCount)
         {
             var columns     = json2Sql.columns;
+            var cells       = json2Sql.rowCells;
             for (int n = 0; n < columnCount; n++) {
                 var column = columns[n];
-                ref var cell = ref json2Sql.rowCells[n];
+                ref var cell = ref cells[n];
                 switch (cell.type) {
                     case JsonEvent.None:
                     case JsonEvent.ValueNull:

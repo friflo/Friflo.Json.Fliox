@@ -47,12 +47,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         private void Traverse(ObjectInfo objInfo)
         {
+            var cells = rowCells;
             while (true) {
                 var ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString: {
                         var column      = objInfo.FindColumn(parser.key);
-                        ref var cell    = ref rowCells[column.ordinal];
+                        ref var cell    = ref cells[column.ordinal];
                         buffer.AppendBytes(parser.value);
                         cell.SetValue(buffer, parser.value.Len);
                         cell.type       = JsonEvent.ValueString;
@@ -60,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     }
                     case JsonEvent.ValueNumber: {
                         var column      = objInfo.FindColumn(parser.key);
-                        ref var cell    = ref rowCells[column.ordinal];
+                        ref var cell    = ref cells[column.ordinal];
                         buffer.AppendBytes(parser.value);
                         cell.SetValue(buffer, parser.value.Len);
                         cell.isFloat    = parser.isFloat;
@@ -69,14 +70,14 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     }
                     case JsonEvent.ValueBool: {
                         var column          = objInfo.FindColumn(parser.key);
-                        ref var cell        = ref rowCells[column.ordinal];
+                        ref var cell        = ref cells[column.ordinal];
                         cell.boolean        = parser.boolValue;
                         cell.type           = JsonEvent.ValueBool;
                         break;
                     }
                     case JsonEvent.ArrayStart: {
                         var column          = objInfo.FindColumn(parser.key);
-                        ref var cell        = ref rowCells[column.ordinal];
+                        ref var cell        = ref cells[column.ordinal];
                         var start = parser.Position - 1;
                         parser.SkipTree(); // TODO implementation skipped for now
                         var end = parser.Position;
@@ -90,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     case JsonEvent.ObjectStart:
                         var obj = objInfo.FindObject(parser.key);
                         if (obj != null) {
-                            rowCells[obj.ordinal].type = JsonEvent.ObjectStart;
+                            cells[obj.ordinal].type = JsonEvent.ObjectStart;
                             Traverse(obj);
                         } else {
                             parser.SkipTree();
