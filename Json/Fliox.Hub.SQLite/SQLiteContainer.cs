@@ -260,7 +260,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 sql     = queryEnumerator.sql;
             } else {
                 var filter  = command.GetFilter();
-                var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
+                var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter(tableType)}";
                 var limit   = command.limit == null ? "" : $" LIMIT {command.limit}";
                 var sqlSb   = new StringBuilder();
                 if (tableType == TableType.Relational) {
@@ -316,7 +316,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             if (command.type == AggregateType.count) {
                 var filter  = command.GetFilter();
-                var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter()}";
+                var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter(tableType)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
                 if (!SQLiteUtils.Prepare(connection, sql, out var stmt, out var error)) {
                     return new AggregateEntitiesResult { Error = error };

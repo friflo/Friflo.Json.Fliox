@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
@@ -16,11 +17,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 {
     public static class SQLiteExtensions
     {
-        public static string SQLiteFilter(this FilterOperation op) {
+        public static string SQLiteFilter(this FilterOperation op, TableType tableType) {
             var filter      = (Filter)op;
             var args        = new FilterArgs(filter);
             args.AddArg(filter.arg, DATA);
-            var cx          = new ConvertContext (args);
+            var cx          = new ConvertContext (args, tableType);
             var result      = cx.Traverse(filter.body);
             return result;
         }
@@ -28,9 +29,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     
     internal sealed class ConvertContext {
         private readonly    FilterArgs  args;
+        private readonly    TableType   tableType;
 
-        internal ConvertContext (FilterArgs args) {
+        internal ConvertContext (FilterArgs args, TableType tableType) {
             this.args       = args;
+            this.tableType  = tableType;
         }
         
         internal static string GetSqlType(ColumnInfo column) {
@@ -64,6 +67,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     var arg         = args.GetArg(field);
                     var path        = GetFieldPath(field);
                     var arrayField  = args.GetArrayField(field);
+                    if (tableType == TableType.Relational) {
+                        if (arrayField != null) {
+                            return $"json_extract({arrayField.array}.value, '{path}')";
+                        }
+                        return GetColumn(field);
+                    }
                     if (arrayField != null) {
                         return $"json_extract({arrayField.array}.value, '{path}')";
                     }
@@ -325,6 +334,15 @@ $@"NOT EXISTS(
             }
             var path = field.name.Substring(field.arg.Length + 1);
             return $"$.{path}";
+        }
+        
+        private static string GetColumn(Field field) {
+            var name = field.name;
+            if (field.arg == name) {
+                //return "$";
+                throw new NotSupportedException("GetColum()");
+            }
+            return $"[{name.Substring(field.arg.Length + 1)}]";
         }
     }
 }
