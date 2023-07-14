@@ -160,9 +160,9 @@ GENERATED ALWAYS AS ({asStr});";
             SyncContext             syncContext,
             out TaskExecuteError    error)
         {
-            using var pooled = syncContext.Json2SQL.Get();
-            // var writer = new Json2SQLWriter (sql, SQLEscape.Default);
-            pooled.instance.AppendColumnValues(null, entities, tableInfo);
+            using var pooled    = syncContext.Json2SQL.Get();
+            var writer          = new SQLiteJson2SQLWriter (pooled.instance, stmt);
+            pooled.instance.AppendColumnValues(writer, entities, tableInfo);
             error = default;
             return false;
         }

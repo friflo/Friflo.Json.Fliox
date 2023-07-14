@@ -126,7 +126,7 @@ namespace Friflo.Json.Tests.Provider
             var connection = EnvConfig.GetConnectionString(provider);
             switch (provider) {
                 case "sqlite":          return new SQLiteDatabase       (db, SQLite,     schema) { TableType = TableType.JsonColumn };
-                case "sqlite_rel":      return new SQLiteDatabase       (db, SQLiteRel,  schema);
+                case "sqlite_rel":      return new SQLiteDatabase       (db, SQLiteRel,  schema) { Synchronous = true }; // Synchronous to simplify debugging
                 case "mysql":           return new MySQLDatabase        (db, connection, schema) { TableType = TableType.JsonColumn };
                 case "mysql_rel":       return new MySQLDatabase        (db, connection, schema);
                 case "mariadb":         return new MariaDBDatabase      (db, connection, schema) { TableType = TableType.JsonColumn };

@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     {
         public      RowCell[]       rowCells    = new RowCell[4];   // reused
         public      ColumnInfo[]    columns;
+        public      Bytes           parseError  = new Bytes(8);
         // --- private
         private     Utf8JsonParser  parser;
         private     Bytes           buffer      = new Bytes(256);   // reused
@@ -62,6 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         ref var cell    = ref rowCells[column.ordinal];
                         buffer.AppendBytes(parser.value);
                         cell.SetValue(buffer, parser.value.Len);
+                        cell.isFloat    = parser.isFloat;
                         cell.type       = JsonEvent.ValueNumber;
                         break;
                     }
@@ -114,9 +116,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     public struct RowCell
     {
-        internal Bytes      value;
-        internal bool       boolean;
-        internal JsonEvent  type;
+        public  Bytes       value;
+        public  bool        boolean;
+        public  bool        isFloat;
+        public  JsonEvent   type;
         
         internal void SetValue(in Bytes value, int len) {
             this.value.buffer   = value.buffer;

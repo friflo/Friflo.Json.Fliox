@@ -180,8 +180,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (!SQLiteUtils.Prepare(connection, sql.ToString(), out var stmt, out error)) {
                     return new UpsertEntitiesResult { Error = error };
                 }
-                if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
-                    return new UpsertEntitiesResult { Error = error };
+                if (tableType == TableType.Relational) {
+                    if (!SQLiteUtils.AppendColumnValues(stmt, command.entities, tableInfo, syncContext, out error)) {
+                        return new UpsertEntitiesResult { Error = error };
+                    }
+                } else {
+                    if (!SQLiteUtils.AppendValues(stmt, command.entities, out error)) {
+                        return new UpsertEntitiesResult { Error = error };
+                    }
                 }
                 raw.sqlite3_finalize(stmt);
                 if (!scope.EndTransaction("COMMIT TRANSACTION", out error)) {
