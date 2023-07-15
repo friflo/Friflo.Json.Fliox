@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case ColumnType.Guid: {
                     var data = raw.sqlite3_column_blob(stmt, column.ordinal);
                     if (!Bytes.TryParseGuid(data, out cell.guid)) {
-                        var guidStr = Encoding.UTF8.GetString(data);
+                        var guidStr = new Bytes(data).ToString();
                         return new SQLError($"invalid guid: {guidStr}, PK: {sql2Json.DebugKey()}");
                     }
                     break;
@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case ColumnType.DateTime: {
                     var text = raw.sqlite3_column_blob(stmt, column.ordinal);
                     if (!Bytes.TryParseDateTime(text, out var dateTime)) {
-                        var dateStr = Encoding.UTF8.GetString(text);
+                        var dateStr = new Bytes(text).ToString();
                         return new SQLError($"invalid datetime: {dateStr}, PK: {sql2Json.DebugKey()}");
                     }
                     cell.date = dateTime.ToUniversalTime();

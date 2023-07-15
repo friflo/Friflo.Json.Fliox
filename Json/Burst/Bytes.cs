@@ -102,6 +102,13 @@ namespace Friflo.Json.Burst
             AppendBytes(src);
         }
         
+        public Bytes(ReadOnlySpan<byte> value) {
+            start   = 0;
+            end     = value.Length;
+            buffer  = AllocateBuffer(end);
+            AppendBytesSpan(value);
+        }
+        
         /// was previous in <see cref="ByteList"/> constructor
         private static byte[] AllocateBuffer(int size) {
             var result = new byte [size];
