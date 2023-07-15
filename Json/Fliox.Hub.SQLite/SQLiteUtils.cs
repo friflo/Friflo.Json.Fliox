@@ -162,9 +162,13 @@ GENERATED ALWAYS AS ({asStr});";
         {
             using var pooled    = syncContext.Json2SQL.Get();
             var writer          = new SQLiteJson2SQLWriter (pooled.instance, stmt);
-            pooled.instance.AppendColumnValues(writer, entities, tableInfo);
-            error = default;
-            return false;
+            var sqlError        =  pooled.instance.AppendColumnValues(writer, entities, tableInfo);
+            if (sqlError.message is not null) {
+                error = new TaskExecuteError(sqlError.message);
+                return false;
+            }
+            error = null;
+            return true;
         }
         
         internal static bool ReadById(

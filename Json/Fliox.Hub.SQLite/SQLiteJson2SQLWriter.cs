@@ -9,6 +9,7 @@ using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using SQLitePCL;
 
+// ReSharper disable TooWideLocalVariableScope
 namespace Friflo.Json.Fliox.Hub.SQLite
 {
     internal class SQLiteJson2SQLWriter : IJson2SQLWriter
@@ -21,66 +22,85 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             this.stmt       = stmt;
         }
 
-        public void WriteRowValues(int columnCount)
+        public SQLError WriteRowValues(int columnCount)
         {
-            var columns     = json2Sql.columns;
-            var cells       = json2Sql.rowCells;
+            var         columns = json2Sql.columns;
+            var         cells   = json2Sql.rowCells;
+            SQLError    error;
             for (int n = 0; n < columnCount; n++) {
                 var column = columns[n];
                 ref var cell = ref cells[n];
                 switch (cell.type) {
                     case JsonEvent.None:
-                    case JsonEvent.ValueNull:   raw.sqlite3_bind_null(stmt, column.ordinal + 1);    break;
-                    case JsonEvent.ValueString: WriteBytes  (column, cell);                         break;
-                    case JsonEvent.ValueBool:   WriteBool   (column, cell);                         break;
-                    case JsonEvent.ValueNumber: WriteNumber (column, cell);                         break;
-                    case JsonEvent.ArrayStart:  WriteBytes  (column, cell);                         break;
-                    case JsonEvent.ObjectStart: WriteBool   (column, cell);                         break;
+                    case JsonEvent.ValueNull:   error = WriteNull   (column);       break;
+                    case JsonEvent.ValueString: error = WriteBytes  (column, cell); break;
+                    case JsonEvent.ValueBool:   error = WriteBool   (column, cell); break;
+                    case JsonEvent.ValueNumber: error = WriteNumber (column, cell); break;
+                    case JsonEvent.ArrayStart:  error = WriteBytes  (column, cell); break;
+                    case JsonEvent.ObjectStart: error = WriteBool   (column, cell); break;
                     default:
                         throw new InvalidOperationException($"unexpected cell.type: {cell.type}");
+                }
+                if (error.message is not null) {
+                    return error;
                 }
                 cell.type = JsonEvent.None;
             }
             var rc = raw.sqlite3_step(stmt);
             if (rc != raw.SQLITE_DONE) {
-                // return Error($"step failed. error: {rc}, key: {key}", out error);
-                throw new InvalidOperationException($"AddRowValues() step error: {rc}");
+                return new SQLError($"write row values failed. error: {rc}");
             }
             raw.sqlite3_reset(stmt);
+            return default;
         }
         
-        private void WriteBytes(ColumnInfo column, in RowCell cell) {
+        private SQLError WriteNull(ColumnInfo column) {
+            var rc      = raw.sqlite3_bind_null(stmt, column.ordinal + 1);
+            if (rc == raw.SQLITE_OK) {
+                return default;
+            }
+            return new SQLError($"write null failed. error: {rc}");
+        }
+        
+        private SQLError WriteBytes(ColumnInfo column, in RowCell cell) {
             var span    = cell.value.AsSpan();
             var rc      = raw.sqlite3_bind_text(stmt, column.ordinal + 1, span);
-            if (rc != raw.SQLITE_OK) {
-                throw new InvalidOperationException($"WriteBytes(). error: {rc}");
+            if (rc == raw.SQLITE_OK) {
+                return default;
             }
+            return new SQLError($"write string failed. error: {rc}");
         }
         
-        private void WriteNumber(ColumnInfo column, in RowCell cell) {
+        private SQLError WriteNumber(ColumnInfo column, in RowCell cell) {
             if (cell.isFloat) {
                 var value = ValueParser.ParseDoubleStd(cell.value.AsSpan(), ref json2Sql.parseError, out bool success);
                 if (!success) {
-                    throw new InvalidOperationException($"Json2SQL error: {json2Sql.parseError}");
+                    return new SQLError($"parsing floating point number failed. error: {json2Sql.parseError}");
                 }
                 var rc = raw.sqlite3_bind_double(stmt, column.ordinal + 1, value);
-                if (rc != raw.SQLITE_OK) {
-                    throw new InvalidOperationException($"WriteNumber(). error: {rc}");
+                if (rc == raw.SQLITE_OK) {
+                    return default;
                 }
+                return new SQLError($"write floating point number failed. error: {rc}");
             } else {
                 var value = ValueParser.ParseLong(cell.value.AsSpan(), ref json2Sql.parseError, out bool success);
                 if (!success) {
-                    throw new InvalidOperationException($"Json2SQL error: {json2Sql.parseError}");
+                    return new SQLError($"parsing integer failed. error: {json2Sql.parseError}");
                 }
                 var rc = raw.sqlite3_bind_int64(stmt, column.ordinal + 1, value);
-                if (rc != raw.SQLITE_OK) {
-                    throw new InvalidOperationException($"WriteNumber(). error: {rc}");
+                if (rc == raw.SQLITE_OK) {
+                    return default;
                 }
+                return new SQLError($"write integer failed. error: {rc}");
             }
         }
         
-        private void WriteBool(ColumnInfo column, in RowCell cell) {
-            raw.sqlite3_bind_int(stmt, column.ordinal + 1, cell.boolean ? 1 : 0);
+        private SQLError WriteBool(ColumnInfo column, in RowCell cell) {
+            var rc = raw.sqlite3_bind_int(stmt, column.ordinal + 1, cell.boolean ? 1 : 0);
+            if (rc == raw.SQLITE_OK) {
+                return default;
+            }
+            return new SQLError($"write bool failed. error: {rc}");
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public interface IJson2SQLWriter
     {
-        void WriteRowValues(int columnCount);
+        SQLError WriteRowValues(int columnCount);
     }
     
     public sealed class Json2SQLWriter : IJson2SQLWriter
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             isFirstRow      = true;
         }
 
-        public void WriteRowValues(int columnCount)
+        public SQLError WriteRowValues(int columnCount)
         {
             if (isFirstRow) {
                 isFirstRow = false;
@@ -84,6 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 cell.type = JsonEvent.None;
             }
             sb.Append(')');
+            return default;
         }
         
         

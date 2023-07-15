@@ -255,7 +255,15 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
     }
     
+    public readonly struct SQLError
+    {
+        public  readonly    string  message;
         
+        public SQLError(string message) {
+            this.message = message;
+        }
+    }
+
     public readonly struct SQLResult
     {
         public  readonly    object  value;

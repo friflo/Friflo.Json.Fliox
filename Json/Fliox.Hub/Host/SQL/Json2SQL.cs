@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             parser.Dispose();
         }
 
-        public void AppendColumnValues(
+        public SQLError AppendColumnValues(
             IJson2SQLWriter     writer,
             List<JsonEntity>    entities,
             TableInfo           tableInfo)
@@ -41,8 +41,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (ev != JsonEvent.ObjectStart) throw new InvalidOperationException("expect object");
                 Traverse(tableInfo.root);
                 
-                writer.WriteRowValues(columnCount);
+                var error = writer.WriteRowValues(columnCount);
+                if (error.message is not null) {
+                    return error;
+                }
             }
+            return default;
         }
         
         private void Traverse(ObjectInfo objInfo)
