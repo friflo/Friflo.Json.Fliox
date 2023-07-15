@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -43,7 +44,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                             cells[n].isNull = true;
                             continue;
                         } 
-                        ReadCell(column, ref cells[n]);
+                        var sqlError = ReadCell(column, ref cells[n]);
+                        if (sqlError.message is not null) {
+                            SQLiteUtils.Error(sqlError.message, out error);
+                            return false;
+                        }
                     }
                     sql2Json.AddRow();
                     count++;
@@ -72,11 +77,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     key.ToBytes(ref bytes);
                     return raw.sqlite3_bind_text (stmt, 1, bytes.AsSpan());
                 default:
-                    throw new InvalidOperationException("unhandled case");
+                    throw new InvalidOperationException($"unhandled case: {encoding}");
             }
         }
         
-        internal void ReadEntities(List<JsonKey> keys, MemoryBuffer buffer)
+        internal bool ReadEntities(List<JsonKey> keys, MemoryBuffer buffer, out TaskExecuteError error)
         {
             sql2Json.InitMapper(this, tableInfo, buffer);
             var columns = tableInfo.columns;
@@ -86,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             foreach (var key in keys) {
                 var rc  = BindKey(stmt, key, ref bytes);
                 if (rc != raw.SQLITE_OK) {
-                    return; // return Error($"bind key failed. error: {rc}, key: {key}", out error);
+                    return SQLiteUtils.Error($"bind key failed. error: {rc}, key: {key}", out error);
                 }
                 rc = raw.sqlite3_step(stmt);
                 switch (rc) {
@@ -100,22 +105,26 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                                 cells[n].isNull = true;
                                 continue;
                             } 
-                            ReadCell(column, ref cells[n]);
+                            var sqlError = ReadCell(column, ref cells[n]);
+                            if (sqlError.message is not null) {
+                                return SQLiteUtils.Error(sqlError.message, out error);
+                            }
                         }
                         sql2Json.AddRow();
                         break;
                     default:
-                        return; // return Error($"step failed. error: {rc}, key: {key}", out error);
+                        return SQLiteUtils.Error($"step failed. error: {rc}, key: {key}", out error);
                 }
                 rc = raw.sqlite3_reset(stmt);
                 if (rc != raw.SQLITE_OK) {
-                    return; // return Error($"reset failed. error: {rc}, key: {key}", out error);
+                    return SQLiteUtils.Error($"reset failed. error: {rc}, key: {key}", out error);
                 }
             }
             sql2Json.Cleanup();
+            return SQLiteUtils.Success(out error);
         }
     
-        private void ReadCell(ColumnInfo column, ref ReadCell cell)
+        private SQLError ReadCell(ColumnInfo column, ref ReadCell cell)
         {
             cell.isNull = false;
             switch (column.type) {
@@ -134,14 +143,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case ColumnType.Guid: {
                     var data = raw.sqlite3_column_blob(stmt, column.ordinal);
                     if (!Bytes.TryParseGuid(data, out cell.guid)) {
-                        throw new InvalidOperationException("invalid guid");
+                        var guidStr = Encoding.UTF8.GetString(data);
+                        return new SQLError($"invalid guid: {guidStr}");
                     }
                     break;
                 }
                 case ColumnType.DateTime: {
-                    var text     = raw.sqlite3_column_blob(stmt, column.ordinal);
+                    var text = raw.sqlite3_column_blob(stmt, column.ordinal);
                     if (!Bytes.TryParseDateTime(text, out var dateTime)) {
-                        throw new InvalidOperationException("invalid datetime");
+                        var dateStr = Encoding.UTF8.GetString(text);
+                        return new SQLError($"invalid datetime: {dateStr}");
                     }
                     cell.date = dateTime.ToUniversalTime();
                     break;
@@ -155,6 +166,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     break;
                 }
             }
+            return default;
         }
         
         public void WriteJsonMember(SQL2Json sql2Json, ColumnInfo column)

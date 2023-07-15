@@ -224,7 +224,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (tableType == TableType.Relational) {
                 using var pooled = syncContext.SQL2Json.Get();
                 var mapper  = new SQLiteSQL2Json(pooled.instance, stmt, tableInfo);
-                mapper.ReadEntities(command.ids, buffer);
+                if (!mapper.ReadEntities(command.ids, buffer, out error)) {
+                    return new ReadEntitiesResult { Error = error };
+                }
                 values = pooled.instance.result;
             } else {
                 values = new List<EntityValue>(); // TODO - OPTIMIZE

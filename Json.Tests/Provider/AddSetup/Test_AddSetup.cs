@@ -20,6 +20,7 @@ namespace Friflo.Json.Tests.Provider.AddSetup
     {
         private static readonly DatabaseSchema SetupSchema  = DatabaseSchema.Create<TestClientSetup>();
 
+        // [Ignore("to save a second for each database test")]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task Test_SetupDatabase(string db) {
             
