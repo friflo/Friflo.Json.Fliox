@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case ColumnType.Int64:      return "integer";
                 case ColumnType.Float:
                 case ColumnType.Double:     return "real";
-                case ColumnType.Boolean:    return "text";
+                case ColumnType.Boolean:    return "tinyint";
                 case ColumnType.DateTime:
                 case ColumnType.Guid:
                 case ColumnType.BigInteger:
