@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case ColumnType.Enum:
                 case ColumnType.Array: {
                     var data = raw.sqlite3_column_blob(stmt, column.ordinal);
-                    sql2Json.CopyBytes(data, ref cell);
+                    sql2Json.CopyToCellBytes(data, ref cell);
                     break;
                 }
             }

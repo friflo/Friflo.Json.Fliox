@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             charPos += len;
         }
         
-        public void CopyBytes(in ReadOnlySpan<byte> bytes, ref ReadCell cell) {
+        public void CopyToCellBytes(in ReadOnlySpan<byte> bytes, ref ReadCell cell) {
             var start = bytesBuf.end;
             bytesBuf.AppendBytesSpan(bytes);
             cell.bytes.buffer   = bytesBuf.buffer;

@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         var column          = objInfo.FindColumn(parser.key);
                         ref var cell        = ref cells[column.ordinal];
                         var start = parser.Position - 1;
-                        parser.SkipTree(); // TODO implementation skipped for now
+                        parser.SkipTree();
                         var end = parser.Position;
                         parser.AppendInputSlice(ref buffer, start, end);
                         cell.SetValue(buffer, end - start);
