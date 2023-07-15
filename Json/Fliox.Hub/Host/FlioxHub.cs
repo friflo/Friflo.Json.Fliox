@@ -150,6 +150,20 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public virtual void Dispose() { }
         
+        /// <summary>
+        /// Utility methods calling <see cref="EntityDatabase.SetupDatabaseAsync"/> for the main and extension databases.<br/>
+        /// <b>Note:</b> This method is intended for use during development. See docs at <see cref="EntityDatabase.SetupDatabaseAsync"/>
+        /// </summary>
+        public async Task SetupDatabasesAsync(Setup options = Setup.All) {
+            var databases = GetDatabases().Values;
+            var tasks = new List<Task>();
+            foreach (var db in databases) {
+                var task = db.SetupDatabaseAsync(options);
+                tasks.Add(task);
+            }
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+        }
+        
         public TFeature TryGetFeature<TFeature>() where TFeature : new() {
             if (features.TryGetValue(typeof(TFeature), out var value)) {
                 return (TFeature)value;
@@ -321,6 +335,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             var databaseName = new ShortString(name);
             return extensionDbs.TryGetValue(databaseName, out value);
         }
+        
+        internal EntityDatabase FindDatabase(ShortString name) {
+            if (name.IsNull() || name.IsEqual(database.nameShort)) {
+                return database;
+            }
+            extensionDbs.TryGetValue(name, out var result);
+            return result;
+        }
 
         public Dictionary<string, EntityDatabase> GetDatabases() {
             var result = new Dictionary<string, EntityDatabase> (extensionDbs.Count + 1) {
@@ -333,19 +355,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        /// <summary>
-        /// Utility methods calling <see cref="EntityDatabase.SetupDatabaseAsync"/> for the main and extension databases.<br/>
-        /// <b>Note:</b> This method is intended for use during development. See docs at <see cref="EntityDatabase.SetupDatabaseAsync"/>
-        /// </summary>
-        public async Task SetupDatabasesAsync(Setup options = Setup.All) {
-            var databases = GetDatabases().Values;
-            var tasks = new List<Task>();
-            foreach (var db in databases) {
-                var task = db.SetupDatabaseAsync(options);
-                tasks.Add(task);
-            }
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-        }
+
         #endregion
     }
 }

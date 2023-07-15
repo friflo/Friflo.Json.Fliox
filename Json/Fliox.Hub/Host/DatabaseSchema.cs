@@ -60,7 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public   override   string                                  ToString()  => typeSchema.RootType.Name;
         
-        public              ValidationType  GetValidationType (in ShortString container) => containerTypes[container];
+        public              ValidationType  GetValidationType   (in ShortString container) => containerTypes[container];
+        public              bool            HasContainer        (in ShortString container) => containerTypes.ContainsKey(container);
 
         /// <summary>
         /// Create a <see cref="DatabaseSchema"/> from the given <paramref name="typeSchema"/>.<br/>

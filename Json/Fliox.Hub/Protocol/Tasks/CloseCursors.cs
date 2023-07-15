@@ -29,6 +29,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return Task.FromResult<SyncTaskResult>(MissingContainer());
             
             var entityContainer     = database.GetOrCreateContainer(container);
+            if (entityContainer == null) {
+                return Task.FromResult<SyncTaskResult>(ContainerNotFound());
+            }
             RemoveCursors(entityContainer, cursors, syncContext.User);
             
             var count               = entityContainer.cursors.Count;

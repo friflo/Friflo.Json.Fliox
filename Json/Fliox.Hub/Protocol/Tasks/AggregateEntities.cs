@@ -53,6 +53,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return InvalidTaskError($"invalid filter: {message}");
             }
             var entityContainer = database.GetOrCreateContainer(container);
+            if (entityContainer == null) {
+                return ContainerNotFound();
+            }
             var result = await entityContainer.AggregateEntitiesAsync(this, syncContext).ConfigureAwait(false);
             
             if (result.Error != null) {

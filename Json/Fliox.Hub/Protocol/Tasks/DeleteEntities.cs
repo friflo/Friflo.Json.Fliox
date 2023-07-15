@@ -57,6 +57,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return MissingField($"[{nameof(ids)} | {nameof(all)}]");
             }
             entityContainer = database.GetOrCreateContainer(container);
+            if (entityContainer == null) {
+                return ContainerNotFound();
+            }
             return null;
         }
 

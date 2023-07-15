@@ -51,14 +51,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (entities == null) {
                 return MissingField(nameof(entities));
             }
-            if (!KeyValueUtils.GetKeysFromEntities(keyName, entities, env, out string errorMsg)) {
+            entityContainer = database.GetOrCreateContainer(container);
+            if (entityContainer == null) {
+                return ContainerNotFound();
+            }
+            var key = entityContainer.keyName ?? keyName;
+            if (!KeyValueUtils.GetKeysFromEntities(key, entities, env, out string errorMsg)) {
                 return InvalidTask(errorMsg);
             }
             errorMsg = database.Schema?.ValidateEntities (container, entities, env, EntityErrorType.WriteError, ref validationErrors);
             if (errorMsg != null) {
                 return TaskError(new TaskExecuteError(TaskErrorType.ValidationError, errorMsg));
             }
-            entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
                 using (var pooled = env.pool.JsonPatcher.Get()) {

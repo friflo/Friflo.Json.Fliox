@@ -71,6 +71,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return InvalidTaskError($"missing field: container");   
         }
         
+        internal static TaskErrorResult ContainerNotFound() {
+            return InvalidTaskError($"container not found");   
+        }
+        
         internal static TaskErrorResult InvalidTask(string error) {
             return InvalidTaskError(error);
         }

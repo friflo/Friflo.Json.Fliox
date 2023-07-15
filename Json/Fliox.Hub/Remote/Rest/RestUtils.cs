@@ -385,8 +385,16 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             }
             var type        = create ? TaskType.create : TaskType.upsert;
 
-            if (database.IsEqual(context.hub.database.nameShort))
+            if (database.IsEqual(context.hub.database.nameShort)) {
                 database = default;
+            }
+            if (keyName == null) {
+                var db = context.hub.FindDatabase(database);
+                if (db != null) {
+                    var cont = db.GetOrCreateContainer(container);
+                    keyName = cont?.keyName;
+                }
+            }
             var entities = Body2JsonValues(context, id, keyName, value, out error);
             if (error != null) {
                 context.WriteError("PUT error", error, 400);

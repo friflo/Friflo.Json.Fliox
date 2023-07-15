@@ -253,8 +253,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public EntityContainer GetOrCreateContainer(in ShortString name)
         {
-            if (containers.TryGetValue(name, out EntityContainer container))
+            if (containers.TryGetValue(name, out EntityContainer container)) {
                 return container;
+            }
+            var schema = Schema;
+            if (schema != null && !schema.HasContainer(name)) {
+                return null;
+            }
             containers[name] = container = CreateContainer(name, this);
             return container;
         }
