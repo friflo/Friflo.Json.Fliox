@@ -35,10 +35,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
     
         private void ReadCell(SQL2Json sql2Json, ColumnInfo column, ref ReadCell cell) {
             var ordinal = column.ordinal;
-            cell.isNull = reader.IsDBNull(ordinal);
-            if (cell.isNull) {
+            if (reader.IsDBNull(ordinal)) {
+                cell.type = ColumnType.None;
                 return;
             }
+            cell.type = column.type; 
             switch (column.type) {
                 case ColumnType.Boolean:    cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return;
                 //
@@ -69,11 +70,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             ref var cell    = ref sql2Json.cells[column.ordinal];
             ref var writer  = ref sql2Json.writer;
             var key         = column.nameBytes;
-            if (cell.isNull) {
+            if (cell.type == ColumnType.None) {
                 // writer.MemberNul(key); // omit writing member with value null
                 return;
             }
-            cell.isNull = true;
+            cell.type = column.type;
             switch (column.type) {
                 case ColumnType.Boolean:    writer.MemberBln    (key, cell.lng != 0);               break;
                 //

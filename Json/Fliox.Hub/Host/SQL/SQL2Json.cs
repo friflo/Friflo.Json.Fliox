@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Globalization;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -24,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private             ISQL2JsonMapper     mapper;
         private             TableInfo           tableInfo;
         private             MemoryBuffer        memBuf;
-        
+
         public void InitMapper(ISQL2JsonMapper mapper, TableInfo tableInfo, MemoryBuffer memoryBuffer) {
             this.tableInfo  = tableInfo;
             this.mapper     = mapper;
@@ -94,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         mapper.WriteJsonMember(this, column);
                         break;
                     case ObjectInfo objectMember:
-                        if (cells[objectMember.ordinal].isNull) {
+                        if (cells[objectMember.ordinal].type == ColumnType.None) {
                             // writer.MemberNul(objectMember.nameBytes); // omit writing member with value null
                             continue;
                         }
@@ -125,11 +126,15 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public void Dispose() {
             writer.Dispose();
         }
+        /// <summary>Return the primary key of the current row</summary>
+        public string DebugKey() {
+            return cells[tableInfo.keyColumn.ordinal].AsString();
+        }
     }
     
     public struct ReadCell
     {
-        public      bool        isNull;
+        public      ColumnType  type;
         internal    Chars       chars;
         public      Bytes       bytes;
         internal    bool        isCharString;
@@ -141,8 +146,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         public          ReadOnlySpan<char>  CharsSpan() => chars.AsSpan();
         public          ReadOnlySpan<byte>  BytesSpan() => bytes.AsSpan();
-
-        public override string              ToString() => isNull ? "null" : "not null";
+        public override string              ToString()  => AsString();
 
         internal JsonKey AsKey(ColumnType typeId)
         {
@@ -159,6 +163,35 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case ColumnType.Guid:       return new JsonKey(guid);
                 default:
                     throw new NotSupportedException($"primary key type not supported: {typeId}");
+            }
+        }
+        
+        public string AsString() {
+            switch (type) {
+                case ColumnType.None:       return "null";
+                //
+                case ColumnType.Boolean:    return lng != 0 ? "true" : "false";
+                // --- integer
+                case ColumnType.Uint8:
+                case ColumnType.Int16:
+                case ColumnType.Int32:
+                case ColumnType.Int64:      return lng.ToString();
+                // --- floating point
+                case ColumnType.Float:
+                case ColumnType.Double:     return dbl.ToString(CultureInfo.InvariantCulture);
+                // --- specialized
+                case ColumnType.BigInteger: return chars.GetString();
+                case ColumnType.DateTime:   return date.ToString(Bytes.DateTimeFormat, CultureInfo.InvariantCulture);
+                case ColumnType.Guid:       return guid.ToString();
+                case ColumnType.JsonValue:
+                case ColumnType.JsonKey:
+                case ColumnType.JsonEntity:
+                case ColumnType.Enum:       return bytes.AsString();
+                //
+                case ColumnType.String:     
+                case ColumnType.Array:      return isCharString ? chars.GetString() : bytes.AsString();
+                case ColumnType.Object:     return lng == 0 ? "(object null)" : "(object exists)";
+                default:                    return "(invalid cell)";
             }
         }
     }

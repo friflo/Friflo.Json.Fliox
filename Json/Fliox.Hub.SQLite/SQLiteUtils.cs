@@ -107,7 +107,7 @@ GENERATED ALWAYS AS ({asStr});";
                 } else if (rc == raw.SQLITE_DONE) {
                     break;
                 } else {
-                    return Error("step failed", out error);
+                    return Error("step failed.", out error);
                 }
             }
             return Success(out error);

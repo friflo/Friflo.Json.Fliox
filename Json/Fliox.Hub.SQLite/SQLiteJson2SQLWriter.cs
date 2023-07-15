@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             var rc = raw.sqlite3_step(stmt);
             if (rc != raw.SQLITE_DONE) {
-                return new SQLError($"write row values failed. error: {rc}");
+                return new SQLError($"write row values failed. error: {rc}, PK: {json2Sql.DebugKey()}");
             }
             raw.sqlite3_reset(stmt);
             return default;
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (rc == raw.SQLITE_OK) {
                 return default;
             }
-            return new SQLError($"write null failed. error: {rc}");
+            return new SQLError($"write null failed. error: {rc}, PK: {json2Sql.DebugKey()}");
         }
         
         private SQLError WriteBytes(ColumnInfo column, in RowCell cell) {
@@ -68,30 +68,30 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (rc == raw.SQLITE_OK) {
                 return default;
             }
-            return new SQLError($"write string failed. error: {rc}");
+            return new SQLError($"write string failed. error: {rc}, PK: {json2Sql.DebugKey()}");
         }
         
         private SQLError WriteNumber(ColumnInfo column, in RowCell cell) {
             if (cell.isFloat) {
                 var value = ValueParser.ParseDoubleStd(cell.value.AsSpan(), ref json2Sql.parseError, out bool success);
                 if (!success) {
-                    return new SQLError($"parsing floating point number failed. error: {json2Sql.parseError}");
+                    return new SQLError($"parsing floating point number failed. error: {json2Sql.parseError}, PK: {json2Sql.DebugKey()}");
                 }
                 var rc = raw.sqlite3_bind_double(stmt, column.ordinal + 1, value);
                 if (rc == raw.SQLITE_OK) {
                     return default;
                 }
-                return new SQLError($"write floating point number failed. error: {rc}");
+                return new SQLError($"write floating point number failed. error: {rc}, PK: {json2Sql.DebugKey()}");
             } else {
                 var value = ValueParser.ParseLong(cell.value.AsSpan(), ref json2Sql.parseError, out bool success);
                 if (!success) {
-                    return new SQLError($"parsing integer failed. error: {json2Sql.parseError}");
+                    return new SQLError($"parsing integer failed. error: {json2Sql.parseError}, PK: {json2Sql.DebugKey()}");
                 }
                 var rc = raw.sqlite3_bind_int64(stmt, column.ordinal + 1, value);
                 if (rc == raw.SQLITE_OK) {
                     return default;
                 }
-                return new SQLError($"write integer failed. error: {rc}");
+                return new SQLError($"write integer failed. error: {rc}, PK: {json2Sql.DebugKey()}");
             }
         }
         
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (rc == raw.SQLITE_OK) {
                 return default;
             }
-            return new SQLError($"write bool failed. error: {rc}");
+            return new SQLError($"write bool failed. error: {rc}, PK: {json2Sql.DebugKey()}");
         }
     }
 }

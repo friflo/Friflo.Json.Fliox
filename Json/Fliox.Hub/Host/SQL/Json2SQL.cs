@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public      ColumnInfo[]    columns;
         public      Bytes           parseError  = new Bytes(8);
         // --- private
+        public      ColumnInfo      keyColumn;
         private     Utf8JsonParser  parser;
         private     Bytes           buffer      = new Bytes(256);   // reused
         private     char[]          charBuffer  = new char[32];     // reused
@@ -29,6 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             TableInfo           tableInfo)
         {
             columns         = tableInfo.columns;
+            keyColumn       = tableInfo.keyColumn;
             var columnCount = columns.Length;
             if (columnCount > rowCells.Length) {
                 rowCells = new RowCell[columnCount];
@@ -116,6 +118,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
             chars = charBuffer;
             return Encoding.UTF8.GetChars(bytes.buffer, bytes.start, bytes.end - bytes.start, charBuffer, 0);
+        }
+        
+        /// <summary>Return the primary key of the current row</summary>
+        public string DebugKey() {
+            return rowCells[keyColumn.ordinal].value.AsString();
         }
     }
     
