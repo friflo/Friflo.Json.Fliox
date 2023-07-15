@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 //
                 case ColumnType.String:
                 case ColumnType.Enum:
-                case ColumnType.BigInteger: writer.MemberStr    (key, cell.CharsSpan());         break;
+                case ColumnType.BigInteger: writer.MemberStr    (key, cell.CharsSpan());            break;
                 //
                 case ColumnType.Uint8:
                 case ColumnType.Int16:

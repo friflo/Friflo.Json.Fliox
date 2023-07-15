@@ -30,24 +30,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 ref var cell = ref cells[n];
                 switch (cell.type) {
                     case JsonEvent.None:
-                    case JsonEvent.ValueNull:
-                        raw.sqlite3_bind_null(stmt, column.ordinal + 1);
-                        break;
-                    case JsonEvent.ValueString:
-                        WriteBytes(column, cell);
-                        break;
-                    case JsonEvent.ValueBool:
-                        raw.sqlite3_bind_int(stmt, column.ordinal + 1, cell.boolean ? 1 : 0);
-                        break;
-                    case JsonEvent.ValueNumber:
-                        WriteNumber(column, cell);
-                        break;
-                    case JsonEvent.ArrayStart:
-                        WriteBytes(column, cell);
-                        break;
-                    case JsonEvent.ObjectStart:
-                        raw.sqlite3_bind_int(stmt, column.ordinal + 1, cell.boolean ? 1 : 0);
-                        break;
+                    case JsonEvent.ValueNull:   raw.sqlite3_bind_null(stmt, column.ordinal + 1);    break;
+                    case JsonEvent.ValueString: WriteBytes  (column, cell);                         break;
+                    case JsonEvent.ValueBool:   WriteBool   (column, cell);                         break;
+                    case JsonEvent.ValueNumber: WriteNumber (column, cell);                         break;
+                    case JsonEvent.ArrayStart:  WriteBytes  (column, cell);                         break;
+                    case JsonEvent.ObjectStart: WriteBool   (column, cell);                         break;
                     default:
                         throw new InvalidOperationException($"unexpected cell.type: {cell.type}");
                 }
@@ -89,6 +77,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     throw new InvalidOperationException($"WriteNumber(). error: {rc}");
                 }
             }
+        }
+        
+        private void WriteBool(ColumnInfo column, in RowCell cell) {
+            raw.sqlite3_bind_int(stmt, column.ordinal + 1, cell.boolean ? 1 : 0);
         }
     }
 }

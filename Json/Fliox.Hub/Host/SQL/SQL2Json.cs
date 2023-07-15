@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public sealed class SQL2Json : IDisposable
     {
-        public  readonly    List<EntityValue>   result = new List<EntityValue>();
+        public  readonly    List<EntityValue>   result      = new List<EntityValue>();
         public              Utf8JsonWriter      writer;
         public              ReadCell[]          cells       = new ReadCell[4];  // reused
         // --- private

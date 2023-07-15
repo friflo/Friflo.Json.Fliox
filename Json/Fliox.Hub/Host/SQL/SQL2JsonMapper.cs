@@ -83,23 +83,23 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
             cell.isNull = true;
             switch (column.type) {
-                case ColumnType.Boolean:    writer.MemberBln    (key, cell.lng != 0);       break;
+                case ColumnType.Boolean:    writer.MemberBln    (key, cell.lng != 0);               break;
                 //
                 case ColumnType.String:
                 case ColumnType.Enum:
-                case ColumnType.BigInteger: writer.MemberStr    (key, cell.CharsSpan());    break;
+                case ColumnType.BigInteger: writer.MemberStr    (key, cell.CharsSpan());            break;
                 //
                 case ColumnType.Uint8:
                 case ColumnType.Int16:
                 case ColumnType.Int32:
-                case ColumnType.Int64:      writer.MemberLng    (key, cell.lng);            break;
+                case ColumnType.Int64:      writer.MemberLng    (key, cell.lng);                    break;
                 //
                 case ColumnType.Float:
-                case ColumnType.Double:     writer.MemberDbl    (key, cell.dbl);            break;
+                case ColumnType.Double:     writer.MemberDbl    (key, cell.dbl);                    break;
                 //
-                case ColumnType.Guid:       writer.MemberGuid   (key, cell.guid);           break;
-                case ColumnType.DateTime:   writer.MemberDate   (key, cell.date);           break;
-                case ColumnType.Array:      writer.MemberArr(key, sql2Json.Chars2Bytes(cell.chars)); break;
+                case ColumnType.Guid:       writer.MemberGuid   (key, cell.guid);                   break;
+                case ColumnType.DateTime:   writer.MemberDate   (key, cell.date);                   break;
+                case ColumnType.Array:      writer.MemberArr(key, sql2Json.Chars2Bytes(cell.chars));break;
                 default:
                     throw new InvalidOperationException($"unexpected type: {column.type}");
             }

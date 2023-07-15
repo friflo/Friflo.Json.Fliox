@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 for (int n = 0; n < len; n++) {
                     var c = chars[n];
                     switch (c) {
-                        case '\'':  sb.Append("''");   break;
+                        case '\'':  sb.Append("''");    break;
                         default:    sb.Append(c);       break;
                     }
                 }
