@@ -104,4 +104,8 @@ namespace Friflo.Json.Tests.Provider.Client
                     public  double?         f64;
                     public  float?          f32;
     }
+    
+    public class TestReadTypesSetup {
+        [Key]       public  string              id;
+    }
 }

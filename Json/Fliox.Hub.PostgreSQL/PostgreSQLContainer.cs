@@ -72,6 +72,9 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         public async Task<SQLResult> AddVirtualColumns(ISyncConnection syncConnection) {
+            if (tableType != TableType.JsonColumn) {
+                return default;
+            }
             var connection  = (SyncConnection)syncConnection;
             var columnNames = await GetColumnNamesAsync(connection).ConfigureAwait(false);
             foreach (var column in tableInfo.columns) {
@@ -87,13 +90,21 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         }
         
         public async Task<SQLResult> AddColumns (ISyncConnection syncConnection) {
+            if (tableType != TableType.Relational) {
+                return new SQLResult();
+            }
             var connection  = (SyncConnection)syncConnection;
             var columnNames = await GetColumnNamesAsync (connection).ConfigureAwait(false);
             foreach (var column in tableInfo.columns) {
                 if (columnNames.Contains(column.name)) {
                     continue;
                 }
-                // ...
+                var type    = ConvertContext.GetSqlType(column.type);
+                var sql     = $"ALTER TABLE {name} ADD \"{column.name}\" {type};";
+                var result  = await ExecuteAsync(connection, sql).ConfigureAwait(false);
+                if (result.Failed) {
+                    return result;
+                }
             }
             return new SQLResult();
         }

@@ -26,4 +26,12 @@ namespace Friflo.Json.Tests.Provider.Client
 
         public TestClient(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
     }
+
+    public class TestClientSetup : FlioxClient
+    {
+        // --- containers
+        public readonly EntitySet <string, TestReadTypesSetup>  testReadTypes;
+
+        public TestClientSetup(FlioxHub hub, string dbName = null) : base (hub, dbName) { }
+    }
 }

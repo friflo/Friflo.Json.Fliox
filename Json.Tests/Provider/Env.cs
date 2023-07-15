@@ -65,12 +65,13 @@ namespace Friflo.Json.Tests.Provider
             }
         }
         
+        internal static readonly DatabaseSchema Schema  = DatabaseSchema.Create<TestClient>();
+        
         private static EntityDatabase SeedSource { get {
             if (_seedSource != null) {
                 return _seedSource;
             }
-            var databaseSchema  = DatabaseSchema.Create<TestClient>();
-            return _seedSource = new FileDatabase("file_db", TestDbFolder, databaseSchema);
+            return _seedSource = new FileDatabase("file_db", TestDbFolder, Schema);
         } }
         
         internal static async Task<TestClient> GetClient(string db, bool seed = true)
@@ -97,7 +98,7 @@ namespace Friflo.Json.Tests.Provider
 #if UNITY_5_3_OR_NEWER
         private static EntityDatabase CreateDatabase(string db, DatabaseSchema schema) => null;
 #else
-        private static EntityDatabase CreateDatabase(string db, DatabaseSchema schema)
+        internal static EntityDatabase CreateDatabase(string db, DatabaseSchema schema)
         {
             switch (db) {
                 case memory_db:
