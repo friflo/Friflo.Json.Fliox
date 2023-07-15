@@ -116,4 +116,28 @@ Cookie: {{auth}}
 HEAD {{base}}/rest/main_db
 Cookie: {{auth}}
 
+###
+GET {{base}}/rest/main_db/unknown_1/u-1
+Cookie: {{auth}}
+
+###
+PUT {{base}}/rest/main_db/unknown_2/u-2
+Cookie: {{auth}}
+
+{
+    "id": "u-2"
+}
+
+###
+PATCH {{base}}/rest/main_db/unknown_3/u-3
+Cookie: {{auth}}
+
+{
+    "id": "u-3"
+}
+
+
+
+
+
 

@@ -93,6 +93,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var entityContainer = PrepareRead(database, out var error);
+            if (entityContainer == null) {
+                return ContainerNotFound();
+            }
             if (error != null) {
                 return error;
             }

@@ -150,3 +150,24 @@ HEAD {{base}}/rest/main_db
 
 invalid path/method > /rest/main_db
 
+###
+GET {{base}}/rest/main_db/unknown_1/u-1
+# StatusCode:   400
+# Content-Type: text/plain
+
+InvalidTask > container not found
+
+###
+PUT {{base}}/rest/main_db/unknown_2/u-2
+# StatusCode:   400
+# Content-Type: text/plain
+
+InvalidTask > container not found
+
+###
+PATCH {{base}}/rest/main_db/unknown_3/u-3
+# StatusCode:   400
+# Content-Type: text/plain
+
+InvalidTask > container not found
+
