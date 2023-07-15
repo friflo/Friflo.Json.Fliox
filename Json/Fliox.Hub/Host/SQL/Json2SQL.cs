@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public      ColumnInfo[]    columns;
         public      Bytes           parseError  = new Bytes(8);
         // --- private
-        public      ColumnInfo      keyColumn;
+        private     ColumnInfo      keyColumn;
         private     Utf8JsonParser  parser;
         private     Bytes           buffer      = new Bytes(256);   // reused
         private     char[]          charBuffer  = new char[32];     // reused
