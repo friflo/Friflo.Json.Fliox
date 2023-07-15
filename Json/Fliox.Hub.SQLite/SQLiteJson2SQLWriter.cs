@@ -11,12 +11,12 @@ using SQLitePCL;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
 {
-    public class SQLiteJson2SQLWriter : IJson2SQLWriter
+    internal class SQLiteJson2SQLWriter : IJson2SQLWriter
     {
         private readonly    Json2SQL        json2Sql;
         private readonly    sqlite3_stmt    stmt;
 
-        public SQLiteJson2SQLWriter(Json2SQL json2Sql, sqlite3_stmt stmt) {
+        internal SQLiteJson2SQLWriter(Json2SQL json2Sql, sqlite3_stmt stmt) {
             this.json2Sql   = json2Sql;
             this.stmt       = stmt;
         }
