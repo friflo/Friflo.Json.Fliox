@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             foreach (var member in obj.members) {
                 switch (member) {
                     case ColumnInfo column:
-                        mapper.WriteColumn(this, column);
+                        mapper.WriteJsonMember(this, column);
                         break;
                     case ObjectInfo objectMember:
                         if (cells[objectMember.ordinal].isNull) {

@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             this.stmt       = stmt;
         }
 
-        public void AddRowValues(int columnCount)
+        public void WriteRowValues(int columnCount)
         {
             var columns     = json2Sql.columns;
             var cells       = json2Sql.rowCells;

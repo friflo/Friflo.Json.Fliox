@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (ev != JsonEvent.ObjectStart) throw new InvalidOperationException("expect object");
                 Traverse(tableInfo.root);
                 
-                writer.AddRowValues(columnCount);
+                writer.WriteRowValues(columnCount);
             }
         }
         

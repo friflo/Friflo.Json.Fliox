@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     /// </summary>
     public interface ISQL2JsonMapper
     {
-        void WriteColumn(SQL2Json sql2Json, ColumnInfo column);
+        void WriteJsonMember(SQL2Json sql2Json, ColumnInfo column);
     }
     
     public sealed class SQL2JsonMapper : ISQL2JsonMapper
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
         }
         
-        public void WriteColumn(SQL2Json sql2Json, ColumnInfo column)
+        public void WriteJsonMember(SQL2Json sql2Json, ColumnInfo column)
         {
             ref var cell    = ref sql2Json.cells[column.ordinal];
             ref var writer  = ref sql2Json.writer;
