@@ -64,36 +64,39 @@ namespace Friflo.Json.Tests.Provider
                 await testDb.SeedDatabase(fileDb).ConfigureAwait(false);
                 hub.AddExtensionDB (testDb);
             } */
-            var sqlite          = $"Data Source={CommonUtils.GetBasePath() + "sqlite_db.sqlite3"}";
-            hub.AddExtensionDB  (new SQLiteDatabase     ("sqlite_db",       sqlite,   schema) { TableType = TableType.JsonColumn });
-            
+            var sqlite          = $"Data Source={CommonUtils.GetBasePath() + "test_db.sqlite3"}";
+            hub.AddExtensionDB  (new SQLiteDatabase     ("sqlite_db",       sqlite,     schema) { TableType = TableType.JsonColumn });
+
+            var sqliteRel       = $"Data Source={CommonUtils.GetBasePath() + "test_rel.sqlite3"}";
+            hub.AddExtensionDB  (new SQLiteDatabase     ("sqlite_rel",      sqliteRel,  schema));
+
             var mysql           = EnvConfig.GetConnectionString("mysql");
-            hub.AddExtensionDB  (new MySQLDatabase      ("mysql_db",        mysql,    schema) { TableType = TableType.JsonColumn });
+            hub.AddExtensionDB  (new MySQLDatabase      ("mysql_db",        mysql,      schema) { TableType = TableType.JsonColumn });
             
             var mysqlRel        = EnvConfig.GetConnectionString("mysql_rel");
-            hub.AddExtensionDB  (new MySQLDatabase      ("mysql_rel",       mysqlRel,schema));
+            hub.AddExtensionDB  (new MySQLDatabase      ("mysql_rel",       mysqlRel,   schema));
             
             var mariadb         = EnvConfig.GetConnectionString("mariadb");
-            hub.AddExtensionDB  (new MariaDBDatabase    ("maria_db",        mariadb,  schema) { TableType = TableType.JsonColumn });
+            hub.AddExtensionDB  (new MariaDBDatabase    ("maria_db",        mariadb,    schema) { TableType = TableType.JsonColumn });
             
             var mariadbRel      = EnvConfig.GetConnectionString("mariadb_rel");
             hub.AddExtensionDB  (new MariaDBDatabase    ("mariadb_rel",     mariadbRel, schema));
             
             var postgres        = EnvConfig.GetConnectionString("postgres");
-            hub.AddExtensionDB  (new PostgreSQLDatabase ("postgres_db",     postgres, schema) { TableType = TableType.JsonColumn });
+            hub.AddExtensionDB  (new PostgreSQLDatabase ("postgres_db",     postgres,   schema) { TableType = TableType.JsonColumn });
             
             var postgresRel     = EnvConfig.GetConnectionString("postgres_rel");
-            hub.AddExtensionDB  (new PostgreSQLDatabase ("postgres_rel",    postgresRel, schema));
+            hub.AddExtensionDB  (new PostgreSQLDatabase ("postgres_rel",    postgresRel,schema));
             
             var sqlServer       = EnvConfig.GetConnectionString("sqlserver");
-            hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_db",    sqlServer,schema) { TableType = TableType.JsonColumn });
+            hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_db",    sqlServer,  schema) { TableType = TableType.JsonColumn });
 
             var sqlServerRel    = EnvConfig.GetConnectionString("sqlserver_rel");
             hub.AddExtensionDB  (new SQLServerDatabase  ("sqlserver_rel",   sqlServerRel,schema));
 
             if (UseRedis) {
                 var redis           = EnvConfig.GetConnectionString("redis");
-                hub.AddExtensionDB  (new RedisHashDatabase  ("redis_db",        redis,    schema));
+                hub.AddExtensionDB  (new RedisHashDatabase  ("redis_db",    redis,      schema));
             }
 #endif
         }
