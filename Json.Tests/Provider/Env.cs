@@ -96,7 +96,7 @@ namespace Friflo.Json.Tests.Provider
         }
 
 #if UNITY_5_3_OR_NEWER
-        private static EntityDatabase CreateDatabase(string db, DatabaseSchema schema) => null;
+        internal static EntityDatabase CreateDatabase(string db, DatabaseSchema schema) => null;
 #else
         internal static EntityDatabase CreateDatabase(string db, DatabaseSchema schema)
         {
