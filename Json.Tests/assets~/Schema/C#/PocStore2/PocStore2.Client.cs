@@ -11,19 +11,21 @@ namespace PocStore2.Client {
 
 public abstract class PocStore {
     [Required]
-    Dictionary<string, Order>     orders;
+    Dictionary<string, Order>        orders;
     [Required]
-    Dictionary<string, Customer>  customers;
+    Dictionary<string, Customer>     customers;
     [Required]
-    Dictionary<string, Article>   articles;
+    Dictionary<string, Article>      articles;
     [Required]
-    Dictionary<string, Article>   articles2;
+    Dictionary<string, Article>      articles2;
     [Required]
-    Dictionary<string, Producer>  producers;
+    Dictionary<string, Producer>     producers;
     [Required]
-    Dictionary<string, Employee>  employees;
+    Dictionary<string, Employee>     employees;
     [Required]
-    Dictionary<string, TestType>  types;
+    Dictionary<string, TestType>     types;
+    [Required]
+    Dictionary<string, TestKeyName>  keyName;
 }
 
 public class Order {
@@ -96,6 +98,13 @@ public class TestType : PocEntity {
     DerivedClass  derivedClassNull;
     TestEnum      testEnum;
     TestEnum?     testEnumNull;
+}
+
+public class TestKeyName {
+    [Key]
+    [Required]
+    string  testId;
+    string  value;
 }
 
 public class OrderItem {

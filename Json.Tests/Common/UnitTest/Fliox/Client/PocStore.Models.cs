@@ -147,6 +147,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public  int                     derivedVal;
     }
     
+    public class TestKeyName {
+        [Key]       public  string          testId;
+                    public  string          value;
+    }
     
     // ---------------------------- command models - aka DTO's ---------------------------
     public class TestCommand {

@@ -37,6 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public readonly EntitySet <string, Producer>    producers;
         public readonly EntitySet <string, Employee>    employees;
         public readonly EntitySet <string, TestType>    types;
+        public readonly EntitySet <string, TestKeyName> keyName;
         
         
         public PocStore(FlioxHub hub, string dbName = null): base (hub, dbName) {

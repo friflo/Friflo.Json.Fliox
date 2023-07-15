@@ -53,6 +53,7 @@ export interface PocStore {
     producers  : { [key: string]: Producer };
     employees  : { [key: string]: Employee };
     types      : { [key: string]: TestType };
+    keyName    : { [key: string]: TestKeyName };
 
     // --- commands
     ["TestCommand"]                        (param: TestCommand | null) : boolean;
@@ -162,6 +163,11 @@ export class Producer {
     id         : string;
     name       : string;
     employees? : string[] | null;
+}
+
+export class TestKeyName {
+    testId  : string;
+    value?  : string | null;
 }
 
 export class TestType extends PocEntity {

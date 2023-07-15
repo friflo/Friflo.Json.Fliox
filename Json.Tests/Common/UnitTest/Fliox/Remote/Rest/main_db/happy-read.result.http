@@ -36,7 +36,8 @@ GET {{base}}/rest
                 "articles2",
                 "producers",
                 "employees",
-                "types"
+                "types",
+                "keyName"
             ],
             "defaultDB": true
         },
@@ -94,7 +95,8 @@ GET {{base}}/rest/main_db
         "articles2",
         "producers",
         "employees",
-        "types"
+        "types",
+        "keyName"
     ],
     "defaultDB": true
 }

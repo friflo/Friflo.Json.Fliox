@@ -23,6 +23,7 @@ type Query {
     queryProducers                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryProducersResult!
     queryEmployees                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryEmployeesResult!
     queryTypes                    (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryTypesResult!
+    queryKeyName                  (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryKeyNameResult!
     readOrders                    (ids: [String!]!, selectAll: Boolean) : [Order]!
     readCustomers                 (ids: [String!]!, selectAll: Boolean) : [Customer]!
     readArticles                  (ids: [String!]!, selectAll: Boolean) : [Article]!
@@ -30,6 +31,7 @@ type Query {
     readProducers                 (ids: [String!]!, selectAll: Boolean) : [Producer]!
     readEmployees                 (ids: [String!]!, selectAll: Boolean) : [Employee]!
     readTypes                     (ids: [String!]!, selectAll: Boolean) : [TestType]!
+    readKeyName                   (ids: [String!]!, selectAll: Boolean) : [TestKeyName]!
     countOrders                   (filter: String) : Int
     countCustomers                (filter: String) : Int
     countArticles                 (filter: String) : Int
@@ -37,6 +39,7 @@ type Query {
     countProducers                (filter: String) : Int
     countEmployees                (filter: String) : Int
     countTypes                    (filter: String) : Int
+    countKeyName                  (filter: String) : Int
     TestCommand                   (param: TestCommandInput) : Boolean!
     MultiRequests                 (param: Int) : Int!
     SyncCommand                   (param: String) : String!
@@ -112,6 +115,12 @@ type QueryTypesResult {
     items  : [TestType!]!
 }
 
+type QueryKeyNameResult {
+    count  : Int!
+    cursor : String
+    items  : [TestKeyName!]!
+}
+
 type EntityError {
     id      : String!
     type    : String!
@@ -126,6 +135,7 @@ type Mutation {
     createProducers(entities: [ProducerInput!]!) : [EntityError!]
     createEmployees(entities: [EmployeeInput!]!) : [EntityError!]
     createTypes    (entities: [TestTypeInput!]!) : [EntityError!]
+    createKeyName  (entities: [TestKeyNameInput!]!) : [EntityError!]
     upsertOrders   (entities: [OrderInput!]!) : [EntityError!]
     upsertCustomers(entities: [CustomerInput!]!) : [EntityError!]
     upsertArticles (entities: [ArticleInput!]!) : [EntityError!]
@@ -133,6 +143,7 @@ type Mutation {
     upsertProducers(entities: [ProducerInput!]!) : [EntityError!]
     upsertEmployees(entities: [EmployeeInput!]!) : [EntityError!]
     upsertTypes    (entities: [TestTypeInput!]!) : [EntityError!]
+    upsertKeyName  (entities: [TestKeyNameInput!]!) : [EntityError!]
     deleteOrders   (ids: [String!]!) : [EntityError!]
     deleteCustomers(ids: [String!]!) : [EntityError!]
     deleteArticles (ids: [String!]!) : [EntityError!]
@@ -140,6 +151,7 @@ type Mutation {
     deleteProducers(ids: [String!]!) : [EntityError!]
     deleteEmployees(ids: [String!]!) : [EntityError!]
     deleteTypes    (ids: [String!]!) : [EntityError!]
+    deleteKeyName  (ids: [String!]!) : [EntityError!]
 }
 
 type PocStore {
@@ -150,6 +162,7 @@ type PocStore {
     producers : Any
     employees : Any
     types     : Any
+    keyName   : Any
 }
 
 type Order {
@@ -274,6 +287,16 @@ input TestTypeInput {
     derivedClassNull : DerivedClassInput
     testEnum         : TestEnum!
     testEnumNull     : TestEnum
+}
+
+type TestKeyName {
+    testId : String!
+    value  : String
+}
+
+input TestKeyNameInput {
+    testId : String!
+    value  : String
 }
 
 type OrderItem {

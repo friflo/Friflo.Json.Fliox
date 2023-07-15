@@ -43,3 +43,10 @@ POST {{base}}/rest/main_db/articles/bulk-delete
 
 deleted successful
 
+###
+PUT {{base}}/rest/main_db/keyName/key-1
+# StatusCode:   200
+# Content-Type: text/plain
+
+PUT successful
+

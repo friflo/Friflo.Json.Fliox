@@ -109,7 +109,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test, Order(2)]
         public static void JSON_JSON () {
             var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
-            var schema      = new JsonTypeSchema(schemas);
+            var schema      = new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore");
             var jsonTypes   = SchemaTest.TypesAsJsonTypes (PocStoreTypes, "UnitTest.Fliox.Client.");
             var typeDefs    = schema.TypesAsTypeDefs(jsonTypes);
             var options     = new JsonTypeOptions(schema) { separateTypes = typeDefs };

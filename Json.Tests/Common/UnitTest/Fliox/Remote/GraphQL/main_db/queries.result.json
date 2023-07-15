@@ -78,7 +78,8 @@
         "articles2",
         "producers",
         "employees",
-        "types"
+        "types",
+        "keyName"
     ]
 },
         "std_Stats": {
@@ -110,6 +111,10 @@
         {
             "name": "types",
             "count": 1
+        },
+        {
+            "name": "keyName",
+            "count": 0
         }
     ]
 },

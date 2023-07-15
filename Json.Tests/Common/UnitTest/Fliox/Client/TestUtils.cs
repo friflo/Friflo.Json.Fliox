@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff        = Mem.GetAllocationDiff(start);
             var platform    = Environment.OSVersion.Platform;
             var isWindows   = platform == PlatformID.Win32NT; 
-            var expected    = isWindows ? 800 : 800;  // Test Windows & Linux
+            var expected    = isWindows ? 824 : 824;  // Test Windows & Linux
             Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
             Mem.AreEqual(expected, diff);
         }

@@ -9,7 +9,8 @@
                 "articles2": { "values": { "ref":  "Article" } },
                 "producers": { "values": { "ref":  "Producer" } },
                 "employees": { "values": { "ref":  "Employee" } },
-                "types":     { "values": { "ref":  "TestType" } }
+                "types":     { "values": { "ref":  "TestType" } },
+                "keyName":   { "values": { "ref":  "TestKeyName" } }
             }
         },
         "Order": {
@@ -78,6 +79,12 @@
                 "derivedClassNull": { "ref":  "DerivedClass", "nullable": true },
                 "testEnum":         { "ref":  "TestEnum" },
                 "testEnumNull":     { "ref":  "TestEnum", "nullable": true }
+            }
+        },
+        "TestKeyName": {
+            "properties": {
+                "testId": { "type": "string" },
+                "value":  { "type": "string", "nullable": true }
             }
         },
         "OrderItem": {

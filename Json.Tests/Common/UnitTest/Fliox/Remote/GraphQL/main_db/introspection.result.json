@@ -362,6 +362,53 @@
                     }
                 },
                 {
+                    "name": "queryKeyName",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "limit",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "maxCount",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "cursor",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "QueryKeyNameResult"
+                        }
+                    }
+                },
+                {
                     "name": "readOrders",
                     "args": [
                         {
@@ -628,6 +675,44 @@
                     }
                 },
                 {
+                    "name": "readKeyName",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "TestKeyName"
+                            }
+                        }
+                    }
+                },
+                {
                     "name": "countOrders",
                     "args": [
                         {
@@ -725,6 +810,22 @@
                 },
                 {
                     "name": "countTypes",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "countKeyName",
                     "args": [
                         {
                             "name": "filter",
@@ -1638,6 +1739,53 @@
         },
         {
             "kind":"OBJECT",
+            "name": "QueryKeyNameResult",
+            "fields": [
+                {
+                    "name": "count",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "cursor",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "items",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "TestKeyName"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
             "name": "EntityError",
             "fields": [
                 {
@@ -1902,6 +2050,37 @@
                     }
                 },
                 {
+                    "name": "createKeyName",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "TestKeyNameInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
                     "name": "upsertOrders",
                     "args": [
                         {
@@ -2101,6 +2280,37 @@
                                         "ofType": {
                                             "kind":"SCALAR",
                                             "name": "TestTypeInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "upsertKeyName",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "TestKeyNameInput"
                                         }
                                     }
                                 }
@@ -2334,6 +2544,37 @@
                             }
                         }
                     }
+                },
+                {
+                    "name": "deleteKeyName",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
                 }
             ],
             "interfaces": [
@@ -2406,6 +2647,16 @@
                 },
                 {
                     "name": "types",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                },
+                {
+                    "name": "keyName",
                     "description": "",
                     "args": [
                     ],
@@ -3588,6 +3839,68 @@
                     "type": {
                         "kind":"SCALAR",
                         "name": "TestEnum"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "TestKeyName",
+            "description": "",
+            "fields": [
+                {
+                    "name": "testId",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "value",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "TestKeyNameInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "testId",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "value",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
                     }
                 }
             ]

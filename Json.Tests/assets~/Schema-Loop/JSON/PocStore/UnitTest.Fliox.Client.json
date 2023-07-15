@@ -13,7 +13,8 @@
                 "articles2": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Article.json#/definitions/Article" }, "type": "object", "description": "ensure multiple containers can use same entity Type" },
                 "producers": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Producer.json#/definitions/Producer" }, "type": "object" },
                 "employees": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Employee.json#/definitions/Employee" }, "type": "object" },
-                "types":     { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }, "type": "object" }
+                "types":     { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }, "type": "object" },
+                "keyName":   { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.TestKeyName.json#/definitions/TestKeyName" }, "type": "object" }
             },
             "required": [
                 "orders",
@@ -22,7 +23,8 @@
                 "articles2",
                 "producers",
                 "employees",
-                "types"
+                "types",
+                "keyName"
             ],
             "additionalProperties": false,
             "commands": {

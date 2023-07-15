@@ -30,7 +30,8 @@ GET {{base}}/rest/main_db?cmd=std.Containers
         "articles2",
         "producers",
         "employees",
-        "types"
+        "types",
+        "keyName"
     ],
     "defaultDB": true
 }

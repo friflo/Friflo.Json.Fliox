@@ -16,6 +16,7 @@ abstract class PocStore {
     abstract  val producers : HashMap<String, Producer>
     abstract  val employees : HashMap<String, Employee>
     abstract  val types     : HashMap<String, TestType>
+    abstract  val keyName   : HashMap<String, TestKeyName>
 }
 
 @Serializable
@@ -87,6 +88,12 @@ data class TestType (
               val testEnum         : TestEnum,
               val testEnumNull     : TestEnum? = null,
 ) : PocEntity()
+
+@Serializable
+data class TestKeyName (
+              val testId : String,
+              val value  : String? = null,
+)
 
 @Serializable
 data class OrderItem (

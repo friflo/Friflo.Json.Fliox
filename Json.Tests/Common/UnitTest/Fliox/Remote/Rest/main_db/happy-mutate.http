@@ -49,3 +49,12 @@ POST {{base}}/rest/main_db/articles/bulk-delete
 Cookie: {{auth}}
 
 ["article-2"]
+
+###
+PUT {{base}}/rest/main_db/keyName/key-1
+Cookie: {{auth}}
+
+{
+    "testId": "key-1",
+    "value": "Test key name != 'id'"
+}
