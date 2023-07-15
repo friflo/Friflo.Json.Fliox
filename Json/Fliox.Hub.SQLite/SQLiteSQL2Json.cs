@@ -13,13 +13,13 @@ using SQLitePCL;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
 {
-    public class SQLiteSQL2Json : ISQL2JsonMapper
+    internal sealed class SQLiteSQL2Json : ISQL2JsonMapper
     {
         private readonly    sqlite3_stmt        stmt;
         private readonly    SQL2Json            sql2Json;
         private readonly    TableInfo           tableInfo;
         
-        public SQLiteSQL2Json(SQL2Json sql2Json, sqlite3_stmt stmt, TableInfo tableInfo) {
+        internal SQLiteSQL2Json(SQL2Json sql2Json, sqlite3_stmt stmt, TableInfo tableInfo) {
             this.sql2Json   = sql2Json;
             this.stmt       = stmt;
             this.tableInfo  = tableInfo;
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
         }
         
-        public void ReadEntities(List<JsonKey> keys, MemoryBuffer buffer)
+        internal void ReadEntities(List<JsonKey> keys, MemoryBuffer buffer)
         {
             sql2Json.InitMapper(this, tableInfo, buffer);
             var columns = tableInfo.columns;

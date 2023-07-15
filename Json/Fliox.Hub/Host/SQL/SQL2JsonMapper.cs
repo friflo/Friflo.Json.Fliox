@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         void WriteColumn(SQL2Json sql2Json, ColumnInfo column);
     }
     
-    public class SQL2JsonMapper : ISQL2JsonMapper
+    public sealed class SQL2JsonMapper : ISQL2JsonMapper
     {
         private readonly    DbDataReader    reader;
         
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return sql2Json.result;
         }
 
-        public void ReadCell(SQL2Json sql2Json, ColumnInfo column, ref ReadCell cell) {
+        private void ReadCell(SQL2Json sql2Json, ColumnInfo column, ref ReadCell cell) {
             var ordinal = column.ordinal;
             cell.isNull = reader.IsDBNull(ordinal);
             if (cell.isNull) {

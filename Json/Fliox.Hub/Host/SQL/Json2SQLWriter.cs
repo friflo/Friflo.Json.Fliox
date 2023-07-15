@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         void AddRowValues(int columnCount);
     }
     
-    public class Json2SQLWriter : IJson2SQLWriter
+    public sealed class Json2SQLWriter : IJson2SQLWriter
     {
         private readonly    StringBuilder   sb;
         private readonly    bool            hasBool;

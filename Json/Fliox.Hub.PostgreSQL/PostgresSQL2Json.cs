@@ -11,15 +11,15 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
-    public class PostgresSQL2Json : ISQL2JsonMapper
+    internal sealed class PostgresSQL2Json : ISQL2JsonMapper
     {
         private readonly    DbDataReader    reader;
         
-        public PostgresSQL2Json(DbDataReader reader) {
+        internal PostgresSQL2Json(DbDataReader reader) {
             this.reader = reader;
         }
         
-        public async Task<List<EntityValue>> ReadEntitiesAsync(SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer)
+        internal async Task<List<EntityValue>> ReadEntitiesAsync(SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer)
         {
             sql2Json.InitMapper(this, tableInfo, buffer);
             while (await reader.ReadAsync().ConfigureAwait(false))
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             return sql2Json.result;
         }
     
-        public void ReadCell(SQL2Json sql2Json, ColumnInfo column, ref ReadCell cell) {
+        private void ReadCell(SQL2Json sql2Json, ColumnInfo column, ref ReadCell cell) {
             var ordinal = column.ordinal;
             cell.isNull = reader.IsDBNull(ordinal);
             if (cell.isNull) {
