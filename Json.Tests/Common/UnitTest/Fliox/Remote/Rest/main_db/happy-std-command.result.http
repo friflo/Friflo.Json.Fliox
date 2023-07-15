@@ -132,8 +132,8 @@ GET {{base}}/rest/main_db?cmd=std.User
         },
         {
             "db": "main_db",
-            "requests": 38,
-            "tasks": 54
+            "requests": 40,
+            "tasks": 56
         },
         {
             "db": "user_db",

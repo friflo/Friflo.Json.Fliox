@@ -136,7 +136,14 @@ Cookie: {{auth}}
     "id": "u-3"
 }
 
+###
+GET {{base}}/rest/main_db/unknown_4
+Cookie: {{auth}}
 
+
+###
+DELETE {{base}}/rest/main_db/unknown_5/u-5
+Cookie: {{auth}}
 
 
 

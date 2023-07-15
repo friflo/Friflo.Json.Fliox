@@ -103,3 +103,35 @@ POST {{base}}/
   "user":  "admin",
   "token": "admin"
 }
+
+###
+POST {{base}}/
+
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":  "aggregate",
+      "cont":  "unknown-aggregate",
+      "type": "count"
+    }
+  ],
+  "user":  "admin",
+  "token": "admin"
+}
+
+###
+POST {{base}}/
+
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":  "create",
+      "cont":  "unknown-create",
+      "set": [{}]
+    }
+  ],
+  "user":  "admin",
+  "token": "admin"
+}

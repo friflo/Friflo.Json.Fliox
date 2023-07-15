@@ -118,3 +118,35 @@ POST {{base}}/
     "type": "BadRequest"
 }
 
+###
+POST {{base}}/
+# StatusCode:   200
+# Content-Type: application/json
+
+{
+    "msg":"resp",
+    "tasks": [
+        {
+            "task":"error",
+            "type": "InvalidTask",
+            "message": "container not found"
+        }
+    ]
+}
+
+###
+POST {{base}}/
+# StatusCode:   200
+# Content-Type: application/json
+
+{
+    "msg":"resp",
+    "tasks": [
+        {
+            "task":"error",
+            "type": "InvalidTask",
+            "message": "container not found"
+        }
+    ]
+}
+

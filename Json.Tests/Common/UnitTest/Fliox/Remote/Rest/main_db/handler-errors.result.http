@@ -171,3 +171,17 @@ PATCH {{base}}/rest/main_db/unknown_3/u-3
 
 InvalidTask > container not found
 
+###
+GET {{base}}/rest/main_db/unknown_4
+# StatusCode:   400
+# Content-Type: text/plain
+
+InvalidTask > container not found
+
+###
+DELETE {{base}}/rest/main_db/unknown_5/u-5
+# StatusCode:   400
+# Content-Type: text/plain
+
+InvalidTask > container not found
+
