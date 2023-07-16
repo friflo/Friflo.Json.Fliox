@@ -54,14 +54,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         internal static HashSet<string> GetColumnNames(SyncConnection connection, string table) {
             var sql = $"SELECT * FROM {table} LIMIT 0";
-            Prepare(connection, sql, out var stmt, out var error);
-            var count   = raw.sqlite3_column_count(stmt);
+            using var stmt = Prepare(connection, sql, out var error);
+            var count   = raw.sqlite3_column_count(stmt.instance);
             var result = Helper.CreateHashSet<string>(count);
             for (int n = 0; n < count; n++) {
-                var name = raw.sqlite3_column_name(stmt, n).utf8_to_string();
+                var name = raw.sqlite3_column_name(stmt.instance, n).utf8_to_string();
                 result.Add(name); 
             }
-            raw.sqlite3_finalize(stmt);
+            raw.sqlite3_finalize(stmt.instance);
             return result;
         }
         
@@ -223,12 +223,15 @@ GENERATED ALWAYS AS ({asStr});";
             return Success(out error);
         }
         
-        internal static bool Prepare(SyncConnection connection, string sql, out sqlite3_stmt stmt, out TaskExecuteError error) {
-            var rc  = raw.sqlite3_prepare_v3(connection.sqliteDB, sql, 0, out stmt);
+        internal static StmtScope Prepare(SyncConnection connection, string sql, out TaskExecuteError error) {
+            var rc  = raw.sqlite3_prepare_v3(connection.sqliteDB, sql, 0, out var stmt);
             if (rc == raw.SQLITE_OK) {
-                return Success(out error);
+                error = null;
+                return new StmtScope(stmt);
             }
-            return Error($"prepare failed. sql: {sql}, error: {rc}", out error);
+            var msg = $"prepare failed. sql: {sql}, error: {rc}";
+            error = new TaskExecuteError(TaskErrorType.DatabaseError, msg);
+            return default;
         }
         
         internal static bool Exec(SyncConnection connection, string sql, out TaskExecuteError error) {
@@ -237,6 +240,19 @@ GENERATED ALWAYS AS ({asStr});";
                 return Success(out error);
             }
             return Error($"exec failed. sql: {sql}, error: {errMsg}", out error);
+        }
+    }
+    
+    internal readonly struct StmtScope : IDisposable
+    {
+        internal readonly sqlite3_stmt instance;
+        
+        internal StmtScope(sqlite3_stmt instance) {
+            this.instance = instance;
+        }
+
+        public void Dispose() {
+            raw.sqlite3_finalize(instance);
         }
     }
 }
