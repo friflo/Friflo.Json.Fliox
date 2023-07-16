@@ -87,6 +87,16 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             await command.ExecuteReaderAsync().ConfigureAwait(false);
         }
         
+        public override async Task DropContainerAsync(string name) {
+            var syncConnection = await GetConnectionAsync().ConfigureAwait(false);
+            if (syncConnection is not SyncConnection connection) {
+                throw new InvalidOperationException(syncConnection.Error.message); 
+            }
+            var sql = $"DROP TABLE IF EXISTS \"{name}\";";
+            await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+            ReturnConnection(syncConnection);
+        }
+        
         public async Task CreateFunctions(ISyncConnection connection) {
             await CreateText2Ts(connection).ConfigureAwait(false);
         }

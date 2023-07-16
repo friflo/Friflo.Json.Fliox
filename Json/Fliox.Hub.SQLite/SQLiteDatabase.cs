@@ -119,6 +119,20 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
         }
         
+        public override Task DropContainerAsync(string name) {
+            var syncConnection = GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                throw new InvalidOperationException(syncConnection.Error.message); 
+            }
+            var sql = $"DROP TABLE IF EXISTS `{name}`;";
+            var result = SQLiteUtils.Execute(connection, sql);
+            if (result.error != null) {
+                throw new InvalidOperationException(result.error);
+            }
+            ReturnConnection(syncConnection);
+            return Task.CompletedTask;
+        }
+        
         public Task CreateFunctions(ISyncConnection connection) => Task.CompletedTask;
     }
 

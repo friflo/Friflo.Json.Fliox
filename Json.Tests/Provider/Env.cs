@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Provider
         internal static bool    IsSQLServer (string db) => IsProvider("sqlserver", "sqlserver_rel") && db == test_db;
         internal static bool    IsPostgres  (string db) => IsProvider("postgres",  "postgres_rel")  && db == test_db;
         internal static bool    IsSQLite    (string db) =>(IsProvider("sqlite",    "sqlite_rel")    && db == test_db) || db == sqlite_db;
-        private  static bool    IsFileSystem            => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
+        internal static bool    IsFileSystem            => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
         
         private  static readonly    string  SQLite      = $"Data Source={CommonUtils.GetBasePath() + "test_db.sqlite3"}";
         private  static readonly    string  SQLiteRel   = $"Data Source={CommonUtils.GetBasePath() + "test_rel.sqlite3"}";

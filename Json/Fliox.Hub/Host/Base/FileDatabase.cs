@@ -56,6 +56,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return Task.FromResult(result);
         }
+        
+        public override Task DropContainerAsync(string name) {
+            var dir = new DirectoryInfo(databaseFolder + name);
+            dir.Delete(true);
+            return Task.CompletedTask;
+        }
     }
     
 

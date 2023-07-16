@@ -6,6 +6,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Provider.Env;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Tests.Provider.AddSetup
 {
     /// <summary>
@@ -15,26 +16,27 @@ namespace Friflo.Json.Tests.Provider.AddSetup
     /// - add virtual columns for <see cref="TableType.JsonColumn"/> database<br/>
     /// - create missing tables<br/>
     /// </summary>
-    // ReSharper disable once InconsistentNaming
+    // [Ignore("to save a second for each database test")]
     public static class Test_AddSetup
     {
         private static readonly DatabaseSchema SetupSchema  = DatabaseSchema.Create<TestClientSetup>();
 
-        // [Ignore("to save a second for each database test")]
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task Test_SetupDatabase(string db) {
+        public static async Task Test_1_SetupDatabase(string db) {
             
-            var database    = CreateDatabase(db, SetupSchema);
+            var database = CreateDatabase(db, SetupSchema);
             try {
                 await database.DropDatabaseAsync();
             }
             // ReSharper disable once EmptyGeneralCatchClause
-            catch (Exception) { } // database already does not exist
+            catch (Exception) {
+                // database already does not exist   
+            }
             database = CreateDatabase(db, SetupSchema);
-            await database.SetupDatabaseAsync();
+            await database.SetupDatabaseAsync();    // create database with only one table and fewer columns 
             
             database = CreateDatabase(db, Schema);
-            await database.SetupDatabaseAsync();
+            await database.SetupDatabaseAsync();    // create missing tables and add missing columns 
 
             var hub = new FlioxHub(database);
             var client = new TestClientSetup(hub);
@@ -43,5 +45,23 @@ namespace Friflo.Json.Tests.Provider.AddSetup
             
             IsNull(find.Result);
         }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task Test_2_DropContainers(string db) {
+            if (IsFileSystem) return;
+            var database = CreateDatabase(db, Schema);
+            
+            await database.DropContainersAsync();
+            
+            await database.SetupDatabaseAsync(); // will create tables
+            
+            var hub = new FlioxHub(database);
+            var client = new TestClientSetup(hub);
+            var find    = client.testReadTypes.Read().Find("missing");
+            await client.SyncTasks();
+            
+            IsNull(find.Result);
+        }
+
     }
 }

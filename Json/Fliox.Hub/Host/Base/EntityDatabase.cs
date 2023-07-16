@@ -131,6 +131,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
+        protected void ClearContainers() {
+            containers.Clear();
+        }
+        
         /// <summary>
         /// Create a ready-to-use database or modify the schema of an existing database.<br/>
         /// <br/>
@@ -173,6 +177,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             return this;
         }
         
+        public async Task DropContainersAsync() {
+            var schema          = Schema;
+            var containerNames  = schema != null ? schema.GetContainers() : await GetContainers().ConfigureAwait(false);
+            foreach (var containerName in containerNames) {
+                await DropContainerAsync(containerName).ConfigureAwait(false);
+            }
+        }
+        
         private async Task SetupInternal(Setup options, ISyncConnection connection)
         {
             if (this is ISQLDatabase sqlDatabase) {
@@ -213,8 +225,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        protected   virtual Task    CreateDatabaseAsync()   => Task.CompletedTask;
-        public      virtual Task    DropDatabaseAsync()     => throw new NotSupportedException($"DropDatabaseAsync() not supported");
+        protected   virtual Task    CreateDatabaseAsync()           => Task.CompletedTask;
+        public      virtual Task    DropDatabaseAsync()             => throw new NotSupportedException($"DropDatabaseAsync() not supported");
+        public      virtual Task    DropContainerAsync(string name) => throw new NotSupportedException($"DropContainerAsync() not supported");
         
         public EntityDatabase AddCommands(IServiceCommands commands) {
             if (!service.AddAttributedHandlers(commands, out var error)) {
