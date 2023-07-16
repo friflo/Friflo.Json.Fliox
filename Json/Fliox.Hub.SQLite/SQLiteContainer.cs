@@ -218,25 +218,31 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             } else {
                 sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in (?)");    
             }
-            if (!SQLiteUtils.Prepare(connection, sql.ToString(), out var stmt, out var error)) {
-                return new ReadEntitiesResult { Error = error };
-            }
-            List<EntityValue> values;
-            var buffer = syncContext.MemoryBuffer;
-            if (tableType == TableType.Relational) {
-                using var pooled = syncContext.SQL2Json.Get();
-                var mapper  = new SQLiteSQL2Json(pooled.instance, stmt, tableInfo);
-                if (!mapper.ReadEntities(command.ids, buffer, out error)) {
+            sqlite3_stmt stmt = null;
+            try {
+                if (!SQLiteUtils.Prepare(connection, sql.ToString(), out stmt, out var error)) {
                     return new ReadEntitiesResult { Error = error };
                 }
-                values = pooled.instance.result;
-            } else {
-                values = new List<EntityValue>(); // TODO - OPTIMIZE
-                if (!SQLiteUtils.ReadById(stmt, command.ids, values, buffer, out error)) {
-                    return new ReadEntitiesResult { Error = error };
+                List<EntityValue> values;
+                var buffer = syncContext.MemoryBuffer;
+                if (tableType == TableType.Relational) {
+                    using var pooled = syncContext.SQL2Json.Get();
+                    var mapper  = new SQLiteSQL2Json(pooled.instance, stmt, tableInfo);
+                    if (!mapper.ReadEntities(command.ids, buffer, out error)) {
+                        return new ReadEntitiesResult { Error = error };
+                    }
+                    values = pooled.instance.result;
+                } else {
+                    values = new List<EntityValue>(); // TODO - OPTIMIZE
+                    if (!SQLiteUtils.ReadById(stmt, command.ids, values, buffer, out error)) {
+                        return new ReadEntitiesResult { Error = error };
+                    }
                 }
+                return new ReadEntitiesResult { entities = values.ToArray() };
             }
-            return new ReadEntitiesResult { entities = values.ToArray() };
+            finally {
+                raw.sqlite3_finalize(stmt);
+            }
         }
         
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {

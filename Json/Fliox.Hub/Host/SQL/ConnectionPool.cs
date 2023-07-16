@@ -69,6 +69,18 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 connectionPool.Enqueue(connection);    
             }
         }
+        
+        public void ClearAll() {
+            Connection<T>[] connections;
+            lock (connectionPool) {
+                connections = connectionPool.ToArray();
+                connectionPool.Clear();
+                closeTimer.Stop();
+            }
+            foreach (var connection in connections) {
+                connection.instance.Dispose();
+            }
+        }
     }
     
     internal readonly struct Connection<T> where T : ISyncConnection

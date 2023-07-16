@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Provider.Env;
 
@@ -25,7 +26,7 @@ namespace Friflo.Json.Tests.Provider.AddSetup
         public static async Task Test_1_DropContainers(string db)
         {
             if (IsFileSystem) return; // don't delete test data
-            var database = CreateDatabase(db, SetupSchema);
+            using var database = CreateDatabase(db, SetupSchema);
             await database.SetupDatabaseAsync();        // will create missing tables
             await database.DropAllContainersAsync();    // drop all tables
             await database.SetupDatabaseAsync();        // will create all tables
@@ -43,13 +44,22 @@ namespace Friflo.Json.Tests.Provider.AddSetup
         {
             if (IsFileSystem) return; // don't delete test data
             var database = CreateDatabase(db, Schema);
-            try {
-                await database.DropDatabaseAsync();
+            await database.DropDatabaseAsync();
+
+            // Check error message of a dropped database
+            var hub = new FlioxHub(database);
+            var client = new TestClientSetup(hub);
+            var read = client.testReadTypes.Read().Find("missing");
+            await client.TrySyncTasks();
+            
+            var kvStorage = IsFileSystem || IsMemoryDB(db);
+            if (!kvStorage) {
+                IsFalse(read.Success);
+                var error = read.Error.Message.Split('\n');
+                That(error[0], Does.StartWith("DatabaseError ~ database does not exist:"));
+                AreEqual("To create one call: database.SetupDatabaseAsync()", error[1]);
             }
-            // ReSharper disable once EmptyGeneralCatchClause
-            catch (Exception) {
-                // database already does not exist   
-            }
+            
             database = CreateDatabase(db, SetupSchema);
             await database.SetupDatabaseAsync();    // 1. create database with only one table and fewer columns 
             
@@ -60,8 +70,8 @@ namespace Friflo.Json.Tests.Provider.AddSetup
             //
             // Reason: This ensures all INSERT, CREATE and SELECT statements set the column names instead of using *.   
 
-            var hub = new FlioxHub(database);
-            var client = new TestClientSetup(hub);
+            hub = new FlioxHub(database);
+            client = new TestClientSetup(hub);
             var find    = client.testReadTypes.Read().Find("missing");
             await client.SyncTasks();
             

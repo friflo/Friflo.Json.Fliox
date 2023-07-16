@@ -30,6 +30,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             connectionPool          = new ConnectionPool<SyncConnection>();
         }
         
+        public override void Dispose() {
+            base.Dispose();
+            connectionPool.ClearAll();
+        }
+        
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new PostgreSQLContainer(name.AsString(), this);
         }
@@ -89,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             builder.Remove("Database");
             using var connection = new NpgsqlConnection(builder.ConnectionString);
             await connection.OpenAsync().ConfigureAwait(false);
-            var sql = $"drop database {db};";
+            var sql = $"drop database {db};"; // WITH (FORCE);";
             using var command = new NpgsqlCommand(sql, connection);
             await command.ExecuteReaderAsync().ConfigureAwait(false);
         }

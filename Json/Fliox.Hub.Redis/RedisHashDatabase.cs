@@ -30,6 +30,11 @@ namespace Friflo.Json.Fliox.Hub.Redis
             connectionPool          = new ConnectionPool<SyncConnection>();
         }
         
+        public override void Dispose() {
+            base.Dispose();
+            connectionPool.ClearAll();
+        }
+        
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new RedisHashContainer(name.AsString(), this, Pretty);
         }

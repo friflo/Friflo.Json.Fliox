@@ -4,6 +4,7 @@
 #if !UNITY_5_3_OR_NEWER || SQLITE
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -49,7 +50,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             connectionPool  = new ConnectionPool<SyncConnection>();
             filePath        = builder.DataSource;
         }
-        
+
+        public override void Dispose() {
+            base.Dispose();
+            connectionPool.ClearAll();
+        }
+
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new SQLiteContainer(name.AsString(), this, Pretty);
         }
@@ -128,11 +134,13 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (!SQLiteUtils.Exec(connection, "PRAGMA journal_mode = WAL;", out var error)) {
                 throw new InvalidOperationException($"PRAGMA journal_mode = WAL failed. error: {error}");
             }
+            connection.Dispose();
             return Task.CompletedTask;
         }
         
-        public override async Task DropDatabaseAsync() {
-            await DropAllContainersAsync().ConfigureAwait(false);
+        public override Task DropDatabaseAsync() {
+            File.Delete(filePath);
+            return Task.CompletedTask;
         }
 
         protected override Task DropContainerAsync(ISyncConnection syncConnection, string name) {
