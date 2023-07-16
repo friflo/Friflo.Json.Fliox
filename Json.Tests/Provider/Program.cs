@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Provider
         
         private static async Task<HttpHost> CreateHttpHost() {
             var env         = new SharedEnv();
-            string cache    = null;
+            string cache    = "max-age=600";
 
             var fileDb      = new FileDatabase("file_db", Env.TestDbFolder, Schema);
             var memoryDb    = new MemoryDatabase("memory_db", Schema);

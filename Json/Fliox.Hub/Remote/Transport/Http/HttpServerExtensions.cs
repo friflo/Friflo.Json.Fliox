@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO.Compression;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
@@ -61,34 +62,62 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <summary>
         /// Write the result of <see cref="ExecuteFlioxRequest"/> to the given <paramref name="context"/>
         /// </summary>
-        public static async Task WriteFlioxResponse(this HttpListenerContext context, RequestContext requestContext) {
-            if (requestContext == null)
+        public static async Task WriteFlioxResponse(this HttpListenerContext context, RequestContext cx) {
+            if (cx == null)
                 return; // request was WebSocket
             HttpListenerResponse resp = context.Response;
-            if (!requestContext.Handled) {
+            if (!cx.Handled) {
                 var body = $"{context.Request.Url} not found";
                 await resp.WriteResponseString("text/plain", 404, body, null).ConfigureAwait(false);
                 return;
             }
-            var responseBody = requestContext.Response;
-            SetResponseHeader(resp, requestContext.ResponseContentType, requestContext.StatusCode, responseBody.Count, requestContext.ResponseHeaders);
-            await resp.OutputStream.WriteAsync(responseBody).ConfigureAwait(false);
+            var respBody = cx.Response;
+            if (respBody.Count < 4094 || cx.ResponseGzip) {
+                SetResponseHeader(resp, cx.ResponseContentType, cx.StatusCode, respBody.Count, cx.ResponseHeaders, cx.ResponseGzip);
+                await resp.OutputStream.WriteAsync(respBody).ConfigureAwait(false);
+            } else {
+                SetResponseHeaderGZip(resp, cx.ResponseContentType, cx.StatusCode, cx.ResponseHeaders);
+                await using GZipStream zipStream = new GZipStream(resp.OutputStream, CompressionMode.Compress, false);
+                await zipStream.WriteAsync(respBody.AsReadOnlyMemory());
+            }
             resp.Close();
         }
         
         public static async Task WriteResponseString (this HttpListenerResponse response, string contentType, int statusCode, string value, Dictionary<string, string> headers) {
             byte[]  resultBytes = Encoding.UTF8.GetBytes(value);
             
-            SetResponseHeader(response, contentType, statusCode, resultBytes.Length, headers);
+            SetResponseHeader(response, contentType, statusCode, resultBytes.Length, headers, false);
             await response.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
         }
         
-        private static void SetResponseHeader (HttpListenerResponse response, string contentType, int statusCode, int len, Dictionary<string, string> headers) {
+        private static void SetResponseHeader (
+            HttpListenerResponse        response,
+            string                      contentType,
+            int                         statusCode,
+            int                         len,
+            Dictionary<string, string>  headers,
+            bool                        gzip)
+        {
             response.ContentType        = contentType;
             response.ContentEncoding    = Encoding.UTF8;
             response.ContentLength64    = len;
             response.StatusCode         = statusCode;
+            if (gzip) {
+                response.AddHeader("Content-Encoding", "gzip");
+            }
         //  resp.Headers["link"]    = "rel=\"icon\" href=\"#\""; // not working as expected - expect no additional request of favicon.ico
+            if (headers != null) {
+                foreach (var header in headers) {
+                    response.Headers[header.Key] = header.Value;
+                }
+            }
+        }
+        
+        private static void SetResponseHeaderGZip (HttpListenerResponse response, string contentType, int statusCode, Dictionary<string, string> headers) {
+            response.ContentType        = contentType;
+            response.StatusCode         = statusCode;
+            response.AddHeader("Content-Encoding", "gzip");
+            //  resp.Headers["link"]    = "rel=\"icon\" href=\"#\""; // not working as expected - expect no additional request of favicon.ico
             if (headers != null) {
                 foreach (var header in headers) {
                     response.Headers[header.Key] = header.Value;

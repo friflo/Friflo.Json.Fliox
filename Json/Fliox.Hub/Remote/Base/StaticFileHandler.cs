@@ -110,6 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (cache.TryGetValue(context.route, out CacheEntry entry)) {
                     context.Write(entry.body, entry.mediaType, entry.status);
                     context.SetHeaders(entry.headers);
+                    context.ResponseGzip = entry.gzip;
                     return true;
                 }
                 bool found = await GetHandler(context).ConfigureAwait(false);
@@ -162,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 memoryIn.CopyTo(zipStream);
                 memoryIn.Flush();
             }
-            context.AddHeader("Content-Encoding", "gzip");
+            context.ResponseGzip = true;
             return new JsonValue(memoryOut.ToArray());
         }
         
@@ -208,6 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal  readonly  string                      mediaType;
         internal  readonly  JsonValue                   body; // any file content type. js, html, png, ... 
         internal  readonly  Dictionary<string, string>  headers;
+        internal  readonly  bool                        gzip;
 
         public    override  string                      ToString() => path;
 
@@ -217,6 +219,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             mediaType   = context.ResponseContentType;
             body        = context.Response;
             headers     = context.ResponseHeaders;
+            gzip        = context.ResponseGzip;
         }
     }
 }

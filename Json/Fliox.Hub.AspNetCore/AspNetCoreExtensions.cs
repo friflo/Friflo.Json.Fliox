@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Net;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -115,20 +116,31 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         /// Write the result of <see cref="ExecuteFlioxRequest"/> to the given <paramref name="context"/>
         /// </summary>
         public static async Task WriteFlioxResponse(this HttpContext context, RequestContext requestContext) {
-            if (requestContext == null)
+            if (requestContext == null) {
                 return; // request was WebSocket
+            }
             var httpResponse            = context.Response;
             JsonValue response          = requestContext.Response;
             httpResponse.StatusCode     = requestContext.StatusCode;
             httpResponse.ContentType    = requestContext.ResponseContentType;
-            httpResponse.ContentLength  = response.Count;
             var responseHeaders         = requestContext.ResponseHeaders;
             if (responseHeaders != null) {
                 foreach (var header in responseHeaders) {
                     httpResponse.Headers[header.Key] = header.Value;
                 }
             }
-            await httpResponse.Body.WriteAsync(response).ConfigureAwait(false);
+            bool raw = response.Count < 4094 || requestContext.ResponseGzip;
+            if (raw) {
+                httpResponse.ContentLength  = response.Count;
+                if (requestContext.ResponseGzip) {
+                    httpResponse.Headers["Content-Encoding"] = "gzip";
+                }
+                await httpResponse.Body.WriteAsync(response).ConfigureAwait(false);
+            } else {
+                httpResponse.Headers["Content-Encoding"] = "gzip";
+                await using var zipStream = new GZipStream(httpResponse.Body, CompressionMode.Compress, false);
+                await zipStream.WriteAsync(response.AsReadOnlyMemory()).ConfigureAwait(false);
+            }
         }
         
         /// <summary>

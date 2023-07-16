@@ -50,6 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public    readonly  MemoryBuffer                memoryBuffer;
         // --- public properties
         public              string                      ResponseContentType { get; private set; }
+        public              bool                        ResponseGzip        { get; internal set; }
         public              int                         StatusCode          { get; private set; }
         public              JsonValue                   Response            { get; private set; }
         public              Dictionary<string, string>  ResponseHeaders     => responseHeaders;

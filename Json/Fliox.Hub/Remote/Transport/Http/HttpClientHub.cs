@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
+using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -26,6 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         {
             this.endpoint       = endpoint;
             httpClient          = new HttpClient();
+            // httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+            // httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
         }
         
         public override void Dispose() {
@@ -54,9 +59,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 
                 try {
                     var httpResponse    = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
-                    
+
                     var bodyArray       = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                    var jsonBody        = new JsonValue(bodyArray);
+                    var gzip            = httpResponse.Content.Headers.ContentEncoding.Contains("gzip"); 
+                    var jsonBody        = gzip ? ReadGzipStream(bodyArray) : new JsonValue(bodyArray);
+                    
                     var response        = MessageUtils.ReadProtocolMessage (jsonBody, sharedEnv, mapper.reader, out string error);
                     switch (response) {
                         case null:
@@ -81,6 +88,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var msg = $"Request failed: Exception: {error}";
                     return new ExecuteSyncResult(msg, ErrorResponseType.Exception);
                 }
+            }
+        }
+        
+        private static JsonValue ReadGzipStream(byte[] bodyArray) {
+            var stream          = new MemoryStream(bodyArray);
+            var outStream       = new MemoryStream();
+            var zipStream       = new GZipStream(stream, CompressionMode.Decompress, false);
+            Span<byte> buffer   = stackalloc byte[1024];
+            while (true) {
+                int len     = zipStream.Read(buffer);
+                var span    = buffer.Slice(0, len);
+                outStream.Write(span);
+                if (len > 0) {
+                    continue;
+                }
+                var result = new JsonValue(outStream.GetBuffer(), (int)outStream.Length); 
+                return result;
             }
         }
     }
