@@ -177,7 +177,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return this;
         }
         
-        public async Task DropContainersAsync() {
+        public async Task DropAllContainersAsync() {
             var schema          = Schema;
             var containerNames  = schema != null ? schema.GetContainers() : await GetContainers().ConfigureAwait(false);
             foreach (var containerName in containerNames) {

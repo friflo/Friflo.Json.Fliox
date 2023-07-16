@@ -64,6 +64,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             return false;
         }
         
+        public override async Task DropDatabaseAsync() {
+            await DropAllContainersAsync().ConfigureAwait(false);
+        }
+        
         public override Task DropContainerAsync(string name) {
             ClearContainers();
             return Task.CompletedTask;

@@ -119,6 +119,10 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
         }
         
+        public override async Task DropDatabaseAsync() {
+            await DropAllContainersAsync().ConfigureAwait(false);
+        }
+
         public override Task DropContainerAsync(string name) {
             var syncConnection = GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {

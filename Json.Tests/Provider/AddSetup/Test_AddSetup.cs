@@ -22,9 +22,27 @@ namespace Friflo.Json.Tests.Provider.AddSetup
         private static readonly DatabaseSchema SetupSchema  = DatabaseSchema.Create<TestClientSetup>();
 
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task Test_1_SetupDatabase(string db) {
-            
+        public static async Task Test_1_DropContainers(string db)
+        {
+            if (IsFileSystem) return; // don't delete test data
             var database = CreateDatabase(db, SetupSchema);
+            await database.SetupDatabaseAsync();        // will create missing tables
+            await database.DropAllContainersAsync();    // drop all tables
+            await database.SetupDatabaseAsync();        // will create all tables
+            
+            var hub = new FlioxHub(database);
+            var client = new TestClientSetup(hub);
+            var find    = client.testReadTypes.Read().Find("missing");
+            await client.SyncTasks();
+            
+            IsNull(find.Result);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task Test_2_SetupDatabase(string db)
+        {
+            if (IsFileSystem) return; // don't delete test data
+            var database = CreateDatabase(db, Schema);
             try {
                 await database.DropDatabaseAsync();
             }
@@ -45,23 +63,5 @@ namespace Friflo.Json.Tests.Provider.AddSetup
             
             IsNull(find.Result);
         }
-        
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task Test_2_DropContainers(string db) {
-            if (IsFileSystem) return;
-            var database = CreateDatabase(db, Schema);
-            
-            await database.DropContainersAsync();
-            
-            await database.SetupDatabaseAsync(); // will create tables
-            
-            var hub = new FlioxHub(database);
-            var client = new TestClientSetup(hub);
-            var find    = client.testReadTypes.Read().Find("missing");
-            await client.SyncTasks();
-            
-            IsNull(find.Result);
-        }
-
     }
 }
