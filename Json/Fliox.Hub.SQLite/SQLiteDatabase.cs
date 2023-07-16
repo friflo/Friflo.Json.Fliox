@@ -63,16 +63,15 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
             }
-            var flags = raw.SQLITE_OPEN_READWRITE | raw.SQLITE_OPEN_CREATE;
+            const int flags = raw.SQLITE_OPEN_READWRITE;
             var rc = raw.sqlite3_open_v2(filePath, out sqlite3 sqliteDB, flags, null);
+            if (rc == raw.SQLITE_CANTOPEN) {
+                return SyncConnectionError.DatabaseDoesNotExist(name);
+            }
             if (rc != raw.SQLITE_OK) {
                 return new SyncConnectionError($"sqlite3_open_v2 failed. error: {rc}");
             }
-            var connection = new SyncConnection(sqliteDB, writeLock);
-            if (!SQLiteUtils.Exec(connection, "PRAGMA journal_mode = WAL;", out var error)) {
-                return new SyncConnectionError($"PRAGMA journal_mode = WAL failed. error: {error}");
-            }
-            return connection;
+            return new SyncConnection(sqliteDB, writeLock);
         }
         
         protected  override void ReturnConnection(ISyncConnection syncConnection) {
@@ -117,6 +116,19 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 default:
                     return new TransResult($"invalid transaction command {command}");
             }
+        }
+        
+        protected override Task CreateDatabaseAsync() {
+            const int flags = raw.SQLITE_OPEN_READWRITE | raw.SQLITE_OPEN_CREATE;
+            var rc = raw.sqlite3_open_v2(filePath, out sqlite3 sqliteDB, flags, null);
+            if (rc != raw.SQLITE_OK) {
+                throw new InvalidOperationException($"CreateDatabaseAsync() failed. error: {rc}");
+            }
+            var connection = new SyncConnection(sqliteDB, writeLock);
+            if (!SQLiteUtils.Exec(connection, "PRAGMA journal_mode = WAL;", out var error)) {
+                throw new InvalidOperationException($"PRAGMA journal_mode = WAL failed. error: {error}");
+            }
+            return Task.CompletedTask;
         }
         
         public override async Task DropDatabaseAsync() {

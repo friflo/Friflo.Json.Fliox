@@ -42,7 +42,14 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 var connection = new NpgsqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
                 return new SyncConnection(connection);                
-            } catch (Exception e) {
+            }
+            catch(PostgresException e) {
+                if (e.SqlState == PostgresErrorCodes.InvalidCatalogName) {
+                    return SyncConnectionError.DatabaseDoesNotExist(name);
+                } 
+                return new SyncConnectionError(e);
+            }
+            catch (Exception e) {
                 return new SyncConnectionError(e);
             }
         }

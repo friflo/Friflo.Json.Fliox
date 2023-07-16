@@ -48,6 +48,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public SyncConnectionError(Exception exception) {
             Error = new TaskExecuteError(exception.Message);
         }
+        
+        public static SyncConnectionError DatabaseDoesNotExist(string dbName) {
+            var msg = $"database does not exist: '{dbName}'\nTo create one call {nameof(EntityDatabase.SetupDatabaseAsync)}()";
+            return new SyncConnectionError(msg);
+        }
     }
     
     internal readonly struct ConnectionScope : IDisposable

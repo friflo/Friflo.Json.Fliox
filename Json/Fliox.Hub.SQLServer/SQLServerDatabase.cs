@@ -44,7 +44,14 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 var connection = new SqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
                 return new SyncConnection(connection);   
-            } catch (SqlException e) {
+            }
+            catch (SqlException e) {
+                if (e.Number == 4060) {
+                    return SyncConnectionError.DatabaseDoesNotExist(name);
+                }
+                return new SyncConnectionError(e);
+            }
+            catch (Exception e) {
                 return new SyncConnectionError(e);
             }
         }

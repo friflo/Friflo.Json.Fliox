@@ -44,7 +44,14 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
                 return new SyncConnection(connection);                
-            } catch (Exception e) {
+            }
+            catch(MySqlException e) {
+                if (e.ErrorCode == MySqlErrorCode.UnknownDatabase) {
+                    return SyncConnectionError.DatabaseDoesNotExist(name);
+                } 
+                return new SyncConnectionError(e);
+            }
+            catch (Exception e) {
                 return new SyncConnectionError(e);
             }
         }
