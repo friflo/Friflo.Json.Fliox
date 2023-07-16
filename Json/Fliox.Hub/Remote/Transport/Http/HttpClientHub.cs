@@ -101,10 +101,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Span<byte> buffer   = stackalloc byte[1024];
 #endif
             while (true) {
-                int len     = zipStream.Read(buffer);
 #if NETSTANDARD2_0
+                int len     = zipStream.Read(buffer, 0, buffer.Length);
                 outStream.Write(buffer, 0, len);
 #else
+                int len     = zipStream.Read(buffer);
                 var span    = buffer.Slice(0, len);
                 outStream.Write(span);
 #endif

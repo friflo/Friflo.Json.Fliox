@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             } else {
                 SetResponseHeaderGZip(resp, cx.ResponseContentType, cx.StatusCode, cx.ResponseHeaders);
                 using GZipStream zipStream = new GZipStream(resp.OutputStream, CompressionMode.Compress, false);
-                await zipStream.WriteAsync(respBody.AsReadOnlyMemory());
+                await zipStream.WriteAsync(respBody.MutableArray, 0, respBody.Count).ConfigureAwait(false);
             }
             resp.Close();
         }
