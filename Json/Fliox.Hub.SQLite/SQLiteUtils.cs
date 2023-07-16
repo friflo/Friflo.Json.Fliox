@@ -61,7 +61,6 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 var name = raw.sqlite3_column_name(stmt.instance, n).utf8_to_string();
                 result.Add(name); 
             }
-            raw.sqlite3_finalize(stmt.instance);
             return result;
         }
         
