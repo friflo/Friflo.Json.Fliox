@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType;
@@ -68,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             await DropAllContainersAsync().ConfigureAwait(false);
         }
         
-        public override Task DropContainerAsync(string name) {
+        protected override Task DropContainerAsync(ISyncConnection connection, string name) {
             ClearContainers();
             return Task.CompletedTask;
         }

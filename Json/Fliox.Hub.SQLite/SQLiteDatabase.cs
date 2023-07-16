@@ -123,8 +123,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             await DropAllContainersAsync().ConfigureAwait(false);
         }
 
-        public override Task DropContainerAsync(string name) {
-            var syncConnection = GetConnectionSync();
+        protected override Task DropContainerAsync(ISyncConnection syncConnection, string name) {
             if (syncConnection is not SyncConnection connection) {
                 throw new InvalidOperationException(syncConnection.Error.message); 
             }
@@ -133,7 +132,6 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (result.error != null) {
                 throw new InvalidOperationException(result.error);
             }
-            ReturnConnection(syncConnection);
             return Task.CompletedTask;
         }
         

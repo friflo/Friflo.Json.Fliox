@@ -177,11 +177,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             return this;
         }
         
+        public async Task DropContainerAsync(string name) {
+            using var connection = await GetConnectionScopeAsync().ConfigureAwait(false);
+            await DropContainerAsync(connection.instance, name).ConfigureAwait(false);
+        }
+        
         public async Task DropAllContainersAsync() {
-            var schema          = Schema;
-            var containerNames  = schema != null ? schema.GetContainers() : await GetContainers().ConfigureAwait(false);
+            var schema              = Schema;
+            var containerNames      = schema != null ? schema.GetContainers() : await GetContainers().ConfigureAwait(false);
+            using var connection    = await GetConnectionScopeAsync().ConfigureAwait(false);
             foreach (var containerName in containerNames) {
-                await DropContainerAsync(containerName).ConfigureAwait(false);
+                await DropContainerAsync(connection.instance, containerName).ConfigureAwait(false);
             }
         }
         
@@ -227,7 +233,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         protected   virtual Task    CreateDatabaseAsync()           => Task.CompletedTask;
         public      virtual Task    DropDatabaseAsync()             => throw new NotSupportedException($"DropDatabaseAsync() not supported");
-        public      virtual Task    DropContainerAsync(string name) => throw new NotSupportedException($"DropContainerAsync() not supported");
+        protected   virtual Task    DropContainerAsync(ISyncConnection connection, string name) => throw new NotSupportedException($"DropContainerAsync() not supported");
         
         public EntityDatabase AddCommands(IServiceCommands commands) {
             if (!service.AddAttributedHandlers(commands, out var error)) {
@@ -334,6 +340,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         public virtual  void                    ReturnConnection(ISyncConnection connection)    => connection.Dispose();
         public virtual  Task<TransResult>       Transaction(SyncContext syncContext, TransCommand command) {
             return Task.FromResult(new TransResult(command));
+        }
+        
+        public async Task<ConnectionScope> GetConnectionScopeAsync() {
+            var connection = await GetConnectionAsync().ConfigureAwait(false);
+            if (connection.IsOpen) {
+                return new ConnectionScope(connection, this);
+            }
+            throw new InvalidOperationException($"connect failed: {connection.Error.message}");
         }
         #endregion
         

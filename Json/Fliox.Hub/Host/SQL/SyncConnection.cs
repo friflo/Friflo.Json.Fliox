@@ -49,4 +49,21 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             Error = new TaskExecuteError(exception.Message);
         }
     }
+    
+    public readonly struct ConnectionScope : IDisposable
+    {
+        public  readonly  ISyncConnection   instance;
+        private readonly  EntityDatabase    database;
+        
+        internal ConnectionScope(ISyncConnection instance, EntityDatabase database) {
+            this.instance = instance;
+            this.database   = database;
+        }
+        public void Dispose() {
+            if (instance == null) {
+                return;
+            }
+            database.ReturnConnection(instance);
+        }
+    }
 }
