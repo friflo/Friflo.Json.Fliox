@@ -95,11 +95,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var stream          = new MemoryStream(bodyArray);
             var outStream       = new MemoryStream();
             var zipStream       = new GZipStream(stream, CompressionMode.Decompress, false);
+#if NETSTANDARD2_0
+            byte[] buffer       = new  byte[1024];
+#else
             Span<byte> buffer   = stackalloc byte[1024];
+#endif
             while (true) {
                 int len     = zipStream.Read(buffer);
+#if NETSTANDARD2_0
+                outStream.Write(buffer, 0, len);
+#else
                 var span    = buffer.Slice(0, len);
                 outStream.Write(span);
+#endif
                 if (len > 0) {
                     continue;
                 }
