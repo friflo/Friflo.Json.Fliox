@@ -39,11 +39,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (rc == raw.SQLITE_ROW) {
                     for (int n = 0; n < columns.Length; n++) {
                         var column      = columns[n];
+                        ref var cell    = ref cells[n];
                         if (raw.sqlite3_column_type(stmt, column.ordinal) == raw.SQLITE_NULL) {
-                            cells[n].type = ColumnType.None;
+                            cell.type = ColumnType.None;
                             continue;
                         } 
-                        var sqlError = ReadCell(column, ref cells[n]);
+                        var sqlError = ReadCell(column, ref cell);
                         if (sqlError.message is not null) {
                             SQLiteUtils.Error(sqlError.message, out error);
                             return false;

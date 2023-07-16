@@ -166,7 +166,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 }
                 var sql = new StringBuilder();
                 if (tableType == TableType.Relational) {
-                    sql.Append($"INSERT INTO {name} VALUES(");
+                    sql.Append($"INSERT INTO {name} (");
+                    SQLTable.AppendColumnNames(sql, tableInfo);
+                    sql.Append(") VALUES(");                   
                     for (int n = 0; n < tableInfo.columns.Length; n++) sql.Append("?,");
                     sql.Length--;
                     sql.Append($") ON CONFLICT([{keyColumn.name}]) DO UPDATE SET ");
@@ -175,7 +177,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     }
                     sql.Length -= 2;
                 } else {
-                    sql.Append($"INSERT INTO {name} VALUES(?,?) ON CONFLICT({ID}) DO UPDATE SET {DATA}=excluded.{DATA}");
+                    sql.Append($"INSERT INTO {name} ({ID}, {DATA}) VALUES(?,?) ON CONFLICT({ID}) DO UPDATE SET {DATA}=excluded.{DATA}");
                 }
                 if (!SQLiteUtils.Prepare(connection, sql.ToString(), out var stmt, out error)) {
                     return new UpsertEntitiesResult { Error = error };

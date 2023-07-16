@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Numerics;
 using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable All
@@ -84,6 +85,7 @@ namespace Friflo.Json.Tests.Provider.Client
         [Key]       public  string              id;
                     public  Guid?               guid;
                     public  DateTime?           dateTime;
+                    public  BigInteger?         bigInt;
                     /// <summary>Stored in a JSON column when using <see cref="TableType.Relational"/></summary>
                     public  int[]               intArray;
                     /// <summary>Stored in a JSON column when using <see cref="TableType.Relational"/></summary>
@@ -105,7 +107,13 @@ namespace Friflo.Json.Tests.Provider.Client
                     public  float?          f32;
     }
     
+    /// <summary>
+    /// Use some of the fields of <see cref="TestReadTypes"/>.<br/>
+    /// When calling <see cref="EntityDatabase.SetupDatabaseAsync"/> missing columns will be added.
+    /// </summary>
     public class TestReadTypesSetup {
-        [Key]       public  string              id;
+        [Key]       public  string          id;
+                    public  BigInteger?     bigInt;
+                    public  ComponentType   obj;
     }
 }

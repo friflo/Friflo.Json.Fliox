@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Numerics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Provider.Client;
@@ -286,6 +287,24 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual("abc-☀🌎♥👋", c1Read.Result.obj.str);
             NotNull (c2Read.Result.obj);
             IsNull  (c3Read.Result.obj);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_27_BigInteger(string db) {
+            var client1 = await GetClient(db);
+            var bi0     = new TestReadTypes { id = "bi0", bigInt = BigInteger.Zero };
+            var bi1     = new TestReadTypes { id = "bi1", bigInt = BigInteger.Parse("1234567890123456789012345678901234567890") };
+            client1.testReadTypes.UpsertRange(new [] { bi0, bi1 });
+            await client1.SyncTasks();
+            
+            var client2 = await GetClient(db);
+            var read    = client2.testReadTypes.Read();
+            var bi0Read = read.Find(bi0.id);
+            var bi1Read = read.Find(bi1.id);
+            await client2.SyncTasks();
+            
+            AreEqual(bi0.bigInt,   bi0Read.Result.bigInt);
+            AreEqual(bi1.bigInt,   bi1Read.Result.bigInt);
         }
     }
 }
