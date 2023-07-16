@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>Create missing columns for a database with <see cref="TableType.JsonColumn"/></summary>
         AddColumns          = 4,
         //
-        All = CreateDatabase | CreateTables | AddVirtualColumns | AddColumns
+        Default = CreateDatabase | CreateTables | AddVirtualColumns | AddColumns
     }
     
     /// <summary>
@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///     <item>Add missing columns if using a database with <see cref="TableType.Relational"/> tables</item>
         /// </list>
         /// </remarks>
-        public async Task<EntityDatabase> SetupDatabaseAsync(Setup options = Setup.All) {
+        public async Task<EntityDatabase> SetupDatabaseAsync(Setup options = Setup.Default) {
             ISyncConnection connection = null;
             try {
                 connection = await GetConnectionAsync().ConfigureAwait(false);
