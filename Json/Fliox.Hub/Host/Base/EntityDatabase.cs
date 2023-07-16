@@ -335,14 +335,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
         
     #region - sync connection
-        public virtual  Task<ISyncConnection>   GetConnectionAsync()                            => Task.FromResult<ISyncConnection>(new DefaultSyncConnection());
-        public virtual  ISyncConnection         GetConnectionSync()                             => throw new NotImplementedException();
-        public virtual  void                    ReturnConnection(ISyncConnection connection)    => connection.Dispose();
-        public virtual  Task<TransResult>       Transaction(SyncContext syncContext, TransCommand command) {
-            return Task.FromResult(new TransResult(command));
-        }
-        
-        public async Task<ConnectionScope> GetConnectionScopeAsync() {
+        protected internal virtual  Task<ISyncConnection>   GetConnectionAsync()                            => Task.FromResult<ISyncConnection>(new DefaultSyncConnection());
+        protected internal virtual  ISyncConnection         GetConnectionSync()                             => throw new NotImplementedException();
+        protected internal virtual  void                    ReturnConnection(ISyncConnection connection)    => connection.Dispose();
+        protected internal virtual  Task<TransResult>       Transaction(SyncContext syncContext, TransCommand command) => Task.FromResult(new TransResult(command));
+
+        private async Task<ConnectionScope> GetConnectionScopeAsync() {
             var connection = await GetConnectionAsync().ConfigureAwait(false);
             if (connection.IsOpen) {
                 return new ConnectionScope(connection, this);

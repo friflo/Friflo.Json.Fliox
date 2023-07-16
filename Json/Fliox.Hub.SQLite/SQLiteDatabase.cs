@@ -54,12 +54,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return new SQLiteContainer(name.AsString(), this, Pretty);
         }
         
-        public override  Task<ISyncConnection>   GetConnectionAsync() {
+        protected override  Task<ISyncConnection>   GetConnectionAsync() {
             var result = GetConnectionSync();
             return Task.FromResult(result);
         }
 
-        public override ISyncConnection GetConnectionSync() {
+        protected override ISyncConnection GetConnectionSync() {
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
             }
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return connection;
         }
         
-        public override void ReturnConnection(ISyncConnection syncConnection) {
+        protected  override void ReturnConnection(ISyncConnection syncConnection) {
             connectionPool.Push(syncConnection);
         }
 
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             raw.SetProvider(new SQLite3Provider_e_sqlite3());
         }
         
-        public override Task<TransResult> Transaction(SyncContext syncContext, TransCommand command) {
+        protected override Task<TransResult> Transaction(SyncContext syncContext, TransCommand command) {
             var result = TransactionSync(syncContext, command);
             return Task.FromResult(result);
         }

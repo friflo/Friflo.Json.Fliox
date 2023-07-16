@@ -50,13 +50,14 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
     }
     
-    public readonly struct ConnectionScope : IDisposable
+    internal readonly struct ConnectionScope : IDisposable
     {
-        public  readonly  ISyncConnection   instance;
-        private readonly  EntityDatabase    database;
+        internal readonly   ISyncConnection   instance;
+        private  readonly   EntityDatabase    database;
         
         internal ConnectionScope(ISyncConnection instance, EntityDatabase database) {
-            this.instance = instance;
+            this.instance   = instance ?? throw new ArgumentNullException(nameof(instance));
+            if (!instance.IsOpen) throw new ArgumentException("Expect open connection", nameof(instance));
             this.database   = database;
         }
         public void Dispose() {

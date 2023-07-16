@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             return new SQLServerContainer(name.AsString(), this, Pretty);
         }
         
-        public override async Task<ISyncConnection> GetConnectionAsync()  {
+        protected override async Task<ISyncConnection> GetConnectionAsync()  {
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
             }
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
         }
         
-        public override void ReturnConnection(ISyncConnection connection) {
+        protected  override void ReturnConnection(ISyncConnection connection) {
             connectionPool.Push(connection);
         }
 
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
         }
         
-        public override async Task<TransResult> Transaction(SyncContext syncContext, TransCommand command) {
+        protected override async Task<TransResult> Transaction(SyncContext syncContext, TransCommand command) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new TransResult(syncConnection.Error.message);

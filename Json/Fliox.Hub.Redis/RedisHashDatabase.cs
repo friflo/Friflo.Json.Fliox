@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             return new RedisHashContainer(name.AsString(), this, Pretty);
         }
         
-        public override async Task<ISyncConnection> GetConnectionAsync()  {
+        protected override async Task<ISyncConnection> GetConnectionAsync()  {
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
             }
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             }
         }
         
-        public override void ReturnConnection(ISyncConnection connection) {
+        protected  override void ReturnConnection(ISyncConnection connection) {
             connectionPool.Push(connection);
         }
     }
