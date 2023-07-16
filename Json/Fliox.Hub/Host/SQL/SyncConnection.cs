@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
         
         public static SyncConnectionError DatabaseDoesNotExist(string dbName) {
-            var msg = $"database does not exist: '{dbName}'\nTo create one call {nameof(EntityDatabase.SetupDatabaseAsync)}()";
+            var msg = $"database does not exist: '{dbName}'\nTo create one call: database.{nameof(EntityDatabase.SetupDatabaseAsync)}()";
             return new SyncConnectionError(msg);
         }
     }
