@@ -51,10 +51,14 @@ namespace Friflo.Json.Tests.Provider.AddSetup
                 // database already does not exist   
             }
             database = CreateDatabase(db, SetupSchema);
-            await database.SetupDatabaseAsync();    // create database with only one table and fewer columns 
+            await database.SetupDatabaseAsync();    // 1. create database with only one table and fewer columns 
             
             database = CreateDatabase(db, Schema);
-            await database.SetupDatabaseAsync();    // create missing tables and add missing columns 
+            await database.SetupDatabaseAsync();    // 2. create missing tables and add missing columns 
+            // Will create all required columns.
+            // The order of columns is different when calling only the 2. SetupDatabaseAsync() without the 1. one
+            //
+            // Reason: This ensures all INSERT, CREATE and SELECT statements set the column names instead of using *.   
 
             var hub = new FlioxHub(database);
             var client = new TestClientSetup(hub);
