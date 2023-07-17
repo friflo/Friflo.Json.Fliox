@@ -167,6 +167,7 @@ It also perform some database operations like: `UpsertRange()` & `Query()`
 ```csharp
     var schema      = DatabaseSchema.Create<TodoClient>();
     var database    = new SQLiteDatabase("todo_db", "Data Source=todo.sqlite3", schema);
+    await database.SetupDatabaseAsync(); // for development: create database or update ist schema
     var hub         = new FlioxHub(database);
 
     var client      = new TodoClient(hub);
@@ -212,6 +213,7 @@ Replace the code in 📄 `Program.cs` above to host a database by an HTTP server
 ```csharp
     var schema      = DatabaseSchema.Create<TodoClient>();
     var database    = new SQLiteDatabase("todo_db", "Data Source=todo.sqlite3", schema);
+    await database.SetupDatabaseAsync(); // for development: create database or update ist schema
     var hub         = new FlioxHub(database);
     hub.Info.Set ("TodoHub", "dev", "https://github.com/friflo/Fliox.Examples/tree/main/Todo", "rgb(0 171 145)"); // optional
     hub.UseClusterDB(); // required by HubExplorer
