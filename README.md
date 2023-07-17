@@ -6,7 +6,8 @@
 [![CI](https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml) 
 [![CD](https://github.com/friflo/Friflo.Json.Fliox/workflows/CD/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml) 
 
-![new](docs/images/new.svg) • Published database providers for: SQLite, MySQL, MariaDB, PostgreSQL & SQL Server. 
+![new](docs/images/new.svg) 2023-07-17 · Add support for relational tables storing each class property in its own column.  
+![new](docs/images/new.svg) 2023-06-29 · Published database providers for: SQLite, MySQL, MariaDB, PostgreSQL & SQL Server.  
 
 A client / server **ORM** for **.NET** for **SQL & NoSQL** databases with focus on Web apps and performance.  
 Database access is realized by creating a single class to query, create, update or delete table / container records.  
@@ -27,8 +28,12 @@ As Fliox is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping)![]
 As of writing this the list below show unique features not supported by other ORMs like:  
 EFCore, Dapper, NHibernate, LINQ to DB, PetaPoco or ServiceStack.
 
-- Fliox store entities in **JSON columns** by all SQL database providers.  
-  This enable schema changes without database migrations and avoid [object–relational impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch)![](docs/images/ext.svg).
+- Fliox provide two schema models for all SQL databases:
+
+  - **Relational** - the default - storing each entity class property in its own column. 
+
+  - **JSON columns** storing entities in a single column called: `json_data`.  
+    This enables schema changes without database migrations and avoid [OR impedance mismatch](https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch)![](docs/images/ext.svg).
 
 - Create automatically common **REST route handlers** `GET`, `PUT`, `PATCH`, `DELETE` to execute [LINQ query filters](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md#query-filter)  
   and CRUD operations (bulk or single resource) for each table using ASP.NET Core.
