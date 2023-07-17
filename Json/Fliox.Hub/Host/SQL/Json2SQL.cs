@@ -20,6 +20,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         private     Bytes           buffer      = new Bytes(256);   // reused
         private     char[]          charBuffer  = new char[32];     // reused
         
+        private static readonly Bytes True  = new Bytes("true");
+        private static readonly Bytes False = new Bytes("false");
+        
         public void Dispose() {
             parser.Dispose();
         }
@@ -85,8 +88,18 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     case JsonEvent.ValueBool: {
                         var column          = objInfo.FindColumn(parser.key);
                         ref var cell        = ref cells[column.ordinal];
-                        cell.boolean        = parser.boolValue;
-                        cell.type           = CellType.Bool;
+                        if (column.type == ColumnType.JsonValue) {
+                            if (parser.boolValue) {
+                                buffer.AppendBytes(True);
+                            } else {
+                                buffer.AppendBytes(False);
+                            }
+                            cell.SetValue(buffer, parser.value.Len);
+                            cell.type           = CellType.JSON;
+                        } else {
+                            cell.boolean        = parser.boolValue;
+                            cell.type           = CellType.Bool;
+                        }
                         break;
                     }
                     case JsonEvent.ArrayStart: {

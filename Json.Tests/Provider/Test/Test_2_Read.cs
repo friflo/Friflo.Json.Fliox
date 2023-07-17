@@ -346,7 +346,10 @@ namespace Friflo.Json.Tests.Provider.Test
             var jv1     = new TestReadTypes { id = "jv1", jsonValue = new JsonValue("{\"key\":123}") };
             var jv2     = new TestReadTypes { id = "jv2", jsonValue = new JsonValue("123") };
             var jv3     = new TestReadTypes { id = "jv3", jsonValue = new JsonValue("\"abc\"") };
-            client1.testReadTypes.UpsertRange(new [] { jv1, jv2, jv3 });
+            var jv4     = new TestReadTypes { id = "jv4", jsonValue = new JsonValue("[10,11]") };
+            var jv5     = new TestReadTypes { id = "jv5", jsonValue = new JsonValue("[{\"item-1\":1},{\"item-2\":2}]") };
+            var jv6     = new TestReadTypes { id = "jv6", jsonValue = new JsonValue("true") };
+            client1.testReadTypes.UpsertRange(new [] { jv1, jv2, jv3, jv4, jv5, jv6 });
             await client1.SyncTasks();
             
             var client2 = await GetClient(db);
@@ -354,11 +357,17 @@ namespace Friflo.Json.Tests.Provider.Test
             var jv1Read = read.Find(jv1.id);
             var jv2Read = read.Find(jv2.id);
             var jv3Read = read.Find(jv3.id);
+            var jv4Read = read.Find(jv4.id);
+            var jv5Read = read.Find(jv5.id);
+            var jv6Read = read.Find(jv6.id);
             await client2.SyncTasks();
             
             AreEqualJsonValue(jv1.jsonValue, jv1Read.Result.jsonValue);
             AreEqualJsonValue(jv2.jsonValue, jv2Read.Result.jsonValue);
             AreEqualJsonValue(jv3.jsonValue, jv3Read.Result.jsonValue);
+            AreEqualJsonValue(jv4.jsonValue, jv4Read.Result.jsonValue);
+            AreEqualJsonValue(jv5.jsonValue, jv5Read.Result.jsonValue);
+            AreEqualJsonValue(jv6.jsonValue, jv6Read.Result.jsonValue);
         }
         
         private static void AreEqualJsonValue(JsonValue expected, JsonValue actual) {

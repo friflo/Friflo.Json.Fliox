@@ -214,6 +214,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
                                 continue;
                             return false;
                         }
+                        if (fieldType.typeId == TypeId.JsonValue) {
+                            if (parser.SkipTree())
+                                continue;
+                            return false;
+                        }
                         return ErrorType("Incorrect type.", "array", false, fieldType.typeName, fieldType.typeDef.@namespace, typeDef);
                     
                     case JsonEvent.ObjectStart:
