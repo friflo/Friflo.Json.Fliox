@@ -60,9 +60,17 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     case JsonEvent.ValueString: {
                         var column      = objInfo.FindColumn(parser.key);
                         ref var cell    = ref cells[column.ordinal];
-                        buffer.AppendBytes(parser.value);
-                        cell.SetValue(buffer, parser.value.Len);
-                        cell.type       = JsonEvent.ValueString;
+                        if (column.type == ColumnType.JsonValue) {
+                            buffer.AppendChar('\"');
+                            buffer.AppendBytes(parser.value);
+                            buffer.AppendChar('\"');
+                            cell.SetValue(buffer, parser.value.Len + 2); // + 2 for start and end "
+                            cell.type       = CellType.JSON;
+                        } else {
+                            buffer.AppendBytes(parser.value);
+                            cell.SetValue(buffer, parser.value.Len);
+                            cell.type       = CellType.String;
+                        }
                         break;
                     }
                     case JsonEvent.ValueNumber: {
@@ -71,14 +79,14 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         buffer.AppendBytes(parser.value);
                         cell.SetValue(buffer, parser.value.Len);
                         cell.isFloat    = parser.isFloat;
-                        cell.type       = JsonEvent.ValueNumber;
+                        cell.type       = column.type == ColumnType.JsonValue ? CellType.JSON : CellType.Number;
                         break;
                     }
                     case JsonEvent.ValueBool: {
                         var column          = objInfo.FindColumn(parser.key);
                         ref var cell        = ref cells[column.ordinal];
                         cell.boolean        = parser.boolValue;
-                        cell.type           = JsonEvent.ValueBool;
+                        cell.type           = CellType.Bool;
                         break;
                     }
                     case JsonEvent.ArrayStart: {
@@ -89,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         var end = parser.Position;
                         parser.AppendInputSlice(ref buffer, start, end);
                         cell.SetValue(buffer, end - start);
-                        cell.type           = JsonEvent.ArrayStart;
+                        cell.type           = CellType.Array;
                         break;
                     }
                     case JsonEvent.ValueNull:
@@ -97,10 +105,21 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     case JsonEvent.ObjectStart:
                         var obj = objInfo.FindObject(parser.key);
                         if (obj != null) {
-                            cells[obj.ordinal].type = JsonEvent.ObjectStart;
+                            cells[obj.ordinal].type = CellType.Object;
                             Traverse(obj);
-                        } else {
+                            break;
+                        }
+                        var objColumn = objInfo.FindColumn(parser.key);
+                        if (objColumn == null) {
                             parser.SkipTree();
+                        } else {
+                            ref var cell        = ref cells[objColumn.ordinal];
+                            var start = parser.Position - 1;
+                            parser.SkipTree();
+                            var end = parser.Position;
+                            parser.AppendInputSlice(ref buffer, start, end);
+                            cell.SetValue(buffer, end - start);
+                            cell.type           = CellType.JSON;
                         }
                         break;
                     case JsonEvent.ObjectEnd:
@@ -131,7 +150,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public  Bytes       value;
         public  bool        boolean;
         public  bool        isFloat;
-        public  JsonEvent   type;
+        public  CellType    type;
         
         internal void SetValue(in Bytes value, int len) {
             this.value.buffer   = value.buffer;
@@ -142,10 +161,21 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 
         public override string ToString() {
             switch (type) {
-                case JsonEvent.None:        return "None";
-                case JsonEvent.ObjectStart: return "Object";
-                default:                    return $"{value}: {type}";
+                case CellType.Null:     return "null";
+                case CellType.Object:   return "Object";
+                default:                return $"{value}: {type}";
             }
         }
+    }
+    
+    public enum CellType
+    {
+        Null    = 0,
+        String  = 1,
+        Number  = 2,
+        Bool    = 3,
+        Array   = 4,
+        Object  = 5,
+        JSON    = 6,
     }
 }

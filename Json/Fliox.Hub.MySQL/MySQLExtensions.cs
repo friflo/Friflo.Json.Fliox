@@ -62,6 +62,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 case ColumnType.String:
                 case ColumnType.JsonKey:
                 case ColumnType.Enum:       return column.isPrimaryKey ? "varchar(255)" : "text"; // used 255 to enable using as PK
+                case ColumnType.JsonValue:
                 case ColumnType.Array:      return "JSON"; // JSON column
                 case ColumnType.Object:     return "tinyint";
             }

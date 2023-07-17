@@ -161,6 +161,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case ColumnType.String:
                 case ColumnType.JsonKey:
                 case ColumnType.Enum:
+                case ColumnType.JsonValue:
                 case ColumnType.Array: {
                     var data = raw.sqlite3_column_blob(stmt, column.ordinal);
                     sql2Json.CopyToCellBytes(data, ref cell);
@@ -200,6 +201,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 //
                 case ColumnType.Guid:       writer.MemberGuid   (key, cell.guid);       break;
                 case ColumnType.DateTime:   writer.MemberDate   (key, cell.date);       break;
+                case ColumnType.JsonValue:
                 case ColumnType.Array:      writer.MemberArr    (key, cell.bytes);      break;
                 default:
                     throw new InvalidOperationException($"unexpected type: {column.type}");

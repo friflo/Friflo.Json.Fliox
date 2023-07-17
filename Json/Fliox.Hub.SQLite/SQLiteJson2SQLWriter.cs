@@ -31,20 +31,20 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 var column = columns[n];
                 ref var cell = ref cells[n];
                 switch (cell.type) {
-                    case JsonEvent.None:
-                    case JsonEvent.ValueNull:   error = WriteNull   (column);       break;
-                    case JsonEvent.ValueString: error = WriteBytes  (column, cell); break;
-                    case JsonEvent.ValueBool:   error = WriteBool   (column, cell); break;
-                    case JsonEvent.ValueNumber: error = WriteNumber (column, cell); break;
-                    case JsonEvent.ArrayStart:  error = WriteBytes  (column, cell); break;
-                    case JsonEvent.ObjectStart: error = WriteBool   (column, cell); break;
+                    case CellType.Null:     error = WriteNull   (column);       break;
+                    case CellType.String:   error = WriteBytes  (column, cell); break;
+                    case CellType.Bool:     error = WriteBool   (column, cell); break;
+                    case CellType.Number:   error = WriteNumber (column, cell); break;
+                    case CellType.Array:    error = WriteBytes  (column, cell); break;
+                    case CellType.Object:   error = WriteBool   (column, cell); break;
+                    case CellType.JSON:     error = WriteBytes  (column, cell); break;
                     default:
                         throw new InvalidOperationException($"unexpected cell.type: {cell.type}");
                 }
                 if (error.message is not null) {
                     return error;
                 }
-                cell.type = JsonEvent.None;
+                cell.type = CellType.Null;
             }
             var rc = raw.sqlite3_step(stmt);
             if (rc != raw.SQLITE_DONE) {

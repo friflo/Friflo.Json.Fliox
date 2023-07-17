@@ -57,6 +57,11 @@ GENERATED ALWAYS AS {asStr} VIRTUAL;";
             var colName = column.name;
             var asStr   = $"(JSON_VALUE({DATA}, '$.{colName}'))";
             switch (column.type) {
+                case ColumnType.JsonValue:
+                    if (provider == MySQLProvider.MY_SQL) {
+                        return $"(JSON_VALUE({DATA}, '$.{colName}' RETURNING JSON))";
+                    }
+                    return $"(JSON_QUERY({DATA}, '$.{colName}'))";
                 case ColumnType.Object:
                     if (provider == MySQLProvider.MY_SQL) {
                         return $"(!ISNULL(JSON_VALUE({DATA}, '$.{colName}')))";    

@@ -67,6 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case ColumnType.DateTime:   cell.date= reader.GetDateTime       (ordinal);  return;
                 case ColumnType.Guid:       cell.guid= reader.GetGuid           (ordinal);  return;
                 //
+                case ColumnType.JsonValue:
                 case ColumnType.Array:      sql2Json.GetString(reader, ref cell, ordinal);  return;
                 case ColumnType.Object:     cell.lng = reader.GetByte           (ordinal);  return; // used as boolean: != 0 => object is not null
                 default:
@@ -102,6 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 //
                 case ColumnType.Guid:       writer.MemberGuid   (key, cell.guid);                   break;
                 case ColumnType.DateTime:   writer.MemberDate   (key, cell.date);                   break;
+                case ColumnType.JsonValue:
                 case ColumnType.Array:      writer.MemberArr(key, sql2Json.Chars2Bytes(cell.chars));break;
                 default:
                     throw new InvalidOperationException($"unexpected type: {column.type}");

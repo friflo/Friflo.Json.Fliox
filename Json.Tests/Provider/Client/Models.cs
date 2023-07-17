@@ -98,6 +98,7 @@ namespace Friflo.Json.Tests.Provider.Client
                     public  ComponentType       obj;
                     public  ShortString         shortStr;
                     public  JsonKey             jsonKey;
+                    public  JsonValue           jsonValue;
     }
     
     public class ComponentType {

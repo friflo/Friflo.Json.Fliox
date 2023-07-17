@@ -335,7 +335,36 @@ namespace Friflo.Json.Tests.Provider.Test
             var bi0Read = read.Find(jk1.id);
             await client2.SyncTasks();
             
-            IsTrue(jk1.jsonKey.IsEqual(bi0Read.Result.jsonKey));
+            var expected = jk1.jsonValue.AsString();
+            var actual   = bi0Read.Result.jsonValue.AsString();
+            AreEqual(expected, actual);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_30_JsonValue(string db) {
+            var client1 = await GetClient(db);
+            var jv1     = new TestReadTypes { id = "jv1", jsonValue = new JsonValue("{\"key\":123}") };
+            var jv2     = new TestReadTypes { id = "jv2", jsonValue = new JsonValue("123") };
+            var jv3     = new TestReadTypes { id = "jv3", jsonValue = new JsonValue("\"abc\"") };
+            client1.testReadTypes.UpsertRange(new [] { jv1, jv2, jv3 });
+            await client1.SyncTasks();
+            
+            var client2 = await GetClient(db);
+            var read    = client2.testReadTypes.Read();
+            var jv1Read = read.Find(jv1.id);
+            var jv2Read = read.Find(jv2.id);
+            var jv3Read = read.Find(jv3.id);
+            await client2.SyncTasks();
+            
+            AreEqualJsonValue(jv1.jsonValue, jv1Read.Result.jsonValue);
+            AreEqualJsonValue(jv2.jsonValue, jv2Read.Result.jsonValue);
+            AreEqualJsonValue(jv3.jsonValue, jv3Read.Result.jsonValue);
+        }
+        
+        private static void AreEqualJsonValue(JsonValue expected, JsonValue actual) {
+            var e   = expected.AsString();
+            var a   = actual.AsString();
+            AreEqual(e, a);
         }
     }
 }

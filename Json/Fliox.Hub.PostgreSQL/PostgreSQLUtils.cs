@@ -38,8 +38,10 @@ GENERATED ALWAYS AS (({asStr})::{type}) STORED;";
         }
         
         private static string GetColumnAs(ColumnInfo column) {
-            var asStr   = ConvertContext.ConvertPath(DATA, column.name, 0);
+            var asStr = ConvertContext.ConvertPath(DATA, column.name, 0, AsType.Text);
             switch (column.type) {
+                case ColumnType.JsonValue:
+                    return ConvertContext.ConvertPath(DATA, column.name, 0, AsType.JSON);
                 case ColumnType.DateTime:
                     return $"(text2ts{asStr})";
                 case ColumnType.Object:

@@ -183,12 +183,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case ColumnType.BigInteger: return chars.GetString();
                 case ColumnType.DateTime:   return date.ToString(Bytes.DateTimeFormat, CultureInfo.InvariantCulture);
                 case ColumnType.Guid:       return guid.ToString();
-                case ColumnType.JsonValue:
                 case ColumnType.JsonKey:
                 case ColumnType.JsonEntity:
                 case ColumnType.Enum:       return bytes.AsString();
                 //
-                case ColumnType.String:     
+                case ColumnType.String:
+                case ColumnType.JsonValue:
                 case ColumnType.Array:      return isCharString ? chars.GetString() : bytes.AsString();
                 case ColumnType.Object:     return lng == 0 ? "(object null)" : "(object exists)";
                 default:                    return "(invalid cell)";

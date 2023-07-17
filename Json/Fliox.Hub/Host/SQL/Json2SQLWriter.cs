@@ -49,29 +49,29 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 if (firstValue) firstValue = false; else sb.Append(',');
                 ref var cell = ref cells[n];
                 switch (cell.type) {
-                    case JsonEvent.None:
-                    case JsonEvent.ValueNull:
+                    case CellType.Null:
                         sb.Append(Null);
                         break;
-                    case JsonEvent.ValueString:
+                    case CellType.String:
                         if (columns[n].type == ColumnType.DateTime) {
                             AppendDateTime(sb, ref cell.value);
                         } else {
                             AppendString(sb, cell.value, escape);
                         }
                         break;
-                    case JsonEvent.ValueBool:
+                    case CellType.Bool:
                         AppendBool(sb, cell.boolean);
                         break;
-                    case JsonEvent.ValueNumber:
+                    case CellType.Number:
                         AppendBytes(sb, cell.value);
                         break;
-                    case JsonEvent.ArrayStart:
+                    case CellType.JSON:
+                    case CellType.Array:
                         sb.Append('\'');
                         AppendBytes(sb, cell.value);
                         sb.Append('\'');
                         break;
-                    case JsonEvent.ObjectStart:
+                    case CellType.Object:
                         if (hasBool) {
                             sb.Append(True);
                         } else {
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     default:
                         throw new InvalidOperationException($"unexpected cell.type: {cell.type}");
                 }
-                cell.type = JsonEvent.None;
+                cell.type = CellType.Null;
             }
             sb.Append(')');
             return default;

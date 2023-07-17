@@ -55,6 +55,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case ColumnType.String:
                 case ColumnType.JsonKey:
                 case ColumnType.Enum:       return "text";
+                case ColumnType.JsonValue:
                 case ColumnType.Array:      return "JSONB"; // JSON column
                 case ColumnType.Object:     return "boolean";
             }
@@ -72,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     var arrayField  = args.GetArrayField(field);
                     if (tableType == TableType.Relational) {
                         if (arrayField != null) {
-                            var path = ConvertPath(arrayField.array, field.name, 1); 
+                            var path = ConvertPath(arrayField.array, field.name, 1, AsType.Text); 
                             return $"({path})";
                         }
                         return GetColumn(field);
@@ -82,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                         return path;
                     } else {
                         var arg     = args.GetArg(field);
-                        var path    = ConvertPath(arg, field.name, 1); // todo check using GetFieldPath() instead
+                        var path    = ConvertPath(arg, field.name, 1, AsType.Text); // todo check using GetFieldPath() instead
                         return path;
                     }
                 }
@@ -381,14 +382,14 @@ $@"jsonb_typeof({arrayPath}) <> 'array'
             return result;
         }
         
-        internal static string ConvertPath (string arg, string path, int start) {
+        internal static string ConvertPath (string arg, string path, int start, AsType asType) {
             var names   = path.Split('.');
             var count   = names.Length;
             var sb      = new StringBuilder();
             sb.Append('(');
             sb.Append(arg);
             for (int n = start; n < count; n++) {
-                if (n == count - 1) {
+                if (asType == AsType.Text && n == count - 1) {
                     sb.Append(" ->> '");
                 } else {
                     sb.Append(" -> '");
@@ -441,5 +442,11 @@ $@"jsonb_typeof({arrayPath}) <> 'array'
             }
             return $"\"{name.Substring(field.arg.Length + 1)}\"";
         }
+    }
+    
+    internal enum AsType
+    {
+        Text,
+        JSON
     }
 }

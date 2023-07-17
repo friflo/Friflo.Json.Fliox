@@ -59,6 +59,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case ColumnType.DateTime:   cell.date= reader.GetDateTime   (ordinal);          return;
                 case ColumnType.Guid:       cell.guid= reader.GetGuid       (ordinal);          return;
                 //
+                case ColumnType.JsonValue:
                 case ColumnType.Array:      cell.str = reader.GetString     (ordinal);          return; // JSONB
                 case ColumnType.Object:     cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return; // true => object is not null
                 default:
@@ -94,6 +95,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 //
                 case ColumnType.Guid:       writer.MemberGuid   (key, cell.guid);                   break;
                 case ColumnType.DateTime:   writer.MemberDate   (key, cell.date);                   break;
+                case ColumnType.JsonValue:
                 case ColumnType.Array:      writer.MemberArr(key, sql2Json.String2Bytes(cell.str)); break;
                 default:
                     throw new InvalidOperationException($"unexpected type: {column.type}");
