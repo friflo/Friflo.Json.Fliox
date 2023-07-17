@@ -322,5 +322,20 @@ namespace Friflo.Json.Tests.Provider.Test
             
             IsTrue(ss0.shortStr.IsEqual(bi0Read.Result.shortStr));
         }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_29_JsonKey(string db) {
+            var client1 = await GetClient(db);
+            var jk1     = new TestReadTypes { id = "jk1", jsonKey = new JsonKey("json-key") };
+            client1.testReadTypes.UpsertRange(new [] { jk1 });
+            await client1.SyncTasks();
+            
+            var client2 = await GetClient(db);
+            var read    = client2.testReadTypes.Read();
+            var bi0Read = read.Find(jk1.id);
+            await client2.SyncTasks();
+            
+            IsTrue(jk1.jsonKey.IsEqual(bi0Read.Result.jsonKey));
+        }
     }
 }

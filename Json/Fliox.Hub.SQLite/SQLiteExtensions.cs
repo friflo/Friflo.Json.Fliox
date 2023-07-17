@@ -49,6 +49,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case ColumnType.Guid:
                 case ColumnType.BigInteger:
                 case ColumnType.String:
+                case ColumnType.JsonKey:
                 case ColumnType.Enum:       return "text";
                 case ColumnType.Array:      return "text"; // JSON column
                 case ColumnType.Object:     return "tinyint";

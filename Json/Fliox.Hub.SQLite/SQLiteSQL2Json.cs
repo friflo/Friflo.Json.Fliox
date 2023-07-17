@@ -159,12 +159,15 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 }
                 case ColumnType.BigInteger:
                 case ColumnType.String:
+                case ColumnType.JsonKey:
                 case ColumnType.Enum:
                 case ColumnType.Array: {
                     var data = raw.sqlite3_column_blob(stmt, column.ordinal);
                     sql2Json.CopyToCellBytes(data, ref cell);
                     break;
                 }
+                default:
+                    throw new InvalidOperationException($"unexpected type: {column.type}");
             }
             return default;
         }
@@ -183,6 +186,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case ColumnType.Boolean:    writer.MemberBln    (key, cell.lng != 0);   break;
                 //
                 case ColumnType.String:
+                case ColumnType.JsonKey:
                 case ColumnType.Enum:
                 case ColumnType.BigInteger: writer.MemberStr    (key, cell.bytes);      break;
                 //

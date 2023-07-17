@@ -43,7 +43,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             switch (column.type) {
                 case ColumnType.Boolean:    cell.lng = reader.GetBoolean    (ordinal) ? 1 : 0;  return;
                 //
-                case ColumnType.String:     
+                case ColumnType.String:
+                case ColumnType.JsonKey:
                 case ColumnType.Enum:
                 case ColumnType.BigInteger: sql2Json.GetString(reader, ref cell, ordinal);      return;
                 //
@@ -79,6 +80,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case ColumnType.Boolean:    writer.MemberBln    (key, cell.lng != 0);               break;
                 //
                 case ColumnType.String:
+                case ColumnType.JsonKey:
                 case ColumnType.Enum:
                 case ColumnType.BigInteger: writer.MemberStr    (key, cell.CharsSpan());            break;
                 //

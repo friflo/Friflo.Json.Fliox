@@ -53,6 +53,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 case ColumnType.DateTime:   return "timestamp";
                 case ColumnType.BigInteger:
                 case ColumnType.String:
+                case ColumnType.JsonKey:
                 case ColumnType.Enum:       return "text";
                 case ColumnType.Array:      return "JSONB"; // JSON column
                 case ColumnType.Object:     return "boolean";
