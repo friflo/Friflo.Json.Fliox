@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable All
@@ -95,6 +96,7 @@ namespace Friflo.Json.Tests.Provider.Client
                     /// If component is null all its column values are null
                     /// </summary>
                     public  ComponentType       obj;
+                    public  ShortString         shortStr;
     }
     
     public class ComponentType {

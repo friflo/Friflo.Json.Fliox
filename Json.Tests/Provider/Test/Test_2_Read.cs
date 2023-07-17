@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
@@ -305,6 +306,21 @@ namespace Friflo.Json.Tests.Provider.Test
             
             AreEqual(bi0.bigInt,   bi0Read.Result.bigInt);
             AreEqual(bi1.bigInt,   bi1Read.Result.bigInt);
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestRead_28_ShortString(string db) {
+            var client1 = await GetClient(db);
+            var ss0     = new TestReadTypes { id = "ss0", shortStr = new ShortString("short-string") };
+            client1.testReadTypes.UpsertRange(new [] { ss0 });
+            await client1.SyncTasks();
+            
+            var client2 = await GetClient(db);
+            var read    = client2.testReadTypes.Read();
+            var bi0Read = read.Find(ss0.id);
+            await client2.SyncTasks();
+            
+            IsTrue(ss0.shortStr.IsEqual(bi0Read.Result.shortStr));
         }
     }
 }
