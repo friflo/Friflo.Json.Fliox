@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER || SQLITE
 
 using System;
-using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using SQLitePCL;
