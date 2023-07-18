@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             try {
                 await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
             } catch (MySqlException e) {
-                return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
+                return new CreateEntitiesResult { Error = DatabaseError(e) };
             }
             return new CreateEntitiesResult();
         }
@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             try {
                 await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
             } catch (MySqlException e) {
-                return new UpsertEntitiesResult { Error = DatabaseError(e.Message) };    
+                return new UpsertEntitiesResult { Error = DatabaseError(e) };
             }
             return new UpsertEntitiesResult();
         }
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
                 }
             } catch (MySqlException e) {
-                return new ReadEntitiesResult { Error = DatabaseError(e.Message) };    
+                return new ReadEntitiesResult { Error = DatabaseError(e) };
             }
         }
 
@@ -194,7 +194,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
             catch (MySqlException e) {
-                return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message), sql = sql };
+                var msg = GetErrMsg(e);
+                return new QueryEntitiesResult { Error = new TaskExecuteError(msg), sql = sql };
             }
         }
         
@@ -233,14 +234,15 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 try {
                     await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
                 } catch (MySqlException e) {
-                    return new DeleteEntitiesResult { Error = DatabaseError(e.Message) };    
+                    return new DeleteEntitiesResult { Error = DatabaseError(e) };
                 }
                 return new DeleteEntitiesResult();
             }
         }
         
-        private static TaskExecuteError DatabaseError(string message) {
-            return new TaskExecuteError(TaskErrorType.DatabaseError, message);
+        private static TaskExecuteError DatabaseError(MySqlException exception) {
+            var msg = GetErrMsg(exception);
+            return new TaskExecuteError(TaskErrorType.DatabaseError, msg);
         }
     }
 }

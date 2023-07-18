@@ -14,6 +14,10 @@ namespace Friflo.Json.Fliox.Hub.MySQL
 {
     internal static class MySQLUtils
     {
+        internal static string GetErrMsg(MySqlException exception) {
+            return exception.Message;
+        }
+        
         internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
@@ -25,7 +29,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return default;
             }
             catch (MySqlException e) {
-                return SQLResult.CreateError(e);
+                var msg = GetErrMsg(e);
+                return SQLResult.CreateError(msg);
             }
         }
         

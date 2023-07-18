@@ -82,7 +82,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new TransResult(command);
             }
             catch (MySqlException e) {
-                return new TransResult(e.Message);
+                var msg = GetErrMsg(e);
+                return new TransResult(msg);
             }
         }
         
