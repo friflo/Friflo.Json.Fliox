@@ -18,6 +18,11 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     internal static partial class SQLServerUtils
     {
+        internal static string GetErrMsg(SqlException exception) {
+            var error = exception.Errors[0]; // always present
+            return error.Message;
+        }
+
         internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);

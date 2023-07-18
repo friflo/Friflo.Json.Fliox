@@ -91,7 +91,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 return new TransResult(command);
             }
             catch (SqlException e) {
-                return new TransResult(e.Message);
+                var msg = GetErrMsg(e);
+                return new TransResult(msg);
             }
         }
         

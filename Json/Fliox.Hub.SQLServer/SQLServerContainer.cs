@@ -132,7 +132,8 @@ CREATE TABLE dbo.{name}";
                     await CreateEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
                 }
             } catch (SqlException e) {
-                return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
+                var msg = GetErrMsg(e);
+                return new CreateEntitiesResult { Error = new TaskExecuteError(msg) };
             }
             return new CreateEntitiesResult();
         }
@@ -152,7 +153,8 @@ CREATE TABLE dbo.{name}";
                     await UpsertEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
                 }
             } catch (SqlException e) {
-                return new UpsertEntitiesResult { Error = new TaskExecuteError(e.Message) };
+                var msg = GetErrMsg(e);
+                return new UpsertEntitiesResult { Error = new TaskExecuteError(msg) };
             }
             return new UpsertEntitiesResult();
         }
@@ -188,7 +190,8 @@ CREATE TABLE dbo.{name}";
                     return SQLUtils.ReadEntitiesSync(reader, command);
                 }
             } catch (SqlException e) {
-                return new ReadEntitiesResult { Error = new TaskExecuteError(e.Message) };
+                var msg = GetErrMsg(e);
+                return new ReadEntitiesResult { Error = new TaskExecuteError(msg) };
             }
         }
 
@@ -216,7 +219,8 @@ CREATE TABLE dbo.{name}";
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
             catch (SqlException e) {
-                return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message), sql = sql };
+                var msg = GetErrMsg(e);
+                return new QueryEntitiesResult { Error = new TaskExecuteError(msg), sql = sql };
             }
         }
         
@@ -237,7 +241,8 @@ CREATE TABLE dbo.{name}";
                 return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
             }
             catch (SqlException e) {
-                return new AggregateEntitiesResult { Error = new TaskExecuteError(e.Message) };
+                var msg = GetErrMsg(e);
+                return new AggregateEntitiesResult { Error = new TaskExecuteError(msg) };
             }
         }
 
@@ -264,12 +269,9 @@ CREATE TABLE dbo.{name}";
                 return new DeleteEntitiesResult();
             }
             catch (SqlException e) {
-                return new DeleteEntitiesResult { Error = new TaskExecuteError(e.Message) };
+                var msg = GetErrMsg(e);
+                return new DeleteEntitiesResult { Error = new TaskExecuteError(msg) };
             }
-        }
-        
-        private static TaskExecuteError DatabaseError(string message) {
-            return new TaskExecuteError(TaskErrorType.DatabaseError, message);
         }
     }
 }
