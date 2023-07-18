@@ -31,13 +31,16 @@ namespace Friflo.Json.Tests.Provider.Test
             var raw = sqlResult.Result;
             AreEqual(21, raw.rowCount);
             IsTrue(raw.columnCount >= 16);
-            for (int n = 0; n < raw.rowCount; n++) {
-                var row = raw.GetRow(n);
+            int n = 0;
+            foreach (var row in raw.Rows) {
                 AreEqual(raw.columnCount, row.count);
                 AreEqual(raw.columnCount, row.Values.Length);
                 for (int i = 0; i < raw.columnCount; i++) {
                     IsTrue(row.Values[i].IsEqual(row[i]));
+                    IsTrue(raw.GetRow(n)[i].IsEqual(row[i]));
+                    IsTrue(raw.GetRow(n)[i].IsEqual(raw.GetValue(n, i)));
                 }
+                n++;
             }
         }
     }

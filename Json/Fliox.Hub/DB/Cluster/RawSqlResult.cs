@@ -5,6 +5,7 @@ using System;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
+// ReSharper disable ReturnTypeCanBeEnumerable.Global
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     public class RawSqlResult
@@ -12,11 +13,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public  int             rowCount;
         public  int             columnCount;
         public  JsonKey[]       values;
+        private RawSqlRow[]     rows;
         
-        public  RawSqlRow[]     Rows        => GetRows();
+        public  RawSqlRow[]     Rows        => rows ?? GetRows();
+        
         public  override string ToString()  => GetString();
 
-        public RawSqlRow GetRow(int row) {
+        public   RawSqlRow      GetRow(int row) {
             if (row < 0 || row >= rowCount) throw new IndexOutOfRangeException(nameof(row));
             return new RawSqlRow(values, row, columnCount);
         }
