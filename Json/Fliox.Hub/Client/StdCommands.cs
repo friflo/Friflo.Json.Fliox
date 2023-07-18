@@ -51,7 +51,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>Rollback a transaction started previously with <see cref="TransactionBegin"/></summary>
         public CommandTask<TransactionResult>   TransactionRollback()       => send.Command<TransactionResult>();
         
-        public CommandTask<SQLResult2>          ExecuteSQL(string sql)     => send.Command<string, SQLResult2>(sql);
+        /// <summary>Execute a raw SQL query / statement</summary>
+        public CommandTask<RawSqlResult>        ExecuteRawSQL(string sql)   => send.Command<string, RawSqlResult>(sql);
 
         // --- commands: host
         /// <summary>Returns general information about the Hub like version, host, project and environment name</summary>

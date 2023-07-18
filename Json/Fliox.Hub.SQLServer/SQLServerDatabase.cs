@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using System.Data.SqlClient;
-using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
 
 // ReSharper disable UseAwaitUsing
@@ -135,25 +135,23 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
         
         public Task CreateFunctions(ISyncConnection connection) => Task.CompletedTask;
         
-        public override async Task<SQLResult2> ExecuteSQL(string sql, SyncContext syncContext) {
+        public override async Task<Result<RawSqlResult>> ExecuteRawSQL(string sql, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
-                return new SQLResult2();
+                return new RawSqlResult();
             }
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 var fieldTypes = SQLTable.GetFieldTypes(reader);
-                var rows = new List<SqlRow>();
+                var result = new RawSqlResult { columns = fieldTypes.Length, values = new List<JsonKey>() };
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
-                    var row = SQLTable.GetSqlRow(reader, fieldTypes);
-                    rows.Add(row);
-                    return new SQLResult2 { rows = rows };
+                    SQLTable.AddRow(reader, fieldTypes, ref result);
                 }
-                return default;
+                return result;
             }
             catch (SqlException e) {
                 var msg = GetErrMsg(e);
-                return new SQLResult2 { error = msg };
+                return Result.Error(msg);
             }
         }
     }

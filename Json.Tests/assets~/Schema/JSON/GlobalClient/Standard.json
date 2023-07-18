@@ -10,6 +10,9 @@
         },
         "int32": {
             "type": "integer", "minimum": -2147483648, "maximum": 2147483647
+        },
+        "JsonKey": {
+            "oneOf": [{ "type": "string" }, { "type": "integer" }]
         }
     }
 }

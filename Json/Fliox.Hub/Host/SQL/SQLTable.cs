@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -101,30 +101,29 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return types;
         }
         
-        public static SqlRow GetSqlRow(DbDataReader reader, FieldType[] fieldTypes) {
+        public static void AddRow(DbDataReader reader, FieldType[] fieldTypes, ref RawSqlResult result) {
             var count   = fieldTypes.Length;
-            var values  = new SqlValue[count];
+            var values  = result.values;
+            result.rows++;
             for (int n = 0; n < count; n++) {
                 if (reader.IsDBNull(n)) {
                     continue;
                 }
                 var type = fieldTypes[n];
-                SqlValue value = default;
+                JsonKey value = default;
                 switch (type) {
-                    case FieldType.UInt8:       value.lng       = reader.GetByte(n);        break;
-                    case FieldType.Int16:       value.lng       = reader.GetInt16(n);       break;
-                    case FieldType.Int32:       value.lng       = reader.GetInt32(n);       break;
-                    case FieldType.Int64:       value.lng       = reader.GetInt64(n);       break;
-                    case FieldType.Float:       value.dbl       = reader.GetFloat(n);       break;
-                    case FieldType.Double:      value.dbl       = reader.GetDouble(n);      break;
-                    case FieldType.String:      value.str       = reader.GetString(n);      break;
-                    case FieldType.DateTime:    value.dateTime  = reader.GetDateTime(n);    break;
-                    default:                    value = default;                            break;
+                    case FieldType.UInt8:       value = new JsonKey(reader.GetByte(n));         break;
+                    case FieldType.Int16:       value = new JsonKey(reader.GetInt16(n));        break;
+                    case FieldType.Int32:       value = new JsonKey(reader.GetInt32(n));        break;
+                    case FieldType.Int64:       value = new JsonKey(reader.GetInt64(n));        break;
+                //  case FieldType.Float:       value = new JsonKey(reader.GetFloat(n));        break;
+                //  case FieldType.Double:      value = new JsonKey(reader.GetDouble(n));       break;
+                    case FieldType.String:      value = new JsonKey(reader.GetString(n));       break;
+                //  case FieldType.DateTime:    value = new JsonKey(reader.GetDateTime(n));     break;
+                    default:                    value = default;                                break;
                 }
-                values[n] = value;
+                values.Add(value);
             }
-            var row = new SqlRow { values = values };
-            return row;
         }
     }
 

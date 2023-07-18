@@ -333,7 +333,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new DbMessages { commands = commands, messages = messages };
         }
         
-        public virtual Task<SQLResult2> ExecuteSQL(string sql, SyncContext syncContext) => throw new NotSupportedException();
+        public virtual Task<Result<RawSqlResult>> ExecuteRawSQL(string sql, SyncContext syncContext) => throw new NotSupportedException();
 
         #endregion
         

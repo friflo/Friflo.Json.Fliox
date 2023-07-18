@@ -6,7 +6,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -160,29 +160,20 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         public Task CreateFunctions(ISyncConnection connection) => Task.CompletedTask;
         
-        public override async Task<SQLResult2> ExecuteSQL(string sql, SyncContext syncContext) {
+        public override async Task<Result<RawSqlResult>> ExecuteRawSQL(string sql, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
-                return new SQLResult2();
+                return new RawSqlResult();
             }
             try {
                 using var stmt = SQLiteUtils.Prepare(connection, sql, out var error);
                 if (error != null) {
-                    return new SQLResult2 { error = error.message };    
+                    return Result.Error(error.message);
                 }
                 throw new NotImplementedException();
-                /* using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
-                var fieldTypes = SQLTable.GetFieldTypes(reader);
-                var rows = new List<SqlRow>();
-                while (await reader.ReadAsync().ConfigureAwait(false)) {
-                    var row = SQLTable.GetSqlRow(reader, fieldTypes);
-                    rows.Add(row);
-                    return new SQLResult2 { rows = rows };
-                }
-                return default; */
             }
             catch (Exception e) {
-                return new SQLResult2 { error = e.Message };
+                return Result.Error(e.Message);
             }
         }
     }

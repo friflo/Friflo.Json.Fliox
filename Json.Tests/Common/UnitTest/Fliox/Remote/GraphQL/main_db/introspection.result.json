@@ -1224,6 +1224,26 @@
                     }
                 },
                 {
+                    "name": "std_ExecuteRawSQL",
+                    "description": "/** Execute a raw SQL query / statement */\n",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "RawSqlResult"
+                        }
+                    }
+                },
+                {
                     "name": "std_Host",
                     "description": "/** Returns general information about the Hub like version, host, project and environment name */\n",
                     "args": [
@@ -4774,6 +4794,106 @@
                 {
                     "name": "Rollback",
                     "description": ""
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "RawSqlResult",
+            "description": "",
+            "fields": [
+                {
+                    "name": "rows",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "columns",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "values",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "RawSqlResultInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "rows",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "columns",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "values",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    }
                 }
             ]
         },

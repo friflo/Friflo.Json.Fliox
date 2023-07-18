@@ -6,6 +6,7 @@ using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
 using SqlKata;
 using static Friflo.Json.Tests.Provider.Env;
+using static NUnit.Framework.Assert;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Json.Tests.Provider.Test
@@ -20,14 +21,16 @@ namespace Friflo.Json.Tests.Provider.Test
             if (!SupportSQL(db)) return;
             
             var compiler    = GetCompiler();
-            var query       = new Query(nameof(TestClient.testReadTypes));
+            var query       = new Query("testreadtypes");
             var result      = compiler.Compile(query);
             
             var client      = await GetClient(db);
             // var sql2        = "DROP TABLE IF EXISTS `testops`;";
-            SqlResult ddd;
-            var sqlResult   = client.std.ExecuteSQL(result.Sql);
+            var sqlResult   = client.std.ExecuteRawSQL(result.Sql);
             await client.SyncTasks();
+            
+            AreEqual(21, sqlResult.Result.rows);
+            IsTrue(sqlResult.Result.columns >= 16);
         }
     }
 }

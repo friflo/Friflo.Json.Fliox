@@ -170,6 +170,13 @@
                 "Rollback"
             ]
         },
+        "RawSqlResult": {
+            "properties": {
+                "rows":    { "type": "int32" },
+                "columns": { "type": "int32" },
+                "values":  { "elements": { "type": "string" }, "nullable": true }
+            }
+        },
         "HostParam": {
             "properties": {
                 "memory":    { "type": "boolean", "nullable": true },

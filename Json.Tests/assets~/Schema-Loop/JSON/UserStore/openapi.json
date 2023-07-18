@@ -306,6 +306,33 @@
         }
       }
     },
+    "/?cmd=std.ExecuteRawSQL": {
+      "post": {
+        "summary":    "Execute a raw SQL query / statement",
+        "tags":       ["commands"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/RawSqlResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/?cmd=std.Host": {
       "post": {
         "summary":    "Returns general information about the Hub like version, host, project and environment name",

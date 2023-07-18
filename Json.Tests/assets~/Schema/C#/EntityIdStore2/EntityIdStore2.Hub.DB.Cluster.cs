@@ -56,6 +56,12 @@ public enum TransactionCommand {
     Rollback,
 }
 
+public class RawSqlResult {
+    int            rows;
+    int            columns;
+    List<JsonKey>  values;
+}
+
 public class HostParam {
     bool? memory;
     bool? gcCollect;

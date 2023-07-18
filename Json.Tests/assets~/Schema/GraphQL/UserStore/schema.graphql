@@ -35,6 +35,7 @@ type Query {
     std_TransactionBegin    : TransactionResult!
     std_TransactionCommit   : TransactionResult!
     std_TransactionRollback : TransactionResult!
+    std_ExecuteRawSQL      (param: String) : RawSqlResult!
     std_Host               (param: HostParamInput) : HostInfo!
     std_Cluster             : HostCluster!
     std_User               (param: UserParamInput) : UserResult!
@@ -367,6 +368,18 @@ input TransactionResultInput {
 enum TransactionCommand {
     Commit
     Rollback
+}
+
+type RawSqlResult {
+    rows    : Int!
+    columns : Int!
+    values  : [String!]
+}
+
+input RawSqlResultInput {
+    rows    : Int!
+    columns : Int!
+    values  : [String!]
 }
 
 type HostParam {

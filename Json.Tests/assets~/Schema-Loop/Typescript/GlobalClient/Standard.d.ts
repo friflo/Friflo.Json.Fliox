@@ -10,3 +10,6 @@ export type DateTime = string;
 /** signed integer 32-bit. Range: [-2147483648, 2147483647]                   */
 export type int32 = number;
 
+/** generic key type for key/values"      */
+export type JsonKey = string | number;
+

@@ -301,6 +301,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'><div><span>ContainerStats</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'><div><span>TransactionResult</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'><div><span>TransactionCommand</span><keyword>enum</keyword></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlResult'><div><span>RawSqlResult</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'><div><span>HostParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'><div><span>HostInfo</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'><div><span>HostMemory</span></div></a></li>
@@ -413,6 +414,12 @@ The transaction ends by either calling <b>SyncTasks</b> or explicit by
             <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'>TransactionResult</a></sig></td>
             <td><oas><a href='../open-api.html#/commands/post__cmd_std_TransactionRollback' target='_blank' title='open std.TransactionRollback API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>Rollback a transaction started previously with <b>TransactionBegin</b></docs></td>
+        </tr>
+        <tr>
+            <td><cmd>std.ExecuteRawSQL</cmd></td>
+            <td><sig>(<keyword>param</keyword>: <predef>string</predef> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlResult'>RawSqlResult</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__cmd_std_ExecuteRawSQL' target='_blank' title='open std.ExecuteRawSQL API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
+            <td><docs>Execute a raw SQL query / statement</docs></td>
         </tr>
         <tr>
             <td><cmd>std.Host</cmd></td>
@@ -623,6 +630,26 @@ In case any task in the transaction failed the transaction performs a <b>Rollbac
     <table>
         <tr><td>Commit</td><td></td></tr>
         <tr><td>Rollback</td><td></td></tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlResult'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlResult'>RawSqlResult</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>rows</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+        </tr>
+        <tr>
+            <td><field>columns</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+        </tr>
+        <tr>
+            <td><field>values</field></td>
+            <td><type><predef>(string | integer)</predef>[] | null</type></td>
+        </tr>
     </table>
     </div>
     <div class='type'>

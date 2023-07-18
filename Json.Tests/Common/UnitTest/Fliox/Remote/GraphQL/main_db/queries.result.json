@@ -141,6 +141,7 @@
         "std.TransactionBegin",
         "std.TransactionCommit",
         "std.TransactionRollback",
+        "std.ExecuteRawSQL",
         "std.Host",
         "std.Cluster",
         "std.User",

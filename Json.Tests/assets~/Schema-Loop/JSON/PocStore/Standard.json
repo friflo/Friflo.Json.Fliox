@@ -25,6 +25,9 @@
         },
         "double": {
             "type": "number"
+        },
+        "JsonKey": {
+            "oneOf": [{ "type": "string" }, { "type": "integer" }]
         }
     }
 }

@@ -95,6 +95,20 @@ namespace Friflo.Json.Fliox
             : this (bytes.AsSpan(), oldKey)
         { }
         
+        public JsonKey (in ReadOnlySpan<byte> bytes) {
+            var bytesLen = bytes.Length;
+            if (bytesLen == Bytes.GuidLength && Bytes.TryParseGuid(bytes, out var guid)) {
+                keyObj  = GUID;
+                GuidUtils.GuidToLongLong(guid, out lng, out lng2);
+                return;
+            }
+            if (ShortStringUtils.BytesToLongLong(bytes, out lng, out lng2)) {
+                keyObj  = STRING_SHORT;
+            } else {
+                keyObj  = ShortString.GetString(bytes, null, out lng, out lng2);
+            }
+        }
+        
         public JsonKey (in ReadOnlySpan<byte> bytes, in JsonKey oldKey) {
             if (Bytes.IsIntegral(bytes)) {
                 keyObj  = LONG;

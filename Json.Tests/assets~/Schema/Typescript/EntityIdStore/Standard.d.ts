@@ -16,3 +16,6 @@ export type int16 = number;
 /** unsigned integer 8-bit. Range: [0 - 255]                                  */
 export type uint8 = number;
 
+/** generic key type for key/values"      */
+export type JsonKey = string | number;
+

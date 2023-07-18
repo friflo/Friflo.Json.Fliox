@@ -33,6 +33,8 @@
                     "description": "Commit a transaction started previously with <b>TransactionBegin</b>" },
                 "std.TransactionRollback": { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/TransactionResult" },
                     "description": "Rollback a transaction started previously with <b>TransactionBegin</b>" },
+                "std.ExecuteRawSQL":       { "param": { "type": ["string", "null"] }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/RawSqlResult" },
+                    "description": "Execute a raw SQL query / statement" },
                 "std.Host":                { "param": { "oneOf": [{ "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostParam" }, {"type": "null"}] }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostInfo" },
                     "description": "Returns general information about the Hub like version, host, project and environment name" },
                 "std.Cluster":             { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" },

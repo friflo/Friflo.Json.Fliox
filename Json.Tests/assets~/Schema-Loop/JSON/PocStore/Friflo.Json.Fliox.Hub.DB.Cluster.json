@@ -88,6 +88,19 @@
                 "Rollback"
             ]
         },
+        "RawSqlResult": {
+            "type": "object",
+            "properties": {
+                "rows":    { "$ref": "./Standard.json#/definitions/int32" },
+                "columns": { "$ref": "./Standard.json#/definitions/int32" },
+                "values":  { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/JsonKey" } }
+            },
+            "required": [
+                "rows",
+                "columns"
+            ],
+            "additionalProperties": false
+        },
         "HostParam": {
             "type": "object",
             "properties": {
