@@ -79,8 +79,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
                 return new TransResult(command);
             }
-            catch (NpgsqlException e) {
-                return new TransResult(e.Message);
+            catch (PostgresException e) {
+                return new TransResult(e.MessageText);
             }
         }
         

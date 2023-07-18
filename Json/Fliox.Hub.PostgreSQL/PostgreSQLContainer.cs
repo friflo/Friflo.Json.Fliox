@@ -127,8 +127,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             try {
                 await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
-            } catch (NpgsqlException e) {
-                return new CreateEntitiesResult { Error = DatabaseError(e.Message) };    
+            } catch (PostgresException e) {
+                return new CreateEntitiesResult { Error = DatabaseError(e.MessageText) };    
             }
             return new CreateEntitiesResult();
         }
@@ -158,8 +158,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             try {
                 await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
-            } catch (NpgsqlException e) {
-                return new UpsertEntitiesResult { Error = DatabaseError(e.Message) };    
+            } catch (PostgresException e) {
+                return new UpsertEntitiesResult { Error = DatabaseError(e.MessageText) };    
             }
             return new UpsertEntitiesResult();
         }
@@ -189,8 +189,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 } else {
                     return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
                 }
-            } catch (NpgsqlException e) {
-                return new ReadEntitiesResult { Error = new TaskExecuteError(e.Message) };
+            } catch (PostgresException e) {
+                return new ReadEntitiesResult { Error = new TaskExecuteError(e.MessageText) };
             }
         }
 
@@ -214,8 +214,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     entities = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
                 }
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
-            } catch (NpgsqlException e) {
-                return new QueryEntitiesResult { Error = new TaskExecuteError(e.Message), sql = sql };
+            } catch (PostgresException e) {
+                return new QueryEntitiesResult { Error = new TaskExecuteError(e.MessageText), sql = sql };
             }
         }
         
@@ -253,8 +253,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.Default);
                 try {
                     await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
-                } catch (NpgsqlException e) {
-                    return new DeleteEntitiesResult { Error = DatabaseError(e.Message) };    
+                } catch (PostgresException e) {
+                    return new DeleteEntitiesResult { Error = DatabaseError(e.MessageText) };    
                 }
                 return new DeleteEntitiesResult();
             }
