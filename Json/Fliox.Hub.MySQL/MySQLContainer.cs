@@ -194,8 +194,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
             catch (MySqlException e) {
-                var msg = GetErrMsg(e);
-                return new QueryEntitiesResult { Error = new TaskExecuteError(msg), sql = sql };
+                return new QueryEntitiesResult { Error = DatabaseError(e), sql = sql };
             }
         }
         
