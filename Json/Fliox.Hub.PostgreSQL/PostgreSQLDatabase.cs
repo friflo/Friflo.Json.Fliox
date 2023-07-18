@@ -135,11 +135,11 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
-                var fieldTypes  = SQLTable.GetFieldTypes(reader);
-                var values      = new List<JsonKey>();
-                var result      = new RawSqlResult { columnCount = fieldTypes.Length };
+                var types   = SQLTable.GetFieldTypes(reader);
+                var values  = new List<JsonKey>();
+                var result  = new RawSqlResult { types = types };
                 while (await reader.ReadAsync().ConfigureAwait(false)) {
-                    SQLTable.AddRow(reader, fieldTypes, values);
+                    SQLTable.AddRow(reader, types, values);
                     result.rowCount++;
                 }
                 result.values = values.ToArray();

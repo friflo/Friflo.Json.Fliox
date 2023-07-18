@@ -314,6 +314,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'><div><span>TransactionResult</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'><div><span>TransactionCommand</span><keyword>enum</keyword></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlResult'><div><span>RawSqlResult</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.FieldType'><div><span>FieldType</span><keyword>enum</keyword></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'><div><span>HostParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'><div><span>HostInfo</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostMemory'><div><span>HostMemory</span></div></a></li>
@@ -1086,13 +1087,30 @@ In case any task in the transaction failed the transaction performs a <b>Rollbac
             <td><type><a href='#Standard.int32'>int32</a></type></td>
         </tr>
         <tr>
-            <td><field>columnCount</field></td>
-            <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><field>types</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.FieldType'>FieldType</a>[] | null</type></td>
         </tr>
         <tr>
             <td><field>values</field></td>
             <td><type><predef>(string | integer)</predef>[] | null</type></td>
         </tr>
+    </table>
+    </div>
+    <div class='type enum'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.FieldType'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.FieldType'>FieldType</a>
+        <keyword>enum</keyword>
+    </h3>
+    <table>
+        <tr><td>None</td><td></td></tr>
+        <tr><td>UInt8</td><td></td></tr>
+        <tr><td>Int16</td><td></td></tr>
+        <tr><td>Int32</td><td></td></tr>
+        <tr><td>Int64</td><td></td></tr>
+        <tr><td>String</td><td></td></tr>
+        <tr><td>DateTime</td><td></td></tr>
+        <tr><td>Double</td><td></td></tr>
+        <tr><td>Float</td><td></td></tr>
     </table>
     </div>
     <div class='type'>

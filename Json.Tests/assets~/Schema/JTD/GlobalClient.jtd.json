@@ -62,10 +62,23 @@
         },
         "RawSqlResult": {
             "properties": {
-                "rowCount":    { "type": "int32" },
-                "columnCount": { "type": "int32" },
-                "values":      { "elements": { "type": "string" }, "nullable": true }
+                "rowCount": { "type": "int32" },
+                "types":    { "elements": { "ref":  "FieldType" }, "nullable": true },
+                "values":   { "elements": { "type": "string" }, "nullable": true }
             }
+        },
+        "FieldType": {
+            "enum": [
+                "None",
+                "UInt8",
+                "Int16",
+                "Int32",
+                "Int64",
+                "String",
+                "DateTime",
+                "Double",
+                "Float"
+            ]
         },
         "HostParam": {
             "properties": {

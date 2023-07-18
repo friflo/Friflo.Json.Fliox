@@ -4816,15 +4816,18 @@
                     }
                 },
                 {
-                    "name": "columnCount",
+                    "name": "types",
                     "description": "",
                     "args": [
                     ],
                     "type": {
-                        "kind":"NON_NULL",
+                        "kind":"LIST",
                         "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Int"
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "FieldType"
+                            }
                         }
                     }
                 },
@@ -4867,15 +4870,18 @@
                     }
                 },
                 {
-                    "name": "columnCount",
+                    "name": "types",
                     "description": "",
                     "args": [
                     ],
                     "type": {
-                        "kind":"NON_NULL",
+                        "kind":"LIST",
                         "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Int"
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "FieldType"
+                            }
                         }
                     }
                 },
@@ -4894,6 +4900,49 @@
                             }
                         }
                     }
+                }
+            ]
+        },
+        {
+            "kind":"ENUM",
+            "name": "FieldType",
+            "description": "",
+            "enumValues": [
+                {
+                    "name": "None",
+                    "description": ""
+                },
+                {
+                    "name": "UInt8",
+                    "description": ""
+                },
+                {
+                    "name": "Int16",
+                    "description": ""
+                },
+                {
+                    "name": "Int32",
+                    "description": ""
+                },
+                {
+                    "name": "Int64",
+                    "description": ""
+                },
+                {
+                    "name": "String",
+                    "description": ""
+                },
+                {
+                    "name": "DateTime",
+                    "description": ""
+                },
+                {
+                    "name": "Double",
+                    "description": ""
+                },
+                {
+                    "name": "Float",
+                    "description": ""
                 }
             ]
         },

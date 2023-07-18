@@ -123,10 +123,22 @@ export type TransactionCommand =
 ;
 
 export class RawSqlResult {
-    rowCount     : int32;
-    columnCount  : int32;
-    values?      : JsonKey[] | null;
+    rowCount  : int32;
+    types?    : FieldType[] | null;
+    values?   : JsonKey[] | null;
 }
+
+export type FieldType =
+    | "None"
+    | "UInt8"
+    | "Int16"
+    | "Int32"
+    | "Int64"
+    | "String"
+    | "DateTime"
+    | "Double"
+    | "Float"
+;
 
 export class HostParam {
     memory?    : boolean | null;

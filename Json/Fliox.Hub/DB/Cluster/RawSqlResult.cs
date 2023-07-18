@@ -11,33 +11,34 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public class RawSqlResult
     {
         public  int             rowCount;
-        public  int             columnCount;
+        public  FieldType[]     types;
         public  JsonKey[]       values;
         private RawSqlRow[]     rows;
         
+        public  int             ColumnCount => types.Length;
         public  RawSqlRow[]     Rows        => rows ?? GetRows();
         
         public  override string ToString()  => GetString();
 
         public   RawSqlRow      GetRow(int row) {
             if (row < 0 || row >= rowCount) throw new IndexOutOfRangeException(nameof(row));
-            return new RawSqlRow(values, row, columnCount);
+            return new RawSqlRow(values, row, ColumnCount);
         }
 
         public JsonKey GetValue(int row, int column) {
             if (row    < 0  || row    >= rowCount)      throw new IndexOutOfRangeException(nameof(row));
-            if (column < 0  || column >= columnCount)   throw new IndexOutOfRangeException(nameof(column));
-            return values[row * columnCount + column];
+            if (column < 0  || column >= ColumnCount)   throw new IndexOutOfRangeException(nameof(column));
+            return values[row * ColumnCount + column];
         }
 
         private string GetString() {
-            return $"rows: {rowCount}, columns; {columnCount}";
+            return $"rows: {rowCount}, columns; {ColumnCount}";
         }
         
         private RawSqlRow[] GetRows() { 
             var result = new RawSqlRow[rowCount];
             for (int row = 0; row < rowCount; row++) {
-                result[row] = new RawSqlRow(values, row, columnCount);
+                result[row] = new RawSqlRow(values, row, ColumnCount);
             }
             return result;
         }

@@ -141,15 +141,27 @@ enum TransactionCommand {
 }
 
 type RawSqlResult {
-    rowCount    : Int!
-    columnCount : Int!
-    values      : [String!]
+    rowCount : Int!
+    types    : [FieldType!]
+    values   : [String!]
 }
 
 input RawSqlResultInput {
-    rowCount    : Int!
-    columnCount : Int!
-    values      : [String!]
+    rowCount : Int!
+    types    : [FieldType!]
+    values   : [String!]
+}
+
+enum FieldType {
+    None
+    UInt8
+    Int16
+    Int32
+    Int64
+    String
+    DateTime
+    Double
+    Float
 }
 
 type HostParam {

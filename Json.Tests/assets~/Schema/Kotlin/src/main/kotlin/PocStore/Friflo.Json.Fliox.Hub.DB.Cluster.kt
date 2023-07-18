@@ -51,10 +51,22 @@ enum class TransactionCommand {
 
 @Serializable
 data class RawSqlResult (
-              val rowCount    : Int,
-              val columnCount : Int,
-              val values      : List<String>? = null,
+              val rowCount : Int,
+              val types    : List<FieldType>? = null,
+              val values   : List<String>? = null,
 )
+
+enum class FieldType {
+    None,
+    UInt8,
+    Int16,
+    Int32,
+    Int64,
+    String,
+    DateTime,
+    Double,
+    Float,
+}
 
 @Serializable
 data class HostParam (
