@@ -101,16 +101,15 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return types;
         }
         
-        public static void AddRow(DbDataReader reader, FieldType[] fieldTypes, ref RawSqlResult result) {
+        public static void AddRow(DbDataReader reader, FieldType[] fieldTypes, List<JsonKey> values) {
             var count   = fieldTypes.Length;
-            var values  = result.values;
-            result.rows++;
             for (int n = 0; n < count; n++) {
                 if (reader.IsDBNull(n)) {
+                    values.Add(default);
                     continue;
                 }
                 var type = fieldTypes[n];
-                JsonKey value = default;
+                JsonKey value;
                 switch (type) {
                     case FieldType.UInt8:       value = new JsonKey(reader.GetByte(n));         break;
                     case FieldType.Int16:       value = new JsonKey(reader.GetInt16(n));        break;

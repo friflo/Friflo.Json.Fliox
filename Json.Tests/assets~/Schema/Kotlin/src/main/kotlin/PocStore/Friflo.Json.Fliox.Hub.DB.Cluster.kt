@@ -51,9 +51,9 @@ enum class TransactionCommand {
 
 @Serializable
 data class RawSqlResult (
-              val rows    : Int,
-              val columns : Int,
-              val values  : List<String>? = null,
+              val rowCount    : Int,
+              val columnCount : Int,
+              val values      : List<String>? = null,
 )
 
 @Serializable

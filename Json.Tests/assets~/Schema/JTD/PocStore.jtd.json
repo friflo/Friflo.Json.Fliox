@@ -172,9 +172,9 @@
         },
         "RawSqlResult": {
             "properties": {
-                "rows":    { "type": "int32" },
-                "columns": { "type": "int32" },
-                "values":  { "elements": { "type": "string" }, "nullable": true }
+                "rowCount":    { "type": "int32" },
+                "columnCount": { "type": "int32" },
+                "values":      { "elements": { "type": "string" }, "nullable": true }
             }
         },
         "HostParam": {

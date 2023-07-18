@@ -2,7 +2,6 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System.Threading.Tasks;
-using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
 using SqlKata;
 using static Friflo.Json.Tests.Provider.Env;
@@ -29,8 +28,17 @@ namespace Friflo.Json.Tests.Provider.Test
             var sqlResult   = client.std.ExecuteRawSQL(result.Sql);
             await client.SyncTasks();
             
-            AreEqual(21, sqlResult.Result.rows);
-            IsTrue(sqlResult.Result.columns >= 16);
+            var raw = sqlResult.Result;
+            AreEqual(21, raw.rowCount);
+            IsTrue(raw.columnCount >= 16);
+            for (int n = 0; n < raw.rowCount; n++) {
+                var row = raw.GetRow(n);
+                AreEqual(raw.columnCount, row.count);
+                AreEqual(raw.columnCount, row.Values.Length);
+                for (int i = 0; i < raw.columnCount; i++) {
+                    IsTrue(row.Values[i].IsEqual(row[i]));
+                }
+            }
         }
     }
 }

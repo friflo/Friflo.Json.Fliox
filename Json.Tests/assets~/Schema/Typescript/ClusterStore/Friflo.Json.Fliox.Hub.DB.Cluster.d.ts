@@ -142,9 +142,9 @@ export type TransactionCommand =
 ;
 
 export class RawSqlResult {
-    rows     : int32;
-    columns  : int32;
-    values?  : JsonKey[] | null;
+    rowCount     : int32;
+    columnCount  : int32;
+    values?      : JsonKey[] | null;
 }
 
 export class HostParam {

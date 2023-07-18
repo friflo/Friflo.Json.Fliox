@@ -4803,7 +4803,7 @@
             "description": "",
             "fields": [
                 {
-                    "name": "rows",
+                    "name": "rowCount",
                     "description": "",
                     "args": [
                     ],
@@ -4816,7 +4816,7 @@
                     }
                 },
                 {
-                    "name": "columns",
+                    "name": "columnCount",
                     "description": "",
                     "args": [
                     ],
@@ -4854,7 +4854,7 @@
             "description": "",
             "inputFields": [
                 {
-                    "name": "rows",
+                    "name": "rowCount",
                     "description": "",
                     "args": [
                     ],
@@ -4867,7 +4867,7 @@
                     }
                 },
                 {
-                    "name": "columns",
+                    "name": "columnCount",
                     "description": "",
                     "args": [
                     ],
