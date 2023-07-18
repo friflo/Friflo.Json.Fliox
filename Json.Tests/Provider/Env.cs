@@ -147,6 +147,7 @@ namespace Friflo.Json.Tests.Provider
         internal static SqlKata.Compilers.Compiler GetCompiler() {
             var db = TEST_DB_PROVIDER;
             switch (db) {
+                case  null:
                 case "sqlite":          
                 case "sqlite_rel":      return new SqlKata.Compilers.SqliteCompiler();
                 case "mysql":
