@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Provider.Test
     // ReSharper disable once InconsistentNaming
     public static class Test_6_Statement
     {
-        private static bool SupportSQL (string db) => /* IsSQLite(db) || */  IsMySQL(db) || IsMariaDB(db) || IsPostgres(db) || IsSQLServer(db);
+        private static bool SupportSQL (string db) => IsSQLite(db) || IsMySQL(db) || IsMariaDB(db) || IsPostgres(db) || IsSQLServer(db);
 
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestStatement_Select(string db) {

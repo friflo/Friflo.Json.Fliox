@@ -165,12 +165,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (syncConnection is not SyncConnection connection) {
                 return new RawSqlResult();
             }
+            using var stmt = SQLiteUtils.Prepare(connection, sql, out var error);
+            if (error != null) {
+                return Result.Error(error.message);
+            }
             try {
-                using var stmt = SQLiteUtils.Prepare(connection, sql, out var error);
-                if (error != null) {
-                    return Result.Error(error.message);
+                var result = SQLiteUtils.GetRawSqlResult(connection, stmt.instance, out var errorMsg);
+                if (errorMsg != null) {
+                    return Result.Error(errorMsg); 
                 }
-                throw new NotImplementedException();
+                return result;
             }
             catch (Exception e) {
                 return Result.Error(e.Message);

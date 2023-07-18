@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -263,6 +264,62 @@ GENERATED ALWAYS AS ({asStr});";
                 return Success(out error);
             }
             return Error($"exec failed. sql: {sql}, error: {errMsg}", out error);
+        }
+        
+        internal static RawSqlResult GetRawSqlResult(SyncConnection connection, sqlite3_stmt stmt, out string error) {
+            var count   = raw.sqlite3_column_count(stmt);
+            var types = new FieldType[count];
+            for (int n = 0; n < count; n++) {
+                var type = raw.sqlite3_column_decltype(stmt, n);
+                types[n]= GetFieldType(type);
+            }
+            var values  = new List<JsonKey>();
+            int row = 0;
+            while (true) {
+                var rc = raw.sqlite3_step(stmt);
+                if (rc == raw.SQLITE_ROW) {
+                    for (int n = 0; n < count; n++) {
+                        JsonKey value;
+                        switch (types[n]) {
+                            case FieldType.UInt8:
+                            case FieldType.Int64:
+                                var lng = raw.sqlite3_column_int64(stmt, n);
+                                value = new JsonKey(lng);
+                                break;
+                            case FieldType.Double:
+                                value = default;
+                                break;
+                            case FieldType.String:
+                                var text = raw.sqlite3_column_text(stmt, n);
+                                var str = text.utf8_to_string(); // TODO optimize - avoid string instantiation
+                                value = new JsonKey(str);
+                                break;
+                            default:
+                                throw new InvalidOperationException($"unexpected type: {types[n]}");
+                        }
+                        values.Add(value);
+                    }
+                    row++;
+                } else if (rc == raw.SQLITE_DONE) {
+                    break;
+                } else {
+                    error = GetErrorMsg("xxx", connection.sqliteDB, rc);
+                    return null;
+                }
+            }
+            error = null;
+            return new RawSqlResult { types = types, values = values.ToArray(), rowCount = row };
+        }
+        
+        private static  FieldType GetFieldType(utf8z type) {
+            var str = type.utf8_to_string();    // TODO optimize - avoid string instantiation
+            switch (str) {
+                case "TEXT":        return FieldType.String;
+                case "tinyint":     return FieldType.UInt8;
+                case "INTEGER":     return FieldType.Int64;
+                case "REAL":        return FieldType.Double;
+                default: throw new InvalidOperationException($"unexpected type: {str}");
+            }
         }
     }
     
