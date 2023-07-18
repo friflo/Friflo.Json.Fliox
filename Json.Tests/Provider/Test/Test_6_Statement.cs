@@ -30,15 +30,18 @@ namespace Friflo.Json.Tests.Provider.Test
             
             var raw = sqlResult.Result;
             AreEqual(21, raw.rowCount);
-            IsTrue(raw.ColumnCount >= 16);
+            var columnCount = raw.ColumnCount;
+            IsTrue(columnCount >= 16);
             int n = 0;
             foreach (var row in raw.Rows) {
-                AreEqual(raw.ColumnCount, row.count);
-                AreEqual(raw.ColumnCount, row.Values.Length);
-                for (int i = 0; i < raw.ColumnCount; i++) {
+                AreEqual(columnCount, row.count);
+                AreEqual(columnCount, row.Values.Length);
+                AreEqual(n, row.index);
+                for (int i = 0; i < columnCount; i++) {
                     IsTrue(row.Values[i].IsEqual(row[i]));
-                    IsTrue(raw.GetRow(n)[i].IsEqual(row[i]));
-                    IsTrue(raw.GetRow(n)[i].IsEqual(raw.GetValue(n, i)));
+                    var tempRow = raw.GetRow(n);
+                    IsTrue(tempRow[i].IsEqual(row[i]));
+                    IsTrue(tempRow[i].IsEqual(raw.GetValue(n, i)));
                 }
                 n++;
             }
