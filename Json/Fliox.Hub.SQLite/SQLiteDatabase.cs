@@ -75,7 +75,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 return SyncConnectionError.DatabaseDoesNotExist(name);
             }
             if (rc != raw.SQLITE_OK) {
-                return new SyncConnectionError($"sqlite3_open_v2 failed. error: {rc}");
+                var msg = SQLiteUtils.GetErrorMsg("open failed.", sqliteDB, rc);
+                return new SyncConnectionError(msg);
             }
             return new SyncConnection(sqliteDB, writeLock);
         }
@@ -128,7 +129,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             const int flags = raw.SQLITE_OPEN_READWRITE | raw.SQLITE_OPEN_CREATE;
             var rc = raw.sqlite3_open_v2(filePath, out sqlite3 sqliteDB, flags, null);
             if (rc != raw.SQLITE_OK) {
-                throw new InvalidOperationException($"CreateDatabaseAsync() failed. error: {rc}");
+                var msg = SQLiteUtils.GetErrorMsg("create / open database failed.", sqliteDB, rc);
+                throw new InvalidOperationException(msg);
             }
             var connection = new SyncConnection(sqliteDB, writeLock);
             if (!SQLiteUtils.Exec(connection, "PRAGMA journal_mode = WAL;", out var error)) {

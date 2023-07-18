@@ -15,11 +15,13 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 {
     internal sealed class SQLiteSQL2Json : ISQL2JsonMapper
     {
+        private readonly    SyncConnection      connection;
         private readonly    sqlite3_stmt        stmt;
         private readonly    SQL2Json            sql2Json;
         private readonly    TableInfo           tableInfo;
         
-        internal SQLiteSQL2Json(SQL2Json sql2Json, sqlite3_stmt stmt, TableInfo tableInfo) {
+        internal SQLiteSQL2Json(SQL2Json sql2Json, SyncConnection connection, sqlite3_stmt stmt, TableInfo tableInfo) {
+            this.connection = connection;
             this.sql2Json   = sql2Json;
             this.stmt       = stmt;
             this.tableInfo  = tableInfo;
@@ -91,7 +93,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             foreach (var key in keys) {
                 var rc  = BindKey(stmt, key, ref bytes);
                 if (rc != raw.SQLITE_OK) {
-                    return SQLiteUtils.Error($"bind key failed. error: {rc}, key: {key}", out error);
+                    var msg = SQLiteUtils.GetErrorMsg("bind key failed.", connection, rc, key);
+                    return SQLiteUtils.Error(msg, out error);
                 }
                 rc = raw.sqlite3_step(stmt);
                 switch (rc) {
@@ -113,11 +116,13 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                         sql2Json.AddRow();
                         break;
                     default:
-                        return SQLiteUtils.Error($"step failed. error: {rc}, key: {key}", out error);
+                        var msg = SQLiteUtils.GetErrorMsg("step failed.", connection, rc, key);
+                        return SQLiteUtils.Error(msg, out error);
                 }
                 rc = raw.sqlite3_reset(stmt);
                 if (rc != raw.SQLITE_OK) {
-                    return SQLiteUtils.Error($"reset failed. error: {rc}, key: {key}", out error);
+                    var msg = SQLiteUtils.GetErrorMsg("reset failed.", connection, rc, key);
+                    return SQLiteUtils.Error(msg, out error);
                 }
             }
             sql2Json.Cleanup();

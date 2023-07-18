@@ -7,6 +7,7 @@ using System;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using SQLitePCL;
+using static Friflo.Json.Fliox.Hub.SQLite.SQLiteUtils;
 
 // ReSharper disable TooWideLocalVariableScope
 namespace Friflo.Json.Fliox.Hub.SQLite
@@ -14,10 +15,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     internal class SQLiteJson2SQLWriter : IJson2SQLWriter
     {
         private readonly    Json2SQL        json2Sql;
+        private readonly    SyncConnection  connection;
         private readonly    sqlite3_stmt    stmt;
 
-        internal SQLiteJson2SQLWriter(Json2SQL json2Sql, sqlite3_stmt stmt) {
+        internal SQLiteJson2SQLWriter(Json2SQL json2Sql, SyncConnection connection, sqlite3_stmt stmt) {
             this.json2Sql   = json2Sql;
+            this.connection = connection;
             this.stmt       = stmt;
         }
 
@@ -47,7 +50,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             var rc = raw.sqlite3_step(stmt);
             if (rc != raw.SQLITE_DONE) {
-                return new SQLError($"write row values failed. error: {rc}, PK: {json2Sql.DebugKey()}");
+                var msg = GetErrorMsg("step failed.", connection, rc, json2Sql.DebugKey());
+                return new SQLError(msg);
             }
             raw.sqlite3_reset(stmt);
             return default;
@@ -58,7 +62,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (rc == raw.SQLITE_OK) {
                 return default;
             }
-            return new SQLError($"write null failed. error: {rc}, PK: {json2Sql.DebugKey()}");
+            var msg = GetErrorMsg("write null failed.", connection, rc, json2Sql.DebugKey());
+            return new SQLError(msg);
         }
         
         private SQLError WriteBytes(ColumnInfo column, in RowCell cell) {
@@ -67,7 +72,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (rc == raw.SQLITE_OK) {
                 return default;
             }
-            return new SQLError($"write string failed. error: {rc}, PK: {json2Sql.DebugKey()}");
+            var msg = GetErrorMsg("bind failed.", connection, rc, json2Sql.DebugKey());
+            return new SQLError(msg);
         }
         
         private SQLError WriteNumber(ColumnInfo column, in RowCell cell) {
@@ -80,7 +86,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (rc == raw.SQLITE_OK) {
                     return default;
                 }
-                return new SQLError($"write floating point number failed. error: {rc}, PK: {json2Sql.DebugKey()}");
+                var msg = GetErrorMsg("bind double failed.", connection, rc, json2Sql.DebugKey());
+                return new SQLError(msg);
             } else {
                 var value = ValueParser.ParseLong(cell.value.AsSpan(), ref json2Sql.parseError, out bool success);
                 if (!success) {
@@ -90,7 +97,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (rc == raw.SQLITE_OK) {
                     return default;
                 }
-                return new SQLError($"write integer failed. error: {rc}, PK: {json2Sql.DebugKey()}");
+                var msg = GetErrorMsg("bind int64 failed.", connection, rc, json2Sql.DebugKey());
+                return new SQLError(msg);
             }
         }
         
@@ -99,7 +107,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             if (rc == raw.SQLITE_OK) {
                 return default;
             }
-            return new SQLError($"write bool failed. error: {rc}, PK: {json2Sql.DebugKey()}");
+            var msg = GetErrorMsg("bind int failed.", connection, rc, json2Sql.DebugKey());
+            return new SQLError(msg);
         }
     }
 }

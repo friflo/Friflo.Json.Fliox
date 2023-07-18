@@ -153,8 +153,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
         
         /// <summary>Return the primary key of the current row</summary>
-        public string DebugKey() {
-            return rowCells[keyColumn.ordinal].value.AsString();
+        public JsonKey DebugKey() {
+            var bytes = rowCells[keyColumn.ordinal].value;
+            return new JsonKey(bytes, default);
         }
     }
     

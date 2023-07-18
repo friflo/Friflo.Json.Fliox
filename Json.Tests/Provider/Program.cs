@@ -65,10 +65,10 @@ namespace Friflo.Json.Tests.Provider
                 hub.AddExtensionDB (testDb);
             } */
             var sqlite          = $"Data Source={CommonUtils.GetBasePath() + "test_db.sqlite3"}";
-            hub.AddExtensionDB  (new SQLiteDatabase     ("sqlite_db",       sqlite,     schema) { TableType = TableType.JsonColumn });
+            hub.AddExtensionDB  (new SQLiteDatabase     ("sqlite_db",       sqlite,     schema) { TableType = TableType.JsonColumn, Synchronous = true });
 
             var sqliteRel       = $"Data Source={CommonUtils.GetBasePath() + "test_rel.sqlite3"}";
-            hub.AddExtensionDB  (new SQLiteDatabase     ("sqlite_rel",      sqliteRel,  schema));
+            hub.AddExtensionDB  (new SQLiteDatabase     ("sqlite_rel",      sqliteRel,  schema) { Synchronous = true } );
 
             var mysql           = EnvConfig.GetConnectionString("mysql");
             hub.AddExtensionDB  (new MySQLDatabase      ("mysql_db",        mysql,      schema) { TableType = TableType.JsonColumn });

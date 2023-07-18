@@ -120,11 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             var result = await entityContainer.QueryEntitiesAsync(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
-                var taskError = result.Error;
-                if (result.sql != null) {
-                    taskError = new TaskExecuteError(taskError.type, $"{taskError.message}. SQL: {result.sql}");
-                }
-                return TaskError(taskError);
+                return TaskError(result.Error);
             }
             var entities = result.entities;
             result.entities = null;  // clear -> its not part of protocol

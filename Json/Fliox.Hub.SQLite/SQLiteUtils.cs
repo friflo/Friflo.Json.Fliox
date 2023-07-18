@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
     {
         internal static string GetVersion(sqlite3 db) {
             var sql     = "select sqlite_version()";
-            var rc      = raw.sqlite3_prepare_v3(db, sql, 0, out var stmt);
+            var rc      = raw.sqlite3_prepare_v2(db, sql, out var stmt);
             if (rc != raw.SQLITE_OK) throw new InvalidOperationException($"sqlite_version() - prepare error: {rc}");
             rc = raw.sqlite3_step(stmt);
             if (rc != raw.SQLITE_ROW) throw new InvalidOperationException($"sqlite_version() - step error: {rc}");
@@ -40,13 +40,15 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         }
         
         internal static SQLResult Execute(SyncConnection connection, string sql) {
-            var rc = raw.sqlite3_prepare_v3(connection.sqliteDB, sql, 0, out var stmt);
+            var rc = raw.sqlite3_prepare_v2(connection.sqliteDB, sql,out var stmt);
             if (rc != raw.SQLITE_OK) {
-                return SQLResult.CreateError($"prepare failed. sql: ${sql}, error: {rc}");
+                var msg = GetErrorMsg("prepare failed.", connection.sqliteDB, rc);
+                return SQLResult.CreateError(msg);
             }
             rc = raw.sqlite3_step(stmt);
             if (rc != raw.SQLITE_DONE) {
-                return SQLResult.CreateError($"step failed. sql: ${sql}, error: {rc}");
+                var msg = GetErrorMsg("step failed.", connection.sqliteDB, rc);
+                return SQLResult.CreateError(msg);
             }
             raw.sqlite3_finalize(stmt);
             return new SQLResult();
@@ -130,22 +132,25 @@ GENERATED ALWAYS AS ({asStr});";
 
         // [c - Improve INSERT-per-second performance of SQLite - Stack Overflow]
         // https://stackoverflow.com/questions/1711631/improve-insert-per-second-performance-of-sqlite
-        internal static bool AppendValues(sqlite3_stmt stmt, List<JsonEntity> entities, out TaskExecuteError error)
+        internal static bool AppendValues(SyncConnection connection, sqlite3_stmt stmt, List<JsonEntity> entities, out TaskExecuteError error)
         {
             var bytes = new Bytes(36);
             foreach (var entity in entities) {
                 var key = entity.key;
                 var rc  = BindKey(stmt, key, ref bytes);
                 if (rc != raw.SQLITE_OK) {
-                    return Error($"bind key failed. error: {rc}, key: {key}", out error);
+                    var msg = GetErrorMsg("bind key failed.", connection, rc, key);
+                    return Error(msg, out error);
                 }
                 rc = raw.sqlite3_bind_text(stmt, 2, entity.value.AsReadOnlySpan());
                 if (rc != raw.SQLITE_OK) {
-                    return Error($"bind value failed. error: {rc}, key: {key}", out error);
+                    var msg = GetErrorMsg("bind text failed.", connection, rc, key);
+                    return Error(msg, out error);
                 }
                 rc = raw.sqlite3_step(stmt);
                 if (rc != raw.SQLITE_DONE) {
-                    return Error($"step failed. error: {rc}, key: {key}", out error);
+                    var msg = GetErrorMsg("step failed", connection, rc, key);
+                    return Error(msg, out error);
                 }
                 raw.sqlite3_reset(stmt);
             }
@@ -153,6 +158,7 @@ GENERATED ALWAYS AS ({asStr});";
         }
         
         internal static bool AppendColumnValues(
+            SyncConnection          connection,
             sqlite3_stmt            stmt,
             List<JsonEntity>        entities,
             TableInfo               tableInfo,
@@ -160,7 +166,7 @@ GENERATED ALWAYS AS ({asStr});";
             out TaskExecuteError    error)
         {
             using var pooled    = syncContext.Json2SQL.Get();
-            var writer          = new SQLiteJson2SQLWriter (pooled.instance, stmt);
+            var writer          = new SQLiteJson2SQLWriter (pooled.instance, connection, stmt);
             var sqlError        =  pooled.instance.AppendColumnValues(writer, entities, tableInfo);
             if (sqlError.message is not null) {
                 error = new TaskExecuteError(sqlError.message);
@@ -171,6 +177,7 @@ GENERATED ALWAYS AS ({asStr});";
         }
         
         internal static bool ReadById(
+            SyncConnection          connection,
             sqlite3_stmt            stmt,
             List<JsonKey>           keys,
             List<EntityValue>       values,
@@ -181,7 +188,8 @@ GENERATED ALWAYS AS ({asStr});";
             foreach (var key in keys) {
                 var rc  = BindKey(stmt, key, ref bytes);
                 if (rc != raw.SQLITE_OK) {
-                    return Error($"bind key failed. error: {rc}, key: {key}", out error);
+                    var msg = GetErrorMsg("bind key failed.", connection, rc, key);
+                    return Error(msg, out error);
                 }
                 rc = raw.sqlite3_step(stmt);
                 switch (rc) {
@@ -194,41 +202,57 @@ GENERATED ALWAYS AS ({asStr});";
                         values.Add(new EntityValue(key, value));
                         break;
                     default:
-                        return Error($"step failed. error: {rc}, key: {key}", out error);
+                        var msg = GetErrorMsg("step failed.", connection, rc, key);
+                        return Error(msg, out error);
                 }
                 rc = raw.sqlite3_reset(stmt);
                 if (rc != raw.SQLITE_OK) {
-                    return Error($"reset failed. error: {rc}, key: {key}", out error);
+                    var msg = GetErrorMsg("reset failed.", connection, rc, key);
+                    return Error(msg, out error);
                 }
             }
             return Success(out error);
         }
         
-        internal static bool AppendKeys(sqlite3_stmt stmt, List<JsonKey> keys, out TaskExecuteError error)
+        internal static bool AppendKeys(SyncConnection connection, sqlite3_stmt stmt, List<JsonKey> keys, out TaskExecuteError error)
         {
             var bytes = new Bytes(36);
             foreach (var key in keys) {
                 var rc  = BindKey(stmt, key, ref bytes);
                 if (rc != raw.SQLITE_OK) {
-                    error = new TaskExecuteError($"bind key failed. error: {rc}, key: {key}");
+                    var msg = GetErrorMsg("bind key failed.", connection, rc, key);
+                    error = new TaskExecuteError(msg);
                     return false;
                 }
                 rc = raw.sqlite3_step(stmt);
                 if (rc != raw.SQLITE_DONE) {
-                    return Error($"step failed. error: {rc}, key: {key}", out error);
+                    var msg = GetErrorMsg("step failed.", connection, rc, key);
+                    return Error(msg, out error);
                 }
                 raw.sqlite3_reset(stmt);
             }
             return Success(out error);
         }
         
+        internal static string GetErrorMsg(string info, sqlite3 sqliteDB, int rc) {
+            var msg = raw.sqlite3_errmsg(sqliteDB).utf8_to_string();
+            return $"{info} rc:{rc}, {msg}";
+        }
+        
+        internal static string GetErrorMsg(string info, SyncConnection connection, int rc, in JsonKey key) {
+            var msg = raw.sqlite3_errmsg(connection.sqliteDB).utf8_to_string();
+            var pk = key.AsString();
+            return $"{info} rc:{rc}, {msg}, PK: {pk}";
+        }
+        
         internal static StmtScope Prepare(SyncConnection connection, string sql, out TaskExecuteError error) {
-            var rc  = raw.sqlite3_prepare_v3(connection.sqliteDB, sql, 0, out var stmt);
+            var rc  = raw.sqlite3_prepare_v2(connection.sqliteDB, sql, out var stmt);
             if (rc == raw.SQLITE_OK) {
                 error = null;
                 return new StmtScope(stmt);
             }
-            var msg = $"prepare failed. sql: {sql}, error: {rc}";
+            var msg = GetErrorMsg("prepare failed.", connection.sqliteDB, rc);
+            raw.sqlite3_reset(stmt);
             error = new TaskExecuteError(TaskErrorType.DatabaseError, msg);
             return default;
         }

@@ -31,7 +31,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             var rc = raw.sqlite3_close_v2(sqliteDB);
             if (rc !=  raw.SQLITE_OK) {
-                Console.Error.WriteLine($"sqlite3_close_v2 failed. error: {rc}");
+                var msg = SQLiteUtils.GetErrorMsg("close failed.", sqliteDB, rc);
+                Console.Error.WriteLine(msg);
             }
         }
 

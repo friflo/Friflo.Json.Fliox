@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using SQLitePCL;
 using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
+using static Friflo.Json.Fliox.Hub.SQLite.SQLiteUtils;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
 {
@@ -42,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             var connection = (SyncConnection)syncConnection;
             if (tableType == TableType.JsonColumn) {
                 var sql = $"CREATE TABLE IF NOT EXISTS {name} ({ID} TEXT PRIMARY KEY, {DATA} TEXT NOT NULL);";
-                return Task.FromResult(SQLiteUtils.Execute(connection, sql));
+                return Task.FromResult(Execute(connection, sql));
             }
             var sb = new StringBuilder();
             sb.Append($"CREATE TABLE if not exists {name} (");
@@ -56,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             sb.Length -= 1;
             sb.Append(");");
-            var result = SQLiteUtils.Execute(connection, sb.ToString());
+            var result = Execute(connection, sb.ToString());
             return Task.FromResult(result);
         }
         
@@ -65,12 +66,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 return Task.FromResult(new SQLResult());
             }
             var connection = (SyncConnection)syncConnection;
-            var columnNames = SQLiteUtils.GetColumnNames(connection, name);
+            var columnNames = GetColumnNames(connection, name);
             foreach (var column in columns) {
                 if (column == keyColumn || columnNames.Contains(column.name)) {
                     continue;
                 }
-                var result = SQLiteUtils.AddVirtualColumn(connection, name, column);
+                var result = AddVirtualColumn(connection, name, column);
                 if (result.Failed) {
                     return Task.FromResult(result);
                 }
@@ -83,14 +84,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 return Task.FromResult<SQLResult>(default);
             }
             var connection  = (SyncConnection)syncConnection;
-            var columnNames = SQLiteUtils.GetColumnNames(connection, name);
+            var columnNames = GetColumnNames(connection, name);
             foreach (var column in columns) {
                 if (columnNames.Contains(column.name)) {
                     continue;
                 }
                 var type    = ConvertContext.GetSqlType(column);
                 var sql     = $"ALTER TABLE {name} ADD `{column.name}` {type};";
-                var result  = SQLiteUtils.Execute(connection, sql);
+                var result  = Execute(connection, sql);
                 if (result.Failed) {
                     return Task.FromResult(result);
                 }
@@ -124,16 +125,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 } else {
                     sql.Append($@"INSERT INTO {name} VALUES(?,?)");
                 }
-                using var stmt = SQLiteUtils.Prepare(connection, sql.ToString(), out error);
+                using var stmt = Prepare(connection, sql.ToString(), out error);
                 if (error != null) {
                     return new CreateEntitiesResult { Error = error };
                 }
                 if (tableType == TableType.Relational) {
-                    if (!SQLiteUtils.AppendColumnValues(stmt.instance, command.entities, tableInfo, syncContext, out error)) {
+                    if (!AppendColumnValues(connection, stmt.instance, command.entities, tableInfo, syncContext, out error)) {
                         return new CreateEntitiesResult { Error = error };
                     }
                 } else {
-                    if (!SQLiteUtils.AppendValues(stmt.instance, command.entities, out error)) {
+                    if (!AppendValues(connection, stmt.instance, command.entities, out error)) {
                         return new CreateEntitiesResult { Error = error };
                     }
                 }
@@ -179,16 +180,16 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 } else {
                     sql.Append($"INSERT INTO {name} ({ID}, {DATA}) VALUES(?,?) ON CONFLICT({ID}) DO UPDATE SET {DATA}=excluded.{DATA}");
                 }
-                using var stmt = SQLiteUtils.Prepare(connection, sql.ToString(), out error);
+                using var stmt = Prepare(connection, sql.ToString(), out error);
                 if (error != null) {
                     return new UpsertEntitiesResult { Error = error };
                 }
                 if (tableType == TableType.Relational) {
-                    if (!SQLiteUtils.AppendColumnValues(stmt.instance, command.entities, tableInfo, syncContext, out error)) {
+                    if (!AppendColumnValues(connection, stmt.instance, command.entities, tableInfo, syncContext, out error)) {
                         return new UpsertEntitiesResult { Error = error };
                     }
                 } else {
-                    if (!SQLiteUtils.AppendValues(stmt.instance, command.entities, out error)) {
+                    if (!AppendValues(connection, stmt.instance, command.entities, out error)) {
                         return new UpsertEntitiesResult { Error = error };
                     }
                 }
@@ -218,7 +219,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             } else {
                 sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in (?)");    
             }
-            using var stmt = SQLiteUtils.Prepare(connection, sql.ToString(), out var error);
+            using var stmt = Prepare(connection, sql.ToString(), out var error);
             if (error != null) {
                 return new ReadEntitiesResult { Error = error };
             }
@@ -226,14 +227,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             var buffer = syncContext.MemoryBuffer;
             if (tableType == TableType.Relational) {
                 using var pooled = syncContext.SQL2Json.Get();
-                var mapper  = new SQLiteSQL2Json(pooled.instance, stmt.instance, tableInfo);
+                var mapper  = new SQLiteSQL2Json(pooled.instance, connection, stmt.instance, tableInfo);
                 if (!mapper.ReadEntities(command.ids, buffer, out error)) {
                     return new ReadEntitiesResult { Error = error };
                 }
                 values = pooled.instance.result;
             } else {
                 values = new List<EntityValue>(); // TODO - OPTIMIZE
-                if (!SQLiteUtils.ReadById(stmt.instance, command.ids, values, buffer, out error)) {
+                if (!ReadById(connection, stmt.instance, command.ids, values, buffer, out error)) {
                     return new ReadEntitiesResult { Error = error };
                 }
             }
@@ -271,12 +272,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 if (tableType == TableType.Relational) {
                     sqlSb.Append("SELECT ");
                     SQLTable.AppendColumnNames(sqlSb, tableInfo);
-                    sqlSb.Append($" FROM {name}{where}{limit}");
+                    sqlSb.Append($" FROM {name}{where}{limit};");
                 } else {
-                    sqlSb.Append($"SELECT {ID}, {DATA} FROM {name}{where}{limit}");    
+                    sqlSb.Append($"SELECT {ID}, {DATA} FROM {name}{where}{limit};");    
                 }
                 sql = sqlSb.ToString();
-                stmt = SQLiteUtils.Prepare(connection, sql, out var error).instance;
+                stmt = Prepare(connection, sql, out var error).instance;
                 if (error != null) {
                     return new QueryEntitiesResult { Error = error, sql = sql };
                 }
@@ -285,14 +286,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             List<EntityValue> values;
             if (tableType == TableType.Relational) {
                 using var pooled = syncContext.SQL2Json.Get();
-                var mapper  = new SQLiteSQL2Json(pooled.instance, stmt, tableInfo);
+                var mapper  = new SQLiteSQL2Json(pooled.instance, connection, stmt, tableInfo);
                 if (!mapper.ReadValues(maxCount, buffer, out var readError)) {
                     return new QueryEntitiesResult { Error = readError, sql = sql };
                 }
                 values =  pooled.instance.result;
             } else {
                 values = new List<EntityValue>();   // TODO remove
-                if (!SQLiteUtils.ReadValues(stmt, maxCount, values, buffer, out var readError)) {
+                if (!ReadValues(stmt, maxCount, values, buffer, out var readError)) {
                     return new QueryEntitiesResult { Error = readError, sql = sql };
                 }
             }
@@ -324,13 +325,13 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 var filter  = command.GetFilter();
                 var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLiteFilter(tableType)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
-                using var stmt = SQLiteUtils.Prepare(connection, sql, out var error);
+                using var stmt = Prepare(connection, sql, out var error);
                 if (error != null) {
                     return new AggregateEntitiesResult { Error = error };
                 }
                 var rc      = raw.sqlite3_step(stmt.instance);
                 if (rc != raw.SQLITE_ROW) {
-                    var msg = $"step failed. sql: {sql}. error: {rc}";
+                    var msg = GetErrorMsg("step failed.", connection.sqliteDB, rc);
                     return new AggregateEntitiesResult { Error = new TaskExecuteError(TaskErrorType.DatabaseError, msg) };
                 }
                 var count   = raw.sqlite3_column_int64(stmt.instance, 0);
@@ -353,7 +354,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
             if (command.all == true) {
                 var sql = $"DELETE from {name}";
-                if (!SQLiteUtils.Exec(connection, sql, out var error)) {
+                if (!Exec(connection, sql, out var error)) {
                     return new DeleteEntitiesResult { Error = error };    
                 }
                 return new DeleteEntitiesResult();
@@ -365,11 +366,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 }
                 var id = tableType == TableType.Relational ? keyColumn.name : ID;
                 var sql = $"DELETE from {name} WHERE [{id}] in (?)";
-                using var stmt = SQLiteUtils.Prepare(connection, sql, out error);
+                using var stmt = Prepare(connection, sql, out error);
                 if (error != null) {
                     return new DeleteEntitiesResult { Error = error };
                 }
-                if (!SQLiteUtils.AppendKeys(stmt.instance, command.ids, out error)) {
+                if (!AppendKeys(connection, stmt.instance, command.ids, out error)) {
                     return new DeleteEntitiesResult { Error = error };
                 }
                 if (!scope.EndTransaction("COMMIT TRANSACTION", out error)) {
