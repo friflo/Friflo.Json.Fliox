@@ -1,14 +1,17 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
+// ReSharper disable ConvertTypeCheckPatternToNullCheck
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public interface ISQLDatabase
@@ -75,5 +78,54 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var buffer   = syncContext.MemoryBuffer;
             return await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
         }
+        
+        public static FieldType[] GetFieldTypes(DbDataReader reader) {
+            var count   = reader.FieldCount;
+            var types  = new FieldType[count];
+            for (int n = 0; n < count; n++) {
+                var type = reader.GetFieldType(n);
+                FieldType fieldType = type switch {
+                    Type _ when type == typeof(byte)        => FieldType.UInt8,
+                    Type _ when type == typeof(sbyte)       => FieldType.Int16,
+                    Type _ when type == typeof(short)       => FieldType.Int16,
+                    Type _ when type == typeof(int)         => FieldType.Int32,
+                    Type _ when type == typeof(long)        => FieldType.Int64,
+                    Type _ when type == typeof(string)      => FieldType.String,
+                    Type _ when type == typeof(DateTime)    => FieldType.DateTime,
+                    Type _ when type == typeof(double)      => FieldType.Double,
+                    Type _ when type == typeof(float)       => FieldType.Float,
+                    _                                       => FieldType.None
+                };
+                types[n] = fieldType;
+            }
+            return types;
+        }
+        
+        public static SqlRow GetSqlRow(DbDataReader reader, FieldType[] fieldTypes) {
+            var count   = fieldTypes.Length;
+            var values  = new SqlValue[count];
+            for (int n = 0; n < count; n++) {
+                if (reader.IsDBNull(n)) {
+                    continue;
+                }
+                var type = fieldTypes[n];
+                SqlValue value = default;
+                switch (type) {
+                    case FieldType.UInt8:       value.lng       = reader.GetByte(n);        break;
+                    case FieldType.Int16:       value.lng       = reader.GetInt16(n);       break;
+                    case FieldType.Int32:       value.lng       = reader.GetInt32(n);       break;
+                    case FieldType.Int64:       value.lng       = reader.GetInt64(n);       break;
+                    case FieldType.Float:       value.dbl       = reader.GetFloat(n);       break;
+                    case FieldType.Double:      value.dbl       = reader.GetDouble(n);      break;
+                    case FieldType.String:      value.str       = reader.GetString(n);      break;
+                    case FieldType.DateTime:    value.dateTime  = reader.GetDateTime(n);    break;
+                    default:                    value = default;                            break;
+                }
+                values[n] = value;
+            }
+            var row = new SqlRow { values = values };
+            return row;
+        }
     }
+
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -27,6 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public const string TransactionBegin    = "std.TransactionBegin";
         public const string TransactionCommit   = "std.TransactionCommit";
         public const string TransactionRollback = "std.TransactionRollback";
+        public const string ExecuteSQL          = "std.ExecuteSQL";
         
         public const string Client              = "std.Client";
 
@@ -53,6 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionBegin,  TransactionBegin);
             AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionCommit, TransactionCommit);
             AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionRollback,TransactionRollback);
+            AddCommandHandlerAsync <string,      SQLResult2>        (Std.ExecuteSQL,        ExecuteSQL);
             // --- host
             AddCommandHandler      <HostParam,   HostInfo>          (Std.HostInfo,          HostInfo);
             AddCommandHandlerAsync <Empty,       HostCluster>       (Std.HostCluster,       HostCluster);
@@ -202,6 +205,12 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return SyncTransaction.CreateResult(TransCommand.Rollback);
             }
             return Result.Error(result.error);
+        }
+        
+        private static async Task<Result<SQLResult2>> ExecuteSQL (Param<string> param, MessageContext context) {
+            var database    = context.Database;
+            var sql         = param.Value;
+            return await database.ExecuteSQL(sql, context.syncContext).ConfigureAwait(false);
         }
 
         private static async Task<Result<HostCluster>> HostCluster (Param<Empty> param, MessageContext context) {

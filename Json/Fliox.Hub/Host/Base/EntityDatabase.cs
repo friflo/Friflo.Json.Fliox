@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -332,6 +333,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new DbMessages { commands = commands, messages = messages };
         }
         
+        public virtual Task<SQLResult2> ExecuteSQL(string sql, SyncContext syncContext) => throw new NotSupportedException();
+
         #endregion
         
     #region - sync connection

@@ -4,7 +4,9 @@
 #if !UNITY_5_3_OR_NEWER || MYSQL
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using MySqlConnector;
@@ -108,6 +110,28 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
             var sql = $"DROP TABLE IF EXISTS `{name}`;";
             await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+        }
+        
+        public override async Task<SQLResult2> ExecuteSQL(string sql, SyncContext syncContext) {
+            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
+            if (syncConnection is not SyncConnection connection) {
+                return new SQLResult2();
+            }
+            try {
+                using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
+                var fieldTypes = SQLTable.GetFieldTypes(reader);
+                var rows = new List<SqlRow>();
+                while (await reader.ReadAsync().ConfigureAwait(false)) {
+                    var row = SQLTable.GetSqlRow(reader, fieldTypes);
+                    rows.Add(row);
+                    return new SQLResult2 { rows = rows };
+                }
+                return default;
+            }
+            catch (MySqlException e) {
+                var msg = GetErrMsg(e);
+                return new SQLResult2 { error = msg };
+            }
         }
 
         public Task CreateFunctions(ISyncConnection connection) => Task.CompletedTask;
