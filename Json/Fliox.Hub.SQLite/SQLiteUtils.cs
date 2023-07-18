@@ -235,14 +235,14 @@ GENERATED ALWAYS AS ({asStr});";
         }
         
         internal static string GetErrorMsg(string info, sqlite3 sqliteDB, int rc) {
-            var msg = raw.sqlite3_errmsg(sqliteDB).utf8_to_string();
-            return $"{info} rc:{rc}, {msg}";
+            var errMsg = raw.sqlite3_errmsg(sqliteDB).utf8_to_string();
+            return $"{info} error: {rc}, {errMsg}";
         }
         
         internal static string GetErrorMsg(string info, SyncConnection connection, int rc, in JsonKey key) {
-            var msg = raw.sqlite3_errmsg(connection.sqliteDB).utf8_to_string();
+            var errMsg = raw.sqlite3_errmsg(connection.sqliteDB).utf8_to_string();
             var pk = key.AsString();
-            return $"{info} rc:{rc}, {msg}, PK: {pk}";
+            return $"{info} error: {rc}, {errMsg}, PK: {pk}";
         }
         
         internal static StmtScope Prepare(SyncConnection connection, string sql, out TaskExecuteError error) {
