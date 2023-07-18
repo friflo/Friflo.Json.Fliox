@@ -208,6 +208,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static async Task<Result<RawSqlResult>> ExecuteRawSQL (Param<string> param, MessageContext context) {
+            if (!param.Validate(out string error)) {
+                return Result.Error(error);
+            }
             var database    = context.Database;
             var sql         = param.Value;
             return await database.ExecuteRawSQL(sql, context.syncContext).ConfigureAwait(false);
