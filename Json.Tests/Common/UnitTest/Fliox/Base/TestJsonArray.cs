@@ -33,70 +33,68 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             array.Finish        ();
             
             
-            var reader = new JsonArrayReader();
-            reader.Init(array);
             int pos         = 0;
             var type        = JsonItemType.Null;
             int stringCount = 0;
             while (type != JsonItemType.End)
             {
-                type = reader.GetItemType(pos, out int next);
+                type = array.GetItemType(pos, out int next);
                 switch (type) {
                     case JsonItemType.Null:
                         break;
                     case JsonItemType.True:
                     case JsonItemType.False: {
-                        var value = reader.ReadBool(pos);
+                        var value = array.ReadBool(pos);
                         IsTrue(value);
                         break;
                     }
                     case JsonItemType.Uint8: {
-                        var value = reader.ReadUint8(pos);
+                        var value = array.ReadUint8(pos);
                         AreEqual(255, value);
                         break;
                     }
                     case JsonItemType.Int16: {
-                        var value = reader.ReadInt16(pos);
+                        var value = array.ReadInt16(pos);
                         AreEqual(short.MaxValue, value);
                         break;
                     }
                     case JsonItemType.Int32: {
-                        var value = reader.ReadInt32(pos);
+                        var value = array.ReadInt32(pos);
                         AreEqual(int.MaxValue, value);
                         break;
                     }
                     case JsonItemType.Int64: {
-                        var value = reader.ReadInt64(pos);
+                        var value = array.ReadInt64(pos);
                         AreEqual(long.MaxValue, value);
                         break;
                     }
                     case JsonItemType.Flt32: {
-                        var value = reader.ReadFlt32(pos);
+                        var value = array.ReadFlt32(pos);
                         AreEqual(float.MaxValue, value);
                         break;
                     }
                     case JsonItemType.Flt64: {
-                        var value = reader.ReadFlt64(pos);
+                        var value = array.ReadFlt64(pos);
                         AreEqual(double.MaxValue, value);
                         break;
                     }
                     case JsonItemType.Chars: {
                         if (stringCount++ == 0) { 
-                            var value = reader.ReadString(pos);
+                            var value = array.ReadString(pos);
                             AreEqual("test", value);
                         } else {
-                            var value = reader.ReadCharSpan(pos);
+                            var value = array.ReadCharSpan(pos);
                             IsTrue(value.SequenceEqual("chars".AsSpan()));
                         }
                         break;
                     }
                     case JsonItemType.DateTime: {
-                        var value = reader.ReadDateTime(pos);
+                        var value = array.ReadDateTime(pos);
                         AreEqual(dateTime, value);
                         break;
                     }
                     case JsonItemType.Guid: {
-                        var value = reader.ReadGuid(pos);
+                        var value = array.ReadGuid(pos);
                         AreEqual(guid, value);
                         break;
                     }
