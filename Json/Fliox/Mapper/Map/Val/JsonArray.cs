@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         break;
                     }
                     case JsonItemType.CharString: {
-                        var value = array.ReadCharSpan(pos);        // TODO optimize - creates char[]
+                        var value = array.ReadCharSpan(pos);
                         Utf8JsonWriter.AppendEscString(ref bytes, value);
                         break;
                     }

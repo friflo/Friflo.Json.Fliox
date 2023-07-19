@@ -105,8 +105,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                     case JsonItemType.CharString:
                         switch (stringCount++) {
                             case 0: {
-                                    var value = array.ReadString(pos);
-                                    AreEqual("test", value);
+                                    var value = array.ReadCharSpan(pos);
+                                    IsTrue(value.SequenceEqual("test".AsSpan()));
                                 }
                                 break;
                             case 1: {
@@ -191,11 +191,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var e = Throws<JsonReaderException>(() => {
                  mapper.Read<JsonArray>("[123-]");
             });
+            IsNotNull(e);
             AreEqual("JsonReader/error: invalid integer: 123- path: '[0]' at position: 5", e.Message);
 
             e = Throws<JsonReaderException>(() => {
                 mapper.Read<JsonArray>("[123e+38.999]");
             });
+            IsNotNull(e);
             AreEqual("JsonReader/error: invalid floating point number: 123e+38.999 path: '[0]' at position: 12", e.Message);
         }
     }

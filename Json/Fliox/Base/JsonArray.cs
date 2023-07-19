@@ -118,18 +118,15 @@ namespace Friflo.Json.Fliox
                 WriteNull();
                 return;
             }
-            var start = bytes.end;
-            int maxByteLen = start + Utf8.GetMaxByteCount(value.Length) + 1 + 4;
-            if (maxByteLen > bytes.buffer.Length) {
-                bytes.DoubleSize(maxByteLen);
+            var start   = bytes.end;
+            int newEnd  = start + 1 + 4 + 2 * value.Length;
+            if (newEnd > bytes.buffer.Length) {
+                bytes.DoubleSize(newEnd);
             }
-            var buffer      = bytes.buffer;
-            buffer[start]   = (byte)JsonItemType.CharString;
-            var targetStart = start + 1 + 4;
-            var target      = new Span<byte> (buffer, targetStart, buffer.Length - targetStart);
-            int byteLen     = Utf8.GetBytes(value, target);
-            bytes.WriteInt32(start + 1, byteLen);
-            bytes.end = start + 1 + 4 + byteLen;
+            bytes.buffer        [start]   = (byte)JsonItemType.CharString;
+            bytes.WriteInt32    (start + 1,     value.Length); // count chars (not bytes)
+            bytes.WriteCharArray(start + 1 + 4, value);
+            bytes.end = newEnd;
         }
         
         public void WriteBytes(ReadOnlySpan<byte> value) {
@@ -202,10 +199,10 @@ namespace Friflo.Json.Fliox
                     next = pos + 17;
                     return type;
                 case JsonItemType.ByteString:
-                    next = pos + 1 + 4 + bytes.ReadInt32(pos + 1); 
+                    next = pos + 1 + 4 + bytes.ReadInt32(pos + 1);      // byte count
                     return type;
                 case JsonItemType.CharString:
-                    next = pos + 1 + 4 + bytes.ReadInt32(pos + 1); 
+                    next = pos + 1 + 4 + 2 * bytes.ReadInt32(pos + 1);  // char count (not byte count)
                     return type;
                 default:
                     throw new InvalidOperationException($"unexpected type: {type}");
@@ -252,14 +249,9 @@ namespace Friflo.Json.Fliox
             return new Bytes { buffer = bytes.buffer, start = start, end = start + len };
         }
         
-        public string ReadString(int pos) {
-            var len = bytes.ReadInt32(pos + 1);
-            return Utf8.GetString(bytes.buffer, pos + 1 + 4, len);
-        }
-        
         public ReadOnlySpan<char> ReadCharSpan(int pos) {
-            var len = bytes.ReadInt32(pos + 1);
-            return Utf8.GetChars(bytes.buffer, pos + 1 + 4, len);
+            var len = bytes.ReadInt32(pos + 1);  // len = char count (not byte count)
+            return bytes.GetCharSpan(pos + 1 + 4, len);
         }
 
         public DateTime ReadDateTime(int pos) {
@@ -323,7 +315,7 @@ namespace Friflo.Json.Fliox
                 }
                 case JsonItemType.CharString:
                     sb.Append('\'');
-                    sb.Append(ReadCharSpan  (pos));      // TODO optimize - creates char[]
+                    sb.Append(ReadCharSpan(pos));
                     sb.Append('\'');
                     break;
                 case JsonItemType.DateTime:
@@ -341,24 +333,24 @@ namespace Friflo.Json.Fliox
     
     public enum JsonItemType
     {
-        Null        =  0,
+        Null        =  0,   // 1 byte
         //
-        True        =  1,
-        False       =  2,
+        True        =  1,   // 1
+        False       =  2,   // 1
         // --- integer
-        Uint8       =  3,
-        Int16       =  4,
-        Int32       =  5,
-        Int64       =  6,
+        Uint8       =  3,   // 1 + 1
+        Int16       =  4,   // 1 + 2
+        Int32       =  5,   // 1 + 4
+        Int64       =  6,   // 1 + 8
         //
-        Flt32       =  7,
-        Flt64       =  8,
+        Flt32       =  7,   // 1 + 4
+        Flt64       =  8,   // 1 + 8
         //
-        ByteString  =  9,
-        CharString  = 10,
-        DateTime    = 11,
-        Guid        = 12,
-        
-        End         = 13,
+        ByteString  =  9,   // 1 + 4 + byte count
+        CharString  = 10,   // 1 + 4 + char count (2 * char count = byte count)
+        DateTime    = 11,   // 1 + 8
+        Guid        = 12,   // 1 + 16
+        //
+        End         = 13,   // 0
     }
 }

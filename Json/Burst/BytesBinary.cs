@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
+
 namespace Friflo.Json.Burst
 {
     public partial struct Bytes
@@ -46,12 +48,21 @@ namespace Friflo.Json.Burst
             }
         }
         
+        public unsafe void WriteCharArray(int pos, ReadOnlySpan<char> chars)
+        {
+            fixed (char* srcPtr  = &chars[0])
+            fixed (byte* destPtr = &buffer[pos])
+            {
+                Buffer.MemoryCopy(srcPtr, destPtr, buffer.Length - pos, 2 * chars.Length);
+            }
+        }
+        
         // --------------------------------------- read --------------------------------------- 
         public unsafe int ReadInt32(int pos)
         {
             fixed (byte* destPtr = &buffer [pos])
             {
-                return  *(int*)(destPtr);
+                return  *(int*)destPtr;
             }
         }
         
@@ -59,7 +70,7 @@ namespace Friflo.Json.Burst
         {
             fixed (byte* destPtr = &buffer [pos])
             {
-                return *(long*)(destPtr);
+                return *(long*)destPtr;
             }
         }
         
@@ -67,7 +78,7 @@ namespace Friflo.Json.Burst
         {
             fixed (byte* destPtr = &buffer [pos])
             {
-                return  *(float*)(destPtr);
+                return  *(float*)destPtr;
             }
         }
         
@@ -75,7 +86,16 @@ namespace Friflo.Json.Burst
         {
             fixed (byte* destPtr = &buffer [pos])
             {
-                return *(double*)(destPtr);
+                return *(double*)destPtr;
+            }
+        }
+        
+        /// <summary>counter part of <see cref="WriteCharArray"/></summary>
+        public unsafe ReadOnlySpan<char> GetCharSpan(int pos, int len)
+        {
+            fixed (void* destPtr = &buffer[pos])
+            {
+                return new ReadOnlySpan<char>(destPtr, len);
             }
         }
     }
