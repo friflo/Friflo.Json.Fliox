@@ -166,9 +166,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
                 switch (ev) {
-                    case JsonEvent.ValueString:
-                        var len = parser.value.Len;
+                    case JsonEvent.ValueString: {
                         var span = parser.value.AsSpan();
+                        var len  = span.Length;
                         if (len == Bytes.GuidLength && Bytes.TryParseGuid(span, out var guid)) {
                             value.WriteGuid(guid);
                             break;
@@ -180,15 +180,29 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         }
                         value.WriteBytes(parser.value.AsSpan());
                         break;
-                    case JsonEvent.ValueNumber:
-                        if (parser.isFloat) {
-                            var dbl = ValueParser.ParseDouble(parser.value.AsSpan(), ref reader.strBuf, out success);   // TODO - handle error
-                            value.WriteFlt64(dbl);
-                        } else {
-                            var lng = ValueParser.ParseLong(parser.value.AsSpan(), ref reader.strBuf, out success);     // TODO - handle error
-                            value.WriteInt64(lng); 
+                    }
+                    case JsonEvent.ValueNumber: {
+                        var span = parser.value.AsSpan();
+                        if (!parser.isFloat) {
+                            var lng = ValueParser.ParseLong(span, ref reader.strBuf, out success);  // TODO - handle error
+                            value.WriteInt64(lng);
+                            break;
                         }
+                        var dbl         = ValueParser.ParseDouble(span, ref reader.strBuf, out success);    // TODO - handle error
+                        var exponent    = Math.Log(dbl, 10);
+                        // max float: 3.40282346638528859e+38. Is exponent is > 38? => Write as double
+                        if (exponent >= 39) {
+                            value.WriteFlt64(dbl);
+                            break;
+                        }
+                        // More than 8 decimal digit precision? => Write as double
+                        if (DigitCount(span) > 8) {
+                            value.WriteFlt64(dbl);
+                            break;
+                        }
+                        value.WriteFlt32((float)dbl);
                         break;
+                    }
                     case JsonEvent.ValueBool:
                         value.WriteBoolean(parser.boolValue);
                         break;
@@ -209,6 +223,22 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         return reader.ErrorMsg<JsonArray>("unexpected state: ", ev, out success);
                 }
             }
+        }
+        
+        private static int DigitCount(in ReadOnlySpan<byte> span) {
+            int len         = span.Length;
+            int digitCount  = 0;
+            for (int n = 0; n < len; n++) {
+                var c = span[n];
+                if ('0' <= c && c <= '9') {
+                    digitCount++;
+                    continue;
+                }
+                if (c == 'e' || c == 'E') {
+                    return digitCount;
+                }
+            }
+            return digitCount;
         }
     }
 }

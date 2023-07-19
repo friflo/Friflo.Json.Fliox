@@ -85,11 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                     }
                     case JsonItemType.Flt64: {
                         var value = array.ReadFlt64(pos);
-                        if (readArrayType == ReadArrayType.Binary) {
-                            AreEqual(double.MaxValue, value);
-                        } else {
-                            // TODO
-                        }
+                        AreEqual(double.MaxValue, value);
                         break;
                     }
                     case JsonItemType.ByteString: {
