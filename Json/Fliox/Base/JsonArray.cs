@@ -112,7 +112,18 @@ namespace Friflo.Json.Fliox
         
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
         
-        public void WriteChars(ReadOnlySpan<char> value) {
+        public void WriteJSON(ReadOnlySpan<byte> value) {
+            count++;
+            int len = value.Length;
+            bytes.EnsureCapacity(1 + 4 + len);
+            int start = bytes.end;
+            bytes.buffer[start] = (byte)JsonItemType.JSON;
+            bytes.WriteInt32(start + 1, len);
+            bytes.end = start + 1 + 4;
+            bytes.AppendBytesSpan(value);
+        }
+        
+        public void WriteCharString(ReadOnlySpan<char> value) {
             count++;
             if (value == null) {
                 WriteNull();
@@ -129,7 +140,7 @@ namespace Friflo.Json.Fliox
             bytes.end = newEnd;
         }
         
-        public void WriteBytes(ReadOnlySpan<byte> value) {
+        public void WriteByteString(ReadOnlySpan<byte> value) {
             count++;
             int len = value.Length;
             bytes.EnsureCapacity(1 + 4 + len);
@@ -139,7 +150,7 @@ namespace Friflo.Json.Fliox
             bytes.end = start + 1 + 4;
             bytes.AppendBytesSpan(value);
         }
-
+        
         public void WriteDateTime(in DateTime value) {
             count++;
             bytes.EnsureCapacity(9);
@@ -190,6 +201,7 @@ namespace Friflo.Json.Fliox
                 case JsonItemType.Guid:
                     next = pos + 17;
                     return type;
+                case JsonItemType.JSON:
                 case JsonItemType.ByteString:
                     next = pos + 1 + 4 + bytes.ReadInt32(pos + 1);      // byte count
                     return type;
@@ -300,6 +312,12 @@ namespace Friflo.Json.Fliox
                     sb.Append(dbl);
                     break;
                 //
+                case JsonItemType.JSON: {
+                    var value = ReadBytes(pos);
+                    var str = Utf8.GetString(value.buffer, value.start, value.Len);
+                    sb.Append(str);
+                    break;
+                }
                 case JsonItemType.ByteString: {
                     var value = ReadBytes(pos);
                     var str = Utf8.GetString(value.buffer, value.start, value.Len);
@@ -341,11 +359,13 @@ namespace Friflo.Json.Fliox
         Flt32       =  7,   // 1 + 4
         Flt64       =  8,   // 1 + 8
         //
-        ByteString  =  9,   // 1 + 4 + byte count
-        CharString  = 10,   // 1 + 4 + char count (2 * char count = byte count)
-        DateTime    = 11,   // 1 + 8
-        Guid        = 12,   // 1 + 16
+        JSON        =  9,   // 1 + 4 + byte count (array or object, is written as is)
+        ByteString  = 10,   // 1 + 4 + byte count
+        CharString  = 11,   // 1 + 4 + char count (2 * char count = byte count)
         //
-        End         = 13,   // 0 - Note: End is not written to JsonArray.bytes
+        DateTime    = 12,   // 1 + 8
+        Guid        = 13,   // 1 + 16
+        //
+        End         = 14,   // 0 - Note: End is not written to JsonArray.bytes
     }
 }

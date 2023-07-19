@@ -83,6 +83,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         writer.format.AppendDbl(ref bytes, value);
                         break;
                     }
+                    case JsonItemType.JSON: {
+                        var value = array.ReadBytes(pos);
+                        bytes.AppendBytes(value);
+                        break;
+                    }
                     case JsonItemType.ByteString: {
                         var value = array.ReadBytes(pos);
                         Utf8JsonWriter.AppendEscStringBytes(ref bytes, value);
@@ -176,7 +181,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                             value.WriteDateTime(dateTime);
                             break;
                         }
-                        value.WriteBytes(parser.value.AsSpan());
+                        value.WriteByteString(parser.value.AsSpan());
                         break;
                     }
                     case JsonEvent.ValueNumber: {
@@ -210,8 +215,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     case JsonEvent.ValueBool:
                         value.WriteBoolean(parser.boolValue);
                         break;
-                    case JsonEvent.ArrayStart:
-                        throw new NotImplementedException();
+                    case JsonEvent.ArrayStart: {
+                        var start   = parser.Position - 1;
+                        parser.SkipTree();
+                        var end     = parser.Position;
+                        var json    = parser.GetInputSpan(start, end);
+                        value.WriteJSON(json);
+                        break;
+                    }
                     case JsonEvent.ObjectStart:
                         throw new NotImplementedException();
                     case JsonEvent.ValueNull:

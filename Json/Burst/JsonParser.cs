@@ -174,6 +174,10 @@ namespace Friflo.Json.Burst
             dst.AppendBytes(slice);
         }
         
+        public ReadOnlySpan<byte> GetInputSpan(int start, int end) {
+            return new ReadOnlySpan<byte>(buf.buffer, start, end - start);
+        }
+        
         enum ErrorType {
             JsonError,
             Assertion,
