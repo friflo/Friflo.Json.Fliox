@@ -181,5 +181,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             ReadTestData(array, ReadArrayType.Json);
             AreEqual(13, array.Count);
         }
+        
+        [Test]
+        public static void TestJsonArray_ReadErrors () 
+        {
+            var typeStore = new TypeStore();
+            var mapper = new ObjectMapper(typeStore);
+
+            var e = Throws<JsonReaderException>(() => {
+                 mapper.Read<JsonArray>("[123-]");
+            });
+            AreEqual("JsonReader/error: invalid integer: 123- path: '[0]' at position: 5", e.Message);
+
+            e = Throws<JsonReaderException>(() => {
+                mapper.Read<JsonArray>("[123e+38.999]");
+            });
+            AreEqual("JsonReader/error: invalid floating point number: 123e+38.999 path: '[0]' at position: 12", e.Message);
+        }
     }
 }

@@ -159,9 +159,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         private static JsonArray ReadItems(ref Reader reader, JsonArray value, out bool success)
         {
-            if (value == null) {
-                value = new JsonArray();
-            }
+            value ??= new JsonArray();
             ref var parser = ref reader.parser;
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
@@ -184,11 +182,17 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     case JsonEvent.ValueNumber: {
                         var span = parser.value.AsSpan();
                         if (!parser.isFloat) {
-                            var lng = ValueParser.ParseLong(span, ref reader.strBuf, out success);          // TODO - handle error
+                            var lng = ValueParser.ParseLong(span, ref reader.strBuf, out success);
+                            if (!success) {
+                                return reader.ErrorMsg<JsonArray>("invalid integer: ", parser.value, out success);
+                            }
                             value.WriteInt64(lng);
                             break;
                         }
-                        var dbl         = ValueParser.ParseDouble(span, ref reader.strBuf, out success);    // TODO - handle error
+                        var dbl = ValueParser.ParseDouble(span, ref reader.strBuf, out success);
+                        if (!success) {
+                            return reader.ErrorMsg<JsonArray>("invalid floating point number: ", parser.value, out success);
+                        }
                         var exponent    = Math.Log(dbl, 10);
                         // max float: 3.40282346638528859e+38. Is exponent is > 38? => Write as double
                         if (exponent >= 39) {
