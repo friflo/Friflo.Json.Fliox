@@ -81,14 +81,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         writer.format.AppendFlt(ref bytes, value);
                         break;
                     }
-                    case JsonItemType.Bytes: {
+                    case JsonItemType.ByteString: {
                         var value = array.ReadBytes(pos);
                         bytes.AppendChar('"');
                         bytes.AppendString("bytes");
                         bytes.AppendChar('"');
                         break;
                     }
-                    case JsonItemType.Chars: {
+                    case JsonItemType.CharString: {
                         bytes.AppendChar('"');
                         bytes.AppendString("chars");
                         bytes.AppendChar('"');
@@ -109,11 +109,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         break;
                     }
                     case JsonItemType.End:
-                        bytes.end--; // remove last terminator
+                        if (!isFirstItem) {
+                            bytes.end--; // remove last terminator
+                        }
                         return;
                     default:
                         throw new InvalidComObjectException("unexpected itemType: {itemType}");
                 }
+                isFirstItem = false;
                 bytes.AppendChar(',');
                 pos = next;
             }

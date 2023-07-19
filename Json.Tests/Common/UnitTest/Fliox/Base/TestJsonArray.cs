@@ -12,8 +12,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
 {
     public static class TestJsonArray
     {
-        private static readonly DateTime    DateTime    = DateTime.Now;
-        private static readonly Guid        Guid        = Guid.NewGuid();
+        private static readonly DateTime    DateTime    = DateTime.Parse("2023-07-19T12:58:57.448575Z").ToUniversalTime();
+        private static readonly Guid        Guid        = Guid.Parse("af82dcf5-8664-4b4e-8072-6cb43b335364");
         private static readonly Bytes       Bytes       = new Bytes("bytes");
         
         
@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         }
             
         [Test]
-        public static void JsonKeyTests ()
+        public static void TestJsonArray_ReadWrite ()
         {
             var array = new JsonArray();
             WriteTestData(array);
@@ -87,12 +87,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                         AreEqual(double.MaxValue, value);
                         break;
                     }
-                    case JsonItemType.Bytes: {
+                    case JsonItemType.ByteString: {
                         var value = array.ReadBytes(pos);
                         IsTrue(value.SequenceEqual(Bytes.AsSpan()));
                         break;
                     }
-                    case JsonItemType.Chars: {
+                    case JsonItemType.CharString: {
                         if (stringCount++ == 0) { 
                             var value = array.ReadString(pos);
                             AreEqual("test", value);
@@ -119,14 +119,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         }
         
         [Test]
-        public static void JsonKeyMapper () 
+        public static void TestJsonArray_Mapper () 
         {
-            var array = new JsonArray();
-            WriteTestData(array);
-            
             var typeStore = new TypeStore();
             var mapper = new ObjectMapper(typeStore);
-            mapper.Write(array);
+            
+            var array = new JsonArray();
+            
+            var json = mapper.Write(array);
+            AreEqual("[]", json);
+
+            array.Init();
+            WriteTestData(array);
+            json = mapper.Write(array);
+            var expect = "[null,true,255,32767,2147483647,9223372036854775807,3.4028234663852886E+38,1.7976931348623157E+308,\"bytes\",\"chars\",\"chars\",\"2023-07-19T12:58:57.448575Z\",\"af82dcf5-8664-4b4e-8072-6cb43b335364\"]";
+            AreEqual(expect, json);
         }
     }
 }

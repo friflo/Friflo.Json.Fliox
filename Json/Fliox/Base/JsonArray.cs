@@ -11,7 +11,16 @@ namespace Friflo.Json.Fliox
 {
     public class JsonArray
     {
-        internal Bytes bytes = new Bytes(32);
+        private Bytes bytes = new Bytes(32);
+        
+        public JsonArray() {
+            Init();
+        }
+        
+        public void Init() {
+            bytes.start = 0;
+            bytes.end   = 0;
+        }
         
         // -------------------------------------------- write --------------------------------------------
         public void WriteNull() {
@@ -86,7 +95,7 @@ namespace Friflo.Json.Fliox
                 bytes.DoubleSize(maxByteLen);
             }
             var buffer      = bytes.buffer;
-            buffer[start]   = (byte)JsonItemType.Chars;
+            buffer[start]   = (byte)JsonItemType.CharString;
             var targetStart = start + 1 + 4;
             var target      = new Span<byte> (buffer, targetStart, buffer.Length - targetStart);
             int byteLen     = Utf8.GetBytes(value, target);
@@ -98,7 +107,7 @@ namespace Friflo.Json.Fliox
             int len = value.Length;
             bytes.EnsureCapacity(1 + 4 + len);
             int start = bytes.end;
-            bytes.buffer[start] = (byte)JsonItemType.Bytes;
+            bytes.buffer[start] = (byte)JsonItemType.ByteString;
             bytes.WriteInt32(start + 1, len);
             bytes.end = start + 1 + 4;
             bytes.AppendBytesSpan(value);
@@ -125,17 +134,22 @@ namespace Friflo.Json.Fliox
             bytes.EnsureCapacity(1);
             bytes.buffer[bytes.end] = (byte)JsonItemType.End;
         }
-        
-        
+
         // -------------------------------------------- read --------------------------------------------
         public JsonItemType GetItemType(int pos, out int next) {
+            if (pos >= bytes.end) {
+                next = pos;
+                return JsonItemType.End;
+            }
             var type = (JsonItemType)bytes.buffer[pos];
             switch (type) {
                 case JsonItemType.Null:
                 case JsonItemType.True:
                 case JsonItemType.False:
-                case JsonItemType.End:
                     next = pos + 1;
+                    return type;
+                case JsonItemType.End:
+                    next = pos;
                     return type;
                 case JsonItemType.Uint8:
                     next = pos + 2;
@@ -155,10 +169,10 @@ namespace Friflo.Json.Fliox
                 case JsonItemType.Guid:
                     next = pos + 17;
                     return type;
-                case JsonItemType.Bytes:
+                case JsonItemType.ByteString:
                     next = pos + 1 + 4 + bytes.ReadInt32(pos + 1); 
                     return type;
-                case JsonItemType.Chars:
+                case JsonItemType.CharString:
                     next = pos + 1 + 4 + bytes.ReadInt32(pos + 1); 
                     return type;
                 default:
@@ -238,8 +252,8 @@ namespace Friflo.Json.Fliox
         Flt32       =  7,
         Flt64       =  8,
         //
-        Bytes       =  9,
-        Chars       = 10,
+        ByteString  =  9,
+        CharString  = 10,
         DateTime    = 11,
         Guid        = 12,
         
