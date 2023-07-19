@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -15,6 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var array       = new JsonArray();
             var dateTime    = DateTime.Now;
             var guid        = Guid.NewGuid();
+            var bytes       = new Bytes("bytes");
             
             array.WriteNull();
             array.WriteBoolean  (true);
@@ -26,6 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             array.WriteFlt32    (float.MaxValue);
             array.WriteFlt64    (double.MaxValue);
 
+            array.WriteBytes    (bytes.AsSpan());
             array.WriteChars    ("test".AsSpan());
             array.WriteChars    ("chars".AsSpan());
             array.WriteDateTime (dateTime);
@@ -76,6 +79,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                     case JsonItemType.Flt64: {
                         var value = array.ReadFlt64(pos);
                         AreEqual(double.MaxValue, value);
+                        break;
+                    }
+                    case JsonItemType.Bytes: {
+                        var value = array.ReadBytes(pos);
+                        IsTrue(value.SequenceEqual(bytes.AsSpan()));
                         break;
                     }
                     case JsonItemType.Chars: {
