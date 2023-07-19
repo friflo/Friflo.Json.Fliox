@@ -107,10 +107,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                         ref var cell        = ref cells[column.ordinal];
                         var start = parser.Position - 1;
                         parser.SkipTree();
-                        var end = parser.Position;
-                        parser.AppendInputSlice(ref buffer, start, end);
-                        cell.SetValue(buffer, end - start);
-                        cell.type           = CellType.Array;
+                        var end     = parser.Position;
+                        var json    = parser.GetInputBytes(start, end);
+                        cell.SetValue(json, end - start);
+                        cell.type   = CellType.Array;
                         break;
                     }
                     case JsonEvent.ValueNull:
@@ -129,10 +129,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                             ref var cell        = ref cells[objColumn.ordinal];
                             var start = parser.Position - 1;
                             parser.SkipTree();
-                            var end = parser.Position;
-                            parser.AppendInputSlice(ref buffer, start, end);
-                            cell.SetValue(buffer, end - start);
-                            cell.type           = CellType.JSON;
+                            var end     = parser.Position;
+                            var json    = parser.GetInputBytes(start, end);
+                            cell.SetValue(json, end - start);
+                            cell.type   = CellType.JSON;
                         }
                         break;
                     case JsonEvent.ObjectEnd:
