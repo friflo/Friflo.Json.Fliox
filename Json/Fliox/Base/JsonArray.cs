@@ -42,29 +42,40 @@ namespace Friflo.Json.Fliox
         }
 
         public void WriteInt16(short value) {
-            bytes.EnsureCapacity(3);
-            var start = bytes.end;
-            bytes.buffer[start    ] = (byte)JsonItemType.Int16;
-            bytes.buffer[start + 1] = (byte)(value >> 8);
-            bytes.buffer[start + 2] = (byte)(value & 0xff);
-            bytes.end = start + 3;
+            if (value > byte.MaxValue || value < byte.MinValue) {
+                bytes.EnsureCapacity(3);
+                var start = bytes.end;
+                bytes.buffer[start    ] = (byte)JsonItemType.Int16;
+                bytes.buffer[start + 1] = (byte)(value >> 8);
+                bytes.buffer[start + 2] = (byte)(value & 0xff);
+                bytes.end = start + 3;
+                return;
+            }
+            WriteByte((byte)value);
         }
 
         public void WriteInt32(int value) {
-            bytes.EnsureCapacity(5);
-            var start = bytes.end;
-            bytes.buffer[start] = (byte)JsonItemType.Int32;
-            bytes.WriteInt32(start + 1, value);
-            bytes.end = start + 5;
+            if (value > short.MaxValue || value < short.MinValue) {
+                bytes.EnsureCapacity(5);
+                var start = bytes.end;
+                bytes.buffer[start] = (byte)JsonItemType.Int32;
+                bytes.WriteInt32(start + 1, value);
+                bytes.end = start + 5;
+                return;
+            }
+            WriteInt16((short)value);
         }
 
         public void WriteInt64(long value) {
-            // TODO optimize - write byte, int16, int32 for small integers 
-            bytes.EnsureCapacity(9);
-            var start = bytes.end;
-            bytes.buffer[start] = (byte)JsonItemType.Int64;
-            bytes.WriteInt64(start + 1, value);
-            bytes.end = start + 9;
+            if (value > int.MaxValue || value < int.MinValue) {
+                bytes.EnsureCapacity(9);
+                var start = bytes.end;
+                bytes.buffer[start] = (byte)JsonItemType.Int64;
+                bytes.WriteInt64(start + 1, value);
+                bytes.end = start + 9;
+                return;
+            }
+            WriteInt32((int)value);
         }
         
         public void WriteFlt32(float value) {
