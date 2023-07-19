@@ -20,6 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         private static readonly DateTime    DateTime    = DateTime.Parse("2023-07-19T12:58:57.448575Z").ToUniversalTime();
         private static readonly Guid        Guid        = Guid.Parse("af82dcf5-8664-4b4e-8072-6cb43b335364");
         private static readonly Bytes       JSONArray   = new Bytes("[1,2,3]");
+        private static readonly Bytes       JSONObject  = new Bytes("{\"key\":42}");
         private static readonly Bytes       ByteString  = new Bytes("byte-string");
         
         
@@ -35,18 +36,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             array.WriteFlt64        (double.MaxValue);      // [7]  1.7976931348623157E+308;
 
             array.WriteJSON         (JSONArray.AsSpan());   // [8]
-            array.WriteByteString   (ByteString.AsSpan());  // [9]
-            array.WriteCharString   ("test".AsSpan());      // [10]
-            array.WriteCharString   ("chars".AsSpan());     // [11]
-            array.WriteDateTime     (DateTime);             // [12]
-            array.WriteGuid         (Guid);                 // [13]
+            array.WriteJSON         (JSONObject.AsSpan());  // [9]
+            array.WriteByteString   (ByteString.AsSpan());  // [10]
+            array.WriteCharString   ("test".AsSpan());      // [11]
+            array.WriteCharString   ("chars".AsSpan());     // [12]
+            array.WriteDateTime     (DateTime);             // [13]
+            array.WriteGuid         (Guid);                 // [14]
         }
             
         private static void ReadTestData (JsonArray array, ReadArrayType readArrayType)
         {
             int n   = 0;
             int pos = 0;
-            var idx = new int[14];
+            var idx = new int[15];
             while (true) {
                 var type = array.GetItemType(pos, out int next);
                 if (type == JsonItemType.End) {
@@ -69,24 +71,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             IsTrue(bytes.SequenceEqual(JSONArray.AsSpan()));
             
             bytes =                     array.ReadBytesSpan (idx[9]);
+            IsTrue(bytes.SequenceEqual(JSONObject.AsSpan()));
+            
+            bytes =                     array.ReadBytesSpan (idx[10]);
             IsTrue(bytes.SequenceEqual(ByteString.AsSpan()));
             
             if (readArrayType == ReadArrayType.Binary) {
-                var chars =             array.ReadCharSpan  (idx[10]);
+                var chars =             array.ReadCharSpan  (idx[11]);
                 IsTrue(chars.SequenceEqual("test".AsSpan()));
                 
-                chars =                 array.ReadCharSpan  (idx[11]);
+                chars =                 array.ReadCharSpan  (idx[12]);
                 IsTrue(chars.SequenceEqual("chars".AsSpan()));
             } else {
-                bytes =                 array.ReadBytesSpan (idx[10]);
+                bytes =                 array.ReadBytesSpan (idx[11]);
                 IsTrue(bytes.SequenceEqual(new Bytes("test").AsSpan()));
                 
-                bytes =                 array.ReadBytesSpan (idx[11]);
+                bytes =                 array.ReadBytesSpan (idx[12]);
                 IsTrue(bytes.SequenceEqual(new Bytes("chars").AsSpan()));
             }
             
-            AreEqual(DateTime,          array.ReadDateTime  (idx[12]));
-            AreEqual(Guid,              array.ReadGuid      (idx[13]));
+            AreEqual(DateTime,          array.ReadDateTime  (idx[13]));
+            AreEqual(Guid,              array.ReadGuid      (idx[14]));
         }
         
         [Test]
@@ -94,16 +99,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         {
             var array = new JsonArray();
             WriteTestData(array);
-            AreEqual(14, array.Count);
+            AreEqual(15, array.Count);
             ReadTestData(array, ReadArrayType.Binary);
         }
 
         // Note! Unity format floating point numbers with lower precision
         private const string ExpectJson =
-            "[null,true,255,32767,2147483647,9223372036854775807,3.4028235E+38,1.7976931348623157E+308,[1,2,3],\"byte-string\",\"test\",\"chars\",\"2023-07-19T12:58:57.448575Z\",\"af82dcf5-8664-4b4e-8072-6cb43b335364\"]";
+            "[null,true,255,32767,2147483647,9223372036854775807,3.4028235E+38,1.7976931348623157E+308,[1,2,3],{\"key\":42},\"byte-string\",\"test\",\"chars\",\"2023-07-19T12:58:57.448575Z\",\"af82dcf5-8664-4b4e-8072-6cb43b335364\"]";
         
         private const string ExpectToString =
-            "Count: 14 [null, true, 255, 32767, 2147483647, 9223372036854775807, 3.4028235E+38, 1.7976931348623157E+308, [1,2,3], 'byte-string', 'test', 'chars', 2023-07-19 12:58:57, af82dcf5-8664-4b4e-8072-6cb43b335364]";
+            "Count: 15 [null, true, 255, 32767, 2147483647, 9223372036854775807, 3.4028235E+38, 1.7976931348623157E+308, [1,2,3], {\"key\":42}, 'byte-string', 'test', 'chars', 2023-07-19 12:58:57, af82dcf5-8664-4b4e-8072-6cb43b335364]";
 
 
         [Test]
@@ -136,7 +141,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
 
             var array = mapper.Read<JsonArray>(ExpectJson);
             ReadTestData(array, ReadArrayType.Json);
-            AreEqual(14, array.Count);
+            AreEqual(15, array.Count);
         }
         
         [Test]

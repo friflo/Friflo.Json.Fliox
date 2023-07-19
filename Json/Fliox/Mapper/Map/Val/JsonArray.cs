@@ -215,6 +215,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     case JsonEvent.ValueBool:
                         value.WriteBoolean(parser.boolValue);
                         break;
+                    case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart: {
                         var start   = parser.Position - 1;
                         parser.SkipTree();
@@ -223,8 +224,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         value.WriteJSON(json);
                         break;
                     }
-                    case JsonEvent.ObjectStart:
-                        throw new NotImplementedException();
                     case JsonEvent.ValueNull:
                         value.WriteNull();
                         break;

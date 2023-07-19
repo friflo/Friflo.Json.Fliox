@@ -112,6 +112,10 @@ namespace Friflo.Json.Fliox
         
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
         
+        /// <summary>
+        /// <b>Important!</b> <br/>
+        /// Passed value MUST be valid JSON. Otherwise invalid JSON will be generated downstream.
+        /// </summary>
         public void WriteJSON(ReadOnlySpan<byte> value) {
             count++;
             int len = value.Length;
