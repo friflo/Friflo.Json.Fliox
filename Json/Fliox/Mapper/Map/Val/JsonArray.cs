@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     }
                     case JsonItemType.Flt64: {
                         var value = array.ReadFlt64(pos);
-                        writer.format.AppendFlt(ref bytes, value);
+                        writer.format.AppendDbl(ref bytes, value);
                         break;
                     }
                     case JsonItemType.ByteString: {

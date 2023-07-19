@@ -136,7 +136,7 @@ namespace Friflo.Json.Burst.Utils
             return PowTable[powNeutral + exp];
         }
         
-        public void AppendFlt (ref Bytes dst, double val) {
+        public void AppendFlt (ref Bytes dst, float val) {
 #if NETSTANDARD2_0
             var chars   = val.ToString(CultureInfo.InvariantCulture).AsSpan();
             var len     = chars.Length;
