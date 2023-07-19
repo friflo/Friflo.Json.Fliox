@@ -59,6 +59,7 @@ namespace Friflo.Json.Fliox
         }
 
         public void WriteInt64(long value) {
+            // TODO optimize - write byte, int16, int32 for small integers 
             bytes.EnsureCapacity(9);
             var start = bytes.end;
             bytes.buffer[start] = (byte)JsonItemType.Int64;

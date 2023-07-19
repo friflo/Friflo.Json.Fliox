@@ -36,12 +36,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             array.Finish        ();
         }
             
-        [Test]
-        public static void TestJsonArray_ReadWrite ()
+        private static void ReadTestData (JsonArray array)
         {
-            var array = new JsonArray();
-            WriteTestData(array);
-
             int pos         = 0;
             var type        = JsonItemType.Null;
             int stringCount = 0;
@@ -119,7 +115,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         }
         
         [Test]
-        public static void TestJsonArray_Mapper () 
+        public static void TestJsonArray_ReadWrite ()
+        {
+            var array = new JsonArray();
+            WriteTestData(array);
+            ReadTestData(array);
+        }
+
+        private const string Expect = "[null,true,255,32767,2147483647,9223372036854775807,3.4028234663852886E+38,1.7976931348623157E+308,\"bytes\",\"test\",\"chars\",\"2023-07-19T12:58:57.448575Z\",\"af82dcf5-8664-4b4e-8072-6cb43b335364\"]";
+
+        [Test]
+        public static void TestJsonArray_MapperWrite () 
         {
             var typeStore = new TypeStore();
             var mapper = new ObjectMapper(typeStore);
@@ -132,8 +138,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             array.Init();
             WriteTestData(array);
             json = mapper.Write(array);
-            var expect = "[null,true,255,32767,2147483647,9223372036854775807,3.4028234663852886E+38,1.7976931348623157E+308,\"bytes\",\"test\",\"chars\",\"2023-07-19T12:58:57.448575Z\",\"af82dcf5-8664-4b4e-8072-6cb43b335364\"]";
-            AreEqual(expect, json);
+            AreEqual(Expect, json);
+        }
+        
+        // [Test]
+        public static void TestJsonArray_MapperRead () 
+        {
+            var typeStore = new TypeStore();
+            var mapper = new ObjectMapper(typeStore);
+
+            var array = mapper.Read<JsonArray>(Expect);
+            ReadTestData(array);
         }
     }
 }

@@ -3,6 +3,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Friflo.Json.Burst;
+using Friflo.Json.Burst.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
@@ -29,7 +30,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public JsonArrayMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
         
-        private static void WriteItems(ref Writer writer, JsonArray array) {
+        private static void WriteItems(ref Writer writer, JsonArray array)
+        {
             int     pos         = 0;
             bool    isFirstItem = true;
             ref var bytes       = ref writer.bytes;
@@ -111,7 +113,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         }
                         return;
                     default:
-                        throw new InvalidComObjectException("unexpected itemType: {itemType}");
+                        throw new InvalidComObjectException($"unexpected itemType: {itemType}");
                 }
                 isFirstItem = false;
                 bytes.AppendChar(',');
@@ -119,7 +121,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             }
         }
         
-        public override void Write(ref Writer writer, JsonArray array) {
+        public override void Write(ref Writer writer, JsonArray array)
+        {
             int startLevel = writer.IncLevel();
             writer.WriteArrayBegin();
             
@@ -128,25 +131,83 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             writer.WriteArrayEnd();
             writer.DecLevel(startLevel);
         }
-
-        public override JsonArray Read(ref Reader reader, JsonArray value, out bool success) {
-            success = false;
-            return null;
-            /* ref var parser = ref reader.parser;
+        
+        private bool StartArray(ref Reader reader, out bool success) {
+            ref var parser = ref reader.parser;
             var ev = parser.Event;
             switch (ev) {
                 case JsonEvent.ValueNull:
+                    reader.ErrorIncompatible<JsonArray>(DataTypeName(), this, out success);
+                    return default;
+                case JsonEvent.ArrayStart:
                     success = true;
-                    return new JsonKey();
-                case JsonEvent.ValueString:
-                    success = true;
-                    return new JsonKey(parser.value.AsSpan());
-                case JsonEvent.ValueNumber:
-                    success = true;
-                    return new JsonKey(parser.value, value);
+                    return true;
                 default:
-                    return reader.ErrorMsg<JsonKey>("Expect string as JsonKey. ", ev, out success);
-            } */
+                    success = false;
+                    reader.ErrorIncompatible<JsonArray>(DataTypeName(), this, out success);
+                    return false;
+            }
+        }
+
+        public override JsonArray Read(ref Reader reader, JsonArray value, out bool success)
+        {
+            if (!StartArray(ref reader, out success)) {
+                return default;
+            }
+            return ReadItems(ref reader, value, out success);
+        }
+        
+        private static JsonArray ReadItems(ref Reader reader, JsonArray value, out bool success)
+        {
+            if (value == null) {
+                value = new JsonArray();
+            }
+            ref var parser = ref reader.parser;
+            while (true) {
+                JsonEvent ev = reader.parser.NextEvent();
+                switch (ev) {
+                    case JsonEvent.ValueString:
+                        var len = parser.value.Len;
+                        var span = parser.value.AsSpan();
+                        if (len == Bytes.GuidLength && Bytes.TryParseGuid(span, out var guid)) {
+                            value.WriteGuid(guid);
+                            break;
+                        }
+                        if (Bytes.TryParseDateTime(span, out var dateTime)) {
+                            value.WriteDateTime(dateTime);
+                            break;
+                        }
+                        value.WriteBytes(parser.value.AsSpan());
+                        break;
+                    case JsonEvent.ValueNumber:
+                        if (parser.isFloat) {
+                            var dbl = ValueParser.ParseDouble(parser.value.AsSpan(), ref reader.strBuf, out success);   // TODO - handle error
+                            value.WriteFlt64(dbl);
+                        } else {
+                            var lng = ValueParser.ParseLong(parser.value.AsSpan(), ref reader.strBuf, out success);     // TODO - handle error
+                            value.WriteInt64(lng); 
+                        }
+                        break;
+                    case JsonEvent.ValueBool:
+                        value.WriteBoolean(parser.boolValue);
+                        break;
+                    case JsonEvent.ArrayStart:
+                        throw new NotImplementedException();
+                    case JsonEvent.ObjectStart:
+                        throw new NotImplementedException();
+                    case JsonEvent.ValueNull:
+                        value.WriteNull();
+                        break;
+                    case JsonEvent.ArrayEnd:
+                        success = true;
+                        return value;
+                    case JsonEvent.Error:
+                        success = false;
+                        return default;
+                    default:
+                        return reader.ErrorMsg<JsonArray>("unexpected state: ", ev, out success);
+                }
+            }
         }
     }
 }
