@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Globalization;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
@@ -303,8 +304,14 @@ namespace Friflo.Json.Fliox
                 case JsonItemType.Int32:        sb.Append(ReadInt32     (pos)); break;
                 case JsonItemType.Int64:        sb.Append(ReadInt64     (pos)); break;
                 //
-                case JsonItemType.Flt32:        sb.Append(ReadFlt32     (pos)); break;
-                case JsonItemType.Flt64:        sb.Append(ReadFlt64     (pos)); break;
+                case JsonItemType.Flt32:
+                    var flt = ReadFlt32(pos).ToString(CultureInfo.InvariantCulture);
+                    sb.Append(flt);
+                    break;
+                case JsonItemType.Flt64:
+                    var dbl = ReadFlt64(pos).ToString(CultureInfo.InvariantCulture);
+                    sb.Append(dbl);
+                    break;
                 //
                 case JsonItemType.ByteString: {
                     var value = ReadBytes(pos);
