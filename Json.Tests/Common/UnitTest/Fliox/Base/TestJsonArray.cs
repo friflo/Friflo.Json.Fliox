@@ -143,7 +143,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             ReadTestData(array, ReadArrayType.Binary);
         }
 
-        private const string Expect = "[null,true,255,32767,2147483647,9223372036854775807,3.4028235E+38,1.7976931348623157E+308,\"bytes\",\"test\",\"chars\",\"2023-07-19T12:58:57.448575Z\",\"af82dcf5-8664-4b4e-8072-6cb43b335364\"]";
+        private const string ExpectJson =
+            "[null,true,255,32767,2147483647,9223372036854775807,3.4028235E+38,1.7976931348623157E+308,\"bytes\",\"test\",\"chars\",\"2023-07-19T12:58:57.448575Z\",\"af82dcf5-8664-4b4e-8072-6cb43b335364\"]";
+        
+        private const string ExpectToString =
+            "Count: 13 [null, true, 255, 32767, 2147483647, 9223372036854775807, 3,4028235E+38, 1,7976931348623157E+308, 'bytes', 'test', 'chars', 19.07.2023 12:58:57, af82dcf5-8664-4b4e-8072-6cb43b335364]";
+
 
         [Test]
         public static void TestJsonArray_MapperWrite () 
@@ -159,8 +164,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
 
             array.Init();
             WriteTestData(array);
+            var toString = array.ToString();
+            AreEqual(ExpectToString, toString);
+
             json = mapper.Write(array);
-            AreEqual(Expect, json);
+            AreEqual(ExpectJson, json);
         }
         
         [Test]
@@ -169,7 +177,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var typeStore = new TypeStore();
             var mapper = new ObjectMapper(typeStore);
 
-            var array = mapper.Read<JsonArray>(Expect);
+            var array = mapper.Read<JsonArray>(ExpectJson);
             ReadTestData(array, ReadArrayType.Json);
             AreEqual(13, array.Count);
         }

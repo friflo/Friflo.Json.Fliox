@@ -307,9 +307,10 @@ namespace Friflo.Json.Fliox
                 case JsonItemType.Flt64:        sb.Append(ReadFlt64     (pos)); break;
                 //
                 case JsonItemType.ByteString: {
-                    var span = ReadBytesSpan(pos);
+                    var value = ReadBytes(pos);
+                    var str = Utf8.GetString(value.buffer, value.start, value.Len);
                     sb.Append('\'');
-                    sb.Append(Utf8.GetString(span));
+                    sb.Append(str);
                     sb.Append('\'');
                     break;
                 }
