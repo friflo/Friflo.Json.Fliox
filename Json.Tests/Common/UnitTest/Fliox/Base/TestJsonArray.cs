@@ -139,7 +139,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         {
             var array = new JsonArray();
             WriteTestData(array);
-            array.ToString();
             AreEqual(13, array.Count);
             ReadTestData(array, ReadArrayType.Binary);
         }
@@ -153,6 +152,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var mapper = new ObjectMapper(typeStore);
             
             var array = new JsonArray();
+            AreEqual("Count: 0 []", array.ToString());
             
             var json = mapper.Write(array);
             AreEqual("[]", json);

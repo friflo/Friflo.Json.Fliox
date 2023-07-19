@@ -285,7 +285,9 @@ namespace Friflo.Json.Fliox
                 AppendItem(sb, type, pos);
                 pos = next;
             }
-            sb.Length -= 2;
+            if (count > 0) {
+                sb.Length -= 2;
+            }
             sb.Append(']');
             return sb.ToString();
         }
@@ -306,10 +308,16 @@ namespace Friflo.Json.Fliox
                 //
                 case JsonItemType.ByteString: {
                     var span = ReadBytesSpan(pos);
+                    sb.Append('\'');
                     sb.Append(Utf8.GetString(span));
+                    sb.Append('\'');
                     break;
                 }
-                case JsonItemType.CharString:   sb.Append(ReadCharSpan  (pos)); break;     // TODO optimize - creates char[]
+                case JsonItemType.CharString:
+                    sb.Append('\'');
+                    sb.Append(ReadCharSpan  (pos));      // TODO optimize - creates char[]
+                    sb.Append('\'');
+                    break;
                 case JsonItemType.DateTime:     sb.Append(ReadDateTime  (pos)); break;
                 case JsonItemType.Guid:         sb.Append(ReadGuid      (pos)); break;
                 case JsonItemType.End:
