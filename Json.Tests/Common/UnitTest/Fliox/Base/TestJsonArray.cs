@@ -139,6 +139,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         {
             var array = new JsonArray();
             WriteTestData(array);
+            array.ToString();
+            AreEqual(13, array.Count);
             ReadTestData(array, ReadArrayType.Binary);
         }
 
@@ -169,6 +171,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
 
             var array = mapper.Read<JsonArray>(Expect);
             ReadTestData(array, ReadArrayType.Json);
+            AreEqual(13, array.Count);
         }
     }
 }

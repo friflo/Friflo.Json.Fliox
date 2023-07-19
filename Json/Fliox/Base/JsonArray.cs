@@ -6,18 +6,25 @@ using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
     public class JsonArray
     {
-        private Bytes bytes = new Bytes(32);
+        public          int     Count       => count;
+        public override string  ToString()  => GetString();
+
+        // --- private
+        private Bytes   bytes = new Bytes(32);
+        private int     count;
         
         public JsonArray() {
             Init();
         }
         
         public void Init() {
+            count       = 0;
             bytes.start = 0;
             bytes.end   = 0;
         }
@@ -26,11 +33,13 @@ namespace Friflo.Json.Fliox
         public void WriteNull() {
             bytes.EnsureCapacity(1);
             bytes.buffer[bytes.end++] = (byte)JsonItemType.Null;
+            count++;
         }
         
         public void WriteBoolean(bool value) {
             bytes.EnsureCapacity(1);
             bytes.buffer[bytes.end++] = (byte)(value ? JsonItemType.True : JsonItemType.False);
+            count++;
         }
 
         public void WriteByte(byte value) {
@@ -39,6 +48,7 @@ namespace Friflo.Json.Fliox
             bytes.buffer[start]     = (byte)JsonItemType.Uint8;
             bytes.buffer[start + 1] = value;
             bytes.end = start + 2;
+            count++;
         }
 
         public void WriteInt16(short value) {
@@ -49,6 +59,7 @@ namespace Friflo.Json.Fliox
                 bytes.buffer[start + 1] = (byte)(value >> 8);
                 bytes.buffer[start + 2] = (byte)(value & 0xff);
                 bytes.end = start + 3;
+                count++;
                 return;
             }
             WriteByte((byte)value);
@@ -61,6 +72,7 @@ namespace Friflo.Json.Fliox
                 bytes.buffer[start] = (byte)JsonItemType.Int32;
                 bytes.WriteInt32(start + 1, value);
                 bytes.end = start + 5;
+                count++;
                 return;
             }
             WriteInt16((short)value);
@@ -73,6 +85,7 @@ namespace Friflo.Json.Fliox
                 bytes.buffer[start] = (byte)JsonItemType.Int64;
                 bytes.WriteInt64(start + 1, value);
                 bytes.end = start + 9;
+                count++;
                 return;
             }
             WriteInt32((int)value);
@@ -84,6 +97,7 @@ namespace Friflo.Json.Fliox
             bytes.buffer[start] = (byte)JsonItemType.Flt32;
             bytes.WriteFlt32(start + 1, value);
             bytes.end = start + 5;
+            count++;
         }
         
         public void WriteFlt64(double value) {
@@ -92,11 +106,13 @@ namespace Friflo.Json.Fliox
             bytes.buffer[start] = (byte)JsonItemType.Flt64;
             bytes.WriteFlt64(start + 1, value);
             bytes.end = start + 9;
+            count++;
         }
         
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
         
         public void WriteChars(ReadOnlySpan<char> value) {
+            count++;
             if (value == null) {
                 WriteNull();
                 return;
@@ -116,6 +132,7 @@ namespace Friflo.Json.Fliox
         }
         
         public void WriteBytes(ReadOnlySpan<byte> value) {
+            count++;
             int len = value.Length;
             bytes.EnsureCapacity(1 + 4 + len);
             int start = bytes.end;
@@ -126,6 +143,7 @@ namespace Friflo.Json.Fliox
         }
 
         public void WriteDateTime(in DateTime value) {
+            count++;
             bytes.EnsureCapacity(9);
             int start = bytes.end;
             bytes.buffer[start] = (byte)JsonItemType.DateTime;
@@ -134,6 +152,7 @@ namespace Friflo.Json.Fliox
         }
         
         public void WriteGuid(in Guid value) {
+            count++;
             bytes.EnsureCapacity(17);
             int start = bytes.end;
             bytes.buffer[start] = (byte)JsonItemType.Guid;
@@ -242,7 +261,6 @@ namespace Friflo.Json.Fliox
             return Utf8.GetChars(bytes.buffer, pos + 1 + 4, len);
         }
 
-        
         public DateTime ReadDateTime(int pos) {
             var lng = bytes.ReadInt64(pos + 1);
             return DateTime.FromBinary(lng);
@@ -253,6 +271,53 @@ namespace Friflo.Json.Fliox
             var lng2 = bytes.ReadInt64(pos + 9);
             return GuidUtils.LongLongToGuid(lng1, lng2);
         }
+        
+        private string GetString() {
+            var sb = new StringBuilder();
+            sb.Append("Count: ");
+            sb.Append(count);
+            sb.Append(" [");
+            int pos         = 0;
+            var type        = JsonItemType.Null;
+            while (type != JsonItemType.End)
+            {
+                type = GetItemType(pos, out int next);
+                AppendItem(sb, type, pos);
+                pos = next;
+            }
+            sb.Length -= 2;
+            sb.Append(']');
+            return sb.ToString();
+        }
+        
+        private void AppendItem(StringBuilder sb, JsonItemType type, int pos) {
+            switch (type) {
+                case JsonItemType.Null:         sb.Append("null");              break;
+                case JsonItemType.True:         sb.Append("true");              break;
+                case JsonItemType.False:        sb.Append("false");             break;
+                //
+                case JsonItemType.Uint8:        sb.Append(ReadUint8     (pos)); break;
+                case JsonItemType.Int16:        sb.Append(ReadInt16     (pos)); break;
+                case JsonItemType.Int32:        sb.Append(ReadInt32     (pos)); break;
+                case JsonItemType.Int64:        sb.Append(ReadInt64     (pos)); break;
+                //
+                case JsonItemType.Flt32:        sb.Append(ReadFlt32     (pos)); break;
+                case JsonItemType.Flt64:        sb.Append(ReadFlt64     (pos)); break;
+                //
+                case JsonItemType.ByteString: {
+                    var span = ReadBytesSpan(pos);
+                    sb.Append(Utf8.GetString(span));
+                    break;
+                }
+                case JsonItemType.CharString:   sb.Append(ReadCharSpan  (pos)); break;     // TODO optimize - creates char[]
+                case JsonItemType.DateTime:     sb.Append(ReadDateTime  (pos)); break;
+                case JsonItemType.Guid:         sb.Append(ReadGuid      (pos)); break;
+                case JsonItemType.End:
+                    return;
+            }
+            sb.Append(", ");
+        }
+        
     }
     
     public enum JsonItemType

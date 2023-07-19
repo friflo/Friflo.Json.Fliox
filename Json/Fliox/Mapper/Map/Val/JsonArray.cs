@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         break;
                     }
                     case JsonItemType.CharString: {
-                        var value = array.ReadCharSpan(pos);
+                        var value = array.ReadCharSpan(pos);        // TODO optimize - creates char[]
                         Utf8JsonWriter.AppendEscString(ref bytes, value);
                         break;
                     }
@@ -184,7 +184,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     case JsonEvent.ValueNumber: {
                         var span = parser.value.AsSpan();
                         if (!parser.isFloat) {
-                            var lng = ValueParser.ParseLong(span, ref reader.strBuf, out success);  // TODO - handle error
+                            var lng = ValueParser.ParseLong(span, ref reader.strBuf, out success);          // TODO - handle error
                             value.WriteInt64(lng);
                             break;
                         }
