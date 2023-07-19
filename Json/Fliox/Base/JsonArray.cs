@@ -326,7 +326,10 @@ namespace Friflo.Json.Fliox
                     sb.Append(ReadCharSpan  (pos));      // TODO optimize - creates char[]
                     sb.Append('\'');
                     break;
-                case JsonItemType.DateTime:     sb.Append(ReadDateTime  (pos)); break;
+                case JsonItemType.DateTime:
+                    var dateTime = ReadDateTime(pos).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                    sb.Append(dateTime);
+                    break;
                 case JsonItemType.Guid:         sb.Append(ReadGuid      (pos)); break;
                 case JsonItemType.End:
                     return;
