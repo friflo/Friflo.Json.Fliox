@@ -159,12 +159,6 @@ namespace Friflo.Json.Fliox
             bytes.end = start + 17;
         }
         
-        // TODO remove
-        public void Finish() {
-            bytes.EnsureCapacity(1);
-            bytes.buffer[bytes.end] = (byte)JsonItemType.End;
-        }
-
         // -------------------------------------------- read --------------------------------------------
         public JsonItemType GetItemType(int pos, out int next) {
             if (pos >= bytes.end) {
@@ -177,9 +171,6 @@ namespace Friflo.Json.Fliox
                 case JsonItemType.True:
                 case JsonItemType.False:
                     next = pos + 1;
-                    return type;
-                case JsonItemType.End:
-                    next = pos;
                     return type;
                 case JsonItemType.Uint8:
                     next = pos + 2;
@@ -271,11 +262,13 @@ namespace Friflo.Json.Fliox
             sb.Append("Count: ");
             sb.Append(count);
             sb.Append(" [");
-            int pos         = 0;
-            var type        = JsonItemType.Null;
-            while (type != JsonItemType.End)
+            int pos     = 0;
+            while (true)
             {
-                type = GetItemType(pos, out int next);
+                var type = GetItemType(pos, out int next);
+                if (type == JsonItemType.End) {
+                    break;
+                }
                 AppendItem(sb, type, pos);
                 pos = next;
             }
@@ -286,7 +279,8 @@ namespace Friflo.Json.Fliox
             return sb.ToString();
         }
         
-        private void AppendItem(StringBuilder sb, JsonItemType type, int pos) {
+        private void AppendItem(StringBuilder sb, JsonItemType type, int pos)
+        {
             switch (type) {
                 case JsonItemType.Null:         sb.Append("null");              break;
                 case JsonItemType.True:         sb.Append("true");              break;
@@ -324,8 +318,8 @@ namespace Friflo.Json.Fliox
                     sb.Append(dateTime);
                     break;
                 case JsonItemType.Guid:         sb.Append(ReadGuid      (pos)); break;
-                case JsonItemType.End:
-                    return;
+                default:
+                    throw new InvalidOperationException($"unexpected type: {type}");
             }
             sb.Append(", ");
         }
@@ -352,6 +346,6 @@ namespace Friflo.Json.Fliox
         DateTime    = 11,   // 1 + 8
         Guid        = 12,   // 1 + 16
         //
-        End         = 13,   // 0
+        End         = 13,   // 0 - Note: End is not written to JsonArray.bytes
     }
 }

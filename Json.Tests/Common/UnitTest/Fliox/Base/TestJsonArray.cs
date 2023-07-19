@@ -38,7 +38,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             array.WriteChars    ("chars".AsSpan()); // [10]
             array.WriteDateTime (DateTime);         // [11]
             array.WriteGuid     (Guid);             // [12]
-            array.Finish        (); // TODO remove
         }
             
         private static void ReadTestData (JsonArray array, ReadArrayType readArrayType)
