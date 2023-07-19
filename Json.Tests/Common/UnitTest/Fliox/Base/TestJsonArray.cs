@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox;
+using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -11,13 +12,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
 {
     public static class TestJsonArray
     {
-        [Test]
-        public static void JsonKeyTests () {
-            var array       = new JsonArray();
-            var dateTime    = DateTime.Now;
-            var guid        = Guid.NewGuid();
-            var bytes       = new Bytes("bytes");
-            
+        private static readonly DateTime    DateTime    = DateTime.Now;
+        private static readonly Guid        Guid        = Guid.NewGuid();
+        private static readonly Bytes       Bytes       = new Bytes("bytes");
+        
+        
+        private static void WriteTestData (JsonArray array) {
             array.WriteNull();
             array.WriteBoolean  (true);
             array.WriteByte     (255);
@@ -28,14 +28,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             array.WriteFlt32    (float.MaxValue);
             array.WriteFlt64    (double.MaxValue);
 
-            array.WriteBytes    (bytes.AsSpan());
+            array.WriteBytes    (Bytes.AsSpan());
             array.WriteChars    ("test".AsSpan());
             array.WriteChars    ("chars".AsSpan());
-            array.WriteDateTime (dateTime);
-            array.WriteGuid     (guid);
+            array.WriteDateTime (DateTime);
+            array.WriteGuid     (Guid);
             array.Finish        ();
+        }
             
-            
+        [Test]
+        public static void JsonKeyTests ()
+        {
+            var array = new JsonArray();
+            WriteTestData(array);
+
             int pos         = 0;
             var type        = JsonItemType.Null;
             int stringCount = 0;
@@ -83,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                     }
                     case JsonItemType.Bytes: {
                         var value = array.ReadBytes(pos);
-                        IsTrue(value.SequenceEqual(bytes.AsSpan()));
+                        IsTrue(value.SequenceEqual(Bytes.AsSpan()));
                         break;
                     }
                     case JsonItemType.Chars: {
@@ -98,19 +104,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                     }
                     case JsonItemType.DateTime: {
                         var value = array.ReadDateTime(pos);
-                        AreEqual(dateTime, value);
+                        AreEqual(DateTime, value);
                         break;
                     }
                     case JsonItemType.Guid: {
                         var value = array.ReadGuid(pos);
-                        AreEqual(guid, value);
+                        AreEqual(Guid, value);
                         break;
                     }
                 }
                 pos = next;
             }
-
             AreEqual(true, true);
+        }
+        
+        [Test]
+        public static void JsonKeyMapper () 
+        {
+            var array = new JsonArray();
+            WriteTestData(array);
+            
+            var typeStore = new TypeStore();
+            var mapper = new ObjectMapper(typeStore);
+            mapper.Write(array);
         }
     }
 }

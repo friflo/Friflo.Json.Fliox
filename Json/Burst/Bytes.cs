@@ -241,8 +241,10 @@ namespace Friflo.Json.Burst
                 throw new InvalidOperationException("AppendGuid() failed");
             EnsureCapacity(charsWritten);
             var array   = buffer;
-            for (int n = 0; n < charsWritten; n++)
-                array[start + n] = (byte)span[n];
+            var bufEnd  = end;
+            for (int n = 0; n < charsWritten; n++) {
+                array[bufEnd + n] = (byte)span[n];
+            }
             end += charsWritten;
 #endif
         }
