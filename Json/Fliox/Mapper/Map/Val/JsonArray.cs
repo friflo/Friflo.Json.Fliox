@@ -83,15 +83,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     }
                     case JsonItemType.ByteString: {
                         var value = array.ReadBytes(pos);
-                        bytes.AppendChar('"');
-                        bytes.AppendString("bytes");
-                        bytes.AppendChar('"');
+                        Utf8JsonWriter.AppendEscStringBytes(ref bytes, value);
                         break;
                     }
                     case JsonItemType.CharString: {
-                        bytes.AppendChar('"');
-                        bytes.AppendString("chars");
-                        bytes.AppendChar('"');
+                        var value = array.ReadCharSpan(pos);
+                        Utf8JsonWriter.AppendEscString(ref bytes, value);
                         break;
                     }
                     case JsonItemType.DateTime: {

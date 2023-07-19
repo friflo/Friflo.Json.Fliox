@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                         break;
                     }
                     case JsonItemType.ByteString: {
-                        var value = array.ReadBytes(pos);
+                        var value = array.ReadBytesSpan(pos);
                         IsTrue(value.SequenceEqual(Bytes.AsSpan()));
                         break;
                     }
@@ -132,7 +132,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             array.Init();
             WriteTestData(array);
             json = mapper.Write(array);
-            var expect = "[null,true,255,32767,2147483647,9223372036854775807,3.4028234663852886E+38,1.7976931348623157E+308,\"bytes\",\"chars\",\"chars\",\"2023-07-19T12:58:57.448575Z\",\"af82dcf5-8664-4b4e-8072-6cb43b335364\"]";
+            var expect = "[null,true,255,32767,2147483647,9223372036854775807,3.4028234663852886E+38,1.7976931348623157E+308,\"bytes\",\"test\",\"chars\",\"2023-07-19T12:58:57.448575Z\",\"af82dcf5-8664-4b4e-8072-6cb43b335364\"]";
             AreEqual(expect, json);
         }
     }

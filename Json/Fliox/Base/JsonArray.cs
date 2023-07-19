@@ -209,9 +209,15 @@ namespace Friflo.Json.Fliox
             return bytes.ReadFlt64(pos + 1);
         }
         
-        public ReadOnlySpan<byte> ReadBytes(int pos) {
+        public ReadOnlySpan<byte> ReadBytesSpan(int pos) {
             var len = bytes.ReadInt32(pos + 1);
             return new ReadOnlySpan<byte>(bytes.buffer, pos + 1 + 4, len);
+        }
+        
+        public Bytes ReadBytes(int pos) {
+            var len     = bytes.ReadInt32(pos + 1);
+            var start   =  pos + 1 + 4;
+            return new Bytes { buffer = bytes.buffer, start = start, end = start + len };
         }
         
         public string ReadString(int pos) {
