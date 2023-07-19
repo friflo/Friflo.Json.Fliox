@@ -23,119 +23,66 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         
         
         private static void WriteTestData (JsonArray array) {
-            array.WriteNull();
-            array.WriteBoolean  (true);
-            array.WriteByte     (255);
-            array.WriteInt16    (short.MaxValue);
-            array.WriteInt32    (int.MaxValue);
-            array.WriteInt64    (long.MaxValue);
+            array.WriteNull();                      // [0]
+            array.WriteBoolean  (true);             // [1]
+            array.WriteByte     (255);              // [2]
+            array.WriteInt16    (short.MaxValue);   // [3]
+            array.WriteInt32    (int.MaxValue);     // [4]
+            array.WriteInt64    (long.MaxValue);    // [5]
             
-            array.WriteFlt32    (float.MaxValue);   // 3.4028235E+38f;
-            array.WriteFlt64    (double.MaxValue);  // 1.7976931348623157E+308;
+            array.WriteFlt32    (float.MaxValue);   // [6]  3.4028235E+38f;
+            array.WriteFlt64    (double.MaxValue);  // [7]  1.7976931348623157E+308;
 
-            array.WriteBytes    (Bytes.AsSpan());
-            array.WriteChars    ("test".AsSpan());
-            array.WriteChars    ("chars".AsSpan());
-            array.WriteDateTime (DateTime);
-            array.WriteGuid     (Guid);
-            array.Finish        ();
+            array.WriteBytes    (Bytes.AsSpan());   // [8]
+            array.WriteChars    ("test".AsSpan());  // [9]
+            array.WriteChars    ("chars".AsSpan()); // [10]
+            array.WriteDateTime (DateTime);         // [11]
+            array.WriteGuid     (Guid);             // [12]
+            array.Finish        (); // TODO remove
         }
             
         private static void ReadTestData (JsonArray array, ReadArrayType readArrayType)
         {
             int pos         = 0;
-            var type        = JsonItemType.Null;
-            int stringCount = 0;
-            while (type != JsonItemType.End)
-            {
-                type = array.GetItemType(pos, out int next);
-                switch (type) {
-                    case JsonItemType.Null:
-                        break;
-                    case JsonItemType.True:
-                    case JsonItemType.False: {
-                        var value = array.ReadBool(pos);
-                        IsTrue(value);
-                        break;
-                    }
-                    case JsonItemType.Uint8: {
-                        var value = array.ReadUint8(pos);
-                        AreEqual(255, value);
-                        break;
-                    }
-                    case JsonItemType.Int16: {
-                        var value = array.ReadInt16(pos);
-                        AreEqual(short.MaxValue, value);
-                        break;
-                    }
-                    case JsonItemType.Int32: {
-                        var value = array.ReadInt32(pos);
-                        AreEqual(int.MaxValue, value);
-                        break;
-                    }
-                    case JsonItemType.Int64: {
-                        var value = array.ReadInt64(pos);
-                        AreEqual(long.MaxValue, value);
-                        break;
-                    }
-                    case JsonItemType.Flt32: {
-                        var value = array.ReadFlt32(pos);
-#if !UNITY_5_3_OR_NEWER
-                        AreEqual(float.MaxValue, value);
-#endif
-                        break;
-                    }
-                    case JsonItemType.Flt64: {
-                        var value = array.ReadFlt64(pos);
-#if !UNITY_5_3_OR_NEWER
-                        AreEqual(double.MaxValue, value);
-#endif
-                        break;
-                    }
-                    case JsonItemType.ByteString: {
-                        var value = array.ReadBytesSpan(pos);
-                        if (readArrayType == ReadArrayType.Binary) {
-                            IsTrue(value.SequenceEqual(Bytes.AsSpan()));
-                        } else {
-                            switch (stringCount++) {
-                                case 0: IsTrue(value.SequenceEqual(Bytes.AsSpan()));                break;
-                                case 1: IsTrue(value.SequenceEqual(new Bytes("test").AsSpan()));    break;
-                                case 2: IsTrue(value.SequenceEqual(new Bytes("chars").AsSpan()));   break;
-                                default: Fail(); break;
-                            }
-                        }
-                        break;
-                    }
-                    case JsonItemType.CharString:
-                        switch (stringCount++) {
-                            case 0: {
-                                    var value = array.ReadCharSpan(pos);
-                                    IsTrue(value.SequenceEqual("test".AsSpan()));
-                                }
-                                break;
-                            case 1: {
-                                    var value = array.ReadCharSpan(pos);
-                                    IsTrue(value.SequenceEqual("chars".AsSpan()));
-                                }
-                                break;
-                            default:
-                                Fail(); break;
-                        }
-                        break;
-                    case JsonItemType.DateTime: {
-                        var value = array.ReadDateTime(pos);
-                        AreEqual(DateTime, value);
-                        break;
-                    }
-                    case JsonItemType.Guid: {
-                        var value = array.ReadGuid(pos);
-                        AreEqual(Guid, value);
-                        break;
-                    }
+            var idx     = new int[13];
+            int n           = 0;
+            while (true) {
+                var type = array.GetItemType(pos, out int next);
+                if (type == JsonItemType.End) {
+                    break;
                 }
+                idx[n++] = pos;
                 pos = next;
             }
-            AreEqual(true, true);
+            AreEqual(0,                                      idx[0]); // null
+            IsTrue(                     array.ReadBool      (idx[1]));
+            AreEqual(255,               array.ReadUint8     (idx[2]));
+            AreEqual(short.MaxValue,    array.ReadInt16     (idx[3]));
+            AreEqual(int.MaxValue,      array.ReadInt32     (idx[4]));
+            AreEqual(long.MaxValue,     array.ReadInt64     (idx[5]));
+#if !UNITY_5_3_OR_NEWER
+            AreEqual(float.MaxValue,    array.ReadFlt32     (idx[6]));
+            AreEqual(double.MaxValue,   array.ReadFlt64     (idx[7]));
+#endif
+            var bytes =                 array.ReadBytesSpan (idx[8]);
+            IsTrue(bytes.SequenceEqual(Bytes.AsSpan()));
+            
+            if (readArrayType == ReadArrayType.Binary) {
+                var chars =             array.ReadCharSpan  (idx[9]);
+                IsTrue(chars.SequenceEqual("test".AsSpan()));
+                
+                chars =                 array.ReadCharSpan  (idx[10]);
+                IsTrue(chars.SequenceEqual("chars".AsSpan()));
+            } else {
+                bytes =                 array.ReadBytesSpan (idx[9]);
+                IsTrue(bytes.SequenceEqual(new Bytes("test").AsSpan()));
+                
+                bytes =                 array.ReadBytesSpan (idx[10]);
+                IsTrue(bytes.SequenceEqual(new Bytes("chars").AsSpan()));
+            }
+            
+            AreEqual(DateTime,          array.ReadDateTime  (idx[11]));
+            AreEqual(Guid,              array.ReadGuid      (idx[12]));
         }
         
         [Test]

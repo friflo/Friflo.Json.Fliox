@@ -159,6 +159,7 @@ namespace Friflo.Json.Fliox
             bytes.end = start + 17;
         }
         
+        // TODO remove
         public void Finish() {
             bytes.EnsureCapacity(1);
             bytes.buffer[bytes.end] = (byte)JsonItemType.End;
