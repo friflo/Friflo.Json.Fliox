@@ -384,15 +384,15 @@ input RawSqlResultInput {
 
 type RawSqlColumn {
     name : String
-    type : FieldType!
+    type : RawColumnType!
 }
 
 input RawSqlColumnInput {
     name : String
-    type : FieldType!
+    type : RawColumnType!
 }
 
-enum FieldType {
+enum RawColumnType {
     Unknown
     Bool
     Uint8

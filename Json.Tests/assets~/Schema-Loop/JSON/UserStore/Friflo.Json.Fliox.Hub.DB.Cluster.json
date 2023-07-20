@@ -105,14 +105,14 @@
             "isStruct": true,
             "properties": {
                 "name": { "type": ["string", "null"] },
-                "type": { "$ref": "#/definitions/FieldType" }
+                "type": { "$ref": "#/definitions/RawColumnType" }
             },
             "required": [
                 "type"
             ],
             "additionalProperties": false
         },
-        "FieldType": {
+        "RawColumnType": {
             "enum": [
                 "Unknown",
                 "Bool",

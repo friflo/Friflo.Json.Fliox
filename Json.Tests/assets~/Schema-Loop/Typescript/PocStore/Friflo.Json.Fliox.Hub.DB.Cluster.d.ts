@@ -84,10 +84,10 @@ export class RawSqlResult {
 
 export class RawSqlColumn {
     name? : string | null;
-    type  : FieldType;
+    type  : RawColumnType;
 }
 
-export type FieldType =
+export type RawColumnType =
     | "Unknown"
     | "Bool"
     | "Uint8"

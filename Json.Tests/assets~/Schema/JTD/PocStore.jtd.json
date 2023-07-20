@@ -180,10 +180,10 @@
         "RawSqlColumn": {
             "properties": {
                 "name": { "type": "string", "nullable": true },
-                "type": { "ref":  "FieldType" }
+                "type": { "ref":  "RawColumnType" }
             }
         },
-        "FieldType": {
+        "RawColumnType": {
             "enum": [
                 "Unknown",
                 "Bool",

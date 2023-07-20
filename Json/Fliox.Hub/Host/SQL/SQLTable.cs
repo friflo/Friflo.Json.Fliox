@@ -100,23 +100,23 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             for (int n = 0; n < count; n++) {
                 var column  = schema[n];
                 var type    = column.DataType;
-                FieldType fieldType = type switch {
-                    Type _ when type == typeof(bool)        => FieldType.Bool,
+                RawColumnType fieldType = type switch {
+                    Type _ when type == typeof(bool)        => RawColumnType.Bool,
                     //
-                    Type _ when type == typeof(byte)        => FieldType.Uint8,
-                    Type _ when type == typeof(sbyte)       => FieldType.Int16,
-                    Type _ when type == typeof(short)       => FieldType.Int16,
-                    Type _ when type == typeof(int)         => FieldType.Int32,
-                    Type _ when type == typeof(long)        => FieldType.Int64,
+                    Type _ when type == typeof(byte)        => RawColumnType.Uint8,
+                    Type _ when type == typeof(sbyte)       => RawColumnType.Int16,
+                    Type _ when type == typeof(short)       => RawColumnType.Int16,
+                    Type _ when type == typeof(int)         => RawColumnType.Int32,
+                    Type _ when type == typeof(long)        => RawColumnType.Int64,
                     //
-                    Type _ when type == typeof(string)      => reader.GetDataTypeName(n) == "JSON" ? FieldType.JSON : FieldType.String,
-                    Type _ when type == typeof(DateTime)    => FieldType.DateTime,
-                    Type _ when type == typeof(Guid)        => FieldType.Guid,
+                    Type _ when type == typeof(string)      => reader.GetDataTypeName(n) == "JSON" ? RawColumnType.JSON : RawColumnType.String,
+                    Type _ when type == typeof(DateTime)    => RawColumnType.DateTime,
+                    Type _ when type == typeof(Guid)        => RawColumnType.Guid,
                     //
-                    Type _ when type == typeof(double)      => FieldType.Double,
-                    Type _ when type == typeof(float)       => FieldType.Float,
+                    Type _ when type == typeof(double)      => RawColumnType.Double,
+                    Type _ when type == typeof(float)       => RawColumnType.Float,
                     //
-                    _                                       => FieldType.Unknown
+                    _                                       => RawColumnType.Unknown
                 };
                 columns[n] = new RawSqlColumn(column.ColumnName, fieldType);
             }
@@ -133,18 +133,18 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 }
                 var type = columns[n].type;
                 switch (type) {
-                    case FieldType.Bool:        values.WriteBoolean     (reader.GetBoolean  (n));   break;
-                    case FieldType.Uint8:       values.WriteByte        (reader.GetByte     (n));   break;
-                    case FieldType.Int16:       values.WriteInt16       (reader.GetInt16    (n));   break;
-                    case FieldType.Int32:       values.WriteInt32       (reader.GetInt32    (n));   break;
-                    case FieldType.Int64:       values.WriteInt64       (reader.GetInt64    (n));   break;
-                    case FieldType.Float:       values.WriteFlt32       (reader.GetFloat    (n));   break;
-                    case FieldType.Double:      values.WriteFlt64       (reader.GetDouble   (n));   break;
-                    case FieldType.String:      values.WriteCharString  (rawSql.GetString   (n));   break;
-                    case FieldType.DateTime:    values.WriteDateTime    (reader.GetDateTime (n));   break;
-                    case FieldType.Guid:        values.WriteGuid        (reader.GetGuid     (n));   break;
-                    case FieldType.JSON:        values.WriteCharJSON    (rawSql.GetString   (n));   break;
-                    default:                    values.WriteNull();                                 break;
+                    case RawColumnType.Bool:        values.WriteBoolean     (reader.GetBoolean  (n));   break;
+                    case RawColumnType.Uint8:       values.WriteByte        (reader.GetByte     (n));   break;
+                    case RawColumnType.Int16:       values.WriteInt16       (reader.GetInt16    (n));   break;
+                    case RawColumnType.Int32:       values.WriteInt32       (reader.GetInt32    (n));   break;
+                    case RawColumnType.Int64:       values.WriteInt64       (reader.GetInt64    (n));   break;
+                    case RawColumnType.Float:       values.WriteFlt32       (reader.GetFloat    (n));   break;
+                    case RawColumnType.Double:      values.WriteFlt64       (reader.GetDouble   (n));   break;
+                    case RawColumnType.String:      values.WriteCharString  (rawSql.GetString   (n));   break;
+                    case RawColumnType.DateTime:    values.WriteDateTime    (reader.GetDateTime (n));   break;
+                    case RawColumnType.Guid:        values.WriteGuid        (reader.GetGuid     (n));   break;
+                    case RawColumnType.JSON:        values.WriteCharJSON    (rawSql.GetString   (n));   break;
+                    default:                        values.WriteNull();                                 break;
                 }
             }
         }

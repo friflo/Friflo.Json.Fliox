@@ -50,27 +50,27 @@ namespace Friflo.Json.Tests.Provider.Test
                 var type = columns[i].type;
                 if (row.IsNull(i)) {
                     switch (type) {
-                        case FieldType.JSON:    IsNull(row.GetJSON   (i));  break;
-                        case FieldType.String:  IsNull(row.GetString (i));  break;
+                        case RawColumnType.JSON:    IsNull(row.GetJSON   (i));  break;
+                        case RawColumnType.String:  IsNull(row.GetString (i));  break;
                     }
                     continue;
                 }
                 switch (type) {
-                    case FieldType.Bool:        row.GetBoolean  (i);    break;
+                    case RawColumnType.Bool:        row.GetBoolean  (i);    break;
                     //
-                    case FieldType.Uint8:       row.GetByte     (i);    break;
-                    case FieldType.Int16:       row.GetInt16    (i);    break;
-                    case FieldType.Int32:       row.GetInt32    (i);    break;
-                    case FieldType.Int64:       row.GetInt64    (i);    break;
+                    case RawColumnType.Uint8:       row.GetByte     (i);    break;
+                    case RawColumnType.Int16:       row.GetInt16    (i);    break;
+                    case RawColumnType.Int32:       row.GetInt32    (i);    break;
+                    case RawColumnType.Int64:       row.GetInt64    (i);    break;
                     //
-                    case FieldType.Float:       row.GetFlt32    (i);    break;
-                    case FieldType.Double:      row.GetFlt64    (i);    break;
+                    case RawColumnType.Float:       row.GetFlt32    (i);    break;
+                    case RawColumnType.Double:      row.GetFlt64    (i);    break;
                     //
-                    case FieldType.JSON:        row.GetJSON     (i);    break;
-                    case FieldType.String:      row.GetString   (i);    break;
+                    case RawColumnType.JSON:        row.GetJSON     (i);    break;
+                    case RawColumnType.String:      row.GetString   (i);    break;
                     //
-                    case FieldType.Guid:        row.GetGuid     (i);    break;
-                    case FieldType.DateTime:    row.GetDateTime (i);    break;
+                    case RawColumnType.Guid:        row.GetGuid     (i);    break;
+                    case RawColumnType.DateTime:    row.GetDateTime (i);    break;
                 }
             }
         }

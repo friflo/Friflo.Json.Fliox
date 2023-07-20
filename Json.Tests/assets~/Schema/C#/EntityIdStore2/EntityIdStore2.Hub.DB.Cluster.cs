@@ -63,11 +63,11 @@ public class RawSqlResult {
 }
 
 public struct RawSqlColumn {
-    string     name;
-    FieldType  type;
+    string         name;
+    RawColumnType  type;
 }
 
-public enum FieldType {
+public enum RawColumnType {
     Unknown,
     Bool,
     Uint8,

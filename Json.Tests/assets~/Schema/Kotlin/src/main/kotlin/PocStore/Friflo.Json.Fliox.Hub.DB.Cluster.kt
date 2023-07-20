@@ -60,10 +60,10 @@ data class RawSqlResult (
 @Serializable
 data class RawSqlColumn (
               val name : String? = null,
-              val type : FieldType,
+              val type : RawColumnType,
 )
 
-enum class FieldType {
+enum class RawColumnType {
     Unknown,
     Bool,
     Uint8,

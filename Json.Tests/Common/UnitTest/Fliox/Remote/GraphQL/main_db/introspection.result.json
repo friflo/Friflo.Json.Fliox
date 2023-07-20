@@ -4915,7 +4915,7 @@
                         "kind":"NON_NULL",
                         "ofType": {
                             "kind":"SCALAR",
-                            "name": "FieldType"
+                            "name": "RawColumnType"
                         }
                     }
                 }
@@ -4947,7 +4947,7 @@
                         "kind":"NON_NULL",
                         "ofType": {
                             "kind":"SCALAR",
-                            "name": "FieldType"
+                            "name": "RawColumnType"
                         }
                     }
                 }
@@ -4955,7 +4955,7 @@
         },
         {
             "kind":"ENUM",
-            "name": "FieldType",
+            "name": "RawColumnType",
             "description": "",
             "enumValues": [
                 {

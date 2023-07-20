@@ -315,14 +315,14 @@ GENERATED ALWAYS AS ({asStr});";
             return new RawSqlResult(columns, values, rowCount);
         }
         
-        private static  FieldType GetFieldType(utf8z type) {
+        private static  RawColumnType GetFieldType(utf8z type) {
             var str = type.utf8_to_string();    // TODO optimize - avoid string instantiation
             switch (str) {
-                case "TEXT":        return FieldType.String;
-                case "tinyint":     return FieldType.Uint8;
-                case "INTEGER":     return FieldType.Int64;
-                case "REAL":        return FieldType.Double;
-                default: throw new InvalidOperationException($"unexpected type: {str}");
+                case "TEXT":        return RawColumnType.String;
+                case "tinyint":     return RawColumnType.Uint8;
+                case "INTEGER":     return RawColumnType.Int64;
+                case "REAL":        return RawColumnType.Double;
+                default:            throw new InvalidOperationException($"unexpected type: {str}");
             }
         }
     }

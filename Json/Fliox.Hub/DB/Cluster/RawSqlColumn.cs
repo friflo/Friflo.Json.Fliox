@@ -5,7 +5,7 @@
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     /** The column type used by an SQL database. */
-    public enum FieldType
+    public enum RawColumnType
     {
         Unknown     =  0,
         //
@@ -36,10 +36,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     public struct RawSqlColumn
     {
-        public string      name;
-        public FieldType   type;
+        public string           name;
+        public RawColumnType    type;
         
-        public RawSqlColumn(string name, FieldType type) {
+        public RawSqlColumn(string name, RawColumnType type) {
             this.name   = name;
             this.type   = type;
         }
