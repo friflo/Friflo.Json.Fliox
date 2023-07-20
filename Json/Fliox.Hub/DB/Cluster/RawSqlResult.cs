@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         }
         
         public bool IsNull(int ordinal) {
-            var type = rawResult.GetValue(index, ordinal, out int pos);
+            var type = rawResult.GetValue(index, ordinal, out _);
             return type == JsonItemType.Null;
         }
         
@@ -124,6 +124,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
                 case JsonItemType.Null:         return null;
+                //
                 case JsonItemType.True:         return "true";
                 case JsonItemType.False:        return "false";
                 //
@@ -143,10 +144,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         }
         
         public bool GetBoolean(int ordinal) {
-            var type = rawResult.GetValue(index, ordinal, out int pos);
+            var type = rawResult.GetValue(index, ordinal, out _);
             switch (type) {
-                case JsonItemType.True:
-                case JsonItemType.False:        return rawResult.values.ReadBool(pos);  // TODO use only one case
+                case JsonItemType.True:         return true; 
+                case JsonItemType.False:        return false;
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
