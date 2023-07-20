@@ -5,8 +5,8 @@ using System;
 using System.Text;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
-// ReSharper disable InconsistentNaming
 
+// ReSharper disable InconsistentNaming
 // ReSharper disable ReturnTypeCanBeEnumerable.Global
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
@@ -67,6 +67,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             indexes[n] = pos;
             return indexArray = indexes;
         }
+        
+        internal JsonItemType GetValue(int index, int ordinal, out int pos) {
+            var valueIndex  = columnCount * index + ordinal;
+            var indexes     = GetIndexes();
+            pos             = indexes[valueIndex];
+            return values.GetItemType(pos);
+        }
     }
     
     public readonly struct RawSqlRow
@@ -81,8 +88,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
 
         public  override    string      ToString()          => GetString();
-    //  public ReadOnlySpan<JsonKey>    Values              => values.AsSpan().Slice(index * count, count);
-    //  public JsonKey                  this[int column]    => values[index * count + column];
 
         internal RawSqlRow(RawSqlResult rawResult, int index) {
             this.index      = index;
@@ -91,33 +96,25 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         }
         
         public JsonItemType GetItemType(int ordinal) {
-            var indexes = rawResult.GetIndexes();
-            var pos     = indexes[count * index + ordinal];
-            return rawResult.values.GetItemType(pos);
+            return rawResult.GetValue(index, ordinal, out _);
         }
         
         public string GetString(int ordinal) {
-            var indexes = rawResult.GetIndexes();
-            var pos     = indexes[count * index + ordinal];
-            var values  = rawResult.values;
-            var type    = values.GetItemType(pos);
+            var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
                 case JsonItemType.JSON:
-                case JsonItemType.ByteString:   return Utf8.GetString(values.ReadByteSpan(pos));
-                case JsonItemType.CharString:   return new string(values.ReadCharSpan(pos));
+                case JsonItemType.ByteString:   return Utf8.GetString(rawResult.values.ReadByteSpan(pos));
+                case JsonItemType.CharString:   return new string(rawResult.values.ReadCharSpan(pos));
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
         
         public int GetInt32(int ordinal) {
-            var indexes = rawResult.GetIndexes();
-            var pos     = indexes[count * index + ordinal];
-            var values  = rawResult.values;
-            var type    = values.GetItemType(pos);
+            var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
-                case JsonItemType.Uint8:    return values.ReadUint8(pos);
-                case JsonItemType.Int16:    return values.ReadInt16(pos);
-                case JsonItemType.Int32:    return values.ReadInt32(pos);
+                case JsonItemType.Uint8:    return rawResult.values.ReadUint8(pos);
+                case JsonItemType.Int16:    return rawResult.values.ReadInt16(pos);
+                case JsonItemType.Int32:    return rawResult.values.ReadInt32(pos);
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
