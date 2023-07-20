@@ -154,27 +154,29 @@ namespace Friflo.Json.Fliox
         }
         
         public void WriteCharString(ReadOnlySpan<char> value) {
-            count++;
             if (value == null) {
                 WriteNull();
                 return;
             }
+            count++;
+            var len     = value.Length;
             var start   = bytes.end;
-            int newEnd  = start + 1 + 4 + 2 * value.Length;
-            if (newEnd > bytes.buffer.Length) {
-                bytes.DoubleSize(newEnd);
-            }
+            bytes.EnsureCapacity (1 + 4 + 2 * len);
             bytes.buffer        [start]   = (byte)JsonItemType.CharString;
-            bytes.WriteInt32    (start + 1,     value.Length); // count chars (not bytes)
+            bytes.WriteInt32    (start + 1,     len); // count chars (not bytes)
             bytes.WriteCharArray(start + 1 + 4, value);
-            bytes.end = newEnd;
+            bytes.end = start + 1 + 4 + 2 * len;
         }
         
         public void WriteByteString(ReadOnlySpan<byte> value) {
+            if (value == null) {
+                WriteNull();
+                return;
+            }
             count++;
-            int len = value.Length;
+            var len     = value.Length;
+            int start   = bytes.end;
             bytes.EnsureCapacity(1 + 4 + len);
-            int start = bytes.end;
             bytes.buffer[start] = (byte)JsonItemType.ByteString;
             bytes.WriteInt32(start + 1, len);
             bytes.end = start + 1 + 4;

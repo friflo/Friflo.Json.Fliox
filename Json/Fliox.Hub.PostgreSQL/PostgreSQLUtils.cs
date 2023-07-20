@@ -77,11 +77,13 @@ GENERATED ALWAYS AS (({asStr})::{type}) STORED;";
             var types       = GetFieldTypes(reader);
             var values      = new JsonArray();
             var readRawSql  = new ReadRawSql(reader);
+            var rowCount    = 0;
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
+                rowCount++;
                 AddRow(reader, types, values, readRawSql);
             }
-            return new RawSqlResult(types, values);
+            return new RawSqlResult(types, values, rowCount);
         }
         
         

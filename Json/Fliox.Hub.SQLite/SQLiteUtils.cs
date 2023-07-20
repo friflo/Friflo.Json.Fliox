@@ -273,25 +273,31 @@ GENERATED ALWAYS AS ({asStr});";
                 var type = raw.sqlite3_column_decltype(stmt, n);
                 types[n]= GetFieldType(type);
             }
+            var rowCount = 0;
             var values  = new JsonArray();
             while (true) {
                 var rc = raw.sqlite3_step(stmt);
                 if (rc == raw.SQLITE_ROW) {
+                    rowCount++;
                     for (int n = 0; n < count; n++) {
-                        switch (types[n]) {
-                            case FieldType.UInt8:
-                            case FieldType.Int64:
+                        var type = raw.sqlite3_column_type(stmt, n);
+                        switch (type) {
+                            case raw.SQLITE_NULL:
+                                values.WriteNull();
+                                break;
+                            case raw.SQLITE_INTEGER:
                                 var lng = raw.sqlite3_column_int64(stmt, n);
                                 values.WriteInt64(lng);
                                 break;
-                            case FieldType.Double:
+                            case raw.SQLITE_FLOAT:
                                 var dbl = raw.sqlite3_column_double(stmt, n);
                                 values.WriteFlt64(dbl);
                                 break;
-                            case FieldType.String:
+                            case raw.SQLITE_TEXT:
                                 var text = raw.sqlite3_column_blob(stmt, n);
                                 values.WriteByteString(text);
                                 break;
+                            case raw.SQLITE_BLOB:
                             default:
                                 throw new InvalidOperationException($"unexpected type: {types[n]}");
                         }
@@ -304,7 +310,7 @@ GENERATED ALWAYS AS ({asStr});";
                 }
             }
             error = null;
-            return new RawSqlResult(types, values);
+            return new RawSqlResult(types, values, rowCount);
         }
         
         private static  FieldType GetFieldType(utf8z type) {

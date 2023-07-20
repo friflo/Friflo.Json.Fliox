@@ -84,11 +84,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var types       = GetFieldTypes(reader);
             var values      = new JsonArray();
             var readRawSql  = new ReadRawSql(reader);
+            var rowCount    = 0;
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
+                rowCount++;
                 AddRow(reader, types, values, readRawSql);
             }
-            return new RawSqlResult(types, values);
+            return new RawSqlResult(types, values, rowCount);
         }
         
         // ReSharper disable once MemberCanBePrivate.Global
@@ -122,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         // ReSharper disable once MemberCanBePrivate.Global
         public static void AddRow(DbDataReader reader, FieldType[] fieldTypes, JsonArray values, ReadRawSql rawSql) {
-            var count   = fieldTypes.Length;
+            var count = fieldTypes.Length;
             for (int n = 0; n < count; n++) {
                 if (reader.IsDBNull(n)) {
                     values.WriteNull();
