@@ -239,24 +239,34 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         }
     }
     
+    /** The column type used by an SQL database. */
     public enum FieldType
     {
         Unknown     =  0,
         //
+        /** Not supported by all SQL database. SQLite, SQL Server, MySQL, MariaDB: tinyint */
         Bool        =  1,
         //
+        /** Not supported by all SQL database. SQLite: integer, PostgreSQL: smallint */
         UInt8       =  2,
+        /** Not supported by all SQL database. SQLite: integer */
         Int16       =  3,
+        /** Not supported by all SQL database. SQLite: integer */
         Int32       =  4,
+        /** Not supported by all SQL database. SQLite: integer */
         Int64       =  5,
         //
         String      =  6,
+        /** Not supported by all SQL database. SQLite: text */
         DateTime    =  7,
+        /** Not supported by all SQL database. SQLite: text, MySQL: varchar(36) */
         Guid        =  8,
         //
+        /** Not supported by all SQL database. SQLite: real */
         Float       =  9,
         Double      = 10,
         //
+        /** Not supported by all SQL database. SQLite: text, SQL Server: nvarchar(max), MariaDB: longtext */
         JSON        = 11,
     }
 }
