@@ -290,9 +290,8 @@ GENERATED ALWAYS AS ({asStr});";
                                 values.WriteFlt64(dbl);
                                 break;
                             case FieldType.String:
-                                var text = raw.sqlite3_column_text(stmt, n);
-                                var str = text.utf8_to_string(); // TODO optimize - avoid string instantiation
-                                values.WriteCharString(str.AsSpan());
+                                var text = raw.sqlite3_column_blob(stmt, n);
+                                values.WriteByteString(text);
                                 break;
                             default:
                                 throw new InvalidOperationException($"unexpected type: {types[n]}");
