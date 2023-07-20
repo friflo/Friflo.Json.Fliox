@@ -59,8 +59,8 @@ data class RawSqlResult (
 
 @Serializable
 data class RawSqlColumn (
-              val type : FieldType,
               val name : String? = null,
+              val type : FieldType,
 )
 
 enum class FieldType {

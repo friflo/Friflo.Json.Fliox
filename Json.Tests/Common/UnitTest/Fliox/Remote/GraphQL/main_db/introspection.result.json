@@ -4897,6 +4897,16 @@
             "description": "",
             "fields": [
                 {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
                     "name": "type",
                     "description": "",
                     "args": [
@@ -4907,16 +4917,6 @@
                             "kind":"SCALAR",
                             "name": "FieldType"
                         }
-                    }
-                },
-                {
-                    "name": "name",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"SCALAR",
-                        "name": "String"
                     }
                 }
             ],
@@ -4929,6 +4929,16 @@
             "description": "",
             "inputFields": [
                 {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
                     "name": "type",
                     "description": "",
                     "args": [
@@ -4939,16 +4949,6 @@
                             "kind":"SCALAR",
                             "name": "FieldType"
                         }
-                    }
-                },
-                {
-                    "name": "name",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"SCALAR",
-                        "name": "String"
                     }
                 }
             ]

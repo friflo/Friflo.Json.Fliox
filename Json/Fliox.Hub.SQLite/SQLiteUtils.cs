@@ -316,10 +316,10 @@ GENERATED ALWAYS AS ({asStr});";
         private static  RawSqlColumn GetFieldType(utf8z type) {
             var str = type.utf8_to_string();    // TODO optimize - avoid string instantiation
             switch (str) {
-                case "TEXT":        return new RawSqlColumn(FieldType.String,   null);
-                case "tinyint":     return new RawSqlColumn(FieldType.Uint8,    null);
-                case "INTEGER":     return new RawSqlColumn(FieldType.Int64,    null);
-                case "REAL":        return new RawSqlColumn(FieldType.Double,   null);
+                case "TEXT":        return new RawSqlColumn(null, FieldType.String);
+                case "tinyint":     return new RawSqlColumn(null, FieldType.Uint8);
+                case "INTEGER":     return new RawSqlColumn(null, FieldType.Int64);
+                case "REAL":        return new RawSqlColumn(null, FieldType.Double);
                 default: throw new InvalidOperationException($"unexpected type: {str}");
             }
         }

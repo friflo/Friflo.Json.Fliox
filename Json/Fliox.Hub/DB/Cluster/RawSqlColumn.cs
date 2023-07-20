@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     /** The column type used by an SQL database. */
@@ -35,12 +36,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     public struct RawSqlColumn
     {
-        public FieldType   type;
         public string      name;
+        public FieldType   type;
         
-        public RawSqlColumn(FieldType type, string name) {
-            this.type   = type;
+        public RawSqlColumn(string name, FieldType type) {
             this.name   = name;
+            this.type   = type;
         }
     }
 }

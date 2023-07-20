@@ -211,8 +211,8 @@
         },
         "RawSqlColumn": {
             "properties": {
-                "type": { "ref":  "FieldType" },
-                "name": { "type": "string", "nullable": true }
+                "name": { "type": "string", "nullable": true },
+                "type": { "ref":  "FieldType" }
             }
         },
         "FieldType": {

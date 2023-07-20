@@ -197,13 +197,13 @@ input RawSqlResultInput {
 }
 
 type RawSqlColumn {
-    type : FieldType!
     name : String
+    type : FieldType!
 }
 
 input RawSqlColumnInput {
-    type : FieldType!
     name : String
+    type : FieldType!
 }
 
 enum FieldType {

@@ -96,8 +96,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public static RawSqlColumn[] GetFieldTypes(DbDataReader reader) {
             var count   = reader.FieldCount;
             var columns = new RawSqlColumn[count];
+            var schema  = reader.GetColumnSchema();
             for (int n = 0; n < count; n++) {
-                var type = reader.GetFieldType(n);
+                var column  = schema[n];
+                var type    = column.DataType;
                 FieldType fieldType = type switch {
                     Type _ when type == typeof(bool)        => FieldType.Bool,
                     //
@@ -116,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     //
                     _                                       => FieldType.Unknown
                 };
-                columns[n] = new RawSqlColumn(fieldType, null);
+                columns[n] = new RawSqlColumn(column.ColumnName, fieldType);
             }
             return columns;
         }

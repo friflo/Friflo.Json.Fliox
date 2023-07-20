@@ -104,8 +104,8 @@
             "type": "object",
             "isStruct": true,
             "properties": {
-                "type": { "$ref": "#/definitions/FieldType" },
-                "name": { "type": ["string", "null"] }
+                "name": { "type": ["string", "null"] },
+                "type": { "$ref": "#/definitions/FieldType" }
             },
             "required": [
                 "type"

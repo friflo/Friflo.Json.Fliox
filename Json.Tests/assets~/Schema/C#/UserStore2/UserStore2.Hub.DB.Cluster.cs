@@ -63,8 +63,8 @@ public class RawSqlResult {
 }
 
 public struct RawSqlColumn {
-    FieldType  type;
     string     name;
+    FieldType  type;
 }
 
 public enum FieldType {

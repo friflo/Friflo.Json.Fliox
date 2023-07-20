@@ -83,8 +83,8 @@ export class RawSqlResult {
 }
 
 export class RawSqlColumn {
-    type  : FieldType;
     name? : string | null;
+    type  : FieldType;
 }
 
 export type FieldType =
