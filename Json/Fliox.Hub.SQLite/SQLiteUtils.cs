@@ -270,8 +270,10 @@ GENERATED ALWAYS AS ({asStr});";
             var count   = raw.sqlite3_column_count(stmt);
             var columns = new RawSqlColumn[count];
             for (int n = 0; n < count; n++) {
-                var type = raw.sqlite3_column_decltype(stmt, n);
-                columns[n]= GetFieldType(type);
+                var name        = raw.sqlite3_column_name(stmt, n).utf8_to_string();
+                var declType    = raw.sqlite3_column_decltype(stmt, n);
+                var type        = GetFieldType(declType);
+                columns[n] = new RawSqlColumn(name, type);
             }
             var rowCount = 0;
             var values  = new JsonArray();
@@ -313,13 +315,13 @@ GENERATED ALWAYS AS ({asStr});";
             return new RawSqlResult(columns, values, rowCount);
         }
         
-        private static  RawSqlColumn GetFieldType(utf8z type) {
+        private static  FieldType GetFieldType(utf8z type) {
             var str = type.utf8_to_string();    // TODO optimize - avoid string instantiation
             switch (str) {
-                case "TEXT":        return new RawSqlColumn(null, FieldType.String);
-                case "tinyint":     return new RawSqlColumn(null, FieldType.Uint8);
-                case "INTEGER":     return new RawSqlColumn(null, FieldType.Int64);
-                case "REAL":        return new RawSqlColumn(null, FieldType.Double);
+                case "TEXT":        return FieldType.String;
+                case "tinyint":     return FieldType.Uint8;
+                case "INTEGER":     return FieldType.Int64;
+                case "REAL":        return FieldType.Double;
                 default: throw new InvalidOperationException($"unexpected type: {str}");
             }
         }
