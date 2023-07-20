@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             return result;
         }
 
-        private int[] GetIndexes() {
+        internal int[] GetIndexes() {
             if (indexArray != null) {
                 return indexArray;
             }
@@ -67,7 +67,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                         public  readonly    int             count;
         
         // --- private
-        [Browse(Never)] private readonly    int[]           indexes;
         [Browse(Never)] private readonly    RawSqlResult    rawResult;
 
         public  override    string      ToString()          => GetString();
@@ -75,13 +74,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     //  public JsonKey                  this[int column]    => values[index * count + column];
 
         internal RawSqlRow(RawSqlResult rawResult, int[] indexes, int index, int count) {
-            this.indexes    = indexes;
             this.index      = index;
             this.count      = count;
             this.rawResult  = rawResult;
         }
         
         private string GetString() {
+            var indexes = rawResult.GetIndexes();
             var first   = index * count;
             var start   = indexes[first];
             var end     = indexes[first + count];
@@ -90,7 +89,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         }
     }
     
-    // TODO rename?
     public enum FieldType
     {
         Unknown     =  0,
