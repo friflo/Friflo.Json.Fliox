@@ -80,18 +80,17 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     {
         // --- public
                         public  readonly    int             index;
-                        public  readonly    int             count;
-        
+                        public              int             count       => rawResult.columnCount;
         // --- private
         [Browse(Never)] private readonly    RawSqlResult    rawResult;
-        
+
+                        public override     string          ToString()  => GetString();
+
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
 
-        public  override    string      ToString()          => GetString();
 
         internal RawSqlRow(RawSqlResult rawResult, int index) {
             this.index      = index;
-            this.count      = rawResult.columnCount;
             this.rawResult  = rawResult;
         }
         
@@ -121,6 +120,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         private string GetString() {
             var indexes = rawResult.GetIndexes();
+            var count   = rawResult.columnCount; 
             var first   = index * count;
             var start   = indexes[first];
             var end     = indexes[first + count];
