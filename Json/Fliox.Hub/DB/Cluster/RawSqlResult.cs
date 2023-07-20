@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Text;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 // ReSharper disable InconsistentNaming
@@ -76,6 +77,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         // --- private
         [Browse(Never)] private readonly    RawSqlResult    rawResult;
+        
+        private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
 
         public  override    string      ToString()          => GetString();
     //  public ReadOnlySpan<JsonKey>    Values              => values.AsSpan().Slice(index * count, count);
@@ -85,6 +88,38 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             this.index      = index;
             this.count      = rawResult.columnCount;
             this.rawResult  = rawResult;
+        }
+        
+        public JsonItemType GetItemType(int ordinal) {
+            var indexes = rawResult.GetIndexes();
+            var pos     = indexes[count * index + ordinal];
+            return rawResult.values.GetItemType(pos);
+        }
+        
+        public string GetString(int ordinal) {
+            var indexes = rawResult.GetIndexes();
+            var pos     = indexes[count * index + ordinal];
+            var values  = rawResult.values;
+            var type    = values.GetItemType(pos);
+            switch (type) {
+                case JsonItemType.JSON:
+                case JsonItemType.ByteString:   return Utf8.GetString(values.ReadByteSpan(pos));
+                case JsonItemType.CharString:   return new string(values.ReadCharSpan(pos));
+            }
+            throw new InvalidOperationException($"incompatible column type: {type}");
+        }
+        
+        public int GetInt32(int ordinal) {
+            var indexes = rawResult.GetIndexes();
+            var pos     = indexes[count * index + ordinal];
+            var values  = rawResult.values;
+            var type    = values.GetItemType(pos);
+            switch (type) {
+                case JsonItemType.Uint8:    return values.ReadUint8(pos);
+                case JsonItemType.Int16:    return values.ReadInt16(pos);
+                case JsonItemType.Int32:    return values.ReadInt32(pos);
+            }
+            throw new InvalidOperationException($"incompatible column type: {type}");
         }
         
         private string GetString() {

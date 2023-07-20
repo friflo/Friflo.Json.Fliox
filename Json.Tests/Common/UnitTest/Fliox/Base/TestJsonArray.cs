@@ -67,13 +67,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             AreEqual(float.MaxValue,    array.ReadFlt32     (idx[6]));
             AreEqual(double.MaxValue,   array.ReadFlt64     (idx[7]));
 #endif
-            var bytes =                 array.ReadBytesSpan (idx[8]);
+            var bytes =                 array.ReadByteSpan  (idx[8]);
             IsTrue(bytes.SequenceEqual(JSONArray.AsSpan()));
             
-            bytes =                     array.ReadBytesSpan (idx[9]);
+            bytes =                     array.ReadByteSpan  (idx[9]);
             IsTrue(bytes.SequenceEqual(JSONObject.AsSpan()));
             
-            bytes =                     array.ReadBytesSpan (idx[10]);
+            bytes =                     array.ReadByteSpan  (idx[10]);
             IsTrue(bytes.SequenceEqual(ByteString.AsSpan()));
             
             if (readArrayType == ReadArrayType.Binary) {
@@ -83,10 +83,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
                 chars =                 array.ReadCharSpan  (idx[12]);
                 IsTrue(chars.SequenceEqual("chars".AsSpan()));
             } else {
-                bytes =                 array.ReadBytesSpan (idx[11]);
+                bytes =                 array.ReadByteSpan (idx[11]);
                 IsTrue(bytes.SequenceEqual(new Bytes("test").AsSpan()));
                 
-                bytes =                 array.ReadBytesSpan (idx[12]);
+                bytes =                 array.ReadByteSpan (idx[12]);
                 IsTrue(bytes.SequenceEqual(new Bytes("chars").AsSpan()));
             }
             

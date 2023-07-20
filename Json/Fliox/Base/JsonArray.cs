@@ -201,6 +201,13 @@ namespace Friflo.Json.Fliox
         }
         
         // -------------------------------------------- read --------------------------------------------
+        public JsonItemType GetItemType(int pos) {
+            if (pos < bytes.end) {
+                return (JsonItemType)bytes.buffer[pos];
+            }
+            return JsonItemType.End;
+        }
+        
         public JsonItemType GetItemType(int pos, out int next) {
             if (pos >= bytes.end) {
                 next = pos;
@@ -272,7 +279,7 @@ namespace Friflo.Json.Fliox
             return bytes.ReadFlt64(pos + 1);
         }
         
-        public ReadOnlySpan<byte> ReadBytesSpan(int pos) {
+        public ReadOnlySpan<byte> ReadByteSpan(int pos) {
             var len = bytes.ReadInt32(pos + 1);
             return new ReadOnlySpan<byte>(bytes.buffer, pos + 1 + 4, len);
         }

@@ -2,6 +2,8 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System.Threading.Tasks;
+using Friflo.Json.Fliox;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using NUnit.Framework;
 using SqlKata;
 using static Friflo.Json.Tests.Provider.Env;
@@ -38,16 +40,23 @@ namespace Friflo.Json.Tests.Provider.Test
                 AreEqual(columnCount, row.count);
                 AreEqual(n, row.index);
                 AreEqual(n, raw.GetRow(n).index);
-                
-                /* AreEqual(columnCount, row.Values.Length);
-                AreEqual(n, row.index);
-                for (int i = 0; i < columnCount; i++) {
-                    IsTrue(row.Values[i].IsEqual(row[i]));
-                    var tempRow = raw.GetRow(n);
-                    IsTrue(tempRow[i].IsEqual(row[i]));
-                    IsTrue(tempRow[i].IsEqual(raw.GetValue(n, i)));
-                } */
+                ReadRow(row);
                 n++;
+            }
+        }
+        
+        private static void ReadRow(RawSqlRow row) {
+            for (var i = 0; i < row.count; i++) {
+                var type = row.GetItemType(i);
+                switch (type) {
+                    case JsonItemType.ByteString:
+                    case JsonItemType.CharString:
+                        row.GetString(i);
+                        break;
+                    case JsonItemType.Int32:
+                        row.GetInt32(i);
+                        break;
+                }
             }
         }
     }
