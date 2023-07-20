@@ -49,13 +49,20 @@ namespace Friflo.Json.Tests.Provider.Test
             for (var i = 0; i < row.count; i++) {
                 var type = row.GetItemType(i);
                 switch (type) {
+                    case JsonItemType.True:
+                    case JsonItemType.False:        row.GetBoolean  (i);    break;
+                    //
+                    case JsonItemType.Uint8:        row.GetByte     (i);    break;
+                    case JsonItemType.Int16:        row.GetInt16    (i);    break;
+                    case JsonItemType.Int32:        row.GetInt32    (i);    break;
+                    case JsonItemType.Int64:        row.GetInt64    (i);    break;
+                    //
+                    case JsonItemType.Flt32:        row.GetFlt32    (i);    break;
+                    case JsonItemType.Flt64:        row.GetFlt64    (i);    break;
+                    //
                     case JsonItemType.ByteString:
-                    case JsonItemType.CharString:
-                        row.GetString(i);
-                        break;
-                    case JsonItemType.Int32:
-                        row.GetInt32(i);
-                        break;
+                    case JsonItemType.CharString:   row.GetString   (i);    break;
+
                 }
             }
         }

@@ -109,6 +109,32 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
         
+        public bool GetBoolean(int ordinal) {
+            var type = rawResult.GetValue(index, ordinal, out int pos);
+            switch (type) {
+                case JsonItemType.True:
+                case JsonItemType.False:        return rawResult.values.ReadBool(pos);  // TODO use only one case
+            }
+            throw new InvalidOperationException($"incompatible column type: {type}");
+        }
+        
+        public byte GetByte(int ordinal) {
+            var type = rawResult.GetValue(index, ordinal, out int pos);
+            switch (type) {
+                case JsonItemType.Uint8:    return rawResult.values.ReadUint8(pos);
+            }
+            throw new InvalidOperationException($"incompatible column type: {type}");
+        }
+
+        public short GetInt16(int ordinal) {
+            var type = rawResult.GetValue(index, ordinal, out int pos);
+            switch (type) {
+                case JsonItemType.Uint8:    return rawResult.values.ReadUint8(pos);
+                case JsonItemType.Int16:    return rawResult.values.ReadInt16(pos);
+            }
+            throw new InvalidOperationException($"incompatible column type: {type}");
+        }
+        
         public int GetInt32(int ordinal) {
             var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
@@ -119,17 +145,46 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
         
+        public long GetInt64(int ordinal) {
+            var type = rawResult.GetValue(index, ordinal, out int pos);
+            switch (type) {
+                case JsonItemType.Uint8:    return rawResult.values.ReadUint8(pos);
+                case JsonItemType.Int16:    return rawResult.values.ReadInt16(pos);
+                case JsonItemType.Int32:    return rawResult.values.ReadInt32(pos);
+                case JsonItemType.Int64:    return rawResult.values.ReadInt64(pos);
+            }
+            throw new InvalidOperationException($"incompatible column type: {type}");
+        }
+        
+        public float GetFlt32(int ordinal) {
+            var type = rawResult.GetValue(index, ordinal, out int pos);
+            switch (type) {
+                case JsonItemType.Flt32:    return rawResult.values.ReadFlt32(pos);
+            }
+            throw new InvalidOperationException($"incompatible column type: {type}");
+        }
+        
+        public double GetFlt64(int ordinal) {
+            var type = rawResult.GetValue(index, ordinal, out int pos);
+            switch (type) {
+                case JsonItemType.Flt32:    return rawResult.values.ReadFlt32(pos);
+                case JsonItemType.Flt64:    return rawResult.values.ReadFlt64(pos);
+            }
+            throw new InvalidOperationException($"incompatible column type: {type}");
+        }
+
+        
         private static string BytesToString(in Bytes bytes) {
             return Utf8.GetString(bytes.buffer, bytes.start, bytes.end - bytes.start);
         }
         
         private string GetString() {
-            var indexes = rawResult.GetIndexes();
-            var count   = rawResult.columnCount; 
-            var first   = index * count;
-            var start   = indexes[first];
-            var end     = indexes[first + count];
-            var array   = new JsonArray(count, rawResult.values, start, end);
+            var indexes     = rawResult.GetIndexes();
+            var columnCount = rawResult.columnCount; 
+            var first       = index * columnCount;
+            var start       = indexes[first];
+            var end         = indexes[first + columnCount];
+            var array       = new JsonArray(columnCount, rawResult.values, start, end);
             return array.AsString();
         }
     }
