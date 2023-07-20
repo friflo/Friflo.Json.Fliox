@@ -4,6 +4,7 @@ package Friflo.Json.Fliox.Hub.DB.Cluster
 import kotlinx.serialization.*
 import CustomSerializer.*
 import kotlinx.serialization.json.*
+import Standard.*
 
 @Serializable
 data class DbContainers (
@@ -51,21 +52,23 @@ enum class TransactionCommand {
 
 @Serializable
 data class RawSqlResult (
-              val rowCount : Int,
-              val types    : List<FieldType>? = null,
-              val values   : List<String>? = null,
+              val types  : List<FieldType>? = null,
+              val values : JsonArray? = null,
 )
 
 enum class FieldType {
-    None,
+    Unknown,
+    Bool,
     UInt8,
     Int16,
     Int32,
     Int64,
     String,
     DateTime,
-    Double,
+    Guid,
     Float,
+    Double,
+    JSON,
 }
 
 @Serializable

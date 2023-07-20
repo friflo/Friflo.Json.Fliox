@@ -14,14 +14,21 @@ namespace Friflo.Json.Fliox
     public class JsonArray
     {
         public          int     Count       => count;
-        public override string  ToString()  => GetString();
+        public override string  ToString()  => AsString();
 
         // --- private
-        private Bytes   bytes = new Bytes(32);
+        private Bytes   bytes;
         private int     count;
         
         public JsonArray() {
-            Init();
+            bytes = new Bytes(32);
+        }
+        
+        public JsonArray(int count, JsonArray array, int start, int end) {
+            this.count      = count;           
+            bytes.buffer    = array.bytes.buffer;
+            bytes.start     = start;
+            bytes.end       = end;
         }
         
         public void Init() {
@@ -273,12 +280,12 @@ namespace Friflo.Json.Fliox
             return GuidUtils.LongLongToGuid(lng1, lng2);
         }
         
-        private string GetString() {
+        public string AsString() {
             var sb = new StringBuilder();
             sb.Append("Count: ");
             sb.Append(count);
             sb.Append(" [");
-            int pos     = 0;
+            int pos = bytes.start;
             while (true)
             {
                 var type = GetItemType(pos, out int next);

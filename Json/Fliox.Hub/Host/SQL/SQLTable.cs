@@ -85,43 +85,50 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             for (int n = 0; n < count; n++) {
                 var type = reader.GetFieldType(n);
                 FieldType fieldType = type switch {
+                    Type _ when type == typeof(bool)        => FieldType.Bool,
+                    //
                     Type _ when type == typeof(byte)        => FieldType.UInt8,
                     Type _ when type == typeof(sbyte)       => FieldType.Int16,
                     Type _ when type == typeof(short)       => FieldType.Int16,
                     Type _ when type == typeof(int)         => FieldType.Int32,
                     Type _ when type == typeof(long)        => FieldType.Int64,
+                    //
                     Type _ when type == typeof(string)      => FieldType.String,
                     Type _ when type == typeof(DateTime)    => FieldType.DateTime,
+                    Type _ when type == typeof(Guid)        => FieldType.Guid,
+                    //
                     Type _ when type == typeof(double)      => FieldType.Double,
                     Type _ when type == typeof(float)       => FieldType.Float,
-                    _                                       => FieldType.None
+                    //
+                    _                                       => FieldType.Unknown
                 };
                 types[n] = fieldType;
             }
             return types;
         }
         
-        public static void AddRow(DbDataReader reader, FieldType[] fieldTypes, List<JsonKey> values) {
+        public static void AddRow(DbDataReader reader, FieldType[] fieldTypes, JsonArray values) {
             var count   = fieldTypes.Length;
             for (int n = 0; n < count; n++) {
                 if (reader.IsDBNull(n)) {
-                    values.Add(default);
+                    values.WriteNull();
                     continue;
                 }
                 var type = fieldTypes[n];
-                JsonKey value;
                 switch (type) {
-                    case FieldType.UInt8:       value = new JsonKey(reader.GetByte(n));         break;
-                    case FieldType.Int16:       value = new JsonKey(reader.GetInt16(n));        break;
-                    case FieldType.Int32:       value = new JsonKey(reader.GetInt32(n));        break;
-                    case FieldType.Int64:       value = new JsonKey(reader.GetInt64(n));        break;
-                //  case FieldType.Float:       value = new JsonKey(reader.GetFloat(n));        break;
-                //  case FieldType.Double:      value = new JsonKey(reader.GetDouble(n));       break;
-                    case FieldType.String:      value = new JsonKey(reader.GetString(n));       break;
-                //  case FieldType.DateTime:    value = new JsonKey(reader.GetDateTime(n));     break;
-                    default:                    value = default;                                break;
+                    case FieldType.Bool:        values.WriteBoolean     (reader.GetBoolean(n));     break;
+                    case FieldType.UInt8:       values.WriteByte        (reader.GetByte(n));        break;
+                    case FieldType.Int16:       values.WriteInt16       (reader.GetInt16(n));       break;
+                    case FieldType.Int32:       values.WriteInt32       (reader.GetInt32(n));       break;
+                    case FieldType.Int64:       values.WriteInt64       (reader.GetInt64(n));       break;
+                    case FieldType.Float:       values.WriteFlt32       (reader.GetFloat(n));       break;
+                    case FieldType.Double:      values.WriteFlt64       (reader.GetDouble(n));      break;
+                    case FieldType.String:      values.WriteCharString  (reader.GetString(n));      break;
+                    case FieldType.DateTime:    values.WriteDateTime    (reader.GetDateTime(n));    break;
+                    case FieldType.Guid:        values.WriteGuid        (reader.GetGuid(n));        break;
+                    // case FieldType.JSON:     values.WriteJSON        (reader.GetString(n));      break;
+                    default:                    values.WriteNull();                                 break;
                 }
-                values.Add(value);
             }
         }
     }

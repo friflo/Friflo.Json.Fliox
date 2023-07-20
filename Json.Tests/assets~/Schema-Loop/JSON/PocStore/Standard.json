@@ -26,8 +26,8 @@
         "double": {
             "type": "number"
         },
-        "JsonKey": {
-            "oneOf": [{ "type": "string" }, { "type": "integer" }]
+        "JsonArray": {
+            "type": "array"
         }
     }
 }

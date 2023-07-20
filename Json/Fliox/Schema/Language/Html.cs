@@ -39,18 +39,19 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, standard.Uint8,       $"unsigned integer 8-bit. Range: [0 - 255]" );
-            AddType (map, standard.Int16,       $"signed integer 16-bit. Range: [-32768, 32767]" );
-            AddType (map, standard.Int32,       $"signed integer 32-bit. Range: [-2147483648, 2147483647]" );
-            AddType (map, standard.Int64,       $"signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]<br/>" +
-                                                $"number in JavaScript.  Range: [-9007199254740991, 9007199254740991]");
+            AddType (map, standard.Uint8,       "unsigned integer 8-bit. Range: [0 - 255]" );
+            AddType (map, standard.Int16,       "signed integer 16-bit. Range: [-32768, 32767]" );
+            AddType (map, standard.Int32,       "signed integer 32-bit. Range: [-2147483648, 2147483647]" );
+            AddType (map, standard.Int64,       "signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]<br/>" +
+                                                "number in JavaScript.  Range: [-9007199254740991, 9007199254740991]");
                
-            AddType (map, standard.Double,      $"double precision floating point number" );
-            AddType (map, standard.Float,       $"single precision floating point number" );
+            AddType (map, standard.Double,      "double precision floating point number" );
+            AddType (map, standard.Float,       "single precision floating point number" );
                
-            AddType (map, standard.BigInteger,  $"integer with arbitrary precision" );
-            AddType (map, standard.DateTime,    $"timestamp as RFC 3339 + milliseconds" );
-            AddType (map, standard.Guid,        $"GUID / UUID as RFC 4122. e.g. \"123e4567-e89b-12d3-a456-426614174000\"" );
+            AddType (map, standard.BigInteger,  "integer with arbitrary precision" );
+            AddType (map, standard.DateTime,    "timestamp as RFC 3339 + milliseconds" );
+            AddType (map, standard.Guid,        "GUID / UUID as RFC 4122. e.g. \"123e4567-e89b-12d3-a456-426614174000\"" );
+            AddType (map, standard.JsonArray,   "array of arbitrary values" );
             return map;
         }
 

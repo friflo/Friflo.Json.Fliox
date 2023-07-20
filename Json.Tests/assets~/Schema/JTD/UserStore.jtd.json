@@ -204,22 +204,24 @@
         },
         "RawSqlResult": {
             "properties": {
-                "rowCount": { "type": "int32" },
-                "types":    { "elements": { "ref":  "FieldType" }, "nullable": true },
-                "values":   { "elements": { "type": "string" }, "nullable": true }
+                "types":  { "elements": { "ref":  "FieldType" }, "nullable": true },
+                "values": { "ref":  "JsonArray", "nullable": true }
             }
         },
         "FieldType": {
             "enum": [
-                "None",
+                "Unknown",
+                "Bool",
                 "UInt8",
                 "Int16",
                 "Int32",
                 "Int64",
                 "String",
                 "DateTime",
+                "Guid",
+                "Float",
                 "Double",
-                "Float"
+                "JSON"
             ]
         },
         "HostParam": {

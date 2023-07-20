@@ -25,6 +25,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         public   override   TypeDef     JsonKey     { get; }
         public   override   TypeDef     ShortString { get; }
         public   override   TypeDef     JsonEntity  { get; }
+        public   override   TypeDef     JsonArray   { get; }
         
         internal NativeStandardTypes (Dictionary<Type, NativeTypeDef> types) {
             Boolean     = Find(types, typeof(bool));
@@ -42,6 +43,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             JsonKey     = Find(types, typeof(JsonKey));
             ShortString = Find(types, typeof(ShortString));
             JsonEntity  = Find(types, typeof(JsonEntity));
+            JsonArray   = Find(types, typeof(JsonArray));
         }
         
         private static Dictionary<Type, StandardTypeInfo> GetTypes() {
@@ -60,7 +62,8 @@ namespace Friflo.Json.Fliox.Schema.Native
                 { typeof(JsonValue),    Info("JsonValue",   StandardTypeId.JsonValue)},
                 { typeof(JsonKey),      Info("JsonKey",     StandardTypeId.JsonKey)},
                 { typeof(ShortString),  Info("ShortString", StandardTypeId.String)},
-                { typeof(JsonEntity),   Info("JsonEntity",  StandardTypeId.JsonEntity)}
+                { typeof(JsonEntity),   Info("JsonEntity",  StandardTypeId.JsonEntity)},
+                { typeof(JsonArray),    Info("JsonArray",   StandardTypeId.JsonArray)}
             };
             return map;
         }

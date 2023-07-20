@@ -71,6 +71,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                case "DateTime":     return StandardTypeId.DateTime;
                case "Guid":         return StandardTypeId.Guid;
                case "JsonKey":      return StandardTypeId.JsonKey;
+               case "JsonArray":    return StandardTypeId.JsonArray;
                default:             throw new InvalidOperationException($"unknown Standard type: {name}");
             }
         }

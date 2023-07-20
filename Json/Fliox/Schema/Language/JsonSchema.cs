@@ -54,6 +54,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.DateTime,    "\"type\": \"string\", \"format\": \"date-time\", \"default\": \"2023-01-01T00:00:00Z\"" );
             AddType (map, standard.Guid,        "\"type\": \"string\", \"pattern\": \"^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$\"" );
             AddType (map, standard.JsonKey,     "\"oneOf\": [{ \"type\": \"string\" }, { \"type\": \"integer\" }]");
+            AddType (map, standard.JsonArray,   "\"type\": \"array\"");
             
             return map;
         }

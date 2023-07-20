@@ -57,21 +57,23 @@ public enum TransactionCommand {
 }
 
 public class RawSqlResult {
-    int              rowCount;
     List<FieldType>  types;
-    List<JsonKey>    values;
+    JsonArray        values;
 }
 
 public enum FieldType {
-    None,
+    Unknown,
+    Bool,
     UInt8,
     Int16,
     Int32,
     Int64,
     String,
     DateTime,
-    Double,
+    Guid,
     Float,
+    Double,
+    JSON,
 }
 
 public class HostParam {

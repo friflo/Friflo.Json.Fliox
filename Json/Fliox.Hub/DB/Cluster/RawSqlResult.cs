@@ -10,70 +10,105 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     public class RawSqlResult
     {
-        public  int             rowCount;
-        public  FieldType[]     types;
-        public  JsonKey[]       values;
-        private RawSqlRow[]     rows;
+        // --- public
+                        public  int             RowCount   => values.Count / types.Length;
+                        public  FieldType[]     types;
+                        public  JsonArray       values;
+                        public  int             ColumnCount => types.Length;
+                        public  RawSqlRow[]     Rows        => rows ?? GetRows();
         
-        public  int             ColumnCount => types.Length;
-        public  RawSqlRow[]     Rows        => rows ?? GetRows();
-        
-        public  override string ToString()  => GetString();
+        // --- private / internal
+        [Browse(Never)] private int[]           indexArray;
+        [Browse(Never)] private RawSqlRow[]     rows;
+
+        public override         string          ToString()  => $"rows: {RowCount}, columns; {ColumnCount}";
 
         public   RawSqlRow      GetRow(int row) {
-            if (row < 0 || row >= rowCount) throw new IndexOutOfRangeException(nameof(row));
-            return new RawSqlRow(values, row, ColumnCount);
-        }
-
-        public JsonKey GetValue(int row, int column) {
-            if (row    < 0  || row    >= rowCount)      throw new IndexOutOfRangeException(nameof(row));
-            if (column < 0  || column >= ColumnCount)   throw new IndexOutOfRangeException(nameof(column));
-            return values[row * ColumnCount + column];
-        }
-
-        private string GetString() {
-            return $"rows: {rowCount}, columns; {ColumnCount}";
+            if (row < 0 || row >= RowCount) throw new IndexOutOfRangeException(nameof(row));
+            var indexes = GetIndexes();
+            return new RawSqlRow(this, indexes, row, ColumnCount);
         }
         
         private RawSqlRow[] GetRows() { 
-            var result = new RawSqlRow[rowCount];
+            var indexes     = GetIndexes();
+            var rowCount    = RowCount;
+            var result      = new RawSqlRow[rowCount];
             for (int row = 0; row < rowCount; row++) {
-                result[row] = new RawSqlRow(values, row, ColumnCount);
+                result[row] = new RawSqlRow(this, indexes, row, ColumnCount);
             }
             return result;
+        }
+
+        private int[] GetIndexes() {
+            if (indexArray != null) {
+                return indexArray;
+            }
+            var indexes = new int[values.Count + 1];
+            int n   = 0;
+            int pos = 0;
+            while (true)
+            {
+                var type = values.GetItemType(pos, out int next);
+                if (type == JsonItemType.End) {
+                    break;
+                }
+                indexes[n++] = pos;
+                pos = next;
+            }
+            indexes[n] = pos;
+            return indexArray = indexes;
         }
     }
     
     public readonly struct RawSqlRow
     {
-        public  readonly    int         index;
-        public  readonly    int         count;
-        [Browse(Never)]
-        private readonly    JsonKey[]   values;
+        // --- public
+                        public  readonly    int             index;
+                        public  readonly    int             count;
+        
+        // --- private
+        [Browse(Never)] private readonly    int[]           indexes;
+        [Browse(Never)] private readonly    RawSqlResult    rawResult;
 
-        public  override    string      ToString()          => $"row: {index}";
-        public ReadOnlySpan<JsonKey>    Values              => values.AsSpan().Slice(index * count, count);
-        public JsonKey                  this[int column]    => values[index * count + column];
+        public  override    string      ToString()          => GetString();
+    //  public ReadOnlySpan<JsonKey>    Values              => values.AsSpan().Slice(index * count, count);
+    //  public JsonKey                  this[int column]    => values[index * count + column];
 
-        internal RawSqlRow(JsonKey[] values, int index, int count) {
-            this.values = values;
-            this.index  = index;
-            this.count  = count;
+        internal RawSqlRow(RawSqlResult rawResult, int[] indexes, int index, int count) {
+            this.indexes    = indexes;
+            this.index      = index;
+            this.count      = count;
+            this.rawResult  = rawResult;
+        }
+        
+        private string GetString() {
+            var first   = index * count;
+            var start   = indexes[first];
+            var end     = indexes[first + count];
+            var array   = new JsonArray(count, rawResult.values, start, end);
+            return array.AsString();
         }
     }
     
-   
     // TODO rename?
     public enum FieldType
     {
-        None,
-        UInt8,
-        Int16,
-        Int32,
-        Int64,
-        String,
-        DateTime,
-        Double,
-        Float,
+        Unknown     =  0,
+        //
+        Bool        =  1,
+        //
+        UInt8       =  2,
+        Int16       =  3,
+        Int32       =  4,
+        Int64       =  5,
+        //
+        String      =  6,
+        DateTime    =  7,
+        Guid        =  8,
+        //
+        Float       =  9,
+        Double      = 10,
+        //
+        JSON        = 11,
     }
 }

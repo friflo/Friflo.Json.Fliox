@@ -8,8 +8,8 @@
         "int64": {
             "type": "integer", "minimum": -9223372036854775808, "maximum": 9223372036854775807
         },
-        "JsonKey": {
-            "oneOf": [{ "type": "string" }, { "type": "integer" }]
+        "JsonArray": {
+            "type": "array"
         }
     }
 }

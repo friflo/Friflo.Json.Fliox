@@ -340,6 +340,7 @@
             <li><a href='#Standard.int64'><div><span>int64</span></div></a></li>
             <li><a href='#Standard.float'><div><span>float</span></div></a></li>
             <li><a href='#Standard.double'><div><span>double</span></div></a></li>
+            <li><a href='#Standard.JsonArray'><div><span>JsonArray</span></div></a></li>
         </ul>
     </li>
 </ul>
@@ -1083,16 +1084,12 @@ In case any task in the transaction failed the transaction performs a <b>Rollbac
     </h3>
     <table class='fields'>
         <tr>
-            <td><field>rowCount</field></td>
-            <td><type><a href='#Standard.int32'>int32</a></type></td>
-        </tr>
-        <tr>
             <td><field>types</field></td>
             <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.FieldType'>FieldType</a>[] | null</type></td>
         </tr>
         <tr>
             <td><field>values</field></td>
-            <td><type><predef>(string | integer)</predef>[] | null</type></td>
+            <td><type><a href='#Standard.JsonArray'>JsonArray</a> | null</type></td>
         </tr>
     </table>
     </div>
@@ -1102,15 +1099,18 @@ In case any task in the transaction failed the transaction performs a <b>Rollbac
         <keyword>enum</keyword>
     </h3>
     <table>
-        <tr><td>None</td><td></td></tr>
+        <tr><td>Unknown</td><td></td></tr>
+        <tr><td>Bool</td><td></td></tr>
         <tr><td>UInt8</td><td></td></tr>
         <tr><td>Int16</td><td></td></tr>
         <tr><td>Int32</td><td></td></tr>
         <tr><td>Int64</td><td></td></tr>
         <tr><td>String</td><td></td></tr>
         <tr><td>DateTime</td><td></td></tr>
-        <tr><td>Double</td><td></td></tr>
+        <tr><td>Guid</td><td></td></tr>
         <tr><td>Float</td><td></td></tr>
+        <tr><td>Double</td><td></td></tr>
+        <tr><td>JSON</td><td></td></tr>
     </table>
     </div>
     <div class='type'>
@@ -1508,6 +1508,12 @@ E.g. <c>ws:[::1]:52089</c> for WebSockets, <c>udp:127.0.0.1:60005</c> for UDP or
         <a href='#Standard.double'>double</a>
     </h3>
     <desc>double precision floating point number</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.JsonArray'>
+        <a href='#Standard.JsonArray'>JsonArray</a>
+    </h3>
+    <desc>array of arbitrary values</desc>
     </div>
 </div>
 

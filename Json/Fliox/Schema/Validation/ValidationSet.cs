@@ -59,6 +59,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             AddStandardType(TypeId.JsonValue,   standardType.JsonValue);
             AddStandardType(TypeId.JsonKey,     standardType.JsonKey);
             AddStandardType(TypeId.String,      standardType.ShortString);
+            AddStandardType(TypeId.JsonArray,   standardType.JsonArray);
 
             foreach (var type in schemaTypes) {
                 if (typeMap.ContainsKey(type))
@@ -116,6 +117,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 case TypeId.JsonKey:    return new ValidationTypeDef(typeId, "JsonKey",     typeDef, false);
                 // --- JSON: number, string, boolean, array & object
                 case TypeId.JsonValue:  return new ValidationTypeDef(typeId, "JSON",        typeDef);
+                case TypeId.JsonArray:  return new ValidationTypeDef(typeId, "JsonArray",   typeDef);
                 default:
                     throw new InvalidOperationException($"no standard typeId: {typeId}");
             }

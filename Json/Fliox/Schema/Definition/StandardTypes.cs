@@ -28,6 +28,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public abstract     TypeDef     JsonKey     { get; }
         public abstract     TypeDef     ShortString { get; }
         public abstract     TypeDef     JsonEntity  { get; }
+        public abstract     TypeDef     JsonArray   { get; }
     }
     
     public enum StandardTypeId
@@ -52,5 +53,6 @@ namespace Friflo.Json.Fliox.Schema.Definition
         JsonKey     = 13,
         JsonEntity  = 15,
         Enum        = 16,
+        JsonArray   = 17,
     }
 }

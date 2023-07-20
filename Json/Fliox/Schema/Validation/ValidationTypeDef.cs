@@ -239,6 +239,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         Enum        = 14,
         //
         JsonKey     = 15,
-        JsonValue   = 16
+        JsonValue   = 16,
+        JsonArray   = 17
     }
 }

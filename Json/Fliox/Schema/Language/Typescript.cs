@@ -57,6 +57,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.Guid,        $"/** GUID / UUID as RFC 4122. e.g. \"123e4567-e89b-12d3-a456-426614174000\" */{nl}export type Guid = string" );
             
             AddType (map, standard.JsonKey,     $"/** generic key type for key/values\"      */{nl}export type JsonKey = string | number" );
+            AddType (map, standard.JsonArray,   $"/** array of arbitrary types\"             */{nl}export type JsonArray = any[]" );
             return map;
         }
 

@@ -4803,19 +4803,6 @@
             "description": "",
             "fields": [
                 {
-                    "name": "rowCount",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Int"
-                        }
-                    }
-                },
-                {
                     "name": "types",
                     "description": "",
                     "args": [
@@ -4837,14 +4824,8 @@
                     "args": [
                     ],
                     "type": {
-                        "kind":"LIST",
-                        "ofType": {
-                            "kind":"NON_NULL",
-                            "ofType": {
-                                "kind":"SCALAR",
-                                "name": "String"
-                            }
-                        }
+                        "kind":"SCALAR",
+                        "name": "JsonArray"
                     }
                 }
             ],
@@ -4857,19 +4838,6 @@
             "description": "",
             "inputFields": [
                 {
-                    "name": "rowCount",
-                    "description": "",
-                    "args": [
-                    ],
-                    "type": {
-                        "kind":"NON_NULL",
-                        "ofType": {
-                            "kind":"SCALAR",
-                            "name": "Int"
-                        }
-                    }
-                },
-                {
                     "name": "types",
                     "description": "",
                     "args": [
@@ -4891,14 +4859,8 @@
                     "args": [
                     ],
                     "type": {
-                        "kind":"LIST",
-                        "ofType": {
-                            "kind":"NON_NULL",
-                            "ofType": {
-                                "kind":"SCALAR",
-                                "name": "String"
-                            }
-                        }
+                        "kind":"SCALAR",
+                        "name": "JsonArrayInput"
                     }
                 }
             ]
@@ -4909,7 +4871,11 @@
             "description": "",
             "enumValues": [
                 {
-                    "name": "None",
+                    "name": "Unknown",
+                    "description": ""
+                },
+                {
+                    "name": "Bool",
                     "description": ""
                 },
                 {
@@ -4937,11 +4903,19 @@
                     "description": ""
                 },
                 {
-                    "name": "Double",
+                    "name": "Guid",
                     "description": ""
                 },
                 {
                     "name": "Float",
+                    "description": ""
+                },
+                {
+                    "name": "Double",
+                    "description": ""
+                },
+                {
+                    "name": "JSON",
                     "description": ""
                 }
             ]

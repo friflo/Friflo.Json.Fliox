@@ -91,26 +91,25 @@
         "RawSqlResult": {
             "type": "object",
             "properties": {
-                "rowCount": { "$ref": "./Standard.json#/definitions/int32" },
-                "types":    { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } },
-                "values":   { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/JsonKey" } }
+                "types":  { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } },
+                "values": { "oneOf": [{ "$ref": "./Standard.json#/definitions/JsonArray" }, {"type": "null"}] }
             },
-            "required": [
-                "rowCount"
-            ],
             "additionalProperties": false
         },
         "FieldType": {
             "enum": [
-                "None",
+                "Unknown",
+                "Bool",
                 "UInt8",
                 "Int16",
                 "Int32",
                 "Int64",
                 "String",
                 "DateTime",
+                "Guid",
+                "Float",
                 "Double",
-                "Float"
+                "JSON"
             ]
         },
         "HostParam": {

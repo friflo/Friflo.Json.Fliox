@@ -185,27 +185,28 @@ enum TransactionCommand {
 }
 
 type RawSqlResult {
-    rowCount : Int!
-    types    : [FieldType!]
-    values   : [String!]
+    types  : [FieldType!]
+    values : JsonArray
 }
 
 input RawSqlResultInput {
-    rowCount : Int!
-    types    : [FieldType!]
-    values   : [String!]
+    types  : [FieldType!]
+    values : JsonArrayInput
 }
 
 enum FieldType {
-    None
+    Unknown
+    Bool
     UInt8
     Int16
     Int32
     Int64
     String
     DateTime
-    Double
+    Guid
     Float
+    Double
+    JSON
 }
 
 type HostParam {

@@ -25,6 +25,6 @@ export type float = number;
 /** double precision floating point number */
 export type double = number;
 
-/** generic key type for key/values"      */
-export type JsonKey = string | number;
+/** array of arbitrary types"             */
+export type JsonArray = any[];
 

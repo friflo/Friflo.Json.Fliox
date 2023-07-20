@@ -273,31 +273,30 @@ GENERATED ALWAYS AS ({asStr});";
                 var type = raw.sqlite3_column_decltype(stmt, n);
                 types[n]= GetFieldType(type);
             }
-            var values  = new List<JsonKey>();
+            var values  = new JsonArray();
             int row = 0;
             while (true) {
                 var rc = raw.sqlite3_step(stmt);
                 if (rc == raw.SQLITE_ROW) {
                     for (int n = 0; n < count; n++) {
-                        JsonKey value;
                         switch (types[n]) {
                             case FieldType.UInt8:
                             case FieldType.Int64:
                                 var lng = raw.sqlite3_column_int64(stmt, n);
-                                value = new JsonKey(lng);
+                                values.WriteInt64(lng);
                                 break;
                             case FieldType.Double:
-                                value = default;
+                                var dbl = raw.sqlite3_column_double(stmt, n);
+                                values.WriteFlt64(dbl);
                                 break;
                             case FieldType.String:
                                 var text = raw.sqlite3_column_text(stmt, n);
                                 var str = text.utf8_to_string(); // TODO optimize - avoid string instantiation
-                                value = new JsonKey(str);
+                                values.WriteCharString(str.AsSpan());
                                 break;
                             default:
                                 throw new InvalidOperationException($"unexpected type: {types[n]}");
                         }
-                        values.Add(value);
                     }
                     row++;
                 } else if (rc == raw.SQLITE_DONE) {
@@ -308,7 +307,7 @@ GENERATED ALWAYS AS ({asStr});";
                 }
             }
             error = null;
-            return new RawSqlResult { types = types, values = values.ToArray(), rowCount = row };
+            return new RawSqlResult { types = types, values = values };
         }
         
         private static  FieldType GetFieldType(utf8z type) {
