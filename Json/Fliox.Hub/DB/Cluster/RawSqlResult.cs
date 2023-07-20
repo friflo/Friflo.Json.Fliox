@@ -253,7 +253,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         Int16       =  3,
         /** Not supported by all SQL database. SQLite: integer */
         Int32       =  4,
-        /** Not supported by all SQL database. SQLite: integer */
         Int64       =  5,
         //
         String      =  6,
