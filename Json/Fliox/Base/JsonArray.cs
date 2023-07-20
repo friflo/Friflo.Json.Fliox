@@ -134,6 +134,25 @@ namespace Friflo.Json.Fliox
             bytes.AppendBytesSpan(value);
         }
         
+        /// <summary>
+        /// <b>Important!</b> <br/>
+        /// Passed value MUST be valid JSON. Otherwise invalid JSON will be generated downstream.<br/>
+        /// <b>Note</b> Prefer using <see cref="WriteJSON"/> to avoid char[] -> UTF-8 conversion
+        /// </summary>
+        public void WriteCharJSON(ReadOnlySpan<char> value) {
+            count++;
+            var maxLen = Utf8.GetMaxByteCount(value.Length);
+            bytes.EnsureCapacity(1 + 4 + maxLen);
+            int start       = bytes.end;
+            int valueStart  = start + 1 + 4;
+            var buffer      = bytes.buffer;
+            var target      = new Span<byte> (buffer, valueStart, buffer.Length - valueStart);
+            var len         = Utf8.GetBytes(value, target);
+            buffer[start] = (byte)JsonItemType.JSON;
+            bytes.WriteInt32 (start + 1,      len);
+            bytes.end       = start + 1 + 4 + len;
+        }
+        
         public void WriteCharString(ReadOnlySpan<char> value) {
             count++;
             if (value == null) {

@@ -3,11 +3,15 @@
 
 #if !UNITY_5_3_OR_NEWER || POSTGRESQL
 
+using System;
+using System.Data.Common;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Npgsql;
 using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
+// ReSharper disable ConvertTypeCheckPatternToNullCheck
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
@@ -66,6 +70,74 @@ GENERATED ALWAYS AS (({asStr})::{type}) STORED;";
             database = builder.Database;
             builder.Remove("Database");
             return builder.ToString();
+        }
+        
+        // ------ read raw SQL
+        internal static async Task<RawSqlResult> ReadRows(DbDataReader reader) {
+            var types       = GetFieldTypes(reader);
+            var values      = new JsonArray();
+            var readRawSql  = new ReadRawSql(reader);
+            var result  = new RawSqlResult { types = types, values = values };
+                while (await reader.ReadAsync().ConfigureAwait(false)) {
+                AddRow(reader, types, values, readRawSql);
+            }
+            return result;
+        }
+        
+        
+        // ReSharper disable once MemberCanBePrivate.Global
+        private static FieldType[] GetFieldTypes(DbDataReader reader) {
+            var count   = reader.FieldCount;
+            var types  = new FieldType[count];
+            for (int n = 0; n < count; n++) {
+                var type = reader.GetFieldType(n);
+                FieldType fieldType = type switch {
+                    Type _ when type == typeof(bool)        => FieldType.Bool,
+                    //
+                    Type _ when type == typeof(byte)        => FieldType.UInt8,
+                    Type _ when type == typeof(sbyte)       => FieldType.Int16,
+                    Type _ when type == typeof(short)       => FieldType.Int16,
+                    Type _ when type == typeof(int)         => FieldType.Int32,
+                    Type _ when type == typeof(long)        => FieldType.Int64,
+                    //
+                    Type _ when type == typeof(string)      => reader.GetDataTypeName(n) == "jsonb" ? FieldType.JSON : FieldType.String,
+                    Type _ when type == typeof(DateTime)    => FieldType.DateTime,
+                    Type _ when type == typeof(Guid)        => FieldType.Guid,
+                    //
+                    Type _ when type == typeof(double)      => FieldType.Double,
+                    Type _ when type == typeof(float)       => FieldType.Float,
+                    //
+                    _                                       => FieldType.Unknown
+                };
+                types[n] = fieldType;
+            }
+            return types;
+        }
+        
+        // ReSharper disable once MemberCanBePrivate.Global
+        private static void AddRow(DbDataReader reader, FieldType[] fieldTypes, JsonArray values, ReadRawSql rawSql) {
+            var count   = fieldTypes.Length;
+            for (int n = 0; n < count; n++) {
+                if (reader.IsDBNull(n)) {
+                    values.WriteNull();
+                    continue;
+                }
+                var type = fieldTypes[n];
+                switch (type) {
+                    case FieldType.Bool:        values.WriteBoolean     (reader.GetBoolean  (n));   break;
+                    case FieldType.UInt8:       values.WriteByte        (reader.GetByte     (n));   break;
+                    case FieldType.Int16:       values.WriteInt16       (reader.GetInt16    (n));   break;
+                    case FieldType.Int32:       values.WriteInt32       (reader.GetInt32    (n));   break;
+                    case FieldType.Int64:       values.WriteInt64       (reader.GetInt64    (n));   break;
+                    case FieldType.Float:       values.WriteFlt32       (reader.GetFloat    (n));   break;
+                    case FieldType.Double:      values.WriteFlt64       (reader.GetDouble   (n));   break;
+                    case FieldType.String:      values.WriteCharString  (rawSql.GetString   (n));   break;
+                    case FieldType.DateTime:    values.WriteDateTime    (reader.GetDateTime (n));   break;
+                    case FieldType.Guid:        values.WriteGuid        (reader.GetGuid     (n));   break;
+                    case FieldType.JSON:        values.WriteCharJSON    (reader.GetString   (n));   break;
+                    default:                    values.WriteNull();                                 break;
+                }
+            }
         }
     }
 }

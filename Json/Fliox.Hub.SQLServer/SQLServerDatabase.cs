@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
@@ -142,13 +141,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
-                var types   = SQLTable.GetFieldTypes(reader);
-                var values  = new JsonArray();
-                var result  = new RawSqlResult { types = types, values = values };
-                while (await reader.ReadAsync().ConfigureAwait(false)) {
-                    SQLTable.AddRow(reader, types, values);
-                }
-                return result;
+                return await SQLTable.ReadRows(reader).ConfigureAwait(false);
             }
             catch (SqlException e) {
                 var msg = GetErrMsg(e);

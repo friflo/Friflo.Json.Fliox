@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
@@ -79,6 +80,18 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
         }
         
+        public static async Task<RawSqlResult> ReadRows(DbDataReader reader) {
+            var types       = GetFieldTypes(reader);
+            var values      = new JsonArray();
+            var readRawSql  = new ReadRawSql(reader);
+            var result  = new RawSqlResult { types = types, values = values };
+                while (await reader.ReadAsync().ConfigureAwait(false)) {
+                AddRow(reader, types, values, readRawSql);
+            }
+            return result;
+        }
+        
+        // ReSharper disable once MemberCanBePrivate.Global
         public static FieldType[] GetFieldTypes(DbDataReader reader) {
             var count   = reader.FieldCount;
             var types  = new FieldType[count];
@@ -93,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     Type _ when type == typeof(int)         => FieldType.Int32,
                     Type _ when type == typeof(long)        => FieldType.Int64,
                     //
-                    Type _ when type == typeof(string)      => FieldType.String,
+                    Type _ when type == typeof(string)      => reader.GetDataTypeName(n) == "JSON" ? FieldType.JSON : FieldType.String,
                     Type _ when type == typeof(DateTime)    => FieldType.DateTime,
                     Type _ when type == typeof(Guid)        => FieldType.Guid,
                     //
@@ -107,7 +120,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return types;
         }
         
-        public static void AddRow(DbDataReader reader, FieldType[] fieldTypes, JsonArray values) {
+        // ReSharper disable once MemberCanBePrivate.Global
+        public static void AddRow(DbDataReader reader, FieldType[] fieldTypes, JsonArray values, ReadRawSql rawSql) {
             var count   = fieldTypes.Length;
             for (int n = 0; n < count; n++) {
                 if (reader.IsDBNull(n)) {
@@ -116,21 +130,39 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 }
                 var type = fieldTypes[n];
                 switch (type) {
-                    case FieldType.Bool:        values.WriteBoolean     (reader.GetBoolean(n));         break;
-                    case FieldType.UInt8:       values.WriteByte        (reader.GetByte(n));            break;
-                    case FieldType.Int16:       values.WriteInt16       (reader.GetInt16(n));           break;
-                    case FieldType.Int32:       values.WriteInt32       (reader.GetInt32(n));           break;
-                    case FieldType.Int64:       values.WriteInt64       (reader.GetInt64(n));           break;
-                    case FieldType.Float:       values.WriteFlt32       (reader.GetFloat(n));           break;
-                    case FieldType.Double:      values.WriteFlt64       (reader.GetDouble(n));          break;
-                    case FieldType.String:      values.WriteCharString  (reader.GetString(n).AsSpan()); break;
-                    case FieldType.DateTime:    values.WriteDateTime    (reader.GetDateTime(n));        break;
-                    case FieldType.Guid:        values.WriteGuid        (reader.GetGuid(n));            break;
-                    // case FieldType.JSON:     values.WriteJSON        (reader.GetString(n));          break;
-                    default:                    values.WriteNull();                                     break;
+                    case FieldType.Bool:        values.WriteBoolean     (reader.GetBoolean  (n));   break;
+                    case FieldType.UInt8:       values.WriteByte        (reader.GetByte     (n));   break;
+                    case FieldType.Int16:       values.WriteInt16       (reader.GetInt16    (n));   break;
+                    case FieldType.Int32:       values.WriteInt32       (reader.GetInt32    (n));   break;
+                    case FieldType.Int64:       values.WriteInt64       (reader.GetInt64    (n));   break;
+                    case FieldType.Float:       values.WriteFlt32       (reader.GetFloat    (n));   break;
+                    case FieldType.Double:      values.WriteFlt64       (reader.GetDouble   (n));   break;
+                    case FieldType.String:      values.WriteCharString  (rawSql.GetString   (n));   break;
+                    case FieldType.DateTime:    values.WriteDateTime    (reader.GetDateTime (n));   break;
+                    case FieldType.Guid:        values.WriteGuid        (reader.GetGuid     (n));   break;
+                    case FieldType.JSON:        values.WriteCharJSON    (rawSql.GetString   (n));   break;
+                    default:                    values.WriteNull();                                 break;
                 }
             }
         }
     }
-
+    
+    public class ReadRawSql
+    {
+        private             char[]          charBuf;
+        private  readonly   DbDataReader    reader;
+        
+        public ReadRawSql(DbDataReader reader) {
+            this.reader = reader; 
+        }
+        
+        public ReadOnlySpan<char> GetString(int ordinal) {
+            var len = (int)reader.GetChars(ordinal, 0, null, 0, 0);
+            if (charBuf == null || len > charBuf.Length) {
+                charBuf = new char[len + 32]; // +32 ensure buffer grows not too often
+            }
+            reader.GetChars(ordinal, 0, charBuf, 0, len);
+            return new ReadOnlySpan<char>(charBuf, 0, len);
+        }
+    }
 }
