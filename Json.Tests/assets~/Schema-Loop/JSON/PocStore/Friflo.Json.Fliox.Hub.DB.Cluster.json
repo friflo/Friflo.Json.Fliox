@@ -92,7 +92,7 @@
             "type": "object",
             "properties": {
                 "rowCount": { "$ref": "./Standard.json#/definitions/int32", "description": "number of returned rows" },
-                "types":    { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" }, "description": "The column types of a query result" },
+                "columns":  { "type": ["array", "null"], "items": { "$ref": "#/definitions/RawSqlColumn" }, "description": "The columns returned by a raw SQL query" },
                 "values":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/JsonArray" }, {"type": "null"}], "description": "An array of all query result values. In total: <b>rowCount</b> * <b>columnCount</b> values" }
             },
             "required": [
@@ -100,11 +100,23 @@
             ],
             "additionalProperties": false
         },
+        "RawSqlColumn": {
+            "type": "object",
+            "isStruct": true,
+            "properties": {
+                "type": { "$ref": "#/definitions/FieldType" },
+                "name": { "type": ["string", "null"] }
+            },
+            "required": [
+                "type"
+            ],
+            "additionalProperties": false
+        },
         "FieldType": {
             "enum": [
                 "Unknown",
                 "Bool",
-                "UInt8",
+                "Uint8",
                 "Int16",
                 "Int32",
                 "Int64",

@@ -173,15 +173,21 @@
         "RawSqlResult": {
             "properties": {
                 "rowCount": { "type": "int32" },
-                "types":    { "elements": { "ref":  "FieldType" }, "nullable": true },
+                "columns":  { "elements": { "ref":  "RawSqlColumn" }, "nullable": true },
                 "values":   { "ref":  "JsonArray", "nullable": true }
+            }
+        },
+        "RawSqlColumn": {
+            "properties": {
+                "type": { "ref":  "FieldType" },
+                "name": { "type": "string", "nullable": true }
             }
         },
         "FieldType": {
             "enum": [
                 "Unknown",
                 "Bool",
-                "UInt8",
+                "Uint8",
                 "Int16",
                 "Int32",
                 "Int64",

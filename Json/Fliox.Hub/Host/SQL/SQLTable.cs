@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
@@ -81,28 +80,28 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
         
         public static async Task<RawSqlResult> ReadRows(DbDataReader reader) {
-            var types       = GetFieldTypes(reader);
+            var columns     = GetFieldTypes(reader);
             var values      = new JsonArray();
             var readRawSql  = new ReadRawSql(reader);
             var rowCount    = 0;
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 rowCount++;
-                AddRow(reader, types, values, readRawSql);
+                AddRow(reader, columns, values, readRawSql);
             }
-            return new RawSqlResult(types, values, rowCount);
+            return new RawSqlResult(columns, values, rowCount);
         }
         
         // ReSharper disable once MemberCanBePrivate.Global
-        public static FieldType[] GetFieldTypes(DbDataReader reader) {
+        public static RawSqlColumn[] GetFieldTypes(DbDataReader reader) {
             var count   = reader.FieldCount;
-            var types  = new FieldType[count];
+            var columns = new RawSqlColumn[count];
             for (int n = 0; n < count; n++) {
                 var type = reader.GetFieldType(n);
                 FieldType fieldType = type switch {
                     Type _ when type == typeof(bool)        => FieldType.Bool,
                     //
-                    Type _ when type == typeof(byte)        => FieldType.UInt8,
+                    Type _ when type == typeof(byte)        => FieldType.Uint8,
                     Type _ when type == typeof(sbyte)       => FieldType.Int16,
                     Type _ when type == typeof(short)       => FieldType.Int16,
                     Type _ when type == typeof(int)         => FieldType.Int32,
@@ -117,23 +116,23 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     //
                     _                                       => FieldType.Unknown
                 };
-                types[n] = fieldType;
+                columns[n] = new RawSqlColumn(fieldType, null);
             }
-            return types;
+            return columns;
         }
         
         // ReSharper disable once MemberCanBePrivate.Global
-        public static void AddRow(DbDataReader reader, FieldType[] fieldTypes, JsonArray values, ReadRawSql rawSql) {
-            var count = fieldTypes.Length;
+        public static void AddRow(DbDataReader reader, RawSqlColumn[] columns, JsonArray values, ReadRawSql rawSql) {
+            var count = columns.Length;
             for (int n = 0; n < count; n++) {
                 if (reader.IsDBNull(n)) {
                     values.WriteNull();
                     continue;
                 }
-                var type = fieldTypes[n];
+                var type = columns[n].type;
                 switch (type) {
                     case FieldType.Bool:        values.WriteBoolean     (reader.GetBoolean  (n));   break;
-                    case FieldType.UInt8:       values.WriteByte        (reader.GetByte     (n));   break;
+                    case FieldType.Uint8:       values.WriteByte        (reader.GetByte     (n));   break;
                     case FieldType.Int16:       values.WriteInt16       (reader.GetInt16    (n));   break;
                     case FieldType.Int32:       values.WriteInt32       (reader.GetInt32    (n));   break;
                     case FieldType.Int64:       values.WriteInt64       (reader.GetInt64    (n));   break;

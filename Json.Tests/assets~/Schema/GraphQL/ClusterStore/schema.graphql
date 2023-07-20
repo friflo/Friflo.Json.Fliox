@@ -186,20 +186,30 @@ enum TransactionCommand {
 
 type RawSqlResult {
     rowCount : Int!
-    types    : [FieldType!]
+    columns  : [RawSqlColumn!]
     values   : JsonArray
 }
 
 input RawSqlResultInput {
     rowCount : Int!
-    types    : [FieldType!]
+    columns  : [RawSqlColumnInput!]
     values   : JsonArrayInput
+}
+
+type RawSqlColumn {
+    type : FieldType!
+    name : String
+}
+
+input RawSqlColumnInput {
+    type : FieldType!
+    name : String
 }
 
 enum FieldType {
     Unknown
     Bool
-    UInt8
+    Uint8
     Int16
     Int32
     Int64

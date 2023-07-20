@@ -268,10 +268,10 @@ GENERATED ALWAYS AS ({asStr});";
         
         internal static RawSqlResult GetRawSqlResult(SyncConnection connection, sqlite3_stmt stmt, out string error) {
             var count   = raw.sqlite3_column_count(stmt);
-            var types = new FieldType[count];
+            var columns = new RawSqlColumn[count];
             for (int n = 0; n < count; n++) {
                 var type = raw.sqlite3_column_decltype(stmt, n);
-                types[n]= GetFieldType(type);
+                columns[n]= GetFieldType(type);
             }
             var rowCount = 0;
             var values  = new JsonArray();
@@ -299,7 +299,7 @@ GENERATED ALWAYS AS ({asStr});";
                                 break;
                             case raw.SQLITE_BLOB:
                             default:
-                                throw new InvalidOperationException($"unexpected type: {types[n]}");
+                                throw new InvalidOperationException($"unexpected type: {columns[n]}");
                         }
                     }
                 } else if (rc == raw.SQLITE_DONE) {
@@ -310,16 +310,16 @@ GENERATED ALWAYS AS ({asStr});";
                 }
             }
             error = null;
-            return new RawSqlResult(types, values, rowCount);
+            return new RawSqlResult(columns, values, rowCount);
         }
         
-        private static  FieldType GetFieldType(utf8z type) {
+        private static  RawSqlColumn GetFieldType(utf8z type) {
             var str = type.utf8_to_string();    // TODO optimize - avoid string instantiation
             switch (str) {
-                case "TEXT":        return FieldType.String;
-                case "tinyint":     return FieldType.UInt8;
-                case "INTEGER":     return FieldType.Int64;
-                case "REAL":        return FieldType.Double;
+                case "TEXT":        return new RawSqlColumn(FieldType.String,   null);
+                case "tinyint":     return new RawSqlColumn(FieldType.Uint8,    null);
+                case "INTEGER":     return new RawSqlColumn(FieldType.Int64,    null);
+                case "REAL":        return new RawSqlColumn(FieldType.Double,   null);
                 default: throw new InvalidOperationException($"unexpected type: {str}");
             }
         }

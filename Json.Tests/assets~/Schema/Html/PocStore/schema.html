@@ -314,6 +314,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'><div><span>TransactionResult</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'><div><span>TransactionCommand</span><keyword>enum</keyword></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlResult'><div><span>RawSqlResult</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlColumn'><div><span>RawSqlColumn</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.FieldType'><div><span>FieldType</span><keyword>enum</keyword></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostParam'><div><span>HostParam</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostInfo'><div><span>HostInfo</span></div></a></li>
@@ -1089,14 +1090,30 @@ In case any task in the transaction failed the transaction performs a <b>Rollbac
             <td><docs>number of returned rows</docs></td>
         </tr>
         <tr>
-            <td><field>types</field></td>
-            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.FieldType'>FieldType</a>[] | null</type></td>
-            <td><docs>The column types of a query result</docs></td>
+            <td><field>columns</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlColumn'>RawSqlColumn</a>[] | null</type></td>
+            <td><docs>The columns returned by a raw SQL query</docs></td>
         </tr>
         <tr>
             <td><field>values</field></td>
             <td><type><a href='#Standard.JsonArray'>JsonArray</a> | null</type></td>
             <td><docs>An array of all query result values. In total: <b>rowCount</b> * <b>columnCount</b> values</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlColumn'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlColumn'>RawSqlColumn</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>type</field></td>
+            <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.FieldType'>FieldType</a></type></td>
+        </tr>
+        <tr>
+            <td><field>name</field></td>
+            <td><type><predef>string</predef> | null</type></td>
         </tr>
     </table>
     </div>
@@ -1108,7 +1125,7 @@ In case any task in the transaction failed the transaction performs a <b>Rollbac
     <table>
         <tr><td>Unknown</td><td></td></tr>
         <tr><td>Bool</td><td></td></tr>
-        <tr><td>UInt8</td><td></td></tr>
+        <tr><td>Uint8</td><td></td></tr>
         <tr><td>Int16</td><td></td></tr>
         <tr><td>Int32</td><td></td></tr>
         <tr><td>Int64</td><td></td></tr>

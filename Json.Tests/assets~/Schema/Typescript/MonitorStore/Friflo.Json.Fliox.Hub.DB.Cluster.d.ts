@@ -125,16 +125,21 @@ export type TransactionCommand =
 export class RawSqlResult {
     /** number of returned rows */
     rowCount  : int32;
-    /** The column types of a query result */
-    types?    : FieldType[] | null;
+    /** The columns returned by a raw SQL query */
+    columns?  : RawSqlColumn[] | null;
     /** An array of all query result values. In total: **rowCount** * **columnCount** values */
     values?   : JsonArray | null;
+}
+
+export class RawSqlColumn {
+    type  : FieldType;
+    name? : string | null;
 }
 
 export type FieldType =
     | "Unknown"
     | "Bool"
-    | "UInt8"
+    | "Uint8"
     | "Int16"
     | "Int32"
     | "Int64"

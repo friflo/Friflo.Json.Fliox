@@ -45,9 +45,9 @@ namespace Friflo.Json.Tests.Provider.Test
         }
         
         private static void ReadRow(RawSqlRow row) {
-            var types = row.types;
+            var columns = row.columns;
             for (var i = 0; i < row.count; i++) {
-                var type = types[i];
+                var type = columns[i].type;
                 if (row.IsNull(i)) {
                     switch (type) {
                         case FieldType.JSON:    IsNull(row.GetJSON   (i));  break;
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Provider.Test
                 switch (type) {
                     case FieldType.Bool:        row.GetBoolean  (i);    break;
                     //
-                    case FieldType.UInt8:       row.GetByte     (i);    break;
+                    case FieldType.Uint8:       row.GetByte     (i);    break;
                     case FieldType.Int16:       row.GetInt16    (i);    break;
                     case FieldType.Int32:       row.GetInt32    (i);    break;
                     case FieldType.Int64:       row.GetInt64    (i);    break;

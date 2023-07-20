@@ -4816,8 +4816,8 @@
                     }
                 },
                 {
-                    "name": "types",
-                    "description": "    /** The column types of a query result */\n",
+                    "name": "columns",
+                    "description": "    /** The columns returned by a raw SQL query */\n",
                     "args": [
                     ],
                     "type": {
@@ -4826,7 +4826,7 @@
                             "kind":"NON_NULL",
                             "ofType": {
                                 "kind":"SCALAR",
-                                "name": "FieldType"
+                                "name": "RawSqlColumn"
                             }
                         }
                     }
@@ -4864,8 +4864,8 @@
                     }
                 },
                 {
-                    "name": "types",
-                    "description": "    /** The column types of a query result */\n",
+                    "name": "columns",
+                    "description": "    /** The columns returned by a raw SQL query */\n",
                     "args": [
                     ],
                     "type": {
@@ -4874,7 +4874,7 @@
                             "kind":"NON_NULL",
                             "ofType": {
                                 "kind":"SCALAR",
-                                "name": "FieldType"
+                                "name": "RawSqlColumnInput"
                             }
                         }
                     }
@@ -4887,6 +4887,68 @@
                     "type": {
                         "kind":"SCALAR",
                         "name": "JsonArrayInput"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "RawSqlColumn",
+            "description": "",
+            "fields": [
+                {
+                    "name": "type",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "FieldType"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "RawSqlColumnInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "type",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "FieldType"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
                     }
                 }
             ]
@@ -4905,7 +4967,7 @@
                     "description": ""
                 },
                 {
-                    "name": "UInt8",
+                    "name": "Uint8",
                     "description": ""
                 },
                 {

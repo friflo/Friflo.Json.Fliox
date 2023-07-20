@@ -14,13 +14,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public readonly struct RawSqlRow
     {
         // --- public
-                        public  readonly    int                     index;
-                        public              int                     count       => rawResult.columnCount;
-                        public              ReadOnlySpan<FieldType> types       => new ReadOnlySpan<FieldType>(rawResult.types);
+                        public  readonly    int                         index;
+                        public              int                         count   => rawResult.columnCount;
+                        public              ReadOnlySpan<RawSqlColumn>  columns => new ReadOnlySpan<RawSqlColumn>(rawResult.columns);
         // --- private
-        [Browse(Never)] private readonly    RawSqlResult            rawResult;
+        [Browse(Never)] private readonly    RawSqlResult                rawResult;
 
-                        public override     string                  ToString()  => GetString();
+                        public override     string                      ToString()  => GetString();
 
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
 
