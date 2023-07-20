@@ -3,6 +3,7 @@
 
 using System;
 using System.Text;
+using Friflo.Json.Burst;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
@@ -102,8 +103,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
                 case JsonItemType.JSON:
-                case JsonItemType.ByteString:   return Utf8.GetString(rawResult.values.ReadByteSpan(pos));
-                case JsonItemType.CharString:   return new string(rawResult.values.ReadCharSpan(pos));
+                case JsonItemType.ByteString:   return BytesToString(rawResult.values.ReadBytes(pos));
+                case JsonItemType.CharString:   return rawResult.values.ReadCharSpan(pos).ToString();
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
@@ -116,6 +117,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 case JsonItemType.Int32:    return rawResult.values.ReadInt32(pos);
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
+        }
+        
+        private static string BytesToString(in Bytes bytes) {
+            return Utf8.GetString(bytes.buffer, bytes.start, bytes.end - bytes.start);
         }
         
         private string GetString() {
