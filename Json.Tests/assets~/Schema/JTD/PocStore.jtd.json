@@ -172,9 +172,10 @@
         },
         "RawSqlResult": {
             "properties": {
-                "rowCount": { "type": "int32" },
-                "columns":  { "elements": { "ref":  "RawSqlColumn" }, "nullable": true },
-                "values":   { "ref":  "JsonArray", "nullable": true }
+                "rowCount":    { "type": "int32" },
+                "columnCount": { "type": "int32" },
+                "columns":     { "elements": { "ref":  "RawSqlColumn" }, "nullable": true },
+                "values":      { "ref":  "JsonArray", "nullable": true }
             }
         },
         "RawSqlColumn": {

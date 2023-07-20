@@ -58,6 +58,7 @@ public enum TransactionCommand {
 
 public class RawSqlResult {
     int                 rowCount;
+    int                 columnCount;
     List<RawSqlColumn>  columns;
     JsonArray           values;
 }

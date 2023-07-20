@@ -279,15 +279,17 @@ enum TransactionCommand {
 }
 
 type RawSqlResult {
-    rowCount : Int!
-    columns  : [RawSqlColumn!]
-    values   : JsonArray
+    rowCount    : Int!
+    columnCount : Int!
+    columns     : [RawSqlColumn!]
+    values      : JsonArray
 }
 
 input RawSqlResultInput {
-    rowCount : Int!
-    columns  : [RawSqlColumnInput!]
-    values   : JsonArrayInput
+    rowCount    : Int!
+    columnCount : Int!
+    columns     : [RawSqlColumnInput!]
+    values      : JsonArrayInput
 }
 
 type RawSqlColumn {

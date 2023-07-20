@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
+// ReSharper disable ReturnTypeCanBeEnumerable.Global
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
@@ -14,11 +16,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         // --- public
         /// <summary>number of returned rows</summary>
         [Serialize]     public  int             rowCount    { get; internal set; }
+        [Serialize]     public  int             columnCount { get; internal set; }
         /// <summary>The columns returned by a raw SQL query</summary>
                         public  RawSqlColumn[]  columns;
         /// <summary>An array of all query result values. In total: <see cref="rowCount"/> * <see cref="columnCount"/> values</summary>
                         public  JsonArray       values;
-                        public  int             columnCount => columns.Length;
                         public  RawSqlRow[]     Rows        => rows ?? GetRows();
         
         // --- private / internal
@@ -30,9 +32,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public RawSqlResult() { } // required for serialization
         
         public RawSqlResult(RawSqlColumn[] columns, JsonArray values, int rowCount) {
-            this.columns    = columns;
-            this.values     = values;
-            this.rowCount   = values.Count / columns.Length;
+            this.columns        = columns;
+            this.values         = values;
+            this.columnCount    = columns.Length;
+            this.rowCount       = values.Count / columnCount;
             if (this.rowCount != rowCount) {
                 throw new InvalidComObjectException($"invalid rowCount. expected: {rowCount}. was: {this.rowCount}");
             }

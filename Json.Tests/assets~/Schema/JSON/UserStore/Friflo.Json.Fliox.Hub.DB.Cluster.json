@@ -91,12 +91,14 @@
         "RawSqlResult": {
             "type": "object",
             "properties": {
-                "rowCount": { "$ref": "./Standard.json#/definitions/int32", "description": "number of returned rows" },
-                "columns":  { "type": ["array", "null"], "items": { "$ref": "#/definitions/RawSqlColumn" }, "description": "The columns returned by a raw SQL query" },
-                "values":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/JsonArray" }, {"type": "null"}], "description": "An array of all query result values. In total: <b>rowCount</b> * <b>columnCount</b> values" }
+                "rowCount":    { "$ref": "./Standard.json#/definitions/int32", "description": "number of returned rows" },
+                "columnCount": { "$ref": "./Standard.json#/definitions/int32" },
+                "columns":     { "type": ["array", "null"], "items": { "$ref": "#/definitions/RawSqlColumn" }, "description": "The columns returned by a raw SQL query" },
+                "values":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/JsonArray" }, {"type": "null"}], "description": "An array of all query result values. In total: <b>rowCount</b> * <b>columnCount</b> values" }
             },
             "required": [
-                "rowCount"
+                "rowCount",
+                "columnCount"
             ],
             "additionalProperties": false
         },

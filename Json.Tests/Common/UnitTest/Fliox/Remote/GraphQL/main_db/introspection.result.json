@@ -4816,6 +4816,19 @@
                     }
                 },
                 {
+                    "name": "columnCount",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
                     "name": "columns",
                     "description": "    /** The columns returned by a raw SQL query */\n",
                     "args": [
@@ -4853,6 +4866,19 @@
                 {
                     "name": "rowCount",
                     "description": "    /** number of returned rows */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "columnCount",
+                    "description": "",
                     "args": [
                     ],
                     "type": {

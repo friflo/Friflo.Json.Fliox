@@ -124,11 +124,12 @@ export type TransactionCommand =
 
 export class RawSqlResult {
     /** number of returned rows */
-    rowCount  : int32;
+    rowCount     : int32;
+    columnCount  : int32;
     /** The columns returned by a raw SQL query */
-    columns?  : RawSqlColumn[] | null;
+    columns?     : RawSqlColumn[] | null;
     /** An array of all query result values. In total: **rowCount** * **columnCount** values */
-    values?   : JsonArray | null;
+    values?      : JsonArray | null;
 }
 
 export class RawSqlColumn {
