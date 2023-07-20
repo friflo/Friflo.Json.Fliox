@@ -33,9 +33,12 @@ namespace Friflo.Json.Tests.Provider.Test
             var columnCount = raw.columnCount;
             var rows = raw.Rows;
             IsTrue(columnCount >= 16);
-            // int n = 0;
+            int n = 0;
             foreach (var row in rows) {
                 AreEqual(columnCount, row.count);
+                AreEqual(n, row.index);
+                AreEqual(n, raw.GetRow(n).index);
+                
                 /* AreEqual(columnCount, row.Values.Length);
                 AreEqual(n, row.index);
                 for (int i = 0; i < columnCount; i++) {
@@ -43,8 +46,8 @@ namespace Friflo.Json.Tests.Provider.Test
                     var tempRow = raw.GetRow(n);
                     IsTrue(tempRow[i].IsEqual(row[i]));
                     IsTrue(tempRow[i].IsEqual(raw.GetValue(n, i)));
-                }
-                n++; */
+                } */
+                n++;
             }
         }
     }

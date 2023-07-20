@@ -36,15 +36,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 
         public   RawSqlRow      GetRow(int row) {
             if (row < 0 || row >= rowCount) throw new IndexOutOfRangeException(nameof(row));
-            var indexes = GetIndexes();
-            return new RawSqlRow(this, indexes, row, columnCount);
+            return new RawSqlRow(this, row);
         }
         
         private RawSqlRow[] GetRows() { 
-            var indexes     = GetIndexes();
             var result      = new RawSqlRow[rowCount];
             for (int row = 0; row < rowCount; row++) {
-                result[row] = new RawSqlRow(this, indexes, row, columnCount);
+                result[row] = new RawSqlRow(this, row);
             }
             return result;
         }
@@ -83,9 +81,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     //  public ReadOnlySpan<JsonKey>    Values              => values.AsSpan().Slice(index * count, count);
     //  public JsonKey                  this[int column]    => values[index * count + column];
 
-        internal RawSqlRow(RawSqlResult rawResult, int[] indexes, int index, int count) {
+        internal RawSqlRow(RawSqlResult rawResult, int index) {
             this.index      = index;
-            this.count      = count;
+            this.count      = rawResult.columnCount;
             this.rawResult  = rawResult;
         }
         
