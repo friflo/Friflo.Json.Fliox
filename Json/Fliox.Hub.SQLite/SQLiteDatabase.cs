@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         /// <a href="https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods/">
         /// Should I expose asynchronous wrappers for synchronous methods? - .NET Parallel Programming</a>
         /// </summary>
-        public              bool            Synchronous             { get; init; } = false;
+        public              bool            Synchronous             { get; init; }
         
         /// <summary>
         /// could use a single SyncConnection - an sqlite3 handle - for all database operation
@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         public override async Task<Result<RawSqlResult>> ExecuteRawSQL(string sql, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
-                return new RawSqlResult();
+                return Result.Error(syncConnection.Error.message);
             }
             using var stmt = SQLiteUtils.Prepare(connection, sql, out var error);
             if (error != null) {

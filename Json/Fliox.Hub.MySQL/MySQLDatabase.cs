@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         public override async Task<Result<RawSqlResult>> ExecuteRawSQL(string sql, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
-                return new RawSqlResult();
+                return Result.Error(syncConnection.Error.message);
             }
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);

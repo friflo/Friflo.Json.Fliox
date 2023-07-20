@@ -57,7 +57,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 
         public override         string          ToString()  => $"rows: {rowCount}, columns; {columnCount}";
 
-        public RawSqlResult() { }
+        public RawSqlResult() { } // required for serialization
+        
         public RawSqlResult(FieldType[] types, JsonArray values, int rowCount) {
             this.types      = types;
             this.values     = values;
