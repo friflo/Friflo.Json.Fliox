@@ -210,8 +210,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (!param.Validate(out string error)) {
                 return Result.Error(error);
             }
+            var sql = param.Value;
+            if (sql == null) {
+                return Result.Error("missing SQL statement");
+            }
             var database    = context.Database;
-            var sql         = param.Value;
             return await database.ExecuteRawSQL(sql, context.syncContext).ConfigureAwait(false);
         }
 
