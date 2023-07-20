@@ -641,12 +641,19 @@ In case any task in the transaction failed the transaction performs a <b>Rollbac
     </h3>
     <table class='fields'>
         <tr>
+            <td><field>rowCount</field></td>
+            <td><type><a href='#Standard.int32'>int32</a></type></td>
+            <td><docs>number of returned rows</docs></td>
+        </tr>
+        <tr>
             <td><field>types</field></td>
             <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.FieldType'>FieldType</a>[] | null</type></td>
+            <td><docs>The column types of a query result</docs></td>
         </tr>
         <tr>
             <td><field>values</field></td>
             <td><type><a href='#Standard.JsonArray'>JsonArray</a> | null</type></td>
+            <td><docs>An array of all query result values. In total: <b>rowCount</b> * <b>columnCount</b> values</docs></td>
         </tr>
     </table>
     </div>

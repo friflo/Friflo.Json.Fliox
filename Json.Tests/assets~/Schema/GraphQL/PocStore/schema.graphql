@@ -428,13 +428,15 @@ enum TransactionCommand {
 }
 
 type RawSqlResult {
-    types  : [FieldType!]
-    values : JsonArray
+    rowCount : Int!
+    types    : [FieldType!]
+    values   : JsonArray
 }
 
 input RawSqlResultInput {
-    types  : [FieldType!]
-    values : JsonArrayInput
+    rowCount : Int!
+    types    : [FieldType!]
+    values   : JsonArrayInput
 }
 
 enum FieldType {

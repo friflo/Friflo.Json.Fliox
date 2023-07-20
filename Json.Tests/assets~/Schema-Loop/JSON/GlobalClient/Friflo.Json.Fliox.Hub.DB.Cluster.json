@@ -91,9 +91,13 @@
         "RawSqlResult": {
             "type": "object",
             "properties": {
-                "types":  { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } },
-                "values": { "oneOf": [{ "$ref": "./Standard.json#/definitions/JsonArray" }, {"type": "null"}] }
+                "rowCount": { "$ref": "./Standard.json#/definitions/int32", "description": "number of returned rows" },
+                "types":    { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" }, "description": "The column types of a query result" },
+                "values":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/JsonArray" }, {"type": "null"}], "description": "An array of all query result values. In total: <b>rowCount</b> * <b>columnCount</b> values" }
             },
+            "required": [
+                "rowCount"
+            ],
             "additionalProperties": false
         },
         "FieldType": {

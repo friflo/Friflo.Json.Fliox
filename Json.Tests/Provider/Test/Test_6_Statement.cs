@@ -29,8 +29,8 @@ namespace Friflo.Json.Tests.Provider.Test
             await client.SyncTasks();
             
             var raw = sqlResult.Result;
-            AreEqual(21, raw.RowCount);
-            var columnCount = raw.ColumnCount;
+            AreEqual(21, raw.rowCount);
+            var columnCount = raw.columnCount;
             var rows = raw.Rows;
             IsTrue(columnCount >= 16);
             // int n = 0;

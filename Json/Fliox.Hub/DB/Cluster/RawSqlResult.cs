@@ -4,6 +4,7 @@
 using System;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
+// ReSharper disable InconsistentNaming
 
 // ReSharper disable ReturnTypeCanBeEnumerable.Global
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
@@ -11,30 +12,39 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public class RawSqlResult
     {
         // --- public
-                        public  int             RowCount   => values.Count / types.Length;
+        /// <summary>number of returned rows</summary>
+        [Serialize]     public  int             rowCount    { get; internal set; }
+        /// <summary>The column types of a query result</summary>
                         public  FieldType[]     types;
+        /// <summary>An array of all query result values. In total: <see cref="rowCount"/> * <see cref="columnCount"/> values</summary>
                         public  JsonArray       values;
-                        public  int             ColumnCount => types.Length;
+                        public  int             columnCount => types.Length;
                         public  RawSqlRow[]     Rows        => rows ?? GetRows();
         
         // --- private / internal
         [Browse(Never)] private int[]           indexArray;
         [Browse(Never)] private RawSqlRow[]     rows;
 
-        public override         string          ToString()  => $"rows: {RowCount}, columns; {ColumnCount}";
+        public override         string          ToString()  => $"rows: {rowCount}, columns; {columnCount}";
+
+        public RawSqlResult() { }
+        public RawSqlResult(FieldType[] types, JsonArray values) {
+            this.types      = types;
+            this.values     = values;
+            this.rowCount   = values.Count / types.Length;
+        }
 
         public   RawSqlRow      GetRow(int row) {
-            if (row < 0 || row >= RowCount) throw new IndexOutOfRangeException(nameof(row));
+            if (row < 0 || row >= rowCount) throw new IndexOutOfRangeException(nameof(row));
             var indexes = GetIndexes();
-            return new RawSqlRow(this, indexes, row, ColumnCount);
+            return new RawSqlRow(this, indexes, row, columnCount);
         }
         
         private RawSqlRow[] GetRows() { 
             var indexes     = GetIndexes();
-            var rowCount    = RowCount;
             var result      = new RawSqlRow[rowCount];
             for (int row = 0; row < rowCount; row++) {
-                result[row] = new RawSqlRow(this, indexes, row, ColumnCount);
+                result[row] = new RawSqlRow(this, indexes, row, columnCount);
             }
             return result;
         }

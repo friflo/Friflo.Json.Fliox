@@ -274,7 +274,6 @@ GENERATED ALWAYS AS ({asStr});";
                 types[n]= GetFieldType(type);
             }
             var values  = new JsonArray();
-            int row = 0;
             while (true) {
                 var rc = raw.sqlite3_step(stmt);
                 if (rc == raw.SQLITE_ROW) {
@@ -297,7 +296,6 @@ GENERATED ALWAYS AS ({asStr});";
                                 throw new InvalidOperationException($"unexpected type: {types[n]}");
                         }
                     }
-                    row++;
                 } else if (rc == raw.SQLITE_DONE) {
                     break;
                 } else {
@@ -306,7 +304,7 @@ GENERATED ALWAYS AS ({asStr});";
                 }
             }
             error = null;
-            return new RawSqlResult { types = types, values = values };
+            return new RawSqlResult(types, values);
         }
         
         private static  FieldType GetFieldType(utf8z type) {

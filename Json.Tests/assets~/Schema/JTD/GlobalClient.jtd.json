@@ -62,8 +62,9 @@
         },
         "RawSqlResult": {
             "properties": {
-                "types":  { "elements": { "ref":  "FieldType" }, "nullable": true },
-                "values": { "ref":  "JsonArray", "nullable": true }
+                "rowCount": { "type": "int32" },
+                "types":    { "elements": { "ref":  "FieldType" }, "nullable": true },
+                "values":   { "ref":  "JsonArray", "nullable": true }
             }
         },
         "FieldType": {

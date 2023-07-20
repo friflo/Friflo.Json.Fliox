@@ -4803,8 +4803,21 @@
             "description": "",
             "fields": [
                 {
+                    "name": "rowCount",
+                    "description": "    /** number of returned rows */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
                     "name": "types",
-                    "description": "",
+                    "description": "    /** The column types of a query result */\n",
                     "args": [
                     ],
                     "type": {
@@ -4820,7 +4833,7 @@
                 },
                 {
                     "name": "values",
-                    "description": "",
+                    "description": "    /** An array of all query result values. In total: **rowCount** * **columnCount** values */\n",
                     "args": [
                     ],
                     "type": {
@@ -4838,8 +4851,21 @@
             "description": "",
             "inputFields": [
                 {
+                    "name": "rowCount",
+                    "description": "    /** number of returned rows */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
                     "name": "types",
-                    "description": "",
+                    "description": "    /** The column types of a query result */\n",
                     "args": [
                     ],
                     "type": {
@@ -4855,7 +4881,7 @@
                 },
                 {
                     "name": "values",
-                    "description": "",
+                    "description": "    /** An array of all query result values. In total: **rowCount** * **columnCount** values */\n",
                     "args": [
                     ],
                     "type": {

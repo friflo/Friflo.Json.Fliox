@@ -142,8 +142,12 @@ export type TransactionCommand =
 ;
 
 export class RawSqlResult {
-    types?  : FieldType[] | null;
-    values? : JsonArray | null;
+    /** number of returned rows */
+    rowCount  : int32;
+    /** The column types of a query result */
+    types?    : FieldType[] | null;
+    /** An array of all query result values. In total: **rowCount** * **columnCount** values */
+    values?   : JsonArray | null;
 }
 
 export type FieldType =
