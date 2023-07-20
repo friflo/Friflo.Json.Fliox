@@ -116,18 +116,18 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 }
                 var type = fieldTypes[n];
                 switch (type) {
-                    case FieldType.Bool:        values.WriteBoolean     (reader.GetBoolean(n));     break;
-                    case FieldType.UInt8:       values.WriteByte        (reader.GetByte(n));        break;
-                    case FieldType.Int16:       values.WriteInt16       (reader.GetInt16(n));       break;
-                    case FieldType.Int32:       values.WriteInt32       (reader.GetInt32(n));       break;
-                    case FieldType.Int64:       values.WriteInt64       (reader.GetInt64(n));       break;
-                    case FieldType.Float:       values.WriteFlt32       (reader.GetFloat(n));       break;
-                    case FieldType.Double:      values.WriteFlt64       (reader.GetDouble(n));      break;
-                    case FieldType.String:      values.WriteCharString  (reader.GetString(n));      break;
-                    case FieldType.DateTime:    values.WriteDateTime    (reader.GetDateTime(n));    break;
-                    case FieldType.Guid:        values.WriteGuid        (reader.GetGuid(n));        break;
-                    // case FieldType.JSON:     values.WriteJSON        (reader.GetString(n));      break;
-                    default:                    values.WriteNull();                                 break;
+                    case FieldType.Bool:        values.WriteBoolean     (reader.GetBoolean(n));         break;
+                    case FieldType.UInt8:       values.WriteByte        (reader.GetByte(n));            break;
+                    case FieldType.Int16:       values.WriteInt16       (reader.GetInt16(n));           break;
+                    case FieldType.Int32:       values.WriteInt32       (reader.GetInt32(n));           break;
+                    case FieldType.Int64:       values.WriteInt64       (reader.GetInt64(n));           break;
+                    case FieldType.Float:       values.WriteFlt32       (reader.GetFloat(n));           break;
+                    case FieldType.Double:      values.WriteFlt64       (reader.GetDouble(n));          break;
+                    case FieldType.String:      values.WriteCharString  (reader.GetString(n).AsSpan()); break;
+                    case FieldType.DateTime:    values.WriteDateTime    (reader.GetDateTime(n));        break;
+                    case FieldType.Guid:        values.WriteGuid        (reader.GetGuid(n));            break;
+                    // case FieldType.JSON:     values.WriteJSON        (reader.GetString(n));          break;
+                    default:                    values.WriteNull();                                     break;
                 }
             }
         }
