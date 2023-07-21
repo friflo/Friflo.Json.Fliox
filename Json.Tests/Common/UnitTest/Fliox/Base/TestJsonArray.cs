@@ -206,6 +206,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             json = mapper.Write(array);
             AreEqual("[\n[1,2],\n[3,4]\n]", json);
             AreEqual("rows: 2, columns: 2\n[1, 2],\n[3, 4]", array.TableString);
+            
+            // --- [1,2],[3,4]
+            array.WriteNewRow();
+            AreEqual(2, array.RowCount);
+            AreEqual(2, array.ColumnCount);
+            AreEqual(4, array.ItemCount);
+            json = mapper.Write(array);
+            AreEqual("[\n[1,2],\n[3,4]\n]", json);
+            AreEqual("rows: 2, columns: 2\n[1, 2],\n[3, 4]", array.TableString);
 
             array.Init();
             WriteTestData(array);

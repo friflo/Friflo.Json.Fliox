@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox
         
         private     int     RowItemCount    => itemCount - startRowCount;
         
-        public override string  ToString()  => GetString(new StringBuilder()).ToString();
+        public override string  ToString()  => AppendString(new StringBuilder()).ToString();
         
         public JsonArray() {
             bytes = new Bytes(32);
@@ -39,7 +39,8 @@ namespace Friflo.Json.Fliox
                 case 0: return rowItemCount;
                 case 1: return rowItemCount == 0 ? columnCount : rowItemCount;
             }
-            return rowItemCount == columnCount ? columnCount : -1;
+            return rowItemCount == 0 ||
+                   rowItemCount == columnCount ? columnCount : -1;
         }
         
         public JsonArray(int itemCount, JsonArray array, int start, int end) {
@@ -345,7 +346,7 @@ namespace Friflo.Json.Fliox
             return GuidUtils.LongLongToGuid(lng1, lng2);
         }
         
-        private StringBuilder GetString(StringBuilder sb) {
+        private StringBuilder AppendString(StringBuilder sb) {
             var rows = RowCount;
             sb.Append("rows: ");
             sb.Append(rows);
@@ -359,20 +360,23 @@ namespace Friflo.Json.Fliox
         
         private string GetTableString() {
             var sb = new StringBuilder();
-            GetString(sb);
+            AppendString(sb);
             sb.Append("\n[");
-            AsString(sb);
+            AppendRows(sb);
             sb.Append(']');
             return sb.ToString();
         }
         
-        public string AsString() {
-            var sb = new StringBuilder();
-            AsString(sb);
-            return sb.ToString();
+        public StringBuilder AppendRowItems(StringBuilder sb) {
+            sb.Append("Count: ");
+            sb.Append(ItemCount);
+            sb.Append(" [");
+            AppendRows(sb);
+            sb.Append(']');
+            return sb;
         }
         
-        private void AsString(StringBuilder sb) {
+        private void AppendRows(StringBuilder sb) {
             int pos         = bytes.start;
             var firstItem   = true;
             while (true)

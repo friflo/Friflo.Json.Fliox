@@ -29,10 +29,10 @@ namespace Friflo.Json.Tests.Provider.Test
             var sqlResult   = client.std.ExecuteRawSQL(result.Sql);
             await client.SyncTasks();
             
-            var raw = sqlResult.Result;
+            var raw         = sqlResult.Result;
             AreEqual(21, raw.rowCount);
             var columnCount = raw.columnCount;
-            var rows = raw.Rows;
+            var rows        = raw.Rows;
             IsTrue(columnCount >= 16);
             int n = 0;
             foreach (var row in rows) {

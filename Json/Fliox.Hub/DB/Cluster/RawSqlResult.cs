@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         [Browse(Never)] private int[]           indexArray;
         [Browse(Never)] private RawSqlRow[]     rows;
 
-        public override         string          ToString()  => $"rows: {rowCount}, columns; {columnCount}";
+        public override         string          ToString()  => $"rows: {rowCount}, columns: {columnCount}";
 
         public RawSqlResult() { } // required for serialization
         

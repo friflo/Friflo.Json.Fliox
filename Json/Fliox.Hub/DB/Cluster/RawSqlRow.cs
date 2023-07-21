@@ -164,7 +164,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var start       = indexes[first];
             var end         = indexes[first + columnCount];
             var array       = new JsonArray(columnCount, rawResult.values, start, end);
-            return array.AsString();
+            return array.AppendRowItems(new StringBuilder()).ToString();
         }
     }
 }
