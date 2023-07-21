@@ -88,6 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             {
                 rowCount++;
                 AddRow(reader, columns, values, readRawSql);
+                values.WriteNewRow();
             }
             return new RawSqlResult(columns, values, rowCount);
         }

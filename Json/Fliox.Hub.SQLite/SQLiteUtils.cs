@@ -304,6 +304,7 @@ GENERATED ALWAYS AS ({asStr});";
                                 throw new InvalidOperationException($"unexpected type: {columns[n]}");
                         }
                     }
+                    values.WriteNewRow();
                 } else if (rc == raw.SQLITE_DONE) {
                     break;
                 } else {

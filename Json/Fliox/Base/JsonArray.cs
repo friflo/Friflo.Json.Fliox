@@ -13,41 +13,62 @@ namespace Friflo.Json.Fliox
 {
     public class JsonArray
     {
-        public          int     Count       => count;
-        public override string  ToString()  => AsString();
+        public      int     RowCount    => rowCount + (RowItemCount > 0 ? 1 : 0);
+        public      int     ColumnCount => GetColumnCount();
+        public      int     ItemCount   => itemCount;
+        public      string  TableString => GetTableString();
 
         // --- private
-        private Bytes   bytes;
-        private int     count;
+        private     Bytes   bytes;
+        private     int     rowCount;
+        private     int     itemCount;
+        private     int     columnCount;
+        private     int     startRowCount;
+        
+        private     int     RowItemCount    => itemCount - startRowCount;
+        
+        public override string  ToString()  => GetString(new StringBuilder()).ToString();
         
         public JsonArray() {
             bytes = new Bytes(32);
         }
         
-        public JsonArray(int count, JsonArray array, int start, int end) {
-            this.count      = count;           
+        private int GetColumnCount() {
+            var rowItemCount = RowItemCount;
+            switch (RowCount) {
+                case 0: return rowItemCount;
+                case 1: return rowItemCount == 0 ? columnCount : rowItemCount;
+            }
+            return rowItemCount == columnCount ? columnCount : -1;
+        }
+        
+        public JsonArray(int itemCount, JsonArray array, int start, int end) {
+            this.itemCount  = itemCount;           
             bytes.buffer    = array.bytes.buffer;
             bytes.start     = start;
             bytes.end       = end;
         }
         
         public void Init() {
-            count       = 0;
-            bytes.start = 0;
-            bytes.end   = 0;
+            rowCount        = 0;
+            itemCount       = 0;
+            columnCount     = 0;
+            startRowCount   = 0;
+            bytes.start     = 0;
+            bytes.end       = 0;
         }
         
         // -------------------------------------------- write --------------------------------------------
         public void WriteNull() {
             bytes.EnsureCapacity(1);
             bytes.buffer[bytes.end++] = (byte)JsonItemType.Null;
-            count++;
+            itemCount++;
         }
         
         public void WriteBoolean(bool value) {
             bytes.EnsureCapacity(1);
             bytes.buffer[bytes.end++] = (byte)(value ? JsonItemType.True : JsonItemType.False);
-            count++;
+            itemCount++;
         }
 
         public void WriteByte(byte value) {
@@ -56,7 +77,7 @@ namespace Friflo.Json.Fliox
             bytes.buffer[start]     = (byte)JsonItemType.Uint8;
             bytes.buffer[start + 1] = value;
             bytes.end = start + 2;
-            count++;
+            itemCount++;
         }
 
         public void WriteInt16(short value) {
@@ -67,7 +88,7 @@ namespace Friflo.Json.Fliox
                 bytes.buffer[start + 1] = (byte)(value >> 8);
                 bytes.buffer[start + 2] = (byte)(value & 0xff);
                 bytes.end = start + 3;
-                count++;
+                itemCount++;
                 return;
             }
             WriteByte((byte)value);
@@ -80,7 +101,7 @@ namespace Friflo.Json.Fliox
                 bytes.buffer[start] = (byte)JsonItemType.Int32;
                 bytes.WriteInt32(start + 1, value);
                 bytes.end = start + 5;
-                count++;
+                itemCount++;
                 return;
             }
             WriteInt16((short)value);
@@ -93,7 +114,7 @@ namespace Friflo.Json.Fliox
                 bytes.buffer[start] = (byte)JsonItemType.Int64;
                 bytes.WriteInt64(start + 1, value);
                 bytes.end = start + 9;
-                count++;
+                itemCount++;
                 return;
             }
             WriteInt32((int)value);
@@ -105,7 +126,7 @@ namespace Friflo.Json.Fliox
             bytes.buffer[start] = (byte)JsonItemType.Flt32;
             bytes.WriteFlt32(start + 1, value);
             bytes.end = start + 5;
-            count++;
+            itemCount++;
         }
         
         public void WriteFlt64(double value) {
@@ -114,7 +135,7 @@ namespace Friflo.Json.Fliox
             bytes.buffer[start] = (byte)JsonItemType.Flt64;
             bytes.WriteFlt64(start + 1, value);
             bytes.end = start + 9;
-            count++;
+            itemCount++;
         }
         
         private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
@@ -124,7 +145,7 @@ namespace Friflo.Json.Fliox
         /// Passed value MUST be valid JSON. Otherwise invalid JSON will be generated downstream.
         /// </summary>
         public void WriteJSON(ReadOnlySpan<byte> value) {
-            count++;
+            itemCount++;
             int len = value.Length;
             bytes.EnsureCapacity(1 + 4 + len);
             int start = bytes.end;
@@ -140,7 +161,7 @@ namespace Friflo.Json.Fliox
         /// <b>Note</b> Prefer using <see cref="WriteJSON"/> to avoid char[] -> UTF-8 conversion
         /// </summary>
         public void WriteCharJSON(ReadOnlySpan<char> value) {
-            count++;
+            itemCount++;
             var maxLen = Utf8.GetMaxByteCount(value.Length);
             bytes.EnsureCapacity(1 + 4 + maxLen);
             int start       = bytes.end;
@@ -158,7 +179,7 @@ namespace Friflo.Json.Fliox
                 WriteNull();
                 return;
             }
-            count++;
+            itemCount++;
             var len     = value.Length;
             var start   = bytes.end;
             bytes.EnsureCapacity (1 + 4 + 2 * len);
@@ -173,7 +194,7 @@ namespace Friflo.Json.Fliox
                 WriteNull();
                 return;
             }
-            count++;
+            itemCount++;
             var len     = value.Length;
             int start   = bytes.end;
             bytes.EnsureCapacity(1 + 4 + len);
@@ -184,7 +205,7 @@ namespace Friflo.Json.Fliox
         }
         
         public void WriteDateTime(in DateTime value) {
-            count++;
+            itemCount++;
             bytes.EnsureCapacity(9);
             int start = bytes.end;
             bytes.buffer[start] = (byte)JsonItemType.DateTime;
@@ -193,7 +214,7 @@ namespace Friflo.Json.Fliox
         }
         
         public void WriteGuid(in Guid value) {
-            count++;
+            itemCount++;
             bytes.EnsureCapacity(17);
             int start = bytes.end;
             bytes.buffer[start] = (byte)JsonItemType.Guid;
@@ -202,6 +223,21 @@ namespace Friflo.Json.Fliox
             bytes.end = start + 17;
         }
         
+        public void WriteNewRow() {
+            bytes.EnsureCapacity(1);
+            bytes.buffer[bytes.end++] = (byte)JsonItemType.NewRow;
+            var rowItems = RowItemCount;
+            if (rowCount == 0) {
+                columnCount = rowItems;
+            } else {
+                if (rowItems != columnCount) {
+                    columnCount = -1;
+                }
+            }
+            rowCount++;
+            startRowCount = itemCount;
+        }
+
         // -------------------------------------------- read --------------------------------------------
         public JsonItemType GetItemType(int pos) {
             if (pos < bytes.end) {
@@ -220,6 +256,7 @@ namespace Friflo.Json.Fliox
                 case JsonItemType.Null:
                 case JsonItemType.True:
                 case JsonItemType.False:
+                case JsonItemType.NewRow:
                     next = pos + 1;
                     return type;
                 case JsonItemType.Uint8:
@@ -308,26 +345,59 @@ namespace Friflo.Json.Fliox
             return GuidUtils.LongLongToGuid(lng1, lng2);
         }
         
+        private StringBuilder GetString(StringBuilder sb) {
+            var rows = RowCount;
+            sb.Append("rows: ");
+            sb.Append(rows);
+            var columns = ColumnCount;
+            if (columns != -1) {
+                sb.Append(", columns: ");
+                sb.Append(columns);
+            }
+            return sb;
+        }
+        
+        private string GetTableString() {
+            var sb = new StringBuilder();
+            GetString(sb);
+            sb.Append("\n[");
+            AsString(sb);
+            sb.Append(']');
+            return sb.ToString();
+        }
+        
         public string AsString() {
             var sb = new StringBuilder();
-            sb.Append("Count: ");
-            sb.Append(count);
-            sb.Append(" [");
-            int pos = bytes.start;
+            AsString(sb);
+            return sb.ToString();
+        }
+        
+        private void AsString(StringBuilder sb) {
+            int pos         = bytes.start;
+            var firstItem   = true;
             while (true)
             {
                 var type = GetItemType(pos, out int next);
-                if (type == JsonItemType.End) {
-                    break;
+                switch (type) {
+                    case JsonItemType.End:
+                        if (!firstItem) {
+                            sb.Length -= 2;
+                        }
+                        return;
+                    case JsonItemType.NewRow:
+                        if (!firstItem) {
+                            sb.Length -= 2;
+                        }
+                        sb.Append("],\n[");
+                        firstItem = true;
+                        break;
+                    default:
+                        AppendItem(sb, type, pos);
+                        firstItem = false;
+                        break;
                 }
-                AppendItem(sb, type, pos);
                 pos = next;
             }
-            if (count > 0) {
-                sb.Length -= 2;
-            }
-            sb.Append(']');
-            return sb.ToString();
         }
         
         private void AppendItem(StringBuilder sb, JsonItemType type, int pos)
@@ -374,7 +444,9 @@ namespace Friflo.Json.Fliox
                     var dateTime = ReadDateTime(pos).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                     sb.Append(dateTime);
                     break;
-                case JsonItemType.Guid:         sb.Append(ReadGuid      (pos)); break;
+                case JsonItemType.Guid:
+                    sb.Append(ReadGuid(pos));
+                    break;
                 default:
                     throw new InvalidOperationException($"unexpected type: {type}");
             }
@@ -405,6 +477,7 @@ namespace Friflo.Json.Fliox
         DateTime    = 12,   // 1 + 8
         Guid        = 13,   // 1 + 16
         //
-        End         = 14,   // 0 - Note: End is not written to JsonArray.bytes
+        NewRow      = 14,   // 1
+        End         = 15,   // 0 - Note: End is not written to JsonArray.bytes
     }
 }

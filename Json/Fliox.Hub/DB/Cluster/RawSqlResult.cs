@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             this.columns        = columns;
             this.values         = values;
             this.columnCount    = columns.Length;
-            this.rowCount       = values.Count / columnCount;
+            this.rowCount       = values.ItemCount / columnCount;
             if (this.rowCount != rowCount) {
                 throw new InvalidComObjectException($"invalid rowCount. expected: {rowCount}. was: {this.rowCount}");
             }
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             if (indexArray != null) {
                 return indexArray;
             }
-            var indexes = new int[values.Count + 1];
+            var indexes = new int[values.ItemCount + 1];
             int n   = 0;
             int pos = 0;
             while (true)
@@ -66,6 +66,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 var type = values.GetItemType(pos, out int next);
                 if (type == JsonItemType.End) {
                     break;
+                }
+                if (type == JsonItemType.NewRow) {
+                    pos = next;
+                    continue;                    
                 }
                 indexes[n++] = pos;
                 pos = next;

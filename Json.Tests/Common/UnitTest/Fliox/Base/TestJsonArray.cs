@@ -42,13 +42,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             array.WriteCharString   ("chars".AsSpan());     // [12]
             array.WriteDateTime     (DateTime);             // [13]
             array.WriteGuid         (Guid);                 // [14]
+            array.WriteNewRow       ();                     // [15]
+            array.WriteCharString   ("new-row".AsSpan());   // [16]
         }
             
         private static void ReadTestData (JsonArray array, ReadArrayType readArrayType)
         {
             int n   = 0;
             int pos = 0;
-            var idx = new int[15];
+            var idx = new int[18];
             while (true) {
                 var type = array.GetItemType(pos, out int next);
                 if (type == JsonItemType.End) {
@@ -92,6 +94,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             
             AreEqual(DateTime,          array.ReadDateTime  (idx[13]));
             AreEqual(Guid,              array.ReadGuid      (idx[14]));
+            // AreEqual(132,                                    idx[15]); // new row
+            if (readArrayType == ReadArrayType.Binary) {
+                var newRow =            array.ReadCharSpan  (idx[16]).ToString();
+                AreEqual("new-row", newRow);
+            } else {
+                var newRow =            array.ReadByteSpan (idx[16]);
+                IsTrue(newRow.SequenceEqual(new Bytes("new-row").AsSpan()));
+            }
         }
         
         [Test]
@@ -99,16 +109,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         {
             var array = new JsonArray();
             WriteTestData(array);
-            AreEqual(15, array.Count);
+            AreEqual(2,  array.RowCount);
+            AreEqual(16, array.ItemCount);
             ReadTestData(array, ReadArrayType.Binary);
         }
 
         // Note! Unity format floating point numbers with lower precision
         private const string ExpectJson =
-            "[null,true,255,32767,2147483647,9223372036854775807,3.4028235E+38,1.7976931348623157E+308,[1,2,3],{\"key\":42},\"byte-string\",\"test\",\"chars\",\"2023-07-19T12:58:57.448575Z\",\"af82dcf5-8664-4b4e-8072-6cb43b335364\"]";
+            @"[
+[null,true,255,32767,2147483647,9223372036854775807,3.4028235E+38,1.7976931348623157E+308,[1,2,3],{""key"":42},""byte-string"",""test"",""chars"",""2023-07-19T12:58:57.448575Z"",""af82dcf5-8664-4b4e-8072-6cb43b335364""],
+[""new-row""]
+]";
         
         private const string ExpectToString =
-            "Count: 15 [null, true, 255, 32767, 2147483647, 9223372036854775807, 3.4028235E+38, 1.7976931348623157E+308, [1,2,3], {\"key\":42}, 'byte-string', 'test', 'chars', 2023-07-19 12:58:57, af82dcf5-8664-4b4e-8072-6cb43b335364]";
+            @"rows: 2
+[null, true, 255, 32767, 2147483647, 9223372036854775807, 3.4028235E+38, 1.7976931348623157E+308, [1,2,3], {""key"":42}, 'byte-string', 'test', 'chars', 2023-07-19 12:58:57, af82dcf5-8664-4b4e-8072-6cb43b335364],
+['new-row']";
 
 
         [Test]
@@ -117,18 +133,47 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var typeStore = new TypeStore();
             var mapper = new ObjectMapper(typeStore);
             
+            // --- empty table
             var array = new JsonArray();
-            AreEqual("Count: 0 []", array.ToString());
+            AreEqual(0, array.RowCount);
+            AreEqual(0, array.ColumnCount);
+            AreEqual("rows: 0, columns: 0\n[]", array.TableString);
             
             var json = mapper.Write(array);
             AreEqual("[]", json);
+            
+            AreEqual(0, array.RowCount);
+            AreEqual(0, array.ColumnCount);
+            
+            // --- [1,1] table
+            array.WriteInt16(1);
+            AreEqual(1, array.RowCount);
+            AreEqual(1, array.ColumnCount);
+            
+            array.WriteInt16(2);
+            AreEqual(1, array.RowCount);
+            AreEqual(2, array.ColumnCount);
+            
+            array.WriteNewRow();
+            AreEqual(1, array.RowCount);
+            AreEqual(2, array.ColumnCount);
+            
+            array.WriteInt16(3);
+            AreEqual(2, array.RowCount);
+            AreEqual(-1,array.ColumnCount);
+
+            array.WriteInt16(4);
+            AreEqual(2, array.RowCount);
+            AreEqual(2, array.ColumnCount);
+            AreEqual(4, array.ItemCount);
+            AreEqual("rows: 2, columns: 2\n[1, 2],\n[3, 4]", array.TableString);
 
             array.Init();
             WriteTestData(array);
             json = mapper.Write(array);
-            var toString = array.ToString();
+            var tableString = array.TableString;
 #if !UNITY_5_3_OR_NEWER
-            AreEqual(ExpectToString, toString);
+            AreEqual(ExpectToString, tableString);
             AreEqual(ExpectJson, json);
 #endif
         }
@@ -140,8 +185,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var mapper = new ObjectMapper(typeStore);
 
             var array = mapper.Read<JsonArray>(ExpectJson);
+            AreEqual(2,  array.RowCount);
+            AreEqual(16, array.ItemCount);
+            
             ReadTestData(array, ReadArrayType.Json);
-            AreEqual(15, array.Count);
         }
         
         [Test]
@@ -151,16 +198,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var mapper = new ObjectMapper(typeStore);
 
             var e = Throws<JsonReaderException>(() => {
-                 mapper.Read<JsonArray>("[123-]");
+                 mapper.Read<JsonArray>("[[123-]]");
             });
             IsNotNull(e);
-            AreEqual("JsonReader/error: invalid integer: 123- path: '[0]' at position: 5", e.Message);
+            AreEqual("JsonReader/error: invalid integer: 123- path: '[0][0]' at position: 6", e.Message);
 
             e = Throws<JsonReaderException>(() => {
-                mapper.Read<JsonArray>("[123e+38.999]");
+                mapper.Read<JsonArray>("[[123e+38.999]]");
             });
             IsNotNull(e);
-            AreEqual("JsonReader/error: invalid floating point number: 123e+38.999 path: '[0]' at position: 12", e.Message);
+            AreEqual("JsonReader/error: invalid floating point number: 123e+38.999 path: '[0][0]' at position: 13", e.Message);
         }
     }
 }

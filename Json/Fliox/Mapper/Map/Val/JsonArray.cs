@@ -26,7 +26,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     {
         public override string  DataTypeName()              => "JsonArray";
         public override bool    IsNull(ref JsonArray value) => value == null;
-        
+
+        private static readonly Bytes NewRow = new Bytes("],\n[");
 
         public JsonArrayMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
         
@@ -112,6 +113,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         bytes.AppendChar('"');
                         break;
                     }
+                    case JsonItemType.NewRow:
+                        if (!isFirstItem) {
+                            bytes.end--; // remove last terminator
+                        }
+                        bytes.AppendBytes(NewRow);
+                        isFirstItem = true;
+                        pos         = next;
+                        continue;
                     case JsonItemType.End:
                         if (!isFirstItem) {
                             bytes.end--; // remove last terminator
@@ -120,9 +129,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     default:
                         throw new InvalidComObjectException($"unexpected itemType: {itemType}");
                 }
-                isFirstItem = false;
                 bytes.AppendChar(',');
-                pos = next;
+                isFirstItem = false;
+                pos         = next;
             }
         }
         
@@ -131,7 +140,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             int startLevel = writer.IncLevel();
             writer.WriteArrayBegin();
             
-            WriteItems(ref writer, array);
+            if (array.ItemCount > 0) {
+                writer.bytes.AppendChar2('\n', '[');
+                
+                WriteItems(ref writer, array);
+                
+                writer.bytes.AppendChar2(']', '\n');
+            }
             
             writer.WriteArrayEnd();
             writer.DecLevel(startLevel);
@@ -159,12 +174,30 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             if (!StartArray(ref reader, out success)) {
                 return default;
             }
-            return ReadItems(ref reader, value, out success);
+            value ??= new JsonArray();
+            ref var parser = ref reader.parser;
+            while (true) {
+                JsonEvent ev = parser.NextEvent();
+                switch (ev) {
+                    case JsonEvent.ValueNull:
+                        return reader.ErrorIncompatible<JsonArray>(DataTypeName(), this, out success);
+                    case JsonEvent.ArrayStart:
+                        if (!ReadItems(ref reader, value, out success)) {
+                            return null;
+                        }
+                        continue;
+                    case JsonEvent.ArrayEnd:
+                        return value;
+                    default:
+                        success = false;
+                        reader.ErrorIncompatible<JsonArray>(DataTypeName(), this, out success);
+                        return null;
+                }
+            }
         }
         
-        private static JsonArray ReadItems(ref Reader reader, JsonArray value, out bool success)
+        private static bool ReadItems(ref Reader reader, JsonArray value, out bool success)
         {
-            value ??= new JsonArray();
             ref var parser = ref reader.parser;
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
@@ -189,14 +222,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         if (!parser.isFloat) {
                             var lng = ValueParser.ParseLong(span, ref reader.strBuf, out success);
                             if (!success) {
-                                return reader.ErrorMsg<JsonArray>("invalid integer: ", parser.value, out success);
+                                return reader.ErrorMsg<bool>("invalid integer: ", parser.value, out success);
                             }
                             value.WriteInt64(lng);
                             break;
                         }
                         var dbl = ValueParser.ParseDouble(span, ref reader.strBuf, out success);
                         if (!success) {
-                            return reader.ErrorMsg<JsonArray>("invalid floating point number: ", parser.value, out success);
+                            return reader.ErrorMsg<bool>("invalid floating point number: ", parser.value, out success);
                         }
                         var exponent    = Math.Log(dbl, 10);
                         // max float: 3.40282346638528859e+38. Is exponent is > 38? => Write as double
@@ -228,13 +261,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         value.WriteNull();
                         break;
                     case JsonEvent.ArrayEnd:
+                        value.WriteNewRow();
                         success = true;
-                        return value;
+                        return true;
                     case JsonEvent.Error:
                         success = false;
                         return default;
                     default:
-                        return reader.ErrorMsg<JsonArray>("unexpected state: ", ev, out success);
+                        return reader.ErrorMsg<bool>("unexpected state: ", ev, out success);
                 }
             }
         }

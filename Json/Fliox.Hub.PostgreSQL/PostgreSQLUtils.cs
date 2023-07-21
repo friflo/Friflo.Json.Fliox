@@ -82,6 +82,7 @@ GENERATED ALWAYS AS (({asStr})::{type}) STORED;";
             {
                 rowCount++;
                 AddRow(reader, columns, values, readRawSql);
+                values.WriteNewRow();
             }
             return new RawSqlResult(columns, values, rowCount);
         }
