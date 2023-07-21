@@ -377,8 +377,8 @@ namespace Friflo.Json.Fliox
             var firstItem   = true;
             while (true)
             {
-                var type = GetItemType(pos, out int next);
-                switch (type) {
+                var itemType = GetItemType(pos, out int next);
+                switch (itemType) {
                     case JsonItemType.End:
                         if (!firstItem) {
                             sb.Length -= 2;
@@ -388,11 +388,16 @@ namespace Friflo.Json.Fliox
                         if (!firstItem) {
                             sb.Length -= 2;
                         }
+                        pos     = next;
+                        itemType    = GetItemType(pos, out next);
+                        if (itemType == JsonItemType.End) {
+                            return;
+                        }
                         sb.Append("],\n[");
                         firstItem = true;
-                        break;
+                        continue;
                     default:
-                        AppendItem(sb, type, pos);
+                        AppendItem(sb, itemType, pos);
                         firstItem = false;
                         break;
                 }

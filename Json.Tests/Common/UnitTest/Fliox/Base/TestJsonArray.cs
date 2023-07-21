@@ -137,35 +137,74 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var array = new JsonArray();
             AreEqual(0, array.RowCount);
             AreEqual(0, array.ColumnCount);
-            AreEqual("rows: 0, columns: 0\n[]", array.TableString);
-            
+            AreEqual(0, array.ItemCount);
             var json = mapper.Write(array);
             AreEqual("[]", json);
+            AreEqual("rows: 0, columns: 0\n[]", array.TableString);
             
-            AreEqual(0, array.RowCount);
+            // --- [[]]
+            array.WriteNewRow();
+            AreEqual(1, array.RowCount);
             AreEqual(0, array.ColumnCount);
+            AreEqual(0, array.ItemCount);
+            json = mapper.Write(array);
+            AreEqual("[\n[]\n]", json);
+            AreEqual("rows: 1, columns: 0\n[]", array.TableString);
             
-            // --- [1,1] table
+            // --- [[],[]] -> trailing new rows are ignored
+            array.WriteNewRow();
+            AreEqual(2, array.RowCount);
+            AreEqual(0, array.ColumnCount);
+            AreEqual(0, array.ItemCount);
+            json = mapper.Write(array);
+            AreEqual("[\n[],\n[]\n]", json);
+            AreEqual("rows: 2, columns: 0\n[],\n[]", array.TableString);
+            
+            
+            array = new JsonArray();
+            // --- [1]
             array.WriteInt16(1);
             AreEqual(1, array.RowCount);
             AreEqual(1, array.ColumnCount);
+            AreEqual(1, array.ItemCount);
+            json = mapper.Write(array);
+            AreEqual("[\n[1]\n]", json);
+            AreEqual("rows: 1, columns: 1\n[1]", array.TableString);
             
+            // --- [1,2]
             array.WriteInt16(2);
             AreEqual(1, array.RowCount);
             AreEqual(2, array.ColumnCount);
+            AreEqual(2, array.ItemCount);
+            json = mapper.Write(array);
+            AreEqual("[\n[1,2]\n]", json);
+            AreEqual("rows: 1, columns: 2\n[1, 2]", array.TableString);
             
+            // --- [1,2] -> trailing new rows are ignored
             array.WriteNewRow();
             AreEqual(1, array.RowCount);
             AreEqual(2, array.ColumnCount);
+            AreEqual(2, array.ItemCount);
+            json = mapper.Write(array);
+            AreEqual("[\n[1,2]\n]", json);
+            AreEqual("rows: 1, columns: 2\n[1, 2]", array.TableString);
             
+            // --- [1,2],[3]
             array.WriteInt16(3);
             AreEqual(2, array.RowCount);
             AreEqual(-1,array.ColumnCount);
+            AreEqual(3, array.ItemCount);
+            json = mapper.Write(array);
+            AreEqual("[\n[1,2],\n[3]\n]", json);
+            AreEqual("rows: 2\n[1, 2],\n[3]", array.TableString);
 
+            // --- [1,2],[3,4]
             array.WriteInt16(4);
             AreEqual(2, array.RowCount);
             AreEqual(2, array.ColumnCount);
             AreEqual(4, array.ItemCount);
+            json = mapper.Write(array);
+            AreEqual("[\n[1,2],\n[3,4]\n]", json);
             AreEqual("rows: 2, columns: 2\n[1, 2],\n[3, 4]", array.TableString);
 
             array.Init();

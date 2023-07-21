@@ -36,10 +36,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             int     pos         = 0;
             bool    isFirstItem = true;
             ref var bytes       = ref writer.bytes;
+            var     itemType    = array.GetItemType(pos, out int next);
+            if (itemType == JsonItemType.End) {
+                return;
+            }
+            writer.bytes.AppendChar2('\n','[');
             
             while (true)
             {
-                var itemType = array.GetItemType(pos, out int next);
                 switch (itemType) {
                     case JsonItemType.Null:
                         bytes.AppendBytes(JsonArrayMatcher.Null);    
@@ -114,17 +118,23 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         break;
                     }
                     case JsonItemType.NewRow:
+                        pos         = next;
+                        itemType    = array.GetItemType(pos, out next);
                         if (!isFirstItem) {
                             bytes.end--; // remove last terminator
                         }
-                        bytes.AppendBytes(NewRow);
+                        if (itemType == JsonItemType.End) {
+                            writer.bytes.AppendChar2(']', '\n');
+                            return;
+                        }
+                        writer.bytes.AppendBytes(NewRow);
                         isFirstItem = true;
-                        pos         = next;
                         continue;
                     case JsonItemType.End:
                         if (!isFirstItem) {
                             bytes.end--; // remove last terminator
                         }
+                        writer.bytes.AppendChar2(']', '\n');
                         return;
                     default:
                         throw new InvalidComObjectException($"unexpected itemType: {itemType}");
@@ -132,6 +142,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 bytes.AppendChar(',');
                 isFirstItem = false;
                 pos         = next;
+                itemType    = array.GetItemType(pos, out next);
             }
         }
         
@@ -139,15 +150,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         {
             int startLevel = writer.IncLevel();
             writer.WriteArrayBegin();
-            
-            if (array.ItemCount > 0) {
-                writer.bytes.AppendChar2('\n', '[');
                 
-                WriteItems(ref writer, array);
-                
-                writer.bytes.AppendChar2(']', '\n');
-            }
-            
+            WriteItems(ref writer, array);
+
             writer.WriteArrayEnd();
             writer.DecLevel(startLevel);
         }
