@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Provider.Test
             
             IsFalse(sql3.Success);
             AreEqual(TaskErrorType.CommandError, sql3.Error.type);
-            AreEqual("CommandError ~ missing SQL statement", sql3.Error.Message);
+            AreEqual("CommandError ~ missing SQL command: E.g. { \"command\": \"select * from table_name;\" }", sql3.Error.Message);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]

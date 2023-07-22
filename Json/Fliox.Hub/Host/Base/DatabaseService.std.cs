@@ -212,7 +212,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             var sql = param.Value;
             if (sql == null) {
-                return Result.Error("missing SQL statement");
+                return Result.Error("missing SQL command: E.g. { \"command\": \"select * from table_name;\" }");
             }
             var database    = context.Database;
             var result      = await database.ExecuteRawSQL(sql, context.syncContext).ConfigureAwait(false);
