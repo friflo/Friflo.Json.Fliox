@@ -262,22 +262,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         [Test]
         public static void TestDebugRows () {
             var data = new JsonTable();
+            var rows = data.CreateTableRows();
+            AreEqual(0,                     rows.Length);
             //
             data.WriteInt32(123);
-            var rows = data.CreateTableRows();
-            
+            rows = data.CreateTableRows();
+            AreEqual(1,                     rows.Length);
             AreEqual(JsonItemType.Uint8,    rows[0].GetType(0));
             AreEqual(123,                   rows[0].GetInt32(0));
             AreEqual("123",                 rows[0].ToString());
             //
             data.WriteCharString("abc".AsSpan());
             rows = data.CreateTableRows();
+            AreEqual(1,                     rows.Length);
             AreEqual("abc",                 rows[0].GetCharSpan(1).ToString());
             AreEqual("abc",                 rows[0].GetString(1));
             AreEqual("123, 'abc'",          rows[0].ToString());
             //
             data.WriteInt64(456);
             rows = data.CreateTableRows();
+            AreEqual(1,                     rows.Length);
             AreEqual(456,                   rows[0].GetInt64(2));
             AreEqual("123, 'abc', 456",     rows[0].ToString());
             
@@ -285,6 +289,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             data.WriteNewRow();
             data.WriteByte(255);
             rows = data.CreateTableRows();
+            AreEqual(2,                     rows.Length);
             AreEqual(255,                   rows[1].GetByte(0));
             AreEqual("255",                 rows[1].ToString());
             //
@@ -297,6 +302,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             data.WriteNewRow();
             data.WriteBoolean(true);
             rows = data.CreateTableRows();
+            AreEqual(3,                     rows.Length);
             AreEqual(true,                  rows[2].GetBool(0));
             AreEqual("true",                rows[2].ToString());
             //
@@ -315,6 +321,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             data.WriteNewRow();
             data.WriteFlt32(12.5f);
             rows = data.CreateTableRows();
+            AreEqual(4,                     rows.Length);
             AreEqual(12.5f,                 rows[3].GetFlt32(0));
             AreEqual("12.5",                rows[3].ToString());
             //
@@ -328,6 +335,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             data.WriteNewRow();
             data.WriteDateTime(dateTime);
             rows = data.CreateTableRows();
+            AreEqual(5,                     rows.Length);
             AreEqual(dateTime,              rows[4].GetDateTime(0));
             AreEqual("2023-07-22 12:47:57", rows[4].ToString());
             
@@ -336,6 +344,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             data.WriteNewRow();
             data.WriteGuid(guid);
             rows = data.CreateTableRows();
+            AreEqual(6,                                         rows.Length);
             AreEqual(guid,                                      rows[5].GetGuid(0));
             AreEqual("11111111-2222-0000-6666-222222222222",    rows[5].ToString());
             
@@ -343,13 +352,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             data.WriteNewRow();
             data.WriteNull();
             rows = data.CreateTableRows();
+            AreEqual(7,                     rows.Length);
             IsTrue(                         rows[6].IsNull(0));
             AreEqual("null",                rows[6].ToString());
             
             // --- new row
             data.WriteNewRow(); // trailing NewRow's are omitted
             rows = data.CreateTableRows();
-            AreEqual(7, rows.Length);
+            AreEqual(7,                     rows.Length);
         }
     }
 }
