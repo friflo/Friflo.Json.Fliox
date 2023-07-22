@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         Relational  = 1,
     }
     
-    public class PrepareDatabaseException : Exception {
+    public sealed class PrepareDatabaseException : Exception {
         public PrepareDatabaseException(string message) : base (message) { } 
     }
     

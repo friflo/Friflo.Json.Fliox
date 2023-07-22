@@ -13,7 +13,7 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     /// <summary>Used to execute raw SQL commands</summary>
-    public class RawSql
+    public sealed class RawSql
     {
         /// <summary>An SQL statement like: <c>select * from table_name;</c></summary>
         [Required]  public string   command;
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         }
     }
     
-    public class RawSqlResult
+    public sealed class RawSqlResult
     {
         // --- public
         /// <summary>number of returned rows</summary>

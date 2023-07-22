@@ -7,7 +7,7 @@ using System.Data.Common;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
 {
-    public class SQLiteConnectionStringBuilder : DbConnectionStringBuilder
+    public sealed class SQLiteConnectionStringBuilder : DbConnectionStringBuilder
     {
         public string DataSource { get => (string)this["Data Source"]; set => this["Data Source"] = value; }
         

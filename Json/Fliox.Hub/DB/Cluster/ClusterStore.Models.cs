@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     /// <summary>return the execution result performed by a transaction.</summary>
-    public class TransactionResult {
+    public sealed class TransactionResult {
         /// <summary>
         /// The execution performed by the transaction.<br/>
         /// In case any task in the transaction failed the transaction performs a <see cref="TransactionCommand.Rollback"/>

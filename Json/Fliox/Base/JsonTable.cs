@@ -12,7 +12,7 @@ using Friflo.Json.Burst.Utils;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
-    public class JsonTable
+    public sealed class JsonTable
     {
         public      int             RowCount    => rowCount + (RowItemCount > 0 ? 1 : 0);
         public      int             ColumnCount => GetColumnCount();

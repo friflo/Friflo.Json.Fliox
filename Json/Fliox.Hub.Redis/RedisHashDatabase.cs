@@ -12,7 +12,7 @@ using StackExchange.Redis;
 
 namespace Friflo.Json.Fliox.Hub.Redis
 {
-    public class RedisHashDatabase : EntityDatabase
+    public sealed class RedisHashDatabase : EntityDatabase
     {
         public              bool        Pretty      { get; init; } = false;
         /// <summary>The ID to get a database for. See <see cref="ConnectionMultiplexer.GetDatabase"/></summary>

@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
     }
     
-    public class ReadRawSql
+    public sealed class ReadRawSql
     {
         private             char[]          charBuf;
         private  readonly   DbDataReader    reader;
