@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
@@ -256,6 +257,94 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             });
             IsNotNull(e);
             AreEqual("JsonReader/error: invalid floating point number: 123e+38.999 path: '[0][0]' at position: 13", e.Message);
+        }
+        
+        [Test]
+        public static void TestDebugRows () {
+            var data = new JsonTable();
+            //
+            data.WriteInt32(123);
+            var rows = data.CreateTableRows();
+            
+            AreEqual(JsonItemType.Uint8,    rows[0].GetType(0));
+            AreEqual(123,                   rows[0].GetInt32(0));
+            AreEqual("123",                 rows[0].ToString());
+            //
+            data.WriteCharString("abc".AsSpan());
+            rows = data.CreateTableRows();
+            AreEqual("abc",                 rows[0].GetCharSpan(1).ToString());
+            AreEqual("abc",                 rows[0].GetString(1));
+            AreEqual("123, 'abc'",          rows[0].ToString());
+            //
+            data.WriteInt64(456);
+            rows = data.CreateTableRows();
+            AreEqual(456,                   rows[0].GetInt64(2));
+            AreEqual("123, 'abc', 456",     rows[0].ToString());
+            
+            // --- new row
+            data.WriteNewRow();
+            data.WriteByte(255);
+            rows = data.CreateTableRows();
+            AreEqual(255,                   rows[1].GetByte(0));
+            AreEqual("255",                 rows[1].ToString());
+            //
+            data.WriteInt16(32767);
+            rows = data.CreateTableRows();
+            AreEqual(32767,                 rows[1].GetInt16(1));
+            AreEqual("255, 32767",          rows[1].ToString());
+            
+            // --- new row
+            data.WriteNewRow();
+            data.WriteBoolean(true);
+            rows = data.CreateTableRows();
+            AreEqual(true,                  rows[2].GetBool(0));
+            AreEqual("true",                rows[2].ToString());
+            //
+            data.WriteBoolean(false);
+            rows = data.CreateTableRows();
+            AreEqual(false,                 rows[2].GetBool(1));
+            AreEqual("true, false",         rows[2].ToString());
+            //
+            data.WriteByteString(new Bytes("xyz").AsSpan());
+            rows = data.CreateTableRows();
+            AreEqual("xyz",                 Encoding.UTF8.GetString(rows[2].GetByteSpan(2)));
+            AreEqual("xyz",                 rows[2].GetString(2));
+            AreEqual("true, false, 'xyz'",  rows[2].ToString());
+            
+            // --- new row
+            data.WriteNewRow();
+            data.WriteFlt32(12.5f);
+            rows = data.CreateTableRows();
+            AreEqual(12.5f,                 rows[3].GetFlt32(0));
+            AreEqual("12.5",                rows[3].ToString());
+            //
+            data.WriteFlt32(456.5f);
+            rows = data.CreateTableRows();
+            AreEqual(456.5f,                rows[3].GetFlt64(1));
+            AreEqual("12.5, 456.5",         rows[3].ToString());
+            
+            // --- new row
+            var dateTime    = DateTime.Parse("2023-07-22T12:47:57Z").ToUniversalTime();
+            data.WriteNewRow();
+            data.WriteDateTime(dateTime);
+            rows = data.CreateTableRows();
+            AreEqual(dateTime,              rows[4].GetDateTime(0));
+            AreEqual("2023-07-22 12:47:57", rows[4].ToString());
+            
+            // --- new row
+            var guid        = Guid.Parse("11111111-2222-0000-6666-222222222222");
+            data.WriteNewRow();
+            data.WriteGuid(guid);
+            rows = data.CreateTableRows();
+            AreEqual(guid,                                      rows[5].GetGuid(0));
+            AreEqual("11111111-2222-0000-6666-222222222222",    rows[5].ToString());
+            
+            // --- new row
+            data.WriteNewRow();
+            data.WriteNull();
+            rows = data.CreateTableRows();
+            IsTrue(                         rows[6].IsNull(0));
+            AreEqual("null",                rows[6].ToString());
         }
     }
 }

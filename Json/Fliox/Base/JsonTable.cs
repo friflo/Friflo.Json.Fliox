@@ -14,21 +14,24 @@ namespace Friflo.Json.Fliox
 {
     public class JsonTable
     {
-        public      int     RowCount    => rowCount + (RowItemCount > 0 ? 1 : 0);
-        public      int     ColumnCount => GetColumnCount();
-        public      int     ItemCount   => itemCount;
+        public      int             RowCount    => rowCount + (RowItemCount > 0 ? 1 : 0);
+        public      int             ColumnCount => GetColumnCount();
+        public      int             ItemCount   => itemCount;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] // output can be very long
-        public      string  TableString => GetTableString();
+        public      string          TableString => GetTableString();
 
         // --- private
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] // output can be very long
-        private     Bytes   bytes;
-        private     int     rowCount;
-        private     int     itemCount;
-        private     int     columnCount;
-        private     int     startRowCount;
+        private     Bytes           bytes;
+        private     int             rowCount;
+        private     int             itemCount;
+        private     int             columnCount;
+        private     int             startRowCount;
+        //
+        internal    int[]           indexes;
         
-        private     int     RowItemCount    => itemCount - startRowCount;
+        private     int             RowItemCount        => itemCount - startRowCount;
+        public      JsonTableRow[]  CreateTableRows()   => JsonTableRow.CreateTableRows(this);
         
         public override string  ToString()  => AppendString(new StringBuilder()).ToString();
         
@@ -365,7 +368,7 @@ namespace Friflo.Json.Fliox
             var sb = new StringBuilder();
             AppendString(sb);
             sb.Append("\n[");
-            AppendRows(sb);
+            AppendRows(sb, bytes.start, bytes.end);
             sb.Append(']');
             return sb.ToString();
         }
@@ -374,23 +377,26 @@ namespace Friflo.Json.Fliox
             sb.Append("Count: ");
             sb.Append(ItemCount);
             sb.Append(" [");
-            AppendRows(sb);
+            AppendRows(sb, bytes.start, bytes.end);
             sb.Append(']');
             return sb;
         }
         
-        private void AppendRows(StringBuilder sb) {
-            int pos         = bytes.start;
+        internal void AppendRows(StringBuilder sb, int start, int end) {
+            int pos         = start;
             var firstItem   = true;
             while (true)
             {
+                if (pos >= end) {
+                    if (!firstItem) {
+                        sb.Length -= 2;
+                    }
+                    return;
+                }
                 var itemType = GetItemType(pos, out int next);
                 switch (itemType) {
                     case JsonItemType.End:
-                        if (!firstItem) {
-                            sb.Length -= 2;
-                        }
-                        return;
+                        throw new InvalidOperationException("unexpected access to JsonItemType.End");
                     case JsonItemType.NewRow:
                         if (!firstItem) {
                             sb.Length -= 2;

@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             switch (type) {
                 case JsonItemType.Null:         return null;
                 //
-                case JsonItemType.ByteString:   return BytesToString(rawResult.data.ReadBytes(pos));
+                case JsonItemType.ByteString:   return rawResult.data.ReadBytes(pos).AsString();
                 case JsonItemType.CharString:   return rawResult.data.ReadCharSpan(pos).ToString();
                 //
                 case JsonItemType.Guid:         return rawResult.data.ReadGuid(pos).ToString();   // TODO can be remove?
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 case JsonItemType.Flt64:        return rawResult.data.ReadFlt64(pos).ToString(CultureInfo.InvariantCulture);
                 //
                 case JsonItemType.JSON:
-                case JsonItemType.ByteString:   return BytesToString(rawResult.data.ReadBytes(pos));
+                case JsonItemType.ByteString:   return rawResult.data.ReadBytes(pos).AsString();
                 case JsonItemType.CharString:   return rawResult.data.ReadCharSpan(pos).ToString();
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
@@ -152,11 +152,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
 
-        
-        private static string BytesToString(in Bytes bytes) {
-            return Utf8.GetString(bytes.buffer, bytes.start, bytes.end - bytes.start);
-        }
-        
         private string GetString() {
             var indexes     = rawResult.GetIndexes();
             var columnCount = rawResult.columnCount; 
