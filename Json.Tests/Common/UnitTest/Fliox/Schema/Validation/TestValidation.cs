@@ -127,6 +127,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             success = validator.Validate(new JsonValue("{}"),           validation, out error);
             IsFalse(success);
             AreEqual("Incorrect type. was: object, expect: string at string > (root), pos: 1", error);
+            
+            success = validator.Validate(new JsonValue("null {"),       validation, out error);
+            IsFalse(success);
+            AreEqual("Expected EOF at string > (root), pos: 6", error);
         }
         
         [Test]

@@ -83,8 +83,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         ErrorType("Incorrect type.", "null", false, typeDef.name, typeDef.@namespace, null);
                         return Return(typeDef, false, out error);
                     }
-                    error = null;
-                    return true;
+                    return Return(typeDef, true, out error);
                 case JsonEvent.ValueBool: {
                     var success = ValidateBoolean(typeDef, null);
                     return Return(typeDef, success, out error);
