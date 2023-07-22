@@ -47,7 +47,10 @@ namespace Friflo.Json.Fliox
                 pos = next;
                 n++;
             }
-            rows[rowIndex]  = new JsonTableRow(table, start, rowItemCount);
+            // trailing NewRow's are omitted
+            if (rowIndex < rows.Length) {
+                rows[rowIndex]  = new JsonTableRow(table, start, rowItemCount);
+            }
             indexArray[n]   = pos;
             table.indexes   = indexArray;
             return rows;

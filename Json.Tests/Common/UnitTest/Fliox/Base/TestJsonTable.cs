@@ -345,6 +345,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             rows = data.CreateTableRows();
             IsTrue(                         rows[6].IsNull(0));
             AreEqual("null",                rows[6].ToString());
+            
+            // --- new row
+            data.WriteNewRow(); // trailing NewRow's are omitted
+            rows = data.CreateTableRows();
+            AreEqual(7, rows.Length);
         }
     }
 }
