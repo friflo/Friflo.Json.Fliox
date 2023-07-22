@@ -27,7 +27,7 @@
             "type": "number"
         },
         "JsonTable": {
-            "type": "array"
+            "type": "array", "items": { "type": "array" }
         }
     }
 }
