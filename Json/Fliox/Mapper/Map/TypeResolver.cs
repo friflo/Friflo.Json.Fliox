@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (Match(ByteMatcher.          Instance,   config, type, q)) return q.hit;
             if (Match(BoolMatcher.          Instance,   config, type, q)) return q.hit;
             
-            if (Match(JsonArrayMatcher.     Instance,   config, type, q)) return q.hit;
+            if (Match(JsonTableMatcher.     Instance,   config, type, q)) return q.hit;
 
             // --- List's
             if (Match(PrimitiveListMatcher. Instance,   config, type, q)) return q.hit;

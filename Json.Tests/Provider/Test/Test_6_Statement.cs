@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query       = new Query("testreadtypes");
             var result      = compiler.Compile(query);
             
-            var client      = await GetClient(db);
+            var client      = await GetClient(db, false);
             // var sql2        = "DROP TABLE IF EXISTS `testops`;";
             var sqlResult   = client.std.ExecuteRawSQL(new RawSql(result.Sql, true));
             await client.SyncTasks();
@@ -80,7 +80,7 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestStatement_InvalidCommand(string db) {
             if (!SupportSQL(db)) return;
             
-            var client  = await GetClient(db);
+            var client  = await GetClient(db, false);
 
             var sql1    = client.std.ExecuteRawSQL(new RawSql("select id, guid, ddd from testreadtypes;", true));
             var sql2    = client.std.ExecuteRawSQL(new RawSql("select id, guid, ddd from testreadtypes;"));

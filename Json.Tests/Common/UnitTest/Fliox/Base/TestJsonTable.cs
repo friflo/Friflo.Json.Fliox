@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         Json
     }
         
-    public static class TestJsonArray
+    public static class TestJsonTable
     {
         private static readonly DateTime    DateTime    = DateTime.Parse("2023-07-19T12:58:57.448575Z").ToUniversalTime();
         private static readonly Guid        Guid        = Guid.Parse("af82dcf5-8664-4b4e-8072-6cb43b335364");
@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         }
         
         [Test]
-        public static void TestJsonArray_ReadWrite ()
+        public static void TestJsonTable_ReadWrite ()
         {
             var data = new JsonTable();
             WriteTestData(data);
@@ -128,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
 
 
         [Test]
-        public static void TestJsonArray_MapperWrite () 
+        public static void TestJsonTable_MapperWrite () 
         {
             var typeStore = new TypeStore();
             var mapper = new ObjectMapper(typeStore);
@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         }
         
         [Test]
-        public static void TestJsonArray_MapperRead () 
+        public static void TestJsonTable_MapperRead () 
         {
             var typeStore = new TypeStore();
             var mapper = new ObjectMapper(typeStore);
@@ -240,7 +240,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         }
         
         [Test]
-        public static void TestJsonArray_ReadErrors () 
+        public static void TestJsonTable_ReadErrors () 
         {
             var typeStore = new TypeStore();
             var mapper = new ObjectMapper(typeStore);

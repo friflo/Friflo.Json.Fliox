@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using Friflo.Json.Burst;
@@ -16,9 +17,11 @@ namespace Friflo.Json.Fliox
         public      int     RowCount    => rowCount + (RowItemCount > 0 ? 1 : 0);
         public      int     ColumnCount => GetColumnCount();
         public      int     ItemCount   => itemCount;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] // output can be very long
         public      string  TableString => GetTableString();
 
         // --- private
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] // output can be very long
         private     Bytes   bytes;
         private     int     rowCount;
         private     int     itemCount;

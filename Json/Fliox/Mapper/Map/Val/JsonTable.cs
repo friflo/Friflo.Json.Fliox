@@ -8,8 +8,8 @@ using Friflo.Json.Burst.Utils;
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
     // ------------------------- PatchValueMatcher / PatchValueMapper -------------------------
-    internal sealed class JsonArrayMatcher : ITypeMatcher {
-        public static readonly JsonArrayMatcher Instance = new JsonArrayMatcher();
+    internal sealed class JsonTableMatcher : ITypeMatcher {
+        public static readonly JsonTableMatcher Instance = new JsonTableMatcher();
         
         internal static readonly Bytes True     = new Bytes("true");
         internal static readonly Bytes False    = new Bytes("false");
@@ -18,18 +18,18 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type != typeof(JsonTable))
                 return null;
-            return new JsonArrayMapper (config, type);
+            return new JsonTableMapper (config, type);
         }
     }
     
-    internal sealed class JsonArrayMapper : TypeMapper<JsonTable>
+    internal sealed class JsonTableMapper : TypeMapper<JsonTable>
     {
         public override string  DataTypeName()              => "JsonTable";
         public override bool    IsNull(ref JsonTable value) => value == null;
 
         private static readonly Bytes NewRow = new Bytes("],\n[");
 
-        public JsonArrayMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
+        public JsonTableMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
         
         private static void WriteItems(ref Writer writer, JsonTable array)
         {
@@ -46,15 +46,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             {
                 switch (itemType) {
                     case JsonItemType.Null:
-                        bytes.AppendBytes(JsonArrayMatcher.Null);    
+                        bytes.AppendBytes(JsonTableMatcher.Null);    
                         break;
                     case JsonItemType.True:
                     case JsonItemType.False: {
                         var value = array.ReadBool(pos);
                         if (value) {
-                            bytes.AppendBytes(JsonArrayMatcher.True);
+                            bytes.AppendBytes(JsonTableMatcher.True);
                         } else {
-                            bytes.AppendBytes(JsonArrayMatcher.False);
+                            bytes.AppendBytes(JsonTableMatcher.False);
                         }
                         break;
                     }
