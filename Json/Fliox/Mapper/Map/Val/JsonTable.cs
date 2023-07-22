@@ -34,13 +34,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         private static void WriteItems(ref Writer writer, JsonTable array)
         {
             int     pos         = 0;
-            bool    isFirstItem = true;
-            ref var bytes       = ref writer.bytes;
             var     itemType    = array.GetItemType(pos, out int next);
             if (itemType == JsonItemType.End) {
                 return;
             }
-            writer.bytes.AppendChar2('\n','[');
+            bool    isFirstItem = true;
+            ref var bytes       = ref writer.bytes;
+            ref var format      = ref writer.format;
+            bytes.AppendChar2('\n','[');
             
             while (true)
             {
@@ -60,32 +61,32 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     }
                     case JsonItemType.Uint8: {
                         var value = array.ReadUint8(pos);
-                        writer.format.AppendLong(ref bytes, value);
+                        format.AppendLong(ref bytes, value);
                         break;
                     }
                     case JsonItemType.Int16: {
                         var value = array.ReadInt16(pos);
-                        writer.format.AppendLong(ref bytes, value);
+                        format.AppendLong(ref bytes, value);
                         break;
                     }
                     case JsonItemType.Int32: {
                         var value = array.ReadInt32(pos);
-                        writer.format.AppendLong(ref bytes, value);
+                        format.AppendLong(ref bytes, value);
                         break;
                     }
                     case JsonItemType.Int64: {
                         var value = array.ReadInt64(pos);
-                        writer.format.AppendLong(ref bytes, value);
+                        format.AppendLong(ref bytes, value);
                         break;
                     }
                     case JsonItemType.Flt32: {
                         var value = array.ReadFlt32(pos);
-                        writer.format.AppendFlt(ref bytes, value);
+                        format.AppendFlt(ref bytes, value);
                         break;
                     }
                     case JsonItemType.Flt64: {
                         var value = array.ReadFlt64(pos);
-                        writer.format.AppendDbl(ref bytes, value);
+                        format.AppendDbl(ref bytes, value);
                         break;
                     }
                     case JsonItemType.JSON: {
@@ -124,7 +125,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                             bytes.end--; // remove last terminator
                         }
                         if (itemType == JsonItemType.End) {
-                            writer.bytes.AppendChar2(']', '\n');
+                            bytes.AppendChar2(']', '\n');
                             return;
                         }
                         writer.bytes.AppendBytes(NewRow);
@@ -134,7 +135,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         if (!isFirstItem) {
                             bytes.end--; // remove last terminator
                         }
-                        writer.bytes.AppendChar2(']', '\n');
+                        bytes.AppendChar2(']', '\n');
                         return;
                     default:
                         throw new InvalidComObjectException($"unexpected itemType: {itemType}");
