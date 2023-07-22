@@ -97,6 +97,20 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(TaskErrorType.CommandError, sql3.Error.type);
             AreEqual("CommandError ~ missing SQL statement", sql3.Error.Message);
         }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestStatement_CreateTable(string db) {
+            if (!SupportSQL(db)) return;
+            
+            var client  = await GetClient(db, false);
+
+            // ensure table doesn't exist on CREATE TABLE 
+            client.std.ExecuteRawSQL(new RawSql("DROP TABLE test_create_table;"));
+            var create  = client.std.ExecuteRawSQL(new RawSql("CREATE TABLE test_create_table (PersonID int);"));
+            await client.TrySyncTasks();
+            
+            IsTrue(create.Success);
+        }
     }
 }
 

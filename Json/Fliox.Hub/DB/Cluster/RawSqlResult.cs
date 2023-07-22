@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             this.columns        = columns;
             this.data           = data;
             this.columnCount    = columns.Length;
-            this.rowCount       = data.ItemCount / columnCount;
+            this.rowCount       = rowCount;
             if (this.rowCount != rowCount) {
                 throw new InvalidComObjectException($"invalid rowCount. expected: {rowCount}. was: {this.rowCount}");
             }
