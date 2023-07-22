@@ -214,6 +214,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
 
             success = validator.Validate(new JsonValue("[{}]"),         validation, out error);
             IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("123 {"),         validation, out error);
+            IsFalse(success);
+            AreEqual("Expected EOF at JSON > (root), pos: 5", error);
         }
         
         // --- container types: array, List<>, ...

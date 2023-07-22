@@ -65,6 +65,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static Result<JsonValue> Echo (Param<JsonValue> param, MessageContext context) {
+            if (!param.Validate(out string error)) {
+                return Result.Error(error);
+            }
             return param.RawValue;
         }
         
