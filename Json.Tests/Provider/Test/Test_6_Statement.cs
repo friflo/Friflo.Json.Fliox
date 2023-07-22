@@ -106,10 +106,11 @@ namespace Friflo.Json.Tests.Provider.Test
 
             // ensure table doesn't exist on CREATE TABLE 
             client.std.ExecuteRawSQL(new RawSql("DROP TABLE test_create_table;"));
-            var create  = client.std.ExecuteRawSQL(new RawSql("CREATE TABLE test_create_table (PersonID int);"));
+            var create  = client.std.ExecuteRawSQL(new RawSql("CREATE TABLE test_create_table (PersonID int);", true));
             await client.TrySyncTasks();
             
             IsTrue(create.Success);
+            AreEqual(0, create.Result.columns.Length);  // executed command with schema: true
         }
     }
 }
