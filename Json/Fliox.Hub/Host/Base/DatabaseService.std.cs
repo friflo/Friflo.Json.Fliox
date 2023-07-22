@@ -215,8 +215,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return Result.Error("missing SQL statement");
             }
             var database    = context.Database;
-            var result = await database.ExecuteRawSQL(sql, context.syncContext).ConfigureAwait(false);
-            if (sql.schema != true) {
+            var result      = await database.ExecuteRawSQL(sql, context.syncContext).ConfigureAwait(false);
+            
+            if (result.Success && sql.schema != true) {
                 result.value.columns = null;
             }
             return result;

@@ -80,14 +80,22 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestStatement_InvalidCommand(string db) {
             if (!SupportSQL(db)) return;
             
-            var client      = await GetClient(db);
+            var client  = await GetClient(db);
 
-            var rawSql      = new RawSql("select id, guid, ddd from testreadtypes;", true);
-            var sqlResult   = client.std.ExecuteRawSQL(rawSql);
+            var sql1    = client.std.ExecuteRawSQL(new RawSql("select id, guid, ddd from testreadtypes;", true));
+            var sql2    = client.std.ExecuteRawSQL(new RawSql("select id, guid, ddd from testreadtypes;"));
+            var sql3    = client.std.ExecuteRawSQL(null);
             await client.TrySyncTasks();
             
-            IsFalse(sqlResult.Success);
-            AreEqual(TaskErrorType.CommandError, sqlResult.Error.type);
+            IsFalse(sql1.Success);
+            AreEqual(TaskErrorType.CommandError, sql1.Error.type);
+            
+            IsFalse(sql2.Success);
+            AreEqual(TaskErrorType.CommandError, sql2.Error.type);
+            
+            IsFalse(sql3.Success);
+            AreEqual(TaskErrorType.CommandError, sql3.Error.type);
+            AreEqual("CommandError ~ missing SQL statement", sql3.Error.Message);
         }
     }
 }
