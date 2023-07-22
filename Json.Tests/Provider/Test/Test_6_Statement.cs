@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Provider.Test
             
             var client      = await GetClient(db);
             // var sql2        = "DROP TABLE IF EXISTS `testops`;";
-            var sqlResult   = client.std.ExecuteRawSQL(result.Sql);
+            var sqlResult   = client.std.ExecuteRawSQL(new RawSql(result.Sql, true));
             await client.SyncTasks();
             
             var raw         = sqlResult.Result;

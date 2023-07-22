@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public   override   TypeDef     JsonKey     { get; }
         public   override   TypeDef     ShortString { get; }
         public   override   TypeDef     JsonEntity  { get; }
-        public   override   TypeDef     JsonArray   { get; }
+        public   override   TypeDef     JsonTable   { get; }
         
         /// <summary>
         /// stand types are defined in <see cref="Language.JsonSchemaGenerator.GetStandardTypes"/> 
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             JsonKey     = Find(types, "./Standard.json#/definitions/JsonKey");
             ShortString = new JsonTypeDef("string",     buffer, StandardTypeId.String);
             JsonEntity  = new JsonTypeDef("{ }",        buffer, StandardTypeId.JsonEntity);
-            JsonArray   = Find(types, "./Standard.json#/definitions/JsonArray"); // JSON_ARRAY
+            JsonTable   = Find(types, "./Standard.json#/definitions/JsonTable"); // JSON_ARRAY
         }
         
         private static TypeDef Find (Dictionary<string, JsonTypeDef> types, string type) {

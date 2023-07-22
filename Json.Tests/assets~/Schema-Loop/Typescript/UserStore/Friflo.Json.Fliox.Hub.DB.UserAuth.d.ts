@@ -5,6 +5,7 @@ import { DbMessages }        from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbSchema }          from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbStats }           from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { TransactionResult } from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { RawSql }            from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { RawSqlResult }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostParam }         from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostInfo }          from "./Friflo.Json.Fliox.Hub.DB.Cluster";
@@ -58,7 +59,7 @@ export interface UserStore {
     /** Rollback a transaction started previously with **TransactionBegin** */
     ["std.TransactionRollback"]     () : TransactionResult;
     /** Execute a raw SQL query / statement */
-    ["std.ExecuteRawSQL"]           (param: string | null) : RawSqlResult;
+    ["std.ExecuteRawSQL"]           (param: RawSql | null) : RawSqlResult;
     /** Returns general information about the Hub like version, host, project and environment name */
     ["std.Host"]                    (param: HostParam | null) : HostInfo;
     /** List all databases and their containers hosted by the Hub */

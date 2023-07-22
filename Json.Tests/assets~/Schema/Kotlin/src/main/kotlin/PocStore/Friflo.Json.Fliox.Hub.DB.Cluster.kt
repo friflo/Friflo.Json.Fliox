@@ -51,11 +51,17 @@ enum class TransactionCommand {
 }
 
 @Serializable
+data class RawSql (
+              val command : String,
+              val schema  : Boolean? = null,
+)
+
+@Serializable
 data class RawSqlResult (
               val rowCount    : Int,
               val columnCount : Int,
               val columns     : List<RawSqlColumn>? = null,
-              val values      : JsonArray? = null,
+              val data        : JsonTable? = null,
 )
 
 @Serializable

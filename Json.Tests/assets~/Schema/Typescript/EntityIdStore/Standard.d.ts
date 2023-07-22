@@ -16,6 +16,6 @@ export type int16 = number;
 /** unsigned integer 8-bit. Range: [0 - 255]                                  */
 export type uint8 = number;
 
-/** array of arbitrary types"             */
-export type JsonArray = any[];
+/** array of arrays"                      */
+export type JsonTable = any[][];
 

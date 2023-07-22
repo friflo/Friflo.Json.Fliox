@@ -127,13 +127,13 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
         }
         
-        public override async Task<Result<RawSqlResult>> ExecuteRawSQL(string sql, SyncContext syncContext) {
+        public override async Task<Result<RawSqlResult>> ExecuteRawSQL(RawSql sql, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return Result.Error(syncConnection.Error.message);
             }
             try {
-                using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
+                using var reader = await connection.ExecuteReaderAsync(sql.command).ConfigureAwait(false);
                 return await ReadRows(reader).ConfigureAwait(false);
             }
             catch (PostgresException e) {

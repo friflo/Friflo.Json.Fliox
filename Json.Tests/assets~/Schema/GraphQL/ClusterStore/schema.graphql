@@ -30,7 +30,7 @@ type Query {
     std_TransactionBegin    : TransactionResult!
     std_TransactionCommit   : TransactionResult!
     std_TransactionRollback : TransactionResult!
-    std_ExecuteRawSQL      (param: String) : RawSqlResult!
+    std_ExecuteRawSQL      (param: RawSqlInput) : RawSqlResult!
     std_Host               (param: HostParamInput) : HostInfo!
     std_Cluster             : HostCluster!
     std_User               (param: UserParamInput) : UserResult!
@@ -184,18 +184,28 @@ enum TransactionCommand {
     Rollback
 }
 
+type RawSql {
+    command : String!
+    schema  : Boolean
+}
+
+input RawSqlInput {
+    command : String!
+    schema  : Boolean
+}
+
 type RawSqlResult {
     rowCount    : Int!
     columnCount : Int!
     columns     : [RawSqlColumn!]
-    values      : JsonArray
+    data        : JsonTable
 }
 
 input RawSqlResultInput {
     rowCount    : Int!
     columnCount : Int!
     columns     : [RawSqlColumnInput!]
-    values      : JsonArrayInput
+    data        : JsonTableInput
 }
 
 type RawSqlColumn {

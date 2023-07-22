@@ -1231,7 +1231,7 @@
                             "name": "param",
                             "type": {
                                 "kind":"SCALAR",
-                                "name": "String"
+                                "name": "RawSqlInput"
                             }
                         }
                     ],
@@ -4799,6 +4799,68 @@
         },
         {
             "kind":"OBJECT",
+            "name": "RawSql",
+            "description": "/** Used to execute raw SQL commands */\n",
+            "fields": [
+                {
+                    "name": "command",
+                    "description": "    /** An SQL statement like: select * from table_name; */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "schema",
+                    "description": "    /** If true the response contains the schema **columns** in the response */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "RawSqlInput",
+            "description": "/** Used to execute raw SQL commands */\n",
+            "inputFields": [
+                {
+                    "name": "command",
+                    "description": "    /** An SQL statement like: select * from table_name; */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "schema",
+                    "description": "    /** If true the response contains the schema **columns** in the response */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
             "name": "RawSqlResult",
             "description": "",
             "fields": [
@@ -4845,13 +4907,13 @@
                     }
                 },
                 {
-                    "name": "values",
+                    "name": "data",
                     "description": "    /** An array of all query result values. In total: **rowCount** * **columnCount** values */\n",
                     "args": [
                     ],
                     "type": {
                         "kind":"SCALAR",
-                        "name": "JsonArray"
+                        "name": "JsonTable"
                     }
                 }
             ],
@@ -4906,13 +4968,13 @@
                     }
                 },
                 {
-                    "name": "values",
+                    "name": "data",
                     "description": "    /** An array of all query result values. In total: **rowCount** * **columnCount** values */\n",
                     "args": [
                     ],
                     "type": {
                         "kind":"SCALAR",
-                        "name": "JsonArrayInput"
+                        "name": "JsonTableInput"
                     }
                 }
             ]

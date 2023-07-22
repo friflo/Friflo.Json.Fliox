@@ -40,11 +40,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             switch (type) {
                 case JsonItemType.Null:         return null;
                 //
-                case JsonItemType.ByteString:   return BytesToString(rawResult.values.ReadBytes(pos));
-                case JsonItemType.CharString:   return rawResult.values.ReadCharSpan(pos).ToString();
+                case JsonItemType.ByteString:   return BytesToString(rawResult.data.ReadBytes(pos));
+                case JsonItemType.CharString:   return rawResult.data.ReadCharSpan(pos).ToString();
                 //
-                case JsonItemType.Guid:         return rawResult.values.ReadGuid(pos).ToString();   // TODO can be remove?
-                case JsonItemType.DateTime:     return rawResult.values.ReadDateTime(pos).ToString(Bytes.DateTimeFormat, CultureInfo.InvariantCulture); // TODO can be remove?
+                case JsonItemType.Guid:         return rawResult.data.ReadGuid(pos).ToString();   // TODO can be remove?
+                case JsonItemType.DateTime:     return rawResult.data.ReadDateTime(pos).ToString(Bytes.DateTimeFormat, CultureInfo.InvariantCulture); // TODO can be remove?
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
@@ -57,17 +57,17 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 case JsonItemType.True:         return "true";
                 case JsonItemType.False:        return "false";
                 //
-                case JsonItemType.Uint8:        return rawResult.values.ReadUint8(pos).ToString(CultureInfo.InvariantCulture);
-                case JsonItemType.Int16:        return rawResult.values.ReadInt16(pos).ToString(CultureInfo.InvariantCulture);
-                case JsonItemType.Int32:        return rawResult.values.ReadInt32(pos).ToString(CultureInfo.InvariantCulture);
-                case JsonItemType.Int64:        return rawResult.values.ReadInt64(pos).ToString(CultureInfo.InvariantCulture);
+                case JsonItemType.Uint8:        return rawResult.data.ReadUint8(pos).ToString(CultureInfo.InvariantCulture);
+                case JsonItemType.Int16:        return rawResult.data.ReadInt16(pos).ToString(CultureInfo.InvariantCulture);
+                case JsonItemType.Int32:        return rawResult.data.ReadInt32(pos).ToString(CultureInfo.InvariantCulture);
+                case JsonItemType.Int64:        return rawResult.data.ReadInt64(pos).ToString(CultureInfo.InvariantCulture);
                 //
-                case JsonItemType.Flt32:        return rawResult.values.ReadFlt32(pos).ToString(CultureInfo.InvariantCulture);
-                case JsonItemType.Flt64:        return rawResult.values.ReadFlt64(pos).ToString(CultureInfo.InvariantCulture);
+                case JsonItemType.Flt32:        return rawResult.data.ReadFlt32(pos).ToString(CultureInfo.InvariantCulture);
+                case JsonItemType.Flt64:        return rawResult.data.ReadFlt64(pos).ToString(CultureInfo.InvariantCulture);
                 //
                 case JsonItemType.JSON:
-                case JsonItemType.ByteString:   return BytesToString(rawResult.values.ReadBytes(pos));
-                case JsonItemType.CharString:   return rawResult.values.ReadCharSpan(pos).ToString();
+                case JsonItemType.ByteString:   return BytesToString(rawResult.data.ReadBytes(pos));
+                case JsonItemType.CharString:   return rawResult.data.ReadCharSpan(pos).ToString();
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public byte GetByte(int ordinal) {
             var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
-                case JsonItemType.Uint8:        return rawResult.values.ReadUint8(pos);
+                case JsonItemType.Uint8:        return rawResult.data.ReadUint8(pos);
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
@@ -92,8 +92,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public short GetInt16(int ordinal) {
             var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
-                case JsonItemType.Uint8:        return rawResult.values.ReadUint8(pos);
-                case JsonItemType.Int16:        return rawResult.values.ReadInt16(pos);
+                case JsonItemType.Uint8:        return rawResult.data.ReadUint8(pos);
+                case JsonItemType.Int16:        return rawResult.data.ReadInt16(pos);
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
@@ -101,9 +101,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public int GetInt32(int ordinal) {
             var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
-                case JsonItemType.Uint8:        return rawResult.values.ReadUint8(pos);
-                case JsonItemType.Int16:        return rawResult.values.ReadInt16(pos);
-                case JsonItemType.Int32:        return rawResult.values.ReadInt32(pos);
+                case JsonItemType.Uint8:        return rawResult.data.ReadUint8(pos);
+                case JsonItemType.Int16:        return rawResult.data.ReadInt16(pos);
+                case JsonItemType.Int32:        return rawResult.data.ReadInt32(pos);
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
@@ -111,10 +111,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public long GetInt64(int ordinal) {
             var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
-                case JsonItemType.Uint8:        return rawResult.values.ReadUint8(pos);
-                case JsonItemType.Int16:        return rawResult.values.ReadInt16(pos);
-                case JsonItemType.Int32:        return rawResult.values.ReadInt32(pos);
-                case JsonItemType.Int64:        return rawResult.values.ReadInt64(pos);
+                case JsonItemType.Uint8:        return rawResult.data.ReadUint8(pos);
+                case JsonItemType.Int16:        return rawResult.data.ReadInt16(pos);
+                case JsonItemType.Int32:        return rawResult.data.ReadInt32(pos);
+                case JsonItemType.Int64:        return rawResult.data.ReadInt64(pos);
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public float GetFlt32(int ordinal) {
             var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
-                case JsonItemType.Flt32:        return rawResult.values.ReadFlt32(pos);
+                case JsonItemType.Flt32:        return rawResult.data.ReadFlt32(pos);
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
@@ -130,8 +130,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public double GetFlt64(int ordinal) {
             var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
-                case JsonItemType.Flt32:        return rawResult.values.ReadFlt32(pos);
-                case JsonItemType.Flt64:        return rawResult.values.ReadFlt64(pos);
+                case JsonItemType.Flt32:        return rawResult.data.ReadFlt32(pos);
+                case JsonItemType.Flt64:        return rawResult.data.ReadFlt64(pos);
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public Guid GetGuid(int ordinal) {
             var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
-                case JsonItemType.Guid:         return rawResult.values.ReadGuid(pos);
+                case JsonItemType.Guid:         return rawResult.data.ReadGuid(pos);
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public DateTime GetDateTime(int ordinal) {
             var type = rawResult.GetValue(index, ordinal, out int pos);
             switch (type) {
-                case JsonItemType.DateTime:     return rawResult.values.ReadDateTime(pos);
+                case JsonItemType.DateTime:     return rawResult.data.ReadDateTime(pos);
             }
             throw new InvalidOperationException($"incompatible column type: {type}");
         }
@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var first       = index * columnCount;
             var start       = indexes[first];
             var end         = indexes[first + columnCount];
-            var array       = new JsonArray(columnCount, rawResult.values, start, end);
+            var array       = new JsonTable(columnCount, rawResult.data, start, end);
             return array.AppendRowItems(new StringBuilder()).ToString();
         }
     }

@@ -11,7 +11,7 @@ using Friflo.Json.Burst.Utils;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
-    public class JsonArray
+    public class JsonTable
     {
         public      int     RowCount    => rowCount + (RowItemCount > 0 ? 1 : 0);
         public      int     ColumnCount => GetColumnCount();
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox
         
         public override string  ToString()  => AppendString(new StringBuilder()).ToString();
         
-        public JsonArray() {
+        public JsonTable() {
             bytes = new Bytes(32);
         }
         
@@ -43,9 +43,9 @@ namespace Friflo.Json.Fliox
                    rowItemCount == columnCount ? columnCount : -1;
         }
         
-        public JsonArray(int itemCount, JsonArray array, int start, int end) {
+        public JsonTable(int itemCount, JsonTable data, int start, int end) {
             this.itemCount  = itemCount;           
-            bytes.buffer    = array.bytes.buffer;
+            bytes.buffer    = data.bytes.buffer;
             bytes.start     = start;
             bytes.end       = end;
         }
@@ -487,6 +487,6 @@ namespace Friflo.Json.Fliox
         Guid        = 13,   // 1 + 16
         //
         NewRow      = 14,   // 1
-        End         = 15,   // 0 - Note: End is not written to JsonArray.bytes
+        End         = 15,   // 0 - Note: End is not written to JsonTable.bytes
     }
 }

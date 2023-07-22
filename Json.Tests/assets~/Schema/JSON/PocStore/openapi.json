@@ -571,7 +571,7 @@
           "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/RawSql"
                 }
               }
             }

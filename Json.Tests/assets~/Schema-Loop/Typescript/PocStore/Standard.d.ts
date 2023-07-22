@@ -25,6 +25,6 @@ export type float = number;
 /** double precision floating point number */
 export type double = number;
 
-/** array of arbitrary types"             */
-export type JsonArray = any[];
+/** array of arrays"                      */
+export type JsonTable = any[][];
 

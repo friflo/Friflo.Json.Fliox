@@ -10,7 +10,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
         private const int Gen_rowCount = 0;
         private const int Gen_columnCount = 1;
         private const int Gen_columns = 2;
-        private const int Gen_values = 3;
+        private const int Gen_data = 3;
 
         private static bool ReadField (ref RawSqlResult obj, PropField field, ref Reader reader) {
             bool success;
@@ -18,7 +18,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
                 case Gen_rowCount:    obj.rowCount    = reader.ReadInt32 (field, out success);  return success;
                 case Gen_columnCount: obj.columnCount = reader.ReadInt32 (field, out success);  return success;
                 case Gen_columns:     obj.columns     = reader.ReadClass (field, obj.columns,     out success);  return success;
-                case Gen_values:      obj.values      = reader.ReadClass (field, obj.values,      out success);  return success;
+                case Gen_data:        obj.data        = reader.ReadClass (field, obj.data,        out success);  return success;
             }
             return false;
         }
@@ -27,7 +27,7 @@ namespace Gen.Friflo.Json.Fliox.Hub.DB.Cluster
             writer.WriteInt32 (fields[Gen_rowCount],    obj.rowCount,    ref firstMember);
             writer.WriteInt32 (fields[Gen_columnCount], obj.columnCount, ref firstMember);
             writer.WriteClass (fields[Gen_columns],     obj.columns,     ref firstMember);
-            writer.WriteClass (fields[Gen_values],      obj.values,      ref firstMember);
+            writer.WriteClass (fields[Gen_data],        obj.data,        ref firstMember);
         }
     }
 }

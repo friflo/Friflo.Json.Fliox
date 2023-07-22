@@ -276,7 +276,7 @@ GENERATED ALWAYS AS ({asStr});";
                 columns[n] = new RawSqlColumn(name, type);
             }
             var rowCount = 0;
-            var values  = new JsonArray();
+            var data  = new JsonTable();
             while (true) {
                 var rc = raw.sqlite3_step(stmt);
                 if (rc == raw.SQLITE_ROW) {
@@ -285,26 +285,26 @@ GENERATED ALWAYS AS ({asStr});";
                         var type = raw.sqlite3_column_type(stmt, n);
                         switch (type) {
                             case raw.SQLITE_NULL:
-                                values.WriteNull();
+                                data.WriteNull();
                                 break;
                             case raw.SQLITE_INTEGER:
                                 var lng = raw.sqlite3_column_int64(stmt, n);
-                                values.WriteInt64(lng);
+                                data.WriteInt64(lng);
                                 break;
                             case raw.SQLITE_FLOAT:
                                 var dbl = raw.sqlite3_column_double(stmt, n);
-                                values.WriteFlt64(dbl);
+                                data.WriteFlt64(dbl);
                                 break;
                             case raw.SQLITE_TEXT:
                                 var text = raw.sqlite3_column_blob(stmt, n);
-                                values.WriteByteString(text);
+                                data.WriteByteString(text);
                                 break;
                             case raw.SQLITE_BLOB:
                             default:
                                 throw new InvalidOperationException($"unexpected type: {columns[n]}");
                         }
                     }
-                    values.WriteNewRow();
+                    data.WriteNewRow();
                 } else if (rc == raw.SQLITE_DONE) {
                     break;
                 } else {
@@ -313,7 +313,7 @@ GENERATED ALWAYS AS ({asStr});";
                 }
             }
             error = null;
-            return new RawSqlResult(columns, values, rowCount);
+            return new RawSqlResult(columns, data, rowCount);
         }
         
         private static  RawColumnType GetFieldType(utf8z type) {

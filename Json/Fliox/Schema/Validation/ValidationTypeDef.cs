@@ -240,6 +240,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
         //
         JsonKey     = 15,
         JsonValue   = 16,
-        JsonArray   = 17
+        JsonTable   = 17
     }
 }

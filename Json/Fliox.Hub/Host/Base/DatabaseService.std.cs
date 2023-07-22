@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionBegin,  TransactionBegin);
             AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionCommit, TransactionCommit);
             AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionRollback,TransactionRollback);
-            AddCommandHandlerAsync <string,      RawSqlResult>      (Std.ExecuteRawSQL,     ExecuteRawSQL);
+            AddCommandHandlerAsync <RawSql,      RawSqlResult>      (Std.ExecuteRawSQL,     ExecuteRawSQL);
             // --- host
             AddCommandHandler      <HostParam,   HostInfo>          (Std.HostInfo,          HostInfo);
             AddCommandHandlerAsync <Empty,       HostCluster>       (Std.HostCluster,       HostCluster);
@@ -206,7 +206,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return Result.Error(result.error);
         }
         
-        private static async Task<Result<RawSqlResult>> ExecuteRawSQL (Param<string> param, MessageContext context) {
+        private static async Task<Result<RawSqlResult>> ExecuteRawSQL (Param<RawSql> param, MessageContext context) {
             if (!param.Validate(out string error)) {
                 return Result.Error(error);
             }
@@ -215,7 +215,11 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return Result.Error("missing SQL statement");
             }
             var database    = context.Database;
-            return await database.ExecuteRawSQL(sql, context.syncContext).ConfigureAwait(false);
+            var result = await database.ExecuteRawSQL(sql, context.syncContext).ConfigureAwait(false);
+            if (sql.schema != true) {
+                result.value.columns = null;
+            }
+            return result;
         }
 
         private static async Task<Result<HostCluster>> HostCluster (Param<Empty> param, MessageContext context) {

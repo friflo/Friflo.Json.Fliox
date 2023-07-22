@@ -16,22 +16,22 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         internal static readonly Bytes Null     = new Bytes("null");
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (type != typeof(JsonArray))
+            if (type != typeof(JsonTable))
                 return null;
             return new JsonArrayMapper (config, type);
         }
     }
     
-    internal sealed class JsonArrayMapper : TypeMapper<JsonArray>
+    internal sealed class JsonArrayMapper : TypeMapper<JsonTable>
     {
-        public override string  DataTypeName()              => "JsonArray";
-        public override bool    IsNull(ref JsonArray value) => value == null;
+        public override string  DataTypeName()              => "JsonTable";
+        public override bool    IsNull(ref JsonTable value) => value == null;
 
         private static readonly Bytes NewRow = new Bytes("],\n[");
 
         public JsonArrayMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
         
-        private static void WriteItems(ref Writer writer, JsonArray array)
+        private static void WriteItems(ref Writer writer, JsonTable array)
         {
             int     pos         = 0;
             bool    isFirstItem = true;
@@ -146,12 +146,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             }
         }
         
-        public override void Write(ref Writer writer, JsonArray array)
+        public override void Write(ref Writer writer, JsonTable value)
         {
             int startLevel = writer.IncLevel();
             writer.WriteArrayBegin();
                 
-            WriteItems(ref writer, array);
+            WriteItems(ref writer, value);
 
             writer.WriteArrayEnd();
             writer.DecLevel(startLevel);
@@ -162,30 +162,30 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             var ev = parser.Event;
             switch (ev) {
                 case JsonEvent.ValueNull:
-                    reader.ErrorIncompatible<JsonArray>(DataTypeName(), this, out success);
+                    reader.ErrorIncompatible<JsonTable>(DataTypeName(), this, out success);
                     return default;
                 case JsonEvent.ArrayStart:
                     success = true;
                     return true;
                 default:
                     success = false;
-                    reader.ErrorIncompatible<JsonArray>(DataTypeName(), this, out success);
+                    reader.ErrorIncompatible<JsonTable>(DataTypeName(), this, out success);
                     return false;
             }
         }
 
-        public override JsonArray Read(ref Reader reader, JsonArray value, out bool success)
+        public override JsonTable Read(ref Reader reader, JsonTable value, out bool success)
         {
             if (!StartArray(ref reader, out success)) {
                 return default;
             }
-            value ??= new JsonArray();
+            value ??= new JsonTable();
             ref var parser = ref reader.parser;
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueNull:
-                        return reader.ErrorIncompatible<JsonArray>(DataTypeName(), this, out success);
+                        return reader.ErrorIncompatible<JsonTable>(DataTypeName(), this, out success);
                     case JsonEvent.ArrayStart:
                         if (!ReadItems(ref reader, value, out success)) {
                             return null;
@@ -195,13 +195,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         return value;
                     default:
                         success = false;
-                        reader.ErrorIncompatible<JsonArray>(DataTypeName(), this, out success);
+                        reader.ErrorIncompatible<JsonTable>(DataTypeName(), this, out success);
                         return null;
                 }
             }
         }
         
-        private static bool ReadItems(ref Reader reader, JsonArray value, out bool success)
+        private static bool ReadItems(ref Reader reader, JsonTable value, out bool success)
         {
             ref var parser = ref reader.parser;
             while (true) {

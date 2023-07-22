@@ -160,12 +160,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         public Task CreateFunctions(ISyncConnection connection) => Task.CompletedTask;
         
-        public override async Task<Result<RawSqlResult>> ExecuteRawSQL(string sql, SyncContext syncContext) {
+        public override async Task<Result<RawSqlResult>> ExecuteRawSQL(RawSql sql, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return Result.Error(syncConnection.Error.message);
             }
-            using var stmt = SQLiteUtils.Prepare(connection, sql, out var error);
+            using var stmt = SQLiteUtils.Prepare(connection, sql.command, out var error);
             if (error != null) {
                 return Result.Error(error.message);
             }

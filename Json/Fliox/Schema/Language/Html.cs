@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.BigInteger,  "integer with arbitrary precision" );
             AddType (map, standard.DateTime,    "timestamp as RFC 3339 + milliseconds" );
             AddType (map, standard.Guid,        "GUID / UUID as RFC 4122. e.g. \"123e4567-e89b-12d3-a456-426614174000\"" );
-            AddType (map, standard.JsonArray,   "array of arbitrary values" );
+            AddType (map, standard.JsonTable,   "array of arbitrary values" );
             return map;
         }
 

@@ -75,16 +75,16 @@ GENERATED ALWAYS AS (({asStr})::{type}) STORED;";
         // ------ read raw SQL
         internal static async Task<RawSqlResult> ReadRows(DbDataReader reader) {
             var columns     = GetFieldTypes(reader);
-            var values      = new JsonArray();
+            var data        = new JsonTable();
             var readRawSql  = new ReadRawSql(reader);
             var rowCount    = 0;
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 rowCount++;
-                AddRow(reader, columns, values, readRawSql);
-                values.WriteNewRow();
+                AddRow(reader, columns, data, readRawSql);
+                data.WriteNewRow();
             }
-            return new RawSqlResult(columns, values, rowCount);
+            return new RawSqlResult(columns, data, rowCount);
         }
         
         
@@ -120,27 +120,27 @@ GENERATED ALWAYS AS (({asStr})::{type}) STORED;";
         }
         
         // ReSharper disable once MemberCanBePrivate.Global
-        private static void AddRow(DbDataReader reader, RawSqlColumn[] columns, JsonArray values, ReadRawSql rawSql) {
+        private static void AddRow(DbDataReader reader, RawSqlColumn[] columns, JsonTable data, ReadRawSql rawSql) {
             var count   = columns.Length;
             for (int n = 0; n < count; n++) {
                 if (reader.IsDBNull(n)) {
-                    values.WriteNull();
+                    data.WriteNull();
                     continue;
                 }
                 var type = columns[n].type;
                 switch (type) {
-                    case RawColumnType.Bool:        values.WriteBoolean     (reader.GetBoolean  (n));           break;
-                    case RawColumnType.Uint8:       values.WriteByte        (reader.GetByte     (n));           break;
-                    case RawColumnType.Int16:       values.WriteInt16       (reader.GetInt16    (n));           break;
-                    case RawColumnType.Int32:       values.WriteInt32       (reader.GetInt32    (n));           break;
-                    case RawColumnType.Int64:       values.WriteInt64       (reader.GetInt64    (n));           break;
-                    case RawColumnType.Float:       values.WriteFlt32       (reader.GetFloat    (n));           break;
-                    case RawColumnType.Double:      values.WriteFlt64       (reader.GetDouble   (n));           break;
-                    case RawColumnType.String:      values.WriteCharString  (rawSql.GetString   (n));           break;
-                    case RawColumnType.DateTime:    values.WriteDateTime    (reader.GetDateTime (n));           break;
-                    case RawColumnType.Guid:        values.WriteGuid        (reader.GetGuid     (n));           break;
-                    case RawColumnType.JSON:        values.WriteCharJSON    (reader.GetString   (n).AsSpan());  break;
-                    default:                        values.WriteNull();                                         break;
+                    case RawColumnType.Bool:        data.WriteBoolean     (reader.GetBoolean  (n));           break;
+                    case RawColumnType.Uint8:       data.WriteByte        (reader.GetByte     (n));           break;
+                    case RawColumnType.Int16:       data.WriteInt16       (reader.GetInt16    (n));           break;
+                    case RawColumnType.Int32:       data.WriteInt32       (reader.GetInt32    (n));           break;
+                    case RawColumnType.Int64:       data.WriteInt64       (reader.GetInt64    (n));           break;
+                    case RawColumnType.Float:       data.WriteFlt32       (reader.GetFloat    (n));           break;
+                    case RawColumnType.Double:      data.WriteFlt64       (reader.GetDouble   (n));           break;
+                    case RawColumnType.String:      data.WriteCharString  (rawSql.GetString   (n));           break;
+                    case RawColumnType.DateTime:    data.WriteDateTime    (reader.GetDateTime (n));           break;
+                    case RawColumnType.Guid:        data.WriteGuid        (reader.GetGuid     (n));           break;
+                    case RawColumnType.JSON:        data.WriteCharJSON    (reader.GetString   (n).AsSpan());  break;
+                    default:                        data.WriteNull();                                         break;
                 }
             }
         }

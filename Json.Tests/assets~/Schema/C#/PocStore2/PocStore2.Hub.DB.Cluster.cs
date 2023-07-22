@@ -56,11 +56,17 @@ public enum TransactionCommand {
     Rollback,
 }
 
+public class RawSql {
+    [Required]
+    string  command;
+    bool?   schema;
+}
+
 public class RawSqlResult {
     int                 rowCount;
     int                 columnCount;
     List<RawSqlColumn>  columns;
-    JsonArray           values;
+    JsonTable           data;
 }
 
 public struct RawSqlColumn {

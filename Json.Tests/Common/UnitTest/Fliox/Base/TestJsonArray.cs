@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         private static readonly Bytes       ByteString  = new Bytes("byte-string");
         
         
-        private static void WriteTestData (JsonArray array) {
+        private static void WriteTestData (JsonTable array) {
             array.WriteNull();                              // [0]
             array.WriteBoolean      (true);                 // [1]
             array.WriteByte         (255);                  // [2]
@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             array.WriteCharString   ("new-row".AsSpan());   // [16]
         }
             
-        private static void ReadTestData (JsonArray array, ReadArrayType readArrayType)
+        private static void ReadTestData (JsonTable array, ReadArrayType readArrayType)
         {
             int n   = 0;
             int pos = 0;
@@ -107,11 +107,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
         [Test]
         public static void TestJsonArray_ReadWrite ()
         {
-            var array = new JsonArray();
-            WriteTestData(array);
-            AreEqual(2,  array.RowCount);
-            AreEqual(16, array.ItemCount);
-            ReadTestData(array, ReadArrayType.Binary);
+            var data = new JsonTable();
+            WriteTestData(data);
+            AreEqual(2,  data.RowCount);
+            AreEqual(16, data.ItemCount);
+            ReadTestData(data, ReadArrayType.Binary);
         }
 
         // Note! Unity format floating point numbers with lower precision
@@ -134,92 +134,92 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var mapper = new ObjectMapper(typeStore);
             
             // --- empty table
-            var array = new JsonArray();
-            AreEqual(0, array.RowCount);
-            AreEqual(0, array.ColumnCount);
-            AreEqual(0, array.ItemCount);
-            var json = mapper.Write(array);
+            var data = new JsonTable();
+            AreEqual(0, data.RowCount);
+            AreEqual(0, data.ColumnCount);
+            AreEqual(0, data.ItemCount);
+            var json = mapper.Write(data);
             AreEqual("[]", json);
-            AreEqual("rows: 0, columns: 0\n[]", array.TableString);
+            AreEqual("rows: 0, columns: 0\n[]", data.TableString);
             
             // --- [[]]
-            array.WriteNewRow();
-            AreEqual(1, array.RowCount);
-            AreEqual(0, array.ColumnCount);
-            AreEqual(0, array.ItemCount);
-            json = mapper.Write(array);
+            data.WriteNewRow();
+            AreEqual(1, data.RowCount);
+            AreEqual(0, data.ColumnCount);
+            AreEqual(0, data.ItemCount);
+            json = mapper.Write(data);
             AreEqual("[\n[]\n]", json);
-            AreEqual("rows: 1, columns: 0\n[]", array.TableString);
+            AreEqual("rows: 1, columns: 0\n[]", data.TableString);
             
             // --- [[],[]] -> trailing new rows are ignored
-            array.WriteNewRow();
-            AreEqual(2, array.RowCount);
-            AreEqual(0, array.ColumnCount);
-            AreEqual(0, array.ItemCount);
-            json = mapper.Write(array);
+            data.WriteNewRow();
+            AreEqual(2, data.RowCount);
+            AreEqual(0, data.ColumnCount);
+            AreEqual(0, data.ItemCount);
+            json = mapper.Write(data);
             AreEqual("[\n[],\n[]\n]", json);
-            AreEqual("rows: 2, columns: 0\n[],\n[]", array.TableString);
+            AreEqual("rows: 2, columns: 0\n[],\n[]", data.TableString);
             
             
-            array = new JsonArray();
+            data = new JsonTable();
             // --- [1]
-            array.WriteInt16(1);
-            AreEqual(1, array.RowCount);
-            AreEqual(1, array.ColumnCount);
-            AreEqual(1, array.ItemCount);
-            json = mapper.Write(array);
+            data.WriteInt16(1);
+            AreEqual(1, data.RowCount);
+            AreEqual(1, data.ColumnCount);
+            AreEqual(1, data.ItemCount);
+            json = mapper.Write(data);
             AreEqual("[\n[1]\n]", json);
-            AreEqual("rows: 1, columns: 1\n[1]", array.TableString);
+            AreEqual("rows: 1, columns: 1\n[1]", data.TableString);
             
             // --- [1,2]
-            array.WriteInt16(2);
-            AreEqual(1, array.RowCount);
-            AreEqual(2, array.ColumnCount);
-            AreEqual(2, array.ItemCount);
-            json = mapper.Write(array);
+            data.WriteInt16(2);
+            AreEqual(1, data.RowCount);
+            AreEqual(2, data.ColumnCount);
+            AreEqual(2, data.ItemCount);
+            json = mapper.Write(data);
             AreEqual("[\n[1,2]\n]", json);
-            AreEqual("rows: 1, columns: 2\n[1, 2]", array.TableString);
+            AreEqual("rows: 1, columns: 2\n[1, 2]", data.TableString);
             
             // --- [1,2] -> trailing new rows are ignored
-            array.WriteNewRow();
-            AreEqual(1, array.RowCount);
-            AreEqual(2, array.ColumnCount);
-            AreEqual(2, array.ItemCount);
-            json = mapper.Write(array);
+            data.WriteNewRow();
+            AreEqual(1, data.RowCount);
+            AreEqual(2, data.ColumnCount);
+            AreEqual(2, data.ItemCount);
+            json = mapper.Write(data);
             AreEqual("[\n[1,2]\n]", json);
-            AreEqual("rows: 1, columns: 2\n[1, 2]", array.TableString);
+            AreEqual("rows: 1, columns: 2\n[1, 2]", data.TableString);
             
             // --- [1,2],[3]
-            array.WriteInt16(3);
-            AreEqual(2, array.RowCount);
-            AreEqual(-1,array.ColumnCount);
-            AreEqual(3, array.ItemCount);
-            json = mapper.Write(array);
+            data.WriteInt16(3);
+            AreEqual(2, data.RowCount);
+            AreEqual(-1,data.ColumnCount);
+            AreEqual(3, data.ItemCount);
+            json = mapper.Write(data);
             AreEqual("[\n[1,2],\n[3]\n]", json);
-            AreEqual("rows: 2\n[1, 2],\n[3]", array.TableString);
+            AreEqual("rows: 2\n[1, 2],\n[3]", data.TableString);
 
             // --- [1,2],[3,4]
-            array.WriteInt16(4);
-            AreEqual(2, array.RowCount);
-            AreEqual(2, array.ColumnCount);
-            AreEqual(4, array.ItemCount);
-            json = mapper.Write(array);
+            data.WriteInt16(4);
+            AreEqual(2, data.RowCount);
+            AreEqual(2, data.ColumnCount);
+            AreEqual(4, data.ItemCount);
+            json = mapper.Write(data);
             AreEqual("[\n[1,2],\n[3,4]\n]", json);
-            AreEqual("rows: 2, columns: 2\n[1, 2],\n[3, 4]", array.TableString);
+            AreEqual("rows: 2, columns: 2\n[1, 2],\n[3, 4]", data.TableString);
             
             // --- [1,2],[3,4]
-            array.WriteNewRow();
-            AreEqual(2, array.RowCount);
-            AreEqual(2, array.ColumnCount);
-            AreEqual(4, array.ItemCount);
-            json = mapper.Write(array);
+            data.WriteNewRow();
+            AreEqual(2, data.RowCount);
+            AreEqual(2, data.ColumnCount);
+            AreEqual(4, data.ItemCount);
+            json = mapper.Write(data);
             AreEqual("[\n[1,2],\n[3,4]\n]", json);
-            AreEqual("rows: 2, columns: 2\n[1, 2],\n[3, 4]", array.TableString);
+            AreEqual("rows: 2, columns: 2\n[1, 2],\n[3, 4]", data.TableString);
 
-            array.Init();
-            WriteTestData(array);
-            json = mapper.Write(array);
-            var tableString = array.TableString;
+            data.Init();
+            WriteTestData(data);
+            json = mapper.Write(data);
+            var tableString = data.TableString;
 #if !UNITY_5_3_OR_NEWER
             AreEqual(ExpectToString, tableString);
             AreEqual(ExpectJson, json);
@@ -232,11 +232,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var typeStore = new TypeStore();
             var mapper = new ObjectMapper(typeStore);
 
-            var array = mapper.Read<JsonArray>(ExpectJson);
-            AreEqual(2,  array.RowCount);
-            AreEqual(16, array.ItemCount);
+            var data = mapper.Read<JsonTable>(ExpectJson);
+            AreEqual(2,  data.RowCount);
+            AreEqual(16, data.ItemCount);
             
-            ReadTestData(array, ReadArrayType.Json);
+            ReadTestData(data, ReadArrayType.Json);
         }
         
         [Test]
@@ -246,13 +246,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             var mapper = new ObjectMapper(typeStore);
 
             var e = Throws<JsonReaderException>(() => {
-                 mapper.Read<JsonArray>("[[123-]]");
+                 mapper.Read<JsonTable>("[[123-]]");
             });
             IsNotNull(e);
             AreEqual("JsonReader/error: invalid integer: 123- path: '[0][0]' at position: 6", e.Message);
 
             e = Throws<JsonReaderException>(() => {
-                mapper.Read<JsonArray>("[[123e+38.999]]");
+                mapper.Read<JsonTable>("[[123e+38.999]]");
             });
             IsNotNull(e);
             AreEqual("JsonReader/error: invalid floating point number: 123e+38.999 path: '[0][0]' at position: 13", e.Message);

@@ -7,6 +7,6 @@ export type int32 = number;
  *  number in JavaScript.  Range: [-9007199254740991, 9007199254740991]       */
 export type int64 = number;
 
-/** array of arbitrary types"             */
-export type JsonArray = any[];
+/** array of arrays"                      */
+export type JsonTable = any[][];
 

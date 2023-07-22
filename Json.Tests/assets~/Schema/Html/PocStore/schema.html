@@ -313,6 +313,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'><div><span>ContainerStats</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionResult'><div><span>TransactionResult</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.TransactionCommand'><div><span>TransactionCommand</span><keyword>enum</keyword></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSql'><div><span>RawSql</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlResult'><div><span>RawSqlResult</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlColumn'><div><span>RawSqlColumn</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawColumnType'><div><span>RawColumnType</span><keyword>enum</keyword></div></a></li>
@@ -341,7 +342,7 @@
             <li><a href='#Standard.int64'><div><span>int64</span></div></a></li>
             <li><a href='#Standard.float'><div><span>float</span></div></a></li>
             <li><a href='#Standard.double'><div><span>double</span></div></a></li>
-            <li><a href='#Standard.JsonArray'><div><span>JsonArray</span></div></a></li>
+            <li><a href='#Standard.JsonTable'><div><span>JsonTable</span></div></a></li>
         </ul>
     </li>
 </ul>
@@ -532,7 +533,7 @@ The transaction ends by either calling <b>SyncTasks</b> or explicit by
         </tr>
         <tr>
             <td><cmd>std.ExecuteRawSQL</cmd></td>
-            <td><sig>(<keyword>param</keyword>: <predef>string</predef> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlResult'>RawSqlResult</a></sig></td>
+            <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSql'>RawSql</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlResult'>RawSqlResult</a></sig></td>
             <td><oas><a href='../open-api.html#/commands/post__cmd_std_ExecuteRawSQL' target='_blank' title='open std.ExecuteRawSQL API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>Execute a raw SQL query / statement</docs></td>
         </tr>
@@ -1079,6 +1080,26 @@ In case any task in the transaction failed the transaction performs a <b>Rollbac
     </table>
     </div>
     <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.RawSql'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSql'>RawSql</a>
+        <keyword>class</keyword>
+    </h3>
+    <desc>Used to execute raw SQL commands
+    </desc>
+    <table class='fields'>
+        <tr>
+            <td><field>command</field></td>
+            <td><type><predef>string</predef></type></td>
+            <td><docs>An SQL statement like: <c>select * from table_name;</c></docs></td>
+        </tr>
+        <tr>
+            <td><field>schema</field></td>
+            <td><type><predef>boolean</predef> | null</type></td>
+            <td><docs>If true the response contains the schema <b>columns</b> in the response</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
     <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlResult'>
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.RawSqlResult'>RawSqlResult</a>
         <keyword>class</keyword>
@@ -1099,8 +1120,8 @@ In case any task in the transaction failed the transaction performs a <b>Rollbac
             <td><docs>The columns returned by a raw SQL query</docs></td>
         </tr>
         <tr>
-            <td><field>values</field></td>
-            <td><type><a href='#Standard.JsonArray'>JsonArray</a> | null</type></td>
+            <td><field>data</field></td>
+            <td><type><a href='#Standard.JsonTable'>JsonTable</a> | null</type></td>
             <td><docs>An array of all query result values. In total: <b>rowCount</b> * <b>columnCount</b> values</docs></td>
         </tr>
     </table>
@@ -1538,8 +1559,8 @@ E.g. <c>ws:[::1]:52089</c> for WebSockets, <c>udp:127.0.0.1:60005</c> for UDP or
     <desc>double precision floating point number</desc>
     </div>
     <div class='type'>
-    <h3 id='Standard.JsonArray'>
-        <a href='#Standard.JsonArray'>JsonArray</a>
+    <h3 id='Standard.JsonTable'>
+        <a href='#Standard.JsonTable'>JsonTable</a>
     </h3>
     <desc>array of arbitrary values</desc>
     </div>

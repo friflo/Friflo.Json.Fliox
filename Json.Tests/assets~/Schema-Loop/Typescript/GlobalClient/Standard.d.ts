@@ -10,6 +10,6 @@ export type DateTime = string;
 /** signed integer 32-bit. Range: [-2147483648, 2147483647]                   */
 export type int32 = number;
 
-/** array of arbitrary types"             */
-export type JsonArray = any[];
+/** array of arrays"                      */
+export type JsonTable = any[][];
 
