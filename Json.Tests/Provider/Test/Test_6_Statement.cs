@@ -3,6 +3,7 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using NUnit.Framework;
 using SqlKata;
 using static Friflo.Json.Tests.Provider.Env;
@@ -73,6 +74,20 @@ namespace Friflo.Json.Tests.Provider.Test
                     case RawColumnType.DateTime:    row.GetDateTime (i);    break;
                 }
             }
+        }
+        
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task TestStatement_InvalidCommand(string db) {
+            if (!SupportSQL(db)) return;
+            
+            var client      = await GetClient(db);
+
+            var rawSql      = new RawSql("select id, guid, ddd from testreadtypes;", true);
+            var sqlResult   = client.std.ExecuteRawSQL(rawSql);
+            await client.TrySyncTasks();
+            
+            IsFalse(sqlResult.Success);
+            AreEqual(TaskErrorType.CommandError, sqlResult.Error.type);
         }
     }
 }

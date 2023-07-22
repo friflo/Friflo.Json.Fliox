@@ -337,6 +337,9 @@ GENERATED ALWAYS AS ({asStr});";
         }
 
         public void Dispose() {
+            if (instance == null) {
+                return;
+            }
             raw.sqlite3_finalize(instance);
         }
     }
