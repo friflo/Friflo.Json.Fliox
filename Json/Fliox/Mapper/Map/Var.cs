@@ -27,7 +27,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         private   readonly      long    lng;            // holds also the value of floating point value Dbl
                         
         private                 double  Dbl             => Int64BitsToDouble(lng);
-        private                 DateTime DT             => DateTime.FromBinary(lng);
                         
         internal                object  TryGetObject()  =>  type.TryGetObject(this);
         internal                object  ToObject()      =>  type.ToObject(this);
@@ -52,7 +51,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         [Browse(Never)] public  float   Flt32       { get { AssertType(TypeFlt.Instance);    return (float)Dbl;      } }
         [Browse(Never)] public  double  Flt64       { get { AssertType(TypeDbl.Instance);    return        Dbl;      } }
         
-        [Browse(Never)] public  DateTime DateTime   { get { AssertType(TypeDateTime.Instance);return       DT; } }
+        [Browse(Never)] public  DateTime DateTime   { get { AssertType(TypeDateTime.Instance);return       DateTime.FromBinary(lng); } }
         
         // --- nullable
         [Browse(Never)] public  bool?   BoolNull    { get { AssertType(TypeNullableBool.Instance);  return obj != null ? lng != 0 : (bool?)null; } }
@@ -65,7 +64,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         [Browse(Never)] public  float?  Flt32Null   { get { AssertType(TypeNullableFlt.Instance);   return obj != null ? (float?) Dbl : null; } }
         [Browse(Never)] public  double? Flt64Null   { get { AssertType(TypeNullableDbl.Instance);   return obj != null ? (double?)Dbl : null; } }
-        [Browse(Never)] public  DateTime?DateTimeNull{get { AssertType(TypeNullableDateTime.Instance);return obj!=null ? (DateTime?)DT : null; } }
+        [Browse(Never)] public DateTime?DateTimeNull{ get { AssertType(TypeNullableDateTime.Instance);return obj!=null ? (DateTime?)DateTime.FromBinary(lng) : null; } }
 
         public              string  AsString() =>  type.AsString(this);
         public  override    string  ToString() =>  $"{{{type}}} {type.AsString(this)}";
