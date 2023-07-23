@@ -43,13 +43,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             return null;
         }
         
-        internal ContainerEntities GetContainerResult(in ShortString containerName) {
+        internal ContainerEntities GetContainerResult(in ShortString containerName, ContainerType type) {
             if (containers == null) containers = new List<ContainerEntities>();
             foreach (var container in containers) {
                 if (container.container.IsEqual(containerName))
                     return container;
             }
-            var result = new ContainerEntities { container = containerName };
+            var result = new ContainerEntities (containerName, type);
             containers.Add(result);
             return result;
         }
@@ -125,16 +125,47 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// Required only for serialization
                     public  List<EntityError>   errors;
         
-        [Ignore]    public readonly Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+        [Ignore]    public  readonly ContainerType                       type;
+        [Ignore]    public  readonly Dictionary<JsonKey, EntityValue>    entityMap;
+        [Ignore]    public  readonly Dictionary<JsonKey, object>         objectMap;
 
         public override     string              ToString() => container.AsString();
-
-        internal void AddEntities(in Entities add) {
-            var values = add.values;
-            entityMap.EnsureCapacity(entityMap.Count + values.Length);
-            foreach (var entity in values) {
-                entityMap.TryAdd(entity.key, entity);
+        
+        public ContainerEntities() {
+            type        = ContainerType.Values;
+            entityMap   = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+        }
+        
+        public ContainerEntities(in ShortString name, ContainerType type) {
+            container = name;
+            this.type = type;
+            if (type == ContainerType.Values) {
+                entityMap   = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+            } else {
+                objectMap   = new Dictionary<JsonKey, object>(JsonKey.Equality);
             }
         }
+
+        internal void AddEntities(in Entities add) {
+            if (type == ContainerType.Values) {
+                var values = add.values;
+                entityMap.EnsureCapacity(entityMap.Count + values.Length);
+                foreach (var entity in values) {
+                    entityMap.TryAdd(entity.key, entity);
+                }
+                return;
+            }
+            var objects = add.objects;
+            objectMap.EnsureCapacity(objectMap.Count + objects.Length);
+            foreach (var obj in objects) {
+                objectMap.TryAdd(obj.key, obj.obj);
+            }
+        }
+    }
+    
+    public enum ContainerType
+    {
+        Objects,
+        Values,
     }
 }

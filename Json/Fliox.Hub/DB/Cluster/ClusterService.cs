@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     var read        = (ReadEntities)task;
                     var denied      = ApplyAuthorizedDatabaseFilter(read, syncContext);
                     var readResult  = (ReadEntitiesResult)await task.ExecuteAsync(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
-                    var container   = response.GetContainerResult(read.container);
+                    var container   = response.GetContainerResult(read.container, read.ContainerType);
                     var entityMap   = container.entityMap;
                     foreach (var id in denied) {
                         entityMap.Add(id, new EntityValue(id));

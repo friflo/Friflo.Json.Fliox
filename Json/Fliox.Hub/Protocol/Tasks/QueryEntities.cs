@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 // returned queryRefsResults.references is always set. Each references[] item contain either a result or an error.
             }
             // entities elements can be updated in ReadReferences()
-            var containerResult = response.GetContainerResult(container);
+            var containerResult = response.GetContainerResult(container, ContainerType.Values);
             containerResult.AddEntities(entities);
 
             result.container    = container;

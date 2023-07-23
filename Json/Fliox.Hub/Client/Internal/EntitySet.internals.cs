@@ -33,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void                Reset                   ();
         internal  abstract  void                DetectSetPatchesInternal(DetectAllPatches task, ObjectMapper mapper);
         internal  abstract  void                SyncPeerEntityMap       (Dictionary<JsonKey, EntityValue> entityMap, ObjectMapper mapper);
+        internal  abstract  void                SyncPeerObjectMap       (Dictionary<JsonKey, object>      objectMap);
         
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(Change change);
@@ -226,6 +227,45 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     // [c# - Editing dictionary values in a foreach loop - Stack Overflow] https://stackoverflow.com/questions/1070766/editing-dictionary-values-in-a-foreach-loop
                     entityMap[id] = new EntityValue(id, entityError);
                 }
+            }
+        }
+        
+        internal override void SyncPeerObjectMap (Dictionary<JsonKey, object> objectMap) {
+            var typeMapper  = GetTypeMapper();
+            foreach (var entityPair in objectMap) {
+                var id      = entityPair.Key;
+                var obj     = (T)entityPair.Value;
+                var peer    = GetPeerById(id);
+                /* var error   = value.Error;
+                if (error != null) {
+                    // id & container are not serialized as they are redundant data.
+                    // Infer their values from containing dictionary & EntitySet<>
+                    error.id        = id;
+                    error.container = nameShort;
+                    peer.error      = error;
+                    continue;
+                } */
+                peer.error  = null;
+                if (obj == null) {
+                    peer.SetPatchSourceNull();
+                    continue;    
+                }
+                peer.SetEntity(obj);
+                var entity  = peer.NullableEntity;
+                if (entity == null) {
+                    entity  = (T)typeMapper.NewInstance();
+                    SetEntityId(entity, id);
+                    peer.SetEntity(entity);
+                }
+                /* reader.ReadToMapper(typeMapper, json, entity, false);
+                if (reader.Success) {
+                    peer.SetPatchSource(json);
+                } else {
+                    var entityError = new EntityError(EntityErrorType.ParseError, nameShort, id, reader.Error.msg.ToString());
+                    // entityMap[id].SetError(id, entityError); - used when using class EntityValue
+                    // [c# - Editing dictionary values in a foreach loop - Stack Overflow] https://stackoverflow.com/questions/1070766/editing-dictionary-values-in-a-foreach-loop
+                    entityMap[id] = new EntityValue(id, entityError);
+                } */
             }
         }
         

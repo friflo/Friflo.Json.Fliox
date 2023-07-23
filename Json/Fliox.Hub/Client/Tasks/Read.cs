@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal abstract override  TaskState   State   { get; }
 
         internal abstract void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities, List<TKey> buf);
+        internal abstract void SetFindResult(Dictionary<TKey, T> values);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -57,6 +58,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             error.AddEntityError(entityError);
             findState.SetError(error);
+        }
+        
+        internal override void SetFindResult(Dictionary<TKey, T> values) {
+            findState.Executed  = true;
+            result              = values[key];
+            rawResult           = default;
         }
     }
     
@@ -112,6 +119,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (error.HasErrors) {
                 findState.SetError(error);
                 return;
+            }
+            findState.Executed = true;
+        }
+        
+        internal override void SetFindResult(Dictionary<TKey, T> values) {
+            foreach (var result in results) {
+                var key = result.Key;
+                results[key] = values[key];
             }
             findState.Executed = true;
         }

@@ -421,7 +421,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (containers != null) {
                 foreach (var containerEntities in containers) {
                     EntitySet set = GetSetByName(containerEntities.container);
-                    set.SyncPeerEntityMap(containerEntities.entityMap, mapper);
+                    if (containerEntities.type == ContainerType.Values) {
+                        set.SyncPeerEntityMap(containerEntities.entityMap, mapper);
+                    } else {
+                        set.SyncPeerObjectMap(containerEntities.objectMap);
+                    }
                 }
             }
             var responseTasks = syncResponse.tasks;

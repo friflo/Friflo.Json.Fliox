@@ -71,17 +71,20 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         public  readonly    EntityValue[]   values;
         public  readonly    EntityObject[]  objects;
         public              int             Length  => values != null ? values.Length : objects.Length;
+        public  readonly    ContainerType   containerType;
 
         public override     string          ToString() => $"Length: {Length}";
 
         public  Entities (EntityValue[] values) {
             this.values     = values;
             this.objects    = null;
+            containerType   = ContainerType.Values;
         }
         
         public  Entities (EntityObject[] objects) {
             this.values     = null;
             this.objects    = objects;
+            containerType   = ContainerType.Objects;
         }
     }
 }

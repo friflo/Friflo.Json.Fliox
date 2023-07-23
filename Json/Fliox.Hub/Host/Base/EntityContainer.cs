@@ -382,7 +382,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     referenceResult.error = message;
                     continue;
                 }
-                var containerResult = syncResponse.GetContainerResult(refContName);
+                var containerResult = syncResponse.GetContainerResult(refContName, entities.containerType);
                 containerResult.AddEntities(refEntities.entities);
                 var subReferences = reference.references;  
                 

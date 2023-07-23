@@ -30,6 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary> used to request the entities referenced by properties of a read task result </summary>
                     public   List<References>   references;
         [Ignore]    internal Type               nativeType;
+        [Ignore]    internal ContainerType      ContainerType => nativeType != null ? ContainerType.Objects : ContainerType.Values;
         
         public   override    TaskType           TaskType => TaskType.read;
         public   override    string             TaskName =>  $"container: '{container}'";
@@ -88,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 result.references = readRefResults.references;
             }
             // entities elements can be updated in ReadReferences()
-            var containerResult = response.GetContainerResult(container);
+            var containerResult = response.GetContainerResult(container, ContainerType);
             containerResult.AddEntities(entities);
             return result;
         }
@@ -106,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
-            var containerResult = response.GetContainerResult(container);
+            var containerResult = response.GetContainerResult(container, ContainerType);
             containerResult.AddEntities(result.entities);
             return result;
         }
