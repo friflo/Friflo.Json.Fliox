@@ -5,6 +5,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map.Val;
 using static Friflo.Json.Fliox.Mapper.Map.Var;
 
@@ -27,28 +28,30 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         /// <summary> Method has many conditions. Cache returned VarType in case using frequently </summary>
         public static VarType FromType(Type type) {
-            if (type == typeof(bool))   return TypeBool.Instance;
-            if (type == typeof(char))   return TypeChar.Instance;
+            if (type == typeof(bool))       return TypeBool.Instance;
+            if (type == typeof(char))       return TypeChar.Instance;
             
-            if (type == typeof(byte))   return TypeInt8.Instance;
-            if (type == typeof(short))  return TypeInt16.Instance;
-            if (type == typeof(int))    return TypeInt32.Instance;
-            if (type == typeof(long))   return TypeInt64.Instance;
+            if (type == typeof(byte))       return TypeInt8.Instance;
+            if (type == typeof(short))      return TypeInt16.Instance;
+            if (type == typeof(int))        return TypeInt32.Instance;
+            if (type == typeof(long))       return TypeInt64.Instance;
             
-            if (type == typeof(float))  return TypeFlt.Instance;
-            if (type == typeof(double)) return TypeDbl.Instance;
+            if (type == typeof(float))      return TypeFlt.Instance;
+            if (type == typeof(double))     return TypeDbl.Instance;
+            if (type == typeof(DateTime))   return TypeDateTime.Instance;
             
             // --- nullable
-            if (type == typeof(bool?))  return TypeNullableBool.Instance;
-            if (type == typeof(char?))  return TypeNullableChar.Instance;
+            if (type == typeof(bool?))      return TypeNullableBool.Instance;
+            if (type == typeof(char?))      return TypeNullableChar.Instance;
             
-            if (type == typeof(byte?))  return TypeNullableInt8.Instance;
-            if (type == typeof(short?)) return TypeNullableInt16.Instance;
-            if (type == typeof(int?))   return TypeNullableInt32.Instance;
-            if (type == typeof(long?))  return TypeNullableInt64.Instance;
-            
-            if (type == typeof(float?)) return TypeNullableFlt.Instance;
-            if (type == typeof(double?))return TypeNullableDbl.Instance;
+            if (type == typeof(byte?))      return TypeNullableInt8.Instance;
+            if (type == typeof(short?))     return TypeNullableInt16.Instance;
+            if (type == typeof(int?))       return TypeNullableInt32.Instance;
+            if (type == typeof(long?))      return TypeNullableInt64.Instance;
+                
+            if (type == typeof(float?))     return TypeNullableFlt.Instance;
+            if (type == typeof(double?))    return TypeNullableDbl.Instance;
+            if (type == typeof(DateTime?))  return TypeNullableDateTime.Instance;
 
             // --- reference type
             if (type == typeof(string)) return TypeString.Instance;
@@ -373,6 +376,39 @@ public partial struct Var {
         public    override  Var     FromObject  (object obj)               => new Var((char?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (char?)value.lng : null;
         internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberCharNull<T>(mm);
+    }
+    
+    // --- DateTime ---
+    internal sealed class TypeDateTime : VarType
+    {
+        internal static readonly    TypeDateTime Instance = new TypeDateTime();
+        
+        public    override  string  Name                                   => "DateTime";
+        internal  override  Type    GetType     (in Var value)             => typeof(DateTime);
+        // ReSharper disable once CompareOfFloatsByEqualityOperator
+        internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng;
+        internal  override  bool    IsNull      (in Var value)             => false;
+        internal  override  string  AsString    (in Var value)             => DateTime.FromBinary(value.lng).ToString(Bytes.DateTimeFormat);
+        public    override  Var     DefaultValue                           => new Var((DateTime)default);
+        public    override  Var     FromObject  (object obj)               => new Var((DateTime)obj);
+        public    override  object  ToObject    (in Var value)             => value.DateTime;
+        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberDateTime<T>(mm);
+    }
+    
+    internal sealed class TypeNullableDateTime : VarType
+    {
+        internal static readonly    TypeNullableDateTime Instance = new TypeNullableDateTime();
+        
+        public    override  string  Name                                   => "DateTime?";
+        internal  override  Type    GetType     (in Var value)             => typeof(DateTime?);
+        // ReSharper disable once CompareOfFloatsByEqualityOperator
+        internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng && val1.obj == val2.obj;
+        internal  override  bool    IsNull      (in Var value)             => value.obj == null;
+        internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : value.lng != 0 ? DateTime.FromBinary(value.lng).ToString(Bytes.DateTimeFormat) : default;
+        public    override  Var     DefaultValue                           => new Var((DateTime?)null);
+        public    override  Var     FromObject  (object obj)               => new Var((DateTime?)obj);
+        public    override  object  ToObject    (in Var value)             => value.obj != null ? value.DateTimeNull : null;
+        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberDateTimeNull<T>(mm);
     }
 }
 }

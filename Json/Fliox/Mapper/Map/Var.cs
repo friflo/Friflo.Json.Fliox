@@ -8,6 +8,7 @@ using static System.BitConverter;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 using static Friflo.Json.Fliox.Mapper.Map.Var.Static;
 
+// ReSharper disable MergeConditionalExpression
 namespace Friflo.Json.Fliox.Mapper.Map
 {
     /// <summary>
@@ -26,6 +27,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         private   readonly      long    lng;            // holds also the value of floating point value Dbl
                         
         private                 double  Dbl             => Int64BitsToDouble(lng);
+        private                 DateTime DT             => DateTime.FromBinary(lng);
                         
         internal                object  TryGetObject()  =>  type.TryGetObject(this);
         internal                object  ToObject()      =>  type.ToObject(this);
@@ -50,6 +52,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         [Browse(Never)] public  float   Flt32       { get { AssertType(TypeFlt.Instance);    return (float)Dbl;      } }
         [Browse(Never)] public  double  Flt64       { get { AssertType(TypeDbl.Instance);    return        Dbl;      } }
         
+        [Browse(Never)] public  DateTime DateTime   { get { AssertType(TypeDateTime.Instance);return       DT; } }
+        
         // --- nullable
         [Browse(Never)] public  bool?   BoolNull    { get { AssertType(TypeNullableBool.Instance);  return obj != null ? lng != 0 : (bool?)null; } }
         [Browse(Never)] public  char?   CharNull    { get { AssertType(TypeNullableChar.Instance);  return obj != null ? (char?)  lng : null; } }
@@ -61,6 +65,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         [Browse(Never)] public  float?  Flt32Null   { get { AssertType(TypeNullableFlt.Instance);   return obj != null ? (float?) Dbl : null; } }
         [Browse(Never)] public  double? Flt64Null   { get { AssertType(TypeNullableDbl.Instance);   return obj != null ? (double?)Dbl : null; } }
+        [Browse(Never)] public  DateTime?DateTimeNull{get { AssertType(TypeNullableDateTime.Instance);return obj!=null ? (DateTime?)DT : null; } }
 
         public              string  AsString() =>  type.AsString(this);
         public  override    string  ToString() =>  $"{{{type}}} {type.AsString(this)}";
@@ -108,6 +113,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         public Var (float   value) { type = TypeFlt.Instance;    obj = HasValue; lng = DoubleToInt64Bits (value);  }
         public Var (double  value) { type = TypeDbl.Instance;    obj = HasValue; lng = DoubleToInt64Bits (value); }
+        public Var (DateTime value){ type = TypeDateTime.Instance;obj= HasValue; lng = value.ToBinary(); }
 
         // --- nullable primitives
         public Var (char? value)   { type = TypeNullableChar.Instance;  obj = value.HasValue ? HasValue : null; lng = value ?? 0; }
@@ -119,6 +125,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         public Var (float?  value) { type = TypeNullableFlt.Instance;   obj = value.HasValue ? HasValue : null; lng = value.HasValue ? DoubleToInt64Bits (value.Value) : 0; }
         public Var (double? value) { type = TypeNullableDbl.Instance;   obj = value.HasValue ? HasValue : null; lng = value.HasValue ? DoubleToInt64Bits (value.Value) : 0; }
+        public Var (DateTime?value){ type = TypeNullableDateTime.Instance;obj=value.HasValue ? HasValue : null; lng = value.HasValue ? value.Value.ToBinary() : default;  }
         
 
         // --- bool ---

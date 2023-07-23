@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
 using System.Threading.Tasks;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Provider.Client;
@@ -159,9 +160,9 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestRead_21_DateTime(string db) {
             var client1 = await GetClient(db);
-            var dt1     = new TestReadTypes { id = "dt1", dateTime = DateTime.Parse("2023-07-09 00:00:00Z") };
-            var dt2     = new TestReadTypes { id = "dt2", dateTime = DateTime.Parse("2023-07-09 10:00:30.123456Z") };
-            var dt3     = new TestReadTypes { id = "dt3", dateTime = DateTime.Parse("2023-07-09 23:59:59.999999Z") };
+            var dt1     = new TestReadTypes { id = "dt1", dateTime = DateTime.Parse("2023-07-09 00:00:00Z").ToUniversalTime() };
+            var dt2     = new TestReadTypes { id = "dt2", dateTime = DateTime.Parse("2023-07-09 10:00:30.123456Z").ToUniversalTime() };
+            var dt3     = new TestReadTypes { id = "dt3", dateTime = DateTime.Parse("2023-07-09 23:59:59.999999Z").ToUniversalTime() };
             client1.testReadTypes.UpsertRange(new [] { dt1, dt2, dt3 });
             await client1.SyncTasks();
             

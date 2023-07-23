@@ -226,5 +226,30 @@ public partial struct Var
             setter = CreateSet<T,char?>(mm.setter);
         }
     }
+    
+    // --- DateTime ---
+    private sealed class MemberDateTime<T> : Member {
+        private     readonly    Func  <T, DateTime> getter;
+        private     readonly    Action<T, DateTime> setter;
+        internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
+        internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.DateTime);
+    
+        internal    MemberDateTime(MemberMethods mm) {
+            getter = CreateGet<T,DateTime>(mm.getter);
+            setter = CreateSet<T,DateTime>(mm.setter);
+        }
+    }
+    
+    private sealed class MemberDateTimeNull<T> : Member {
+        private     readonly    Func  <T,DateTime?> getter;
+        private     readonly    Action<T,DateTime?> setter;
+        internal    override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
+        internal    override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.DateTimeNull);
+    
+        internal    MemberDateTimeNull(MemberMethods mm) {
+            getter = CreateGet<T,DateTime?>(mm.getter);
+            setter = CreateSet<T,DateTime?>(mm.setter);
+        }
+    }
 }
 }

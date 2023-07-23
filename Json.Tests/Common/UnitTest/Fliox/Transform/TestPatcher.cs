@@ -42,12 +42,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var left  = new DiffBase {child = new DiffChild {
                         childVal = 1,
                         bigInt = BigInteger.Parse("111"),
-                        dateTime = DateTime.Parse("2021-03-18T16:30:00.000Z")
+                        dateTime = DateTime.Parse("2021-03-18T16:30:00.000Z").ToUniversalTime()
                     }};
                     var right = new DiffBase {child = new DiffChild {
                         childVal = 2,
                         bigInt = BigInteger.Parse("222"),
-                        dateTime = DateTime.Parse("2021-03-18T16:40:00.000Z")
+                        dateTime = DateTime.Parse("2021-03-18T16:40:00.000Z").ToUniversalTime()
                     }};
 
                     var diff = differ.GetDiff(left, right, DiffElements);

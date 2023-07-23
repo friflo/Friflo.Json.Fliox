@@ -38,6 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         public short        srtFld;
         public byte         bytFld;
         public bool         blnFld;
+        public DateTime     dtFld;
         //
         // ReSharper disable InconsistentNaming
         public double       dblPrp { get; set; }
@@ -47,6 +48,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         public short        srtPrp { get; set; }
         public byte         bytPrp { get; set; }
         public bool         blnPrp { get; set; }
+        public DateTime     dtPrp  { get; set; }
+        
+        public static readonly DateTime DateTimeProp  = DateTime.Parse("2023-07-13T11:11:11Z").ToUniversalTime();
+        public static readonly DateTime DateTimeField = DateTime.Parse("2023-07-13T22:22:22Z").ToUniversalTime(); 
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
@@ -62,7 +67,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                    srtPrp == o.srtPrp && bytPrp == o.bytPrp && blnPrp == o.blnPrp &&
                    dblFld == o.dblFld && fltFld == o.fltFld && lngFld == o.lngFld && intFld == o.intFld &&
                    srtFld == o.srtFld && bytFld == o.bytFld && blnFld == o.blnFld &&
-                   bigInt.Equals(o.bigInt);
+                   bigInt.Equals(o.bigInt) &&
+                   dtFld == o.dtFld; 
         }
 
         // ReSharper disable NonReadonlyMemberInGetHashCode
@@ -86,9 +92,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
     ""dblPrp"": 100,    ""fltPrp"": 101,    ""lngPrp"": 102,    ""intPrp"": 103,
     ""srtPrp"": 104,    ""bytPrp"": 105,    ""blnPrp"": true,
+    ""dtPrp"": ""2023-07-13T11:11:11Z"",
 
     ""dblFld"": 200,    ""fltFld"": 201,    ""lngFld"": 202,    ""intFld"": 203,
     ""srtFld"": 204,    ""bytFld"": 205,    ""blnFld"": true,
+    ""dtFld"": ""2023-07-13T22:22:22Z"",
 
     ""unknownObject"": {{
         ""anotherUnknown"": 42
@@ -231,7 +239,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                         var expect = new TestMapperClass {
                             key = 42, bigInt = bigIntVal,
                             dblPrp = 100, fltPrp = 101, lngPrp = 102, intPrp = 103, srtPrp = 104, bytPrp = 105, blnPrp = true,
-                            dblFld = 200, fltFld = 201, lngFld = 202, intFld = 203, srtFld = 204, bytFld = 205, blnFld = true
+                            dtPrp = TestMapperClass.DateTimeProp,
+                            dblFld = 200, fltFld = 201, lngFld = 202, intFld = 203, srtFld = 204, bytFld = 205, blnFld = true,
+                            dtFld = TestMapperClass.DateTimeField,
                         };
                         var value = Read<TestMapperClass>(testClass);
                         if (JsonEvent.EOF != enc.JsonEvent)
@@ -539,7 +549,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     
                     // --- DateTime ---
                     {
-                        DateTime expect = DateTime.Parse(dateTime);
+                        DateTime expect = DateTime.Parse(dateTime).ToUniversalTime();
                         DateTime value = Read<DateTime>(dateTimeStr);
                         AreEqual(expect, value);
                         

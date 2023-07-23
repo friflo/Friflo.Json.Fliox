@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper.Diff;
+using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
@@ -26,6 +28,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public DateTimeMapper(StoreConfig config, Type type) :
             base (config, type, false, false) {
         }
+        
+        public override void        WriteVar(ref Writer writer, in Var value)               => Write(ref writer, value.DateTime);
+        public override DiffType    DiffVar (Differ differ, in Var left, in Var right)      => Diff(differ, left.DateTime, right.DateTime);
+        public override DiffType    Diff    (Differ differ, DateTime left, DateTime right)  => left == right ? DiffType.Equal : differ.AddNotEqual(new Var(left), new Var(right));
+        public override Var         ToVar   (DateTime value)                                => new Var(value);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.DateTime, out success));
+        public override void        CopyVar (in Var src, ref Var dst)                       => dst = new Var(src.DateTime);
 
         public override void Write(ref Writer writer, DateTime value) {
             writer.WriteDateTime(value);
@@ -40,7 +49,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             if (!DateTime.TryParse(str, out slot))
                 return reader.ErrorMsg<DateTime>("Failed parsing DateTime. value: ", str, out success);
             success = true;
-            return slot;
+            return slot.ToUniversalTime();
         }
         
         /// <summary>uses same format as <see cref="Bytes.AppendDateTime"/></summary>
@@ -54,13 +63,20 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override string  DataTypeName()              => "DateTime?";
         public override bool    IsNull(ref DateTime? value) => !value.HasValue;
         
+        public override void        WriteVar(ref Writer writer, in Var value)               => Write(ref writer, value.DateTimeNull);
+        public override DiffType    DiffVar (Differ differ, in Var left, in Var right)      => Diff(differ, left.DateTimeNull, right.DateTimeNull);
+        public override DiffType    Diff    (Differ differ, DateTime? left, DateTime? right)=> left == right ? DiffType.Equal : differ.AddNotEqual(new Var(left), new Var(right));
+        public override Var         ToVar   (DateTime? value)                               => new Var(value);
+        public override Var         ReadVar (ref Reader reader, in Var value, out bool success) => new Var(Read(ref reader, value.DateTimeNull, out success));
+        public override void        CopyVar (in Var src, ref Var dst)                       => dst = new Var(src.DateTimeNull);
+        
         public NullableDateTimeMapper(StoreConfig config, Type type) :
             base (config, type, true, false) {
         }
 
         public override void Write(ref Writer writer, DateTime? value) {
             if (value.HasValue) {
-                writer.WriteDateTime(value.Value);
+                writer.WriteDateTime(value.Value.ToUniversalTime());
             } else {
                 writer.AppendNull();
             }
@@ -75,7 +91,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             if (!DateTime.TryParse(str, out var result))     
                 return reader.ErrorMsg<DateTime?>("Failed parsing DateTime. value: ", str, out success);
             success = true;
-            return result;
+            return result.ToUniversalTime();
         }
     }
 }
