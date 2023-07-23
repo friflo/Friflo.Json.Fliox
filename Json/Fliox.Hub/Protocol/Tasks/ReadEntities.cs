@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
@@ -20,17 +21,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
-        [Required]  public  ShortString         container;
+        [Required]  public   ShortString        container;
         /// <summary> name of the primary key property of the returned entities </summary>
-                    public  string              keyName;
-                    public  bool?               isIntKey;
+                    public   string             keyName;
+                    public   bool?              isIntKey;
         /// <summary> list of requested entity <see cref="ids"/> </summary>
-        [Required]  public  List<JsonKey>       ids;
+        [Required]  public   List<JsonKey>      ids;
         /// <summary> used to request the entities referenced by properties of a read task result </summary>
-                    public  List<References>    references;
+                    public   List<References>   references;
+        [Ignore]    internal Type               nativeType;
         
-        public   override   TaskType            TaskType => TaskType.read;
-        public   override   string              TaskName =>  $"container: '{container}'";
+        public   override    TaskType           TaskType => TaskType.read;
+        public   override    string             TaskName =>  $"container: '{container}'";
         
         public override bool PreExecute(EntityDatabase database, SharedEnv env) {
             if (references != null) {

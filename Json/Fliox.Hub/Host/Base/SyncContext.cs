@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Pools;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -44,10 +45,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)] public  ObjectPool<Json2SQL>    Json2SQL    => pool.Json2SQL;
         [Browse(Never)] public  ObjectPool<SQL2Json>    SQL2Json    => pool.SQL2Json;
         // --- public utils
-        [Browse(Never)] public  ObjectPool<ObjectMapper>    ObjectMapper    => pool.ObjectMapper;
-        [Browse(Never)] public  ObjectPool<EntityProcessor> EntityProcessor => pool.EntityProcessor;
-
-        public override     string                      ToString()      => GetString();
+        [Browse(Never)] public  ObjectPool<ObjectMapper>    ObjectMapper                => pool.ObjectMapper;
+        [Browse(Never)] public  ObjectPool<EntityProcessor> EntityProcessor             => pool.EntityProcessor;
+                        public  TypeMapper                  GetTypeMapper(Type type)    => sharedEnv.typeStore.GetTypeMapper(type);
+        public override         string                      ToString()                  => GetString();
         // --- internal / private by intention
         [Browse(Never)] internal  readonly  SharedEnv           sharedEnv;
         /// <summary>

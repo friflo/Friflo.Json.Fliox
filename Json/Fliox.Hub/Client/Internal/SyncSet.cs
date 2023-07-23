@@ -201,7 +201,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 isIntKey    = IsIntKey(set.IsIntKey()),
                 ids         = ids,
                 references  = references,
-                intern      = new SyncTaskIntern(read)
+                intern      = new SyncTaskIntern(read),
+            //  nativeType  = typeof(T) 
             };
         }
 

@@ -7,6 +7,7 @@ using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map.Object;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
@@ -42,6 +43,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public   readonly   bool            required;
         public   readonly   string          docs;
         public   readonly   string          relation;
+        public   readonly   StandardTypeId  typeId;
         internal readonly   BytesHash       nameKey;
         internal            Bytes           nameBytes;          // don't mutate
         public              Bytes           firstMember;        // don't mutate

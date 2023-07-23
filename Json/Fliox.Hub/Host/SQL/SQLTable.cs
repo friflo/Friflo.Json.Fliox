@@ -60,12 +60,26 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             TableInfo       tableInfo,
             SyncContext     syncContext)
         {
-            using var pooled = syncContext.pool.SQL2Json.Get();
-            var mapper   = new SQL2JsonMapper(reader);
-            var buffer   = syncContext.MemoryBuffer;
-            var entities = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
-            var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
-            return new ReadEntitiesResult { entities = new Entities(array) };
+            var nativeType = query.nativeType;
+            if (nativeType == null) {
+                using var pooled = syncContext.pool.SQL2Json.Get();
+                var sql2Json = new SQL2JsonMapper(reader);
+                var buffer   = syncContext.MemoryBuffer;
+                var entities = await sql2Json.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
+                var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
+                return new ReadEntitiesResult { entities = new Entities(array) };
+            }
+            var typeMapper      = syncContext.GetTypeMapper(nativeType);
+            var binaryReader    = new BinaryDbDataReader(reader);
+            var objects         = new EntityObject[query.ids.Count];
+            int count           = 0;
+            while (await reader.ReadAsync().ConfigureAwait(false))
+            {
+                var obj = typeMapper.ReadBinary(binaryReader, null, out bool _);
+                var key = query.ids[count];
+                objects[count++] = new EntityObject(key, obj);
+            }
+            return new ReadEntitiesResult { entities = new Entities(objects) };
         }
         
         public static async Task<List<EntityValue>> QueryEntitiesAsync(

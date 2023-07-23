@@ -45,6 +45,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         }
     }
     
+    public readonly struct EntityObject
+    {
+        [Ignore]    public  readonly    JsonKey     key;
+        [Ignore]    public  readonly    object      obj;
+        
+        
+        public EntityObject(JsonKey key, object obj) {
+            this.key    = key;
+            this.obj    = obj;
+        }
+    }
+    
     /// <summary>
     /// Contains an array of tuples: (<see cref="JsonKey"/>, <see cref="JsonValue"/>)<br/>
     /// </summary>
@@ -56,10 +68,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     public readonly struct Entities
     {
         public  readonly    EntityValue[]   values;
+        public  readonly    EntityObject[]  objects;
         public              int             Length  => values.Length;
         
         public  Entities (EntityValue[] values) {
-            this.values = values;
+            this.values     = values;
+            this.objects    = null;
+        }
+        
+        public  Entities (EntityObject[] objects) {
+            this.values     = null;
+            this.objects    = objects;
         }
     }
 }
