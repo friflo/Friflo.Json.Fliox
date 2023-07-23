@@ -444,11 +444,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         public override object ReadBinary(BinaryReader reader, object slot, out bool success)
         {
             object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
-            
+            if (objRef == null) {
+                objRef = NewInstance();
+            }
             var fields = propFields.fields;
             foreach (var field in fields)
             {
-                if (field.typeId == StandardTypeId.JsonValue)
+                if (field.typeId == StandardTypeId.JsonEntity)
                 {
                     var objType = field.fieldType;
                     if (!reader.HasObject(objType)) {

@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using static System.Diagnostics.DebuggerBrowsableState;
 
+// ReSharper disable MergeConditionalExpression
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
     public readonly struct EntityValue
@@ -69,8 +70,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     {
         public  readonly    EntityValue[]   values;
         public  readonly    EntityObject[]  objects;
-        public              int             Length  => values.Length;
-        
+        public              int             Length  => values != null ? values.Length : objects.Length;
+
+        public override     string          ToString() => $"Length: {Length}";
+
         public  Entities (EntityValue[] values) {
             this.values     = values;
             this.objects    = null;

@@ -8,6 +8,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map.Object;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
@@ -94,6 +95,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
             this.required   = required;
             this.docs       = docs;
             this.relation   = GetRelationAttributeType();
+            var type = fieldType.isValueType && fieldType.isNullable ? fieldType.nullableUnderlyingType : fieldType.type; 
+            if (NativeStandardTypes.Types.TryGetValue(type, out var typeInfo)) {
+                typeId = typeInfo.typeId;
+            } else {
+                typeId = StandardTypeId.JsonEntity;
+            }
         }
         
         public MemberInfo   Member { get {
