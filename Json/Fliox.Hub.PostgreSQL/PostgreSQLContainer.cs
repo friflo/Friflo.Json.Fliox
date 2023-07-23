@@ -185,7 +185,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     var buffer   = syncContext.MemoryBuffer;
                     var entities = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
                     var array    = KeyValueUtils.EntityListToArray(entities, command.ids);
-                    return new ReadEntitiesResult { entities = array };
+                    return new ReadEntitiesResult { entities = new Entities(array) };
                 } else {
                     return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
                 }

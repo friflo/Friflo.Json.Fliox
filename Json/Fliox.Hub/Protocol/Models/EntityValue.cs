@@ -44,4 +44,22 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
             return $"{key}  {error.type}: {error.message}";
         }
     }
+    
+    /// <summary>
+    /// Contains an array of tuples: (<see cref="JsonKey"/>, <see cref="JsonValue"/>)<br/>
+    /// </summary>
+    /// <remarks>
+    /// Two aspects of this class<br/>
+    /// - avoid passing array parameters: <c>EntityValue[]</c><br/>
+    /// - be prepared to support array of tuples: (<see cref="JsonKey"/>, <see cref="object"/>)
+    /// </remarks>
+    public readonly struct Entities
+    {
+        public  readonly    EntityValue[]   values;
+        public              int             Length  => values.Length;
+        
+        public  Entities (EntityValue[] values) {
+            this.values = values;
+        }
+    }
 }

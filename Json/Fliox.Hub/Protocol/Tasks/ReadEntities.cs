@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <code>         entities[index].key == ids[index]         </code>
         /// Use <see cref="KeyValueUtils.EntityListToArray"/> create an array from a list of unordered or missing key/values.   
         /// </summary>
-        [Ignore]    public  EntityValue[]           entities;
+        [Ignore]    public  Entities                entities;
         
         [Ignore]    public  TaskExecuteError        Error       { get; set; }
         internal override   TaskType                TaskType    => TaskType.read;
@@ -145,8 +145,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public void ValidateEntities(in ShortString container, string keyName, SyncContext syncContext) {
             using (var pooled = syncContext.EntityProcessor.Get()) {
                 EntityProcessor processor = pooled.instance;
-                for (int n = 0; n < entities.Length; n++) {
-                    var entity = entities[n];
+                var values = entities.values;
+                for (int n = 0; n < values.Length; n++) {
+                    var entity = values[n];
                     if (entity.Error != null) {
                         continue;
                     }
@@ -167,7 +168,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         container   = container
                     };
                     // entity.SetError(entity.key, entityError); - used when using class EntityValue
-                    entities[n] = new EntityValue(entity.key, entityError);
+                    values[n] = new EntityValue(entity.key, entityError);
                 }
             }
         }

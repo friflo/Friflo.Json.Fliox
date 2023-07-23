@@ -122,8 +122,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
-            var entities = result.entities;
-            result.entities = null;  // clear -> its not part of protocol
+            var entities    = result.entities;
+            var values      = entities.values;
+            result.entities = default;  // clear -> its not part of protocol
             var queryRefsResults = new ReadReferencesResult();
             if (references != null && references.Count > 0) {
                 queryRefsResults =
@@ -135,8 +136,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             containerResult.AddEntities(entities);
 
             result.container    = container;
-            var ids             = new List<JsonKey>(entities.Length);
-            foreach (var entity in entities) {
+            var ids             = new List<JsonKey>(values.Length);
+            foreach (var entity in values) {
                 ids.Add(entity.key);
             }
             KeyValueUtils.OrderKeys(ids, orderByKey);
@@ -165,7 +166,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public  List<ReferencesResult>  references;
                     public  string                  sql;
                         
-        [Ignore]    public  EntityValue[]           entities;
+        [Ignore]    public  Entities                entities;
         [Ignore]    public  TaskExecuteError        Error { get; set; }
 
         

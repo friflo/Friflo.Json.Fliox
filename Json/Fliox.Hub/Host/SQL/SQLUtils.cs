@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 rows.Add(new EntityValue(key, value));
             }
             var entities = KeyValueUtils.EntityListToArray(rows, ids);
-            return new ReadEntitiesResult { entities = entities };
+            return new ReadEntitiesResult { entities = new Entities(entities) };
         }
         
         public static ReadEntitiesResult ReadEntitiesSync(DbDataReader reader, ReadEntities query) {
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 rows.Add(new EntityValue(key, value));
             }
             var entities = KeyValueUtils.EntityListToArray(rows, ids);
-            return new ReadEntitiesResult { entities = entities };
+            return new ReadEntitiesResult { entities = new Entities(entities) };
         }
         
         /// <summary>
@@ -181,7 +181,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
         
         public static QueryEntitiesResult CreateQueryEntitiesResult(List<EntityValue> entities, QueryEntities query, string sql) {
-            var result = new QueryEntitiesResult { entities = entities.ToArray(), sql = sql };
+            var result = new QueryEntitiesResult { entities = new Entities(entities.ToArray()), sql = sql };
             if (entities.Count >= query.maxCount) {
                 result.cursor = entities[entities.Count - 1].key.AsString();
             }

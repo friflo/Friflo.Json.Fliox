@@ -155,13 +155,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (readResult.Error != null) {
                 return new MergeEntitiesResult { Error = readResult.Error };
             }
-            var entities = readResult.entities;
-            if (entities.Length != ids.Count)
-                throw new InvalidOperationException($"MergeEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {entities.Length}");
+            var values = readResult.entities.values;
+            if (values.Length != ids.Count)
+                throw new InvalidOperationException($"MergeEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {values.Length}");
             
             // --- Apply merges
             // iterate all patches and merge them to the entities read above
-            var targets     = new  List<JsonEntity>  (entities.Length);
+            var targets     = new  List<JsonEntity>  (values.Length);
             var container   = mergeEntities.container;
             List<EntityError> patchErrors = null;
             using (var pooled = env.pool.JsonMerger.Get())
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 for (int n = 0; n < patches.Count; n++) {
                     var patch       = patches[n];
                     var key         = ids[n];
-                    var entity      = entities[n];
+                    var entity      = values[n];
                     var entityError = entity.Error; 
                     if (entityError != null) {
                         AddEntityError(ref patchErrors, key, entityError);
@@ -288,7 +288,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         private static List<ReferencesResult> GetReferences(
             List<References>    references,
-            EntityValue[]       entities,
+            in Entities         entities,
             in ShortString      container,
             SyncContext         syncContext)
         {
@@ -306,24 +306,25 @@ namespace Friflo.Json.Fliox.Hub.Host
                 };
                 referenceResults.Add(referenceResult);
             }
-            var select      = new ScalarSelect(selectors);  // can be reused
+            var select  = new ScalarSelect(selectors);  // can be reused
+            var values  = entities.values;
             using (var pooled = syncContext.pool.ScalarSelector.Get()) {
                 ScalarSelector selector = pooled.instance;
                 // Get the selected refs for all entities.
                 // Select() is expensive as it requires a full JSON parse. By using an selector array only one
                 // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
-                for (int i = 0; i < entities.Length; i++) {
-                    var entity = entities[i];
+                for (int i = 0; i < values.Length; i++) {
+                    var entity = values[i];
                     if (entity.Error != null)
                         continue;
-                    var         json    = entity.Json;
+                    var json = entity.Json;
                     if (json.IsNull())
                         continue;
                     var selectorResults = selector.Select(json, select);
                     if (selectorResults == null) {
                         var error = new EntityError(EntityErrorType.ParseError, container, entity.key, selector.ErrorMessage);
                         // entity.SetError(entity.key, error); - used when using class EntityValue
-                        entities[i] = new EntityValue(entity.key, error);
+                        values[i] = new EntityValue(entity.key, error);
                         continue;
                     }
                     for (int n = 0; n < references.Count; n++) {
@@ -352,7 +353,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         internal async Task<ReadReferencesResult> ReadReferencesAsync(
                 List<References>    references,
-                EntityValue[]       entities,
+                Entities            entities,
                 ShortString         container,
                 string              selectorPath,
                 SyncResponse        syncResponse,
@@ -387,9 +388,11 @@ namespace Friflo.Json.Fliox.Hub.Host
                 
                 if (subReferences == null)
                     continue;
-                var subEntities = new EntityValue [ids.Count];
-                for (int i = 0; i < refEntities.entities.Length; i++) {
-                    subEntities[i] = refEntities.entities[i];
+                var subEntitiesArray    = new EntityValue [ids.Count];
+                var subEntities         = new Entities(subEntitiesArray);
+                var refValues           = refEntities.entities.values;
+                for (int i = 0; i < refValues.Length; i++) {
+                    subEntitiesArray[i] = refValues[i];
                 }
                 var refReferencesResult =
                     await ReadReferencesAsync(subReferences, subEntities, refContName, subPath, syncResponse, syncContext).ConfigureAwait(false);

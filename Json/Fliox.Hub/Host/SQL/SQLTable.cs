@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var buffer   = syncContext.MemoryBuffer;
             var entities = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
             var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
-            return new ReadEntitiesResult { entities = array };
+            return new ReadEntitiesResult { entities = new Entities(array) };
         }
         
         public static async Task<List<EntityValue>> QueryEntitiesAsync(

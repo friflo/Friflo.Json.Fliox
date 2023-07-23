@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             } finally {
                 rwLock.ReleaseReaderLock();
             }
-            var result = new ReadEntitiesResult{entities = entities};
+            var result = new ReadEntitiesResult{ entities = new Entities(entities) };
             result.ValidateEntities(nameShort, command.keyName, syncContext);
             return result;
         }
@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         break;
                     }
                 }
-                result.entities = filterContext.Result.ToArray();
+                result.entities = new Entities(filterContext.Result.ToArray());
                 return result;
             } finally {
                 filterContext.Dispose();

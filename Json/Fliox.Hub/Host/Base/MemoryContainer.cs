@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 TryGetValue(key, out JsonValue value, syncContext.MemoryBuffer);
                 entities[index++]   = new EntityValue(key, value);
             }
-            var result = new ReadEntitiesResult{entities = entities};
+            var result = new ReadEntitiesResult{ entities = new Entities(entities) };
             return result;
         }
         
@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     break;
                 }
             }
-            result.entities = filterContext.Result.ToArray();
+            result.entities = new Entities(filterContext.Result.ToArray());
             return result;
         }
         

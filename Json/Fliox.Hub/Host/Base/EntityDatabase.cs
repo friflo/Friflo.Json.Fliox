@@ -394,8 +394,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             while (true) {
                 var queryResult = await srcContainer.QueryEntitiesAsync(query, syncContext).ConfigureAwait(false);
 
-                var entities    = new List<JsonEntity>(queryResult.entities.Length);
-                foreach (var entity in queryResult.entities) {
+                var values      = queryResult.entities.values;
+                var entities    = new List<JsonEntity>(values.Length);
+                foreach (var entity in values) {
                     entities.Add(new JsonEntity(entity.Json));
                 }
                 if (!KeyValueUtils.GetKeysFromEntities (keyName, entities, syncContext.sharedEnv, out string error)) {

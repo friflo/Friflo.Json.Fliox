@@ -238,7 +238,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return new ReadEntitiesResult { Error = error };
                 }
             }
-            return new ReadEntitiesResult { entities = values.ToArray() };
+            return new ReadEntitiesResult { entities = new Entities(values.ToArray()) };
         }
         
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
@@ -297,7 +297,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     return new QueryEntitiesResult { Error = readError, sql = sql };
                 }
             }
-            var result = new QueryEntitiesResult { entities = values.ToArray(), sql = sql };
+            var result = new QueryEntitiesResult { entities = new Entities(values.ToArray()), sql = sql };
             if (maxCount != null) {
                 if (values.Count == maxCount) {
                     enumerator ??= new SQLiteQueryEnumerator(stmt, sql);
