@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
@@ -60,8 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             TableInfo       tableInfo,
             SyncContext     syncContext)
         {
-            var nativeType = query.nativeType;
-            if (nativeType == null) {
+            if (query.ContainerType == ContainerType.Values) {
                 using var pooled = syncContext.pool.SQL2Json.Get();
                 var sql2Json = new SQL2JsonMapper(reader);
                 var buffer   = syncContext.MemoryBuffer;
@@ -69,12 +69,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
                 return new ReadEntitiesResult { entities = new Entities(array) };
             }
-            var typeMapper      = syncContext.GetTypeMapper(nativeType);
+            var typeMapper      = syncContext.GetTypeMapper(query.nativeType);
             var binaryReader    = new BinaryDbDataReader(reader);
             var objects         = new EntityObject[query.ids.Count];
             int count           = 0;
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
+                binaryReader.Init();
                 var obj = typeMapper.ReadBinary(binaryReader, null, out bool _);
                 var key = query.ids[count];
                 objects[count++] = new EntityObject(key, obj);

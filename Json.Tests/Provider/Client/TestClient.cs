@@ -20,6 +20,7 @@ namespace Friflo.Json.Tests.Provider.Client
         public readonly EntitySet <Guid,   TestGuidKeyEntity>   testGuidKey;
         public readonly EntitySet <string, TestKeyName>         testKeyName;
         public readonly EntitySet <string, TestReadTypes>       testReadTypes;
+        public readonly EntitySet <int,    Post>                posts;
 
         /// <summary>Drop the given database or all is param is null</summary>
         public CommandTask<List<String>>      DropDatabase (string param)    => send.Command<string, List<String>>    (param);

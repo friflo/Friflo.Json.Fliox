@@ -63,4 +63,8 @@
       </None>
     </ItemGroup>
 
+    <PropertyGroup>
+        <ServerGarbageCollection>false</ServerGarbageCollection> <!-- System.Runtime.GCSettings.IsServerGC: false -->
+    </PropertyGroup>
+
 </Project>

@@ -246,26 +246,19 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     continue;
                 } */
                 peer.error  = null;
-                if (obj == null) {
-                    peer.SetPatchSourceNull();
-                    continue;    
-                }
-                peer.SetEntity(obj);
-                var entity  = peer.NullableEntity;
-                if (entity == null) {
-                    entity  = (T)typeMapper.NewInstance();
-                    SetEntityId(entity, id);
-                    peer.SetEntity(entity);
-                }
-                /* reader.ReadToMapper(typeMapper, json, entity, false);
-                if (reader.Success) {
-                    peer.SetPatchSource(json);
+                var current = peer.NullableEntity;
+                if (current != null) {
+                    if (obj == null) {
+                        peer.SetPatchSourceNull();
+                        peer.SetEntity(null);
+                    } else {
+                        typeMapper.MemberwiseCopy(obj, current);
+                        // TODO set patch source
+                    }
                 } else {
-                    var entityError = new EntityError(EntityErrorType.ParseError, nameShort, id, reader.Error.msg.ToString());
-                    // entityMap[id].SetError(id, entityError); - used when using class EntityValue
-                    // [c# - Editing dictionary values in a foreach loop - Stack Overflow] https://stackoverflow.com/questions/1070766/editing-dictionary-values-in-a-foreach-loop
-                    entityMap[id] = new EntityValue(id, entityError);
-                } */
+                    CreatePeer(obj);
+                    // TODO set patch source
+                }
             }
         }
         

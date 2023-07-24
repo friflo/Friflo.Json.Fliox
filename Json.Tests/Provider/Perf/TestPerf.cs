@@ -9,27 +9,59 @@ using static Friflo.Json.Tests.Provider.Env;
 
 namespace Friflo.Json.Tests.Provider.Perf
 {
-    // ReSharper disable once InconsistentNaming
+
     public static class TestPerf
     {
-        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        internal const int  SeedCount   = 1; // 5000;
+        internal const  int WarmupCount = 1; // 50_000;
+        internal const  int ReadCount   = 1; // 1_000;
+        
+        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task Perf_Read_One(string db) {
-            var client  = await GetClient(db);
+            await SeedPosts(db);
+            
+            var client  = await GetClient(db, false);
+
             // warmup
-            for (int n = 0; n < 1; n++) {
-                client.testOps.Read().Find("a-1");
+            for (int n = 0; n < WarmupCount; n++) {
+                client.posts.Read().Find(n % SeedCount);
                 await client.SyncTasks();
             }
+
             // measurement
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            var count = 1; // 1_000;
+            var count = ReadCount;
             for (int n = 0; n < count; n++) {
-                client.testOps.Read().Find("a-1");
+                client.posts.Read().Find(n % SeedCount);
                 await client.SyncTasks();
             }
-            var duration = stopWatch.ElapsedMilliseconds;
+            var duration = stopWatch.Elapsed.TotalMilliseconds;
             Console.WriteLine($"Read. count: {count}, duration: {duration} ms");
+        }
+
+        internal static async Task SeedPosts(string db) {
+            var client  = await GetClient(db, false);
+            
+            var postCount = client.posts.CountAll();
+            await client.SyncTasks();
+            if (postCount.Result < SeedCount) {
+                var chunkSize   = 1000;
+                var text        = new string('x', 2000);
+                var dateTime    = DateTime.Now;
+                var posts       = new List<Post>();
+                for (int n = 0; n < SeedCount; n++) {
+                    var post = new Post { Id = n, Text = text, CreationDate = dateTime, LastChangeDate = dateTime };
+                    posts.Add(post);
+                    if (posts.Count % chunkSize == 0) {
+                        client.posts.UpsertRange(posts);
+                        await client.SyncTasks();
+                        posts.Clear();
+                    }
+                }
+                client.posts.UpsertRange(posts);
+                await client.SyncTasks();
+            }
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]

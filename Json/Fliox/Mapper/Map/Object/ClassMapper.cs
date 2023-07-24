@@ -472,5 +472,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             success = false;
             return (T)objRef;
         }
+        
+        public override void MemberwiseCopy(object source, object target) {
+            var fields = propFields.fields;
+            foreach (var field in fields)
+            {
+                var member = field.member;
+                var value = member.GetVar(source);
+                member.SetVar(target, value);
+            }
+        }
     }
 }

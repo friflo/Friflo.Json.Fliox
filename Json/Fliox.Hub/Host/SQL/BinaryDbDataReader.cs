@@ -16,6 +16,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             this.reader     = reader;
         }
         
+        public void Init() {
+            currentOrdinal = 0;
+        }
+        
         public override bool HasObject (TypeMapper mapper) {
             int ordinal = currentOrdinal++;
             bool result = reader.GetBoolean(ordinal);
@@ -29,6 +33,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public override Var GetVar(PropField field)
         {
             int ordinal = currentOrdinal++;
+            /* if (reader.IsDBNull(ordinal)) {
+                return new Var(field.fieldType.varType.DefaultValue);
+            } */
             if (field.required)
             {
                 switch (field.typeId)
@@ -49,21 +56,25 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 }
                 throw new NotImplementedException($"GetVar() {field.typeId}");
             }
+            var value = reader.GetValue(ordinal);
+            if (value == DBNull.Value) {
+                return field.fieldType.varType.DefaultValue;
+            }
             switch (field.typeId)
             {
-                case StandardTypeId.Boolean:    return new Var((bool?)      reader.GetBoolean   (ordinal));
-                case StandardTypeId.String:     return new Var(             reader.GetString    (ordinal));
+                case StandardTypeId.Boolean:    return new Var((bool?)      value);
+                case StandardTypeId.String:     return new Var(             value);
                 //
-                case StandardTypeId.Uint8:      return new Var((byte?)      reader.GetByte      (ordinal));
-                case StandardTypeId.Int16:      return new Var((short?)     reader.GetInt16     (ordinal));
-                case StandardTypeId.Int32:      return new Var((int?)       reader.GetInt32     (ordinal));
-                case StandardTypeId.Int64:      return new Var((long?)      reader.GetInt64     (ordinal));
+                case StandardTypeId.Uint8:      return new Var((byte?)      value);
+                case StandardTypeId.Int16:      return new Var((short?)     value);
+                case StandardTypeId.Int32:      return new Var((int?)       value);
+                case StandardTypeId.Int64:      return new Var((long?)      value);
                 //
-                case StandardTypeId.Float:      return new Var((float?)     reader.GetFloat     (ordinal));
-                case StandardTypeId.Double:     return new Var((double?)    reader.GetDouble    (ordinal));
+                case StandardTypeId.Float:      return new Var((float?)     value);
+                case StandardTypeId.Double:     return new Var((double?)    value);
                 //
-                case StandardTypeId.DateTime:   return new Var((DateTime?)  reader.GetDateTime  (ordinal));
-                case StandardTypeId.Guid:       return new Var((Guid?)      reader.GetGuid      (ordinal));
+                case StandardTypeId.DateTime:   return new Var((DateTime?)  value);
+                case StandardTypeId.Guid:       return new Var((Guid?)      value);
             }
             throw new NotImplementedException($"GetVar() {field.typeId}");
         }

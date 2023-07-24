@@ -84,7 +84,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         internal virtual  void      WriteKey        (ref Writer writer, object key, int pos)                => throw new Invalid("not implemented");
         
         // TODO - make internal
-        public   virtual  object    ReadBinary      (BinaryReader reader, object slot, out bool success)   => throw new Invalid("not implemented");
+        public   virtual  object    ReadBinary      (BinaryReader reader, object slot, out bool success)    => throw new Invalid("not implemented");
+        public   virtual  void      MemberwiseCopy  (object source, object target)                          => throw new Invalid("not implemented");
         
         public   abstract void      CopyVar         (in Var src, ref Var dst);
         
