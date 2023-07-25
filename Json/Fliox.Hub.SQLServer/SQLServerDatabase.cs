@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using System.Data.SqlClient;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
 
 // ReSharper disable UseAwaitUsing
@@ -42,6 +43,33 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             return new SQLServerContainer(name.AsString(), this, Pretty);
         }
         
+        public override bool IsSyncTask(SyncRequestTask task) {
+            switch (task.TaskType) {
+                case TaskType.read: return ((ReadEntities)task).nativeType != null;
+            }
+            return false;
+        }
+        
+        protected override ISyncConnection GetConnectionSync()  {
+            if (connectionPool.TryPop(out var syncConnection)) {
+                return syncConnection;
+            }
+            try {
+                var connection = new SqlConnection(connectionString);
+                connection.Open();
+                return new SyncConnection(connection);
+            }
+            catch (SqlException e) {
+                if (e.Number == 4060) {
+                    return SyncConnectionError.DatabaseDoesNotExist(name);
+                }
+                return new SyncConnectionError(e);
+            }
+            catch (Exception e) {
+                return new SyncConnectionError(e);
+            }
+        }
+        
         protected override async Task<ISyncConnection> GetConnectionAsync()  {
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
@@ -49,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             try {
                 var connection = new SqlConnection(connectionString);
                 await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);   
+                return new SyncConnection(connection);
             }
             catch (SqlException e) {
                 if (e.Number == 4060) {

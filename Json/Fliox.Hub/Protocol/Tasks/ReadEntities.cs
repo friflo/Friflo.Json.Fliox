@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public   List<JsonKey>      ids;
         /// <summary> used to request the entities referenced by properties of a read task result </summary>
                     public   List<References>   references;
-        [Ignore]    internal Type               nativeType;
+        [Ignore]    public   Type               nativeType;
         [Ignore]    internal ContainerType      ContainerType => nativeType != null ? ContainerType.Objects : ContainerType.Values;
         
         public   override    TaskType           TaskType => TaskType.read;

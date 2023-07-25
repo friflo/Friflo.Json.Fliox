@@ -120,6 +120,33 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sb.Append(')');
         }
         
+        // TODO consolidate with AppendKeysSQL() above
+        public static string AppendKeysSQL2(List<JsonKey> keys, SQLEscape escape) {
+            var sb = new StringBuilder();
+            var escaped = new StringBuilder();
+            var isFirst = true;
+            foreach (var key in keys)
+            {
+                if (isFirst) {
+                    isFirst = false;   
+                } else {
+                    sb.Append(',');
+                }
+                if (key.IsLong()) {
+                    key.AppendTo(sb);
+                    continue;
+                }
+                if ((escape & SQLEscape.PrefixN) != 0) {
+                    sb.Append('N');                    
+                }
+                sb.Append('\'');
+                key.AppendTo(escaped);
+                AppendEscaped(sb, escaped, escape);
+                sb.Append('\'');
+            }
+            return sb.ToString();
+        }
+        
         /// <summary>
         /// Prefer using <see cref="ReadEntitiesSync"/> for SQL Server for performance.<br/>
         /// reading a single record - asynchronous: ~700 µs, synchronous: 100µs

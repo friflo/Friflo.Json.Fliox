@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             /* if (reader.IsDBNull(ordinal)) {
                 return new Var(field.fieldType.varType.DefaultValue);
             } */
-            if (field.required)
+            if (!field.fieldType.isNullable)
             {
                 switch (field.typeId)
                 {

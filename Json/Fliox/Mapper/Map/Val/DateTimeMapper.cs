@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override bool    IsNull(ref DateTime value)  => false;
         
         public DateTimeMapper(StoreConfig config, Type type) :
-            base (config, type, false, false) {
+            base (config, type, false, true) {
         }
         
         public override void        WriteVar(ref Writer writer, in Var value)               => Write(ref writer, value.DateTime);
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override void        CopyVar (in Var src, ref Var dst)                       => dst = new Var(src.DateTimeNull);
         
         public NullableDateTimeMapper(StoreConfig config, Type type) :
-            base (config, type, true, false) {
+            base (config, type, true, true) {
         }
 
         public override void Write(ref Writer writer, DateTime? value) {

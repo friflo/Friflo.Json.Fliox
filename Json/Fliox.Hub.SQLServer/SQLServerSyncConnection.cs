@@ -86,6 +86,23 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 }
             }
         }
+        
+        internal SqlDataReader ExecuteReaderSync(SqlCommand command) {
+            int tryCount = 0;
+            while (true) {
+                tryCount++;
+                try {
+                    return command.ExecuteReader(); // CommandBehavior.SingleResult | CommandBehavior.SingleRow);
+                }
+                catch (SqlException) {
+                    if (instance.State != ConnectionState.Open && tryCount == 1) {
+                        instance.Open();
+                        continue;
+                    }
+                    throw;
+                }
+            }
+        }
     }
 }
 

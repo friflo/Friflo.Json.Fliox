@@ -12,12 +12,14 @@ namespace Friflo.Json.Tests.Provider.Perf
     // [DapperLib/Dapper: Dapper - a simple object mapper for .Net] https://github.com/DapperLib/Dapper
     // In Dapper this test is run with:
     // dotnet run --project .\benchmarks\Dapper.Tests.Performance\ -c Release -f netcoreapp3.1 -- -f HandCodedBenchmarks --join
+    // In this porject
+    // dotnet test -c Release -f net6.0 --consoleloggerparameters:ErrorsOnly --filter "FullyQualifiedName=Friflo.Json.Tests.Provider.Perf.TestPerfSqlServer.Perf_Read_OneHandCoded" --no-build -e TEST_DB_PROVIDER=sqlserver_rel
     public static class TestPerfSqlServer
     {
         // [Test]
         public static async Task Perf_Read_OneHandCoded()
         {
-            await TestPerf.SeedPosts("sqlserver_rel");
+            await TestPerf.SeedPosts("sqlserver_rel").ConfigureAwait(false);
             using var connection = new SqlConnection("Data Source=.;Integrated Security=True;Database=test_rel");
             Console.WriteLine($"IsServerGC: {System.Runtime.GCSettings.IsServerGC}");
             connection.Open();
@@ -33,12 +35,13 @@ namespace Friflo.Json.Tests.Provider.Perf
 
         private static void ReadPosts(SqlConnection connection, int count)
         {
-            using var command = new SqlCommand("select Top 1 * from posts where Id = @Id", connection);
+            using var command = new SqlCommand("select Top 1 * from posts where Id IN (@Id)", connection);
             var idParam = command.Parameters.Add("@Id", SqlDbType.Int);
             command.Prepare();
             
             for (int n = 0; n < count; n++) {
-                idParam.Value = n % TestPerf.SeedCount;
+                var id = n % TestPerf.SeedCount;
+                idParam.Value = id;
                 using (var reader = command.ExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow))
                 {
                     reader.Read();

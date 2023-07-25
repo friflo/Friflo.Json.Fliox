@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Provider.Perf
         internal const  int WarmupCount = 1; // 50_000;
         internal const  int ReadCount   = 1; // 1_000;
         
-        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task Perf_Read_One(string db) {
             await SeedPosts(db);
             
@@ -35,6 +35,33 @@ namespace Friflo.Json.Tests.Provider.Perf
             for (int n = 0; n < count; n++) {
                 client.posts.Read().Find(n % SeedCount);
                 await client.SyncTasks();
+            }
+            var duration = stopWatch.Elapsed.TotalMilliseconds;
+            Console.WriteLine($"Read. count: {count}, duration: {duration} ms");
+        }
+        
+        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task Perf_Read_OneSynchronous(string db) {
+            var supportSync = IsMemoryDB(db) || IsSQLServer(db);
+            if (!supportSync) return;
+            
+            await SeedPosts(db);
+            
+            var client  = await GetClient(db, false);
+
+            // warmup
+            for (int n = 0; n < WarmupCount; n++) {
+                client.posts.Read().Find(n % SeedCount);
+                client.SyncTasksSynchronous();
+            }
+
+            // measurement
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+            var count = ReadCount;
+            for (int n = 0; n < count; n++) {
+                client.posts.Read().Find(n % SeedCount);
+                client.SyncTasksSynchronous();
             }
             var duration = stopWatch.Elapsed.TotalMilliseconds;
             Console.WriteLine($"Read. count: {count}, duration: {duration} ms");

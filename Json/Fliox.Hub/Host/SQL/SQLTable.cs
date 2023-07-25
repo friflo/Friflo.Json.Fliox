@@ -83,6 +83,25 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return new ReadEntitiesResult { entities = new Entities(objects) };
         }
         
+        public static  ReadEntitiesResult ReadObjects(
+            DbDataReader    reader,
+            ReadEntities    query,
+            SyncContext     syncContext)
+        {
+            var typeMapper      = syncContext.GetTypeMapper(query.nativeType);
+            var binaryReader    = new BinaryDbDataReader(reader);
+            var objects         = new EntityObject[query.ids.Count];
+            int count           = 0;
+            while (reader.Read())
+            {
+                binaryReader.Init();
+                var obj = typeMapper.ReadBinary(binaryReader, null, out bool _);
+                var key = query.ids[count];
+                objects[count++] = new EntityObject(key, obj);
+            }
+            return new ReadEntitiesResult { entities = new Entities(objects) };
+        }
+        
         public static async Task<List<EntityValue>> QueryEntitiesAsync(
             DbDataReader    reader,
             TableInfo       tableInfo,

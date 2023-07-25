@@ -64,13 +64,35 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             bytesBuf.end    = 0;
         }
         
-        public void GetString(DbDataReader reader, ref ReadCell cell, int ordinal) {
+        /// <summary>
+        /// Fails with Postgres for long strings > ~1000 chars
+        /// DecoderFallbackException: Unable to translate bytes [A4] at index 982 from specified code page to Unicode.
+        /// Postgres requires alternative <see cref="GetString"/>
+        /// </summary>
+        public void GetChars(DbDataReader reader, ref ReadCell cell, int ordinal) {
             var len = (int)reader.GetChars(ordinal, 0, null, 0, 0);
             if (len > charBuf.Length - charPos) {
                 charBuf = new char[len + charBuf.Length]; // ensure buffer is only growing
                 charPos = 0;
             }
             reader.GetChars(ordinal, 0, charBuf, charPos, len);
+            cell.chars.start    = charPos;
+            cell.chars.len      = len;
+            cell.chars.buf      = charBuf;
+            cell.isCharString   = true;
+            charPos += len;
+        }
+        
+        /// <summary>Required by Postgres. See <see cref="GetChars"/></summary>
+        public void GetString(DbDataReader reader, ref ReadCell cell, int ordinal) {
+            var str = reader.GetString(ordinal);
+            int len = str.Length;
+            if (len > charBuf.Length - charPos) {
+                charBuf = new char[len + charBuf.Length]; // ensure buffer is only growing
+                charPos = 0;
+            }
+            var target = new Span<char>(charBuf, charPos, len);
+            str.AsSpan().CopyTo(target);
             cell.chars.start    = charPos;
             cell.chars.len      = len;
             cell.chars.buf      = charBuf;

@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case ColumnType.String:
                 case ColumnType.JsonKey:
                 case ColumnType.Enum:
-                case ColumnType.BigInteger: sql2Json.GetString(reader, ref cell, ordinal);  return;
+                case ColumnType.BigInteger: sql2Json.GetChars(reader, ref cell, ordinal);   return;
                 //
                 case ColumnType.Uint8:      cell.lng = reader.GetByte           (ordinal);  return;
                 case ColumnType.Int16:      cell.lng = reader.GetInt16          (ordinal);  return;
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case ColumnType.Guid:       cell.guid= reader.GetGuid           (ordinal);  return;
                 //
                 case ColumnType.JsonValue:
-                case ColumnType.Array:      sql2Json.GetString(reader, ref cell, ordinal);  return;
+                case ColumnType.Array:      sql2Json.GetChars(reader, ref cell, ordinal);   return;
                 case ColumnType.Object:     cell.lng = reader.GetByte           (ordinal);  return; // used as boolean: != 0 => object is not null
                 default:
                     throw new InvalidOperationException($"unexpected type: {column.type}");
