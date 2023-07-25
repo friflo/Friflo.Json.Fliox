@@ -11,8 +11,14 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public abstract class SyncFunction
+    /// <summary>
+    /// Base class of all tasks create via methods of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>
+    /// </summary>
+    public abstract class SyncTask
     {
+        internal  abstract  TaskType        TaskType { get; }
+        internal  abstract  SyncRequestTask CreateRequestTask(in CreateTaskContext context);
+        
                                     internal            string              taskName;
                                     internal            string              GetLabel() => taskName ?? Details;
         [DebuggerBrowsable(Never)]  public    abstract  string              Details { get; }
@@ -78,15 +84,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    /// <summary>
-    /// Base class of all tasks create via methods of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>
-    /// </summary>
-    public abstract class SyncTask : SyncFunction
-    {
-        internal  abstract  TaskType        TaskType { get; }
-        internal  abstract  SyncRequestTask CreateRequestTask(in CreateTaskContext context);
-    }
-    
     internal readonly struct CreateTaskContext
     {
         internal  readonly  ObjectMapper    mapper;
@@ -105,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// The library itself doesn't use the <paramref name="name"/> internally - its purpose is only to enhance debugging
         /// or post-mortem debugging of application code.
         /// </summary>
-        public static T TaskName<T> (this T task, string name) where T : SyncFunction {
+        public static T TaskName<T> (this T task, string name) where T : SyncTask {
             task.taskName = name;
             return task;
         }

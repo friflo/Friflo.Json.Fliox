@@ -48,29 +48,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var employees   = store.employees;
 
             var readOrders  = orders.Read()                                                         .TaskName("readOrders");
-            var order1      = readOrders.Find("order-1")                                            .TaskName("order1");
+            var order1      = readOrders.Find("order-1"); //                                         .TaskName("order1");
             AreEqual("Find<Order> (id: 'order-1')", order1.Details);
             var allArticles             = articles.QueryAll()                                       .TaskName("allArticles");
-            var articleProducer         = allArticles.ReadRelations(producers, a => a.producer)     .TaskName("articleProducer");
+            var articleProducer         = allArticles.ReadRelations(producers, a => a.producer); //  .TaskName("articleProducer");
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");
             var ordersWithCustomer1     = orders.Query(o => o.customer == "customer-1")             .TaskName("ordersWithCustomer1");
             var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0)   .TaskName("read3");
             var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2))         .TaskName("ordersAnyAmountLower2");
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
             var orders2WithTaskError    = orders.Query(o => o.customer == readTaskError)            .TaskName("orders2WithTaskError");
-            var order2CustomerError     = orders2WithTaskError.ReadRelations(customers, o => o.customer) .TaskName("order2CustomerError");
+            var order2CustomerError     = orders2WithTaskError.ReadRelations(customers, o => o.customer); // .TaskName("order2CustomerError");
             
             AreEqual("ReadTask<Order> (ids: 1)",                                        readOrders              .Details);
             AreEqual("Find<Order> (id: 'order-1')",                                     order1                  .Details);
             AreEqual("QueryTask<Article> (filter: true)",                               allArticles             .Details);
-            AreEqual("allArticles -> .producer",                                        articleProducer         .Details);
+            AreEqual("allArticles -> .producer",                                        articleProducer         .Label);
             AreEqual("QueryTask<Order> (filter: o => o.items.Any(i => i.name == 'Camera'))", hasOrderCamera          .Details);
             AreEqual("QueryTask<Order> (filter: o => o.customer == 'customer-1')",           ordersWithCustomer1     .Details);
             AreEqual("QueryTask<Order> (filter: o => o.items.Count(i => i.amount < 1) > 0)", read3                   .Details);
             AreEqual("QueryTask<Order> (filter: o => o.items.Any(i => i.amount < 2))",       ordersAnyAmountLower2   .Details);
             AreEqual("QueryTask<Order> (filter: o => o.items.All(i => i.amount > 0))",       ordersAllAmountGreater0 .Details);
             AreEqual("QueryTask<Order> (filter: o => o.customer == 'read-task-error')",      orders2WithTaskError    .Details);
-            AreEqual("orders2WithTaskError -> .customer",                               order2CustomerError     .Details);
+            AreEqual("orders2WithTaskError -> .customer",                                    order2CustomerError     .Label);
 
             var orderCustomer   = orders.RelationPath(customers, o => o.customer);
             var customer        = readOrders.ReadRelation(customers, orderCustomer);
@@ -81,13 +81,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("readOrders -> .customer", customer.ToString());
 
             var readOrders2     = orders.Read()                                                     .TaskName("readOrders2");
-            var order2          = readOrders2.Find("order-2")                                       .TaskName("order2");
-            var order2Customer  = readOrders2.ReadRelation(customers, orderCustomer)                .TaskName("order2Customer");
+            var order2          = readOrders2.Find("order-2"); //                                   .TaskName("order2");
+            var order2Customer  = readOrders2.ReadRelation(customers, orderCustomer); //            .TaskName("order2Customer");
             
-            AreEqual("readOrders -> .customer",         customer        .Details);
+            AreEqual("readOrders -> .customer",         customer        .Label);
             AreEqual("ReadTask<Order> (ids: 1)",        readOrders2     .Details);
             AreEqual("Find<Order> (id: 'order-2')",     order2          .Details);
-            AreEqual("readOrders2 -> .customer",        order2Customer  .Details);
+            AreEqual("readOrders2 -> .customer",        order2Customer  .Label);
 
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
@@ -96,30 +96,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
             AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
 
-            var producerEmployees = articleProducer.ReadRelations(employees, p => p.employeeList)   .TaskName("producerEmployees");
-            AreEqual("articleProducer -> .employees[*]", producerEmployees.Details);
+            var producerEmployees = articleProducer.ReadRelations(employees, p => p.employeeList); //   .TaskName("producerEmployees");
+            AreEqual("allArticles -> .producer -> .employees[*]", producerEmployees.Label);
             
             AreEqual(9,  store.Tasks.Count);
-            AreEqual(16, store.Functions.Count);
             var sync = await store.TrySyncTasks(); // ----------------
             
             IsFalse(sync.Success);
-            AreEqual("tasks: 16, failed: 5", sync.ToString());
-            AreEqual(16, sync.Functions.Count);
-            AreEqual(5,  sync.Failed.Count);
-            const string msg = @"SyncTasks() failed with task errors. Count: 5
+            AreEqual("tasks: 9, failed: 1", sync.ToString());
+            AreEqual(9, sync.Tasks.Count);
+            AreEqual(1, sync.Failed.Count);
+            AreEqual(@"SyncTasks() failed with task errors. Count: 1
 |- allArticles # EntityErrors ~ count: 2
 |   ReadError: articles [article-1], simulated read entity error
-|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-|- articleProducer # EntityErrors ~ count: 2
-|   ReadError: articles [article-1], simulated read entity error
-|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-|- order2CustomerError # DatabaseError ~ read references failed: 'orders -> .customer' - simulated read task error
-|- order2Customer # DatabaseError ~ read references failed: 'orders -> .customer' - simulated read task error
-|- producerEmployees # EntityErrors ~ count: 2
-|   ReadError: articles [article-1], simulated read entity error
-|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
-            AreEqual(msg, sync.Message);
+|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", sync.Message);
+            
+            AreEqual(@"EntityErrors ~ count: 2
+| ReadError: articles [article-1], simulated read entity error
+| ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", articleProducer.Error.Message);
+            
+            AreEqual(@"DatabaseError ~ read references failed: 'orders -> .customer' - simulated read task error", order2CustomerError.Error.Message);
+            AreEqual(@"DatabaseError ~ read references failed: 'orders -> .customer' - simulated read task error", order2Customer.Error.Message);
+            AreEqual(@"EntityErrors ~ count: 2
+| ReadError: articles [article-1], simulated read entity error
+| ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", producerEmployees.Error.Message);
             
             AreEqual(1,                 ordersWithCustomer1.Result.Count);
             NotNull(ordersWithCustomer1.Result.Find(i => i.id == "order-1"));

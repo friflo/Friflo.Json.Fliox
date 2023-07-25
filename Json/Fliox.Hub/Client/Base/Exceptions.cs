@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// Is thrown when accessing the <b>Result</b> of a synced task which returned an <see cref="SyncFunction.Error"/>
+    /// Is thrown when accessing the <b>Result</b> of a synced task which returned an <see cref="SyncTask.Error"/>
     /// </summary>
     public sealed class TaskResultException : Exception
     {
@@ -41,9 +41,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public sealed class SyncTasksException : Exception
     {
-        public readonly     IReadOnlyList<SyncFunction>  failed;
+        public readonly     IReadOnlyList<SyncTask>  failed;
 
-        internal SyncTasksException(ErrorResponse errorResponse, List<SyncFunction> failed)
+        internal SyncTasksException(ErrorResponse errorResponse, List<SyncTask> failed)
             : base(SyncResult.GetMessage(errorResponse, failed))
         {
             this.failed = failed;

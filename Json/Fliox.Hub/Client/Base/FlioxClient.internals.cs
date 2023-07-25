@@ -133,22 +133,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             return count;
         }
         
-        private List<SyncTask> GetTasks() {
-            var functions = _intern.syncStore.functions;
-            var result = new List<SyncTask>(functions.Count);
-            foreach (var function in functions) {
-                if (function is SyncTask syncTask)
-                    result.Add(syncTask);
-            }
-            return result;
-        }
-        
         internal void AddTask(SyncTask task) {
-            _intern.syncStore.functions.Add(task);
-        }
-        
-        internal void AddFunction(SyncFunction task) {
-            _intern.syncStore.functions.Add(task);
+            _intern.syncStore.tasks.Add(task);
         }
         
         internal EntitySet GetEntitySet(in ShortString name) {
@@ -200,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             syncStore.SetSyncSets(this);
             
-            var functions       = syncStore.functions;
+            var functions       = syncStore.tasks;
             var syncRequest     = _intern.syncRequestBuffer.Get() ?? new SyncRequest();
             InitSyncRequest(syncRequest);
             var tasks           = syncRequest.tasks ?? new List<SyncRequestTask>(functions.Count);
@@ -351,7 +337,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     syncStore.DetectPatchesResults();
                 }
                 finally {
-                    var functions   = syncStore.functions;
+                    var functions   = syncStore.tasks;
                     var failed      = GetFailedFunctions(functions);
                     syncResult      = _intern.syncResultBuffer.Get() ?? new SyncResult(this);
                     syncResult.Init(syncRequest, syncStore, memoryBuffer, functions, failed, response.error);
@@ -374,7 +360,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        private static List<SyncFunction> GetFailedFunctions(List<SyncFunction> functions) {
+        private static List<SyncTask> GetFailedFunctions(List<SyncTask> functions) {
             // create failed array only if required
             var errorCount  = 0;
             foreach (var task in functions) {
@@ -385,7 +371,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (errorCount == 0) {
                 return null;
             }
-            var failed = new List<SyncFunction>(errorCount);
+            var failed = new List<SyncTask>(errorCount);
             foreach (var task in functions) {
                 if (!task.State.Error.HasErrors)
                     continue;

@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var customers = store.customers;
 
             var readCustomers   = customers.Read()                                      .TaskName("readCustomers");
-            var customerRead    = readCustomers.Find(readTaskError)                     .TaskName("customerRead");
+            var customerRead    = readCustomers.Find(readTaskError); //                 .TaskName("customerRead");
             var customerQuery   = customers.Query(o => o.id == "query-task-error")      .TaskName("customerQuery");
             
             var createError     = customers.Create(new Customer{id = createTaskError})  .TaskName("createError");
@@ -48,13 +48,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var deleteError     = customers.Delete(new Customer{id = deleteTaskError})  .TaskName("deleteError");
             
             AreEqual(5, store.Tasks.Count);
-            AreEqual(6, store.Functions.Count);
             var sync = await store.TrySyncTasks(); // ----------------
             
-            AreEqual("tasks: 6, failed: 6", sync.ToString());
-            AreEqual(@"SyncTasks() failed with task errors. Count: 6
+            AreEqual("tasks: 5, failed: 5", sync.ToString());
+            AreEqual(@"SyncTasks() failed with task errors. Count: 5
 |- readCustomers # DatabaseError ~ simulated read task error
-|- customerRead # DatabaseError ~ simulated read task error
 |- customerQuery # DatabaseError ~ simulated query error
 |- createError # DatabaseError ~ simulated create task error
 |- upsertError # DatabaseError ~ simulated upsert task error

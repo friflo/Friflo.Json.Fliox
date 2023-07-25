@@ -12,16 +12,63 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client
 {
 
+    public interface IRelationsParent
+    {
+        public  SyncTask    Task            { get; }
+        public  string      Label           { get; }
+        public  string      Details         { get; }
+    }
+    
     // could be an interface, but than internal used methods would be public (C# 8.0 enables internal interface methods) 
-    public abstract class ReadRelationsFunction : SyncFunction
+    /// <summary>originally extended SyncFunction. Its members are now in <see cref="SyncTask"/> </summary>
+    public abstract class ReadRelationsFunction : IRelationsParent // : SyncFunction
     {
         [DebuggerBrowsable(Never)]
-        internal            TaskState   state;
-        internal abstract   string      Selector    { get; }
-        internal abstract   ShortString Container   { get; }
-        internal abstract   string      KeyName     { get; }
-        internal abstract   bool        IsIntKey    { get; }
-        internal abstract   SubRelations SubRelations     { get; }
+        internal            TaskState       state;
+        internal abstract   string          Selector        { get; }
+        internal abstract   ShortString     Container       { get; }
+        internal abstract   string          KeyName         { get; }
+        internal abstract   bool            IsIntKey        { get; }
+        internal abstract   SubRelations    SubRelations    { get; }
+        public   abstract   SyncTask        Task            { get; }
+        public   abstract   string          Label           { get; }
+        public   abstract   string          Details         { get; }
+        public   override   string          ToString()      => Label;
+
+        
+        /// <summary>
+        /// Is true in case task execution was successful. Otherwise false. If false <see cref="Error"/> property is set. 
+        /// </summary>
+        /// <exception cref="TaskNotSyncedException"></exception>
+        public              bool        Success { get {
+            if (state.IsExecuted())
+                return !state.Error.HasErrors;
+            throw new TaskNotSyncedException($"SyncTask.Success requires SyncTasks(). {Label}");
+        }}
+        
+        /// <summary>The error caused the task failing. Return null if task was successful - <see cref="Success"/> == true</summary>
+        public              TaskError   Error { get {
+            if (state.IsExecuted())
+                return state.Error.TaskError;
+            throw new TaskNotSyncedException($"SyncTask.Error requires SyncTasks(). {Label}");
+        } }
+        
+        internal bool IsOk(string method, out Exception e) {
+            if (state.IsExecuted()) {
+                if (!state.Error.HasErrors) {
+                    e = null;
+                    return true;
+                }
+                e = new TaskResultException(state.Error.TaskError);
+                return false;
+            }
+            e = new TaskNotSyncedException($"{method} requires SyncTasks(). {Label}");
+            return false;
+        }
+        
+        internal Exception AlreadySyncedError() {
+            return new TaskAlreadySyncedException($"Task already executed. {Label}");
+        }
         
         internal abstract void    SetResult (EntitySet set, List<JsonKey> ids);
     }
@@ -30,36 +77,37 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         internal            Relations       relations;
         private   readonly  FlioxClient     client;
+        public    override  SyncTask        Task       => relations.parent.Task;
         
-        protected ReadRelationsFunction(FlioxClient client) {
-            relations   = new Relations(this);
+        protected ReadRelationsFunction(FlioxClient client, IRelationsParent parent) {
+            relations   = new Relations(parent);
             this.client = client;
         }
 
         // --- IReadRelationsTask<T>
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
-            if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
+            if (state.IsExecuted()) throw AlreadySyncedError();
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client, this);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class where TRefKey : struct {
-            if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
+            if (state.IsExecuted()) throw AlreadySyncedError();
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client, this);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
-            if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
+            if (state.IsExecuted()) throw AlreadySyncedError();
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client, this);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class where TRefKey : struct {
-            if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client);
+            if (state.IsExecuted()) throw AlreadySyncedError();
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, client, this);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
-            if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByPath<TRef>(relation.GetInstance(), selector.path, client);
+            if (state.IsExecuted()) throw AlreadySyncedError();
+            return relations.ReadRelationsByPath<TRef>(relation.GetInstance(), selector.path, client, this);
         }
     }
 
@@ -79,13 +127,14 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class ReadRelations<T> : ReadRelationsFunction<T>  where T : class
     {
-        private             List<T>         result;
-        private   readonly  SyncFunction    parent;
+        private             List<T>             result;
+        private   readonly  IRelationsParent    parent;
             
         public              List<T>     Result  => IsOk("ReadRelations.Result", out Exception e) ? result      : throw e;
         
-        internal  override  TaskState   State   => state;
-        public    override  string      Details => $"{parent.GetLabel()} -> {Selector}";
+        //internal  override  TaskState   State   => state;
+        public    override  string      Label   => $"{parent.Label} -> {Selector}";
+        public    override  string      Details => $"{parent.Details} -> {Selector}";
             
         internal  override  string      Selector  { get; }
         internal  override  ShortString Container { get; }
@@ -95,8 +144,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal  override  SubRelations SubRelations => relations.subRelations;
 
 
-        internal ReadRelations(SyncFunction parent, string selector, in ShortString container, string keyName, bool isIntKey, FlioxClient client)
-            : base(client)
+        internal ReadRelations(IRelationsParent parent, string selector, in ShortString container, string keyName, bool isIntKey, FlioxClient client)
+            : base(client, parent)
         {
             this.parent     = parent;
             this.Selector   = selector;

@@ -14,25 +14,27 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class ReadRelation<T> : ReadRelationsFunction<T> where T : class
     {
-        private             T           entity;
-        private   readonly  SyncTask    parent;
+        private             T                   entity;
+        private   readonly  IRelationsParent    parent;
     
         public              T           Result  => IsOk("ReadRelation.Result", out Exception e) ? entity  : throw e;
                 
-        internal  override  TaskState   State   => state;
-        public    override  string      Details => $"{parent.GetLabel()} -> {Selector}";
+        // internal  override  TaskState   State   => state;
+        public    override  string      Label   => $"{parent.Label} -> {Selector}";
+        public    override  string      Details => $"{parent.Details} -> {Selector}";
                 
         internal  override  string      Selector    { get; }
         internal  override  ShortString Container   { get; }
         internal  override  string      KeyName     { get; }
         internal  override  bool        IsIntKey    { get; }
+        public    override  SyncTask    Task        => parent.Task;
 
         internal override   SubRelations SubRelations => relations.subRelations;
 
-        internal ReadRelation(SyncTask parent, string selector, in ShortString container, string keyName, bool isIntKey, FlioxClient client)
-            : base(client)
+        internal ReadRelation(IRelationsParent parent, string selector, in ShortString container, string keyName, bool isIntKey, FlioxClient client)
+            : base(client, parent)
         {
-            relations       = new Relations(this);
+            relations       = new Relations(parent);
             this.parent     = parent;
             this.Selector   = selector;
             this.Container  = container;
@@ -41,8 +43,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override void SetResult(EntitySet set, List<JsonKey> ids) {
-            if (ids.Count == 0)
+            if (ids.Count == 0) {
                 return;
+            }
             if (ids.Count != 1)
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
             var entitySet = (EntitySetBase<T>) set;

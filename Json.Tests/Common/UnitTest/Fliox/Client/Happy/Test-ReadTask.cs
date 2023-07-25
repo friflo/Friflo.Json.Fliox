@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var customers   = store.customers;
             
             var readOrders  = orders.Read()                                      .TaskName("readOrders");
-            var order1Task  = readOrders.Find("order-1")                         .TaskName("order1Task");
+            var order1Task  = readOrders.Find("order-1"); //                     .TaskName("order1Task");
             await store.SyncTasks();
             
             // schedule ReadRefs on an already synced Read operation
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             // todo add Read() without ids 
 
             readOrders              = orders.Read()                                             .TaskName("readOrders");
-            var order1              = readOrders.Find("order-1")                                .TaskName("order1");
+            var order1              = readOrders.Find("order-1"); //                            .TaskName("order1");
             var articleRefsTask     = readOrders.ReadRelations(articles, itemsArticle);
             var articleRefsTask2    = readOrders.ReadRelations(articles, itemsArticle);
             AreSame(articleRefsTask, articleRefsTask2);
@@ -63,31 +63,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
             var articleRefsTask3 = readOrders.ReadRelations(articles, o => o.items.Select(a => a.article));
             AreSame(articleRefsTask, articleRefsTask3);
-            AreEqual("readOrders -> .items[*].article", articleRefsTask.Details);
+            AreEqual("readOrders -> .items[*].article", articleRefsTask.Label);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Result; });
             AreEqual("ReadRelations.Result requires SyncTasks(). readOrders -> .items[*].article", e.Message);
 
             var articleProducerTask = articleRefsTask.ReadRelations(producers, a => a.producer);
-            AreEqual("readOrders -> .items[*].article -> .producer", articleProducerTask.Details);
+            AreEqual("readOrders -> .items[*].article -> .producer", articleProducerTask.Label);
 
             var readTask        = articles.Read()                                           .TaskName("readTask");
             var duplicateId     = "article-galaxy"; // support duplicate ids
-            var galaxy          = readTask.Find(duplicateId)                                .TaskName("galaxy");
-            var article1And2    = readTask.FindRange(new [] {"article-1", "article-2"})     .TaskName("article1And2");
+            var galaxy          = readTask.Find(duplicateId); //                            .TaskName("galaxy");
+            var article1And2    = readTask.FindRange(new [] {"article-1", "article-2"}); // .TaskName("article1And2");
             var articleSetIds   = new [] {duplicateId, duplicateId, "article-ipad"};
-            var articleSet      = readTask.FindRange(articleSetIds)                         .TaskName("articleSet");
-            var articleMissing  = readTask.Find("article-missing")                          .TaskName("article-missing");
+            var articleSet      = readTask.FindRange(articleSetIds); //                     .TaskName("articleSet");
+            var articleMissing  = readTask.Find("article-missing");  //                     .TaskName("article-missing");
 
-            AreEqual(@"readOrders
-order1
-readOrders -> .items[*].article
-readOrders -> .items[*].article -> .producer
-readTask
-galaxy
-article1And2
-articleSet
-article-missing", string.Join("\n", store.Functions));
+            AreEqual("readOrders\nreadTask", string.Join("\n", store.Tasks));
 
             await store.SyncTasks(); // ----------------
         

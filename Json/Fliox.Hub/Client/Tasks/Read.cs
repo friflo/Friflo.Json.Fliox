@@ -13,13 +13,43 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    
-    public abstract  class FindFunction<TKey, T> : SyncFunction where T : class {
+    /// <summary>originally extended SyncFunction. Its members are now in <see cref="SyncTask"/> </summary>
+    public abstract  class FindFunction<TKey, T> where T : class {
         [DebuggerBrowsable(Never)]
-        internal                    TaskState   findState;
+        internal            TaskState   findState;
+        public   abstract   string      Details { get; }
+
         
-        public   abstract override  string      Details { get; }
-        internal abstract override  TaskState   State   { get; }
+        /// <summary>
+        /// Is true in case task execution was successful. Otherwise false. If false <see cref="Error"/> property is set. 
+        /// </summary>
+        /// <exception cref="TaskNotSyncedException"></exception>
+        public              bool        Success { get {
+            if (findState.IsExecuted())
+                return !findState.Error.HasErrors;
+            throw new TaskNotSyncedException($"SyncTask.Success requires SyncTasks(). {Details}");
+        }}
+        
+        /// <summary>The error caused the task failing. Return null if task was successful - <see cref="Success"/> == true</summary>
+        public              TaskError   Error { get {
+            if (findState.IsExecuted())
+                return findState.Error.TaskError;
+            throw new TaskNotSyncedException($"SyncTask.Error requires SyncTasks(). {Details}");
+        } }
+        
+        
+        internal bool IsOk(string method, out Exception e) {
+            if (findState.IsExecuted()) {
+                if (!findState.Error.HasErrors) {
+                    e = null;
+                    return true;
+                }
+                e = new TaskResultException(findState.Error.TaskError);
+                return false;
+            }
+            e = new TaskNotSyncedException($"{method} requires SyncTasks(). {Details}");
+            return false;
+        }
 
         internal abstract void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities, List<TKey> buf);
         internal abstract void SetFindResult(Dictionary<TKey, T> values);
@@ -36,7 +66,6 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public              T           Result      => IsOk("Find.Result",   out Exception e) ? result : throw e;
         public              JsonValue   RawResult   => IsOk("Find.RawResult",out Exception e) ? rawResult : throw e;
-        internal override   TaskState   State       => findState;
         public   override   string      Details     => $"Find<{typeof(T).Name}> (id: '{key}')";
         
         private static readonly KeyConverter<TKey> KeyConvert = KeyConverter.GetConverter<TKey>();
@@ -76,7 +105,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         private             Dictionary<JsonKey, EntityValue>    entities;
         public              Dictionary<TKey, T>                 Result    => IsOk("FindRange.Result",   out Exception e) ? results : throw e;
         public              Dictionary<TKey, EntityValue>       RawResult => IsOk("FindRange.RawResult",out Exception e) ? GetRawResult() : throw e;
-        internal override   TaskState                           State   => findState;
         public   override   string                              Details => $"FindRange<{typeof(T).Name}> (ids: {results.Count})";
         
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
@@ -137,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class ReadTask<TKey, T> : SyncTask, IReadRelationsTask<T> where T : class
+    public sealed class ReadTask<TKey, T> : SyncTask, IRelationsParent, IReadRelationsTask<T> where T : class
     {
         [DebuggerBrowsable(Never)]
         internal            TaskState               state;
@@ -152,8 +180,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              Dictionary<TKey, T>     Result      => IsOk("ReadTask.Result", out Exception e) ? result      : throw e;
 
         internal override   TaskState               State       => state;
+        public              string                  Label       => taskName ?? Details;
         public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (ids: {result.Count})";
         internal override   TaskType                TaskType    => TaskType.read;
+        public              SyncTask                Task        => this;
         
 
         internal ReadTask(SyncSet<TKey, T> syncSet) {
@@ -170,7 +200,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             result.Add(key, null);
             var find = new Find<TKey, T>(key);
             findTasks.Add(find);
-            set.client.AddFunction(find);
+            // set.client.AddFunction(find);
             return find;
         }
         
@@ -187,7 +217,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             var find = new FindRange<TKey, T>(keys);
             findTasks.Add(find);
-            set.client.AddFunction(find);
+            // set.client.AddFunction(find);
             return find;
         }
         
@@ -204,7 +234,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             var find = new FindRange<TKey, T>(keys);
             findTasks.Add(find);
-            set.client.AddFunction(find);
+            // set.client.AddFunction(find);
             return find;
         }
         
@@ -243,27 +273,27 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- IReadRelationsTask<T>
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client, this);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client, this);
         }
        
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client, this);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class  where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client);
+            return relations.ReadRelationsByExpression<TRef>(relation.GetInstance(), selector, set.client, this);
         }
         
         public ReadRelations<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
-            return relations.ReadRelationsByPath<TRef>(relation.GetInstance(), selector.path, set.client);
+            return relations.ReadRelationsByPath<TRef>(relation.GetInstance(), selector.path, set.client, this);
         }
 
 
@@ -287,7 +317,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var isIntKey        = relation.IsIntKey();
             var readRelation    = new ReadRelation<TRef>(this, path, relation.nameShort, keyName, isIntKey, set.client);
             relations.subRelations.AddReadRelations(path, readRelation);
-            set.client.AddFunction(readRelation);
+            // set.client.AddFunction(readRelation);
             return readRelation;
         }
     }

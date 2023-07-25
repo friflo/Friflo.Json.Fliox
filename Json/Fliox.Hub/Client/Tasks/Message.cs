@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     /// <remarks>
     /// The <see cref="EntityDatabase"/> forward the message (or command) as en event to all clients subscribed to the message. <br/>
-    /// If sending the message to the <see cref="EntityDatabase"/> is successful <see cref="SyncFunction.Success"/> is true. <br/>
+    /// If sending the message to the <see cref="EntityDatabase"/> is successful <see cref="SyncTask.Success"/> is true. <br/>
     /// <i>Notes:</i>
     /// <list type="bullet">
     ///   <item> Messages in contrast to commands return no result. </item>

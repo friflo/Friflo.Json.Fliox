@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         internal    Dictionary<ShortString,SyncSet> SyncSets { get; private set; }
         
-        internal readonly   List<SyncFunction>  functions           = new List<SyncFunction>();
+        internal readonly   List<SyncTask>  tasks           = new List<SyncTask>();
         
         private     List<DetectAllPatches>      detectAllPatches;
         private     List<DetectAllPatches>      DetectAllPatches()  => detectAllPatches ??= new List<DetectAllPatches>();
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal void Reuse() {
-            foreach (var function in functions) {
+            foreach (var function in tasks) {
                 function.Reuse();
             }
             var syncSets = SyncSets;
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 syncSets.Clear();
             }
             detectAllPatches?.Clear();
-            functions.Clear();
+            tasks.Clear();
         }
 
         internal DetectAllPatches CreateDetectAllPatchesTask() {

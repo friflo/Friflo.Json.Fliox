@@ -32,12 +32,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var types       = store.types;
 
             var readOrders              = orders.Read()                                             .TaskName("readOrders");
-            var order1                  = readOrders.Find("order-1")                                .TaskName("order1");
+            var order1                  = readOrders.Find("order-1"); //                            .TaskName("order1");
             AreEqual("Find<Order> (id: 'order-1')", order1.Details); 
             var allArticles             = articles.QueryAll()                                       .TaskName("allArticles");
             var filterAll               = new EntityFilter<Article>(a => true);
             var allArticles2            = articles.QueryByFilter(filterAll)                         .TaskName("allArticles2");
             var producersTask           = allArticles.ReadRelations(producers, a => a.producer);
+            AreEqual("allArticles -> .producer", producersTask.ToString());
             var allArticlesLimit        = articles.QueryAll();
             allArticlesLimit.limit      = 2;
 
@@ -66,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreSame(customer, customer2);
             var customer3               = readOrders.ReadRelation(customers, o => o.customer);
             AreSame(customer, customer3);
-            AreEqual("readOrders -> .customer", customer.Details);
+            AreEqual("readOrders -> .customer", customer.Label);
 
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });

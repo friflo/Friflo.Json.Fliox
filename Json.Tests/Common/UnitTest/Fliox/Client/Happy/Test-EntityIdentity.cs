@@ -35,17 +35,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("Task already executed. ReadTask<Order> (ids: 1)", e.Message);
 
             var readOrders2     = orders.Read()                         .TaskName("readOrders2");
-            var order1Task      = readOrders2.Find("order-1")           .TaskName("order1Task");
+            var order1Task      = readOrders2.Find("order-1"); //       .TaskName("order1Task");
 
             var readArticles    = articles.Read()                       .TaskName("readArticles");
-            var article1Task    = readArticles.Find("article-1")        .TaskName("article1Task");
+            var article1Task    = readArticles.Find("article-1"); //    .TaskName("article1Task");
             // var article1TaskRedundant   =  readArticles.ReadId("article-1");
             // AreSame(article1Task, article1TaskRedundant);
             
             var readCustomers   = customers.Read()                      .TaskName("readCustomers");
-            var article2Task    = readArticles.Find("article-2")        .TaskName("article2Task");
-            var customer1Task   = readCustomers.Find("customer-1")      .TaskName("customer1Task");
-            var unknownTask     = readCustomers.Find("customer-missing").TaskName("unknownTask");
+            var article2Task    = readArticles.Find("article-2"); //    .TaskName("article2Task");
+            var customer1Task   = readCustomers.Find("customer-1"); //  .TaskName("customer1Task");
+            var unknownTask     = readCustomers.Find("customer-missing"); // .TaskName("unknownTask");
 
             await store.SyncTasks(); // ----------------
             

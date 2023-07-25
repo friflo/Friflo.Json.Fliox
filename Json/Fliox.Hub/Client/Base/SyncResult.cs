@@ -16,20 +16,20 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public sealed class SyncResult
     {
-        public              IReadOnlyList<SyncFunction> Functions  => functions;
-        public              IReadOnlyList<SyncFunction> Failed     => GetFailed();
+        public              IReadOnlyList<SyncTask>     Tasks       => tasks;
+        public              IReadOnlyList<SyncTask>     Failed      => GetFailed();
         
         private             SyncRequest                 syncRequest;
         private             SyncStore                   syncStore;
         private             MemoryBuffer                memoryBuffer;
-        private             List<SyncFunction>          functions;
-        internal            List<SyncFunction>          failed;
+        private             List<SyncTask>              tasks;
+        internal            List<SyncTask>              failed;
         private             ErrorResponse               errorResponse;
 
         public              bool                        Success     => failed == null && errorResponse == null;
         public              string                      Message     => GetMessage(errorResponse, failed);
 
-        public override     string                      ToString()  => $"tasks: {functions.Count}, failed: {failed.Count}";
+        public override     string                      ToString()  => $"tasks: {tasks.Count}, failed: {failed.Count}";
 
 #pragma warning disable CS0169
         private  readonly   FlioxClient                 client; // only set in DEBUG to avoid client not being collected by GC
@@ -45,14 +45,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             SyncRequest         syncRequest,
             SyncStore           syncStore,
             MemoryBuffer        memoryBuffer,
-            List<SyncFunction>  tasks,
-            List<SyncFunction>  failed,
+            List<SyncTask>      tasks,
+            List<SyncTask>      failed,
             ErrorResponse       errorResponse)
         {
             this.syncRequest    = syncRequest;
             this.syncStore      = syncStore;
             this.memoryBuffer   = memoryBuffer;
-            this.functions      = tasks;
+            this.tasks          = tasks;
             this.failed         = failed;
             this.errorResponse  = errorResponse;
         }
@@ -73,18 +73,18 @@ namespace Friflo.Json.Fliox.Hub.Client
             memoryBuffer    = null;
 
             errorResponse   = null;
-            functions       = null;
+            tasks           = null;
             failed          = null;
             client._intern.syncResultBuffer.Add(this);
         }
         
-        private IReadOnlyList<SyncFunction> GetFailed() {
+        private IReadOnlyList<SyncTask> GetFailed() {
             if (failed != null)
                 return failed;
-            return Array.Empty<SyncFunction>();
+            return Array.Empty<SyncTask>();
         }
         
-        internal static string GetMessage(ErrorResponse errorResponse, List<SyncFunction> failed) {
+        internal static string GetMessage(ErrorResponse errorResponse, List<SyncTask> failed) {
             if (errorResponse != null) {
                 return errorResponse.message;
             }

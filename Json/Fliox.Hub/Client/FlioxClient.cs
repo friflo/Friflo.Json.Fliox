@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region - public properties
     
         /// <summary> List of tasks created by its <see cref="FlioxClient"/> methods. These tasks are executed when calling <see cref="SyncTasks"/> </summary>
-                        public      IReadOnlyList<SyncTask>     Tasks           => GetTasks();
+                        public      IReadOnlyList<SyncTask>     Tasks           => _intern.syncStore.tasks;
 
         /// <summary> name of the database the client is attached to </summary>
         [Browse(Never)] public      string                      DatabaseName    => _readonly.database;
@@ -51,8 +51,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> access to standard database commands - <see cref="StdCommands"/> </summary>
         // ReSharper disable once InconsistentNaming
         [Browse(Never)] public      StdCommands                 std             => _std ??= new StdCommands(this);
-
-        [Browse(Never)] public      IReadOnlyList<SyncFunction> Functions       => _intern.syncStore.functions;
 
         /// <summary> general client information: attached database, the number of cached entities and scheduled <see cref="Tasks"/> </summary>
         [Browse(Never)] public      ClientInfo                  ClientInfo      => new ClientInfo(this); 
@@ -130,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             /// <summary>
             /// Process continuation of <see cref="FlioxClient.ExecuteAsync"/> on caller context. <br/>
             /// This ensures modifications to entities are applied on the same context used by the caller. <br/>
-            /// It also ensures that <see cref="SyncFunction.OnSync"/> is called on caller context. <br/>
+            /// It also ensures that <see cref="SyncTask.OnSync"/> is called on caller context. <br/>
             /// </summary>
             internal const           bool                               OriginalContext = true;
             internal const           int                                MemoryBufferCapacity = 1024;

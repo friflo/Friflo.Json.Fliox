@@ -64,80 +64,61 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             // todo add Read() without ids 
 
             readOrders              = orders.Read()                                                 .TaskName("readOrders");
-            var order1              = readOrders.Find("order-1")                                    .TaskName("order1");
-            var orderArticles       = readOrders.ReadRelations(articles, itemsArticle)              .TaskName("orderArticles");
+            var order1              = readOrders.Find("order-1"); //                                .TaskName("order1");
+            var orderArticles       = readOrders.ReadRelations(articles, itemsArticle); //          .TaskName("orderArticles");
             var orderArticles2      = readOrders.ReadRelations(articles, itemsArticle);
             AreSame(orderArticles, orderArticles2);
             
             var orderArticles3      = readOrders.ReadRelations(articles, o => o.items.Select(a => a.article));
             AreSame(orderArticles, orderArticles3);
-            AreEqual("readOrders -> .items[*].article", orderArticles.Details);
+            AreEqual("readOrders -> .items[*].article", orderArticles.Label);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles.Result; });
-            AreEqual("ReadRelations.Result requires SyncTasks(). orderArticles", e.Message);
+            AreEqual("ReadRelations.Result requires SyncTasks(). readOrders -> .items[*].article", e.Message);
 
-            var articleProducer = orderArticles.ReadRelations(producers, a => a.producer)           .TaskName("articleProducer");
-            AreEqual("orderArticles -> .producer", articleProducer.Details);
+            var articleProducer = orderArticles.ReadRelations(producers, a => a.producer); //       .TaskName("articleProducer");
+            AreEqual("readOrders -> .items[*].article -> .producer", articleProducer.Label);
 
             var duplicateId     = "article-galaxy"; // support duplicate ids
             
             var readArticles    = articles.Read()                                                   .TaskName("readArticles");
-            var galaxy          = readArticles.Find(duplicateId)                                    .TaskName("galaxy");
-            var article1        = readArticles.Find(article1ReadError)                              .TaskName("article1");
-            var article1And2    = readArticles.FindRange(new [] {article1ReadError, article2JsonError}).TaskName("article1And2");
-            var articleSet      = readArticles.FindRange(new [] {duplicateId, duplicateId, "article-ipad"}).TaskName("articleSet");
+            var galaxy          = readArticles.Find(duplicateId); //                                .TaskName("galaxy");
+            var article1        = readArticles.Find(article1ReadError); //                          .TaskName("article1");
+            var article1And2    = readArticles.FindRange(new [] {article1ReadError, article2JsonError}); //.TaskName("article1And2");
+            var articleSet      = readArticles.FindRange(new [] {duplicateId, duplicateId, "article-ipad"}); //.TaskName("articleSet");
             
-            var readArticles2   = articles.Read()                                                   .TaskName("readArticles2"); // separate Read without errors
-            var galaxy2         = readArticles2.Find(duplicateId)                                   .TaskName("galaxy2");
+            var readArticles2   = articles.Read(); //                                               .TaskName("readArticles2"); // separate Read without errors
+            var galaxy2         = readArticles2.Find(duplicateId); //                               .TaskName("galaxy2");
             
             var readArticles3   = articles.Read()                                                   .TaskName("readArticles3");
-            var invalidJson     = readArticles3.Find(articleInvalidJson)                            .TaskName("invalidJson");
-            var idDoesntMatch   = readArticles3.Find(articleIdDoesntMatch)                          .TaskName("idDoesntMatch");
-            var missingKey      = readArticles3.Find(articleMissingKey)                             .TaskName("missingKey");
+            var invalidJson     = readArticles3.Find(articleInvalidJson); //                        .TaskName("invalidJson");
+            var idDoesntMatch   = readArticles3.Find(articleIdDoesntMatch); //                      .TaskName("idDoesntMatch");
+            var missingKey      = readArticles3.Find(articleMissingKey); //                         .TaskName("missingKey");
             
             var readArticles4   = articles.Read()                                                   .TaskName("readArticles4");
-            var missingEntity   = readArticles4.Find(missingArticle)                                .TaskName("missingEntity");
+            var missingEntity   = readArticles4.Find(missingArticle); //                            .TaskName("missingEntity");
 
             // test throwing exception in case of task or entity errors
+            SyncTasksException ex = null;
             try {
                 AreEqual(5,  store.Tasks.Count);
-                AreEqual(17, store.Functions.Count);
                 await store.SyncTasks(); // ----------------
                 
                 Fail("SyncTasks() intended to fail - code cannot be reached");
             } catch (SyncTasksException sre) {
-                AreEqual(11, sre.failed.Count);
-                const string expect = @"SyncTasks() failed with task errors. Count: 11
-|- orderArticles # EntityErrors ~ count: 2
-|   ReadError: articles [article-1], simulated read entity error
-|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-|- articleProducer # EntityErrors ~ count: 2
-|   ReadError: articles [article-1], simulated read entity error
-|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
+                ex = sre;
+            }
+            AreEqual(3, ex.failed.Count);
+            AreEqual(@"SyncTasks() failed with task errors. Count: 3
 |- readArticles # EntityErrors ~ count: 2
-|   ReadError: articles [article-1], simulated read entity error
-|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-|- article1 # EntityErrors ~ count: 1
-|   ReadError: articles [article-1], simulated read entity error
-|- article1And2 # EntityErrors ~ count: 2
 |   ReadError: articles [article-1], simulated read entity error
 |   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 |- readArticles3 # EntityErrors ~ count: 3
 |   ParseError: articles [article-idDoesntMatch], entity key mismatch. 'id': 'article-unexpected-id'
 |   ParseError: articles [article-invalidJson], JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
 |   ParseError: articles [article-missingKey], missing key in JSON value. keyName: 'id'
-|- invalidJson # EntityErrors ~ count: 1
-|   ParseError: articles [article-invalidJson], JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
-|- idDoesntMatch # EntityErrors ~ count: 1
-|   ParseError: articles [article-idDoesntMatch], entity key mismatch. 'id': 'article-unexpected-id'
-|- missingKey # EntityErrors ~ count: 1
-|   ParseError: articles [article-missingKey], missing key in JSON value. keyName: 'id'
 |- readArticles4 # EntityErrors ~ count: 1
-|   ReadError: articles [missing-article], requested entity missing in response results
-|- missingEntity # EntityErrors ~ count: 1
-|   ReadError: articles [missing-article], requested entity missing in response results";
-                AreEqual(expect, sre.Message);
-            }
+|   ReadError: articles [missing-article], requested entity missing in response results", ex.Message);
             
             IsTrue(readOrders.Success);
             AreEqual(3, readOrders.Result["order-1"].items.Count);
@@ -170,6 +151,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual(@"EntityErrors ~ count: 1
 | ReadError: articles [article-1], simulated read entity error", article1.Error.ToString());
 
+            AreEqual(@"EntityErrors ~ count: 2
+| ReadError: articles [article-1], simulated read entity error
+| ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", article1And2.Error.Message);
             te = Throws<TaskResultException>(() => { var _ = article1And2.Result; });
             AreEqual(articleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);

@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var customers = store.customers;
 
             var readCustomers   = customers.Read()                                          .TaskName("readCustomers");
-            var customerRead    = readCustomers.Find(readTaskException)                     .TaskName("customerRead");
+            var customerRead    = readCustomers.Find(readTaskException); //                 .TaskName("customerRead");
             var customerQuery   = customers.Query(o => o.id == "query-task-exception")      .TaskName("customerQuery");
 
             var createError     = customers.Create(new Customer{id = createTaskException})  .TaskName("createError");
@@ -58,13 +58,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("SyncTask.Error requires SyncTasks(). createError", e.Message);
 
             AreEqual(5, store.Tasks.Count);
-            AreEqual(6, store.Functions.Count);
             var sync = await store.TrySyncTasks(); // ----------------
             
-            AreEqual("tasks: 6, failed: 6", sync.ToString());
-            AreEqualTrimStack(@"SyncTasks() failed with task errors. Count: 6
+            AreEqual("tasks: 5, failed: 5", sync.ToString());
+            AreEqualTrimStack(@"SyncTasks() failed with task errors. Count: 5
 |- readCustomers # UnhandledException ~ SimulationException: simulated read task exception
-|- customerRead # UnhandledException ~ SimulationException: simulated read task exception
 |- customerQuery # UnhandledException ~ SimulationException: simulated query exception
 |- createError # UnhandledException ~ SimulationException: simulated create task exception
 |- upsertError # UnhandledException ~ SimulationException: simulated upsert task exception

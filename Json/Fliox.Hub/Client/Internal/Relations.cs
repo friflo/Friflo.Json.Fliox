@@ -9,28 +9,29 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal struct Relations
     {
-        private  readonly   SyncFunction    task;
-        internal            SubRelations    subRelations;
+        internal readonly   IRelationsParent    parent;
+        internal            SubRelations        subRelations;
 
-        internal Relations(SyncFunction task) {
-            this.task       = task ?? throw new InvalidOperationException("Expect task not null");
-            this.subRelations    = new SubRelations();
+        internal Relations(IRelationsParent parent) {
+            this.parent         = parent ?? throw new InvalidOperationException("Expect task not null");
+
+            this.subRelations   = new SubRelations();
         }
 
-        internal ReadRelations<TRef> ReadRelationsByExpression<TRef>(EntitySet relation, Expression expression, FlioxClient client) where TRef : class {
+        internal ReadRelations<TRef> ReadRelationsByExpression<TRef>(EntitySet relation, Expression expression, FlioxClient client, IRelationsParent parent) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(expression, out _);
-            return ReadRelationsByPath<TRef>(relation, path, client);
+            return ReadRelationsByPath<TRef>(relation, path, client, parent);
         }
         
-        internal ReadRelations<TRef> ReadRelationsByPath<TRef>(EntitySet relation, string selector, FlioxClient client) where TRef : class {
+        internal ReadRelations<TRef> ReadRelationsByPath<TRef>(EntitySet relation, string selector, FlioxClient client, IRelationsParent parent) where TRef : class {
             if (subRelations.TryGetTask(selector, out ReadRelationsFunction readRelationsFunction))
                 return (ReadRelations<TRef>)readRelationsFunction;
             // var relation = store._intern.GetSetByType(typeof(TValue));
             var keyName         = relation.GetKeyName();
             var isIntKey        = relation.IsIntKey();
-            var readRelations   = new ReadRelations<TRef>(task, selector, relation.nameShort, keyName, isIntKey, client);
+            var readRelations   = new ReadRelations<TRef>(parent, selector, relation.nameShort, keyName, isIntKey, client);
             subRelations.AddReadRelations(selector, readRelations);
-            client.AddFunction(readRelations);
+            // client.AddFunction(readRelations);
             return readRelations;
         }
     }
