@@ -44,6 +44,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             tasks.Add(read);
             return read;
         }
+        
+        internal FindTask<TKey, T> Find(TKey key) {
+            var read = new FindTask<TKey, T>(this, key);
+            tasks.Add(read);
+            return read;
+        }
 
         // --- Query
         internal QueryTask<TKey, T> QueryFilter(FilterOperation filter) {
@@ -163,7 +169,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 reservedToken   = new Guid(), // todo
                 intern          = new SyncTaskIntern(create)
             };
-
         }
 
         internal override UpsertEntities UpsertEntities(UpsertTask<T> upsert, in CreateTaskContext context) {
@@ -182,6 +187,26 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             upsertEntities.entities         = entities;
             upsertEntities.intern.syncTask  = upsert;
             return upsertEntities;
+        }
+        
+        internal SyncRequestTask ReadEntity(FindTask<TKey,T> read) {
+            List<References> references = null;
+            if (read.relations.subRelations.Count > 0) {
+                references = new List<References>(read.relations.subRelations.Count);
+                AddReferences(references, read.relations.subRelations);
+            }
+            var ids = new List<JsonKey>(1);
+            var id  = KeyConvert.KeyToId(read.key);
+            ids.Add(id);
+            return new ReadEntities {
+                container   = set.nameShort,
+                keyName     = SyncKeyName(set.GetKeyName()),
+                isIntKey    = IsIntKey(set.IsIntKey()),
+                ids         = ids,
+                references  = references,
+                intern      = new SyncTaskIntern(read),
+                //  nativeType  = typeof(T) 
+            };
         }
 
         internal SyncRequestTask ReadEntities(ReadTask<TKey,T> read) {

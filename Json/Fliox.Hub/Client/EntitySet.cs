@@ -108,6 +108,17 @@ namespace Friflo.Json.Fliox.Hub.Client
             client.AddTask(task);
             return task;
         }
+        
+        /// <summary>
+        /// Create a <see cref="FindTask{TKey,T}"/> used to read a single entity.
+        /// </summary>
+        /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
+        public FindTask<TKey, T> Find(TKey key) {
+            var instance = GetInstance();
+            var task = instance.GetSyncSet().Find(key);
+            client.AddTask(task);
+            return task;
+        }
         #endregion
 
     #region - Query

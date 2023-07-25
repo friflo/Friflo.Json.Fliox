@@ -12,35 +12,44 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    // ----------------------------------------- ReadTask -----------------------------------------
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public sealed class ReadTask<TKey, T> : SyncTask, IRelationsParent, IReadRelationsTask<T> where T : class
+public sealed class FindTask<TKey, T> : ReadTaskBase<TKey, T> where T : class
     {
-        [DebuggerBrowsable(Never)]
-        internal            TaskState               state;
-        [DebuggerBrowsable(Never)]
-        private  readonly   SyncSet<TKey, T>        syncSet;
-        [DebuggerBrowsable(Never)]
-        private  readonly   EntitySetInstance<TKey, T>      set;
-        internal            Relations               relations;
-        internal readonly   Dictionary<TKey, T>     result      = SyncSet.CreateDictionary<TKey,T>();
-        internal readonly   List<FindFunction<TKey, T>> findTasks   = new List<FindFunction<TKey, T>>();
-
-        public              Dictionary<TKey, T>     Result      => IsOk("ReadTask.Result", out Exception e) ? result      : throw e;
-
-        internal override   TaskState               State       => state;
-        public              string                  Label       => taskName ?? Details;
-        public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (ids: {result.Count})";
-        internal override   TaskType                TaskType    => TaskType.read;
-        public              SyncTask                Task        => this;
+        internal            T           result;
+        internal            TKey        key;
         
+        public              T           Result      => IsOk("FindTask.Result", out Exception e) ? result : throw e;
+        public   override   string      Details     => $"FindTask<{typeof(T).Name}> (id: {key})";
 
-        internal ReadTask(SyncSet<TKey, T> syncSet) {
+        
+        internal FindTask(SyncSet<TKey, T> syncSet, TKey key) : base (syncSet) {
             relations       = new Relations(this);
-            this.syncSet    = syncSet;
-            this.set        = syncSet.set;
+            this.key        = key;
+        }
+        
+        protected internal override void Reuse() {
+            result      = null;
+            key         = default;
+            relations   = default;
+            state       = default;
+            taskName    = null;
+        }
+        
+        internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
+            return syncSet.ReadEntity(this);
+        }
+    }
+
+public sealed class ReadTask<TKey, T> : ReadTaskBase<TKey, T> where T : class
+    {
+        internal readonly   Dictionary<TKey, T>         result      = SyncSet.CreateDictionary<TKey,T>();
+        internal readonly   List<FindFunction<TKey, T>> findTasks   = new List<FindFunction<TKey, T>>();
+        
+        public              Dictionary<TKey, T>         Result      => IsOk("ReadTask.Result", out Exception e) ? result      : throw e;
+        public   override   string                      Details     => $"ReadTask<{typeof(T).Name}> (ids: {result.Count})";
+
+        
+        internal ReadTask(SyncSet<TKey, T> syncSet) : base (syncSet) {
+            relations       = new Relations(this);
         }
 
         public Find<TKey, T> Find(TKey key) {
@@ -101,7 +110,29 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return syncSet.ReadEntities(this);
         }
-        
+    }
+    
+    
+    public abstract class ReadTaskBase <TKey, T> : SyncTask, IRelationsParent, IReadRelationsTask<T> where T : class
+    {
+        [DebuggerBrowsable(Never)]
+        internal            TaskState                   state;
+        [DebuggerBrowsable(Never)]
+        internal readonly   SyncSet<TKey, T>            syncSet;
+        [DebuggerBrowsable(Never)]
+        internal readonly   EntitySetInstance<TKey, T>  set;
+        internal            Relations                   relations;
+        internal override   TaskState                   State       => state;
+        public              string                      Label       => taskName ?? Details;
+        internal override   TaskType                    TaskType    => TaskType.read;
+        public              SyncTask                    Task        => this;
+
+        internal ReadTaskBase(SyncSet<TKey, T> syncSet) {
+            relations       = new Relations(this);
+            this.syncSet    = syncSet;
+            this.set        = syncSet.set;
+        }
+
         // --- Relation
         public ReadRelation<TRef> ReadRelation<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();

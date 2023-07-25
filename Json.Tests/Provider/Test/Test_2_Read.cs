@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
 using System.Threading.Tasks;
-using Friflo.Json.Burst;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Provider.Client;
@@ -23,7 +22,7 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestRead_01_One(string db) {
             var client  = await GetClient(db);
-            var find    = client.testOps.Read().Find("a-1");
+            var find    = client.testOps.Find("a-1");
             await client.SyncTasks();
             NotNull(find.Result);
         }
