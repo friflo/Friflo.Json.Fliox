@@ -12,7 +12,8 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-public sealed class FindTask<TKey, T> : ReadTaskBase<TKey, T> where T : class
+    // --------------------------------- read a single entity ---------------------------------
+    public sealed class FindTask<TKey, T> : ReadTaskBase<TKey, T> where T : class
     {
         internal            T           result;
         internal            TKey        key;
@@ -20,7 +21,6 @@ public sealed class FindTask<TKey, T> : ReadTaskBase<TKey, T> where T : class
         public              T           Result      => IsOk("FindTask.Result", out Exception e) ? result : throw e;
         public   override   string      Details     => $"FindTask<{typeof(T).Name}> (id: {key})";
 
-        
         internal FindTask(SyncSet<TKey, T> syncSet, TKey key) : base (syncSet) {
             relations       = new Relations(this);
             this.key        = key;
@@ -39,7 +39,8 @@ public sealed class FindTask<TKey, T> : ReadTaskBase<TKey, T> where T : class
         }
     }
 
-public sealed class ReadTask<TKey, T> : ReadTaskBase<TKey, T> where T : class
+    // --------------------------------- read multiple entities ---------------------------------
+    public sealed class ReadTask<TKey, T> : ReadTaskBase<TKey, T> where T : class
     {
         internal readonly   Dictionary<TKey, T>         result      = SyncSet.CreateDictionary<TKey,T>();
         internal readonly   List<FindFunction<TKey, T>> findTasks   = new List<FindFunction<TKey, T>>();
@@ -112,7 +113,7 @@ public sealed class ReadTask<TKey, T> : ReadTaskBase<TKey, T> where T : class
         }
     }
     
-    
+    // --------------------------------- base class for ReadTask<,> & FindTask<,> ---------------------------------
     public abstract class ReadTaskBase <TKey, T> : SyncTask, IRelationsParent, IReadRelationsTask<T> where T : class
     {
         [DebuggerBrowsable(Never)]
