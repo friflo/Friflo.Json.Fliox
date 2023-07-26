@@ -4,17 +4,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Collections
 {
-    public class ListOne<T> : IList<T>, IList, IReadOnlyList<T>
+    public struct ListOne<T> : IList<T>, IList, IReadOnlyList<T>
     {
         private int     count;
-        private T[]     items;
         private T       single;
-
-        public  int     Capacity        => items?.Length ?? 1;
+        private T[]     items;
 
         // --- IList, ICollection, IReadOnlyCollection
         public  int     Count           => count;
@@ -27,14 +26,17 @@ namespace Friflo.Json.Fliox.Collections
         IEnumerator<T>  IEnumerable<T>. GetEnumerator() => new Enumerator(this);
         IEnumerator     IEnumerable.    GetEnumerator() => new Enumerator(this);
         
-        public ListOne() { }
+        // public ListOne() {}
+        
         public ListOne(int capacity)
         {
-            switch (capacity) {
-                case 0:
-                case 1: return;
+            count   = 0;
+            single  = default;
+            if (capacity == 0 || capacity == 1) {
+                items = null;
+                return;
             }
-            items = new T[capacity];
+            items   = new T[capacity];
         }
 
         public void Add(T item)
@@ -59,22 +61,6 @@ namespace Friflo.Json.Fliox.Collections
                     items[count++] = item;
                     return;
             }
-        }
-
-        private void EnsureCapacity(int capacity) {
-            if (items == null) {
-                var newCapacity = Math.Max(capacity, 4);
-                items           = new T[newCapacity];
-                return;
-            }
-            if (capacity <= items.Length) {
-                return;
-            }
-            var doubleLen   = 2 * items.Length;
-            var newLen      = Math.Max(doubleLen, capacity);
-            var newItems    = new T[newLen];
-            Array.Copy(items, 0, newItems, 0, count);
-            items = newItems;
         }
 
         public int Add(object value) {
@@ -126,33 +112,33 @@ namespace Friflo.Json.Fliox.Collections
             get {
                 switch (count) {
                     case 0:
-                        throw new ArgumentOutOfRangeException();
+                        throw new IndexOutOfRangeException();
                     case 1:
                         if (index == 0) {
                             return single;
                         }
-                        throw new ArgumentOutOfRangeException();
+                        throw new IndexOutOfRangeException();
                 }
                 if ((uint)index < (uint)count) {
                     return items[index];
                 }
-                throw new ArgumentOutOfRangeException();
+                throw new IndexOutOfRangeException();
             }
             set {
                 switch (count) {
                     case 0:
-                        throw new ArgumentOutOfRangeException();
+                        throw new ArgumentOutOfRangeException(nameof(index));
                     case 1:
                         if (index == 0) {
                             single = value;
                             return;
                         }
-                        throw new ArgumentOutOfRangeException();
+                        throw new ArgumentOutOfRangeException(nameof(index));
                 }
                 if ((uint)index < (uint)count) {
                     items[index] = value;
                 }
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
         }
 
@@ -180,6 +166,40 @@ namespace Friflo.Json.Fliox.Collections
             throw new NotImplementedException();
         }
         
+        public int Capacity {
+            get => items?.Length ?? 1;
+            set {
+                if (value < count) {
+                    throw new ArgumentOutOfRangeException(nameof(Capacity));
+                }
+                EnsureCapacity(value);
+            }
+        }
+
+
+        public ReadOnlySpan<T> GetSpan() {
+            switch (count) {
+                case 0: return new ReadOnlySpan<T>(null);
+                case 1: return MemoryMarshal.CreateReadOnlySpan<T>(ref single, 1);
+            }
+            return new ReadOnlySpan<T>(items, 0, count);
+        }
+        
+        private void EnsureCapacity(int capacity) {
+            if (items == null) {
+                var newCapacity = Math.Max(capacity, 4);
+                items           = new T[newCapacity];
+                return;
+            }
+            if (capacity <= items.Length) {
+                return;
+            }
+            var doubleLen   = 2 * items.Length;
+            var newLen      = Math.Max(doubleLen, capacity);
+            var newItems    = new T[newLen];
+            Array.Copy(items, 0, newItems, 0, count);
+            items = newItems;
+        }
         
         // ----------------------------------------- Enumerator -----------------------------------------
         public struct Enumerator : IEnumerator<T>
