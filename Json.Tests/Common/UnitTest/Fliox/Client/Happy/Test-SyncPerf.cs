@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             await ReadLoop(store, 10_000_000).ConfigureAwait(false);
         }
 
-        private const int IntervalCount = 500_000;
+        private const int IntervalCount = 500_000; // 10;
         
         
         private static Task ReadLoop (SimpleStore store, int requestCount)
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 }
                 var syncCount = store.GetSyncCount();
                 if (syncCount % IntervalCount == 0) {
-                    perfContext.Sample(IntervalCount);
+                    perfContext.Sample(IntervalCount); // 683.000 req/sec
                 }
             }
             return Task.CompletedTask;
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         internal void Sample(int count) {
             var now = stopwatch.ElapsedMilliseconds;
             var dif = now - start;
-            var reqPerSec = 1000 * count / dif;
+            var reqPerSec = dif == 0 ? -1 : 1000 * count / dif;
             Console.WriteLine($"---- {reqPerSec}");
             start = now;
         }

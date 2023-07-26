@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            TaskState           state;
         internal override   TaskState           State       => state;
 
-        protected WriteTask(string entitySet) : base(entitySet) { }
+        internal WriteTask(SyncSet entitySet) : base(entitySet) { }
     }
     
     internal readonly struct KeyEntity<T>  where T : class 

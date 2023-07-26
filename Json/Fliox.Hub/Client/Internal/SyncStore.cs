@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
@@ -8,51 +9,26 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal sealed class SyncStore
     {
-        internal            Dictionary<ShortString,SyncSet> SyncSets            { get; private set; }
-        
         internal readonly   List<SyncTask>                  tasks               = new List<SyncTask>();
         
         private             List<DetectAllPatches>          detectAllPatches;
         private             List<DetectAllPatches>          DetectAllPatches()  => detectAllPatches ??= new List<DetectAllPatches>();
         
-        internal void SetSyncSets(FlioxClient client) {
-            SyncSets = CreateSyncSets(client, SyncSets);
-        }
-        
-        private static Dictionary<ShortString, SyncSet> CreateSyncSets(FlioxClient client, Dictionary<ShortString,SyncSet> syncSets) {
-            var count = 0;
-            syncSets?.Clear();
-            var sets =  client.entitySets;
-            foreach (var set in sets) {
-                SyncSet syncSet = set?.SyncSet;
-                if (syncSet == null)
+        internal void Reuse(int entitySetCount) {
+            Span<bool> reusedSyncSets = stackalloc bool[entitySetCount];
+            foreach (var task in tasks) {
+                task.Reuse();
+                var syncSet = task.taskSyncSet;
+                if (syncSet == null) {
                     continue;
-                count++;
-            }
-            if (count == 0) {
-                return syncSets;
-            }
-            // create Dictionary<,> only if required
-            syncSets = syncSets ?? new Dictionary<ShortString, SyncSet>(count, ShortString.Equality);
-            foreach (var set in sets) {
-                SyncSet syncSet = set?.SyncSet;
-                if (syncSet == null)
-                    continue;
-                syncSets.Add(set.nameShort, syncSet);
-            }
-            return syncSets;
-        }
-        
-        internal void Reuse() {
-            foreach (var function in tasks) {
-                function.Reuse();
-            }
-            var syncSets = SyncSets;
-            if (syncSets != null) {
-                foreach (var syncSet in syncSets) {
-                    syncSet.Value.Reuse();
                 }
-                syncSets.Clear();
+                var index = syncSet.EntitySet.index;
+                // Ensure SyncSet is reused only once
+                if (reusedSyncSets[index]) {
+                    continue;
+                }
+                reusedSyncSets[index] = true;
+                syncSet.Reuse();
             }
             detectAllPatches?.Clear();
             tasks.Clear();

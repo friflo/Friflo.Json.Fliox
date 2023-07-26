@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskType                    TaskType    => TaskType.read;
         public              SyncTask                    Task        => this;
 
-        internal ReadTaskBase(SyncSet<TKey, T> syncSet) : base(syncSet.EntitySet.name) {
+        internal ReadTaskBase(SyncSet<TKey, T> syncSet) : base(syncSet) {
             relations       = new Relations(this);
             this.syncSet    = syncSet;
             this.set        = syncSet.set;

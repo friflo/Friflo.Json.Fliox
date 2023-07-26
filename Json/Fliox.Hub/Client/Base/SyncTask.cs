@@ -17,6 +17,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class SyncTask
     {
         internal  readonly  string          entitySetName;
+        internal  readonly  SyncSet         taskSyncSet;
+        
         internal  abstract  TaskType        TaskType { get; }
         internal  abstract  SyncRequestTask CreateRequestTask(in CreateTaskContext context);
         
@@ -48,8 +50,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         
                                     public    override  string              ToString()  => GetLabel();
 
-        protected SyncTask(string entitySetName) {
-            this.entitySetName = entitySetName;
+        internal SyncTask() { }
+                                    
+        internal SyncTask(SyncSet syncSet) {
+            taskSyncSet     = syncSet;
+            entitySetName   = syncSet.EntitySet.name;
         }
                                     
         /// <summary>

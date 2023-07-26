@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string              Details => $"SubscribeChangesTask<{typeof(T).Name}> (filter: {filterLinq})";
         internal override   TaskType            TaskType=> TaskType.subscribeChanges;
         
-        internal  SubscribeChangesTask(SyncSetBase<T> syncSet) : base(syncSet.EntitySet.name) {
+        internal  SubscribeChangesTask(SyncSetBase<T> syncSet) : base(syncSet) {
             this.syncSet    = syncSet;
         }
             
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskType    TaskType=> TaskType.subscribeMessage;
         
 
-        internal SubscribeMessageTask(string name, bool? remove) : base(null) {
+        internal SubscribeMessageTask(string name, bool? remove) {
             this.name   = name;
             this.remove = remove;
         }

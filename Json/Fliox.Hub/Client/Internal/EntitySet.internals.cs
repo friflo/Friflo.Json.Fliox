@@ -20,6 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal abstract class EntitySet
     {
         [DebuggerBrowsable(Never)] internal readonly  string          name;
+        [DebuggerBrowsable(Never)] internal readonly  int             index;
         [DebuggerBrowsable(Never)] internal readonly  ShortString     nameShort;
         [DebuggerBrowsable(Never)] internal           ChangeCallback  changeCallback;
         
@@ -43,8 +44,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  bool                IsIntKey();
         internal  abstract  void                GetRawEntities(List<object> result);
         
-        protected EntitySet(string name) {
+        protected EntitySet(string name, int index) {
             this.name   = name;
+            this.index  = index;
             nameShort   = new ShortString(name);
         }
         
@@ -89,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  Peer<T>         CreatePeer      (T entity);
         internal  abstract  JsonKey         GetEntityId     (T entity);
         
-        protected EntitySetBase(string name) : base(name) { }
+        protected EntitySetBase(string name, int index) : base(name, index) { }
         
         internal static void ValidateKeyType(Type keyType) {
             var entityId        = EntityKey.GetEntityKey<T>();

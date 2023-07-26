@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              SyncTask        Task            => this;
       
 
-        internal QueryTask(FilterOperation filter, FlioxClient client, SyncSet<TKey,T> syncSet) : base(syncSet.EntitySet.name) {
+        internal QueryTask(FilterOperation filter, FlioxClient client, SyncSet<TKey,T> syncSet) : base(syncSet) {
             relations       = new Relations(this);
             this.filter     = filter;
             this.filterLinq = filter.Linq;
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.syncSet    = syncSet;
         }
         
-        private QueryTask(QueryTask<TKey, T> query, SyncSet<TKey,T> syncSet) : base(syncSet.EntitySet.name) {
+        private QueryTask(QueryTask<TKey, T> query, SyncSet<TKey,T> syncSet) : base(syncSet) {
             relations       = new Relations(this);
             filter          = query.filter;
             filterLinq      = query.filterLinq;

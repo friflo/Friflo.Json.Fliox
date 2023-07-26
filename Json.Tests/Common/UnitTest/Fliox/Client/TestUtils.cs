@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff        = Mem.GetAllocationDiff(start);
             var platform    = Environment.OSVersion.Platform;
             var isWindows   = platform == PlatformID.Win32NT; 
-            var expected    = isWindows ? 824 : 824;  // Test Windows & Linux
+            var expected    = isWindows ? 816 : 816;  // Test Windows & Linux
             Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
             Mem.AreEqual(expected, diff);
         }
@@ -189,7 +189,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff        = Mem.GetAllocationDiff(start);
             var platform    = Environment.OSVersion.Platform;
             Console.WriteLine($"PocStore Reset. platform: {platform}, memory: {diff}");
-            Mem.AreEqual(72, diff);
+            Mem.AreEqual(64, diff);
         }
         
         [Test]
@@ -210,7 +210,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff = Mem.GetAllocationDiff(start);
             stopwatch.Stop();
             Console.WriteLine($"SyncTasks() count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
-            var expected    = IsDebug() ? 792 : 632;  // Test Debug & Release
+            var expected    = IsDebug() ? 784 : 624;  // Test Debug & Release
             Mem.AreEqual(expected, diff);
         }
         
@@ -235,7 +235,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 await store.SyncTasks();
             }
             var diff = Mem.GetAllocationDiff(start);
-            var expected = IsDebug() ? new LongRange(27088, 27500) : new LongRange(24528, 25000); // Test Debug & Release
+            var expected = IsDebug() ? new LongRange(26824, 27500) : new LongRange(24264, 25000); // Test Debug & Release
             Mem.InRange(expected, diff);
         }
         

@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskType            TaskType    => TaskType.delete;
 
 
-        internal DeleteTask(List<TKey> ids, SyncSet<TKey, T> syncSet) : base(syncSet.EntitySet.name) {
+        internal DeleteTask(List<TKey> ids, SyncSet<TKey, T> syncSet) : base(syncSet) {
             this.syncSet    = syncSet;
             this.keys       = ids;
         }
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string              Details     => $"DeleteAllTask<{typeof(T).Name}>";
         internal override   TaskType            TaskType    => TaskType.delete;
 
-        internal DeleteAllTask(SyncSet<TKey, T>  syncSet) : base(syncSet.EntitySet.name) {
+        internal DeleteAllTask(SyncSet<TKey, T>  syncSet) : base(syncSet) {
             this.syncSet = syncSet;
         }
         

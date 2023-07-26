@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskType            TaskType    => TaskType.upsert;
         
         
-        internal UpsertTask(EntitySetBase<T> set, SyncSetBase<T> syncSet) : base(syncSet.EntitySet.name) {
+        internal UpsertTask(EntitySetBase<T> set, SyncSetBase<T> syncSet) : base(syncSet) {
             this.set        = set;
             this.syncSet    = syncSet;
         }

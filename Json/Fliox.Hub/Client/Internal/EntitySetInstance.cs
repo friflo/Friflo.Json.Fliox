@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             internal static  readonly       KeyConverter<TKey>          KeyConvert      = KeyConverter.GetConverter<TKey>();
         }
 
-        internal EntitySetInstance(string name, FlioxClient client) : base (name) {
+        internal EntitySetInstance(string name, int index, FlioxClient client) : base (name, index) {
             // ValidateKeyType(typeof(TKey)); // only required if constructor is public
             // intern    = new SetIntern<TKey, T>(this);
             this.client         = client;

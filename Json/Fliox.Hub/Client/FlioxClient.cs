@@ -130,9 +130,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             /// This ensures modifications to entities are applied on the same context used by the caller. <br/>
             /// It also ensures that <see cref="SyncTask.OnSync"/> is called on caller context. <br/>
             /// </summary>
-            internal const           bool                               OriginalContext = true;
-            internal const           int                                MemoryBufferCapacity = 1024;
-            internal static readonly IDictionary<ShortString, SyncSet>  EmptySyncSet = new EmptyDictionary<ShortString, SyncSet>();
+            internal const  bool    OriginalContext = true;
+            internal const  int     MemoryBufferCapacity = 1024;
         }
 
         #endregion
@@ -230,7 +229,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var entitySet = sets[n];
                 if (entitySet == null) {
                     var entityInfo  = _readonly.entityInfos[n];
-                    entitySet       = entityInfo.containerMember.CreateInstance(entityInfo.container, this);
+                    entitySet       = entityInfo.containerMember.CreateInstance(entityInfo.container, n, this);
                     sets[n] = entitySet;
                     _intern.SetByName[entityInfo.containerShort] = entitySet;
                 }

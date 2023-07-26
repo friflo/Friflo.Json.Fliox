@@ -184,8 +184,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncStore           = _intern.syncStore;
             _intern.syncStore   = _intern.syncStoreBuffer.Get() ?? new SyncStore();
             
-            syncStore.SetSyncSets(this);
-            
             var tasks           = syncStore.tasks;
             var syncRequest     = _intern.syncRequestBuffer.Get() ?? new SyncRequest();
             InitSyncRequest(syncRequest);
@@ -226,9 +224,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         private static void CopyEntityErrors(List<SyncRequestTask> tasks, List<SyncTaskResult> responseTasks, SyncStore syncStore) {
-            var syncSets = syncStore.SyncSets ?? Static.EmptySyncSet;
-            
-            for (int n = 0; n < tasks.Count; n++) {
+            var syncTasks = syncStore.tasks;
+            for (int n = 0; n < tasks.Count; n++)
+            {
                 var task            = tasks[n];
                 var responseTask    = responseTasks[n];
                 switch (responseTask.TaskType) {
@@ -237,7 +235,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         if (upsertResult.errors == null)
                             continue;
                         var container       = ((UpsertEntities)task).container;
-                        SyncSet syncSet     = syncSets[container];
+                        var syncSet     = syncTasks[n].taskSyncSet;
                         CopyEntityErrorsToMap(upsertResult.errors,  container, ref syncSet.errorsUpsert);
                         break; 
                     case TaskType.create:
@@ -245,7 +243,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         if (createResult.errors == null)
                             continue;
                         container           = ((CreateEntities)task).container;
-                        syncSet             = syncSets[container];
+                        syncSet             = syncTasks[n].taskSyncSet;
                         CopyEntityErrorsToMap(createResult.errors,  container, ref syncSet.errorsCreate);
                         break;
                     case TaskType.merge:
@@ -253,7 +251,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         if (patchResult.errors == null)
                             continue;
                         container           = ((MergeEntities)task).container;
-                        syncSet             = syncSets[container];
+                        syncSet             = syncTasks[n].taskSyncSet;
                         CopyEntityErrorsToMap(patchResult.errors,   container, ref syncSet.errorsPatch);
                         break;
                     case TaskType.delete:
@@ -261,7 +259,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         if (deleteResult.errors == null)
                             continue;
                         container           = ((DeleteEntities)task).container;
-                        syncSet             = syncSets[container];
+                        syncSet             = syncTasks[n].taskSyncSet;
                         CopyEntityErrorsToMap(deleteResult.errors,  container, ref syncSet.errorsDelete);
                         break;
                 }
@@ -380,8 +378,9 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         private void ProcessSyncTasks(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper)
         {
-            var             tasks           = syncRequest.tasks;
-            ErrorResponse   error           = response.error;
+            var tasks       = syncRequest.tasks;
+            var syncTasks   = syncStore.tasks;
+            var error       = response.error;
             
             if (error != null) {
                 // ----------- handle ErrorResponse -----------
@@ -390,7 +389,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 // process all task using by passing an error 
                 for (int n = 0; n < tasks.Count; n++) {
                     SyncRequestTask task    = tasks[n];
-                    ProcessTaskResult(task, syncError, syncStore, emptyResults);
+                    ProcessTaskResult(task, syncTasks[n], syncError, syncStore, emptyResults);
                 }
                 return;
             }
@@ -432,64 +431,55 @@ namespace Friflo.Json.Fliox.Hub.Client
             for (int n = 0; n < tasks.Count; n++) {
                 SyncRequestTask task    = tasks[n];
                 SyncTaskResult  result  = responseTasks[n];
-                ProcessTaskResult(task, result, syncStore, containers);
+                ProcessTaskResult(task, syncTasks[n], result, syncStore, containers);
             }
         }
         
         private static void ProcessTaskResult (
-            SyncRequestTask                         task,
-            SyncTaskResult                          result,
-            SyncStore                               syncStore,
-            List<ContainerEntities>                 containerResults)
+            SyncRequestTask         task,
+            SyncTask                syncTasks,
+            SyncTaskResult          result,
+            SyncStore               syncStore,
+            List<ContainerEntities> containerResults)
         {
-            var syncSets    = syncStore.SyncSets ?? Static.EmptySyncSet;
             switch (task.TaskType) {
                 case TaskType.reserveKeys:
                     var reserveKeys =       (ReserveKeys)       task;
-                    var syncSet = syncSets[reserveKeys.container];
-                    syncSet.ReserveKeysResult(reserveKeys, result);
+                    syncTasks.taskSyncSet.ReserveKeysResult(reserveKeys, result);
                     break;
                 case TaskType.create:
                     var create =            (CreateEntities)    task;
-                    syncSet = syncSets[create.container];
-                    syncSet.CreateEntitiesResult(create, result);
+                    syncTasks.taskSyncSet.CreateEntitiesResult(create, result);
                     break;
                 case TaskType.upsert:
                     var upsert =            (UpsertEntities)    task;
-                    syncSet = syncSets[upsert.container];
-                    syncSet.UpsertEntitiesResult(upsert, result);
+                    syncTasks.taskSyncSet.UpsertEntitiesResult(upsert, result);
                     break;
                 case TaskType.read:
                     var readList =          (ReadEntities)      task;
-                    syncSet = syncSets[readList.container];
                     var entities = containerResults?.Find(c => c.container.IsEqual(readList.container));
-                    syncSet.ReadEntitiesResult(readList, result, entities);
+                    syncTasks.taskSyncSet.ReadEntitiesResult(readList, result, entities);
                     break;
                 case TaskType.query:
                     var query =             (QueryEntities)     task;
-                    syncSet = syncSets[query.container];
                     var queryEntities = containerResults?.Find(c => c.container.IsEqual(query.container));
-                    syncSet.QueryEntitiesResult(query, result, queryEntities);
+                    syncTasks.taskSyncSet.QueryEntitiesResult(query, result, queryEntities);
                     break;
                 case TaskType.closeCursors:
                     var closeCursors =      (CloseCursors)      task;
-                    syncSet = syncSets[closeCursors.container];
-                    syncSet.CloseCursorsResult(closeCursors, result);
+                    syncTasks.taskSyncSet.CloseCursorsResult(closeCursors, result);
                     break;
                 case TaskType.aggregate:
                     var aggregate =         (AggregateEntities) task;
-                    syncSet = syncSets[aggregate.container];
-                    syncSet.AggregateEntitiesResult(aggregate, result);
+                    syncTasks.taskSyncSet.AggregateEntitiesResult(aggregate, result);
                     break;
                 case TaskType.merge:
                     var patch =             (MergeEntities)     task;
-                    syncSet = syncSets[patch.container];
-                    syncSet.PatchEntitiesResult(patch, result);
+                    syncTasks.taskSyncSet.PatchEntitiesResult(patch, result);
                     break;
                 case TaskType.delete:
                     var delete =            (DeleteEntities)    task;
-                    syncSet = syncSets[delete.container];
-                    syncSet.DeleteEntitiesResult(delete, result);
+                    syncTasks.taskSyncSet.DeleteEntitiesResult(delete, result);
                     break;
                 case TaskType.message:
                     var message =           (SendMessage)       task;
@@ -501,8 +491,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     break;
                 case TaskType.subscribeChanges:
                     var subscribeChanges =  (SubscribeChanges)  task;
-                    syncSet = syncSets[subscribeChanges.container];
-                    syncSet.SubscribeChangesResult(subscribeChanges, result);
+                    syncTasks.taskSyncSet.SubscribeChangesResult(subscribeChanges, result);
                     break;
                 case TaskType.subscribeMessage:
                     var subscribeMessage =  (SubscribeMessage)  task;

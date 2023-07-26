@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if DEBUG
             if (client != this.client) throw new InvalidOperationException("SyncResult was created by different client");
 #endif
-            syncStore.Reuse();
+            syncStore.Reuse(client.entitySets.Length);
             client._intern.syncStoreBuffer.Add(syncStore);
             syncStore       = null;
             
