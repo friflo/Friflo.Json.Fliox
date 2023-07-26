@@ -22,10 +22,6 @@ namespace Friflo.Json.Fliox.Collections
         public  bool    IsFixedSize     => false;
         public  bool    IsReadOnly      => false;
         
-        public          Enumerator      GetEnumerator() => new Enumerator(this);
-        IEnumerator<T>  IEnumerable<T>. GetEnumerator() => new Enumerator(this);
-        IEnumerator     IEnumerable.    GetEnumerator() => new Enumerator(this);
-        
         // public ListOne() {}
         
         public ListOne(int capacity)
@@ -202,6 +198,16 @@ namespace Friflo.Json.Fliox.Collections
         }
         
         // ----------------------------------------- Enumerator -----------------------------------------
+        // Enumerator not implemented as ListOne<> is a struct.
+        // Would require C# language version 11.0 or greater. 
+        IEnumerator<T>  IEnumerable<T>. GetEnumerator() => throw new NotImplementedException();
+        IEnumerator     IEnumerable.    GetEnumerator() => throw new NotImplementedException();
+        
+        /*
+        public          Enumerator      GetEnumerator() => new Enumerator(this);
+        IEnumerator<T>  IEnumerable<T>. GetEnumerator() => new Enumerator(this);
+        IEnumerator     IEnumerable.    GetEnumerator() => new Enumerator(this);
+        
         public struct Enumerator : IEnumerator<T>
         {
             private readonly    ListOne<T>  list;
@@ -254,6 +260,6 @@ namespace Friflo.Json.Fliox.Collections
                 index = 0;
                 current = default;
             }
-        }
+        } */
     }
 }
