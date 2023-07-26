@@ -19,6 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             // --- items: 0
             AreEqual(0, list.Count);
             AreEqual(1, list.Capacity);
+            AreEqual("Count: 0", list.ToString());
             var span = list.GetReadOnlySpan();
             AreEqual(0,  span.Length);
             Throws<IndexOutOfRangeException>(() => { var _ = list[0]; });
@@ -29,6 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             AreEqual(1, list.Count);
             AreEqual(1, list.Capacity);
             AreEqual(20, list[0]);
+            AreEqual("Count: 1", list.ToString());
             span = list.GetReadOnlySpan();
             AreEqual(1,  span.Length);
             AreEqual(20, span[0]);
@@ -126,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             var start = Mem.GetAllocatedBytes();
             mapper.writer.WriteAsBytes(obj);
             var diff = Mem.GetAllocationDiff(start);
-            // Mem.AreEqual(0, diff);
+            Mem.AreEqual(0, diff);
         }
         
         [Test]
@@ -134,15 +136,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             var mapper  = new ObjectMapper(new TypeStore());
 
             var jsonValue   = new JsonValue(Expected);
-            var request     = new ListOneMember();
-            mapper.reader.ReadTo(jsonValue, request, false);
-            AreEqual(1,  request.ints.Count);
-            AreEqual(11, request.ints[0]);
+            var obj         = new ListOneMember();
+            mapper.reader.ReadTo(jsonValue, obj, false);
+            AreEqual(1,  obj.ints.Count);
+            AreEqual(11, obj.ints[0]);
             //
             var start = Mem.GetAllocatedBytes();
-            mapper.reader.ReadTo(jsonValue, request, false);
+            mapper.reader.ReadTo(jsonValue, obj, false);
             var diff = Mem.GetAllocationDiff(start);
-            // Mem.AreEqual(0, diff);
+            Mem.AreEqual(0, diff);
         }
         
         [Test]

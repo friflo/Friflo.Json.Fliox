@@ -5,22 +5,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Collections
 {
     public struct ListOne<T> : IList<T>, IReadOnlyList<T>
     {
-        private int     count;
-        private T       single;
-        private T[]     items;
+        [Browse(Never)] private         int     count;
+                        private         T       single;
+                        private         T[]     items;
+
+        public override string  ToString() => "Count: " + count;
 
         // --- IList, ICollection, IReadOnlyCollection
-        public  int     Count           => count;
-        public  bool    IsSynchronized  => false;
-        public  object  SyncRoot        => this;
-        public  bool    IsFixedSize     => false;
-        public  bool    IsReadOnly      => false;
+                        public          int     Count           => count;
+        [Browse(Never)] public          bool    IsSynchronized  => false;
+        [Browse(Never)] public          object  SyncRoot        => this;
+        [Browse(Never)] public          bool    IsFixedSize     => false;
+        [Browse(Never)] public          bool    IsReadOnly      => false;
         
         // public ListOne() {}
         

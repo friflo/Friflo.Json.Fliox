@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper.Map;
 
 // Note: This file does and must not have any dependency to <see cref="System.Type"/>.
 namespace Friflo.Json.Fliox.Schema.Definition
@@ -172,6 +173,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   readonly   bool            required;
         public   readonly   bool            isAutoIncrement;
         public   readonly   TypeDef         type;
+        public   readonly   PropField       propField;
         /// if <see cref="isArray"/> is true <see cref="type"/> contains the element type.
         public   readonly   bool            isArray;
         /// if <see cref="isDictionary"/> is true <see cref="type"/> contains the value type.
@@ -194,6 +196,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
             bool        required,
             bool        isAutoIncrement,
             TypeDef     type,
+            PropField   propField,
             bool        isArray,
             bool        isDictionary,
             bool        isNullableElement,
@@ -208,6 +211,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
             this.required           = required;
             this.isAutoIncrement    = isAutoIncrement;
             this.type               = type;
+            this.propField          = propField;
             this.isArray            = isArray;
             this.isDictionary       = isDictionary;
             this.isNullableElement  = isNullableElement;

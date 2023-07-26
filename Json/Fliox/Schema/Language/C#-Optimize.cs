@@ -136,6 +136,10 @@ namespace Friflo.Json.Fliox.Schema.Language
         // ReSharper disable PossibleUnintendedReferenceComparison
         private bool GetSuffix(FieldDef field, out string suffix) {
             if (field.isArray || field.isDictionary) {
+                if (field.propField.fieldType.isValueType) {
+                    suffix = "Struct"; // used for ListOne<>
+                    return false;
+                }
                 suffix = "Class";
                 return false;
             }
