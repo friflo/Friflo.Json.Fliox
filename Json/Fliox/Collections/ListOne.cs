@@ -174,10 +174,15 @@ namespace Friflo.Json.Fliox.Collections
         }
 
 
-        public ReadOnlySpan<T> GetSpan() {
+        public ReadOnlySpan<T> GetReadOnlySpan()
+        {
             switch (count) {
                 case 0: return new ReadOnlySpan<T>(null);
+#if NETSTANDARD2_0
+                case 1: return Burst.Utils.UnsafeUtils.CreateReadOnlySpan(ref single);
+#else
                 case 1: return MemoryMarshal.CreateReadOnlySpan(ref single, 1);
+#endif
             }
             return new ReadOnlySpan<T>(items, 0, count);
         }

@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+// ReSharper disable CollectionNeverQueried.Local
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
 {
     public static class TestListOne
@@ -17,21 +18,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             // --- items: 0
             AreEqual(0, list.Count);
             AreEqual(1, list.Capacity);
-            var span = list.GetSpan();
+            var span = list.GetReadOnlySpan();
             AreEqual(0,  span.Length);
             Throws<IndexOutOfRangeException>(() => { var _ = list[0]; });
-            Throws<IndexOutOfRangeException>(() => { var _ = list.GetSpan()[0]; });
+            Throws<IndexOutOfRangeException>(() => { var _ = list.GetReadOnlySpan()[0]; });
 
             // --- items: 1
             list.Add(20);
             AreEqual(1, list.Count);
             AreEqual(1, list.Capacity);
             AreEqual(20, list[0]);
-            span = list.GetSpan();
+            span = list.GetReadOnlySpan();
             AreEqual(1,  span.Length);
             AreEqual(20, span[0]);
             Throws<IndexOutOfRangeException>(() => { var _ = list[1]; });
-            Throws<IndexOutOfRangeException>(() => { var _ = list.GetSpan()[1]; });
+            Throws<IndexOutOfRangeException>(() => { var _ = list.GetReadOnlySpan()[1]; });
 
             // --- items: 2
             list.Add(21);
@@ -39,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             AreEqual(4, list.Capacity);
             AreEqual(20, list[0]);
             AreEqual(21, list[1]);
-            span = list.GetSpan();
+            span = list.GetReadOnlySpan();
             AreEqual(2,  span.Length);
             AreEqual(20, span[0]);
             AreEqual(21, span[1]);
@@ -50,12 +51,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             AreEqual(10, list.Capacity);
             AreEqual(20, list[0]);
             AreEqual(21, list[1]);
-            span = list.GetSpan();
+            span = list.GetReadOnlySpan();
             AreEqual(2,  span.Length);
             AreEqual(20, span[0]);
             AreEqual(21, span[1]);
             Throws<IndexOutOfRangeException>(() => { var _ = list[2]; });
-            Throws<IndexOutOfRangeException>(() => { var _ = list.GetSpan()[2]; });
+            Throws<IndexOutOfRangeException>(() => { var _ = list.GetReadOnlySpan()[2]; });
         }
         
         [Test]
@@ -66,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             list.RemoveRange(0, 1);
             AreEqual(0,  list.Count);
             AreEqual(1,  list.Capacity);
-            var span = list.GetSpan();
+            var span = list.GetReadOnlySpan();
             AreEqual(0,  span.Length);
         }
 
@@ -80,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             AreEqual(1,  list.Count);
             AreEqual(4,  list.Capacity);
             AreEqual(21, list[0]);
-            var span = list.GetSpan();
+            var span = list.GetReadOnlySpan();
             AreEqual(1,  span.Length);
             AreEqual(21, span[0]);
         }
@@ -108,6 +109,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             Mem.AreEqual(0, diff);
         }
         
+        // [Test]
+        public static void TestListOne_MapperAsMember()
+        {
+            var mapper  = new ObjectMapper(new TypeStore());
+            var obj     = new ListOneMember();
+            obj.ints.Add(1);
+            obj.ints.Add(2);
+            
+            var json = mapper.writer.WriteAsBytes(obj);
+            AreEqual("{\"ints\":[1,2]}", json.AsString());
+            
+            var start = Mem.GetAllocatedBytes();
+            mapper.writer.WriteAsBytes(obj);
+            var diff = Mem.GetAllocationDiff(start);
+            Mem.AreEqual(0, diff);
+        }
+        
         [Test]
         public static void TestListOne_Perf()
         {
@@ -118,6 +136,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
                 list.Clear();
             }
             AreEqual(0, list.Count);
+        }
+        
+        class ListOneMember
+        {
+            public ListOne<int> ints;
         }
     }
 }
