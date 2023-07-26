@@ -8,23 +8,21 @@ using System.Runtime.InteropServices;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Collections
 {
     public struct ListOne<T> : IList<T>, IReadOnlyList<T>
     {
-        [Browse(Never)] private         int     count;
-                        private         T       single;
-                        private         T[]     items;
+        [Browse(Never)] private     int     count;
+                        private     T       single;
+                        private     T[]     items;
 
-        public override string  ToString() => "Count: " + count;
+        public override string      ToString() => "Count: " + count;
 
-        // --- IList, ICollection, IReadOnlyCollection
-                        public          int     Count           => count;
-        [Browse(Never)] public          bool    IsSynchronized  => false;
-        [Browse(Never)] public          object  SyncRoot        => this;
-        [Browse(Never)] public          bool    IsFixedSize     => false;
-        [Browse(Never)] public          bool    IsReadOnly      => false;
+        // --- ICollection<>, IReadOnlyCollection<>
+                        public      int     Count           => count;
+        [Browse(Never)] public      bool    IsReadOnly      => false;
         
         // public ListOne() {}
         
@@ -122,14 +120,12 @@ namespace Friflo.Json.Fliox.Collections
         }
 
         public void CopyTo(T[] array, int arrayIndex) {
-            throw new NotImplementedException();
+            for ( int n= 0; n < count; n++) {
+                array[n + arrayIndex] = this[n];
+            }
         }
 
         public bool Remove(T item) {
-            throw new NotImplementedException();
-        }
-
-        public void CopyTo(Array array, int index) {
             throw new NotImplementedException();
         }
 
@@ -163,6 +159,19 @@ namespace Friflo.Json.Fliox.Collections
 #endif
             }
             return new ReadOnlySpan<T>(items, 0, count);
+        }
+        
+        public Span<T> GetSpan()
+        {
+            switch (count) {
+                case 0: return new Span<T>(null);
+#if NETSTANDARD2_0
+                case 1: return Burst.Utils.UnsafeUtils.CreateSpan(ref single);
+#else
+                case 1: return MemoryMarshal.CreateSpan(ref single, 1);
+#endif
+            }
+            return new Span<T>(items, 0, count);
         }
         
         public void RemoveRange(int index, int count)
@@ -204,15 +213,9 @@ namespace Friflo.Json.Fliox.Collections
         }
         
         // ----------------------------------------- Enumerator -----------------------------------------
-        // Enumerator not implemented as ListOne<> is a struct.
-        // Would require C# language version 11.0 or greater. 
-        IEnumerator<T>  IEnumerable<T>. GetEnumerator() => throw new NotImplementedException();
-        IEnumerator     IEnumerable.    GetEnumerator() => throw new NotImplementedException();
-        
-        /*
-        public          Enumerator      GetEnumerator() => new Enumerator(this);
-        IEnumerator<T>  IEnumerable<T>. GetEnumerator() => new Enumerator(this);
-        IEnumerator     IEnumerable.    GetEnumerator() => new Enumerator(this);
+        public  Enumerator                      GetEnumerator() => new Enumerator(this);
+                IEnumerator<T>  IEnumerable<T>. GetEnumerator() => new Enumerator(this);
+                IEnumerator     IEnumerable.    GetEnumerator() => new Enumerator(this);
         
         public struct Enumerator : IEnumerator<T>
         {
@@ -220,8 +223,7 @@ namespace Friflo.Json.Fliox.Collections
             private             int         index;
             private             T           current;
 
-            internal Enumerator(ListOne<T> list)
-            {
+            internal Enumerator(in ListOne<T> list) {
                 this.list   = list;
                 index       = 0;
                 current     = default;
@@ -231,27 +233,18 @@ namespace Friflo.Json.Fliox.Collections
 
             public bool MoveNext()
             {
-                ListOne<T> localList = list;    
-                if ((uint)index < (uint)localList.count)
+                if ((uint)index < (uint)list.count)
                 {
-                    current = localList.items[index];
-                    index++;
+                    current = list[index++];
                     return true;
                 }
-                return MoveNextRare();
-            }
-
-            private bool MoveNextRare()
-            {
-                index = list.count + 1;
                 current = default;
                 return false;
             }
 
             public T Current => current!;
 
-            object IEnumerator.Current
-            {
+            object IEnumerator.Current {
                 get
                 {
                     if (index == 0 || index == list.count + 1) {
@@ -261,11 +254,10 @@ namespace Friflo.Json.Fliox.Collections
                 }
             }
 
-            void IEnumerator.Reset()
-            {
-                index = 0;
+            void IEnumerator.Reset() {
+                index   = 0;
                 current = default;
             }
-        } */
+        }
     }
 }

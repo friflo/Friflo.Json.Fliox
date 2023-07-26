@@ -63,6 +63,63 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
         }
         
         [Test]
+        public static void TestListOne_Enumerator() {
+            var list = new ListOne<int>();
+            
+            // --- items: 0
+            using var e0 = list.GetEnumerator();
+            IsFalse(e0.MoveNext());
+            
+            // --- items: 1
+            list.Add(10);
+            using var e1 = list.GetEnumerator();
+            IsTrue(e1.MoveNext());
+            AreEqual(10, e1.Current);
+            IsFalse(e1.MoveNext());
+            
+            // --- items: 2
+            list.Add(11);
+            using var e2 = list.GetEnumerator();
+            IsTrue(e2.MoveNext());
+            AreEqual(10, e2.Current);
+            IsTrue(e2.MoveNext());
+            AreEqual(11, e2.Current);
+            IsFalse(e2.MoveNext());
+            
+            // --- check memory
+            int count = 0;
+            var start = Mem.GetAllocatedBytes();
+            foreach (var _ in list) {
+                count++;
+            }
+            var diff = Mem.GetAllocationDiff(start);
+            AreEqual(2, count);
+            Mem.AreEqual(0, diff);
+        }
+        
+        [Test]
+        public static void TestListOne_CopyTo() {
+            var list = new ListOne<int>();
+            
+            // --- items: 0
+            var array = Array.Empty<int>();
+            list.CopyTo(array, 0);
+
+            // --- items: 1
+            array = new int[1];
+            list.Add(10);
+            list.CopyTo(array, 0);
+            AreEqual(10, list[0]);
+
+            // --- items: 2
+            array = new int[2];
+            list.Add(11);
+            list.CopyTo(array, 0);
+            AreEqual(10, list[0]);
+            AreEqual(11, list[1]);
+        }
+        
+        [Test]
         public static void TestListOne_RemoveRange_1() {
             var list = new ListOne<int>();
             list.Add(20);
