@@ -188,12 +188,17 @@ namespace Friflo.Json.Fliox.Collections
             if (count < 0)                  throw new ArgumentOutOfRangeException(nameof(count));
             if (this.count - index < count) throw new ArgumentException(nameof(index));
 
-            if (count > 0) {
-                this.count -= count;
-                if (index < this.count) {
-                    Array.Copy(items, index + count, items, index, this.count - index);
-                }
-                Array.Clear(items, this.count, count);
+            if (count == 0) {
+                return;
+            }
+            this.count -= count;
+            if (index < this.count) {
+                Array.Copy(items, index + count, items, index, this.count - index);
+            }
+            Array.Clear(items, this.count, count);
+            if (this.count == 1) {
+                single   = items[0];
+                items[0] = default;
             }
         }
         

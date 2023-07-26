@@ -56,6 +56,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             AreEqual(21, span[1]);
             Throws<IndexOutOfRangeException>(() => { var _ = list[2]; });
             Throws<IndexOutOfRangeException>(() => { var _ = list.GetSpan()[2]; });
+            
+            // --- items: 1 - RemoveRange()
+
+        }
+        
+        [Test]
+        public static void TestListOne_RemoveRange() {
+            var list = new ListOne<int>();
+            list.Add(20);
+            list.Add(21);
+            
+            list.RemoveRange(0, 1);
+            AreEqual(1,  list.Count);
+            AreEqual(4,  list.Capacity);
+            AreEqual(21, list[0]);
+            var span = list.GetSpan();
+            AreEqual(1,  span.Length);
+            AreEqual(21, span[0]);
         }
         
         [Test]
