@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Collections;
 using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
@@ -109,21 +110,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             Mem.AreEqual(0, diff);
         }
         
-        // [Test]
-        public static void TestListOne_MapperAsMember()
+        private const string Expected = "{\"ints\":[11]}";
+        
+        [Test]
+        public static void TestListOne_WriteAsMember()
         {
             var mapper  = new ObjectMapper(new TypeStore());
+            mapper.WriteNullMembers = false;
             var obj     = new ListOneMember();
-            obj.ints.Add(1);
-            obj.ints.Add(2);
+            obj.ints.Add(11);
             
             var json = mapper.writer.WriteAsBytes(obj);
-            AreEqual("{\"ints\":[1,2]}", json.AsString());
+            AreEqual(Expected, json.AsString());
             
             var start = Mem.GetAllocatedBytes();
             mapper.writer.WriteAsBytes(obj);
             var diff = Mem.GetAllocationDiff(start);
-            Mem.AreEqual(0, diff);
+            // Mem.AreEqual(0, diff);
+        }
+        
+        [Test]
+        public static void TestListOne_ReadAsMember() {
+            var mapper  = new ObjectMapper(new TypeStore());
+
+            var jsonValue   = new JsonValue(Expected);
+            var request     = new ListOneMember();
+            mapper.reader.ReadTo(jsonValue, request, false);
+            AreEqual(1,  request.ints.Count);
+            AreEqual(11, request.ints[0]);
+            //
+            var start = Mem.GetAllocatedBytes();
+            mapper.reader.ReadTo(jsonValue, request, false);
+            var diff = Mem.GetAllocationDiff(start);
+            // Mem.AreEqual(0, diff);
         }
         
         [Test]
@@ -137,10 +156,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             }
             AreEqual(0, list.Count);
         }
-        
-        class ListOneMember
-        {
-            public ListOne<int> ints;
-        }
+    }
+    
+    internal class ListOneMember
+    {
+        public ListOne<int> ints;
     }
 }

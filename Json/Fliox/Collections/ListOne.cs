@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Collections
 {
-    public struct ListOne<T> : IList<T>, IList, IReadOnlyList<T>
+    public struct ListOne<T> : IList<T>, IReadOnlyList<T>
     {
         private int     count;
         private T       single;
@@ -60,10 +60,6 @@ namespace Friflo.Json.Fliox.Collections
             }
         }
 
-        public int Add(object value) {
-            throw new NotImplementedException();
-        }
-
         public void Clear() {
             switch (count) {
                 case 0:
@@ -81,28 +77,6 @@ namespace Friflo.Json.Fliox.Collections
         // --- IList<>
         public void RemoveAt(int index) {
             throw new NotImplementedException();
-        }
-        
-        // --- IList
-        public bool Contains(object value) {
-            throw new NotImplementedException();
-        }
-
-        public int IndexOf(object value) {
-            throw new NotImplementedException();
-        }
-
-        public void Insert(int index, object value) {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(object value) {
-            throw new NotImplementedException();
-        }
-
-        object IList.this[int index] {
-            get => items[index];
-            set => items[index] = (T)value;
         }
         
         public T this[int index] {

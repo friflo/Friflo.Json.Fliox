@@ -32,6 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_Optimize_JsonTests () {
             var folder = CommonUtils.GetBasePath() + "Gen";
             Generate_CS_Optimize(typeof(PocStore), folder);
+            // Generate_CS_Optimize(typeof(ListOneMember), folder);
         }
         
         private static void Generate_CS_Optimize_Library (Type type) {
