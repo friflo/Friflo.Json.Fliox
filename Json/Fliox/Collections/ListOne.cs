@@ -12,6 +12,11 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Collections
 {
+    /// <summary>
+    /// Container implementation aligned to <see cref="List{T}"/> with focus on minimizing heap allocations<br/>
+    /// - Implemented as struct to avoid allocation for the container itself<br/>
+    /// - Optimized for typical use-cases storing only a single item. No heap allocation if <see cref="Count"/> == 1. 
+    /// </summary>
     public struct ListOne<T> : IList<T>, IReadOnlyList<T> // intentionally not implemented IList
     {
         [Browse(Never)] private     int     count;
