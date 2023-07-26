@@ -195,7 +195,9 @@ namespace Friflo.Json.Fliox.Collections
             if (index < this.count) {
                 Array.Copy(items, index + count, items, index, this.count - index);
             }
-            Array.Clear(items, this.count, count);
+            if (items != null) {
+                Array.Clear(items, this.count, count);
+            }
             if (this.count == 1) {
                 single   = items[0];
                 items[0] = default;
