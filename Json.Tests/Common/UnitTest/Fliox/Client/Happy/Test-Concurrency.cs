@@ -110,13 +110,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var id = entity.id;
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
-                    var readEntities = store.entities.Read();
-                    readEntities.Find(id);
-                    await store.SyncTasks();
-                    if (1 !=  readEntities.Result.Count)
-                        throw new TestException($"Expect entities Count: 1. was: {readEntities.Result.Count}");
-                    if (!readEntities.Result.ContainsKey(id))
-                        throw new TestException($"Expect entity with id: {id}");
+                    var readEntity = store.entities.Find(id);
+                    store.SyncTasksSynchronous();
+                    if (readEntity.Result != null) {
+                        continue;
+                    }
+                    throw new TestException($"Expect entity not null");
                 }
             });
         }

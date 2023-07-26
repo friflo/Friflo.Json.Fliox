@@ -4,6 +4,7 @@ using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
 
 namespace Friflo.Json.Tests.Main
 {
@@ -16,6 +17,8 @@ namespace Friflo.Json.Tests.Main
             DropDatabase,
             FlioxServerAspNetCore,
             ListenEvents,
+            //
+            ReadThroughput,
             //
             MemoryDbThroughput,
             SQLiteThroughput,
@@ -68,6 +71,9 @@ namespace Friflo.Json.Tests.Main
 #endif
                     case Module.ListenEvents:
                         await PocClient.ListenEvents(client);
+                        break;
+                    case Module.ReadThroughput:
+                        await TestSyncPerf.ReadThroughput();
                         break;
                     case Module.MemoryDbThroughput:
                         await Throughput.MemoryDbThroughput();
