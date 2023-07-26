@@ -107,5 +107,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             var diff = Mem.GetAllocationDiff(start);
             Mem.AreEqual(0, diff);
         }
+        
+        [Test]
+        public static void TestListOne_Perf()
+        {
+            var list        = new ListOne<int>();
+            const int count = 10; // 100_000_000;
+            for (int n = 0; n < count; n++) {
+                list.Add(21);
+                list.Clear();
+            }
+            AreEqual(0, list.Count);
+        }
     }
 }
