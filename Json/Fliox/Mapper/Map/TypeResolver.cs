@@ -85,6 +85,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             //
             if (Match(EnumMatcher.                      Instance,   config, type, q)) return q.hit;
             if (Match(ListMatcher.                      Instance,   config, type, q)) return q.hit;
+            if (Match(ListOneMatcher.                   Instance,   config, type, q)) return q.hit;
             if (Match(StackMatcher.                     Instance,   config, type, q)) return q.hit;
             if (Match(QueueMatcher.                     Instance,   config, type, q)) return q.hit;
             if (Match(GenericIListMatcher.              Instance,   config, type, q)) return q.hit;

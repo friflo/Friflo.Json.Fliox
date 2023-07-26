@@ -46,6 +46,7 @@ namespace Friflo.Json.Fliox.Collections
                     EnsureCapacity(4);
                     items[0]    = single;
                     items[1]    = item;
+                    single      = default;
                     count       = 2;
                     return;
                 default:
@@ -176,9 +177,24 @@ namespace Friflo.Json.Fliox.Collections
         public ReadOnlySpan<T> GetSpan() {
             switch (count) {
                 case 0: return new ReadOnlySpan<T>(null);
-                case 1: return MemoryMarshal.CreateReadOnlySpan<T>(ref single, 1);
+                case 1: return MemoryMarshal.CreateReadOnlySpan(ref single, 1);
             }
             return new ReadOnlySpan<T>(items, 0, count);
+        }
+        
+        public void RemoveRange(int index, int count)
+        {
+            if (index < 0)                  throw new ArgumentOutOfRangeException(nameof(index));
+            if (count < 0)                  throw new ArgumentOutOfRangeException(nameof(count));
+            if (this.count - index < count) throw new ArgumentException(nameof(index));
+
+            if (count > 0) {
+                this.count -= count;
+                if (index < this.count) {
+                    Array.Copy(items, index + count, items, index, this.count - index);
+                }
+                Array.Clear(items, this.count, count);
+            }
         }
         
         private void EnsureCapacity(int capacity) {

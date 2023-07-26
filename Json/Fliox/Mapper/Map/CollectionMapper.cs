@@ -33,7 +33,21 @@ namespace Friflo.Json.Fliox.Mapper.Map
             Type                elementType,
             int                 rank,
             Type                keyType,
-            ConstructorInfo     constructor) : base (config, type, true, false)
+            ConstructorInfo     constructor)
+            // ReSharper disable once IntroduceOptionalParameters.Global
+            : this (config, type, elementType, rank, keyType, constructor, true, false)
+        { }
+        
+        internal CollectionMapper (
+            StoreConfig         config,
+            Type                type,
+            Type                elementType,
+            int                 rank,
+            Type                keyType,
+            ConstructorInfo     constructor,
+            bool                isNullable,
+            bool                isValueType)
+            : base (config, type, isNullable, isValueType)
         {
             this.keyType        = keyType;
             elementTypeNative   = elementType;

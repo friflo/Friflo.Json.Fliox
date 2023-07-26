@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Fliox.Collections;
+using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -55,6 +56,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             AreEqual(21, span[1]);
             Throws<IndexOutOfRangeException>(() => { var _ = list[2]; });
             Throws<IndexOutOfRangeException>(() => { var _ = list.GetSpan()[2]; });
+        }
+        
+        [Test]
+        public static void TestListOne_Mapper()
+        {
+            var mapper  = new ObjectMapper(new TypeStore());
+            var list    = new ListOne<int>();
+            
+            var json = mapper.Write(list);
+            AreEqual("[]", json);
         }
     }
 }
