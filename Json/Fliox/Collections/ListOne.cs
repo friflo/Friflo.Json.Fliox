@@ -12,13 +12,13 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Collections
 {
-    public struct ListOne<T> : IList<T>, IReadOnlyList<T>
+    public struct ListOne<T> : IList<T>, IReadOnlyList<T> // intentionally not implemented IList
     {
         [Browse(Never)] private     int     count;
                         private     T       single;
                         private     T[]     items;
 
-        public override string      ToString() => "Count: " + count;
+        public override             string  ToString() => "Count: " + count;
 
         // --- ICollection<>, IReadOnlyCollection<>
                         public      int     Count           => count;
@@ -37,6 +37,7 @@ namespace Friflo.Json.Fliox.Collections
             items   = new T[capacity];
         }
 
+        // --- ICollection<>
         public void Add(T item)
         {
             switch (count) {
@@ -74,6 +75,20 @@ namespace Friflo.Json.Fliox.Collections
                     break;
             }
             count = 0;
+        }
+        
+        public bool Contains(T item) {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(T[] array, int arrayIndex) {
+            for ( int n= 0; n < count; n++) {
+                array[n + arrayIndex] = this[n];
+            }
+        }
+
+        public bool Remove(T item) {
+            throw new NotImplementedException();
         }
 
         // --- IList<>
@@ -114,21 +129,7 @@ namespace Friflo.Json.Fliox.Collections
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
         }
-
-        public bool Contains(T item) {
-            throw new NotImplementedException();
-        }
-
-        public void CopyTo(T[] array, int arrayIndex) {
-            for ( int n= 0; n < count; n++) {
-                array[n + arrayIndex] = this[n];
-            }
-        }
-
-        public bool Remove(T item) {
-            throw new NotImplementedException();
-        }
-
+        
         public int IndexOf(T item) {
             throw new NotImplementedException();
         }
@@ -136,7 +137,8 @@ namespace Friflo.Json.Fliox.Collections
         public void Insert(int index, T item) {
             throw new NotImplementedException();
         }
-        
+
+        // --- List<> aligned methods 
         public int Capacity {
             get => items?.Length ?? 1;
             set {
@@ -147,7 +149,29 @@ namespace Friflo.Json.Fliox.Collections
             }
         }
 
+        public void RemoveRange(int index, int count)
+        {
+            if (index < 0)                  throw new ArgumentOutOfRangeException(nameof(index));
+            if (count < 0)                  throw new ArgumentOutOfRangeException(nameof(count));
+            if (this.count - index < count) throw new ArgumentException(nameof(index));
 
+            if (count == 0) {
+                return;
+            }
+            this.count -= count;
+            if (index < this.count) {
+                Array.Copy(items, index + count, items, index, this.count - index);
+            }
+            if (items != null) {
+                Array.Clear(items, this.count, count);
+            }
+            if (this.count == 1) {
+                single   = items[0];
+                items[0] = default;
+            }
+        }
+        
+        // --- Span<>, ReadOnlySpan<>
         public ReadOnlySpan<T> GetReadOnlySpan()
         {
             switch (count) {
@@ -172,28 +196,6 @@ namespace Friflo.Json.Fliox.Collections
 #endif
             }
             return new Span<T>(items, 0, count);
-        }
-        
-        public void RemoveRange(int index, int count)
-        {
-            if (index < 0)                  throw new ArgumentOutOfRangeException(nameof(index));
-            if (count < 0)                  throw new ArgumentOutOfRangeException(nameof(count));
-            if (this.count - index < count) throw new ArgumentException(nameof(index));
-
-            if (count == 0) {
-                return;
-            }
-            this.count -= count;
-            if (index < this.count) {
-                Array.Copy(items, index + count, items, index, this.count - index);
-            }
-            if (items != null) {
-                Array.Clear(items, this.count, count);
-            }
-            if (this.count == 1) {
-                single   = items[0];
-                items[0] = default;
-            }
         }
         
         private void EnsureCapacity(int capacity) {
