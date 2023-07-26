@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary> List of tasks created by its <see cref="EntitySet{TKey,T}"/> methods. These tasks are executed when calling <see cref="FlioxClient.SyncTasks"/> </summary>
         //  Not used internally 
-                        public  IReadOnlyList<SyncTask> Tasks       => GetInstance().syncSet?.tasks;
+                        public  SyncTask[]              Tasks       => GetInstance().GetTasks();
         
         /// <summary> Provide access to the <see cref="LocalEntities{TKey,T}"/> tracked by the <see cref="EntitySet{TKey,T}"/> </summary>
                         public  LocalEntities<TKey,T>   Local       => GetInstance().Local;
@@ -309,7 +309,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var sync    = instance.GetSyncSet();
             var create  = sync.CreateCreateTask();
             create.Add(entity);
-            sync.tasks.Add(create);
             client.AddTask(create);
             return create;
         }
@@ -330,7 +329,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var sync    = instance.GetSyncSet();
             var create  = sync.CreateCreateTask();
             create.AddRange(entities);
-            sync.tasks.Add(create);
             client.AddTask(create);
             return create;
         }
@@ -351,7 +349,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var sync    = instance.GetSyncSet();
             var create  = sync.CreateCreateTask();
             create.AddRange(entities);
-            sync.tasks.Add(create);
             client.AddTask(create);
             return create;
         }
@@ -372,7 +369,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var sync    = instance.GetSyncSet();
             var upsert  = sync.CreateUpsertTask();
             upsert.Add(entity);
-            sync.tasks.Add(upsert);
             client.AddTask(upsert);
             return upsert;
         }
@@ -392,7 +388,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var sync    = instance.GetSyncSet();
             var upsert  = sync.CreateUpsertTask();
             upsert.AddRange(entities);
-            sync.tasks.Add(upsert);
             client.AddTask(upsert);
             return upsert;
         }
@@ -413,7 +408,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var sync    = instance.GetSyncSet();
             var upsert  = sync.CreateUpsertTask();
             upsert.AddRange(entities);
-            sync.tasks.Add(upsert);
             client.AddTask(upsert);
             return upsert;
         }
@@ -435,7 +429,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var sync    = instance.GetSyncSet();
             var delete  = sync.CreateDeleteTask();
             delete.Add(key);
-            sync.tasks.Add(delete);
             client.AddTask(delete);
             return delete;
         }
@@ -452,7 +445,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var sync    = instance.GetSyncSet();
             var delete  = sync.CreateDeleteTask();
             delete.Add(key);
-            sync.tasks.Add(delete);
             client.AddTask(delete);
             return delete;
         }
@@ -477,7 +469,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var sync    = instance.GetSyncSet();
             var delete  = sync.CreateDeleteTask();
             delete.AddRange(keys);
-            sync.tasks.Add(delete);
             client.AddTask(delete);
             return delete;
         }
@@ -497,7 +488,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var sync    = instance.GetSyncSet();
             var delete  = sync.CreateDeleteTask();
             delete.AddRange(keys);
-            sync.tasks.Add(delete);
             client.AddTask(delete);
             return delete;
         }
@@ -516,7 +506,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var sync    = instance.GetSyncSet();
             var delete  = sync.CreateDeleteTask();
             delete.AddRange(keys);
-            sync.tasks.Add(delete);
             client.AddTask(delete);
             return delete;
         }

@@ -29,46 +29,35 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- internal fields
         internal  readonly  EntitySetInstance<TKey, T>  set;
-        internal  readonly  List<SyncTask>      tasks  = new List<SyncTask>();
-
-        internal  override  EntitySet           EntitySet => set;
-        public    override  string              ToString()  => "";
+        
+        internal  override  EntitySet                   EntitySet   => set;
+        public    override  string                      ToString()  => "";
 
         internal SyncSet(EntitySetInstance<TKey, T> set) {
-            this.set = set;
+            this.set    = set;
         }
 
         // --- Read
         internal ReadTask<TKey, T> Read() {
-            var read = set.readBuffer.Get() ?? new ReadTask<TKey, T>(this);
-            tasks.Add(read);
-            return read;
+            return set.readBuffer.Get() ?? new ReadTask<TKey, T>(this);
         }
         
         internal FindTask<TKey, T> Find(TKey key) {
-            var read = new FindTask<TKey, T>(this, key);
-            tasks.Add(read);
-            return read;
+            return new FindTask<TKey, T>(this, key);
         }
 
         // --- Query
         internal QueryTask<TKey, T> QueryFilter(FilterOperation filter) {
-            var query = new QueryTask<TKey, T>(filter, set.client, this);
-            tasks.Add(query);
-            return query;
+            return new QueryTask<TKey, T>(filter, set.client, this);
         }
 
         internal CloseCursorsTask CloseCursors(IEnumerable<string> cursors) {
-            var closeCursor = new CloseCursorsTask(cursors, this);
-            tasks.Add(closeCursor);
-            return closeCursor;
+            return new CloseCursorsTask(cursors, this);
         }
 
         // --- Aggregate
         internal CountTask<T> CountFilter(FilterOperation filter) {
-            var aggregate   = new CountTask<T>(filter, this);
-            tasks.Add(aggregate);
-            return  aggregate;
+            return new CountTask<T>(filter, this);
         }
 
         // --- SubscribeChanges
@@ -76,15 +65,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var subscribeChanges = new SubscribeChangesTask<T>(this);
             var changes = change.ChangeToList();
             subscribeChanges.Set(changes, filter);
-            tasks.Add(subscribeChanges);
             return subscribeChanges;
         }
 
         // --- ReserveKeys
         internal ReserveKeysTask<TKey, T> ReserveKeys(int count) {
-            var reserveKeys = new ReserveKeysTask<TKey,T>(count, this);
-            tasks.Add(reserveKeys);
-            return reserveKeys;
+            return new ReserveKeysTask<TKey,T>(count, this);
         }
 
         // --- Create
@@ -103,15 +89,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal DeleteAllTask<TKey, T> DeleteAll() {
-            var deleteAll = new DeleteAllTask<TKey, T>(this);
-            tasks.Add(deleteAll);
-            return deleteAll;
+            return new DeleteAllTask<TKey, T>(this);
         }
         
         // --- Patch
         // - detect patches
         internal void AddDetectPatches(DetectPatchesTask<TKey,T> detectPatchesTask) {
-            tasks.Add(detectPatchesTask);
         }
 
         // Deprecated comment - preserve for now to remember history of Ref{TKey,T} and Tracer
@@ -350,34 +333,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static void SetNextPatchSource(Peer<T> peer, ObjectMapper mapper) {
             var json   = mapper.writer.WriteAsValue(peer.Entity);
             peer.SetNextPatchSource(json);
-        }
-
-        internal void SetTaskInfo(ref SetInfo info) {
-            foreach (var syncTask in tasks) {
-                switch (syncTask.TaskType) {
-                    case TaskType.read:             info.read++;                break;
-                    case TaskType.query:            info.query++;               break;
-                    case TaskType.aggregate:        info.aggregate++;           break;
-                    case TaskType.create:           info.create++;              break;
-                    case TaskType.upsert:           info.upsert++;              break;
-                    case TaskType.merge:            info.merge++;               break;
-                    case TaskType.delete:           info.delete++;              break;
-                    case TaskType.closeCursors:     info.closeCursors++;        break;
-                    case TaskType.subscribeChanges: info.subscribeChanges++;    break;
-                    case TaskType.reserveKeys:      info.reserveKeys++;         break;
-                }
-            }
-            info.tasks =
-                info.read               +
-                info.query              +
-                info.aggregate          +
-                info.closeCursors       +
-                info.create             +
-                info.upsert             +
-                info.merge              +
-                info.delete             +
-                info.subscribeChanges   +
-                info.reserveKeys;
         }
     }
 }

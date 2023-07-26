@@ -111,7 +111,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
                     var readEntity = store.entities.Find(id);
-                    store.SyncTasksSynchronous();
+                    await store.SyncTasks();
                     if (readEntity.Result != null) {
                         continue;
                     }

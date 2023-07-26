@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              int             Count       => IsOk("CloseCursorsTask.Count", out Exception e) ? count : throw e;
 
 
-        internal CloseCursorsTask(IEnumerable<string> cursors, SyncSet syncSet) {
+        internal CloseCursorsTask(IEnumerable<string> cursors, SyncSet syncSet) : base(syncSet.EntitySet.name) {
             this.cursors    = cursors != null ? new List<string>(cursors) : null;
             this.syncSet    = syncSet;
         }

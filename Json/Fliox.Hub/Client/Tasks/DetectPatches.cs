@@ -17,6 +17,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   abstract   string                          Container   { get; }
         public   abstract   IReadOnlyList<EntityPatchInfo>  GetPatches();
         internal abstract   int                             GetPatchCount();
+
+        protected DetectPatchesTask(string entitySet) : base(entitySet) { }
     }
     
     public sealed class DetectPatchesTask<TKey,T> : DetectPatchesTask  where T : class
@@ -37,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         private static readonly KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
 
-        internal DetectPatchesTask(SyncSet<TKey,T> syncSet) {
+        internal DetectPatchesTask(SyncSet<TKey,T> syncSet) : base(syncSet.EntitySet.name) {
             this.syncSet    = syncSet;
             patches         = new List<EntityPatchInfo<TKey,T>>();
         }

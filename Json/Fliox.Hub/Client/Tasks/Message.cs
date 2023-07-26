@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal  override  TaskType        TaskType    => TaskType.message;
 
         
-        internal MessageTask(in ShortString name, in JsonValue param) {
+        internal MessageTask(in ShortString name, in JsonValue param) : base(null) {
             this.name       = name;
             this.param      = param;
         }

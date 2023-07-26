@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public              long[]          Keys        => IsOk("ReserveKeysTask.Keys", out Exception e) ? keys : throw e;
         
-        internal ReserveKeysTask(int count, SyncSet<TKey,T> syncSet) {
+        internal ReserveKeysTask(int count, SyncSet<TKey,T> syncSet) : base(syncSet.EntitySet.name) {
             this.count      = count;
             this.syncSet    = syncSet;
         }

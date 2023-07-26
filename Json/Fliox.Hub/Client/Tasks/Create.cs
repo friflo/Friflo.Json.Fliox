@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskType            TaskType=> TaskType.create;
         
         
-        internal CreateTask(EntitySetBase<T> set, SyncSetBase<T>  syncSet) {
+        internal CreateTask(EntitySetBase<T> set, SyncSetBase<T>  syncSet) : base(syncSet.EntitySet.name) {
             this.set        = set;
             this.syncSet    = syncSet;
         }

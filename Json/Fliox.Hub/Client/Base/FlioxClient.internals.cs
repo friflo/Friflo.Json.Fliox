@@ -186,17 +186,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             syncStore.SetSyncSets(this);
             
-            var functions       = syncStore.tasks;
+            var tasks           = syncStore.tasks;
             var syncRequest     = _intern.syncRequestBuffer.Get() ?? new SyncRequest();
             InitSyncRequest(syncRequest);
-            var tasks           = syncRequest.tasks ?? new List<SyncRequestTask>(functions.Count);
-            syncRequest.tasks   = tasks;
+            var requestTasks    = syncRequest.tasks ?? new List<SyncRequestTask>(tasks.Count);
+            syncRequest.tasks   = requestTasks;
             var context         = new CreateTaskContext (mapper);
-            foreach (var function in functions) {
-                if (function is SyncTask task) {
-                    var requestTask = task.CreateRequestTask(context);
-                    tasks.Add(requestTask);
-                }
+            foreach (var task in tasks) {
+                var requestTask = task.CreateRequestTask(context);
+                requestTasks.Add(requestTask);
             }
             // --- create new SyncStore and SyncSet's to collect future SyncTask's and execute them via the next SyncTasks() call 
             foreach (var set in entitySets) {

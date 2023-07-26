@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal abstract   AggregateType   Type        { get; }
 
-        internal AggregateTask(FilterOperation filter, SyncSet syncSet) {
+        internal AggregateTask(FilterOperation filter, SyncSet syncSet) : base(syncSet.EntitySet.name) {
             this.filter     = filter;
             this.filterLinq = filter.Linq;
             this.syncSet    = syncSet;

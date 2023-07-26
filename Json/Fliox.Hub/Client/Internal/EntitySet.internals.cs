@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         [DebuggerBrowsable(Never)] internal readonly  string          name;
         [DebuggerBrowsable(Never)] internal readonly  ShortString     nameShort;
         [DebuggerBrowsable(Never)] internal           ChangeCallback  changeCallback;
+        
 
         internal  abstract  SyncSet     SyncSet     { get; }
         internal  abstract  SetInfo     SetInfo     { get; }
@@ -45,6 +46,34 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         protected EntitySet(string name) {
             this.name   = name;
             nameShort   = new ShortString(name);
+        }
+        
+        internal static void SetTaskInfo(ref SetInfo info, SyncTask[] tasks) {
+            foreach (var syncTask in tasks) {
+                switch (syncTask.TaskType) {
+                    case TaskType.read:             info.read++;                break;
+                    case TaskType.query:            info.query++;               break;
+                    case TaskType.aggregate:        info.aggregate++;           break;
+                    case TaskType.create:           info.create++;              break;
+                    case TaskType.upsert:           info.upsert++;              break;
+                    case TaskType.merge:            info.merge++;               break;
+                    case TaskType.delete:           info.delete++;              break;
+                    case TaskType.closeCursors:     info.closeCursors++;        break;
+                    case TaskType.subscribeChanges: info.subscribeChanges++;    break;
+                    case TaskType.reserveKeys:      info.reserveKeys++;         break;
+                }
+            }
+            info.tasks =
+                info.read               +
+                info.query              +
+                info.aggregate          +
+                info.closeCursors       +
+                info.create             +
+                info.upsert             +
+                info.merge              +
+                info.delete             +
+                info.subscribeChanges   +
+                info.reserveKeys;
         }
     }
     
@@ -85,11 +114,34 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal partial class EntitySetInstance<TKey, T>
     {
         private TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._readonly.typeStore.GetTypeMapper(typeof(T));
+
         
         private SetInfo GetSetInfo() {
-            var info = new SetInfo (name) { peers = peerMap?.Count ?? 0 };
-            syncSet?.SetTaskInfo(ref info);
+            var info    = new SetInfo (name) { peers = peerMap?.Count ?? 0 };
+            var tasks   = GetTasks();
+            SetTaskInfo(ref info, tasks);
             return info;
+        }
+        
+        internal SyncTask[] GetTasks() {
+            var allTasks    = client._intern.syncStore.tasks;
+            var count       = 0;
+            foreach (var task in allTasks) {
+                if (task.entitySetName == name) {
+                    count++;
+                }
+            }
+            if (count == 0) {
+                return Array.Empty<SyncTask>();    
+            }
+            var tasks = new SyncTask[count];
+            var n = 0;
+            foreach (var task in allTasks) {
+                if (task.entitySetName == name) {
+                    tasks[n++] = task;
+                }
+            }
+            return tasks;
         }
         
         internal override void Reset() {
@@ -183,10 +235,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var key     = Static.EntityKeyTMap.GetKey(entity); 
             var peers   = PeerMap();
             return peers.TryGetValue(key, out value);
-        }
-        
-        internal void AddTask(SyncTask task) {
-            GetSyncSet().tasks.Add(task);
         }
         
         // --- EntitySet

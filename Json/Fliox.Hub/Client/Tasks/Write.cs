@@ -15,6 +15,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         internal            TaskState           state;
         internal override   TaskState           State       => state;
+
+        protected WriteTask(string entitySet) : base(entitySet) { }
     }
     
     internal readonly struct KeyEntity<T>  where T : class 

@@ -235,7 +235,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 await store.SyncTasks();
             }
             var diff = Mem.GetAllocationDiff(start);
-            var expected = IsDebug() ? new LongRange(27136, 27500) : new LongRange(24576, 25000); // Test Debug & Release
+            var expected = IsDebug() ? new LongRange(27088, 27500) : new LongRange(24528, 25000); // Test Debug & Release
             Mem.InRange(expected, diff);
         }
         

@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              SyncTask        Task            => this;
       
 
-        internal QueryTask(FilterOperation filter, FlioxClient client, SyncSet<TKey,T> syncSet) {
+        internal QueryTask(FilterOperation filter, FlioxClient client, SyncSet<TKey,T> syncSet) : base(syncSet.EntitySet.name) {
             relations       = new Relations(this);
             this.filter     = filter;
             this.filterLinq = filter.Linq;
@@ -67,12 +67,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.syncSet    = syncSet;
         }
         
-        private QueryTask(QueryTask<TKey, T> query) {
-            relations   = new Relations(this);
-            filter      = query.filter;
-            filterLinq  = query.filterLinq;
-            client      = query.client;
-            syncSet     = query.syncSet;
+        private QueryTask(QueryTask<TKey, T> query, SyncSet<TKey,T> syncSet) : base(syncSet.EntitySet.name) {
+            relations       = new Relations(this);
+            filter          = query.filter;
+            filterLinq      = query.filterLinq;
+            client          = query.client;
+            this.syncSet    = syncSet;
         }
         
         private bool GetIsFinished() {
@@ -88,8 +88,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public QueryTask<TKey, T> QueryNext() {
             if (IsOk("QueryTask.QueryNext()", out Exception e)) {
                 if (resultCursor == null) throw new InvalidOperationException("cursor query reached end");
-                var query = new QueryTask<TKey, T>(this) { cursor = resultCursor, maxCount = maxCount };
-                syncSet.set.AddTask(query);
+                var instance    = syncSet.set.GetSyncSet();
+                var query       = new QueryTask<TKey, T>(this, instance) { cursor = resultCursor, maxCount = maxCount };
                 client.AddTask(query);
                 return query;
             }

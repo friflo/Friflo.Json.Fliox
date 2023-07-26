@@ -8,12 +8,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal sealed class SyncStore
     {
-        internal    Dictionary<ShortString,SyncSet> SyncSets { get; private set; }
+        internal            Dictionary<ShortString,SyncSet> SyncSets            { get; private set; }
         
-        internal readonly   List<SyncTask>  tasks           = new List<SyncTask>();
+        internal readonly   List<SyncTask>                  tasks               = new List<SyncTask>();
         
-        private     List<DetectAllPatches>      detectAllPatches;
-        private     List<DetectAllPatches>      DetectAllPatches()  => detectAllPatches ??= new List<DetectAllPatches>();
+        private             List<DetectAllPatches>          detectAllPatches;
+        private             List<DetectAllPatches>          DetectAllPatches()  => detectAllPatches ??= new List<DetectAllPatches>();
         
         internal void SetSyncSets(FlioxClient client) {
             SyncSets = CreateSyncSets(client, SyncSets);

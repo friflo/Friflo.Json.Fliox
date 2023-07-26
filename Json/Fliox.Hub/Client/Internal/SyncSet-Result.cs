@@ -525,7 +525,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal  override  void    Reuse  () {
-            tasks.Clear();
             set.syncSetBuffer.Add(this);
         }
     }
