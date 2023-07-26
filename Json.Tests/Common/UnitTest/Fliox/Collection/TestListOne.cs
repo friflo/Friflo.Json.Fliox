@@ -64,8 +64,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             var mapper  = new ObjectMapper(new TypeStore());
             var list    = new ListOne<int>();
             
-            var json = mapper.Write(list);
-            AreEqual("[]", json);
+            var json = mapper.writer.WriteAsBytes(list);
+            AreEqual("[]", json.AsString());
+            
+            list.Add(1);
+            json = mapper.writer.WriteAsBytes(list);
+            AreEqual("[1]", json.AsString());
+            
+            list.Add(2);
+            json = mapper.writer.WriteAsBytes(list);
+            AreEqual("[1,2]", json.AsString());
+            
+            var start = Mem.GetAllocatedBytes();
+            mapper.writer.WriteAsBytes(list);
+            var diff = Mem.GetAllocationDiff(start);
+            Mem.AreEqual(0, diff);
         }
     }
 }
