@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Provider.Perf
 
             // warmup
             for (int n = 0; n < WarmupCount; n++) {
-                client.posts.Read().Find(n % SeedCount);
+                client.posts.Find(n % SeedCount);
                 await client.SyncTasks();
             }
 
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Provider.Perf
             stopWatch.Start();
             var count = ReadCount;
             for (int n = 0; n < count; n++) {
-                client.posts.Read().Find(n % SeedCount);
+                client.posts.Find(n % SeedCount);
                 await client.SyncTasks();
             }
             var duration = stopWatch.Elapsed.TotalMilliseconds;
