@@ -236,6 +236,15 @@ namespace System.Collections.Generic
         }
         
         // ----------------------------------------- Enumerator -----------------------------------------
+        /// <summary>
+        /// <b>Performance!</b><br/>
+        /// Avoid iteration on the class instance directly. Instead Iterate on <see cref="GetSpan"/> or <see cref="GetReadOnlySpan"/>
+        /// <code>
+        ///     var list = ListOne&lt;string&gt;();
+        ///     foreach (var item in list) {}                       // avoid this
+        ///     foreach (var item in list.GetReadOnlySpan()) {}     // use this
+        /// </code>
+        /// </summary>
         public  Enumerator                      GetEnumerator() => new Enumerator(this);
                 IEnumerator<T>  IEnumerable<T>. GetEnumerator() => new Enumerator(this);
                 IEnumerator     IEnumerable.    GetEnumerator() => new Enumerator(this);
