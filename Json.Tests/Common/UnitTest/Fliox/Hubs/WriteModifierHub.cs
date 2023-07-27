@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
 
         public override ExecutionType InitSyncRequest(SyncRequest syncRequest) {
-            foreach (var task in syncRequest.tasks) {
+            foreach (var task in syncRequest.tasks.GetReadOnlySpan()) {
                 switch (task) {
                     case CreateEntities createEntities:
                         if (writeModifiers.TryGetValue(createEntities.container, out var write)) {

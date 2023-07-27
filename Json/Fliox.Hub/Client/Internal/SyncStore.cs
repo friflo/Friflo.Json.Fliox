@@ -9,14 +9,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal sealed class SyncStore
     {
-        internal readonly   List<SyncTask>                  tasks               = new List<SyncTask>();
+        internal    ListOne<SyncTask>               tasks               = new ListOne<SyncTask>();
         
-        private             List<DetectAllPatches>          detectAllPatches;
-        private             List<DetectAllPatches>          DetectAllPatches()  => detectAllPatches ??= new List<DetectAllPatches>();
+        private     List<DetectAllPatches>          detectAllPatches;
+        private     List<DetectAllPatches>          DetectAllPatches()  => detectAllPatches ??= new List<DetectAllPatches>();
         
         internal void Reuse(int entitySetCount) {
             Span<bool> reusedSyncSets = stackalloc bool[entitySetCount];
-            foreach (var task in tasks) {
+            foreach (var task in tasks.GetReadOnlySpan()) {
                 task.Reuse();
                 var syncSet = task.taskSyncSet;
                 if (syncSet == null) {

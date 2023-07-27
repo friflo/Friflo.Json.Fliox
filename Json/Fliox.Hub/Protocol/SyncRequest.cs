@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         [Serialize                                ("ack")]
                     public  int?                    eventAck;
         /// <summary>list of tasks either container operations or database commands / messages</summary>
-        [Required]  public  List<SyncRequestTask>   tasks;
+        [Required]  public  ListOne<SyncRequestTask> tasks;
         /// <summary>database name the <see cref="tasks"/> apply to. null to access the default database</summary>
         [Serialize                                ("db")]
                     public  ShortString             database;
@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             if (tasks.Count == 0) {
                 sb.Append("no tasks");
             } else {
-                foreach (var task in tasks) {
+                foreach (var task in tasks.GetReadOnlySpan()) {
                     sb.Append(task.TaskType);
                     sb.Append(" - ");
                     sb.Append(task.TaskName);

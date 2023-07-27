@@ -133,8 +133,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (set == null) continue;
                 Add(set.SetInfo);
             }
-            foreach (var function in client._intern.syncStore.tasks) {
-                switch (function) {
+            foreach (var task in client._intern.syncStore.tasks.GetReadOnlySpan()) {
+                switch (task) {
                     case CommandTask _: commands++; break;
                     case MessageTask _: messages++; break;
                 }

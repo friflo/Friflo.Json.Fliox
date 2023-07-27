@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         private             SyncRequest                 syncRequest;
         private             SyncStore                   syncStore;
         private             MemoryBuffer                memoryBuffer;
-        private             List<SyncTask>              tasks;
-        internal            List<SyncTask>              failed;
+        private             ListOne<SyncTask>           tasks;
+        internal            ListOne<SyncTask>           failed;
         private             ErrorResponse               errorResponse;
 
         public              bool                        Success     => failed == null && errorResponse == null;
@@ -42,12 +42,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal void Init (
-            SyncRequest         syncRequest,
-            SyncStore           syncStore,
-            MemoryBuffer        memoryBuffer,
-            List<SyncTask>      tasks,
-            List<SyncTask>      failed,
-            ErrorResponse       errorResponse)
+            SyncRequest             syncRequest,
+            SyncStore               syncStore,
+            MemoryBuffer            memoryBuffer,
+            ListOne<SyncTask>       tasks,
+            ListOne<SyncTask>       failed,
+            ErrorResponse           errorResponse)
         {
             this.syncRequest    = syncRequest;
             this.syncStore      = syncStore;
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return Array.Empty<SyncTask>();
         }
         
-        internal static string GetMessage(ErrorResponse errorResponse, List<SyncTask> failed) {
+        internal static string GetMessage(ErrorResponse errorResponse, ListOne<SyncTask> failed) {
             if (errorResponse != null) {
                 return errorResponse.message;
             }
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 sb.Append('0');
             } else {
                 sb.Append(failed.Count);
-                foreach (var task in failed) {
+                foreach (var task in failed.GetReadOnlySpan()) {
                     sb.Append("\n|- ");
                     sb.Append(task.GetLabel()); // todo should use appender instead of Label
                     sb.Append(" # ");

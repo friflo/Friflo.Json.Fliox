@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var definitions = document.Definitions;
             var queries     = new List<Query> ();
             var utf8Buffer  = new Utf8Buffer();
-            var tasks       = new List<SyncRequestTask>();
+            var tasks       = new ListOne<SyncRequestTask>();
             foreach (var definition in definitions) {
                 if (!(definition is GraphQLOperationDefinition operation))
                     continue;
@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             string                          doc,
             Dictionary<string, JsonValue>   variables,
             List<Query>                     queries,
-            List<SyncRequestTask>           tasks,
+            ListOne<SyncRequestTask>        tasks,
             IUtf8Buffer                     buffer)
         {
             queries.Capacity    = queries.Count + selections.Count;

@@ -41,9 +41,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             return stateDB.CreateContainer(name, database);
         }
 
-        internal static bool FindTask(string container, in JsonKey dbKey, List<SyncRequestTask> tasks) {
+        internal static bool FindTask(string container, in JsonKey dbKey, ListOne<SyncRequestTask> tasks) {
             var containerName = new ShortString(container);
-            foreach (var task in tasks) {
+            foreach (var task in tasks.GetReadOnlySpan()) {
                 if (task is ReadEntities read && read.container.IsEqual(containerName)) {
                     return read.ids.Contains(dbKey, JsonKey.Equality);
                 }
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     public partial class ClusterStore
     {
-        internal void UpdateClusterDB(FlioxHub hub, List<SyncRequestTask> tasks) {
+        internal void UpdateClusterDB(FlioxHub hub, ListOne<SyncRequestTask> tasks) {
             var hubDbs = hub.GetDatabases();
             foreach (var pair in hubDbs) {
                 var database        = pair.Value;

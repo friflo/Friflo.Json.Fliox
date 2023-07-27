@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Collections;
 using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Utils;
@@ -36,9 +36,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         public override string  DataTypeName()                  => $"ListOne<{typeof(TElm).Name}>";
         public override bool    IsNull(ref ListOne<TElm> value) => false;
         public override int     Count(object array)             => ((ListOne<TElm>) array).Count;
-        
+        //
         public ListOneMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
-            base(config, type, elementType, 1, typeof(string), constructor, false, true)
+            base(config, type, elementType, 1, typeof(string), constructor, true, false)
         { }
         
         public override DiffType Diff(Differ differ, ListOne<TElm> left, ListOne<TElm> right) {
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             
             var list = slot;
             int startLen = 0;
-            if (reader.readerPool != null) {
+            if (list == null || reader.readerPool != null) {
                 list = (ListOne<TElm>) CreateInstance(reader.readerPool);
                 list.Clear();
             } else {
@@ -144,9 +144,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         }
         
         public override void Copy(ListOne<TElm> src, ref ListOne<TElm> dst) {
-            int dstCount = dst.Count;
+            int dstCount = 0;
+            if (dst == null) {
+                dst = new ListOne<TElm>(src.Count);
+            } else {
+                dstCount = dst.Count;
+            }
             int dstIndex = 0;
-            foreach (var srcElement in src) {
+            foreach (var srcElement in src.GetReadOnlySpan()) {
                 if (dstIndex < dstCount) {
                     var dstElement = dst[dstIndex];
                     elementType.Copy(srcElement, ref dstElement);

@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         public override string  DataTypeName()              => $"List<{typeof(TElm).Name}>";
         public override bool    IsNull(ref List<TElm> value)=> value == null;
         public override int     Count(object array)         => ((List<TElm>) array).Count;
-        
+        //
         public ListMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {
         }

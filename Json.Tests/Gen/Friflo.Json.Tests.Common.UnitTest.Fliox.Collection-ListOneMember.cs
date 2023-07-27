@@ -12,13 +12,13 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
         private static bool ReadField (ref ListOneMember obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_ints: obj.ints = reader.ReadStruct (field, obj.ints, out success);  return success;
+                case Gen_ints: obj.ints = reader.ReadClass (field, obj.ints, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref ListOneMember obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-            writer.WriteStruct (fields[Gen_ints], obj.ints, ref firstMember);
+            writer.WriteClass (fields[Gen_ints], obj.ints, ref firstMember);
         }
     }
 }

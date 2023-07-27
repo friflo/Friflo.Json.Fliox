@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public readonly     IReadOnlyList<SyncTask>  failed;
 
-        internal SyncTasksException(ErrorResponse errorResponse, List<SyncTask> failed)
+        internal SyncTasksException(ErrorResponse errorResponse, ListOne<SyncTask> failed)
             : base(SyncResult.GetMessage(errorResponse, failed))
         {
             this.failed = failed;

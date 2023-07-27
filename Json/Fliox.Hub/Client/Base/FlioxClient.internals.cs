@@ -187,12 +187,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             var tasks           = syncStore.tasks;
             var syncRequest     = _intern.syncRequestBuffer.Get() ?? new SyncRequest();
             InitSyncRequest(syncRequest);
-            var requestTasks    = syncRequest.tasks ?? new List<SyncRequestTask>(tasks.Count);
+            var requestTasks    = syncRequest.tasks ?? new ListOne<SyncRequestTask>(tasks.Count);
             syncRequest.tasks   = requestTasks;
             var context         = new CreateTaskContext (mapper);
-            foreach (var task in tasks) {
+            foreach (var task in tasks.GetReadOnlySpan()) {
                 var requestTask = task.CreateRequestTask(context);
-                requestTasks.Add(requestTask);
+                syncRequest.tasks.Add(requestTask);
             }
             // --- create new SyncStore and SyncSet's to collect future SyncTask's and execute them via the next SyncTasks() call 
             foreach (var set in entitySets) {
@@ -223,18 +223,17 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        private static void CopyEntityErrors(List<SyncRequestTask> tasks, List<SyncTaskResult> responseTasks, SyncStore syncStore) {
+        private static void CopyEntityErrors(ListOne<SyncRequestTask> tasks, ListOne<SyncTaskResult> responseTasks, SyncStore syncStore) {
             var syncTasks = syncStore.tasks;
-            for (int n = 0; n < tasks.Count; n++)
-            {
-                var task            = tasks[n];
+            int n = 0;
+            foreach (var task in tasks.GetReadOnlySpan()) {
                 var responseTask    = responseTasks[n];
                 switch (responseTask.TaskType) {
                     case TaskType.upsert:
                         var upsertResult    = (UpsertEntitiesResult)responseTask;
                         if (upsertResult.errors == null)
                             continue;
-                        var container       = ((UpsertEntities)task).container;
+                        var container   = ((UpsertEntities)task).container;
                         var syncSet     = syncTasks[n].taskSyncSet;
                         CopyEntityErrorsToMap(upsertResult.errors,  container, ref syncSet.errorsUpsert);
                         break; 
@@ -263,6 +262,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         CopyEntityErrorsToMap(deleteResult.errors,  container, ref syncSet.errorsDelete);
                         break;
                 }
+                n++;
             }
         }
         
@@ -333,21 +333,21 @@ namespace Friflo.Json.Fliox.Hub.Client
                     syncStore.DetectPatchesResults();
                 }
                 finally {
-                    var functions   = syncStore.tasks;
-                    var failed      = GetFailedFunctions(functions);
-                    syncResult      = _intern.syncResultBuffer.Get() ?? new SyncResult(this);
-                    syncResult.Init(syncRequest, syncStore, memoryBuffer, functions, failed, response.error);
+                    var tasks   = syncStore.tasks;
+                    var failed  = GetFailedFunctions(tasks);
+                    syncResult  = _intern.syncResultBuffer.Get() ?? new SyncResult(this);
+                    syncResult.Init(syncRequest, syncStore, memoryBuffer, tasks, failed, response.error);
                     
-                    foreach (var function in functions) {
-                        var onSync  = function.OnSync;
+                    foreach (var task in tasks.GetReadOnlySpan()) {
+                        var onSync  = task.OnSync;
                         if (onSync == null)
                             continue;
-                        var taskError = function.State.Error.TaskError;
+                        var taskError = task.State.Error.TaskError;
                         try {
                             onSync(taskError);
                         }
                         catch (Exception e) {
-                            var error = $"OnSync Exception in {function.GetLabel()}";
+                            var error = $"OnSync Exception in {task.GetLabel()}";
                             Logger.Log(HubLog.Error, error, e);
                         }
                     }
@@ -356,10 +356,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        private static List<SyncTask> GetFailedFunctions(List<SyncTask> functions) {
+        private static ListOne<SyncTask> GetFailedFunctions(ListOne<SyncTask> tasks) {
             // create failed array only if required
             var errorCount  = 0;
-            foreach (var task in functions) {
+            foreach (var task in tasks.GetReadOnlySpan()) {
                 if (!task.State.Error.HasErrors)
                     continue;
                 errorCount++;
@@ -367,8 +367,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (errorCount == 0) {
                 return null;
             }
-            var failed = new List<SyncTask>(errorCount);
-            foreach (var task in functions) {
+            var failed = new ListOne<SyncTask>(errorCount);
+            foreach (var task in tasks.GetReadOnlySpan()) {
                 if (!task.State.Error.HasErrors)
                     continue;
                 failed.Add(task);

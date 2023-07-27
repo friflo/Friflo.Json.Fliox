@@ -547,7 +547,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
 
         // ----------------------------------------- utils -----------------------------------------
         private static SyncRequest CreateSyncRequest (RequestContext context, in ShortString database, SyncRequestTask task, out SyncContext syncContext) {
-            var tasks   = new List<SyncRequestTask> { task };
+            var tasks   = new ListOne<SyncRequestTask> { task };
             var userId  = context.headers.Cookie("fliox-user");
             var token   = context.headers.Cookie("fliox-token");
             var clientId= context.headers.Header("fliox-client");

@@ -71,7 +71,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             var response        = SyncResponse.Create(syncContext, taskCount);
             syncContext.response= response;
             response.database   = syncRequest.database;
-            var tasks           = response.tasks;
 
             // ------------------------ loop through all given tasks and execute them ------------------------
             for (int index = 0; index < taskCount; index++) {
@@ -84,9 +83,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                     // from preceding InitSyncRequest() call.
                     //
                     //
-                    tasks.Add(result);
+                    response.tasks.Add(result);
                 } catch (Exception e) {
-                    tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.
+                    response.tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.
                     var message = GetLogMessage(db.name, syncRequest.userId, index, task);
                     Logger.Log(HubLog.Error, message, e);
                 }

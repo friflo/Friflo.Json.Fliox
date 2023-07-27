@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Fliox;
-using Friflo.Json.Fliox.Collections;
 using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -60,6 +60,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
             AreEqual(21, span[1]);
             Throws<IndexOutOfRangeException>(() => { var _ = list[2]; });
             Throws<IndexOutOfRangeException>(() => { var _ = list.GetReadOnlySpan()[2]; });
+        }
+        
+        [Test]
+        public static void TestListOne_IndexSet() {
+            var list = new ListOne<int>();
+            
+            // --- items: 0
+            Throws<IndexOutOfRangeException>(() => { list[0] = 42; });
+            
+            // --- items: 1
+            list.Add(10);
+            list[0] = 20;
+            AreEqual(20, list[0]);
+            Throws<IndexOutOfRangeException>(() => { list[1] = 42; });
+            
+            // --- items: 2
+            list.Add(11);
+            list[0] = 30;
+            list[1] = 31;
+            AreEqual(30, list[0]);
+            AreEqual(31, list[1]);
+            Throws<IndexOutOfRangeException>(() => { list[2] = 42; });
         }
         
         [Test]
@@ -176,7 +198,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Collection
         {
             var mapper  = new ObjectMapper(new TypeStore());
             mapper.WriteNullMembers = false;
-            var obj     = new ListOneMember();
+            var obj     = new ListOneMember { ints = new ListOne<int>() };
             obj.ints.Add(11);
             
             var json = mapper.writer.WriteAsBytes(obj);

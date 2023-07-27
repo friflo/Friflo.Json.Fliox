@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal SyncTask[] GetTasks() {
-            var allTasks    = client._intern.syncStore.tasks;
+            var allTasks    = client._intern.syncStore.tasks.GetReadOnlySpan();
             var count       = 0;
             foreach (var task in allTasks) {
                 if (task.entitySetName == name) {

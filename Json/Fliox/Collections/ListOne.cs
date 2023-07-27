@@ -1,9 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -11,7 +8,8 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 // ReSharper disable ConvertToAutoProperty
-namespace Friflo.Json.Fliox.Collections
+// ReSharper disable once CheckNamespace
+namespace System.Collections.Generic
 {
     /// <summary>
     /// Container implementation aligned to <see cref="List{T}"/> with focus on minimizing heap allocations<br/>
@@ -19,7 +17,7 @@ namespace Friflo.Json.Fliox.Collections
     /// - Optimized for typical use-cases storing only a single item. No heap allocation if <see cref="Count"/> == 1. 
     /// </summary>
     [DebuggerTypeProxy(typeof(ListOneDebugView<>))]
-    public struct ListOne<T> : IList<T>, IReadOnlyList<T> // intentionally not implemented IList
+    public sealed class ListOne<T> : IList<T>, IReadOnlyList<T> // intentionally not implemented IList
     {
         [Browse(Never)] private     int     count;
                         private     T       single;
@@ -31,14 +29,14 @@ namespace Friflo.Json.Fliox.Collections
                         public      int     Count           => count;
         [Browse(Never)] public      bool    IsReadOnly      => false;
         
-        // public ListOne() {}
+        public ListOne() {}
         
         public ListOne(int capacity)
         {
-            count   = 0;
-            single  = default;
+            // count   = 0;
+            // single  = default;
             if (capacity == 0 || capacity == 1) {
-                items = null;
+                // items = null;
                 return;
             }
             items   = new T[capacity];
@@ -122,18 +120,19 @@ namespace Friflo.Json.Fliox.Collections
             set {
                 switch (count) {
                     case 0:
-                        throw new ArgumentOutOfRangeException(nameof(index));
+                        throw new IndexOutOfRangeException(nameof(index));
                     case 1:
                         if (index == 0) {
                             single = value;
                             return;
                         }
-                        throw new ArgumentOutOfRangeException(nameof(index));
+                        throw new IndexOutOfRangeException(nameof(index));
                 }
                 if ((uint)index < (uint)count) {
                     items[index] = value;
+                    return;
                 }
-                throw new ArgumentOutOfRangeException(nameof(index));
+                throw new IndexOutOfRangeException(nameof(index));
             }
         }
         
@@ -232,7 +231,7 @@ namespace Friflo.Json.Fliox.Collections
             private             int         index;
             private             T           current;
 
-            internal Enumerator(in ListOne<T> list) {
+            internal Enumerator(ListOne<T> list) {
                 this.list   = list;
                 index       = 0;
                 current     = default;

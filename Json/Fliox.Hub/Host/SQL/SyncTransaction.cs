@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             this.beginTask     = beginTask;
         }
         
-        internal static bool HasTaskErrors(List<SyncTaskResult> taskResults, int from, int to) {
+        internal static bool HasTaskErrors(ListOne<SyncTaskResult> taskResults, int from, int to) {
             for (int index = from; index < to; index++) {
                 var taskResult = taskResults[index];
                 if (taskResult.Failed) {

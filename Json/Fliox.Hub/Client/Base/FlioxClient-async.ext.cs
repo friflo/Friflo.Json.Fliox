@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Specific characteristic: Method can run in parallel on any thread </summary>
         private async Task<SyncResult> TrySyncAcknowledgeEvents() {
             // cannot reuse request, context & buffer method can run on any thread
-            var syncRequest = new SyncRequest { tasks = new List<SyncRequestTask>() };
+            var syncRequest = new SyncRequest { tasks = new ListOne<SyncRequestTask>() };
             var buffer      = new MemoryBuffer(Static.MemoryBufferCapacity);
             var syncContext = new SyncContext(_readonly.sharedEnv, _readonly.eventReceiver); 
             syncContext.SetMemoryBuffer(buffer);

@@ -18,8 +18,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         { }
                 
         public override Task<ExecuteSyncResult> ExecuteRequestAsync(SyncRequest syncRequest, SyncContext syncContext) {
-            var result = new SyncResponse {
-                tasks       = new List<SyncTaskResult>()
+            var result  = new SyncResponse {
+                tasks   = new ListOne<SyncTaskResult>()
             };
             var response = new ExecuteSyncResult(result);
             return Task.FromResult(response);

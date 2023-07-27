@@ -26,10 +26,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             store.entities.UpsertRange(entities);
             await store.SyncTasks();
             
-            await ReadLoop(store, 10_000_000).ConfigureAwait(false);
+            await ReadLoop(store, 50_000_000).ConfigureAwait(false);
         }
 
-        private const int IntervalCount = 500_000; // 10;
+        private const int IntervalCount = 500_000; // 10, 500_000
         
         
         private static Task ReadLoop (SimpleStore store, int requestCount)

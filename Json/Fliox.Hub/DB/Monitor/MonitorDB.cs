@@ -39,9 +39,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             return stateDB.CreateContainer(name, database);
         }
 
-        internal static bool FindTask(string container, List<SyncRequestTask> tasks) {
+        internal static bool FindTask(string container, ListOne<SyncRequestTask> tasks) {
             var containerName = new ShortString(container);
-            foreach (var task in tasks) {
+            foreach (var task in tasks.GetReadOnlySpan()) {
                 if (task is ReadEntities read && read.container.IsEqual(containerName))
                     return true;
                 if (task is QueryEntities query && query.container.IsEqual(containerName))

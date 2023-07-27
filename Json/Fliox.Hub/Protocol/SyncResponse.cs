@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         [Serialize                                ("db")]
                     public  ShortString             database;
         /// <summary>list of task results corresponding to the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/></summary>
-                    public  List<SyncTaskResult>    tasks;
+                    public  ListOne<SyncTaskResult> tasks;
         /// <summary>entities as results from the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/>
         /// grouped by container</summary>
                     public  List<ContainerEntities> containers;
@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             var syncPools = syncContext.syncPools;
             if (syncPools == null) {
                 return new SyncResponse {
-                    tasks  = new List<SyncTaskResult>(taskCapacity)
+                    tasks  = new ListOne<SyncTaskResult>(taskCapacity)
                 };
             }
             var tasks           = syncPools.taskResultsPool.Create();
