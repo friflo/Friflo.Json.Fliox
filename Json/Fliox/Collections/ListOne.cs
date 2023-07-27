@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
@@ -17,6 +18,7 @@ namespace Friflo.Json.Fliox.Collections
     /// - Implemented as struct to avoid allocation for the container itself<br/>
     /// - Optimized for typical use-cases storing only a single item. No heap allocation if <see cref="Count"/> == 1. 
     /// </summary>
+    [DebuggerTypeProxy(typeof(ListOneDebugView<>))]
     public struct ListOne<T> : IList<T>, IReadOnlyList<T> // intentionally not implemented IList
     {
         [Browse(Never)] private     int     count;
@@ -264,6 +266,25 @@ namespace Friflo.Json.Fliox.Collections
             void IEnumerator.Reset() {
                 index   = 0;
                 current = default;
+            }
+        }
+    }
+    
+    /// <summary>Display <see cref="ListOne{T}"/> items as list in Debugger</summary>
+    internal sealed class ListOneDebugView<T>
+    {
+        private readonly ICollection<T> list;
+
+        public ListOneDebugView(ListOne<T> list) {
+            this.list = list;
+        }
+
+        [DebuggerBrowsable(RootHidden)]
+        public T[] Items {
+            get {
+                T[] items = new T[list.Count];
+                list.CopyTo(items, 0);
+                return items;
             }
         }
     }
