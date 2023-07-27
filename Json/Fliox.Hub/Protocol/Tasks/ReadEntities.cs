@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public   string             keyName;
                     public   bool?              isIntKey;
         /// <summary> list of requested entity <see cref="ids"/> </summary>
-        [Required]  public   List<JsonKey>      ids;
+        [Required]  public   ListOne<JsonKey>   ids;
         /// <summary> used to request the entities referenced by properties of a read task result </summary>
                     public   List<References>   references;
         [Ignore]    public   Type               nativeType;
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 error = MissingField(nameof(ids));
                 return null;
             }
-            foreach (var id in ids) {
+            foreach (var id in ids.GetReadOnlySpan()) {
                 if (id.IsNull()) {
                     error = InvalidTask("elements in ids must not be null");
                     return null;

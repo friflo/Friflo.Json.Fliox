@@ -214,7 +214,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private TaskErrorInfo AddObjectMap(ReadEntities task, FindTask<TKey, T> read, ContainerEntities readEntities)
         {
             var objects = readEntities.objectMap;
-            foreach (var id in task.ids) {
+            foreach (var id in task.ids.GetReadOnlySpan()) {
                 if (!objects.TryGetValue(id, out object value)) {
                     // AddEntityResponseError(id, entities, ref entityErrorInfo);
                     continue;
@@ -270,7 +270,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         {
             var entityErrorInfo = new TaskErrorInfo();
             var entities = readEntities.entityMap;
-            foreach (var id in task.ids) {
+            foreach (var id in task.ids.GetReadOnlySpan()) {
                 if (!entities.TryGetValue(id, out EntityValue value)) {
                     AddEntityResponseError(id, entities, ref entityErrorInfo);
                     continue;
@@ -300,7 +300,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private TaskErrorInfo AddObjectMap(ReadEntities task, ReadTask<TKey, T> read, ContainerEntities readEntities)
         {
             var objects = readEntities.objectMap;
-            foreach (var id in task.ids) {
+            foreach (var id in task.ids.GetReadOnlySpan()) {
                 if (!objects.TryGetValue(id, out object value)) {
                     // AddEntityResponseError(id, entities, ref entityErrorInfo);
                     continue;
@@ -357,7 +357,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var entities        = queryEntities.entityMap;
             query.entities      = entities;
             var results         = query.result = new List<T>(queryResult.ids.Count);
-            foreach (var id in queryResult.ids) {
+            foreach (var id in queryResult.ids.GetReadOnlySpan()) {
                 if (!entities.TryGetValue(id, out EntityValue value)) {
                     AddEntityResponseError(id, entities, ref entityErrorInfo);
                     continue;
@@ -496,7 +496,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var ids = task.ids;
             if (ids != null) {
-                foreach (var id in ids) {
+                foreach (var id in ids.GetReadOnlySpan()) {
                     set.DeletePeer(id);
                 }
             }

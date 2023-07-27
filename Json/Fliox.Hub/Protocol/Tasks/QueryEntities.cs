@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             containerResult.AddEntities(entities);
 
             result.container    = container;
-            var ids             = new List<JsonKey>(values.Length);
+            var ids             = new ListOne<JsonKey>(values.Length);
             foreach (var entity in values) {
                 ids.Add(entity.key);
             }
@@ -162,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public  string                  cursor;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                    len;
-        [Required]  public  List<JsonKey>           ids;
+        [Required]  public  ListOne<JsonKey>        ids;
                     public  List<ReferencesResult>  references;
                     public  string                  sql;
                         

@@ -13,8 +13,9 @@ namespace System.Collections.Generic
 {
     /// <summary>
     /// Container implementation aligned to <see cref="List{T}"/> with focus on minimizing heap allocations<br/>
-    /// - Implemented as struct to avoid allocation for the container itself<br/>
-    /// - Optimized for typical use-cases storing only a single item. No heap allocation if <see cref="Count"/> == 1. 
+    /// Features:<br/>
+    /// - Optimized for typical use-cases storing only a single item. No heap allocation if <see cref="Count"/> = 1.<br/>
+    /// - Enable access to its items via <see cref="GetSpan"/> or <see cref="GetReadOnlySpan"/>
     /// </summary>
     [DebuggerTypeProxy(typeof(ListOneDebugView<>))]
     public sealed class ListOne<T> : IList<T>, IReadOnlyList<T> // intentionally not implemented IList
@@ -175,6 +176,20 @@ namespace System.Collections.Generic
                 single   = items[0];
                 items[0] = default;
             }
+        }
+        
+        public void Sort(IComparer<T> comparer) {
+            if (count <= 1) {
+                return;
+            }
+            Array.Sort(items, 0, count, comparer);
+        }
+        
+        public void Reverse() {
+            if (count <= 1) {
+                return;
+            }
+            Array.Reverse(items, 0, count);
         }
         
         // --- Span<>, ReadOnlySpan<>

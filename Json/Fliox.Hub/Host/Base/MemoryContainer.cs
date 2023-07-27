@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var keys        = command.ids;
             var entities    = new EntityValue [keys.Count];
             int index       = 0;
-            foreach (var key in keys) {
+            foreach (var key in keys.GetReadOnlySpan()) {
                 TryGetValue(key, out JsonValue value, syncContext.MemoryBuffer);
                 entities[index++]   = new EntityValue(key, value);
             }
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {
             var keys = command.ids;
             if (keys != null && keys.Count > 0) {
-                foreach (var key in keys) {
+                foreach (var key in keys.GetReadOnlySpan()) {
                     if (keyValuesConcurrent != null) {
                         keyValuesConcurrent.TryRemove(key, out _);
                         continue;

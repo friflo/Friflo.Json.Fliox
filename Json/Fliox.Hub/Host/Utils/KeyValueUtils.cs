@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         ///     array[index].value can be null is no entry was found in the source list
         /// </code>
         /// </summary>
-        public static EntityValue[] EntityListToArray(List<EntityValue> source, List<JsonKey> keys)
+        public static EntityValue[] EntityListToArray(List<EntityValue> source, ListOne<JsonKey> keys)
         {
             int keyCount    = keys.Count;
             var result      = new EntityValue[keyCount];
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             return true;
         }
         
-        internal static void OrderKeys (List<JsonKey> keys, Order? order) {
+        internal static void OrderKeys (ListOne<JsonKey> keys, Order? order) {
             if (order == null)
                 return;
             keys.Sort(JsonKey.Comparer);

@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     var read = (ReadEntities) this;
                     if (!read.container.IsEqual(container))
                         return false;
-                    foreach (var readIds in read.ids) {
+                    foreach (var readIds in read.ids.GetReadOnlySpan()) {
                         if (ids.Contains(readIds)) {
                             return true;
                         }
@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     var delete = (DeleteEntities) this;
                     if (!delete.container.IsEqual(container))
                         return false;
-                    foreach (var id in delete.ids) {
+                    foreach (var id in delete.ids.GetReadOnlySpan()) {
                         if (ids.Contains(id)) {
                             return true;
                         }

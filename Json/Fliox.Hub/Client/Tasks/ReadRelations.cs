@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return new TaskAlreadySyncedException($"Task already executed. {Label}");
         }
         
-        internal abstract void    SetResult (EntitySet set, List<JsonKey> ids);
+        internal abstract void    SetResult (EntitySet set, ListOne<JsonKey> ids);
     }
     
     public abstract class ReadRelationsFunction<T> : ReadRelationsFunction, IReadRelationsTask<T> where T : class
@@ -154,11 +154,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.IsIntKey   = isIntKey;
         }
 
-        internal override void SetResult(EntitySet set, List<JsonKey> ids) {
+        internal override void SetResult(EntitySet set, ListOne<JsonKey> ids) {
             var entitySet = (EntitySetBase<T>) set;
             result = new List<T>(ids.Count);
             var entityErrorInfo = new TaskErrorInfo();
-            foreach (var id in ids) {
+            foreach (var id in ids.GetReadOnlySpan()) {
                 var peer = entitySet.GetPeerById(id);
                 if (peer.error == null) {
                     result.Add(peer.Entity);

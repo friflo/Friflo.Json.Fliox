@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return true;
         }
         
-        internal static bool TryGetIds(in QueryContext cx, string name, out List<JsonKey> value, out QueryError? error) {
+        internal static bool TryGetIds(in QueryContext cx, string name, out ListOne<JsonKey> value, out QueryError? error) {
             if (!GetArguments(cx, out var arguments, out error)) {
                 value = null;
                 return true;
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 value = null;
                 return false;
             }
-            value     = new List<JsonKey>(idList.Count);
+            value     = new ListOne<JsonKey>(idList.Count);
             foreach (var id in idList) {
                 value.Add(id);
             }

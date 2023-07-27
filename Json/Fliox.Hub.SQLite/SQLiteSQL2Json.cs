@@ -83,14 +83,14 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             }
         }
         
-        internal bool ReadEntities(List<JsonKey> keys, MemoryBuffer buffer, out TaskExecuteError error)
+        internal bool ReadEntities(ListOne<JsonKey> keys, MemoryBuffer buffer, out TaskExecuteError error)
         {
             sql2Json.InitMapper(this, tableInfo, buffer);
             var columns = tableInfo.columns;
             var cells   = sql2Json.cells;
             var bytes   = new Bytes(36);        // TODO - OPTIMIZE: reuse
 
-            foreach (var key in keys) {
+            foreach (var key in keys.GetReadOnlySpan()) {
                 var rc  = BindKey(stmt, key, ref bytes);
                 if (rc != raw.SQLITE_OK) {
                     var msg = SQLiteUtils.GetErrorMsg("bind key failed.", connection, rc, key);

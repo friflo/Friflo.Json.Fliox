@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event.Collector
         private static void StoreDeleteTask(
             DatabaseChanges     databaseChanges,
             EntityContainer     entityContainer,
-            List<JsonKey>       ids,
+            ListOne<JsonKey>    ids,
             in ShortString      user)
         {
             var containers = databaseChanges.containers;

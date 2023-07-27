@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -144,7 +143,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public virtual async Task<MergeEntitiesResult> MergeEntitiesAsync (MergeEntities mergeEntities, SyncContext syncContext) {
             var patches = mergeEntities.patches;
             var env     = syncContext.sharedEnv;
-            var ids     = new List<JsonKey>(patches.Count);
+            var ids     = new ListOne<JsonKey>(patches.Count);
             foreach (var patch in patches) {
                 ids.Add(patch.key);
             }
@@ -302,7 +301,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 selectors.Add(reference.selector);
                 var referenceResult = new ReferencesResult {
                     container   = reference.container,
-                    ids         = new List<JsonKey>()
+                    ids         = new ListOne<JsonKey>()
                 };
                 referenceResults.Add(referenceResult);
             }
@@ -333,7 +332,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         var referenceResult = referenceResults[n];
                         var ids             = referenceResult.ids;
                         var set             = Helper.CreateHashSet(ids.Count, JsonKey.Equality);
-                        foreach (var id in ids) {
+                        foreach (var id in ids.GetReadOnlySpan()) {
                             set.Add(id);
                         }
                         set.UnionWith(entityRefs);
@@ -370,7 +369,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var ids = referenceResult.ids;
                 if (ids.Count == 0)
                     continue;
-                var refIdList   = ids.ToList();
+                var refIdList   = ids;
                 var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
                 var refEntities = await refCont.ReadEntitiesAsync(readRefIds, syncContext).ConfigureAwait(false);
                 

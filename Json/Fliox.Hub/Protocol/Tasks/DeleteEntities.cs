@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Ignore]    public  EntityContainer     entityContainer;
         [Ignore]    private TaskErrorResult     error;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
-                    public  List<JsonKey>       ids;
+                    public  ListOne<JsonKey>    ids;
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>
                     public  bool?               all;
         

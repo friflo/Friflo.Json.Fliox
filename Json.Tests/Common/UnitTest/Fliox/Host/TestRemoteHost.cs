@@ -138,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             var syncRead = new SyncRequest {
                 database    = new ShortString("remote-memory"),
                 tasks       = new ListOne<SyncRequestTask> {
-                    new ReadEntities { container = new ShortString("players"), ids = new List<JsonKey> { new JsonKey(1)} }
+                    new ReadEntities { container = new ShortString("players"), ids = new ListOne<JsonKey> { new JsonKey(1)} }
                 }
             };
             cx.readReq = cx.mapper.WriteAsValue<ProtocolMessage>(syncRead);

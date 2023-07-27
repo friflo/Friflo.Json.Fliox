@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             }
         }
         
-        internal static RedisValue[] KeysToRedisKeys(List<JsonKey> keys) {
+        internal static RedisValue[] KeysToRedisKeys(ListOne<JsonKey> keys) {
             var count = keys.Count;
             var result = new RedisValue[count];
             for (int n = 0; n < count; n++) {
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Redis
             return new JsonValue(array);    // JsonValue store UTF-8 byte arrays -> use conversion method above
         }
         
-        internal static EntityValue[] KeyValuesToEntities(List<JsonKey> ids, RedisValue[] values) {
+        internal static EntityValue[] KeyValuesToEntities(ListOne<JsonKey> ids, RedisValue[] values) {
             var count = values.Length;
             var result = new EntityValue[count];
             for (int n = 0; n < count; n++) {

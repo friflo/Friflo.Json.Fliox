@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
         internal static async Task GetEntitiesById(RequestContext context, ShortString database, ShortString container, JsonKey[] keys) {
             if (database.IsEqual(context.hub.database.nameShort))
                 database = default;
-            var readEntities = new ReadEntities { container = container, ids = new List<JsonKey>(keys.Length)};
+            var readEntities = new ReadEntities { container = container, ids = new ListOne<JsonKey>(keys.Length)};
             foreach (var id in keys) {
                 readEntities.ids.Add(id);    
             }
@@ -273,7 +273,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
                 database = default;
             var hub             = context.hub;
             var entityId        = new JsonKey(id);
-            var readEntities    = new ReadEntities { container = container, ids = new List<JsonKey> {entityId}};
+            var readEntities    = new ReadEntities { container = container, ids = new ListOne<JsonKey> {entityId}};
             var syncRequest     = CreateSyncRequest(context, database, readEntities, out var syncContext);
             var executionType   = hub.InitSyncRequest(syncRequest);
             ExecuteSyncResult syncResult;
@@ -305,7 +305,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
         internal static async Task DeleteEntities(RequestContext context, ShortString database, ShortString container, JsonKey[] keys) {
             if (database.IsEqual(context.hub.database.nameShort))
                 database = default;
-            var deleteEntities  = new DeleteEntities { container = container, ids = new List<JsonKey>(keys.Length) };
+            var deleteEntities  = new DeleteEntities { container = container, ids = new ListOne<JsonKey>(keys.Length) };
             foreach (var key in keys) {
                 deleteEntities.ids.Add(key);
             }

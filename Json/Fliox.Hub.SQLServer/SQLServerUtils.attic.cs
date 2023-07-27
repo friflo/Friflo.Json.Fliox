@@ -56,7 +56,7 @@ WHEN NOT MATCHED THEN
             await bulk.WriteToServerAsync(rowArray).ConfigureAwait(false);
         }
         
-        internal static async Task DeleteEntitiesCmd_Values (SyncConnection connection, List<JsonKey> ids, string table) {
+        internal static async Task DeleteEntitiesCmd_Values (SyncConnection connection, ListOne<JsonKey> ids, string table) {
             var sql = new StringBuilder();
             sql.Append($"DELETE FROM  {table} WHERE {ID} in\n");
             SQLUtils.AppendKeysSQL(sql, ids, SQLEscape.PrefixN);

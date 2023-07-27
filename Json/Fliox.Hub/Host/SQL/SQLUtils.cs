@@ -98,11 +98,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             escaped.Length = 0;
         }
         
-        public static void AppendKeysSQL(StringBuilder sb, List<JsonKey> keys, SQLEscape escape) {
+        public static void AppendKeysSQL(StringBuilder sb, ListOne<JsonKey> keys, SQLEscape escape) {
             var escaped = new StringBuilder();
             var isFirst = true;
             sb.Append('(');
-            foreach (var key in keys)
+            foreach (var key in keys.GetReadOnlySpan())
             {
                 if (isFirst) {
                     isFirst = false;   
@@ -121,11 +121,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
         
         // TODO consolidate with AppendKeysSQL() above
-        public static string AppendKeysSQL2(List<JsonKey> keys, SQLEscape escape) {
+        public static string AppendKeysSQL2(ListOne<JsonKey> keys, SQLEscape escape) {
             var sb = new StringBuilder();
             var escaped = new StringBuilder();
             var isFirst = true;
-            foreach (var key in keys)
+            foreach (var key in keys.GetReadOnlySpan())
             {
                 if (isFirst) {
                     isFirst = false;   

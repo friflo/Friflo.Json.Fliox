@@ -187,7 +187,7 @@ WHEN NOT MATCHED THEN
             await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
         }
         
-        internal static async Task DeleteEntitiesCmdAsync (SyncConnection connection, List<JsonKey> ids, string table) {
+        internal static async Task DeleteEntitiesCmdAsync (SyncConnection connection, ListOne<JsonKey> ids, string table) {
             var dataTable = new DataTable();
             dataTable.Columns.Add(ID, typeof(string));
             foreach(var id in ids) {
@@ -200,7 +200,7 @@ WHEN NOT MATCHED THEN
             await connection.ExecuteNonQueryAsync(sql, p).ConfigureAwait(false);
         }
         
-        internal static async Task<SqlDataReader> ReadEntitiesCmd (SyncConnection connection, List<JsonKey> ids, string table) {
+        internal static async Task<SqlDataReader> ReadEntitiesCmd (SyncConnection connection, ListOne<JsonKey> ids, string table) {
             var dataTable = new DataTable();
             dataTable.Columns.Add(ID, typeof(string));
             foreach(var id in ids) {

@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var ids             = queryResult.ids;
             var items           = new List<JsonValue>(ids.Count);
             var gqlQueryResult  = new GqlQueryResult { count = ids.Count, cursor = queryResult.cursor, items = items };
-            foreach (var id in ids) {
+            foreach (var id in ids.GetReadOnlySpan()) {
                 var entity = entities[id].Json;
                 items.Add(entity);
             }
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var entities        = cx.synResponse.FindContainer(cx.query.container).entityMap;
             var ids             = readTask.ids;
             var list            = new List<JsonValue>(ids.Count);
-            foreach (var id in ids) {
+            foreach (var id in ids.GetReadOnlySpan()) {
                 var entity = entities[id].Json;
                 list.Add(entity);
             }

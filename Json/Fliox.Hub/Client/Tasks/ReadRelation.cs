@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.IsIntKey   = isIntKey;
         }
         
-        internal override void SetResult(EntitySet set, List<JsonKey> ids) {
+        internal override void SetResult(EntitySet set, ListOne<JsonKey> ids) {
             if (ids.Count == 0) {
                 return;
             }

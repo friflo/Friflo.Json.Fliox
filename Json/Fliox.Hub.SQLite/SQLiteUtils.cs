@@ -180,13 +180,13 @@ GENERATED ALWAYS AS ({asStr});";
         internal static bool ReadById(
             SyncConnection          connection,
             sqlite3_stmt            stmt,
-            List<JsonKey>           keys,
+            ListOne<JsonKey>        keys,
             List<EntityValue>       values,
             MemoryBuffer            buffer,
             out TaskExecuteError    error)
         {
             var bytes = new Bytes(36);
-            foreach (var key in keys) {
+            foreach (var key in keys.GetReadOnlySpan()) {
                 var rc  = BindKey(stmt, key, ref bytes);
                 if (rc != raw.SQLITE_OK) {
                     var msg = GetErrorMsg("bind key failed.", connection, rc, key);
@@ -215,10 +215,10 @@ GENERATED ALWAYS AS ({asStr});";
             return Success(out error);
         }
         
-        internal static bool AppendKeys(SyncConnection connection, sqlite3_stmt stmt, List<JsonKey> keys, out TaskExecuteError error)
+        internal static bool AppendKeys(SyncConnection connection, sqlite3_stmt stmt, ListOne<JsonKey> keys, out TaskExecuteError error)
         {
             var bytes = new Bytes(36);
-            foreach (var key in keys) {
+            foreach (var key in keys.GetReadOnlySpan()) {
                 var rc  = BindKey(stmt, key, ref bytes);
                 if (rc != raw.SQLITE_OK) {
                     var msg = GetErrorMsg("bind key failed.", connection, rc, key);

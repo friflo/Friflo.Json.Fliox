@@ -178,7 +178,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 references = new List<References>(read.relations.subRelations.Count);
                 AddReferences(references, read.relations.subRelations);
             }
-            var ids = new List<JsonKey>(1);
+            var ids = new ListOne<JsonKey>(1);
             var id  = KeyConvert.KeyToId(read.key);
             ids.Add(id);
             return new ReadEntities {
@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 references = new List<References>(read.relations.subRelations.Count);
                 AddReferences(references, read.relations.subRelations);
             }
-            var ids = new List<JsonKey>(read.result.Keys.Count);
+            var ids = new ListOne<JsonKey>(read.result.Keys.Count);
             foreach (var key in read.result.Keys) {
                 var id = KeyConvert.KeyToId(key);
                 ids.Add(id);
@@ -282,7 +282,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal DeleteEntities DeleteEntities(DeleteTask<TKey,T> deleteTask) {
             var deletes = deleteTask.keys;
-            var ids     = new List<JsonKey>(deletes.Count);
+            var ids     = new ListOne<JsonKey>(deletes.Count);
             foreach (var key in deletes) {
                 var id = KeyConvert.KeyToId(key);
                 ids.Add(id);
