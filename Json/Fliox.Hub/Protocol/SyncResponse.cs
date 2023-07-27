@@ -161,6 +161,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol
                 objectMap.TryAdd(obj.key, obj.obj);
             }
         }
+        
+        internal static ContainerEntities FindContainer(List<ContainerEntities> containers, in ShortString name) {
+            if (containers == null) {
+                return null;
+            }
+            foreach (var container in containers) {
+                if (container.container.IsEqual(name)) {
+                    return container;
+                }
+            }
+            return null;
+        }
     }
     
     public enum ContainerType

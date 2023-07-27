@@ -457,7 +457,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     break;
                 case TaskType.read:
                     var readList =          (ReadEntities)      task;
-                    var entities = containerResults?.Find(c => c.container.IsEqual(readList.container));
+                    var entities = ContainerEntities.FindContainer(containerResults, readList.container);
                     syncTasks.taskSyncSet.ReadEntitiesResult(readList, result, entities);
                     break;
                 case TaskType.query:
