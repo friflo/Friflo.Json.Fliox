@@ -389,7 +389,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 // process all task using by passing an error 
                 for (int n = 0; n < tasks.Count; n++) {
                     SyncRequestTask task    = tasks[n];
-                    ProcessTaskResult(task, syncTasks[n], syncError, syncStore, emptyResults);
+                    ProcessTaskResult(task, syncTasks[n], syncError, emptyResults);
                 }
                 return;
             }
@@ -429,9 +429,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             // process all tasks by passing the related response task result
             for (int n = 0; n < tasks.Count; n++) {
-                SyncRequestTask task    = tasks[n];
-                SyncTaskResult  result  = responseTasks[n];
-                ProcessTaskResult(task, syncTasks[n], result, syncStore, containers);
+                SyncRequestTask task        = tasks[n];
+                SyncTaskResult  result      = responseTasks[n];
+                SyncTask        syncTask    = syncTasks[n];
+                ProcessTaskResult(task, syncTask, result, containers);
             }
         }
         
@@ -439,64 +440,76 @@ namespace Friflo.Json.Fliox.Hub.Client
             SyncRequestTask         task,
             SyncTask                syncTasks,
             SyncTaskResult          result,
-            SyncStore               syncStore,
             List<ContainerEntities> containerResults)
         {
             switch (task.TaskType) {
-                case TaskType.reserveKeys:
+                case TaskType.reserveKeys: {
                     var reserveKeys =       (ReserveKeys)       task;
                     syncTasks.taskSyncSet.ReserveKeysResult(reserveKeys, result);
                     break;
-                case TaskType.create:
+                }
+                case TaskType.create: {
                     var create =            (CreateEntities)    task;
                     syncTasks.taskSyncSet.CreateEntitiesResult(create, result);
                     break;
-                case TaskType.upsert:
+                }
+                case TaskType.upsert: {
                     var upsert =            (UpsertEntities)    task;
                     syncTasks.taskSyncSet.UpsertEntitiesResult(upsert, result);
                     break;
-                case TaskType.read:
+                }
+                case TaskType.read: {
                     var readList =          (ReadEntities)      task;
-                    var entities = ContainerEntities.FindContainer(containerResults, readList.container);
+                    var entities =      ContainerEntities.FindContainer(containerResults, readList.container);
                     syncTasks.taskSyncSet.ReadEntitiesResult(readList, result, entities);
                     break;
-                case TaskType.query:
+                }
+                case TaskType.query: {
                     var query =             (QueryEntities)     task;
-                    var queryEntities = containerResults?.Find(c => c.container.IsEqual(query.container));
+                    var queryEntities = ContainerEntities.FindContainer(containerResults, query.container);
                     syncTasks.taskSyncSet.QueryEntitiesResult(query, result, queryEntities);
                     break;
-                case TaskType.closeCursors:
+                }
+                case TaskType.closeCursors: {
                     var closeCursors =      (CloseCursors)      task;
                     syncTasks.taskSyncSet.CloseCursorsResult(closeCursors, result);
                     break;
-                case TaskType.aggregate:
+                }
+                case TaskType.aggregate: {
                     var aggregate =         (AggregateEntities) task;
                     syncTasks.taskSyncSet.AggregateEntitiesResult(aggregate, result);
                     break;
-                case TaskType.merge:
+                }
+                case TaskType.merge: {
                     var patch =             (MergeEntities)     task;
                     syncTasks.taskSyncSet.PatchEntitiesResult(patch, result);
                     break;
-                case TaskType.delete:
+                }
+                case TaskType.delete: {
                     var delete =            (DeleteEntities)    task;
                     syncTasks.taskSyncSet.DeleteEntitiesResult(delete, result);
                     break;
-                case TaskType.message:
+                }
+                case TaskType.message: {
                     var message =           (SendMessage)       task;
                     SyncStore.MessageResult(message, result);
                     break;
-                case TaskType.command:
+                }
+                case TaskType.command: {
                     var command =           (SendCommand)       task;
                     SyncStore.MessageResult(command, result);
                     break;
-                case TaskType.subscribeChanges:
+                }
+                case TaskType.subscribeChanges: {
                     var subscribeChanges =  (SubscribeChanges)  task;
                     syncTasks.taskSyncSet.SubscribeChangesResult(subscribeChanges, result);
                     break;
-                case TaskType.subscribeMessage:
+                }
+                case TaskType.subscribeMessage: {
                     var subscribeMessage =  (SubscribeMessage)  task;
                     SyncStore.SubscribeMessageResult(subscribeMessage, result);
                     break;
+                }
             }
         }
         #endregion
