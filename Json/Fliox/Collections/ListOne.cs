@@ -183,7 +183,7 @@ namespace System.Collections.Generic
             switch (count) {
                 case 0: return new ReadOnlySpan<T>(null);
 #if NETSTANDARD2_0
-                case 1: return Burst.Utils.UnsafeUtils.CreateReadOnlySpan(ref single);
+                case 1: return Friflo.Json.Burst.Utils.UnsafeUtils.CreateReadOnlySpan(ref single);
 #else
                 case 1: return MemoryMarshal.CreateReadOnlySpan(ref single, 1);
 #endif
@@ -196,7 +196,7 @@ namespace System.Collections.Generic
             switch (count) {
                 case 0: return new Span<T>(null);
 #if NETSTANDARD2_0
-                case 1: return Burst.Utils.UnsafeUtils.CreateSpan(ref single);
+                case 1: return Friflo.Json.Burst.Utils.UnsafeUtils.CreateSpan(ref single);
 #else
                 case 1: return MemoryMarshal.CreateSpan(ref single, 1);
 #endif
