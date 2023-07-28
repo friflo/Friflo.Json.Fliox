@@ -54,19 +54,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     internal class PerfContext
     {
         private             long        start;
+        private             long        startMem;
         private readonly    Stopwatch   stopwatch;
         
         internal PerfContext() {
             stopwatch = new Stopwatch();
             stopwatch.Start();
+            startMem = Mem.GetAllocatedBytes();
         }
         
         internal void Sample(int count) {
-            var now = stopwatch.ElapsedMilliseconds;
-            var dif = now - start;
-            var reqPerSec = dif == 0 ? -1 : 1000 * count / dif;
-            Console.WriteLine($"---- {reqPerSec}");
-            start = now;
+            var memDiff         = Mem.GetAllocationDiff(startMem);
+            var now             = stopwatch.ElapsedMilliseconds;
+            var dif             = now - start;
+            var memPerSample    = memDiff / count;
+            var reqPerSec       = dif == 0 ? -1 : 1000 * count / dif;
+
+            Console.WriteLine($"---- {reqPerSec} {memPerSample}");
+            start               = stopwatch.ElapsedMilliseconds;
+            startMem            = Mem.GetAllocatedBytes();
         }
     }
 }
