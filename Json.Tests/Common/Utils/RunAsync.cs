@@ -47,6 +47,11 @@ namespace Friflo.Json.Tests.Common.Utils
         public sealed class TestAttribute : Attribute {
             public TestAttribute () {}
         }
+        
+        [AttributeUsage(AttributeTargets.Method)]
+        public sealed class IgnoreAttribute : Attribute {
+            public IgnoreAttribute (string reason) { }
+        }
     }
 #else
     namespace UnityEngine.TestTools {
