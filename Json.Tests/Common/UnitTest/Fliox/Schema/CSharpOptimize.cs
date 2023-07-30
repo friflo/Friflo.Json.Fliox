@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Schema.Language;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Collection;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -33,6 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_Optimize_JsonTests () {
             var folder = CommonUtils.GetBasePath() + "Gen";
             Generate_CS_Optimize(typeof(ListOneMember), folder);
+            Generate_CS_Optimize(typeof(SimpleStore), folder);
             Generate_CS_Optimize(typeof(PocStore), folder);
         }
         
