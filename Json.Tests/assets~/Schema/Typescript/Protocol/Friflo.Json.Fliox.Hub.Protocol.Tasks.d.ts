@@ -333,6 +333,9 @@ export class UpsertEntitiesResult extends SyncTaskResult {
 export class ReadEntitiesResult extends SyncTaskResult {
     /** task result type */
     task        : "read";
+    set         : any[];
+    notFound?   : JsonKey[] | null;
+    errors?     : EntityError[] | null;
     references? : ReferencesResult[] | null;
 }
 
@@ -343,9 +346,10 @@ export class QueryEntitiesResult extends SyncTaskResult {
     /** container name - not utilized by Protocol */
     cont?       : string | null;
     cursor?     : string | null;
-    /** number of **ids** - not utilized by Protocol */
+    /** number of **set** values - not utilized by Protocol */
     len?        : int32 | null;
-    ids         : JsonKey[];
+    set         : any[];
+    errors?     : EntityError[] | null;
     references? : ReferencesResult[] | null;
     sql?        : string | null;
 }

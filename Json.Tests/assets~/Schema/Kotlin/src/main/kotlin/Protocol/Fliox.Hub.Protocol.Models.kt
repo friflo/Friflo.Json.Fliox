@@ -4,6 +4,7 @@ package Fliox.Hub.Protocol.Models
 import kotlinx.serialization.*
 import CustomSerializer.*
 import Fliox.Hub.Protocol.Tasks.*
+import kotlinx.serialization.json.*
 
 @Serializable
 data class References (
@@ -36,7 +37,7 @@ data class ReferencesResult (
               val error      : String? = null,
               val cont       : String? = null,
               val len        : Int? = null,
-              val ids        : List<String>,
+              val set        : List<JsonElement>,
               val references : List<ReferencesResult>? = null,
 )
 

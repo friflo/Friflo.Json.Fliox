@@ -417,14 +417,13 @@ export class App {
             return;
         }
         const hubInfoResult = content.tasks[0];
+        const containersResult = content.tasks[1];
+        const messagesResult = content.tasks[2];
+        const schemasResult = content.tasks[3];
         this.hostInfo = hubInfoResult.result;
-        const containerMap = {};
-        for (const container of content.containers) {
-            containerMap[container.cont] = container;
-        }
-        const dbContainers = containerMap["containers"].set;
-        const dbMessages = containerMap["messages"].set;
-        const dbSchemas = containerMap["schemas"].set;
+        const dbContainers = containersResult.set;
+        const dbMessages = messagesResult.set;
+        const dbSchemas = schemasResult.set;
         //
         const name = this.hostInfo.projectName;
         const hostVersion = this.hostInfo.hostVersion;

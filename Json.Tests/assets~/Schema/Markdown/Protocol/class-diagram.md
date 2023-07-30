@@ -126,7 +126,7 @@ class ReferencesResult {
     error?      : string
     cont?       : string
     len?        : int32
-    ids         : string[]
+    set         : any[]
     references? : ReferencesResult[]
 }
 ReferencesResult *-- "0..*" ReferencesResult : references
@@ -300,8 +300,12 @@ UpsertEntitiesResult *-- "0..*" EntityError : errors
 SyncTaskResult <|-- ReadEntitiesResult
 class ReadEntitiesResult {
     task        : "read"
+    set         : any[]
+    notFound?   : string[]
+    errors?     : EntityError[]
     references? : ReferencesResult[]
 }
+ReadEntitiesResult *-- "0..*" EntityError : errors
 ReadEntitiesResult *-- "0..*" ReferencesResult : references
 
 SyncTaskResult <|-- QueryEntitiesResult
@@ -310,10 +314,12 @@ class QueryEntitiesResult {
     cont?       : string
     cursor?     : string
     len?        : int32
-    ids         : string[]
+    set         : any[]
+    errors?     : EntityError[]
     references? : ReferencesResult[]
     sql?        : string
 }
+QueryEntitiesResult *-- "0..*" EntityError : errors
 QueryEntitiesResult *-- "0..*" ReferencesResult : references
 
 SyncTaskResult <|-- AggregateEntitiesResult

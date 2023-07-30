@@ -78,10 +78,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 }
             }
             var response = await base.ExecuteRequestAsync(syncRequest, syncContext);
+            var responseTasks = response.success.tasks;
             
             foreach (var pair in testDatabase.testContainers) {
                 TestContainer testContainer = pair.Value;
-                var result = response.success.FindContainer(testContainer.nameShort);
+                /* var result = response.success.FindContainer(testContainer.nameShort);
                 if (result == null)
                     continue;
                 var entities = result.entityMap;
@@ -90,9 +91,51 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                     if (entities.TryGetValue(key, out EntityValue _)) {
                         entities.Remove(key);
                     }
+                } */
+                foreach (var id in testContainer.missingResultErrors) {
+                    var key = new JsonKey(id);
+                    RemoveEntity(responseTasks, key);
                 }
             }
             return response;
+        }
+        
+        // SYNC_READ : TODO implement
+        private static void RemoveEntity(ListOne<SyncTaskResult> responseTasks, JsonKey key) {
+            foreach (var responseTask in responseTasks) {
+                if (responseTask is ReadEntitiesResult read) {
+                    foreach (var value in read.entities.values) {
+                        if (value.key.IsEqual(key)) {
+                            read.entities = new Entities(Array.Empty<EntityValue>());
+                            break;
+                        }
+                    }
+                    RemoveReferences(read.references, key);
+                }
+                if (responseTask is QueryEntitiesResult query) {
+                    foreach (var value in query.entities.values) {
+                        if (value.key.IsEqual(key)) {
+                            query.entities = new Entities(Array.Empty<EntityValue>());
+                            break;
+                        }
+                    }
+                    RemoveReferences(query.references, key);
+                }
+            }
+        }
+        
+        private static void RemoveReferences(List<ReferencesResult> references, JsonKey key) {
+            if (references == null) {
+                return;
+            }
+            foreach (var reference in references) {
+                foreach (var value in reference.entities.values) {
+                    if (value.key.IsEqual(key)) {
+                        reference.entities = new Entities(Array.Empty<EntityValue>());
+                        break;
+                    }
+                }
+            }
         }
         
         internal TestContainer GetTestContainer(string container) {

@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
@@ -26,8 +26,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);
         internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result);
         internal  abstract  void    UpsertEntitiesResult    (UpsertEntities     task, SyncTaskResult result);
-        internal  abstract  void    ReadEntitiesResult      (ReadEntities       task, SyncTaskResult result, ContainerEntities readEntities);
-        internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, SyncTaskResult result, ContainerEntities queryEntities);
+        internal  abstract  void    ReadEntitiesResult      (ReadEntities       task, SyncTaskResult result, ObjectMapper mapper);
+        internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, SyncTaskResult result, ObjectMapper mapper);
         internal  abstract  void    AggregateEntitiesResult (AggregateEntities  task, SyncTaskResult result);
         internal  abstract  void    CloseCursorsResult      (CloseCursors       task, SyncTaskResult result);
         internal  abstract  void    PatchEntitiesResult     (MergeEntities      task, SyncTaskResult result);
@@ -150,191 +150,23 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             writeTask.state.Executed = true;
         }
 
-        internal override void ReadEntitiesResult(ReadEntities task, SyncTaskResult result, ContainerEntities readEntities) {
+        internal override void ReadEntitiesResult(ReadEntities task, SyncTaskResult result, ObjectMapper mapper) {
             if (task.intern.syncTask is FindTask<TKey, T> readOneTask) {
                 if (result is TaskErrorResult taskError) {
                     SetReadOneTaskError(readOneTask, taskError);
                     return;
                 }
-                ReadEntityResult(task, (ReadEntitiesResult)result, readOneTask, readEntities);
+                ReadEntityResult(task, (ReadEntitiesResult)result, readOneTask, mapper);
             } else {
                 var readTask    = (ReadTask<TKey,T>)task.intern.syncTask;
                 if (result is TaskErrorResult taskError) {
                     SetReadTaskError(readTask, taskError);
                     return;
                 }
-                ReadEntitiesResult(task, (ReadEntitiesResult)result, readTask, readEntities);
+                ReadEntitiesResult(task, (ReadEntitiesResult)result, readTask, mapper);
             }
-        }
-        
-        // ------------------------------------ read one entity ------------------------------------
-        private void ReadEntityResult(ReadEntities task, ReadEntitiesResult result, FindTask<TKey, T> read, ContainerEntities readEntities) {
-            if (result.Error != null) {
-                var taskError = SyncRequestTask.TaskError(result.Error);
-                SetReadOneTaskError(read, taskError);
-                return;
-            }
-            TaskErrorInfo entityErrorInfo;
-            if (task.ContainerType == ContainerType.Values) {
-                entityErrorInfo = AddEntityMap(task, read, readEntities);
-            } else {
-                entityErrorInfo = AddObjectMap(task, read, readEntities);
-            }
-            // A ReadTask is set to error if at least one of its JSON results has an error.
-            if (entityErrorInfo.HasErrors) {
-                read.state.SetError(entityErrorInfo);
-                // SetReadTaskError(read, entityErrorInfo); <- must not be called
-                return;
-            }
-            read.state.Executed = true;
-            AddReferencesResult(task.references, result.references, read.relations.subRelations);
-        }
-        
-        private TaskErrorInfo AddEntityMap(ReadEntities task, FindTask<TKey, T> read, ContainerEntities readEntities)
-        {
-            var entityErrorInfo = new TaskErrorInfo();
-            var entities    = readEntities.entityMap;
-            var id          = task.ids[0];
-            if (!entities.TryGetValue(id, out EntityValue value)) {
-                AddEntityResponseError(id, entities, ref entityErrorInfo);
-                return entityErrorInfo;
-            }
-            var error = value.Error;
-            if (error != null) {
-                entityErrorInfo.AddEntityError(error);
-                return entityErrorInfo;
-            }
-            // var json    = value.Json;  // in case of RemoteClient json is "null"
-            var key     = KeyConvert.IdToKey(id);
-            var peer    = set.GetOrCreatePeerByKey(key, id);
-            read.result = peer.Entity;
-            return entityErrorInfo;
-        }
-        
-        private TaskErrorInfo AddObjectMap(ReadEntities task, FindTask<TKey, T> read, ContainerEntities readEntities)
-        {
-            var objects = readEntities.objectMap;
-            foreach (var id in task.ids.GetReadOnlySpan()) {
-                if (!objects.TryGetValue(id, out object value)) {
-                    // AddEntityResponseError(id, entities, ref entityErrorInfo);
-                    continue;
-                }
-                /* var error = value.Error;
-                if (error != null) {
-                    entityErrorInfo.AddEntityError(error);
-                    continue;
-                } */
-                // var json = value.Json;  // in case of RemoteClient json is "null"
-                // var value = json.IsNull();
-                if (value == null) {
-                    // don't remove missing requested peer from EntitySet.peers to preserve info about its absence
-                    continue;
-                }
-                var key     = KeyConvert.IdToKey(id);
-                var peer    = set.GetOrCreatePeerByKey(key, id);
-                read.result = peer.Entity;
-            }
-            return default;
-        }
-        
-        private static void SetReadOneTaskError(FindTask<TKey, T> read, TaskErrorResult taskError) {
-            TaskErrorInfo error = new TaskErrorInfo(taskError);
-            read.state.SetError(error);
-            SetSubRelationsError(read.relations.subRelations, error);
         }
 
-        // ------------------------------------ read multiple entities ------------------------------------
-        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<TKey, T> read, ContainerEntities readEntities) {
-            if (result.Error != null) {
-                var taskError = SyncRequestTask.TaskError(result.Error);
-                SetReadTaskError(read, taskError);
-                return;
-            }
-            TaskErrorInfo entityErrorInfo;
-            if (task.ContainerType == ContainerType.Values) {
-                entityErrorInfo = AddEntityMap(task, read, readEntities);
-            } else {
-                entityErrorInfo = AddObjectMap(task, read, readEntities);
-            }
-            // A ReadTask is set to error if at least one of its JSON results has an error.
-            if (entityErrorInfo.HasErrors) {
-                read.state.SetError(entityErrorInfo);
-                // SetReadTaskError(read, entityErrorInfo); <- must not be called
-                return;
-            }
-            read.state.Executed = true;
-            AddReferencesResult(task.references, result.references, read.relations.subRelations);
-        }
-        
-        private TaskErrorInfo AddEntityMap(ReadEntities task, ReadTask<TKey, T> read, ContainerEntities readEntities)
-        {
-            var entityErrorInfo = new TaskErrorInfo();
-            var entities = readEntities.entityMap;
-            foreach (var id in task.ids.GetReadOnlySpan()) {
-                if (!entities.TryGetValue(id, out EntityValue value)) {
-                    AddEntityResponseError(id, entities, ref entityErrorInfo);
-                    continue;
-                }
-                var error = value.Error;
-                if (error != null) {
-                    entityErrorInfo.AddEntityError(error);
-                    continue;
-                }
-                var json = value.Json;  // in case of RemoteClient json is "null"
-                var isNull = json.IsNull();
-                if (isNull) {
-                    // don't remove missing requested peer from EntitySet.peers to preserve info about its absence
-                    continue;
-                }
-                var key     = KeyConvert.IdToKey(id);
-                var peer    = set.GetOrCreatePeerByKey(key, id);
-                read.result[key] = peer.Entity;
-            }
-            var keysBuf = set.intern.GetKeysBuf();
-            foreach (var findTask in read.findTasks) {
-                findTask.SetFindResult(read.result, entities, keysBuf);
-            }
-            return entityErrorInfo;
-        }
-        
-        private TaskErrorInfo AddObjectMap(ReadEntities task, ReadTask<TKey, T> read, ContainerEntities readEntities)
-        {
-            var objects = readEntities.objectMap;
-            foreach (var id in task.ids.GetReadOnlySpan()) {
-                if (!objects.TryGetValue(id, out object value)) {
-                    // AddEntityResponseError(id, entities, ref entityErrorInfo);
-                    continue;
-                }
-                /* var error = value.Error;
-                if (error != null) {
-                    entityErrorInfo.AddEntityError(error);
-                    continue;
-                } */
-                // var json = value.Json;  // in case of RemoteClient json is "null"
-                // var value = json.IsNull();
-                if (value == null) {
-                    // don't remove missing requested peer from EntitySet.peers to preserve info about its absence
-                    continue;
-                }
-                var key     = KeyConvert.IdToKey(id);
-                var peer    = set.GetOrCreatePeerByKey(key, id);
-                read.result[key] = peer.Entity;
-            }
-            foreach (var findTask in read.findTasks) {
-                findTask.SetFindResult(read.result);
-            }
-            return default;
-        }
-
-        private static void SetReadTaskError(ReadTask<TKey, T> read, TaskErrorResult taskError) {
-            TaskErrorInfo error = new TaskErrorInfo(taskError);
-            read.state.SetError(error);
-            SetSubRelationsError(read.relations.subRelations, error);
-            foreach (var findTask in read.findTasks) {
-                findTask.findState.SetError(error);
-            }
-        }
-        
         private void AddEntityResponseError(in JsonKey id, Dictionary<JsonKey, EntityValue> entities, ref TaskErrorInfo entityErrorInfo) {
             var responseError = new EntityError(EntityErrorType.ReadError, set.nameShort, id, "requested entity missing in response results");
             entityErrorInfo.AddEntityError(responseError);
@@ -342,7 +174,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             entities.Add(id, value);
         }
         
-        internal override void QueryEntitiesResult(QueryEntities task, SyncTaskResult result, ContainerEntities queryEntities) {
+        internal override void QueryEntitiesResult(QueryEntities task, SyncTaskResult result, ObjectMapper mapper) {
             var query   = (QueryTask<TKey, T>)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
                 var taskErrorInfo = new TaskErrorInfo(taskError);
@@ -350,37 +182,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 SetSubRelationsError(query.relations.subRelations, taskErrorInfo);
                 return;
             }
-            var queryResult     = (QueryEntitiesResult)result;
-            query.sql           = queryResult.sql;
-            query.resultCursor  = queryResult.cursor;
-            var entityErrorInfo = new TaskErrorInfo();
-            var entities        = queryEntities.entityMap;
-            query.entities      = entities;
-            var results         = query.result = new List<T>(queryResult.ids.Count);
-            foreach (var id in queryResult.ids.GetReadOnlySpan()) {
-                if (!entities.TryGetValue(id, out EntityValue value)) {
-                    AddEntityResponseError(id, entities, ref entityErrorInfo);
-                    continue;
-                }
-                var error = value.Error;
-                if (error != null) {
-                    entityErrorInfo.AddEntityError(error);
-                    continue;
-                }
-                var key     = KeyConvert.IdToKey(id);
-                var peer    = set.GetOrCreatePeerByKey(key, id);
-                results.Add(peer.Entity);
-            }
-            if (entityErrorInfo.HasErrors) {
-                query.state.SetError(entityErrorInfo);
-                SetSubRelationsError(query.relations.subRelations, entityErrorInfo);
-                return;
-            }
-            AddReferencesResult(task.references, queryResult.references, query.relations.subRelations);
-            query.state.Executed = true;
+            var queryResult = (QueryEntitiesResult)result;
+            QueryEntitiesResult(task, queryResult, query, mapper.reader);
         }
 
-        private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, SubRelations relations) {
+        private void AddReferencesResult(
+            List<References>        references,
+            List<ReferencesResult>  referencesResult,
+            SubRelations            relations,
+            ObjectReader            reader)
+        {
             // in case (references != null &&  referencesResult == null) => no reference ids found for references 
             if (references == null || referencesResult == null)
                 return;
@@ -395,7 +206,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     subRelation.state.SetError(taskErrorInfo);
                     continue;
                 }
-                subRelation.SetResult(refContainer, refResult.ids);
+                var values = refContainer.GetReferencesValues(refResult, reader);
+                if (refResult.ids.Count != values.Length) {
+                    throw new InvalidOperationException($"Expect equals Count: {refResult.ids.Count}, was: {values.Length}");
+                }
+                subRelation.SetResult(refContainer, refResult.ids, values);
                 // handle entity errors of subRef task
                 var subRefError = subRelation.state.Error;
                 if (subRefError.HasErrors) {
@@ -408,7 +223,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var subReferences = reference.references;
                 if (subReferences != null) {
                     var readRefs = subRelation.SubRelations;
-                    AddReferencesResult(subReferences, refResult.references, readRefs);
+                    AddReferencesResult(subReferences, refResult.references, readRefs, reader);
                 }
             }
         }

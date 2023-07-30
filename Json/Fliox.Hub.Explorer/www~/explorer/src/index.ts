@@ -10,9 +10,8 @@ import { ClusterTree }                                              from "./comp
 
 import { FieldType, JSONSchema, JsonType }                          from "Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
 import { DbSchema, DbContainers, DbMessages, HostInfo, ModelFiles } from "Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
-import { SyncRequest, SyncResponse, ProtocolResponse_Union,
-         ContainerEntities }                                        from "Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
-import { SyncRequestTask_Union, SendCommandResult }                 from "Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
+import { SyncRequest, SyncResponse, ProtocolResponse_Union }        from "Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
+import { SyncRequestTask_Union, SendCommandResult, QueryEntitiesResult }                 from "Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 declare global {
     interface Window {
@@ -469,15 +468,15 @@ export class App {
             clusterExplorer.innerHTML = App.errorAsHtml(error, null);
             return;
         }
-        const hubInfoResult = content.tasks[0]                  as SendCommandResult;
-        this.hostInfo       = hubInfoResult.result              as HostInfo;
-        const containerMap: { [key: string]: ContainerEntities} = {};
-        for (const container of content.containers) {
-            containerMap[container.cont] = container;
-        }
-        const dbContainers  = containerMap["containers"].set   as DbContainers[];
-        const dbMessages    = containerMap["messages"].set     as DbMessages[];
-        const dbSchemas     = containerMap["schemas"].set      as DbSchema[];
+        const hubInfoResult     = content.tasks[0]          as SendCommandResult;
+        const containersResult  = content.tasks[1]          as QueryEntitiesResult;
+        const messagesResult    = content.tasks[2]          as QueryEntitiesResult;
+        const schemasResult     = content.tasks[3]          as QueryEntitiesResult;
+        this.hostInfo           = hubInfoResult.result      as HostInfo;
+
+        const dbContainers  = containersResult.set          as DbContainers[];
+        const dbMessages    = messagesResult.set            as DbMessages[];
+        const dbSchemas     = schemasResult.set             as DbSchema[];
         //
         const name          = this.hostInfo.projectName;
         const hostVersion   = this.hostInfo.hostVersion;

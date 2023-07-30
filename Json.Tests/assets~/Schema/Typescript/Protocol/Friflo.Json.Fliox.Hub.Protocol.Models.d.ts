@@ -53,7 +53,7 @@ export class ReferencesResult {
     cont?       : string | null;
     /** number of **ids** - not utilized by Protocol */
     len?        : int32 | null;
-    ids         : JsonKey[];
+    set         : any[];
     references? : ReferencesResult[] | null;
 }
 

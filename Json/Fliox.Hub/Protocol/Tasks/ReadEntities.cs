@@ -84,13 +84,15 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             
             if (references != null && references.Count > 0) {
                 var readRefResults =
-                    await entityContainer.ReadReferencesAsync(references, entities, entityContainer.nameShort, "", response, syncContext).ConfigureAwait(false);
+                    await entityContainer.ReadReferencesAsync(references, entities, entityContainer.nameShort, "", syncContext).ConfigureAwait(false);
                 // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
                 result.references = readRefResults.references;
             }
-            // entities elements can be updated in ReadReferences()
-            var containerResult = response.GetContainerResult(container, ContainerType);
-            containerResult.AddEntities(entities);
+            if (syncContext.hub.Obsolete) {
+                // entities elements can be updated in ReadReferences()
+                var containerResult = response.GetContainerResult(container, ContainerType);
+                containerResult.AddEntities(entities);
+            }
             return result;
         }
         
@@ -107,8 +109,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
-            var containerResult = response.GetContainerResult(container, ContainerType);
-            containerResult.AddEntities(result.entities);
+            if (syncContext.hub.Obsolete) {
+                var containerResult = response.GetContainerResult(container, ContainerType);
+                containerResult.AddEntities(result.entities);
+            }
             return result;
         }
     }
@@ -119,6 +123,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
+        
+        [Required]  public  ListOne<JsonValue>      set;
+                    public  List<JsonKey>           notFound;   // SYNC_READ : not necessary
+                    public  List<EntityError>       errors;
+                    
                     public  List<ReferencesResult>  references;
         /// <summary>
         /// <b>Note!</b> The order and count of elements in this array must match <see cref="ReadEntities.ids"/>.

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
@@ -47,10 +48,45 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
             if (responseError != null) {
                 return JsonResponse.CreateError(writer, responseError.message, responseError.type, reqId);
             }
-            SetContainerResults(response.success);
+            ResponseToJson(response.success);
             response.Result.reqId   = reqId;
             JsonValue jsonResponse  = MessageUtils.WriteProtocolMessage(response.Result, env, writer);
             return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
+        }
+        
+        // SYNC_READ entities -> JSON
+        public static void ResponseToJson(SyncResponse response)
+        {
+            foreach (var taskResult in response.tasks.GetReadOnlySpan())
+            {
+                switch (taskResult.TaskType) {
+                    case TaskType.read:
+                        var read = (ReadEntitiesResult)taskResult;
+                        read.entities.EntitiesToJson(out read.set, out read.notFound, out read.errors);
+                        ReferencesToJson(read.references);
+                        break;
+                    case TaskType.query:
+                        var query = (QueryEntitiesResult)taskResult;
+                        query.entities.EntitiesToJson(out query.set, out _, out query.errors);
+                        query.len = query.entities.Length;
+                        ReferencesToJson(query.references);
+                        break;
+                }
+            }
+        }
+        
+        private static void ReferencesToJson(List<ReferencesResult> references) {
+            if (references == null) {
+                return;
+            }
+            foreach (var result in references) {
+                var values = result.entities.values;
+                result.set = new ListOne<JsonValue>(values.Length);
+                foreach (var value in values) {
+                    result.set.Add(value.Json);
+                }
+                ReferencesToJson(result.references);
+            }
         }
         
         /// Required only by <see cref="RemoteHostUtils"/>
@@ -58,8 +94,9 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
         /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
         /// minimize response by removing redundancy.
         /// <see cref="Client.FlioxClient.GetContainerResults"/> remap these properties.
-        public static void SetContainerResults(SyncResponse response)
-        {
+
+        // SYNC_READ : entities -> JSON       OBSOLETE
+        public static void SetContainerResults_Old(SyncResponse response) {
             var containers = response?.containers;
             if (containers == null)
                 return;

@@ -10,9 +10,10 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
         private const int Gen_container = 0;
         private const int Gen_cursor = 1;
         private const int Gen_len = 2;
-        private const int Gen_ids = 3;
-        private const int Gen_references = 4;
-        private const int Gen_sql = 5;
+        private const int Gen_set = 3;
+        private const int Gen_errors = 4;
+        private const int Gen_references = 5;
+        private const int Gen_sql = 6;
 
         private static bool ReadField (ref QueryEntitiesResult obj, PropField field, ref Reader reader) {
             bool success;
@@ -20,7 +21,8 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
                 case Gen_container:  obj.container  = reader.ReadShortString (field, obj.container,  out success);  return success;
                 case Gen_cursor:     obj.cursor     = reader.ReadString    (field, obj.cursor,     out success);  return success;
                 case Gen_len:        obj.len        = reader.ReadInt32Null (field, out success);  return success;
-                case Gen_ids:        obj.ids        = reader.ReadClass     (field, obj.ids,        out success);  return success;
+                case Gen_set:        obj.set        = reader.ReadClass     (field, obj.set,        out success);  return success;
+                case Gen_errors:     obj.errors     = reader.ReadClass     (field, obj.errors,     out success);  return success;
                 case Gen_references: obj.references = reader.ReadClass     (field, obj.references, out success);  return success;
                 case Gen_sql:        obj.sql        = reader.ReadString    (field, obj.sql,        out success);  return success;
             }
@@ -31,7 +33,8 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
             writer.WriteShortString (fields[Gen_container],  obj.container,  ref firstMember);
             writer.WriteString    (fields[Gen_cursor],     obj.cursor,     ref firstMember);
             writer.WriteInt32Null (fields[Gen_len],        obj.len,        ref firstMember);
-            writer.WriteClass     (fields[Gen_ids],        obj.ids,        ref firstMember);
+            writer.WriteClass     (fields[Gen_set],        obj.set,        ref firstMember);
+            writer.WriteClass     (fields[Gen_errors],     obj.errors,     ref firstMember);
             writer.WriteClass     (fields[Gen_references], obj.references, ref firstMember);
             writer.WriteString    (fields[Gen_sql],        obj.sql,        ref firstMember);
         }

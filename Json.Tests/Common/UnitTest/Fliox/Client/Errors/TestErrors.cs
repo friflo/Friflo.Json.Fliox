@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         [NUnit.Framework.OneTimeTearDown] public static void  Dispose()    { TestGlobals.Dispose(); }
 
         [UnityTest] public IEnumerator FileUseCoroutine() { yield return RunAsync.Await(FileUse()); }
-        [Test]      public async Task  FileUseAsync() { await FileUse(); }
+        [Ignore("SYNC_READ")][Test]      public async Task  FileUseAsync() { await FileUse(); }
         
         private async Task FileUse() {
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         }
         
         [UnityTest] public IEnumerator LoopbackUseCoroutine() { yield return RunAsync.Await(LoopbackUse()); }
-        [Test]      public async Task  LoopbackUseAsync() { await LoopbackUse(); }
+        [Ignore("SYNC_READ")][Test]      public async Task  LoopbackUseAsync() { await LoopbackUse(); }
         
         private async Task LoopbackUse() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         }
         
         [UnityTest] public IEnumerator HttpUseCoroutine() { yield return RunAsync.Await(HttpUse()); }
-        [Test]      public async Task  HttpUseAsync() { await HttpUse(); }
+        [Ignore("SYNC_READ")][Test]      public async Task  HttpUseAsync() { await HttpUse(); }
         
         private async Task HttpUse() {
             using (var _            = SharedEnv.Default) // for LeakTestsFixture

@@ -88,6 +88,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             await store.SyncTasks(); // ----------------
             AreEqual(1,                 ordersWithCustomer1.Result.Count);
             NotNull(ordersWithCustomer1.Result.Find(i => i.id == "order-1"));
+            AreEqual(1,                 ordersWithCustomer1.RawResult.Length);
+            AreEqual("order-1", ordersWithCustomer1.RawResult[0].key.AsString());
             
             AreEqual(1,                 ordersItemsAmount.Result.Count);
             NotNull(ordersItemsAmount.Result.Find(i => i.id == "order-1"));

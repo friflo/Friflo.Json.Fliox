@@ -189,6 +189,9 @@ data class UpsertEntitiesResult (
 @Serializable
 @SerialName("read")
 data class ReadEntitiesResult (
+              val set        : List<JsonElement>,
+              val notFound   : List<String>? = null,
+              val errors     : List<EntityError>? = null,
               val references : List<ReferencesResult>? = null,
 ) : SyncTaskResult()
 
@@ -198,7 +201,8 @@ data class QueryEntitiesResult (
               val cont       : String? = null,
               val cursor     : String? = null,
               val len        : Int? = null,
-              val ids        : List<String>,
+              val set        : List<JsonElement>,
+              val errors     : List<EntityError>? = null,
               val references : List<ReferencesResult>? = null,
               val sql        : String? = null,
 ) : SyncTaskResult()

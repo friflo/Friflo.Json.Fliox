@@ -38,13 +38,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   readonly   string          filterLinq; // use as string identifier of a filter 
         internal            List<T>         result;
         internal            string          sql;
-        internal            Dictionary<JsonKey, EntityValue>    entities;
+        internal            EntityValue[]   entities;
         internal            string          resultCursor;
         private  readonly   FlioxClient     client;
         private  readonly   SyncSet<TKey,T> syncSet;
 
-        public              List<T>         Result          => IsOk("QueryTask.Result",   out Exception e) ? result : throw e;
-        public              List<JsonValue> RawResult       => IsOk("QueryTask.RawResult",out Exception e) ? GetRawValues() : throw e;
+        public              List<T>         Result          => IsOk("QueryTask.Result",   out Exception e) ? result   : throw e;
+        public              EntityValue[]   RawResult       => IsOk("QueryTask.RawResult",out Exception e) ? entities : throw e;
         public              bool            IsFinished      => GetIsFinished();
         public              string          SQL             => IsOk("QueryTask.SQL",      out Exception e) ? sql : throw e;
         
@@ -96,14 +96,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             throw e;
         }
 
-        private List<JsonValue> GetRawValues() {
-            var jsonResult = new List<JsonValue> (entities.Count);
-            foreach (var pair in entities) {
-                jsonResult.Add(pair.Value.Json);
-            }
-            return jsonResult;
-        }
-        
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return syncSet.QueryEntities(this, context);
         }

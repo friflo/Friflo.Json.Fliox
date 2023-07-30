@@ -28,6 +28,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
                     public  string              keyName;
                     public  bool?               isIntKey;
                     public  List<References>    references;
+
+        public override     string              ToString() => container.ToString();
     }
     
     // ----------------------------------- sub task result -----------------------------------
@@ -39,7 +41,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         [DebugInfo] public  ShortString             container;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                    len;
-        [Required]  public  ListOne<JsonKey>        ids;
+        [Required]  public  ListOne<JsonValue>      set;
+        
+        [Ignore]    public  ListOne<JsonKey>        ids;        // SYNC_READ : TODO can remove? redundany with entities
+        [Ignore]    public  Entities                entities;
+        
                     public  List<ReferencesResult>  references;
+                    
+        public override     string                  ToString() => container.ToString();
     }
 }

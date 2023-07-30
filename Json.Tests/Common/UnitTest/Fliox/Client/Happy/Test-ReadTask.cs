@@ -93,7 +93,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(2,                 articleSet.Result.Count);
             AreEqual("Galaxy S10",      articleSet.Result["article-galaxy"].name);
             AreEqual("iPad Pro",        articleSet.Result["article-ipad"].name);
+            NotNull(store.articles.Local["article-galaxy"]);
+            
             IsNull(articleMissing.Result);
+            IsNull(store.articles.Local["article-missing"]);
             
             AreEqual("Galaxy S10",      galaxy.Result.name);
             

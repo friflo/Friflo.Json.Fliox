@@ -284,6 +284,9 @@
         },
         "ReadEntitiesResult": {
             "properties": {
+                "set":        { "elements": {  } },
+                "notFound":   { "elements": { "type": "string" }, "nullable": true },
+                "errors":     { "elements": { "ref":  "EntityError" }, "nullable": true },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }
         },
@@ -292,7 +295,7 @@
                 "error":      { "type": "string", "nullable": true },
                 "cont":       { "type": "string", "nullable": true },
                 "len":        { "type": "int32", "nullable": true },
-                "ids":        { "elements": { "type": "string" } },
+                "set":        { "elements": {  } },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }
         },
@@ -301,7 +304,8 @@
                 "cont":       { "type": "string", "nullable": true },
                 "cursor":     { "type": "string", "nullable": true },
                 "len":        { "type": "int32", "nullable": true },
-                "ids":        { "elements": { "type": "string" } },
+                "set":        { "elements": {  } },
+                "errors":     { "elements": { "ref":  "EntityError" }, "nullable": true },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true },
                 "sql":        { "type": "string", "nullable": true }
             }

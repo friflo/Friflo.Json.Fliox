@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -42,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.IsIntKey   = isIntKey;
         }
         
-        internal override void SetResult(EntitySet set, ListOne<JsonKey> ids) {
+        internal override void SetResult(EntitySet set, ListOne<JsonKey> ids, EntityValue[] values) {
             if (ids.Count == 0) {
                 return;
             }

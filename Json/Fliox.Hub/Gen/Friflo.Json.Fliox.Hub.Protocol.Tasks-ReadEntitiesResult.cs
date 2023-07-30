@@ -7,17 +7,26 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     static class Gen_ReadEntitiesResult
     {
-        private const int Gen_references = 0;
+        private const int Gen_set = 0;
+        private const int Gen_notFound = 1;
+        private const int Gen_errors = 2;
+        private const int Gen_references = 3;
 
         private static bool ReadField (ref ReadEntitiesResult obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
+                case Gen_set:        obj.set        = reader.ReadClass (field, obj.set,        out success);  return success;
+                case Gen_notFound:   obj.notFound   = reader.ReadClass (field, obj.notFound,   out success);  return success;
+                case Gen_errors:     obj.errors     = reader.ReadClass (field, obj.errors,     out success);  return success;
                 case Gen_references: obj.references = reader.ReadClass (field, obj.references, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref ReadEntitiesResult obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
+            writer.WriteClass (fields[Gen_set],        obj.set,        ref firstMember);
+            writer.WriteClass (fields[Gen_notFound],   obj.notFound,   ref firstMember);
+            writer.WriteClass (fields[Gen_errors],     obj.errors,     ref firstMember);
             writer.WriteClass (fields[Gen_references], obj.references, ref firstMember);
         }
     }

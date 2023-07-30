@@ -301,7 +301,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 selectors.Add(reference.selector);
                 var referenceResult = new ReferencesResult {
                     container   = reference.container,
-                    ids         = new ListOne<JsonKey>()
+                    ids         = new ListOne<JsonKey>(),
+                    set         = new ListOne<JsonValue>()
                 };
                 referenceResults.Add(referenceResult);
             }
@@ -355,7 +356,6 @@ namespace Friflo.Json.Fliox.Hub.Host
                 Entities            entities,
                 ShortString         container,
                 string              selectorPath,
-                SyncResponse        syncResponse,
                 SyncContext         syncContext)
         {
             var referenceResults = GetReferences(references, entities, container, syncContext);
@@ -366,9 +366,11 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var refContName     = reference.container;
                 var refCont         = database.GetOrCreateContainer(refContName);
                 var referenceResult = referenceResults[n];
-                var ids = referenceResult.ids;
-                if (ids.Count == 0)
+                var ids             = referenceResult.ids;
+                if (ids.Count == 0) {
+                    referenceResult.entities = new Entities(Array.Empty<EntityValue>());
                     continue;
+                }
                 var refIdList   = ids;
                 var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
                 var refEntities = await refCont.ReadEntitiesAsync(readRefIds, syncContext).ConfigureAwait(false);
@@ -381,10 +383,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                     referenceResult.error = message;
                     continue;
                 }
-                var containerResult = syncResponse.GetContainerResult(refContName, entities.containerType);
-                containerResult.AddEntities(refEntities.entities);
-                var subReferences = reference.references;  
+                referenceResult.entities = refEntities.entities;
                 
+                var subReferences = reference.references;
                 if (subReferences == null)
                     continue;
                 var subEntitiesArray    = new EntityValue [ids.Count];
@@ -394,11 +395,11 @@ namespace Friflo.Json.Fliox.Hub.Host
                     subEntitiesArray[i] = refValues[i];
                 }
                 var refReferencesResult =
-                    await ReadReferencesAsync(subReferences, subEntities, refContName, subPath, syncResponse, syncContext).ConfigureAwait(false);
+                    await ReadReferencesAsync(subReferences, subEntities, refContName, subPath, syncContext).ConfigureAwait(false);
                 // returned refReferencesResult.references is always set. Each references[] item contain either a result or an error.
                 referenceResult.references = refReferencesResult.references;
             }
-            return new ReadReferencesResult {references = referenceResults};
+            return new ReadReferencesResult { references = referenceResults };
         }
         #endregion
 

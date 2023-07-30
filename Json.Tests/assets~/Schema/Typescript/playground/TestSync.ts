@@ -94,18 +94,9 @@ var exampleResponse: ProtocolMessage_Union =
         {
             "task": "query",
             "cont": "orders",
-            "ids": ["new-article", 1, 2]
-        }
-    ],
-    "containers" : [
-        {
-            "cont": "order",
-            "set": [
-                { "id": "new-article", "name":"New Article S10" }
-            ]
+            "set": [{ "id": "new-article", "name":"New Article S10" }]
         }
     ]
-
 }
 
 export function testSync() {

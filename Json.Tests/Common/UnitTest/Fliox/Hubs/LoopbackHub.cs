@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 if (syncResponse.error != null) {
                     return syncResponse;
                 }
-                RemoteHostUtils.SetContainerResults(syncResponse.success);
+                RemoteHostUtils.ResponseToJson(syncResponse.success);
                 var responseJson    = MessageUtils.WriteProtocolMessage(syncResponse.success, sharedEnv, mapper.writer);
                 var responseMessage = MessageUtils.ReadProtocolMessage (responseJson, sharedEnv, mapper.reader, out _);
                 var responseCopy    = (SyncResponse)responseMessage;

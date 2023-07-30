@@ -34,6 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         internal override   MessageType             MessageType => MessageType.resp;
         
         public ContainerEntities FindContainer(in ShortString containerName) {
+            throw new NotSupportedException("SYNC_READ obsolete");
             if (containers == null)
                 return null;
             foreach (var container in containers) {
@@ -44,6 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         }
         
         internal ContainerEntities GetContainerResult(in ShortString containerName, ContainerType type) {
+            throw new NotSupportedException("SYNC_READ obsolete");
             if (containers == null) containers = new List<ContainerEntities>();
             foreach (var container in containers) {
                 if (container.container.IsEqual(containerName))

@@ -132,10 +132,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
                 context.WriteError("read error", resultError.message, 500);
                 return;
             }
-            var entityMap   = restResult.syncResponse.FindContainer(container).entityMap;
-            var entities    = new List<JsonValue>(entityMap.Count);
-            foreach (var pair in entityMap) {
-                var json = pair.Value.Json;
+            var values      = readResult.entities.values;
+            var entities    = new List<JsonValue>(values.Length);
+            foreach (var value in values) {
+                var json = value.Json;
                 if (json.IsNull())
                     continue;
                 entities.Add(json);
@@ -187,15 +187,16 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             if (taskResult.cursor != null) {
                 context.AddHeader("cursor", taskResult.cursor);
             }
-            var entityMap   = restResult.syncResponse.FindContainer(container).entityMap;
-            var entities    = new List<JsonValue>(entityMap.Count);
+            var values      = queryResult.entities.values;
+            var entities    = new List<JsonValue>(values.Length);
             if (orderByKey == null) {
-                foreach (var pair in entityMap) {
-                    entities.Add(pair.Value.Json);
+                foreach (var entity in values) {
+                    entities.Add(entity.Json);
                 }
             } else {
-                foreach (var id in taskResult.ids) {
-                    entities.Add(entityMap[id].Json);
+                // SYNC_READ todo implement sort
+                foreach  (var entity in values) {
+                    entities.Add(entity.Json);
                 }
             }
             context.AddHeader("len", entities.Count.ToString()); // added to simplify debugging experience
@@ -291,8 +292,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
                 context.WriteError("read error", resultError.message, 500);
                 return;
             }
-            var entityMap   = restResult.syncResponse.FindContainer(container).entityMap;
-            var content     = entityMap[entityId];
+            var content     = readResult.entities.values[0];
             var entityError = content.Error;
             if (entityError != null) {
                 context.WriteError("entity error", $"{entityError.type} - {entityError.message}", 404);

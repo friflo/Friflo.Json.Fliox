@@ -268,7 +268,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// Map <see cref="ContainerEntities.entities"/>, <see cref="ContainerEntities.notFound"/> and
         /// <see cref="ContainerEntities.errors"/> to <see cref="ContainerEntities.entityMap"/>.
-        /// These properties are set by <see cref="Remote.Tools.RemoteHostUtils.SetContainerResults"/>.
+        /// These properties are set by <see cref="Remote.Tools.RemoteHostUtils.SetContainerResults_Old"/>.
+
+        // SYNC_READ : JSON -> entities       OBSOLETE
         private void GetContainerResults(SyncResponse response) {
             var containers = response.containers;
             if (containers == null) {
@@ -385,11 +387,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (error != null) {
                 // ----------- handle ErrorResponse -----------
                 var syncError       = new TaskErrorResult (TaskErrorType.SyncError, error.message);
-                var emptyResults    = new List<ContainerEntities>();
                 // process all task using by passing an error 
                 for (int n = 0; n < tasks.Count; n++) {
                     SyncRequestTask task    = tasks[n];
-                    ProcessTaskResult(task, syncTasks[n], syncError, emptyResults);
+                    ProcessTaskResult(task, syncTasks[n], syncError, mapper);
                 }
                 return;
             }
@@ -397,11 +398,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             response.success.AssertResponse(syncRequest);
             SyncResponse    syncResponse    = response.success;
             var             hub             = _readonly.hub; 
-            if (hub.IsRemoteHub) {
+            if (hub.Obsolete && hub.IsRemoteHub) {
                 GetContainerResults(syncResponse);
             }
-            var containers = syncResponse.containers;
-            if (containers != null) {
+            
+            if (hub.Obsolete) {
+                var containers = syncResponse.containers;
                 foreach (var containerEntities in containers) {
                     EntitySet set = GetSetByName(containerEntities.container);
                     if (containerEntities.type == ContainerType.Values) {
@@ -432,7 +434,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 SyncRequestTask task        = tasks[n];
                 SyncTaskResult  result      = responseTasks[n];
                 SyncTask        syncTask    = syncTasks[n];
-                ProcessTaskResult(task, syncTask, result, containers);
+                ProcessTaskResult(task, syncTask, result, mapper);
             }
         }
         
@@ -440,7 +442,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             SyncRequestTask         task,
             SyncTask                syncTasks,
             SyncTaskResult          result,
-            List<ContainerEntities> containerResults)
+            ObjectMapper            mapper)
         {
             switch (task.TaskType) {
                 case TaskType.reserveKeys: {
@@ -460,14 +462,12 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
                 case TaskType.read: {
                     var readList =          (ReadEntities)      task;
-                    var entities =      ContainerEntities.FindContainer(containerResults, readList.container);
-                    syncTasks.taskSyncSet.ReadEntitiesResult(readList, result, entities);
+                    syncTasks.taskSyncSet.ReadEntitiesResult(readList, result, mapper);
                     break;
                 }
                 case TaskType.query: {
                     var query =             (QueryEntities)     task;
-                    var queryEntities = ContainerEntities.FindContainer(containerResults, query.container);
-                    syncTasks.taskSyncSet.QueryEntitiesResult(query, result, queryEntities);
+                    syncTasks.taskSyncSet.QueryEntitiesResult(query, result, mapper);
                     break;
                 }
                 case TaskType.closeCursors: {

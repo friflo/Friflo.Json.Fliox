@@ -124,28 +124,19 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             var entities    = result.entities;
             var values      = entities.values;
-            result.entities = default;  // clear -> its not part of protocol
-            var queryRefsResults = new ReadReferencesResult();
             if (references != null && references.Count > 0) {
-                queryRefsResults =
-                    await entityContainer.ReadReferencesAsync(references, entities, container, "", response, syncContext).ConfigureAwait(false);
-                // returned queryRefsResults.references is always set. Each references[] item contain either a result or an error.
+                var read = await entityContainer.ReadReferencesAsync(references, entities, container, "", syncContext).ConfigureAwait(false);
+                result.references   = read.references; 
             }
             // entities elements can be updated in ReadReferences()
-            var containerResult = response.GetContainerResult(container, ContainerType.Values);
-            containerResult.AddEntities(entities);
-
-            result.container    = container;
-            var ids             = new ListOne<JsonKey>(values.Length);
-            foreach (var entity in values) {
-                ids.Add(entity.key);
+            if (syncContext.hub.Obsolete) {
+                var containerResult = response.GetContainerResult(container, ContainerType.Values);
+                containerResult.AddEntities(entities);
             }
-            KeyValueUtils.OrderKeys(ids, orderByKey);
-            result.ids          = ids;
-            if (ids.Count > 0) {
-                result.len          = ids.Count;
+            result.container = container;
+            if (values.Length > 0) {
+                result.len = values.Length;
             }
-            result.references   = queryRefsResults.references;
             return result;
         }
     }
@@ -160,9 +151,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Serialize                                ("cont")]
         [DebugInfo] public  ShortString             container;
                     public  string                  cursor;
-        /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
+        /// <summary>number of <see cref="set"/> values - not utilized by Protocol</summary>
         [DebugInfo] public  int?                    len;
-        [Required]  public  ListOne<JsonKey>        ids;
+        
+        [Required]  public  ListOne<JsonValue>      set;
+                    public  List<EntityError>       errors;
+                    
                     public  List<ReferencesResult>  references;
                     public  string                  sql;
                         

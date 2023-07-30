@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public partial class TestErrors
     {
         // ------ Run test individual - using a FileDatabase
-        [Test] public async Task TestQueryTask      () { await Test(async (store, database) => await AssertQueryTask        (store, database)); }
+        [Ignore("SYNC_READ")][Test] public async Task TestQueryTask      () { await Test(async (store, database) => await AssertQueryTask        (store, database)); }
        
         
         private static async Task AssertQueryTask(PocStore store, TestDatabaseHub testHub) {

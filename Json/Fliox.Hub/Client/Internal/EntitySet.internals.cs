@@ -43,6 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  string              GetKeyName();
         internal  abstract  bool                IsIntKey();
         internal  abstract  void                GetRawEntities(List<object> result);
+        internal  abstract  EntityValue[]       GetReferencesValues (ReferencesResult referenceResult, ObjectReader reader);
         
         protected EntitySet(string name, int index) {
             this.name   = name;
@@ -115,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
     internal partial class EntitySetInstance<TKey, T>
     {
-        private TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._readonly.typeStore.GetTypeMapper(typeof(T));
+        internal TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._readonly.typeStore.GetTypeMapper(typeof(T));
 
         
         private SetInfo GetSetInfo() {
@@ -220,7 +221,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return peer;
         }
 
-        /// use <see cref="GetOrCreatePeerByKey"/> is possible
+        /// use <see cref="GetOrCreatePeerByKey"/> if possible
         internal override Peer<T> GetPeerById(in JsonKey id) {
             var key = Static.KeyConvert.IdToKey(id);
             var peers = PeerMap();
@@ -240,6 +241,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         // --- EntitySet
+        // SYNC_READ : entities -> JSON       OBSOLETE
         internal override void SyncPeerEntityMap(Dictionary<JsonKey, EntityValue> entityMap, ObjectMapper mapper) {
             var reader      = mapper.reader;
             var typeMapper  = GetTypeMapper();
@@ -280,6 +282,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
         
+        // SYNC_READ - sync objects       OBSOLETE
         internal override void SyncPeerObjectMap (Dictionary<JsonKey, object> objectMap) {
             var typeMapper  = GetTypeMapper();
             foreach (var entityPair in objectMap) {
@@ -348,6 +351,61 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var key = Static.KeyConvert.IdToKey(id);
                 applyInfos.Add(new ApplyInfo<TKey,T>(applyType, key, entity, value));
             }
+        }
+        
+        internal T AddEntity (in EntityValue value, Peer<T> peer, ObjectReader reader, out EntityError entityError) {
+            var error = value.Error;
+            if (error != null) {
+                entityError = error;
+                return null;
+            }
+            var json = value.Json;
+            if (json.IsNull()) {
+                peer.SetEntity(null);   // Could delete peer instead
+                peer.SetPatchSourceNull();
+                entityError = null;
+                return null;
+            }
+            var typeMapper  = GetTypeMapper();
+            var entity      = peer.NullableEntity;
+            if (entity == null) {
+                entity          = (T)typeMapper.NewInstance();
+                SetEntityId(entity, peer.id);
+                peer.SetEntity(entity);
+            }
+            reader.ReadToMapper(typeMapper, json, entity, false);
+            if (reader.Success) {
+                peer.SetPatchSource(json);
+                entityError = null;
+                return entity;
+            }
+            entityError = new EntityError(EntityErrorType.ParseError, nameShort, peer.id, reader.Error.msg.ToString());
+            return null;
+        }
+        
+        internal override EntityValue[] GetReferencesValues (ReferencesResult referenceResult, ObjectReader reader) {
+            EntityValue[]   values; 
+            if (!client._readonly.hub.IsRemoteHub) {
+                values = referenceResult.entities.values;
+            } else {
+                var processor   = client._intern.EntityProcessor();
+                var keyName     = GetKeyName();
+                values          = Entities.JsonToEntities(referenceResult.set, null, null, processor, keyName);
+                referenceResult.ids      = new ListOne<JsonKey>(values.Length);
+                foreach (var value in values) {
+                    referenceResult.ids.Add(value.key);
+                }
+            }
+            for (int n = 0; n < values.Length; n++) {
+                var value   = values[n];
+                var id      = Static.KeyConvert.IdToKey(value.key);
+                var peer    = GetOrCreatePeerByKey(id, value.key);
+                AddEntity(value, peer, reader, out var error);
+                if (error != null) {
+                    peer.error = error;
+                }
+            }
+            return values;
         }
         
         internal void DeletePeerEntities (List<Delete<TKey>> deletes, List<ApplyInfo<TKey,T>> applyInfos) {

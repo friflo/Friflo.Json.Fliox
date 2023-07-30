@@ -70,15 +70,20 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.id = id;
         }
 
-        internal void SetEntity(T entity) {
+        internal void SetEntity(T entity)
+        {
+            /* alternative solution: delete peers, in this case this check need to be enabled 
             if (entity == null)
-                throw new InvalidOperationException("Expect entity not null");
+                throw new InvalidOperationException("Expect entity not null"); */
             if (this.entity == null) {
                 this.entity = entity;
                 return;
             }
-            if (this.entity != entity)
-                throw new ArgumentException($"Entity is already tracked by another instance. id: '{id}'");
+            if (entity == null) {
+                this.entity = null;
+                return;
+            }
+            if (entity != this.entity) throw new ArgumentException($"Entity is already tracked by another instance. id: '{id}'");
         }
 
         internal void SetPatchSource(in JsonValue value) {

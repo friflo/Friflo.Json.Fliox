@@ -88,13 +88,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static JsonValue QueryEntitiesResult(in ResultContext cx) {
             var queryResult     = (QueryEntitiesResult)cx.result;
-            var entities        = cx.synResponse.FindContainer(cx.query.container).entityMap;
-            var ids             = queryResult.ids;
-            var items           = new List<JsonValue>(ids.Count);
-            var gqlQueryResult  = new GqlQueryResult { count = ids.Count, cursor = queryResult.cursor, items = items };
-            foreach (var id in ids.GetReadOnlySpan()) {
-                var entity = entities[id].Json;
-                items.Add(entity);
+            var values          = queryResult.entities.values;
+            var count           = values.Length;
+            var items           = new List<JsonValue>(count);
+            var gqlQueryResult  = new GqlQueryResult { count = count, cursor = queryResult.cursor, items = items };
+            foreach (var value in values) {
+                items.Add(value.Json);
             }
             var json            = cx.writer.WriteAsValue(gqlQueryResult);
             if (cx.query.selectAll)
@@ -109,13 +108,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         private static JsonValue ReadEntitiesResult (in ResultContext cx) {
-            var readTask        = (ReadEntities)cx.query.task;
-            var entities        = cx.synResponse.FindContainer(cx.query.container).entityMap;
-            var ids             = readTask.ids;
-            var list            = new List<JsonValue>(ids.Count);
-            foreach (var id in ids.GetReadOnlySpan()) {
-                var entity = entities[id].Json;
-                list.Add(entity);
+            var readResult      = (ReadEntitiesResult)cx.result;
+            var values          = readResult.entities.values;
+            var list            = new List<JsonValue>(values.Length);
+            foreach (var value in values) {
+                list.Add(value.Json);
             }
             var json            = cx.writer.WriteAsValue(list);
             if (cx.query.selectAll)

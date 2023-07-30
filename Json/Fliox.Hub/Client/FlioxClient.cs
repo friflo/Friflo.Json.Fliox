@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         [Browse(Never)] internal readonly   Type            type;
 
-        [Browse(Never)] internal ObjectPool<ObjectMapper>   ObjectMapper            => _readonly.pool.ObjectMapper;
+        [Browse(Never)] internal ObjectPool<ObjectMapper>   ObjectMapper    => _readonly.pool.ObjectMapper;
 
         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
