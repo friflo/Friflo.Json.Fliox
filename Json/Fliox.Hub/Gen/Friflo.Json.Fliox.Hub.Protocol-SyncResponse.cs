@@ -11,32 +11,29 @@ namespace Gen.Friflo.Json.Fliox.Hub.Protocol
         private const int Gen_clientId = 1;
         private const int Gen_database = 2;
         private const int Gen_tasks = 3;
-        private const int Gen_containers = 4;
-        private const int Gen_info = 5;
-        private const int Gen_authError = 6;
+        private const int Gen_info = 4;
+        private const int Gen_authError = 5;
 
         private static bool ReadField (ref SyncResponse obj, PropField field, ref Reader reader) {
             bool success;
             switch (field.genIndex) {
-                case Gen_reqId:      obj.reqId      = reader.ReadInt32Null (field, out success);  return success;
-                case Gen_clientId:   obj.clientId   = reader.ReadShortString (field, obj.clientId,   out success);  return success;
-                case Gen_database:   obj.database   = reader.ReadShortString (field, obj.database,   out success);  return success;
-                case Gen_tasks:      obj.tasks      = reader.ReadClass     (field, obj.tasks,      out success);  return success;
-                case Gen_containers: obj.containers = reader.ReadClass     (field, obj.containers, out success);  return success;
-                case Gen_info:       obj.info       = reader.ReadJsonValue (field, out success);  return success;
-                case Gen_authError:  obj.authError  = reader.ReadString    (field, obj.authError,  out success);  return success;
+                case Gen_reqId:     obj.reqId     = reader.ReadInt32Null (field, out success);  return success;
+                case Gen_clientId:  obj.clientId  = reader.ReadShortString (field, obj.clientId,  out success);  return success;
+                case Gen_database:  obj.database  = reader.ReadShortString (field, obj.database,  out success);  return success;
+                case Gen_tasks:     obj.tasks     = reader.ReadClass     (field, obj.tasks,     out success);  return success;
+                case Gen_info:      obj.info      = reader.ReadJsonValue (field, out success);  return success;
+                case Gen_authError: obj.authError = reader.ReadString    (field, obj.authError, out success);  return success;
             }
             return false;
         }
 
         private static void Write(ref SyncResponse obj, PropField[] fields, ref Writer writer, ref bool firstMember) {
-            writer.WriteInt32Null (fields[Gen_reqId],      obj.reqId,      ref firstMember);
-            writer.WriteShortString (fields[Gen_clientId],   obj.clientId,   ref firstMember);
-            writer.WriteShortString (fields[Gen_database],   obj.database,   ref firstMember);
-            writer.WriteClass     (fields[Gen_tasks],      obj.tasks,      ref firstMember);
-            writer.WriteClass     (fields[Gen_containers], obj.containers, ref firstMember);
-            writer.WriteJsonValue (fields[Gen_info],       obj.info,       ref firstMember);
-            writer.WriteString    (fields[Gen_authError],  obj.authError,  ref firstMember);
+            writer.WriteInt32Null (fields[Gen_reqId],     obj.reqId,     ref firstMember);
+            writer.WriteShortString (fields[Gen_clientId],  obj.clientId,  ref firstMember);
+            writer.WriteShortString (fields[Gen_database],  obj.database,  ref firstMember);
+            writer.WriteClass     (fields[Gen_tasks],     obj.tasks,     ref firstMember);
+            writer.WriteJsonValue (fields[Gen_info],      obj.info,      ref firstMember);
+            writer.WriteString    (fields[Gen_authError], obj.authError, ref firstMember);
         }
     }
 }

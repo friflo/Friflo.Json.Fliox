@@ -36,24 +36,13 @@ class ProtocolResponse {
 
 ProtocolResponse <|-- SyncResponse
 class SyncResponse {
-    msg         : "resp"
-    db?         : string
-    tasks?      : SyncTaskResult[]
-    containers? : ContainerEntities[]
-    info?       : any
-    authError?  : string
+    msg        : "resp"
+    db?        : string
+    tasks?     : SyncTaskResult[]
+    info?      : any
+    authError? : string
 }
 SyncResponse *-- "0..*" SyncTaskResult : tasks
-SyncResponse *-- "0..*" ContainerEntities : containers
-
-class ContainerEntities {
-    cont      : string
-    len?      : int32
-    set       : any[]
-    notFound? : string[]
-    errors?   : EntityError[]
-}
-ContainerEntities *-- "0..*" EntityError : errors
 
 ProtocolResponse <|-- ErrorResponse
 class ErrorResponse {

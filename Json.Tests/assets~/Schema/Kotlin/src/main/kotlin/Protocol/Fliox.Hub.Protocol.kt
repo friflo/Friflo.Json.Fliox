@@ -5,7 +5,6 @@ import kotlinx.serialization.*
 import CustomSerializer.*
 import Fliox.Hub.Protocol.Tasks.*
 import kotlinx.serialization.json.*
-import Fliox.Hub.Protocol.Models.*
 
 @Serializable
 // @JsonClassDiscriminator("msg") https://github.com/Kotlin/kotlinx.serialization/issues/546
@@ -35,13 +34,12 @@ abstract class ProtocolRequest  : ProtocolMessage() {
 @Serializable
 @SerialName("resp")
 data class SyncResponse (
-    override  val req        : Int? = null,
-    override  val clt        : String? = null,
-              val db         : String? = null,
-              val tasks      : List<SyncTaskResult>? = null,
-              val containers : List<ContainerEntities>? = null,
-              val info       : JsonElement? = null,
-              val authError  : String? = null,
+    override  val req       : Int? = null,
+    override  val clt       : String? = null,
+              val db        : String? = null,
+              val tasks     : List<SyncTaskResult>? = null,
+              val info      : JsonElement? = null,
+              val authError : String? = null,
 ) : ProtocolResponse()
 
 @Serializable
@@ -50,15 +48,6 @@ abstract class ProtocolResponse  : ProtocolMessage() {
     abstract  val req : Int?
     abstract  val clt : String?
 }
-
-@Serializable
-data class ContainerEntities (
-              val cont     : String,
-              val len      : Int? = null,
-              val set      : List<JsonElement>,
-              val notFound : List<String>? = null,
-              val errors   : List<EntityError>? = null,
-)
 
 @Serializable
 @SerialName("error")

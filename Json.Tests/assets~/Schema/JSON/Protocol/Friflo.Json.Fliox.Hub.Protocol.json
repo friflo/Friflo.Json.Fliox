@@ -28,33 +28,16 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
             "description": "A <b>SyncResponse</b> is the response of <b>SyncRequest</b> executed by a <b>FlioxHub</b>",
             "properties": {
-                "msg":        { "enum": ["resp"] },
-                "req":        { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
-                "clt":        { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null." },
-                "db":         { "type": ["string", "null"], "description": "for debugging - not used by Protocol" },
-                "tasks":      { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" }, "description": "list of task results corresponding to the <b>tasks</b> in a <b>SyncRequest</b>" },
-                "containers": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" }, "description": "entities as results from the <b>tasks</b> in a <b>SyncRequest</b>\ngrouped by container" },
-                "info":       {  },
-                "authError":  { "type": ["string", "null"], "description": "error message if authentication failed. null for successful authentication" }
+                "msg":       { "enum": ["resp"] },
+                "req":       { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
+                "clt":       { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null." },
+                "db":        { "type": ["string", "null"], "description": "for debugging - not used by Protocol" },
+                "tasks":     { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" }, "description": "list of task results corresponding to the <b>tasks</b> in a <b>SyncRequest</b>" },
+                "info":      {  },
+                "authError": { "type": ["string", "null"], "description": "error message if authentication failed. null for successful authentication" }
             },
             "required": [
                 "msg"
-            ],
-            "additionalProperties": false
-        },
-        "ContainerEntities": {
-            "type": "object",
-            "description": "Used by <b>SyncResponse</b> to return the <b>entities</b> as results\nfrom <b>tasks</b> of a <b>SyncRequest</b>",
-            "properties": {
-                "cont":     { "type": "string", "description": "container name the of the returned <b>entities</b>" },
-                "len":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>entities</b> - not utilized by Protocol" },
-                "set":      { "type": "array", "items": {  }, "description": "all <b>entities</b> from the <b>container</b> resulting from\n<b>ReadEntities</b> and <b>QueryEntities</b> tasks of a <b>SyncRequest</b>" },
-                "notFound": { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/JsonKey" }, "description": "list of entities not found by <b>ReadEntities</b> tasks" },
-                "errors":   { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "description": "list of entity errors read from <b>container</b>" }
-            },
-            "required": [
-                "cont",
-                "set"
             ],
             "additionalProperties": false
         },

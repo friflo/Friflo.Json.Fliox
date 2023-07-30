@@ -213,13 +213,12 @@
         },
         "SyncResponse": {
             "properties": {
-                "req":        { "type": "int32", "nullable": true },
-                "clt":        { "type": "string", "nullable": true },
-                "db":         { "type": "string", "nullable": true },
-                "tasks":      { "elements": { "ref":  "SyncTaskResult" }, "nullable": true },
-                "containers": { "elements": { "ref":  "ContainerEntities" }, "nullable": true },
-                "info":       { "nullable": true },
-                "authError":  { "type": "string", "nullable": true }
+                "req":       { "type": "int32", "nullable": true },
+                "clt":       { "type": "string", "nullable": true },
+                "db":        { "type": "string", "nullable": true },
+                "tasks":     { "elements": { "ref":  "SyncTaskResult" }, "nullable": true },
+                "info":      { "nullable": true },
+                "authError": { "type": "string", "nullable": true }
             }
         },
         "ProtocolResponse": {
@@ -390,15 +389,6 @@
                 "EntityErrors",
                 "InvalidResponse"
             ]
-        },
-        "ContainerEntities": {
-            "properties": {
-                "cont":     { "type": "string" },
-                "len":      { "type": "int32", "nullable": true },
-                "set":      { "elements": {  } },
-                "notFound": { "elements": { "type": "string" }, "nullable": true },
-                "errors":   { "elements": { "ref":  "EntityError" }, "nullable": true }
-            }
         },
         "ErrorResponse": {
             "properties": {

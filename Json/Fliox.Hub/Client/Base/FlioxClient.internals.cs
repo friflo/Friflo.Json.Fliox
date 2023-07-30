@@ -266,62 +266,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        /// Map <see cref="ContainerEntities.entities"/>, <see cref="ContainerEntities.notFound"/> and
-        /// <see cref="ContainerEntities.errors"/> to <see cref="ContainerEntities.entityMap"/>.
-        /// These properties are set by <see cref="Remote.Tools.RemoteHostUtils.SetContainerResults_Old"/>.
-
-        // SYNC_READ : JSON -> entities       OBSOLETE
-        private void GetContainerResults(SyncResponse response) {
-            var containers = response.containers;
-            if (containers == null) {
-                return;
-            }
-            var processor = _intern.EntityProcessor();
-            foreach (var container in containers) {
-                if (!TryGetSetByName(container.container, out EntitySet set)) {
-                    continue;
-                }
-                var keyName         = set.GetKeyName();
-                var entityMap       = container.entityMap;
-                var entities        = container.entities;
-                var notFound        = container.notFound;
-                var notFoundCount   = notFound?.Count ?? 0;
-                var errors          = container.errors;
-                var errorCount      = errors?.Count ?? 0;
-                container.errors    = null;
-                entityMap.Clear(); // Not necessary, be safe
-                entityMap.EnsureCapacity(entities.Count + notFoundCount + errorCount);
-                
-                // --- entities
-                foreach (var entity in entities) {
-                    if (!processor.GetEntityKey(entity, keyName, out JsonKey key, out string errorMsg)) {
-                        throw new InvalidOperationException($"GetEntityResults not found: {errorMsg}");
-                    }
-                    entityMap.Add(key, new EntityValue(key, entity));
-                }
-                entities.Clear();
-                container.entities = null;
-                
-                // --- notFound
-                if (notFound != null) {
-                    foreach (var notFoundKey in notFound) {
-                        entityMap.Add(notFoundKey, new EntityValue(notFoundKey));
-                    }
-                    notFound.Clear();
-                    container.notFound = null;
-                }
-                
-                // --- errors
-                if (errors == null || errors.Count == 0)
-                    continue;
-                foreach (var error in errors) {
-                    entityMap.Add(error.id, new EntityValue(error.id, error));
-                }
-                errors.Clear();
-                container.errors = null;
-            }
-        }
-        
         private SyncResult HandleSyncResponse(
             SyncRequest         syncRequest,
             ExecuteSyncResult   response,
@@ -396,24 +340,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             // ----------- handle SyncResponse -----------
             response.success.AssertResponse(syncRequest);
-            SyncResponse    syncResponse    = response.success;
-            var             hub             = _readonly.hub; 
-            if (hub.Obsolete && hub.IsRemoteHub) {
-                GetContainerResults(syncResponse);
-            }
-            
-            if (hub.Obsolete) {
-                var containers = syncResponse.containers;
-                foreach (var containerEntities in containers) {
-                    EntitySet set = GetSetByName(containerEntities.container);
-                    if (containerEntities.type == ContainerType.Values) {
-                        set.SyncPeerEntityMap(containerEntities.entityMap, mapper);
-                    } else {
-                        set.SyncPeerObjectMap(containerEntities.objectMap);
-                    }
-                }
-            }
-            var responseTasks = syncResponse.tasks;
+            var responseTasks   = response.success.tasks;
             // Ensure every response task result type matches its task
             for (int n = 0; n < tasks.Count; n++) {
                 var task        = tasks[n];

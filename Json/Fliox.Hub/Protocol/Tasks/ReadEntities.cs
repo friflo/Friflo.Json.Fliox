@@ -88,11 +88,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
                 result.references = readRefResults.references;
             }
-            if (syncContext.hub.Obsolete) {
-                // entities elements can be updated in ReadReferences()
-                var containerResult = response.GetContainerResult(container, ContainerType);
-                containerResult.AddEntities(entities);
-            }
             return result;
         }
         
@@ -108,10 +103,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             
             if (result.Error != null) {
                 return TaskError(result.Error);
-            }
-            if (syncContext.hub.Obsolete) {
-                var containerResult = response.GetContainerResult(container, ContainerType);
-                containerResult.AddEntities(result.entities);
             }
             return result;
         }

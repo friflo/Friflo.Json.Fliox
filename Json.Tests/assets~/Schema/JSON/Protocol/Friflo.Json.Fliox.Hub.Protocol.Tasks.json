@@ -587,7 +587,7 @@
                 "NotImplemented":     "database message / command not implemented     <br/>maps to HTTP status: 501",
                 "PermissionDenied":   "task execution not authorized  <br/>maps to HTTP status: 403",
                 "SyncError":          "The entire <b>SyncRequest</b> containing a task failed  <br/>maps to HTTP status: 500",
-                "EntityErrors":       "Is set for a <b>SyncTask</b> if <b>SyncResponse</b>.<b>containers</b>\ncontains <b>errors</b> for entities accessed via a CRUD task.<br/>\nThe entity errors are available via <b>entityErrors</b>.",
+                "EntityErrors":       "Is set if a read or query result contains specific entity errors.\nSee: <b>errors</b> / <b>errors</b><br/>\nThe entity errors are available via <b>entityErrors</b>.",
                 "InvalidResponse":    "Use to indicate an invalid response."
             }
 

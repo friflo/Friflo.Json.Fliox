@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query;
@@ -127,11 +126,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (references != null && references.Count > 0) {
                 var read = await entityContainer.ReadReferencesAsync(references, entities, container, "", syncContext).ConfigureAwait(false);
                 result.references   = read.references; 
-            }
-            // entities elements can be updated in ReadReferences()
-            if (syncContext.hub.Obsolete) {
-                var containerResult = response.GetContainerResult(container, ContainerType.Values);
-                containerResult.AddEntities(entities);
             }
             result.container = container;
             if (values.Length > 0) {

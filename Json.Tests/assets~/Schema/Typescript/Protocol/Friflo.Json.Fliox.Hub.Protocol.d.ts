@@ -4,8 +4,6 @@ import { SyncRequestTask }       from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { SyncRequestTask_Union } from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { SyncTaskResult }        from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { SyncTaskResult_Union }  from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
-import { JsonKey }               from "./Standard";
-import { EntityError }           from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 
 /** **ProtocolMessage** is the base type for all messages which are classified into request, response and event. */
 export type ProtocolMessage_Union =
@@ -107,39 +105,14 @@ export abstract class ProtocolResponse extends ProtocolMessage {
 /** A **SyncResponse** is the response of **SyncRequest** executed by a **FlioxHub** */
 export class SyncResponse extends ProtocolResponse {
     /** message type */
-    msg         : "resp";
+    msg        : "resp";
     /** for debugging - not used by Protocol */
-    db?         : string | null;
+    db?        : string | null;
     /** list of task results corresponding to the **tasks** in a **SyncRequest** */
-    tasks?      : SyncTaskResult_Union[] | null;
-    /**
-     * entities as results from the **tasks** in a **SyncRequest**
-     * grouped by container
-     */
-    containers? : ContainerEntities[] | null;
-    info?       : any | null;
+    tasks?     : SyncTaskResult_Union[] | null;
+    info?      : any | null;
     /** error message if authentication failed. null for successful authentication */
-    authError?  : string | null;
-}
-
-/**
- * Used by **SyncResponse** to return the **entities** as results
- * from **tasks** of a **SyncRequest**
- */
-export class ContainerEntities {
-    /** container name the of the returned **entities** */
-    cont      : string;
-    /** number of **entities** - not utilized by Protocol */
-    len?      : int32 | null;
-    /**
-     * all **entities** from the **container** resulting from
-     * **ReadEntities** and **QueryEntities** tasks of a **SyncRequest**
-     */
-    set       : any[];
-    /** list of entities not found by **ReadEntities** tasks */
-    notFound? : JsonKey[] | null;
-    /** list of entity errors read from **container** */
-    errors?   : EntityError[] | null;
+    authError? : string | null;
 }
 
 /** **ErrorResponse** is returned for a **SyncRequest** in case the whole requests failed */

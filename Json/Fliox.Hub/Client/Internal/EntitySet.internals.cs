@@ -34,9 +34,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal  abstract  void                Reset                   ();
         internal  abstract  void                DetectSetPatchesInternal(DetectAllPatches task, ObjectMapper mapper);
-        internal  abstract  void                SyncPeerEntityMap       (Dictionary<JsonKey, EntityValue> entityMap, ObjectMapper mapper);
-        internal  abstract  void                SyncPeerObjectMap       (Dictionary<JsonKey, object>      objectMap);
-        
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(Change change);
         internal  abstract  SubscribeChanges    GetSubscription();
@@ -241,81 +238,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         // --- EntitySet
-        // SYNC_READ : entities -> JSON       OBSOLETE
-        internal override void SyncPeerEntityMap(Dictionary<JsonKey, EntityValue> entityMap, ObjectMapper mapper) {
-            var reader      = mapper.reader;
-            var typeMapper  = GetTypeMapper();
-            foreach (var entityPair in entityMap) {
-                var id      = entityPair.Key;
-                var value   = entityPair.Value;
-                var error   = value.Error;
-                var peer    = GetPeerById(id);
-                if (error != null) {
-                    // id & container are not serialized as they are redundant data.
-                    // Infer their values from containing dictionary & EntitySet<>
-                    error.id        = id;
-                    error.container = nameShort;
-                    peer.error      = error;
-                    continue;
-                }
-                peer.error  = null;
-                var json    = value.Json;
-                if (json.IsNull()) {
-                    peer.SetPatchSourceNull();
-                    continue;    
-                }
-                var entity  = peer.NullableEntity;
-                if (entity == null) {
-                    entity  = (T)typeMapper.NewInstance();
-                    SetEntityId(entity, id);
-                    peer.SetEntity(entity);
-                }
-                reader.ReadToMapper(typeMapper, json, entity, false);
-                if (reader.Success) {
-                    peer.SetPatchSource(json);
-                } else {
-                    var entityError = new EntityError(EntityErrorType.ParseError, nameShort, id, reader.Error.msg.ToString());
-                    // entityMap[id].SetError(id, entityError); - used when using class EntityValue
-                    // [c# - Editing dictionary values in a foreach loop - Stack Overflow] https://stackoverflow.com/questions/1070766/editing-dictionary-values-in-a-foreach-loop
-                    entityMap[id] = new EntityValue(id, entityError);
-                }
-            }
-        }
-        
-        // SYNC_READ - sync objects       OBSOLETE
-        internal override void SyncPeerObjectMap (Dictionary<JsonKey, object> objectMap) {
-            var typeMapper  = GetTypeMapper();
-            foreach (var entityPair in objectMap) {
-                var id      = entityPair.Key;
-                var obj     = (T)entityPair.Value;
-                var peer    = GetPeerById(id);
-                /* var error   = value.Error;
-                if (error != null) {
-                    // id & container are not serialized as they are redundant data.
-                    // Infer their values from containing dictionary & EntitySet<>
-                    error.id        = id;
-                    error.container = nameShort;
-                    peer.error      = error;
-                    continue;
-                } */
-                peer.error  = null;
-                var current = peer.NullableEntity;
-                if (current != null) {
-                    if (obj == null) {
-                        peer.SetPatchSourceNull();
-                        peer.SetEntity(null);
-                    } else {
-                        typeMapper.MemberwiseCopy(obj, current);
-                        // TODO set patch source
-                    }
-                } else {
-                    CreatePeer(obj);
-                    // TODO set patch source
-                }
-            }
-        }
-        
-        /// Similar to <see cref="SyncPeerEntityMap"/> but operates on a key and value list.
         internal void SyncPeerEntities(
             List<JsonValue>         values,
             List<JsonKey>           keys,

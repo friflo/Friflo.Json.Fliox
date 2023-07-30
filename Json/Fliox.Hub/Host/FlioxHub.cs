@@ -88,7 +88,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         protected internal virtual  bool        SupportPushEvents   => true;
         protected internal virtual  bool        IsRemoteHub         => false;
-        protected internal          bool        Obsolete            => false;  // SYNC_READ : remove
         
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all

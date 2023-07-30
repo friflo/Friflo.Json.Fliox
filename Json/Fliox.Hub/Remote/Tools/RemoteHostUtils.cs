@@ -88,52 +88,5 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
                 ReferencesToJson(result.references);
             }
         }
-        
-        /// Required only by <see cref="RemoteHostUtils"/>
-        /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,
-        /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
-        /// minimize response by removing redundancy.
-        /// <see cref="Client.FlioxClient.GetContainerResults"/> remap these properties.
-
-        // SYNC_READ : entities -> JSON       OBSOLETE
-        public static void SetContainerResults_Old(SyncResponse response) {
-            var containers = response?.containers;
-            if (containers == null)
-                return;
-            foreach (var container in containers) {
-                var entityMap       = container.entityMap;
-                var entities        = new List<JsonValue> (entityMap.Count);
-                container.entities  = entities;
-                List<JsonKey>       notFound = null;
-                List<EntityError>   errors   = null;
-                entities.Capacity   = entityMap.Count;
-                foreach (var entityPair in entityMap) {
-                    EntityValue entity  = entityPair.Value;
-                    var error           = entity.Error;
-                    if (error != null) {
-                        if (errors == null) {
-                            errors = new List<EntityError>();
-                        }
-                        errors.Add(error);
-                        continue;
-                    }
-                    var json = entity.Json;
-                    if (json.IsNull()) {
-                        if (notFound == null) {
-                            notFound = new List<JsonKey>();
-                        }
-                        notFound.Add(entityPair.Key);
-                        continue;
-                    }
-                    entities.Add(json);
-                }
-                entityMap.Clear();
-                container.notFound  = notFound;
-                container.errors    = errors;
-                if (entities.Count > 0) {
-                    container.len = entities.Count;
-                }
-            }
-        }
     }
 }

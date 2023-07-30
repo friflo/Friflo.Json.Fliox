@@ -47,21 +47,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 case TaskType.command:
                     return await task.ExecuteAsync(database, response, syncContext).ConfigureAwait(false);
                 case TaskType.read:
-                    var read        = (ReadEntities)task;
-                    var denied      = ApplyAuthorizedDatabaseFilter(read, syncContext);
-                    var readResult  = (ReadEntitiesResult)await task.ExecuteAsync(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
-                    var container   = response.GetContainerResult(read.container, read.ContainerType);
-                    var entityMap   = container.entityMap;
-                    foreach (var id in denied) {
-                        entityMap.Add(id, new EntityValue(id));
-                    }
-                    /* var notFound    = container.notFound;
-                    if (notFound == null) {
-                        container.notFound = notFound = new List<JsonKey>();
-                    }
-                    notFound.AddRange(denied); */
-                    return readResult;
-                    // return await task.Execute(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
+                    var read = (ReadEntities)task;
+                    ApplyAuthorizedDatabaseFilter(read, syncContext);
+                    return (ReadEntitiesResult)await task.ExecuteAsync(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
                 case TaskType.query:
                     ApplyAuthorizedDatabaseFilter((QueryEntities)task, syncContext);
                     return await task.ExecuteAsync(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
@@ -70,10 +58,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     return result;
             }
         }
-        
-        private static HashSet<JsonKey> ApplyAuthorizedDatabaseFilter(ReadEntities read, SyncContext syncContext)
+        /// <summary>
+        /// Remove all ids from given <paramref name="read"/> task the user ist not authorized to access,  
+        /// </summary>
+        private static void ApplyAuthorizedDatabaseFilter(ReadEntities read, SyncContext syncContext)
         {
-            var deniedIds       = new HashSet<JsonKey>(JsonKey.Equality);
             var databaseFilters = Helper.CreateHashSet(4, DatabaseFilterComparer.Instance);
             syncContext.authState.taskAuthorizer.AddAuthorizedDatabases(databaseFilters);
 
@@ -82,12 +71,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 var idShort = new ShortString(id);
                 if (DatabaseFilter.IsAuthorizedDatabase(databaseFilters, idShort)) {
                     ids.Add(id);
-                } else {
-                    deniedIds.Add(id);
                 }
             }
             read.ids = ids;
-            return deniedIds;
         }
         
         private static void ApplyAuthorizedDatabaseFilter(QueryEntities query, SyncContext syncContext)

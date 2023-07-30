@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         [DebugInfo] public  int?                    len;
         [Required]  public  ListOne<JsonValue>      set;
         
-        [Ignore]    public  ListOne<JsonKey>        ids;        // SYNC_READ : TODO can remove? redundany with entities
+        [Ignore]    public  ListOne<JsonKey>        ids;        // SYNC_READ : TODO can remove? redundant with entities
         [Ignore]    public  Entities                entities;
         
                     public  List<ReferencesResult>  references;

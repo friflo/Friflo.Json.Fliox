@@ -292,14 +292,19 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
                 context.WriteError("read error", resultError.message, 500);
                 return;
             }
-            var content     = readResult.entities.values[0];
-            var entityError = content.Error;
+            var values  = readResult.entities.values;
+            if (values.Length < 1) {
+                context.Write(new JsonValue(), "application/json", 404);
+                return;
+            }
+            var value   = values[0];
+            var entityError = value.Error;
             if (entityError != null) {
                 context.WriteError("entity error", $"{entityError.type} - {entityError.message}", 404);
                 return;
             }
-            var entityStatus = content.Json.IsNull() ? 404 : 200;
-            context.Write(content.Json, "application/json", entityStatus);
+            var entityStatus = value.Json.IsNull() ? 404 : 200;
+            context.Write(value.Json, "application/json", entityStatus);
         }
         
         internal static async Task DeleteEntities(RequestContext context, ShortString database, ShortString container, JsonKey[] keys) {
