@@ -9,6 +9,11 @@
       "commandName": "Project",
       "commandLineArgs": "--module MemoryDbThroughput",
       "workingDirectory": "$(SolutionDir)"
+    },
+    "ReadThroughput": {
+      "commandName": "Project",
+      "commandLineArgs": "--module ReadThroughput",
+      "workingDirectory": "$(SolutionDir)"
     }
   }
 }
