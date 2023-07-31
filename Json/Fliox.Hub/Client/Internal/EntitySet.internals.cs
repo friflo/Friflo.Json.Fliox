@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         
         private SetInfo GetSetInfo() {
-            var info    = new SetInfo (name) { peers = peerMap?.Count ?? 0 };
+            var info    = new SetInfo (name) { peers = peerMap.Count };
             var tasks   = GetTasks();
             SetTaskInfo(ref info, tasks);
             return info;
@@ -144,8 +144,22 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return tasks;
         }
         
+        internal DetectPatchesTask<TKey,T> DetectPatches() {
+            var set     = GetSyncSet();
+            var task    = new DetectPatchesTask<TKey,T>(set);
+            set.AddDetectPatches(task);
+            using (var pooled = client.ObjectMapper.Get()) {
+                foreach (var peerPair in peerMap) {
+                    TKey    key  = peerPair.Key;
+                    Peer<T> peer = peerPair.Value;
+                    set.DetectPeerPatches(key, peer, task, pooled.instance);
+                }
+            }
+            return task;
+        }
+        
         internal override void Reset() {
-            peerMap?.Clear();
+            peerMap.Clear();
             intern.writePretty  = ClientStatic.DefaultWritePretty;
             intern.writeNull    = ClientStatic.DefaultWriteNull;
             syncSet             = null;
@@ -159,7 +173,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal override void DetectSetPatchesInternal(DetectAllPatches allPatches, ObjectMapper mapper) {
             var set     = GetSyncSet();
             var task    = new DetectPatchesTask<TKey,T>(set);
-            var peers   = PeerMap();
+            var peers   = peerMap;
             foreach (var peerPair in peers) {
                 TKey    key     = peerPair.Key;
                 Peer<T> peer    = peerPair.Value;
@@ -174,7 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal override Peer<T> CreatePeer (T entity) {
             var key   = GetEntityKey(entity);
-            var peers = PeerMap();
+            var peers = peerMap;
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 peer.SetEntity(entity);
                 return peer;
@@ -187,8 +201,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal void DeletePeer (in JsonKey id) {
             var key = Static.KeyConvert.IdToKey(id);
-            var peers = PeerMap();
-            peers.Remove(key);
+            peerMap.Remove(key);
         }
         
         [Conditional("DEBUG")]
@@ -199,13 +212,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal bool TryGetPeerByKey(TKey key, out Peer<T> value) {
-            var peers = PeerMap();
-            return peers.TryGetValue(key, out value);
+            return peerMap.TryGetValue(key, out value);
         }
         
         internal Peer<T> GetOrCreatePeerByKey(TKey key, JsonKey id) {
-            var peers = PeerMap();
-            if (peers.TryGetValue(key, out Peer<T> peer)) {
+            if (peerMap.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
             if (id.IsNull()) {
@@ -214,14 +225,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 AssertId(key, id);
             }
             peer = new Peer<T>(id);
-            peers.Add(key, peer);
+            peerMap.Add(key, peer);
             return peer;
         }
 
         /// use <see cref="GetOrCreatePeerByKey"/> if possible
         internal override Peer<T> GetPeerById(in JsonKey id) {
             var key = Static.KeyConvert.IdToKey(id);
-            var peers = PeerMap();
+            var peers = peerMap;
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
@@ -233,8 +244,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // ReSharper disable once UnusedMember.Local
         private bool TryGetPeerByEntity(T entity, out Peer<T> value) {
             var key     = Static.EntityKeyTMap.GetKey(entity); 
-            var peers   = PeerMap();
-            return peers.TryGetValue(key, out value);
+            return peerMap.TryGetValue(key, out value);
         }
         
         // --- EntitySet
@@ -331,7 +341,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal void DeletePeerEntities (List<Delete<TKey>> deletes, List<ApplyInfo<TKey,T>> applyInfos) {
-            var peers = PeerMap();
+            var peers = peerMap;
             foreach (var delete in deletes) {
                 var found   = peers.Remove(delete.key);
                 var type    = found ? ApplyInfoType.EntityDeleted : default;

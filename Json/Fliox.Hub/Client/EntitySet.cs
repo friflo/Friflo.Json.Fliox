@@ -530,18 +530,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <remarks> Consider using <see cref="DetectPatches(T)"/> or <see cref="DetectPatches(IEnumerable{T})"/>
         /// as this method run detection on all tracked entities. </remarks>
         public DetectPatchesTask<TKey,T> DetectPatches() {
-            var instance = GetInstance();
-            var set     = instance.GetSyncSet();
-            var task    = new DetectPatchesTask<TKey,T>(set);
-            var peers   = instance.PeerMap();
-            set.AddDetectPatches(task);
-            using (var pooled = client.ObjectMapper.Get()) {
-                foreach (var peerPair in peers) {
-                    TKey    key  = peerPair.Key;
-                    Peer<T> peer = peerPair.Value;
-                    set.DetectPeerPatches(key, peer, task, pooled.instance);
-                }
-            }
+            var instance    = GetInstance();
+            var task        = instance.DetectPatches();
             client.AddTask(task);
             return task;
         }

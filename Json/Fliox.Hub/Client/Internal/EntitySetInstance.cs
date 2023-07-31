@@ -23,17 +23,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// <summary> available in debugger via <see cref="SetIntern{TKey,T}.SyncSet"/> </summary>
         [Browse(Never)] internal            SyncSet<TKey, T>            syncSet;
         /// <summary> key: <see cref="Peer{T}.entity"/>.id </summary>
-        [Browse(Never)] private             Dictionary<TKey, Peer<T>>   peerMap;        //  Note: must be private by all means
+        [Browse(Never)] private  readonly   Dictionary<TKey, Peer<T>>   peerMap;        //  Note: must be private by all means
         
         /// <summary> enable access to entities in debugger. Not used internally. </summary>
         // Note: using Dictionary.Values is okay. The ValueCollection is instantiated only once for a Dictionary instance
         // ReSharper disable once UnusedMember.Local
-                        private             IReadOnlyCollection<Peer<T>> Peers => peerMap?.Values;
+                        private            IReadOnlyCollection<Peer<T>> Peers           => peerMap.Values;
         
         [Browse(Never)] internal            LocalEntities<TKey,T>       Local           => local   ??= new LocalEntities<TKey, T>(this);
         [Browse(Never)] private             LocalEntities<TKey,T>       local;
-        /// Note: must be private by all means
-                        internal            Dictionary<TKey, Peer<T>>   PeerMap()       => peerMap ??= SyncSet.CreateDictionary<TKey,Peer<T>>();
         /// <summary> Note! Must be called only from <see cref="LocalEntities{TKey,T}"/> to preserve maintainability </summary>
                         internal            Dictionary<TKey, Peer<T>>   GetPeers()      => peerMap;
                         internal            SyncSet<TKey, T>            GetSyncSet()    => syncSet ??= syncSetBuffer.Get() ?? new SyncSet<TKey, T>(this);
@@ -65,6 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // intern    = new SetIntern<TKey, T>(this);
             this.client         = client;
             intern.entitySet    = this;
+            peerMap             = SyncSet.CreateDictionary<TKey,Peer<T>>();
         }
     }
 }
