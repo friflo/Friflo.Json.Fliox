@@ -380,7 +380,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 // Resolving other references are independent may be successful.
                 if (refEntities.Error != null) {
                     var message = $"read references failed: '{container.AsString()}{subPath}' - {refEntities.Error.message}";
-                    referenceResult.error = message;
+                    referenceResult.error       = message;
+                    referenceResult.entities    = new Entities(Array.Empty<EntityValue>());
                     continue;
                 }
                 referenceResult.entities = refEntities.entities;

@@ -58,6 +58,7 @@
                 "cont":       { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
                 "len":        { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
                 "set":        { "type": "array", "items": {  } },
+                "errors":     { "type": ["array", "null"], "items": { "$ref": "#/definitions/EntityError" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ReferencesResult" } }
             },
             "required": [

@@ -1,10 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable MergeConditionalExpression
@@ -90,58 +87,5 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
             this.objects    = objects;
             containerType   = ContainerType.Objects;
         }
-        
-        public void EntitiesToJson(
-            out ListOne<JsonValue>  set,
-            out List<JsonKey>       notFound,
-            out List<EntityError>   errors)
-        {
-            set         = new ListOne<JsonValue>(values.Length);
-            errors      = null;
-            notFound    = null;
-            foreach (var value in values) {
-                if (value.Json.IsNull()) {
-                    notFound ??= new List<JsonKey>();
-                    notFound.Add(value.key);
-                    continue;
-                } 
-                var error = value.Error;
-                if (error == null) {
-                    set.Add(value.Json);
-                    continue;
-                }
-                errors ??= new List<EntityError>();
-                errors.Add(error);
-            }
-        }
-        
-        public static EntityValue[] JsonToEntities(
-            ListOne<JsonValue>  set,
-            List<JsonKey>       notFound,
-            List<EntityError>   errors,
-            EntityProcessor     processor,
-            string              keyName)    
-        {
-            var values = new EntityValue[set.Count + (notFound?.Count ?? 0) + (errors?.Count ?? 0)];
-            var index = 0;
-            foreach (var value in set.GetReadOnlySpan()) {
-                if (processor.GetEntityKey(value, keyName, out var key, out var error)) {
-                    values[index++] = new EntityValue(key, value);
-                } else {
-                    throw new InvalidOperationException($"missing key int result: {error}");
-                }
-            }
-            if (notFound != null) {
-                foreach (var key in notFound) {
-                    values[index++] = new EntityValue(key);
-                }
-            }
-            if (errors != null) {
-                foreach (var error in errors) {
-                    values[index++] = new EntityValue(error.id, error);
-                }
-            }
-            return values;
-        } 
     }
 }

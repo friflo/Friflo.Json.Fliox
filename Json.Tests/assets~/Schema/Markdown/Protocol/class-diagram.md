@@ -116,8 +116,10 @@ class ReferencesResult {
     cont?       : string
     len?        : int32
     set         : any[]
+    errors?     : EntityError[]
     references? : ReferencesResult[]
 }
+ReferencesResult *-- "0..*" EntityError : errors
 ReferencesResult *-- "0..*" ReferencesResult : references
 
 class SyncRequestTask {

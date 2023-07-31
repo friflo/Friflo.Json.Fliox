@@ -19,10 +19,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // --------------------------------------- EntitySet ---------------------------------------
     internal abstract class EntitySet
     {
-        [DebuggerBrowsable(Never)] internal readonly  string          name;
-        [DebuggerBrowsable(Never)] internal readonly  int             index;
-        [DebuggerBrowsable(Never)] internal readonly  ShortString     nameShort;
-        [DebuggerBrowsable(Never)] internal           ChangeCallback  changeCallback;
+        [DebuggerBrowsable(Never)] internal readonly    FlioxClient     client;
+        [DebuggerBrowsable(Never)] internal readonly    string          name;
+        [DebuggerBrowsable(Never)] internal readonly    int             index;
+        [DebuggerBrowsable(Never)] internal readonly    ShortString     nameShort;
+        [DebuggerBrowsable(Never)] internal             ChangeCallback  changeCallback;
         
 
         internal  abstract  SyncSet     SyncSet     { get; }
@@ -42,9 +43,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void                GetRawEntities(List<object> result);
         internal  abstract  EntityValue[]       GetReferencesValues (ReferencesResult referenceResult, ObjectReader reader);
         
-        protected EntitySet(string name, int index) {
+        protected EntitySet(string name, int index, FlioxClient client) {
             this.name   = name;
             this.index  = index;
+            this.client = client;
             nameShort   = new ShortString(name);
         }
         
@@ -75,6 +77,65 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 info.subscribeChanges   +
                 info.reserveKeys;
         }
+        
+        /// <summary>Counterpart of <see cref="EntitiesToJson"/></summary>
+        //  SYNC_READ : JSON -> entities
+        internal EntityValue[] JsonToEntities(
+            ListOne<JsonValue>  set,
+            List<JsonKey>       notFound,
+            List<EntityError>   errors)
+        {
+            var processor   = client._intern.EntityProcessor();
+            var keyName     = GetKeyName();
+            var values = new EntityValue[set.Count + (notFound?.Count ?? 0) + (errors?.Count ?? 0)];
+            var n = 0;
+            foreach (var value in set.GetReadOnlySpan()) {
+                if (processor.GetEntityKey(value, keyName, out var key, out var error)) {
+                    values[n++] = new EntityValue(key, value);
+                } else {
+                    throw new InvalidOperationException($"missing key int result: {error}");
+                }
+            }
+            if (notFound != null) {
+                foreach (var key in notFound) {
+                    values[n++] = new EntityValue(key);
+                }
+            }
+            if (errors != null) {
+                foreach (var error in errors) {
+                    error.container = nameShort; // container name is not serialized as it is redundant data.
+                    values[n++]     = new EntityValue(error.id, error);
+                }
+            }
+            return values;
+        }
+        
+        /// <summary>Counterpart of <see cref="JsonToEntities"/></summary>
+        //  SYNC_READ : entities -> JSON
+        internal static void EntitiesToJson(
+            EntityValue[]           values,
+            out ListOne<JsonValue>  set,
+            out List<JsonKey>       notFound,
+            out List<EntityError>   errors)
+        {
+            set         = new ListOne<JsonValue>(values.Length);
+            errors      = null;
+            notFound    = null;
+            foreach (var value in values) {
+                var error = value.Error;
+                if (error != null) {
+                    errors ??= new List<EntityError>();
+                    errors.Add(error);
+                    continue;
+                }
+                if (!value.Json.IsNull()) {
+                    set.Add(value.Json);
+                } else {
+                    notFound ??= new List<JsonKey>();
+                    notFound.Add(value.key);
+                }
+            }
+        }
     }
     
     // --------------------------------------- EntitySetBase<T> ---------------------------------------
@@ -89,7 +150,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  Peer<T>         CreatePeer      (T entity);
         internal  abstract  JsonKey         GetEntityId     (T entity);
         
-        protected EntitySetBase(string name, int index) : base(name, index) { }
+        protected EntitySetBase(string name, int index, FlioxClient client) : base(name, index, client) { }
         
         internal static void ValidateKeyType(Type keyType) {
             var entityId        = EntityKey.GetEntityKey<T>();
@@ -288,7 +349,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal T AddEntity (in EntityValue value, Peer<T> peer, ObjectReader reader, out EntityError entityError) {
             var error = value.Error;
             if (error != null) {
-                entityError = error;
+                entityError     = error;
                 return null;
             }
             var json = value.Json;
@@ -320,13 +381,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (!client._readonly.hub.IsRemoteHub) {
                 values = referenceResult.entities.values;
             } else {
-                var processor   = client._intern.EntityProcessor();
-                var keyName     = GetKeyName();
-                values          = Entities.JsonToEntities(referenceResult.set, null, null, processor, keyName);
-                referenceResult.ids      = new ListOne<JsonKey>(values.Length);
+                values  = JsonToEntities(referenceResult.set, null, referenceResult.errors);
+                var ids = new ListOne<JsonKey>(values.Length);
                 foreach (var value in values) {
-                    referenceResult.ids.Add(value.key);
+                    ids.Add(value.key);
                 }
+                referenceResult.ids = ids;
             }
             for (int n = 0; n < values.Length; n++) {
                 var value   = values[n];

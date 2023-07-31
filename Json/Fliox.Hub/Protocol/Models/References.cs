@@ -42,6 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo] public  int?                    len;
         [Required]  public  ListOne<JsonValue>      set;
+                    public  List<EntityError>       errors;
         
         [Ignore]    public  ListOne<JsonKey>        ids;        // SYNC_READ : TODO can remove? redundant with entities
         [Ignore]    public  Entities                entities;

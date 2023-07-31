@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
             
         [Ignore]    public  ShortString         container;
         /// <summary>Is != <see cref="TaskErrorType.None"/> if the error is caused indirectly by a <see cref="SyncRequestTask"/> error.</summary>
-        [Ignore]    public  TaskErrorType taskErrorType;
+        [Ignore]    public  TaskErrorType       taskErrorType;
         /// <summary>Show the stacktrace if <see cref="taskErrorType"/> == <see cref="TaskErrorType.UnhandledException"/>
         /// and the accessed <see cref="EntityContainer"/> implementation expose this data.</summary>
         [Ignore]    public  string              stacktrace;

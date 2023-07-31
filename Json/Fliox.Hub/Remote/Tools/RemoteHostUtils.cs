@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -54,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
             return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
         }
         
-        // SYNC_READ entities -> JSON
+        // SYNC_READ : entities -> JSON
         public static void ResponseToJson(SyncResponse response)
         {
             foreach (var taskResult in response.tasks.GetReadOnlySpan())
@@ -62,12 +63,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
                 switch (taskResult.TaskType) {
                     case TaskType.read:
                         var read = (ReadEntitiesResult)taskResult;
-                        read.entities.EntitiesToJson(out read.set, out read.notFound, out read.errors);
+                        EntitySet.EntitiesToJson(read.entities.values, out read.set, out read.notFound, out read.errors);
                         ReferencesToJson(read.references);
                         break;
                     case TaskType.query:
                         var query = (QueryEntitiesResult)taskResult;
-                        query.entities.EntitiesToJson(out query.set, out _, out query.errors);
+                        EntitySet.EntitiesToJson(query.entities.values, out query.set, out _, out query.errors);
                         query.len = query.entities.Length;
                         ReferencesToJson(query.references);
                         break;
@@ -80,11 +81,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
                 return;
             }
             foreach (var result in references) {
-                var values = result.entities.values;
-                result.set = new ListOne<JsonValue>(values.Length);
-                foreach (var value in values) {
-                    result.set.Add(value.Json);
-                }
+                EntitySet.EntitiesToJson(result.entities.values, out result.set, out _, out result.errors);
+                result.len = result.entities.Length;
                 ReferencesToJson(result.references);
             }
         }

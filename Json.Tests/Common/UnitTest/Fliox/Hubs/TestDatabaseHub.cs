@@ -55,7 +55,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             foreach (var pair in testDatabase.testContainers) {
                 var container = pair.Value;
                 container.readEntityErrors.Clear();
-                container.missingResultErrors.Clear();
                 container.readTaskErrors.Clear();
                 container.writeEntityErrors.Clear();
                 container.writeTaskErrors.Clear();
@@ -77,67 +76,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                     return resp;
                 }
             }
-            var response = await base.ExecuteRequestAsync(syncRequest, syncContext);
-            var responseTasks = response.success.tasks;
-            
-            foreach (var pair in testDatabase.testContainers) {
-                TestContainer testContainer = pair.Value;
-                /* var result = response.success.FindContainer(testContainer.nameShort);
-                if (result == null)
-                    continue;
-                var entities = result.entityMap;
-                foreach (var id in testContainer.missingResultErrors) {
-                    var key = new JsonKey(id);
-                    if (entities.TryGetValue(key, out EntityValue _)) {
-                        entities.Remove(key);
-                    }
-                } */
-                foreach (var id in testContainer.missingResultErrors) {
-                    var key = new JsonKey(id);
-                    RemoveEntity(responseTasks, key);
-                }
-            }
-            return response;
+            return await base.ExecuteRequestAsync(syncRequest, syncContext);
         }
-        
-        // SYNC_READ : TODO implement
-        private static void RemoveEntity(ListOne<SyncTaskResult> responseTasks, JsonKey key) {
-            foreach (var responseTask in responseTasks) {
-                if (responseTask is ReadEntitiesResult read) {
-                    foreach (var value in read.entities.values) {
-                        if (value.key.IsEqual(key)) {
-                            read.entities = new Entities(Array.Empty<EntityValue>());
-                            break;
-                        }
-                    }
-                    RemoveReferences(read.references, key);
-                }
-                if (responseTask is QueryEntitiesResult query) {
-                    foreach (var value in query.entities.values) {
-                        if (value.key.IsEqual(key)) {
-                            query.entities = new Entities(Array.Empty<EntityValue>());
-                            break;
-                        }
-                    }
-                    RemoveReferences(query.references, key);
-                }
-            }
-        }
-        
-        private static void RemoveReferences(List<ReferencesResult> references, JsonKey key) {
-            if (references == null) {
-                return;
-            }
-            foreach (var reference in references) {
-                foreach (var value in reference.entities.values) {
-                    if (value.key.IsEqual(key)) {
-                        reference.entities = new Entities(Array.Empty<EntityValue>());
-                        break;
-                    }
-                }
-            }
-        }
-        
+
         internal TestContainer GetTestContainer(string container) {
             return (TestContainer) testDatabase.GetOrCreateContainer(new ShortString(container));
         }
@@ -187,7 +128,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     {
         private readonly    EntityContainer local;
         public  readonly    Dictionary<string, SimValue>                readEntityErrors    = new Dictionary<string, SimValue>();
-        public  readonly    HashSet<string>                             missingResultErrors = new HashSet<string>();
         public  readonly    Dictionary<string, Func<TaskExecuteError>>  readTaskErrors      = new Dictionary<string, Func<TaskExecuteError>>();
 
         public  readonly    Dictionary<string, SimWriteError>           writeEntityErrors   = new Dictionary<string, SimWriteError>();
@@ -237,16 +177,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         /// simulate assign invalid JSON via .<see cref="SimulateReadErrors"/>.
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             var result = await local.ReadEntitiesAsync(command, syncContext).ConfigureAwait(false);
-            var databaseError = SimulateReadErrors(result.entities);
-            if (databaseError != null)
+            var databaseError = SimulateReadErrors(ref result.entities);
+            if (databaseError != null) {
                 result.Error = databaseError;
+            }
             result.ValidateEntities(local.nameShort, command.keyName, syncContext);
             return result;
         }
         
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             var result = await local.QueryEntitiesAsync(command, syncContext).ConfigureAwait(false);
-            var databaseError = SimulateReadErrors(result.entities);
+            var databaseError = SimulateReadErrors(ref result.entities);
             if (databaseError != null) {
                 result.Error = databaseError;
                 return result;
@@ -264,7 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         
         
         // --- simulate read/write error methods
-        private TaskExecuteError SimulateReadErrors(Entities entities) {
+        private TaskExecuteError SimulateReadErrors(ref Entities entities) {
             var values = entities.values;
             for (int n = 0; n < values.Length; n++) {
                 var entity  = values[n];

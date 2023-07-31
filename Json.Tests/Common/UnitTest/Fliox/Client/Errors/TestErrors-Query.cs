@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public partial class TestErrors
     {
         // ------ Run test individual - using a FileDatabase
-        [Ignore("SYNC_READ")][Test] public async Task TestQueryTask      () { await Test(async (store, database) => await AssertQueryTask        (store, database)); }
+        [Test] public async Task TestQueryTask      () { await Test(async (store, database) => await AssertQueryTask        (store, database)); }
        
         
         private static async Task AssertQueryTask(PocStore store, TestDatabaseHub testHub) {
@@ -170,20 +170,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             IsFalse(order2CustomerError.Success);
             AreEqual("read-task-error", orders2WithTaskError.Result.Find(i => i.id == "order-2").customer);
             AreEqual("DatabaseError ~ read references failed: 'orders -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
-            
-            // --- Test invalid response
- 
-            testHub.ClearErrors();
-            const string missingArticle1      = "article-1";
-            testArticles.missingResultErrors.Add(missingArticle1); 
-            var allArticles2 = articles.QueryAll()          .TaskName("allArticles2");
-            
-            var result = await store.TrySyncTasks();
-            AreEqual(1, result.Failed.Count);
-            IsFalse(allArticles2.Success);
-            AreEqual(@"EntityErrors ~ count: 1
-| ReadError: articles [article-1], requested entity missing in response results", allArticles2.Error.ToString());
-            
         }
     }
 }

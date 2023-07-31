@@ -295,6 +295,7 @@
                 "cont":       { "type": "string", "nullable": true },
                 "len":        { "type": "int32", "nullable": true },
                 "set":        { "elements": {  } },
+                "errors":     { "elements": { "ref":  "EntityError" }, "nullable": true },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }
         },

@@ -79,12 +79,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (!set.client._readonly.hub.IsRemoteHub) {
                 return result.entities.values;
             }
-            var processor   = set.client._intern.EntityProcessor();
-            var keyName     = set.GetKeyName();
-            return Entities.JsonToEntities(result.set, result.notFound, result.errors, processor, keyName);
+            return set.JsonToEntities(result.set, result.notFound, result.errors);
         }
         
-        // SYNC_READ - read entity
+        // SYNC_READ : read entity
         private void AddReadEntity(ref TaskErrorInfo entityErrorInfo, ReadEntitiesResult result, FindTask<TKey, T> read, ObjectReader reader)
         {
             var values  = GetReadResultValues(result);
@@ -107,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             entityErrorInfo.AddEntityError(error);
         }
         
-        // SYNC_READ - read entities
+        // SYNC_READ : read entities
         private void AddReadEntities(ref TaskErrorInfo entityErrorInfo, ReadEntitiesResult result, ReadTask<TKey, T> read, ObjectReader reader)
         {
             var values      = GetReadResultValues(result);
@@ -135,13 +133,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     // peer.SetEntity(null);
                 }
             }
+            var taskError = entityErrorInfo.TaskError;
             foreach (var findTask in read.findTasks) {
-                findTask.SetFindResult(read.result);
+                findTask.SetFindResult(read.result, taskError);
             }
         }
         
         // ---------------------------------------- add object / objects  ----------------------------------------
-        // SYNC_READ - read object
+        // SYNC_READ : read object
         private void AddReadObject(ref TaskErrorInfo entityErrorInfo, ReadEntitiesResult result, FindTask<TKey, T> read)
         {
             var objects = result.entities.objects;
@@ -166,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             read.result = current;
         }
         
-        // SYNC_READ - read objects
+        // SYNC_READ : read objects
         private TaskErrorInfo AddReadObjects(ref TaskErrorInfo entityErrorInfo, ReadEntitiesResult result, ReadTask<TKey, T> read)
         {
             /* var objects = readEntities.objectMap;
@@ -228,9 +227,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (!set.client._readonly.hub.IsRemoteHub) {
                 return result.entities.values;
             }
-            var processor   = set.client._intern.EntityProcessor();
-            var keyName     = set.GetKeyName();
-            return Entities.JsonToEntities(result.set, null, result.errors, processor, keyName);
+            return set.JsonToEntities(result.set, null, result.errors);
         }
     }
 }

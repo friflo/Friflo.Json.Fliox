@@ -38,6 +38,7 @@ data class ReferencesResult (
               val cont       : String? = null,
               val len        : Int? = null,
               val set        : List<JsonElement>,
+              val errors     : List<EntityError>? = null,
               val references : List<ReferencesResult>? = null,
 )
 

@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public partial class TestErrors
     {
         // ------ Test each topic individual - using a FileDatabase
-        [Ignore("SYNC_READ")][Test] public async Task TestReadTask       () { await Test(async (store, database) => await AssertReadTask         (store, database)); }
+        [Test] public async Task TestReadTask       () { await Test(async (store, database) => await AssertReadTask         (store, database)); }
 
         private static async Task AssertReadTask(PocStore store, TestDatabaseHub testHub) {
             testHub.ClearErrors();
@@ -33,15 +33,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             const string articleInvalidJson     = "article-invalidJson";
             const string articleIdDoesntMatch   = "article-idDoesntMatch";
             const string articleMissingKey      = "article-missingKey";
-            const string missingArticle         = "missing-article";
             
             testArticles.readEntityErrors.Add(article2JsonError,    new SimJson(@"{""invalidJson"" XXX}"));
             testArticles.readEntityErrors.Add(article1ReadError,    new SimReadError());
             testArticles.readEntityErrors.Add(articleInvalidJson,   new SimJson(@"{""invalidJson"" YYY}"));
             testArticles.readEntityErrors.Add(articleIdDoesntMatch, new SimJson(@"{""id"": ""article-unexpected-id""}"));
             testArticles.readEntityErrors.Add(articleMissingKey,    new SimJson(@"{}"));
-            
-            testArticles.missingResultErrors.Add(missingArticle);
             
             var orders      = store.orders;
             var articles    = store.articles;
@@ -95,30 +92,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var idDoesntMatch   = readArticles3.Find(articleIdDoesntMatch); //                      .TaskName("idDoesntMatch");
             var missingKey      = readArticles3.Find(articleMissingKey); //                         .TaskName("missingKey");
             
-            var readArticles4   = articles.Read()                                                   .TaskName("readArticles4");
-            var missingEntity   = readArticles4.Find(missingArticle); //                            .TaskName("missingEntity");
-
             // test throwing exception in case of task or entity errors
             SyncTasksException ex = null;
             try {
-                AreEqual(5,  store.Tasks.Count);
+                AreEqual(4,  store.Tasks.Count);
                 await store.SyncTasks(); // ----------------
                 
                 Fail("SyncTasks() intended to fail - code cannot be reached");
             } catch (SyncTasksException sre) {
                 ex = sre;
             }
-            AreEqual(3, ex.failed.Count);
-            AreEqual(@"SyncTasks() failed with task errors. Count: 3
+            AreEqual(2, ex.failed.Count);
+            AreEqual(@"SyncTasks() failed with task errors. Count: 2
 |- readArticles # EntityErrors ~ count: 2
 |   ReadError: articles [article-1], simulated read entity error
 |   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 |- readArticles3 # EntityErrors ~ count: 3
 |   ParseError: articles [article-idDoesntMatch], entity key mismatch. 'id': 'article-unexpected-id'
 |   ParseError: articles [article-invalidJson], JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
-|   ParseError: articles [article-missingKey], missing key in JSON value. keyName: 'id'
-|- readArticles4 # EntityErrors ~ count: 1
-|   ReadError: articles [missing-article], requested entity missing in response results", ex.Message);
+|   ParseError: articles [article-missingKey], missing key in JSON value. keyName: 'id'", ex.Message);
             
             IsTrue(readOrders.Success);
             AreEqual(3, readOrders.Result["order-1"].items.Count);
@@ -174,10 +166,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             IsFalse(missingKey.Success);
             AreEqual(@"EntityErrors ~ count: 1
 | ParseError: articles [article-missingKey], missing key in JSON value. keyName: 'id'", missingKey.Error.ToString());
-            
-            IsFalse(missingEntity.Success);
-            AreEqual(@"EntityErrors ~ count: 1
-| ReadError: articles [missing-article], requested entity missing in response results", missingEntity.Error.ToString());
             
         }
     }

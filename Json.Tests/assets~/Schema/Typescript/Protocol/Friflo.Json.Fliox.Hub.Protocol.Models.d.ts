@@ -54,6 +54,7 @@ export class ReferencesResult {
     /** number of **ids** - not utilized by Protocol */
     len?        : int32 | null;
     set         : any[];
+    errors?     : EntityError[] | null;
     references? : ReferencesResult[] | null;
 }
 

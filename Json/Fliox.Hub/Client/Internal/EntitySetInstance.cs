@@ -19,7 +19,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //          Peers, Tasks
                         internal            SetIntern<TKey, T>          intern;         // Use intern struct as first field 
                         
-        [Browse(Never)] internal readonly   FlioxClient                 client;
         /// <summary> available in debugger via <see cref="SetIntern{TKey,T}.SyncSet"/> </summary>
         [Browse(Never)] internal            SyncSet<TKey, T>            syncSet;
         /// <summary> key: <see cref="Peer{T}.entity"/>.id </summary>
@@ -58,10 +57,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             internal static  readonly       KeyConverter<TKey>          KeyConvert      = KeyConverter.GetConverter<TKey>();
         }
 
-        internal EntitySetInstance(string name, int index, FlioxClient client) : base (name, index) {
+        internal EntitySetInstance(string name, int index, FlioxClient client) : base (name, index, client) {
             // ValidateKeyType(typeof(TKey)); // only required if constructor is public
             // intern    = new SetIntern<TKey, T>(this);
-            this.client         = client;
             intern.entitySet    = this;
             peerMap             = SyncSet.CreateDictionary<TKey,Peer<T>>();
         }
