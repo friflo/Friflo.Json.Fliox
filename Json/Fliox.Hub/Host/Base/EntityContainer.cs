@@ -285,6 +285,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             return false;
         }
 
+        /// <summary>
+        /// Return the ids - foreign keys - stored in the <see cref="References.selector"/> fields
+        /// of the given <paramref name="entities"/>.
+        /// </summary>
         private static List<ReferencesResult> GetReferences(
             List<References>    references,
             in Entities         entities,
@@ -351,6 +355,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             return referenceResults;
         }
 
+        /// <summary>
+        /// Return the <see cref="ReferencesResult.entities"/> referenced by the <see cref="References.selector"/> path
+        /// of the given <paramref name="entities"/>
+        /// </summary>
         internal async Task<ReadReferencesResult> ReadReferencesAsync(
                 List<References>    references,
                 Entities            entities,
@@ -360,7 +368,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         {
             var referenceResults = GetReferences(references, entities, container, syncContext);
             
-            // add referenced entities to ContainerEntities
             for (int n = 0; n < references.Count; n++) {
                 var reference       = references[n];
                 var refContName     = reference.container;
@@ -373,6 +380,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
                 var refIdList   = ids;
                 var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
+                // read all referenced entities with a single read command.
                 var refEntities = await refCont.ReadEntitiesAsync(readRefIds, syncContext).ConfigureAwait(false);
                 
                 var subPath = $"{selectorPath} -> {reference.selector}";
