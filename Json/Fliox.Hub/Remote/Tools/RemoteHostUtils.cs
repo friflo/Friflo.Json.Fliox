@@ -63,12 +63,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
                 switch (taskResult.TaskType) {
                     case TaskType.read:
                         var read = (ReadEntitiesResult)taskResult;
-                        EntitySet.EntitiesToJson(read.entities.values, out read.set, out read.notFound, out read.errors);
+                        EntitySet.EntitiesToJson(read.entities.Values, out read.set, out read.notFound, out read.errors);
                         ReferencesToJson(read.references);
                         break;
                     case TaskType.query:
                         var query = (QueryEntitiesResult)taskResult;
-                        EntitySet.EntitiesToJson(query.entities.values, out query.set, out _, out query.errors);
+                        EntitySet.EntitiesToJson(query.entities.Values, out query.set, out _, out query.errors);
                         query.len = query.entities.Length;
                         ReferencesToJson(query.references);
                         break;
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
                 return;
             }
             foreach (var result in references) {
-                EntitySet.EntitiesToJson(result.entities.values, out result.set, out _, out result.errors);
+                EntitySet.EntitiesToJson(result.entities.Values, out result.set, out _, out result.errors);
                 result.len = result.entities.Length;
                 ReferencesToJson(result.references);
             }

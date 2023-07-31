@@ -379,7 +379,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal override EntityValue[] GetReferencesValues (ReferencesResult referenceResult, ObjectReader reader) {
             EntityValue[]   values; 
             if (!client._readonly.hub.IsRemoteHub) {
-                values = referenceResult.entities.values;
+                values = referenceResult.entities.Values;
             } else {
                 values  = JsonToEntities(referenceResult.set, null, referenceResult.errors);
                 var ids = new ListOne<JsonKey>(values.Length);

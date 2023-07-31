@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
                 context.WriteError("read error", resultError.message, 500);
                 return;
             }
-            var values      = readResult.entities.values;
+            var values      = readResult.entities.Values;
             var entities    = new List<JsonValue>(values.Length);
             foreach (var value in values) {
                 var json = value.Json;
@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             if (taskResult.cursor != null) {
                 context.AddHeader("cursor", taskResult.cursor);
             }
-            var values      = queryResult.entities.values;
+            var values      = queryResult.entities.Values;
             var entities    = new List<JsonValue>(values.Length);
             if (orderByKey == null) {
                 foreach (var entity in values) {
@@ -292,7 +292,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
                 context.WriteError("read error", resultError.message, 500);
                 return;
             }
-            var values  = readResult.entities.values;
+            var values  = readResult.entities.Values;
             if (values.Length < 1) {
                 context.Write(new JsonValue(), "application/json", 404);
                 return;

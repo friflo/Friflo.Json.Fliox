@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
                     diff = Mem.GetAllocationDiff(start);
                     if (response.status != JsonResponseStatus.Ok)   Fail("Expect OK");
                 }
-                Mem.AreEqual(200, diff);
+                Mem.AreEqual(184, diff);
             }
         }
         

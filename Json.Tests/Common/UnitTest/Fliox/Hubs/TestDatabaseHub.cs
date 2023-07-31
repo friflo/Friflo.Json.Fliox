@@ -206,7 +206,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         
         // --- simulate read/write error methods
         private TaskExecuteError SimulateReadErrors(ref Entities entities) {
-            var values = entities.values;
+            var values = entities.Values;
             for (int n = 0; n < values.Length; n++) {
                 var entity  = values[n];
                 var id      = entity.key.AsString();

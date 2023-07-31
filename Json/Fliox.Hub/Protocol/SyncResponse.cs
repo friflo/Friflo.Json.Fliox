@@ -72,10 +72,4 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             return response;
         }
     }
-    
-    public enum ContainerType
-    {
-        Objects,
-        Values,
-    }
 }

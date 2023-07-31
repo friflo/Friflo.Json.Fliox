@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (readResult.Error != null) {
                 return new MergeEntitiesResult { Error = readResult.Error };
             }
-            var values = readResult.entities.values;
+            var values = readResult.entities.Values;
             if (values.Length != ids.Count)
                 throw new InvalidOperationException($"MergeEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {values.Length}");
             
@@ -311,7 +311,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 referenceResults.Add(referenceResult);
             }
             var select  = new ScalarSelect(selectors);  // can be reused
-            var values  = entities.values;
+            var values  = entities.Values;
             using (var pooled = syncContext.pool.ScalarSelector.Get()) {
                 ScalarSelector selector = pooled.instance;
                 // Get the selected refs for all entities.
@@ -399,7 +399,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     continue;
                 var subEntitiesArray    = new EntityValue [ids.Count];
                 var subEntities         = new Entities(subEntitiesArray);
-                var refValues           = refEntities.entities.values;
+                var refValues           = refEntities.entities.Values;
                 for (int i = 0; i < refValues.Length; i++) {
                     subEntitiesArray[i] = refValues[i];
                 }

@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary> used to request the entities referenced by properties of a read task result </summary>
                     public   List<References>   references;
         [Ignore]    public   Type               nativeType;
-        [Ignore]    internal ContainerType      ContainerType => nativeType != null ? ContainerType.Objects : ContainerType.Values;
+        [Ignore]    internal EntitiesType       EntitiesType => nativeType != null ? EntitiesType.Objects : EntitiesType.Values;
         
         public   override    TaskType           TaskType => TaskType.read;
         public   override    string             TaskName =>  $"container: '{container}'";
@@ -148,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public void ValidateEntities(in ShortString container, string keyName, SyncContext syncContext) {
             using (var pooled = syncContext.EntityProcessor.Get()) {
                 EntityProcessor processor = pooled.instance;
-                var values = entities.values;
+                var values = entities.Values;
                 for (int n = 0; n < values.Length; n++) {
                     var entity = values[n];
                     if (entity.Error != null) {

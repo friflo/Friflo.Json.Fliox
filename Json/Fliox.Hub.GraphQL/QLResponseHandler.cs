@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static JsonValue QueryEntitiesResult(in ResultContext cx) {
             var queryResult     = (QueryEntitiesResult)cx.result;
-            var values          = queryResult.entities.values;
+            var values          = queryResult.entities.Values;
             var count           = values.Length;
             var items           = new List<JsonValue>(count);
             var gqlQueryResult  = new GqlQueryResult { count = count, cursor = queryResult.cursor, items = items };
@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static JsonValue ReadEntitiesResult (in ResultContext cx) {
             var readResult      = (ReadEntitiesResult)cx.result;
-            var values          = readResult.entities.values;
+            var values          = readResult.entities.Values;
             var list            = new List<JsonValue>(values.Length);
             foreach (var value in values) {
                 list.Add(value.Json);

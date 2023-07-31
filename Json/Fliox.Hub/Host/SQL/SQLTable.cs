@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Utils;
-using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
@@ -61,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             TableInfo       tableInfo,
             SyncContext     syncContext)
         {
-            if (query.ContainerType == ContainerType.Values) {
+            if (query.EntitiesType == EntitiesType.Values) {
                 using var pooled = syncContext.pool.SQL2Json.Get();
                 var sql2Json = new SQL2JsonMapper(reader);
                 var buffer   = syncContext.MemoryBuffer;

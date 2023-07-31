@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return TaskError(result.Error);
             }
             var entities    = result.entities;
-            var values      = entities.values;
+            var values      = entities.Values;
             if (references != null && references.Count > 0) {
                 var read = await entityContainer.ReadReferencesAsync(references, entities, container, "", syncContext).ConfigureAwait(false);
                 result.references   = read.references; 

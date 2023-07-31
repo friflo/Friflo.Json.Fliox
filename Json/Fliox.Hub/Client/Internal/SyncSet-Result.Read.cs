@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote.Tools;
@@ -20,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             var  entityErrorInfo = new TaskErrorInfo();
-            if (task.ContainerType == ContainerType.Values) {
+            if (task.EntitiesType == EntitiesType.Values) {
                 AddReadEntity(ref entityErrorInfo, result, read, mapper.reader);
             } else {
                 AddReadObject(ref entityErrorInfo, result, read);
@@ -49,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             var  entityErrorInfo = new TaskErrorInfo();
-            if (task.ContainerType == ContainerType.Values) {
+            if (task.EntitiesType == EntitiesType.Values) {
                 AddReadEntities(ref entityErrorInfo, result, read, mapper.reader);
             } else {
                 AddReadObjects(ref entityErrorInfo, result, read);
@@ -77,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// <summary>Counterpart of <see cref="RemoteHostUtils.ResponseToJson"/></summary>
         private EntityValue[] GetReadResultValues (ReadEntitiesResult result) {
             if (!set.client._readonly.hub.IsRemoteHub) {
-                return result.entities.values;
+                return result.entities.Values;
             }
             return set.JsonToEntities(result.set, result.notFound, result.errors);
         }
@@ -143,7 +142,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // SYNC_READ : read object
         private void AddReadObject(ref TaskErrorInfo entityErrorInfo, ReadEntitiesResult result, FindTask<TKey, T> read)
         {
-            var objects = result.entities.objects;
+            var objects = result.entities.Objects;
             var id      = KeyConvert.KeyToId(read.key);
             var peer    = set.GetOrCreatePeerByKey(read.key, id);
             if (objects.Length == 0) {
@@ -225,7 +224,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         private EntityValue[] GetReadResultValues (QueryEntitiesResult result) {
             if (!set.client._readonly.hub.IsRemoteHub) {
-                return result.entities.values;
+                return result.entities.Values;
             }
             return set.JsonToEntities(result.set, null, result.errors);
         }

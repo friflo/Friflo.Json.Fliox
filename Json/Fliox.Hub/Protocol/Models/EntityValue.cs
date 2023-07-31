@@ -69,23 +69,30 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </remarks>
     public readonly struct Entities
     {
-        public  readonly    EntityValue[]   values;
-        public  readonly    EntityObject[]  objects;
-        public              int             Length  => values != null ? values.Length : objects.Length;
-        public  readonly    ContainerType   containerType;
+        private readonly    object          items;
+        
+        public              EntityValue[]   Values  => (EntityValue[]) items;
+        public              EntityObject[]  Objects => (EntityObject[])items;
+        public              int             Length  => items is EntityValue[] values ? values.Length : ((EntityObject[])items).Length;
+        private             EntitiesType    Type    => items is EntityValue[] ? EntitiesType.Values : EntitiesType.Objects;
 
-        public override     string          ToString() => $"Length: {Length}";
+        public override     string          ToString() => $"Length: {Length}, Type: {Type}";
 
         public  Entities (EntityValue[] values) {
-            this.values     = values;
-            this.objects    = null;
-            containerType   = ContainerType.Values;
+            items = values;
         }
         
         public  Entities (EntityObject[] objects) {
-            this.values     = null;
-            this.objects    = objects;
-            containerType   = ContainerType.Objects;
+            items = objects;
         }
+    }
+    
+    /// <summary>The type entities are stored in <see cref="Entities"/></summary>
+    public enum EntitiesType
+    {
+        /// <summary>Entities are stored as an <see cref="object"/>[] - an array of reference types</summary>
+        Objects,
+        /// <summary>Entities are stored as an <see cref="JsonValue"/>[]</summary>
+        Values,
     }
 }
