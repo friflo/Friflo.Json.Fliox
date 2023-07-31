@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Common.Utils;
@@ -55,14 +56,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     
     internal class PerfContext
     {
-        private             long        start;
-        private             long        startMem;
-        private readonly    Stopwatch   stopwatch;
+        private             long            start;
+        private             long            startMem;
+        private readonly    Stopwatch       stopwatch;
+        private readonly    StringBuilder   sb;
+        private             int             countGen0;
+        private             int             countGen1;
+        private             int             countGen2;
         
         internal PerfContext() {
-            stopwatch = new Stopwatch();
+            stopwatch   = new Stopwatch();
             stopwatch.Start();
-            startMem = Mem.GetAllocatedBytes();
+            startMem    = Mem.GetAllocatedBytes();
+            sb          = new StringBuilder();
         }
         
         internal void Sample(int count) {
@@ -71,8 +77,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var dif             = now - start;
             var memPerSample    = memDiff / count;
             var reqPerSec       = dif == 0 ? -1 : 1000 * count / dif;
+            
+            int gen0 = GC.CollectionCount(0);
+            int gen1 = GC.CollectionCount(1);
+            int gen2 = GC.CollectionCount(2);
 
-            Console.WriteLine($"---- {reqPerSec} {memPerSample}");
+            sb.Clear();
+            sb.Append("--- ");
+            sb.AppendFormat("  {0,7}", reqPerSec);
+            sb.AppendFormat("  {0,4}", memPerSample);
+            sb.Append("  GC Gen:");
+            sb.AppendFormat(" {0,3}", gen0 - countGen0);
+            sb.AppendFormat(" {0,1}", gen1 - countGen1);
+            sb.AppendFormat(" {0,1}", gen2 - countGen2);
+            
+            countGen0 = gen0;
+            countGen1 = gen1;
+            countGen2 = gen2;
+
+            Console.WriteLine(sb);
+            
             start               = stopwatch.ElapsedMilliseconds;
             startMem            = Mem.GetAllocatedBytes();
         }
