@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -186,55 +185,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             QueryEntitiesResult(task, queryResult, query, mapper.reader);
         }
 
-        private void AddReferencesResult(
-            List<References>        references,
-            List<ReferencesResult>  referencesResult,
-            SubRelations            relations,
-            ObjectReader            reader)
-        {
-            // in case (references != null &&  referencesResult == null) => no reference ids found for references 
-            if (references == null || referencesResult == null)
-                return;
-            for (int n = 0; n < references.Count; n++) {
-                References              reference    = references[n];
-                ReferencesResult        refResult    = referencesResult[n];
-                EntitySet               refContainer = set.client.GetSetByName(reference.container);
-                ReadRelationsFunction   subRelation  = relations[reference.selector];
-                if (refResult.error != null) {
-                    var taskError       = new TaskErrorResult (TaskErrorType.DatabaseError, refResult.error);
-                    var taskErrorInfo   = new TaskErrorInfo (taskError);
-                    subRelation.state.SetError(taskErrorInfo);
-                    continue;
-                }
-                var values = refContainer.GetReferencesValues(refResult, reader);
-                if (refResult.ids.Count != values.Length) {
-                    throw new InvalidOperationException($"Expect equals Count: {refResult.ids.Count}, was: {values.Length}");
-                }
-                subRelation.SetResult(refContainer, refResult.ids, values);
-                // handle entity errors of subRef task
-                var subRefError = subRelation.state.Error;
-                if (subRefError.HasErrors) {
-                    if (subRefError.TaskError.type != TaskErrorType.EntityErrors)
-                        throw new InvalidOperationException("Expect subRef Error.type == EntityErrors");
-                    SetSubRelationsError(subRelation.SubRelations, subRefError);
-                    continue;
-                }
-                subRelation.state.Executed = true;
-                var subReferences = reference.references;
-                if (subReferences != null) {
-                    var readRefs = subRelation.SubRelations;
-                    AddReferencesResult(subReferences, refResult.references, readRefs, reader);
-                }
-            }
-        }
-
-        private static void SetSubRelationsError(SubRelations relations, TaskErrorInfo taskErrorInfo) {
-            foreach (var subRef in relations) {
-                subRef.state.SetError(taskErrorInfo);
-                SetSubRelationsError(subRef.SubRelations, taskErrorInfo);
-            }
-        }
-        
         internal override void AggregateEntitiesResult (AggregateEntities task, SyncTaskResult result) {
             var aggregate   = (AggregateTask)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {

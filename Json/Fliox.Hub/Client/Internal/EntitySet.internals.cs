@@ -6,6 +6,7 @@ using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
@@ -376,9 +377,25 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return null;
         }
         
+        // ---------------------------- get EntityValue[] from results ----------------------------
+        /// <summary>Counterpart of <see cref="RemoteHostUtils.ResponseToJson"/></summary>
+        internal EntityValue[] GetReadResultValues (ReadEntitiesResult result) {
+            if (!client._readonly.isRemoteHub) {
+                return result.entities.Values;
+            }
+            return JsonToEntities(result.set, result.notFound, result.errors);
+        }
+        
+        internal EntityValue[] GetQueryResultValues (QueryEntitiesResult result) {
+            if (!client._readonly.isRemoteHub) {
+                return result.entities.Values;
+            }
+            return JsonToEntities(result.set, null, result.errors);
+        }
+        
         internal override EntityValue[] GetReferencesValues (ReferencesResult referenceResult, ObjectReader reader) {
             EntityValue[]   values; 
-            if (!client._readonly.hub.IsRemoteHub) {
+            if (!client._readonly.isRemoteHub) {
                 values = referenceResult.entities.Values;
             } else {
                 values  = JsonToEntities(referenceResult.set, null, referenceResult.errors);
@@ -400,6 +417,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return values;
         }
         
+        // ------------------------------------------------------------------------------------------
         internal void DeletePeerEntities (List<Delete<TKey>> deletes, List<ApplyInfo<TKey,T>> applyInfos) {
             var peers = peerMap;
             foreach (var delete in deletes) {

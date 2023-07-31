@@ -1,10 +1,10 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Hub.Remote.Tools;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
@@ -73,18 +73,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // ---------------------------------------- add value / values  ----------------------------------------
-        /// <summary>Counterpart of <see cref="RemoteHostUtils.ResponseToJson"/></summary>
-        private EntityValue[] GetReadResultValues (ReadEntitiesResult result) {
-            if (!set.client._readonly.hub.IsRemoteHub) {
-                return result.entities.Values;
-            }
-            return set.JsonToEntities(result.set, result.notFound, result.errors);
-        }
-        
         // SYNC_READ : read entity
         private void AddReadEntity(ref TaskErrorInfo entityErrorInfo, ReadEntitiesResult result, FindTask<TKey, T> read, ObjectReader reader)
         {
-            var values  = GetReadResultValues(result);
+            var values  = set.GetReadResultValues(result);
             var id      = KeyConvert.KeyToId(read.key);
             var peer    = set.GetOrCreatePeerByKey(read.key, id);
             if (values.Length == 0) {
@@ -107,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // SYNC_READ : read entities
         private void AddReadEntities(ref TaskErrorInfo entityErrorInfo, ReadEntitiesResult result, ReadTask<TKey, T> read, ObjectReader reader)
         {
-            var values      = GetReadResultValues(result);
+            var values      = set.GetReadResultValues(result);
             var readResult  = read.result;
             
             foreach (var value in values) {
@@ -199,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var entityErrorInfo = new TaskErrorInfo();
             query.sql           = queryResult.sql;
             query.resultCursor  = queryResult.cursor;
-            var values          = GetReadResultValues(queryResult);
+            var values          = set.GetQueryResultValues(queryResult);
             query.entities      = values;
             var results         = query.result = new List<T>(values.Length);
             foreach (var value in values)
@@ -222,11 +214,54 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             query.state.Executed = true;
         }
         
-        private EntityValue[] GetReadResultValues (QueryEntitiesResult result) {
-            if (!set.client._readonly.hub.IsRemoteHub) {
-                return result.entities.Values;
+        // -------------------------------------- references values --------------------------------------
+        private void AddReferencesResult(
+            List<References>        references,
+            List<ReferencesResult>  referencesResult,
+            SubRelations            relations,
+            ObjectReader            reader)
+        {
+            // in case (references != null &&  referencesResult == null) => no reference ids found for references 
+            if (references == null || referencesResult == null)
+                return;
+            for (int n = 0; n < references.Count; n++) {
+                References              reference    = references[n];
+                ReferencesResult        refResult    = referencesResult[n];
+                EntitySet               refContainer = set.client.GetSetByName(reference.container);
+                ReadRelationsFunction   subRelation  = relations[reference.selector];
+                if (refResult.error != null) {
+                    var taskError       = new TaskErrorResult (TaskErrorType.DatabaseError, refResult.error);
+                    var taskErrorInfo   = new TaskErrorInfo (taskError);
+                    subRelation.state.SetError(taskErrorInfo);
+                    continue;
+                }
+                var values = refContainer.GetReferencesValues(refResult, reader);
+                if (refResult.ids.Count != values.Length) {
+                    throw new InvalidOperationException($"Expect equals Count: {refResult.ids.Count}, was: {values.Length}");
+                }
+                subRelation.SetResult(refContainer, refResult.ids, values);
+                // handle entity errors of subRef task
+                var subRefError = subRelation.state.Error;
+                if (subRefError.HasErrors) {
+                    if (subRefError.TaskError.type != TaskErrorType.EntityErrors)
+                        throw new InvalidOperationException("Expect subRef Error.type == EntityErrors");
+                    SetSubRelationsError(subRelation.SubRelations, subRefError);
+                    continue;
+                }
+                subRelation.state.Executed = true;
+                var subReferences = reference.references;
+                if (subReferences != null) {
+                    var readRefs = subRelation.SubRelations;
+                    AddReferencesResult(subReferences, refResult.references, readRefs, reader);
+                }
             }
-            return set.JsonToEntities(result.set, null, result.errors);
+        }
+
+        private static void SetSubRelationsError(SubRelations relations, TaskErrorInfo taskErrorInfo) {
+            foreach (var subRef in relations) {
+                subRef.state.SetError(taskErrorInfo);
+                SetSubRelationsError(subRef.SubRelations, taskErrorInfo);
+            }
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         // --- readonly
         internal readonly   FlioxHub                        hub;
+        internal readonly   bool                            isRemoteHub;
         internal readonly   TypeStore                       typeStore;
         internal readonly   Pool                            pool;
         internal readonly   SharedEnv                       sharedEnv;
@@ -50,6 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.pool               = sharedEnv.pool;
             this.hubLogger          = sharedEnv.hubLogger;
             this.hub                = hub;
+            this.isRemoteHub        = hub.IsRemoteHub;
             this.database           = database ?? hub.database.name;
             databaseShort           = new ShortString(this.database);
             this.eventReceiver      = eventReceiver;
