@@ -205,7 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var start       = Mem.GetAllocatedBytes();
             int count = 1; // 1_000_000;
             for (int n = 0; n < count; n++) {
-                await store.SyncTasks();                    // ~ 0.59 µs (Release)
+                await store.SyncTasks();                    // ~ 0.49 µs (Release)
             }
             var diff = Mem.GetAllocationDiff(start);
             stopwatch.Stop();

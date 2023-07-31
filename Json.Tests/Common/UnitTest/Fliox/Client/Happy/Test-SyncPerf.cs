@@ -44,7 +44,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 }
                 var syncCount = store.GetSyncCount();
                 if (syncCount % IntervalCount == 0) {
-                    perfContext.Sample(IntervalCount); // 683.000 req/sec
+                    // req/sec: 1.500.000 - Mac Mini M2
+                    //          1.030.000 - Intel(R) Core(TM) i7-4790K CPU 4.00 GHz
+                    perfContext.Sample(IntervalCount);
                 }
             }
             return Task.CompletedTask;
