@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
 
         public override         string      ToString()  => GetString();
         
-        public static readonly  EntityValueComparer Comparer = new EntityValueComparer();
+        public static readonly  IComparer<EntityValue> Comparer = new EntityValueComparer();
 
         public EntityValue(in JsonKey key) {
             this.key    = key;
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         }
     }
     
-    public sealed class EntityValueComparer : IComparer<EntityValue>
+    internal sealed class EntityValueComparer : IComparer<EntityValue>
     {
         public int Compare(EntityValue x, EntityValue y) {
             return x.key.Compare(y.key);

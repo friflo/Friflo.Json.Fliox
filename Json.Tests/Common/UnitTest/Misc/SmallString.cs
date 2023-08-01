@@ -104,7 +104,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             }
         }
         
-        public sealed class SmallStringComparer : IEqualityComparer<SmallString>
+        private sealed class SmallStringComparer : IEqualityComparer<SmallString>
         {
             public bool Equals(SmallString x, SmallString y) {
                 return x.IsEqual(y);
@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             throw new NotImplementedException("not implemented by intention to avoid boxing. Use SmallString.Equality comparer");
         }
 
-        public static readonly  SmallStringComparer Equality = new SmallStringComparer();    
+        public static readonly  IEqualityComparer<SmallString> Equality = new SmallStringComparer();    
     }
 
 }

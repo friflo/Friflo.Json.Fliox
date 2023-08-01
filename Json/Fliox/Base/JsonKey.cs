@@ -54,8 +54,8 @@ namespace Friflo.Json.Fliox
         
         public      override    string  ToString()  => GetString(); 
 
-        public static readonly  JsonKeyComparer         Comparer    = new JsonKeyComparer();
-        public static readonly  JsonKeyEqualityComparer Equality    = new JsonKeyEqualityComparer();
+        public static readonly  IComparer<JsonKey>          Comparer    = new JsonKeyComparer();
+        public static readonly  IEqualityComparer<JsonKey>  Equality    = new JsonKeyEqualityComparer();
         
         public static readonly  object  LONG            = new Type(JsonKeyType.LONG);
         public static readonly  object  GUID            = new Type(JsonKeyType.GUID);

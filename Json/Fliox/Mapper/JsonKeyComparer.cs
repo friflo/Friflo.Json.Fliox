@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.Mapper
 {
-    public sealed class JsonKeyComparer : IComparer<JsonKey>
+    internal sealed class JsonKeyComparer : IComparer<JsonKey>
     {
         public int Compare(JsonKey x, JsonKey y) {
             return x.Compare(y);
         }
     }
     
-    public sealed class JsonKeyEqualityComparer : IEqualityComparer<JsonKey>
+    internal sealed class JsonKeyEqualityComparer : IEqualityComparer<JsonKey>
     {
         public bool Equals(JsonKey x, JsonKey y) {
             return x.IsEqual(y);

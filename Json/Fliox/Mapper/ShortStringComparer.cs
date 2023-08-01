@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.Mapper
 {
-    public sealed class ShortStringEqualityComparer : IEqualityComparer<ShortString>
+    internal sealed class ShortStringEqualityComparer : IEqualityComparer<ShortString>
     {
         public bool Equals(ShortString x, ShortString y) {
             return x.IsEqual(y);
@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
     }
     
-    public sealed class ShortStringComparer : IComparer<ShortString>
+    internal sealed class ShortStringComparer : IComparer<ShortString>
     {
         public int Compare(ShortString x, ShortString y) {
             return x.Compare(y);

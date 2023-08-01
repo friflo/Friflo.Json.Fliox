@@ -7,7 +7,7 @@ namespace Friflo.Json.Burst
         public readonly int     hashCode;
         public readonly Bytes   value;
 
-        public static readonly  BytesHashComparer Equality = new BytesHashComparer();
+        public static readonly  IEqualityComparer<BytesHash> Equality = new BytesHashComparer();
 
         
         public BytesHash(in Bytes value) {
@@ -26,7 +26,7 @@ namespace Friflo.Json.Burst
         }
     }
     
-    public sealed class BytesHashComparer : IEqualityComparer<BytesHash>
+    internal sealed class BytesHashComparer : IEqualityComparer<BytesHash>
     {
         public bool Equals(BytesHash x, BytesHash y) {
             return x.value.IsEqual(y.value);

@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Friflo.Json.Burst;
@@ -55,8 +56,8 @@ namespace Friflo.Json.Fliox
         [MethodImpl(AggressiveInlining)] internal   int     GetShortLength()=> (int)(lng2 >> ShiftLength) - 1;
         public override                             string  ToString()      => GetString();
 
-        public static readonly  ShortStringEqualityComparer Equality    = new ShortStringEqualityComparer();
-        public static readonly  ShortStringComparer         Comparer    = new ShortStringComparer();
+        public static readonly  IEqualityComparer<ShortString>  Equality    = new ShortStringEqualityComparer();
+        public static readonly  IComparer<ShortString>          Comparer    = new ShortStringComparer();
 
         public ShortString (string value)
         {
