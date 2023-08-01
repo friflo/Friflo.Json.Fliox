@@ -189,15 +189,8 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             }
             var values      = queryResult.entities.Values;
             var entities    = new List<JsonValue>(values.Length);
-            if (orderByKey == null) {
-                foreach (var entity in values) {
-                    entities.Add(entity.Json);
-                }
-            } else {
-                // SYNC_READ todo implement sort
-                foreach  (var entity in values) {
-                    entities.Add(entity.Json);
-                }
+            foreach  (var entity in values) {
+                entities.Add(entity.Json);
             }
             context.AddHeader("len", entities.Count.ToString()); // added to simplify debugging experience
             using (var pooled = context.ObjectMapper.Get()) {

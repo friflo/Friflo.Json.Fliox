@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
@@ -123,6 +124,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             var entities    = result.entities;
             var values      = entities.Values;
+            if (orderByKey.HasValue) {
+                Array.Sort(values, EntityValue.Comparer);
+                if (orderByKey.Value == Order.desc) {
+                    Array.Reverse(values);
+                }
+            }
             if (references != null && references.Count > 0) {
                 var read = await entityContainer.ReadReferencesAsync(references, entities, container, "", syncContext).ConfigureAwait(false);
                 result.references   = read.references; 

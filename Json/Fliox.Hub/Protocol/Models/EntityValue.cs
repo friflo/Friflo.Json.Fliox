@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -19,6 +20,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         [Ignore]                public      EntityError Error       => error;
 
         public override         string      ToString()  => GetString();
+        
+        public static readonly  EntityValueComparer Comparer = new EntityValueComparer();
 
         public EntityValue(in JsonKey key) {
             this.key    = key;
@@ -43,6 +46,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
                 return $"{key}  {value}";
             }
             return $"{key}  {error.type}: {error.message}";
+        }
+    }
+    
+    public sealed class EntityValueComparer : IComparer<EntityValue>
+    {
+        public int Compare(EntityValue x, EntityValue y) {
+            return x.key.Compare(y.key);
         }
     }
     
