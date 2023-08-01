@@ -333,9 +333,11 @@ export class UpsertEntitiesResult extends SyncTaskResult {
 export class ReadEntitiesResult extends SyncTaskResult {
     /** task result type */
     task        : "read";
+    /** the result set of entities requested by **ids** */
     set         : any[];
     notFound?   : JsonKey[] | null;
     errors?     : EntityError[] | null;
+    /** the referenced entities specified in **references** */
     references? : ReferencesResult[] | null;
 }
 
@@ -348,8 +350,10 @@ export class QueryEntitiesResult extends SyncTaskResult {
     cursor?     : string | null;
     /** number of **set** values - not utilized by Protocol */
     len?        : int32 | null;
+    /** the result set of entities matching the given **filter** */
     set         : any[];
     errors?     : EntityError[] | null;
+    /** the referenced entities specified in **references** */
     references? : ReferencesResult[] | null;
     sql?        : string | null;
 }

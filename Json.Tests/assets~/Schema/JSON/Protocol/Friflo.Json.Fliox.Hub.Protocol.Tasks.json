@@ -374,10 +374,10 @@
             "description": "Result of a <b>ReadEntities</b> task",
             "properties": {
                 "task":       { "enum": ["read"] },
-                "set":        { "type": "array", "items": {  } },
+                "set":        { "type": "array", "items": {  }, "description": "the result set of entities requested by <b>ids</b>" },
                 "notFound":   { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/JsonKey" } },
                 "errors":     { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" } },
-                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } }
+                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" }, "description": "the referenced entities specified in <b>references</b>" }
             },
             "required": [
                 "task",
@@ -394,9 +394,9 @@
                 "cont":       { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
                 "cursor":     { "type": ["string", "null"] },
                 "len":        { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>set</b> values - not utilized by Protocol" },
-                "set":        { "type": "array", "items": {  } },
+                "set":        { "type": "array", "items": {  }, "description": "the result set of entities matching the given <b>filter</b>" },
                 "errors":     { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" } },
-                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } },
+                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" }, "description": "the referenced entities specified in <b>references</b>" },
                 "sql":        { "type": ["string", "null"] }
             },
             "required": [

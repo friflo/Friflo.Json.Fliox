@@ -69,7 +69,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
                     case TaskType.query:
                         var query = (QueryEntitiesResult)taskResult;
                         EntitySet.EntitiesToJson(query.entities.Values, out query.set, out _, out query.errors);
-                        query.len = query.entities.Length;
+                        int len = query.set.Count;
+                        if (len > 0) {
+                            query.len = len;
+                        }
                         ReferencesToJson(query.references);
                         break;
                 }

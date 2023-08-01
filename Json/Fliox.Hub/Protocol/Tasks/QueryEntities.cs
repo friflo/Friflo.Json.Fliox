@@ -147,10 +147,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public  string                  cursor;
         /// <summary>number of <see cref="set"/> values - not utilized by Protocol</summary>
         [DebugInfo] public  int?                    len;
-        
+        /// <summary>the result set of entities matching the given <see cref="QueryEntities.filter"/></summary>
         [Required]  public  ListOne<JsonValue>      set;
                     public  List<EntityError>       errors;
-                    
+        /// <summary>the referenced entities specified in <see cref="QueryEntities.references"/></summary>
                     public  List<ReferencesResult>  references;
                     public  string                  sql;
                         

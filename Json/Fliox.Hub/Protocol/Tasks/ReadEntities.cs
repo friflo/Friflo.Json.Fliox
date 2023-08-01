@@ -114,11 +114,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
-        
+        /// <summary>the result set of entities requested by <see cref="ReadEntities.ids"/></summary>
         [Required]  public  ListOne<JsonValue>      set;
                     public  List<JsonKey>           notFound;   // SYNC_READ : not necessary
                     public  List<EntityError>       errors;
-                    
+        /// <summary>the referenced entities specified in <see cref="ReadEntities.references"/></summary>
                     public  List<ReferencesResult>  references;
         /// <summary>
         /// <b>Note!</b> The order and count of elements in this array must match <see cref="ReadEntities.ids"/>.
