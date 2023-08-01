@@ -127,14 +127,20 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private static QueryRequest QueryEntities(in QueryContext cx)
         {
             QueryError? error;
-            if (!RequestArgs.TryGetFilter (cx, "filter",     out var filter,     out error)) return error;
-            if (!RequestArgs.TryGetInt    (cx, "limit",      out var limit,      out error)) return error;
-            if (!RequestArgs.TryGetInt    (cx, "maxCount",   out var maxCount,   out error)) return error;
-            if (!RequestArgs.TryGetString (cx, "cursor",     out var cursor,     out error)) return error;
-            if (!RequestArgs.TryGetBool   (cx, "selectAll",  out var selectAll,  out error)) return error;
-            
+            if (!RequestArgs.TryGetFilter   (cx, "filter",     out var filter,     out error)) return error;
+            if (!RequestArgs.TryGetInt      (cx, "limit",      out var limit,      out error)) return error;
+            if (!RequestArgs.TryGetInt      (cx, "maxCount",   out var maxCount,   out error)) return error;
+            if (!RequestArgs.TryGetString   (cx, "cursor",     out var cursor,     out error)) return error;
+            if (!RequestArgs.TryGetBool     (cx, "selectAll",  out var selectAll,  out error)) return error;
+            if (!RequestArgs.TryGetEnumValue(cx, "orderByKey", out var order,      out error)) return error;
+
+            SortOrder orderByKey =  order switch {
+                "asc"   => SortOrder.asc,
+                "desc"  => SortOrder.desc,
+                _       => default
+            };
             var task = new QueryEntities {
-                container = cx.resolver.container, filter = filter, limit = limit, maxCount = maxCount, cursor = cursor
+                container = cx.resolver.container, filter = filter, limit = limit, maxCount = maxCount, cursor = cursor, orderByKey = orderByKey
             };
             return new QueryRequest(task, selectAll);
         }

@@ -44,7 +44,7 @@ data class ReadEntities (
               val references : List<References>? = null,
 ) : SyncRequestTask()
 
-enum class Order {
+enum class SortOrder {
     asc,
     desc,
 }
@@ -54,7 +54,7 @@ enum class Order {
 data class QueryEntities (
     override  val info       : JsonElement? = null,
               val cont       : String,
-              val orderByKey : Order? = null,
+              val orderByKey : SortOrder? = null,
               val keyName    : String? = null,
               val isIntKey   : Boolean? = null,
               val filterTree : JsonElement? = null,

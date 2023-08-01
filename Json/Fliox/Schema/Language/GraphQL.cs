@@ -46,6 +46,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 Gql.Float(),
                 Gql.Boolean(),
                 Gql.Any(),
+                Gql.SortOrder(),
                 query
             };
             CreateResultTypes (types, schemaType);
@@ -279,7 +280,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                         Gql.InputValue ("limit",        Gql.Int()),
                         Gql.InputValue ("maxCount",     Gql.Int()),
                         Gql.InputValue ("cursor",       Gql.String()),
-                        Gql.InputValue ("selectAll",    Gql.Boolean())
+                        Gql.InputValue ("selectAll",    Gql.Boolean()),
+                        Gql.InputValue ("orderByKey",   Gql.SortOrder())
                     },
                     type = Gql.Type(Gql.Scalar(resultType), true)
                 };

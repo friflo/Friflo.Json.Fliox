@@ -15,15 +15,20 @@ scalar Boolean
 
 scalar Any
 
+enum SortOrder {
+    asc
+    desc
+}
+
 type Query {
-    queryOrders                   (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryOrdersResult!
-    queryCustomers                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryCustomersResult!
-    queryArticles                 (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryArticlesResult!
-    queryArticles2                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryArticles2Result!
-    queryProducers                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryProducersResult!
-    queryEmployees                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryEmployeesResult!
-    queryTypes                    (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryTypesResult!
-    queryKeyName                  (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryKeyNameResult!
+    queryOrders                   (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryOrdersResult!
+    queryCustomers                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryCustomersResult!
+    queryArticles                 (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryArticlesResult!
+    queryArticles2                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryArticles2Result!
+    queryProducers                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryProducersResult!
+    queryEmployees                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryEmployeesResult!
+    queryTypes                    (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryTypesResult!
+    queryKeyName                  (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryKeyNameResult!
     readOrders                    (ids: [String!]!, selectAll: Boolean) : [Order]!
     readCustomers                 (ids: [String!]!, selectAll: Boolean) : [Customer]!
     readArticles                  (ids: [String!]!, selectAll: Boolean) : [Article]!

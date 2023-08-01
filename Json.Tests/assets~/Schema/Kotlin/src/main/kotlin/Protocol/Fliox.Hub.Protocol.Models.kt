@@ -10,7 +10,7 @@ import kotlinx.serialization.json.*
 data class References (
               val selector   : String,
               val cont       : String,
-              val orderByKey : Order? = null,
+              val orderByKey : SortOrder? = null,
               val keyName    : String? = null,
               val isIntKey   : Boolean? = null,
               val references : List<References>? = null,

@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// <summary>the <see cref="container"/> storing the entities referenced by the specified <see cref="selector"/></summary>
         [Serialize                            ("cont")]
         [Required]  public  ShortString         container;
-                    public  Order?              orderByKey;
+                    public  SortOrder?          orderByKey;
                     public  string              keyName;
                     public  bool?               isIntKey;
                     public  List<References>    references;

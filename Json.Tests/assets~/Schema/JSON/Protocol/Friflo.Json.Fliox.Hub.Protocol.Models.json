@@ -8,7 +8,7 @@
             "properties": {
                 "selector":   { "type": "string", "description": "the field path used as a reference to an entity in the specified <b>container</b>" },
                 "cont":       { "type": "string", "description": "the <b>container</b> storing the entities referenced by the specified <b>selector</b>" },
-                "orderByKey": { "oneOf": [{ "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/Order" }, {"type": "null"}] },
+                "orderByKey": { "oneOf": [{ "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SortOrder" }, {"type": "null"}] },
                 "keyName":    { "type": ["string", "null"] },
                 "isIntKey":   { "type": ["boolean", "null"] },
                 "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/References" } }

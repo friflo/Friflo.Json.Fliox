@@ -49,12 +49,21 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
             return new GqlInputValue { name = name, type = type };
         }
         
+        public static GqlEnum Enum (string name, ICollection<string> values) {
+            var enumValues = new List<GqlEnumValue>(values.Count);
+            foreach (var value in values) {
+                enumValues.Add(new GqlEnumValue { name = value } );
+            }
+            return new GqlEnum { name = name, enumValues = enumValues };
+        }
+        
         public static GqlType String    () =>   Scalar("String");
         public static GqlType Int       () =>   Scalar("Int");
         public static GqlType Float     () =>   Scalar("Float");
         public static GqlType Boolean   () =>   Scalar("Boolean");
         public static GqlType Any       () =>   Scalar("Any");
         public static GqlType Table     () =>   List(List(Any(), false, false), true, true);
+        public static GqlType SortOrder () =>   Enum("SortOrder", new [] { "asc", "desc" });
         
         public static string MethodName (string methodType, string container) {
             var sb = new StringBuilder();

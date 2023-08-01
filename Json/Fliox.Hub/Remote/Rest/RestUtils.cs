@@ -93,12 +93,12 @@ namespace Friflo.Json.Fliox.Hub.Remote.Rest
             return true;
         }
         
-        private static bool GerOrderByKey(RequestContext context, NameValueCollection queryParams, out Order? value) {
+        private static bool GerOrderByKey(RequestContext context, NameValueCollection queryParams, out SortOrder? value) {
             var orderByKey = queryParams["orderByKey"];
             switch (orderByKey) {
-                case null:      value = null;       return true;
-                case "asc":     value = Order.asc;  return true;
-                case "desc":    value = Order.desc; return true;
+                case null:      value = null;           return true;
+                case "asc":     value = SortOrder.asc;  return true;
+                case "desc":    value = SortOrder.desc; return true;
                 default:
                     context.WriteError("query parameter error", $"Expect asc|desc. was: {orderByKey}", 400);
                     value = null;

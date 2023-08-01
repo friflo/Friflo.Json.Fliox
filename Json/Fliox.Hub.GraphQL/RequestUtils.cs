@@ -28,6 +28,18 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return null;
         }
         
+        internal static string TryGetEnumValueArg(in QueryContext cx, GraphQLValue gqlValue, string name, out QueryError? error) {
+            if (gqlValue is GraphQLEnumValue strVal) {
+                error = null;
+                return strVal.Name.StringValue;
+            }
+            if (gqlValue is GraphQLVariable gqlVariable) {
+                return cx.ReadVariable<string>(cx, gqlVariable, name, out error);
+            }
+            error = QueryError(name, "expect string", gqlValue, cx.doc);
+            return null;
+        }
+        
         internal static int? TryGetIntArg(in QueryContext cx, GraphQLValue gqlValue, string name, out QueryError? error) {
             if (gqlValue is GraphQLIntValue gqlIntValue) {
                 var strVal = gqlIntValue.Value.Span;

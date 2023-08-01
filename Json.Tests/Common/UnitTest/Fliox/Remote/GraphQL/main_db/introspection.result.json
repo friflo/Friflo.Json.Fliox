@@ -29,6 +29,18 @@
             "name": "Any"
         },
         {
+            "kind":"ENUM",
+            "name": "SortOrder",
+            "enumValues": [
+                {
+                    "name": "asc"
+                },
+                {
+                    "name": "desc"
+                }
+            ]
+        },
+        {
             "kind":"OBJECT",
             "name": "Query",
             "fields": [
@@ -68,6 +80,21 @@
                             "type": {
                                 "kind":"SCALAR",
                                 "name": "Boolean"
+                            }
+                        },
+                        {
+                            "name": "orderByKey",
+                            "type": {
+                                "kind":"ENUM",
+                                "name": "SortOrder",
+                                "enumValues": [
+                                    {
+                                        "name": "asc"
+                                    },
+                                    {
+                                        "name": "desc"
+                                    }
+                                ]
                             }
                         }
                     ],
@@ -116,6 +143,21 @@
                                 "kind":"SCALAR",
                                 "name": "Boolean"
                             }
+                        },
+                        {
+                            "name": "orderByKey",
+                            "type": {
+                                "kind":"ENUM",
+                                "name": "SortOrder",
+                                "enumValues": [
+                                    {
+                                        "name": "asc"
+                                    },
+                                    {
+                                        "name": "desc"
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "type": {
@@ -162,6 +204,21 @@
                             "type": {
                                 "kind":"SCALAR",
                                 "name": "Boolean"
+                            }
+                        },
+                        {
+                            "name": "orderByKey",
+                            "type": {
+                                "kind":"ENUM",
+                                "name": "SortOrder",
+                                "enumValues": [
+                                    {
+                                        "name": "asc"
+                                    },
+                                    {
+                                        "name": "desc"
+                                    }
+                                ]
                             }
                         }
                     ],
@@ -210,6 +267,21 @@
                                 "kind":"SCALAR",
                                 "name": "Boolean"
                             }
+                        },
+                        {
+                            "name": "orderByKey",
+                            "type": {
+                                "kind":"ENUM",
+                                "name": "SortOrder",
+                                "enumValues": [
+                                    {
+                                        "name": "asc"
+                                    },
+                                    {
+                                        "name": "desc"
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "type": {
@@ -256,6 +328,21 @@
                             "type": {
                                 "kind":"SCALAR",
                                 "name": "Boolean"
+                            }
+                        },
+                        {
+                            "name": "orderByKey",
+                            "type": {
+                                "kind":"ENUM",
+                                "name": "SortOrder",
+                                "enumValues": [
+                                    {
+                                        "name": "asc"
+                                    },
+                                    {
+                                        "name": "desc"
+                                    }
+                                ]
                             }
                         }
                     ],
@@ -304,6 +391,21 @@
                                 "kind":"SCALAR",
                                 "name": "Boolean"
                             }
+                        },
+                        {
+                            "name": "orderByKey",
+                            "type": {
+                                "kind":"ENUM",
+                                "name": "SortOrder",
+                                "enumValues": [
+                                    {
+                                        "name": "asc"
+                                    },
+                                    {
+                                        "name": "desc"
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "type": {
@@ -351,6 +453,21 @@
                                 "kind":"SCALAR",
                                 "name": "Boolean"
                             }
+                        },
+                        {
+                            "name": "orderByKey",
+                            "type": {
+                                "kind":"ENUM",
+                                "name": "SortOrder",
+                                "enumValues": [
+                                    {
+                                        "name": "asc"
+                                    },
+                                    {
+                                        "name": "desc"
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "type": {
@@ -397,6 +514,21 @@
                             "type": {
                                 "kind":"SCALAR",
                                 "name": "Boolean"
+                            }
+                        },
+                        {
+                            "name": "orderByKey",
+                            "type": {
+                                "kind":"ENUM",
+                                "name": "SortOrder",
+                                "enumValues": [
+                                    {
+                                        "name": "asc"
+                                    },
+                                    {
+                                        "name": "desc"
+                                    }
+                                ]
                             }
                         }
                     ],

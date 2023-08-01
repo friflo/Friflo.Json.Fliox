@@ -17,7 +17,7 @@ query Test ($testLimit: Int, $countFilter: String, $allFields: Boolean, $ids: [S
   readArticlesWithIdsVar: readArticles (ids: $ids) {
     id
   }
-  queryAll: queryArticles(selectAll: true) {
+  queryAll: queryArticles(selectAll: true, orderByKey: asc) {
     count
     items {
       __typename
@@ -26,7 +26,7 @@ query Test ($testLimit: Int, $countFilter: String, $allFields: Boolean, $ids: [S
   queryAllVariable: queryArticles(limit: $testLimit) {
     count
   }
-  queryOrders(filter: "true", limit: 2) {
+  queryOrders(filter: "true", limit: 2, orderByKey: asc) {
     count
     items {
       id

@@ -92,7 +92,7 @@ export class ReadEntities extends SyncRequestTask {
     references? : References[] | null;
 }
 
-export type Order =
+export type SortOrder =
     | "asc"
     | "desc"
 ;
@@ -106,7 +106,7 @@ export class QueryEntities extends SyncRequestTask {
     task        : "query";
     /** container name */
     cont        : string;
-    orderByKey? : Order | null;
+    orderByKey? : SortOrder | null;
     /** name of the primary key property of the returned entities */
     keyName?    : string | null;
     isIntKey?   : boolean | null;

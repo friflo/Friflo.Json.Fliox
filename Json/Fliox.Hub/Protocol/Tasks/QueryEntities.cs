@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>container name</summary>
         [Serialize                            ("cont")]
         [Required]  public  ShortString         container;
-                    public  Order?              orderByKey;
+                    public  SortOrder?          orderByKey;
         /// <summary>name of the primary key property of the returned entities</summary>
                     public  string              keyName;
                     public  bool?               isIntKey;
@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var values      = entities.Values;
             if (orderByKey.HasValue) {
                 Array.Sort(values, EntityValue.Comparer);
-                if (orderByKey.Value == Order.desc) {
+                if (orderByKey.Value == SortOrder.desc) {
                     Array.Reverse(values);
                 }
             }
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
     
     // ReSharper disable InconsistentNaming
-    public enum Order {
+    public enum SortOrder {
         asc     = 1,
         desc    = 2,
     }

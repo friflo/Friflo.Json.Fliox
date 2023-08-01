@@ -10,8 +10,13 @@ scalar Boolean
 
 scalar Any
 
+enum SortOrder {
+    asc
+    desc
+}
+
 type Query {
-    queryJobs              (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryJobsResult!
+    queryJobs              (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryJobsResult!
     readJobs               (ids: [String!]!, selectAll: Boolean) : [GlobalJob]!
     countJobs              (filter: String) : Int
     ClearCompletedJobs     (param: Boolean!) : Int!

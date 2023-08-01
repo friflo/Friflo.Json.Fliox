@@ -49,6 +49,21 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return true;
         }
         
+        internal static bool TryGetEnumValue(in QueryContext cx, string name, out string value, out QueryError? error)
+        {
+            if (!GetArguments(cx, out var arguments, out error)) {
+                value = null;
+                return true;
+            }
+            value = null;
+            if (FindArgument(arguments, name, out var argument)) {
+                value = RequestUtils.TryGetEnumValueArg(cx, argument.Value, name, out error);
+                if (error != null)
+                    return false;
+            }
+            return true;
+        }
+        
         internal static bool TryGetInt(in QueryContext cx, string name, out int? value, out QueryError? error)
         {
             if (!GetArguments(cx, out var arguments, out error)) {

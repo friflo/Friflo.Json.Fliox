@@ -10,10 +10,15 @@ scalar Boolean
 
 scalar Any
 
+enum SortOrder {
+    asc
+    desc
+}
+
 type Query {
-    queryContainers        (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryContainersResult!
-    queryMessages          (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryMessagesResult!
-    querySchemas           (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QuerySchemasResult!
+    queryContainers        (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryContainersResult!
+    queryMessages          (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryMessagesResult!
+    querySchemas           (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QuerySchemasResult!
     readContainers         (ids: [String!]!, selectAll: Boolean) : [DbContainers]!
     readMessages           (ids: [String!]!, selectAll: Boolean) : [DbMessages]!
     readSchemas            (ids: [String!]!, selectAll: Boolean) : [DbSchema]!

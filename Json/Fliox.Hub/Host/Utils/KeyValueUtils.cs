@@ -105,20 +105,20 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             return true;
         }
         
-        internal static void OrderKeys (ListOne<JsonKey> keys, Order? order) {
+        internal static void OrderKeys (ListOne<JsonKey> keys, SortOrder? order) {
             if (order == null)
                 return;
             keys.Sort(JsonKey.Comparer);
-            if (order == Order.desc) {
+            if (order == SortOrder.desc) {
                 keys.Reverse();
             }
         }
         
-        internal static void OrderKeys (List<JsonKey> keys, Order? order) {
+        internal static void OrderKeys (List<JsonKey> keys, SortOrder? order) {
             if (order == null)
                 return;
             keys.Sort(JsonKey.Comparer);
-            if (order == Order.desc) {
+            if (order == SortOrder.desc) {
                 keys.Reverse();
             }
         }

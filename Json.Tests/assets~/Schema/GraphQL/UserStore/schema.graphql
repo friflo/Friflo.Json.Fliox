@@ -10,11 +10,16 @@ scalar Boolean
 
 scalar Any
 
+enum SortOrder {
+    asc
+    desc
+}
+
 type Query {
-    queryCredentials       (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryCredentialsResult!
-    queryPermissions       (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryPermissionsResult!
-    queryRoles             (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryRolesResult!
-    queryTargets           (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryTargetsResult!
+    queryCredentials       (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryCredentialsResult!
+    queryPermissions       (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryPermissionsResult!
+    queryRoles             (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryRolesResult!
+    queryTargets           (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryTargetsResult!
     readCredentials        (ids: [String!]!, selectAll: Boolean) : [UserCredential]!
     readPermissions        (ids: [String!]!, selectAll: Boolean) : [UserPermission]!
     readRoles              (ids: [String!]!, selectAll: Boolean) : [Role]!

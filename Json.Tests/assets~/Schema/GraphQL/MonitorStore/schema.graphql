@@ -10,11 +10,16 @@ scalar Boolean
 
 scalar Any
 
+enum SortOrder {
+    asc
+    desc
+}
+
 type Query {
-    queryHosts             (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryHostsResult!
-    queryUsers             (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryUsersResult!
-    queryClients           (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryClientsResult!
-    queryHistories         (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryHistoriesResult!
+    queryHosts             (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryHostsResult!
+    queryUsers             (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryUsersResult!
+    queryClients           (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryClientsResult!
+    queryHistories         (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryHistoriesResult!
     readHosts              (ids: [String!]!, selectAll: Boolean) : [HostHits]!
     readUsers              (ids: [String!]!, selectAll: Boolean) : [UserHits]!
     readClients            (ids: [String!]!, selectAll: Boolean) : [ClientHits]!

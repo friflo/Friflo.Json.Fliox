@@ -87,13 +87,13 @@
             "properties": {
                 "selector":   { "type": "string" },
                 "cont":       { "type": "string" },
-                "orderByKey": { "ref":  "Order", "nullable": true },
+                "orderByKey": { "ref":  "SortOrder", "nullable": true },
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true }
             }
         },
-        "Order": {
+        "SortOrder": {
             "enum": [
                 "asc",
                 "desc"
@@ -103,7 +103,7 @@
             "properties": {
                 "info":       { "nullable": true },
                 "cont":       { "type": "string" },
-                "orderByKey": { "ref":  "Order", "nullable": true },
+                "orderByKey": { "ref":  "SortOrder", "nullable": true },
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
                 "filterTree": { "nullable": true },
