@@ -39,12 +39,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// <summary>container name - not utilized by Protocol</summary>
         [Serialize                                ("cont")]
         [DebugInfo] public  ShortString             container;
-        /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
+        /// <summary>number of <see cref="set"/> entries - not utilized by Protocol</summary>
         [DebugInfo] public  int?                    len;
         [Required]  public  ListOne<JsonValue>      set;
                     public  List<EntityError>       errors;
-        
-        [Ignore]    public  ListOne<JsonKey>        ids;        // SYNC_READ : TODO can remove? redundant with entities
+        /// <summary>list of foreign keys found for the given <see cref="References.selector"/></summary>
+        [Ignore]    public  ListOne<JsonKey>        foreignKeys;
+        /// <summary>entities referenced by the <see cref="foreignKeys"/></summary>
         [Ignore]    public  Entities                entities;
         
                     public  List<ReferencesResult>  references;

@@ -235,11 +235,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     subRelation.state.SetError(taskErrorInfo);
                     continue;
                 }
-                var values = refContainer.GetReferencesValues(refResult, reader);
-                if (refResult.ids.Count != values.Length) {
-                    throw new InvalidOperationException($"Expect equals Count: {refResult.ids.Count}, was: {values.Length}");
-                }
-                subRelation.SetResult(refContainer, refResult.ids, values);
+                var values = refContainer.AddReferencedEntities(refResult, reader);
+                subRelation.SetResult(refContainer, values);
                 // handle entity errors of subRef task
                 var subRefError = subRelation.state.Error;
                 if (subRefError.HasErrors) {

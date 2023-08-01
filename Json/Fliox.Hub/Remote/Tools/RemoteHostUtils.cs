@@ -82,7 +82,10 @@ namespace Friflo.Json.Fliox.Hub.Remote.Tools
             }
             foreach (var result in references) {
                 EntitySet.EntitiesToJson(result.entities.Values, out result.set, out _, out result.errors);
-                result.len = result.entities.Length;
+                int len = result.set.Count;
+                if (len > 0) {
+                    result.len = len;
+                }
                 ReferencesToJson(result.references);
             }
         }

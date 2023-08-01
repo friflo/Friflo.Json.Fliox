@@ -113,5 +113,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 keys.Reverse();
             }
         }
+        
+        internal static void OrderKeys (List<JsonKey> keys, Order? order) {
+            if (order == null)
+                return;
+            keys.Sort(JsonKey.Comparer);
+            if (order == Order.desc) {
+                keys.Reverse();
+            }
+        }
     }
 }

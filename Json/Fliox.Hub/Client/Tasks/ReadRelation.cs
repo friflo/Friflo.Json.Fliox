@@ -43,14 +43,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.IsIntKey   = isIntKey;
         }
         
-        internal override void SetResult(EntitySet set, ListOne<JsonKey> ids, EntityValue[] values) {
-            if (ids.Count == 0) {
+        internal override void SetResult(EntitySet set, EntityValue[] values) {
+            if (values.Length == 0) {
                 return;
             }
-            if (ids.Count != 1)
-                throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
+            if (values.Length != 1)
+                throw new InvalidOperationException($"Expect values with one element. got: {values.Length}, task: {this}");
             var entitySet = (EntitySetBase<T>) set;
-            var id      = ids[0];
+            var id      = values[0].key;
             var peer    = entitySet.GetPeerById(id);
             if (peer.error == null) {
                 entity  = peer.Entity;

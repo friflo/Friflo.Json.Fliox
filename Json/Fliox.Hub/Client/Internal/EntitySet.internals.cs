@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  string              GetKeyName();
         internal  abstract  bool                IsIntKey();
         internal  abstract  void                GetRawEntities(List<object> result);
-        internal  abstract  EntityValue[]       GetReferencesValues (ReferencesResult referenceResult, ObjectReader reader);
+        internal  abstract   EntityValue[]      AddReferencedEntities (ReferencesResult referenceResult, ObjectReader reader);
         
         protected EntitySet(string name, int index, FlioxClient client) {
             this.name   = name;
@@ -393,18 +393,17 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return JsonToEntities(result.set, null, result.errors);
         }
         
-        internal override EntityValue[] GetReferencesValues (ReferencesResult referenceResult, ObjectReader reader) {
-            EntityValue[]   values; 
+        private EntityValue[] GetReferencesResultValues (ReferencesResult result) {
             if (!client._readonly.isRemoteHub) {
-                values = referenceResult.entities.Values;
-            } else {
-                values  = JsonToEntities(referenceResult.set, null, referenceResult.errors);
-                var ids = new ListOne<JsonKey>(values.Length);
-                foreach (var value in values) {
-                    ids.Add(value.key);
-                }
-                referenceResult.ids = ids;
+                return result.entities.Values;
             }
+            return JsonToEntities(result.set, null, result.errors);
+        }
+        
+        internal override EntityValue[] AddReferencedEntities (ReferencesResult referenceResult, ObjectReader reader)
+        {
+            var values  = GetReferencesResultValues(referenceResult);
+            
             for (int n = 0; n < values.Length; n++) {
                 var value   = values[n];
                 var id      = Static.KeyConvert.IdToKey(value.key);

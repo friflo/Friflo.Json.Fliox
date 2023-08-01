@@ -51,7 +51,7 @@ export class ReferencesResult {
     error?      : string | null;
     /** container name - not utilized by Protocol */
     cont?       : string | null;
-    /** number of **ids** - not utilized by Protocol */
+    /** number of **set** entries - not utilized by Protocol */
     len?        : int32 | null;
     set         : any[];
     errors?     : EntityError[] | null;

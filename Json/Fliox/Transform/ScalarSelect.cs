@@ -93,6 +93,15 @@ namespace Friflo.Json.Fliox.Transform
             return result;
         }
         
+        public void AddKeysToList(ListOne<JsonKey> target) {
+            foreach (var item in values) {
+                var key = item.AsJsonKey();
+                if (!key.IsNull()) {
+                    target.Add(key);
+                }
+            }
+        }
+        
         public List<object> AsObjects() {
             var result = new List<object>(values.Count);
             foreach (var item in values) {

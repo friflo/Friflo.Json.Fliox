@@ -305,7 +305,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 selectors.Add(reference.selector);
                 var referenceResult = new ReferencesResult {
                     container   = reference.container,
-                    ids         = new ListOne<JsonKey>(),
+                    foreignKeys = new ListOne<JsonKey>(),
                     set         = new ListOne<JsonValue>()
                 };
                 referenceResults.Add(referenceResult);
@@ -333,24 +333,25 @@ namespace Friflo.Json.Fliox.Hub.Host
                     }
                     for (int n = 0; n < references.Count; n++) {
                         // selectorResults[n] contains Select() result of selectors[n] 
-                        var entityRefs      = selectorResults[n].AsJsonKeys();
                         var referenceResult = referenceResults[n];
-                        var ids             = referenceResult.ids;
-                        var set             = Helper.CreateHashSet(ids.Count, JsonKey.Equality);
-                        foreach (var id in ids.GetReadOnlySpan()) {
-                            set.Add(id);
-                        }
-                        set.UnionWith(entityRefs);
-                        ids.Clear();
-                        foreach (var id in set) {
-                            ids.Add(id);
-                        }
-                        KeyValueUtils.OrderKeys(ids, references[n].orderByKey);
-                        if (ids.Count > 0) {
-                            referenceResult.len = ids.Count;     
-                        }
+                        var selectorResult  = selectorResults[n];
+                        selectorResult.AddKeysToList(referenceResult.foreignKeys);
                     }
                 }
+            }
+            // --- remove duplicate ids 
+            var idSet = Helper.CreateHashSet(0, JsonKey.Equality);
+            for (int n = 0; n < referenceResults.Count; n++)
+            {
+                var referenceResult = referenceResults[n];
+                var foreignKeys = referenceResult.foreignKeys;
+                idSet.Clear();
+                idSet.UnionWith(foreignKeys); // deduplicate
+                foreignKeys.Clear();
+                foreach (var id in idSet) {
+                    foreignKeys.Add(id);
+                }
+                KeyValueUtils.OrderKeys(foreignKeys, references[n].orderByKey);
             }
             return referenceResults;
         }
@@ -373,13 +374,12 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var refContName     = reference.container;
                 var refCont         = database.GetOrCreateContainer(refContName);
                 var referenceResult = referenceResults[n];
-                var ids             = referenceResult.ids;
-                if (ids.Count == 0) {
+                var foreignKeys     = referenceResult.foreignKeys;
+                if (foreignKeys.Count == 0) {
                     referenceResult.entities = new Entities(Array.Empty<EntityValue>());
                     continue;
                 }
-                var refIdList   = ids;
-                var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
+                var readRefIds  = new ReadEntities { ids = foreignKeys, keyName = reference.keyName, isIntKey = reference.isIntKey};
                 // read all referenced entities with a single read command.
                 var refEntities = await refCont.ReadEntitiesAsync(readRefIds, syncContext).ConfigureAwait(false);
                 
@@ -395,9 +395,10 @@ namespace Friflo.Json.Fliox.Hub.Host
                 referenceResult.entities = refEntities.entities;
                 
                 var subReferences = reference.references;
-                if (subReferences == null)
+                if (subReferences == null) {
                     continue;
-                var subEntitiesArray    = new EntityValue [ids.Count];
+                }
+                var subEntitiesArray    = new EntityValue [foreignKeys.Count];
                 var subEntities         = new Entities(subEntitiesArray);
                 var refValues           = refEntities.entities.Values;
                 for (int i = 0; i < refValues.Length; i++) {
