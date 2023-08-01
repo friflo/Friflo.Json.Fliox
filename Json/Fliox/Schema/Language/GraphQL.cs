@@ -242,6 +242,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return Gql.Any();
             if (type == standard.JsonEntity)
                 return Gql.Any();
+            if (type == standard.JsonTable)
+                return Gql.Table();
             if (type == standard.String   || type == standard.JsonKey || type == standard.ShortString ||
                 type == standard.DateTime || type == standard.Guid    || type == standard.BigInteger )
                 return Gql.String();

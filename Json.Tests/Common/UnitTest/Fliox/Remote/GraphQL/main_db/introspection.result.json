@@ -4912,8 +4912,20 @@
                     "args": [
                     ],
                     "type": {
-                        "kind":"SCALAR",
-                        "name": "JsonTable"
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"SCALAR",
+                                        "name": "Any"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             ],
@@ -4973,8 +4985,20 @@
                     "args": [
                     ],
                     "type": {
-                        "kind":"SCALAR",
-                        "name": "JsonTableInput"
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"SCALAR",
+                                        "name": "Any"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             ]

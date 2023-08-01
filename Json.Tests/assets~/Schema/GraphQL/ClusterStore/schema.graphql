@@ -198,14 +198,14 @@ type RawSqlResult {
     rowCount    : Int!
     columnCount : Int!
     columns     : [RawSqlColumn!]
-    data        : JsonTable
+    data        : [[Any]!]!
 }
 
 input RawSqlResultInput {
     rowCount    : Int!
     columnCount : Int!
     columns     : [RawSqlColumnInput!]
-    data        : JsonTableInput
+    data        : [[Any]!]!
 }
 
 type RawSqlColumn {

@@ -54,6 +54,7 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
         public static GqlType Float     () =>   Scalar("Float");
         public static GqlType Boolean   () =>   Scalar("Boolean");
         public static GqlType Any       () =>   Scalar("Any");
+        public static GqlType Table     () =>   List(List(Any(), false, false), true, true);
         
         public static string MethodName (string methodType, string container) {
             var sb = new StringBuilder();

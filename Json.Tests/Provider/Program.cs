@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Explorer;
+using Friflo.Json.Fliox.Hub.GraphQL;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.MySQL;
@@ -52,7 +53,8 @@ namespace Friflo.Json.Tests.Provider
             hub.AddExtensionDB  (new ClusterDB("cluster", hub));         // optional - expose info of hosted databases. Required by Hub Explorer
             hub.EventDispatcher = new EventDispatcher(EventDispatching.QueueSend, env); // optional - enables Pub-Sub (sending events for subscriptions)
 
-            var httpHost        = new HttpHost(hub, "/fliox/", env)       { CacheControl = cache };
+            var httpHost        = new HttpHost(hub, "/fliox/", env)      { CacheControl = cache };
+            httpHost.AddHandler (new GraphQLHandler());
             httpHost.AddHandler (new StaticFileHandler(HubExplorer.Path) { CacheControl = cache }); // optional - serve static web files of Hub Explorer
             return httpHost;
         }
