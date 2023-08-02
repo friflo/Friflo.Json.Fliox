@@ -12,7 +12,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         public GameClient(FlioxHub hub, string dbName = null)
             : base (hub, dbName)
         {
-            Options.EventReceiver = new TestEventReceiver();
+            Options.DebugEventReceiver = new TestEventReceiver();
         }
     }
         

@@ -13,17 +13,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- public
         
         /// <summary> If true the serialization of entities to JSON is prettified </summary>
-        public  bool            WritePretty     { get => writePretty; set => SetWritePretty(value); }
+        public  bool            WritePretty         { get => writePretty; set => SetWritePretty(value); }
 
         /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>        
-        public  bool            WriteNull       { get => writeNull;   set => SetWriteNull(value); }
+        public  bool            WriteNull           { get => writeNull;   set => SetWriteNull(value); }
         
         /// <summary>
-        /// An <see cref="EventReceiver"/> send subscribed events to a <see cref="FlioxClient"/> instance.<br/>
+        /// An <see cref="IEventReceiver"/> send subscribed events to a <see cref="FlioxClient"/> instance.<br/>
         /// Its its currently only used for testing.<br/>
         /// It must be set before calling <see cref="FlioxClient.SyncTasks"/> or assigning <see cref="FlioxClient.ClientId"/>.
         /// </summary>
-        public  IEventReceiver  EventReceiver { private get => eventReceiver; set => SetEventReceiver(value); }
+        public  IEventReceiver  DebugEventReceiver  { private get => eventReceiver; set => SetEventReceiver(value); }
 
         // --- private
         [Browse(Never)] internal    IEventReceiver  eventReceiver;
@@ -50,10 +50,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         private void SetEventReceiver(IEventReceiver receiver)
         {
             if (!client._intern.clientId.IsNull()) {
-                throw new InvalidOperationException($"cannot change {nameof(EventReceiver)} after assigning {nameof(FlioxClient.ClientId)}");
+                throw new InvalidOperationException($"cannot change EventReceiver after assigning {nameof(FlioxClient.ClientId)}");
             }
             if (client.GetSyncCount() > 0) {
-                throw new InvalidOperationException($"cannot change {nameof(EventReceiver)} after calling {nameof(FlioxClient.SyncTasks)}()");
+                throw new InvalidOperationException($"cannot change EventReceiver after calling {nameof(FlioxClient.SyncTasks)}()");
             }
             if (!client._readonly.hub.SupportPushEvents) {
                 throw new InvalidOperationException("used hub does not SupportPushEvents");

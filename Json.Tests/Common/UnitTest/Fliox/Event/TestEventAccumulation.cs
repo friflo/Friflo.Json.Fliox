@@ -134,7 +134,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                 for (int i = 0; i < clientCount; i++) {
                     var subClient = new TestAccumulationClient(hub) { UserId = $"client-{i}" };
                     if (receiver != null) {
-                        subClient.Options.EventReceiver = receiver;
+                        subClient.Options.DebugEventReceiver = receiver;
                     }
                     subClient.records.SubscribeChanges(Change.All, (changes, context) => {
                         changeEvents++;
