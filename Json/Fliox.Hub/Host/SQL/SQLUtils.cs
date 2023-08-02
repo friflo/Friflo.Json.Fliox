@@ -121,8 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
         
         // TODO consolidate with AppendKeysSQL() above
-        public static string AppendKeysSQL2(ListOne<JsonKey> keys, SQLEscape escape) {
-            var sb = new StringBuilder();
+        public static StringBuilder AppendKeysSQL2(StringBuilder sb, ListOne<JsonKey> keys, SQLEscape escape) {
             var escaped = new StringBuilder();
             var isFirst = true;
             foreach (var key in keys.GetReadOnlySpan())
@@ -144,7 +143,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 AppendEscaped(sb, escaped, escape);
                 sb.Append('\'');
             }
-            return sb.ToString();
+            return sb;
         }
         
         /// <summary>

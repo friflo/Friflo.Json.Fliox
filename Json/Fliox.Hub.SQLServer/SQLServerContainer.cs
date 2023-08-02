@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +20,7 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseIndexFromEndExpression
 namespace Friflo.Json.Fliox.Hub.SQLServer
 {
-    internal sealed class SQLServerContainer : EntityContainer, ISQLTable
+    internal sealed partial class SQLServerContainer : EntityContainer, ISQLTable
     {
         private  readonly   TableInfo           tableInfo;
         public   override   bool                Pretty      { get; }
@@ -190,33 +189,6 @@ CREATE TABLE dbo.{name}";
                     using var reader = await connection.ExecuteReaderSync(sql.ToString()).ConfigureAwait(false);
                     return SQLUtils.ReadEntitiesSync(reader, command);
                 }
-            } catch (SqlException e) {
-                var msg = GetErrMsg(e);
-                return new ReadEntitiesResult { Error = new TaskExecuteError(msg) };
-            }
-        }
-        
-        SqlCommand readCommand;
-        SqlParameter sqlParam;
-        
-        public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
-            var syncConnection = syncContext.GetConnectionSync();
-            if (syncConnection is not SyncConnection connection) {
-                return new ReadEntitiesResult { Error = syncConnection.Error };
-            }
-            try {
-                if (readCommand == null) {
-                    var sql = new StringBuilder();
-                    sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
-                    sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in (@ids);\n");
-                    readCommand = new SqlCommand(sql.ToString(), connection.instance);
-                    sqlParam = readCommand.Parameters.Add("@ids", SqlDbType.NVarChar, 100);
-                    readCommand.Prepare();
-                }
-                sqlParam.Value = SQLUtils.AppendKeysSQL2(command.ids, SQLEscape.PrefixN);
-                using var reader = connection.ExecuteReaderSync(readCommand);
-                return SQLTable.ReadObjects(reader, command, syncContext);
-
             } catch (SqlException e) {
                 var msg = GetErrMsg(e);
                 return new ReadEntitiesResult { Error = new TaskExecuteError(msg) };
