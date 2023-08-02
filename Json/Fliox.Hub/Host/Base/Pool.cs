@@ -40,6 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal    ObjectPool<MemoryBuffer>        MemoryBuffer        { get; }
         internal    ObjectPool<Json2SQL>            Json2SQL            { get; }
         internal    ObjectPool<SQL2Json>            SQL2Json            { get; }
+        internal    ObjectPool<SQL2Object>          SQL2Object          { get; }
         /// <summary>
         /// Enable pooling instances of the given Type <typeparamref name="T"/>. In case no cached instance of <typeparamref name="T"/>
         /// is available the <paramref name="factory"/> method is called to create a new instance.
@@ -71,6 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             EntityProcessor     = new ObjectPool<EntityProcessor>   (() => new EntityProcessor());
             Json2SQL            = new ObjectPool<Json2SQL>          (() => new Json2SQL());
             SQL2Json            = new ObjectPool<SQL2Json>          (() => new SQL2Json());
+            SQL2Object          = new ObjectPool<SQL2Object>        (() => new SQL2Object());
             TypeValidator       = new ObjectPool<TypeValidator>     (() => new TypeValidator());
             MemoryBuffer        = new ObjectPool<MemoryBuffer>      (() => new MemoryBuffer(4 * 1024));
         }
@@ -85,6 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             EntityProcessor.    Dispose();
             Json2SQL.           Dispose();
             SQL2Json.           Dispose();
+            SQL2Object.         Dispose();
             TypeValidator.      Dispose();
             MemoryBuffer.       Dispose();
             foreach (var pair in poolMap) {

@@ -92,7 +92,10 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             while (true) {
                 tryCount++;
                 try {
-                    return command.ExecuteReader(); // CommandBehavior.SingleResult | CommandBehavior.SingleRow);
+                    // TODO check performance hit caused by many SqlBuffer instances
+                    // [Reading large data (binary, text) asynchronously is extremely slow · Issue #593 · dotnet/SqlClient]
+                    // https://github.com/dotnet/SqlClient/issues/593#issuecomment-1645441459
+                    return command.ExecuteReader(); // CommandBehavior.SingleResult | CommandBehavior.SingleRow | CommandBehavior.SequentialAccess);
                 }
                 catch (SqlException) {
                     if (instance.State != ConnectionState.Open && tryCount == 1) {

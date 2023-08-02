@@ -44,6 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         
         [Browse(Never)] public  ObjectPool<Json2SQL>    Json2SQL    => pool.Json2SQL;
         [Browse(Never)] public  ObjectPool<SQL2Json>    SQL2Json    => pool.SQL2Json;
+        [Browse(Never)] public  ObjectPool<SQL2Object>  SQL2Object  => pool.SQL2Object;
         // --- public utils
         [Browse(Never)] public  ObjectPool<ObjectMapper>    ObjectMapper                => pool.ObjectMapper;
         [Browse(Never)] public  ObjectPool<EntityProcessor> EntityProcessor             => pool.EntityProcessor;

@@ -69,12 +69,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
                 return new ReadEntitiesResult { entities = new Entities(array) };
             }
-            var binaryReader    = new BinaryDbDataReader(reader);
+            var binaryReader    = new BinaryDbDataReader();
+            binaryReader.Init(reader);
             var objects         = new EntityObject[query.ids.Count];
             int count           = 0;
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
-                binaryReader.Init();
+                binaryReader.NextRow();
                 var obj = typeMapper.ReadBinary(binaryReader, null, out bool _);
                 var key = query.ids[count];
                 objects[count++] = new EntityObject(key, obj);
@@ -85,15 +86,16 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public static  ReadEntitiesResult ReadObjects(
             DbDataReader    reader,
             ReadEntities    query,
-            SyncContext     syncContext)
+            SQL2Object      sql2Object)
         {
             var typeMapper      = query.typeMapper;
-            var binaryReader    = new BinaryDbDataReader(reader);
+            var binaryReader    = sql2Object.reader;
+            binaryReader.Init(reader);
             var objects         = new EntityObject[query.ids.Count];
             int count           = 0;
             while (reader.Read())
             {
-                binaryReader.Init();
+                binaryReader.NextRow();
                 var obj = typeMapper.ReadBinary(binaryReader, null, out bool _);
                 var key = query.ids[count];
                 objects[count++] = new EntityObject(key, obj);

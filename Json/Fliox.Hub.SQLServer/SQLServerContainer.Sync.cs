@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
 using System.Data;
-using System.Text;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -20,16 +19,17 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 
         SqlCommand      readCommand;
         SqlParameter    sqlParam;
-        StringBuilder   sb = new StringBuilder();
         
         public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
+            using var pooled = syncContext.SQL2Object.Get();
+            var sql2Object = pooled.instance;
             try {
                 if (readCommand == null) {
-                    var sql = sb;
+                    var sql = sql2Object.sb;
                     sql.Clear();
                     sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
                     sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in (@ids);\n");
@@ -37,12 +37,13 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     sqlParam = readCommand.Parameters.Add("@ids", SqlDbType.NVarChar, 100);
                     readCommand.Prepare();
                 }
-                sb.Clear();
-                sqlParam.Value = SQLUtils.AppendKeysSQL2(sb, command.ids, SQLEscape.PrefixN).ToString();
+                sql2Object.sb.Clear();
+                sqlParam.Value = SQLUtils.AppendKeysSQL2(sql2Object.sb, command.ids, SQLEscape.PrefixN).ToString();
                 using var reader = connection.ExecuteReaderSync(readCommand);
-                return SQLTable.ReadObjects(reader, command, syncContext);
 
-            } catch (SqlException e) {
+                return SQLTable.ReadObjects(reader, command, sql2Object);
+            }
+            catch (SqlException e) {
                 var msg = GetErrMsg(e);
                 return new ReadEntitiesResult { Error = new TaskExecuteError(msg) };
             }

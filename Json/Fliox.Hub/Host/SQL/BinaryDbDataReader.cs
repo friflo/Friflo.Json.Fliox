@@ -10,13 +10,16 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public sealed class BinaryDbDataReader : BinaryReader
     { 
-        private readonly    DbDataReader    reader;
+        private DbDataReader    reader;
         
-        public BinaryDbDataReader(DbDataReader reader) {
-            this.reader     = reader;
+        public BinaryDbDataReader() { }
+       
+        public void Init(DbDataReader reader) {
+            this.reader = reader;
+            currentOrdinal = 0;
         }
         
-        public void Init() {
+        public void NextRow() {
             currentOrdinal = 0;
         }
         

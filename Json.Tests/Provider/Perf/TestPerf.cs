@@ -34,7 +34,8 @@ namespace Friflo.Json.Tests.Provider.Perf
                 client.posts.Find(n % SeedCount);
                 client.SyncTasksSynchronous();
             }
-
+            
+            int i = 0;
             // measurement
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -42,6 +43,9 @@ namespace Friflo.Json.Tests.Provider.Perf
             for (int n = 0; n < count; n++) {
                 client.posts.Find(n % SeedCount);
                 client.SyncTasksSynchronous();
+                if ((++i % 10) == 0) {
+                    int x = 111;
+                }
             }
             var duration = stopWatch.Elapsed.TotalMilliseconds;
             Console.WriteLine($"{db,-12} Read. count: {count}, duration: {duration} ms");
