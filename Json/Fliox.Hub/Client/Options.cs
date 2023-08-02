@@ -11,6 +11,11 @@ namespace Friflo.Json.Fliox.Hub.Client
     public struct ClientOptions
     {
         // --- public
+        /// <summary>
+        /// An <see cref="EventReceiver"/> send subscribed events to a <see cref="FlioxClient"/> instance.<br/>
+        /// Its its currently only used for testing.<br/>
+        /// It must be set before calling <see cref="FlioxClient.SyncTasks"/> or assigning <see cref="FlioxClient.ClientId"/>.
+        /// </summary>
         public IEventReceiver  EventReceiver { private get => eventReceiver; set => SetEventReceiver(value); }
 
         // --- private
