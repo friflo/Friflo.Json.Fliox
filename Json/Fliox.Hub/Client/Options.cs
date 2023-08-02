@@ -11,25 +11,24 @@ namespace Friflo.Json.Fliox.Hub.Client
     public struct ClientOptions
     {
         // --- public
-        public IEventReceiver  EventReceiver
-        {
-            private get => eventReceiver;
-            set {
-                if (!client._intern.clientId.IsNull()) {
-                    throw new InvalidOperationException($"cannot change {nameof(EventReceiver)} after assigning {nameof(FlioxClient.ClientId)}");
-                }
-                if (client.GetSyncCount() > 0) {
-                    throw new InvalidOperationException($"cannot change {nameof(EventReceiver)} after calling {nameof(FlioxClient.SyncTasks)}()");
-                }
-                if (!client._readonly.hub.SupportPushEvents) {
-                    throw new InvalidOperationException("used hub does not SupportPushEvents");
-                }
-                eventReceiver = value;
-            }
-        }
+        public IEventReceiver  EventReceiver { private get => eventReceiver; set => SetEventReceiver(value); }
 
         // --- private
         [Browse(Never)] internal IEventReceiver eventReceiver;
         [Browse(Never)] internal FlioxClient    client;
+        
+        private void SetEventReceiver(IEventReceiver receiver)
+        {
+            if (!client._intern.clientId.IsNull()) {
+                throw new InvalidOperationException($"cannot change {nameof(EventReceiver)} after assigning {nameof(FlioxClient.ClientId)}");
+            }
+            if (client.GetSyncCount() > 0) {
+                throw new InvalidOperationException($"cannot change {nameof(EventReceiver)} after calling {nameof(FlioxClient.SyncTasks)}()");
+            }
+            if (!client._readonly.hub.SupportPushEvents) {
+                throw new InvalidOperationException("used hub does not SupportPushEvents");
+            }
+            eventReceiver = receiver;
+        }
     }
 }
