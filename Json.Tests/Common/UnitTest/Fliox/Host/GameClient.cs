@@ -10,11 +10,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         public readonly EntitySet <int, Player>     players;
 
         public GameClient(FlioxHub hub, string dbName = null)
-            : base (hub, dbName, new ClientOptions (CreateEventReceiver))
-        { }
-        
-        private static IEventReceiver CreateEventReceiver(FlioxHub hub, FlioxClient client) {
-            return new TestEventReceiver();
+            : base (hub, dbName)
+        {
+            Options.EventReceiver = new TestEventReceiver();
         }
     }
         

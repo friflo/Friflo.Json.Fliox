@@ -64,12 +64,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             _intern.clientId    = newClientId;
             if (!_intern.clientId.IsNull()) {
-                _readonly.hub.AddEventReceiver(newClientId, _readonly.eventReceiver);
+                _readonly.hub.AddEventReceiver(newClientId, options.eventReceiver);
             }
         }
         
         internal void AssertSubscription() {
-            if (_readonly.eventReceiver == null) {
+            if (options.eventReceiver == null) {
                 var msg = $"The FlioxHub used by the client don't support PushEvents. hub: {_readonly.hub.GetType().Name}";
                 throw new InvalidOperationException(msg);
             }
@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private SyncContext CreateSyncContext(MemoryBuffer memoryBuffer) {
-            var syncContext = _intern.syncContextBuffer.Get() ?? new SyncContext(_readonly.sharedEnv, _readonly.eventReceiver); 
+            var syncContext = _intern.syncContextBuffer.Get() ?? new SyncContext(_readonly.sharedEnv, options.eventReceiver); 
             syncContext.SetMemoryBuffer(memoryBuffer);
             syncContext.clientId            = _intern.clientId;
             syncContext.responseReaderPool  = _readonly.responseReaderPool?.Get().instance.Reuse();

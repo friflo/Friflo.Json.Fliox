@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             // cannot reuse request, context & buffer method can run on any thread
             var syncRequest = new SyncRequest { tasks = new ListOne<SyncRequestTask>() };
             var buffer      = new MemoryBuffer(Static.MemoryBufferCapacity);
-            var syncContext = new SyncContext(_readonly.sharedEnv, _readonly.eventReceiver); 
+            var syncContext = new SyncContext(_readonly.sharedEnv, options.eventReceiver); 
             syncContext.SetMemoryBuffer(buffer);
             syncContext.clientId = _intern.clientId;
             syncRequest.intern.executeSync = false;

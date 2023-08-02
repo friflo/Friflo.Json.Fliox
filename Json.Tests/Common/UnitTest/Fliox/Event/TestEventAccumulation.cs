@@ -26,8 +26,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
             // --- containers
             public readonly EntitySet <int, Record>     records = default;
 
-            public TestAccumulationClient(FlioxHub hub, IEventReceiver receiver = null)
-                : base (hub, null, receiver == null ? null : new ClientOptions ((h, c)  => receiver)) { }
+            public TestAccumulationClient(FlioxHub hub)
+                : base (hub) { }
         }
         
         [Test]
@@ -132,7 +132,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
                 
                 // --- setup subscribers
                 for (int i = 0; i < clientCount; i++) {
-                    var subClient = new TestAccumulationClient(hub, receiver) { UserId = $"client-{i}" };
+                    var subClient = new TestAccumulationClient(hub) { UserId = $"client-{i}" };
+                    if (receiver != null) {
+                        subClient.Options.EventReceiver = receiver;
+                    }
                     subClient.records.SubscribeChanges(Change.All, (changes, context) => {
                         changeEvents++;
                         if (upsertCount != changes.Upserts.Count) {

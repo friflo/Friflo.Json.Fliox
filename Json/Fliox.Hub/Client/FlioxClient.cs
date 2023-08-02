@@ -8,7 +8,6 @@ using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -68,6 +67,9 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         /// <summary> Return the number of pending <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> calls </summary>
                         public      int                         GetPendingSyncCount()   => _readonly.pendingSyncs.Count;
+        
+        [Browse(Never)] private     ClientOptions               options;
+                        public      ref ClientOptions           Options         => ref options;
         
         /// <summary> Used to send typed messages / commands by classes extending <see cref="FlioxClient"/></summary>
         [Browse(Never)] protected readonly  SendTask            send;
@@ -142,12 +144,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Instantiate a <see cref="FlioxClient"/> for the <paramref name="dbName"/> exposed by the given <paramref name="hub"/>.
         /// If <paramref name="dbName"/> is null the client uses the default database assigned to the <paramref name="hub"/>.
         /// </summary>
-        public FlioxClient(FlioxHub hub, string dbName = null, ClientOptions options = null) {
+        public FlioxClient(FlioxHub hub, string dbName = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
-            type                = GetType();
-            options             = options ?? ClientOptions.Default;
-            var eventReceiver   = options.createEventReceiver(hub, this);
-            _readonly           = new ClientReadOnly(this, hub, dbName, eventReceiver, out string typeError);
+            type                    = GetType();
+            options.client          = this;
+            options.eventReceiver   = hub.SupportPushEvents ? new ClientEventReceiver(this) : null;
+            _readonly               = new ClientReadOnly(this, hub, dbName, out string typeError);
             if (typeError != null) {
                 throw new InvalidTypeException(typeError);
             }
@@ -421,26 +423,5 @@ namespace Friflo.Json.Fliox.Hub.Client
             set.GetRawEntities(result);
         }
         #endregion
-    }
-    
-    public delegate IEventReceiver CreateEventReceiver (FlioxHub hub, FlioxClient client);
-    /// <summary>
-    /// <see cref="ClientOptions"/> can be passed to a <see cref="FlioxClient"/> constructor to customize
-    /// general client behavior. <br/>
-    /// For now its sole use case is to customize a client for testing purposes.
-    /// </summary>
-    public sealed class ClientOptions
-    {
-        internal static readonly ClientOptions Default = new ClientOptions(DefaultCreateEventReceiver);
-            
-        public readonly  CreateEventReceiver    createEventReceiver;
-        
-        public ClientOptions(CreateEventReceiver createEventReceiver) {
-            this.createEventReceiver    = createEventReceiver;
-        }
-        
-        private static IEventReceiver DefaultCreateEventReceiver (FlioxHub hub, FlioxClient client) {
-            return hub.SupportPushEvents ? new ClientEventReceiver(client) : null;
-        }        
     }
 }

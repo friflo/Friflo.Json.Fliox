@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
@@ -28,7 +27,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   string                          database;
         internal readonly   ShortString                     databaseShort;
         /// <summary>is null if <see cref="FlioxHub.SupportPushEvents"/> == false</summary> 
-        internal readonly   IEventReceiver                  eventReceiver;
         internal readonly   ObjectPool<ReaderPool>          responseReaderPool;
         internal readonly   string                          messagePrefix;
         internal readonly   EntitySetInfo[]                 entityInfos;
@@ -42,7 +40,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             FlioxClient     client,
             FlioxHub        hub,
             string          database,
-            IEventReceiver  eventReceiver,
             out string      typeError)
         {
             entityInfos             = ClientEntityUtils.GetEntitySetInfos (client.type);
@@ -54,7 +51,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.isRemoteHub        = hub.IsRemoteHub;
             this.database           = database ?? hub.database.name;
             databaseShort           = new ShortString(this.database);
-            this.eventReceiver      = eventReceiver;
             responseReaderPool      = hub.GetResponseReaderPool();
             pendingSyncs            = new Dictionary<Task, SyncContext>();
             var info                = InitEntitySets (client, entityInfos, typeStore);
