@@ -21,8 +21,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// An <see cref="IEventReceiver"/> send subscribed events to a <see cref="FlioxClient"/> instance.<br/>
         /// Its its currently only used for testing.<br/>
-        /// It must be set before calling <see cref="FlioxClient.SyncTasks"/> or assigning <see cref="FlioxClient.ClientId"/>.
         /// </summary>
+        /// <remarks>
+        /// <b>Note</b><br/>
+        /// It must be set before calling <see cref="FlioxClient.SyncTasks"/> or assigning <see cref="FlioxClient.ClientId"/>.<br/>
+        /// An <see cref="IEventReceiver"/> is registered by an <see cref="FlioxClient.ClientId"/>.<br/>
+        /// Changing the id would result in not receiving events a client subscribed with an old id.<br/>
+        /// </remarks>
         public  IEventReceiver  DebugEventReceiver  { private get => eventReceiver; set => SetEventReceiver(value); }
 
         // --- private
