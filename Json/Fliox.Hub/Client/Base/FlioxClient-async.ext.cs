@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var syncContext = new SyncContext(_readonly.sharedEnv, _readonly.eventReceiver); 
             syncContext.SetMemoryBuffer(buffer);
             syncContext.clientId = _intern.clientId;
-            
+            syncRequest.intern.executeSync = false;
             InitSyncRequest(syncRequest);
             var response    = await ExecuteAsync(syncRequest, syncContext, ExecutionType.Async).ConfigureAwait(false);
 

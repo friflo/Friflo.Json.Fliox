@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using SQLitePCL;
 
 namespace Friflo.Json.Fliox.Hub.SQLite
@@ -59,6 +60,22 @@ namespace Friflo.Json.Fliox.Hub.SQLite
 
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new SQLiteContainer(name.AsString(), this, Pretty);
+        }
+        
+        public override bool IsSyncTask(SyncRequestTask task, in PreExecute execute) {
+            if (!execute.executeSync) {
+                return false;
+            }
+            switch (task.TaskType) {
+                case TaskType.read:
+                case TaskType.query:
+                case TaskType.create:
+                case TaskType.upsert:
+                case TaskType.delete:
+                case TaskType.aggregate:
+                    return true;
+            }
+            return false;
         }
         
         protected override  Task<ISyncConnection>   GetConnectionAsync() {
