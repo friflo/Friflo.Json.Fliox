@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 using Friflo.Json.Tests.Common.Utils;
@@ -284,7 +283,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             // --- write and read a records using references
             using (var store    = new EntityIdStore(database) { ClientId = "guidStore"}) {
-                store.WriteNull = true;
+                store.Options.WriteNull = true;
                 var create = store.entityRefs.Upsert(entityRef);
                 
                 await store.SyncTasks();

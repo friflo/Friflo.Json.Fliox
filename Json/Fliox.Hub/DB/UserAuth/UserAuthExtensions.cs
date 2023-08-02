@@ -29,8 +29,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// This enables access to all Hub databases as user <b>admin</b> without accessing the user database directly.
         /// </remarks>
         public static async Task SetAdminPermissions(this UserAuthenticator userAuthenticator, string token = "admin") {
-            var userStore           = new UserStore(userAuthenticator.userHub) { UserId = UserDB.ID.Server };
-            userStore.WritePretty   = true;
+            var userStore = new UserStore(userAuthenticator.userHub) { UserId = UserDB.ID.Server };
+            userStore.Options.WritePretty   = true;
             
             var adminCredential     = new UserCredential { id = Admin, token   = token };
             userStore.credentials.Create(adminCredential);
@@ -52,8 +52,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
 
         public static async Task SetClusterPermissions(this UserAuthenticator userAuthenticator, string clusterDB, Users users) {
-            var userStore           = new UserStore(userAuthenticator.userHub) { UserId = UserDB.ID.Server };
-            userStore.WritePretty   = true;
+            var userStore = new UserStore(userAuthenticator.userHub) { UserId = UserDB.ID.Server };
+            userStore.Options.WritePretty   = true;
 
             var readPermissions = userStore.permissions.Read();
             var findAllUsers            = readPermissions.Find(AllUsers);

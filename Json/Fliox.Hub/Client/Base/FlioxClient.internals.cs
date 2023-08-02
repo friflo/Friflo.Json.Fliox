@@ -40,22 +40,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             return sb.ToString();
         }
         
-        private void SetWritePretty (bool value) {
-            writePretty = value;
-            foreach (var set in entitySets) {
-                if (set == null) continue;
-                set.WritePretty = value;
-            }
-        }
-
-        private void SetWriteNull (bool value){
-            writeNull = value;
-            foreach (var set in entitySets) {
-                if (set == null) continue;
-                set.WriteNull = value;
-            }
-        }
-        
         private void SetClientId(in ShortString newClientId) {
             if (newClientId.IsEqual(_intern.clientId))
                 return;

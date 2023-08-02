@@ -33,9 +33,9 @@ public class DemoCommands : IServiceCommands
     [CommandHandler("demo.FakeRecords")]
     private static async Task<Result<Records>> FakeRecords(Param<Fake> param, MessageContext context)
     {
-        var client          = new DemoClient(context.Hub);
-        client.UserInfo     = context.UserInfo;
-        client.WritePretty  = true;
+        var client      = new DemoClient(context.Hub);
+        client.UserInfo = context.UserInfo;
+        client.Options.WritePretty  = true;
         
         if (!param.GetValidate(out var fake, out var error)) {
             return Result.ValidationError(error);

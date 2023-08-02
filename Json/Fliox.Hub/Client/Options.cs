@@ -11,16 +11,41 @@ namespace Friflo.Json.Fliox.Hub.Client
     public struct ClientOptions
     {
         // --- public
+        
+        /// <summary> If true the serialization of entities to JSON is prettified </summary>
+        public  bool            WritePretty     { get => writePretty; set => SetWritePretty(value); }
+
+        /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>        
+        public  bool            WriteNull       { get => writeNull;   set => SetWriteNull(value); }
+        
         /// <summary>
         /// An <see cref="EventReceiver"/> send subscribed events to a <see cref="FlioxClient"/> instance.<br/>
         /// Its its currently only used for testing.<br/>
         /// It must be set before calling <see cref="FlioxClient.SyncTasks"/> or assigning <see cref="FlioxClient.ClientId"/>.
         /// </summary>
-        public IEventReceiver  EventReceiver { private get => eventReceiver; set => SetEventReceiver(value); }
+        public  IEventReceiver  EventReceiver { private get => eventReceiver; set => SetEventReceiver(value); }
 
         // --- private
-        [Browse(Never)] internal IEventReceiver eventReceiver;
-        [Browse(Never)] internal FlioxClient    client;
+        [Browse(Never)] internal    IEventReceiver  eventReceiver;
+        [Browse(Never)] internal    FlioxClient     client;
+        [Browse(Never)] internal    bool            writePretty;
+        [Browse(Never)] internal    bool            writeNull;
+        
+        private void SetWritePretty (bool value) {
+            writePretty = value;
+            foreach (var set in client.entitySets) {
+                if (set == null) continue;
+                set.WritePretty = value;
+            }
+        }
+
+        private void SetWriteNull (bool value){
+            writeNull = value;
+            foreach (var set in client.entitySets) {
+                if (set == null) continue;
+                set.WriteNull = value;
+            }
+        }
         
         private void SetEventReceiver(IEventReceiver receiver)
         {

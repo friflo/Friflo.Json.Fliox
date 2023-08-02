@@ -86,8 +86,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         
         public EntitySet CreateInstance(string container, int index, FlioxClient client) {
             var result = new EntitySetInstance<TKey,T>(container, index, client) {
-                WritePretty = client.writePretty,
-                WriteNull   = client.writeNull,
+                WritePretty = client.Options.writePretty,
+                WriteNull   = client.Options.writeNull,
             };
             return result;
         }

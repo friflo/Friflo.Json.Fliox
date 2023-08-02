@@ -54,12 +54,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> general client information: attached database, the number of cached entities and scheduled <see cref="Tasks"/> </summary>
         [Browse(Never)] public      ClientInfo                  ClientInfo      => new ClientInfo(this); 
 
-        /// <summary> If true the serialization of entities to JSON is prettified </summary>
-        [Browse(Never)] public      bool                        WritePretty     { get => writePretty; set => SetWritePretty(value); }
-
-        /// <summary> If true the serialization of entities to JSON write null fields. Otherwise null fields are omitted </summary>        
-        [Browse(Never)] public      bool                        WriteNull       { get => writeNull;   set => SetWriteNull(value); }
-
         [Browse(Never)] public      IHubLogger                  Logger          => _readonly.hubLogger;
         
         /// <summary> Return the number of calls to <see cref="SyncTasks"/> and <see cref="TrySyncTasks"/> </summary>
@@ -113,9 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // ReSharper disable once UnusedMember.Local
                         private             FlioxHub        Hub             => _readonly.hub;
                         
-        [Browse(Never)] internal            bool            writePretty;
 
-        [Browse(Never)] internal            bool            writeNull;
 
         // ReSharper disable once InconsistentNaming
         [Browse(Never)] private             StdCommands     _std;
