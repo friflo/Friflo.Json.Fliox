@@ -82,5 +82,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         internal    EntityDatabase  db;
         internal    PreAuthType     preAuthType;
         internal    User            preAuthUser;
+        internal    bool            executeSync;
     }
 }

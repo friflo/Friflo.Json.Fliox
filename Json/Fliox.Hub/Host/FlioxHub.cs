@@ -229,7 +229,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return syncRequest.intern.executionType = Error;
             }
             var taskCount   = tasks.Count;
-            for (int index = 0; index < taskCount; index++) {
+            var preExecute  = new PreExecute(db, sharedEnv, syncRequest.intern.executeSync);
+            for (int index = 0; index < taskCount; index++)
+            {
                 var task = tasks[index];
                 if (task == null) {
                     syncRequest.intern.error = $"tasks[{index}] == null";
@@ -237,7 +239,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
                 task.intern.index   = index;
                 // todo may validate tasks in PreExecute()
-                var isSyncTask      = task.PreExecute(db, sharedEnv);
+                var isSyncTask      = task.PreExecute(preExecute);
                 isSyncRequest       = isSyncRequest && isSyncTask;
             }
             var executionType = isSyncRequest ? Sync : Async;

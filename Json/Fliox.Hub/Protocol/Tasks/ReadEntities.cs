@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -29,18 +29,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public   ListOne<JsonKey>   ids;
         /// <summary> used to request the entities referenced by properties of a read task result </summary>
                     public   List<References>   references;
-        [Ignore]    public   Type               nativeType;
-        [Ignore]    internal EntitiesType       EntitiesType => nativeType != null ? EntitiesType.Objects : EntitiesType.Values;
+        [Ignore]    public   TypeMapper         typeMapper;
         
         public   override    TaskType           TaskType => TaskType.read;
         public   override    string             TaskName =>  $"container: '{container}'";
         
-        public override bool PreExecute(EntityDatabase database, SharedEnv env) {
+        public override bool PreExecute(in PreExecute execute) {
             if (references != null) {
                 intern.executionType   = ExecutionType.Async;
                 return false;
             }
-            var isSync              = database.IsSyncTask(this);
+            var isSync              = execute.db.IsSyncTask(this, execute);
             intern.executionType    = isSync ? ExecutionType.Sync : ExecutionType.Async;
             return isSync;
         }

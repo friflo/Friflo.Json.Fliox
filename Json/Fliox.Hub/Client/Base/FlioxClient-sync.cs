@@ -28,6 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var buffer          = CreateMemoryBuffer();
             var syncContext     = CreateSyncContext(buffer);
+            syncRequest.intern.executeSync = true;
             var executionType   = hub.InitSyncRequest(syncRequest);
             ExecuteSyncResult syncResult;
             switch (executionType) {
@@ -53,6 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var buffer          = CreateMemoryBuffer();
             var syncContext     = CreateSyncContext(buffer);
+            syncRequest.intern.executeSync = true;
             var executionType   = hub.InitSyncRequest(syncRequest);
             ExecuteSyncResult syncResult;
             switch (executionType) {

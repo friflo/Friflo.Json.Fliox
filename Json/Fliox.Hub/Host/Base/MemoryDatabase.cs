@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new MemoryContainer(name.AsString(), database, ContainerType, Pretty, SmallValueSize);
         }
         
-        public override bool IsSyncTask(SyncRequestTask task) {
+        public override bool IsSyncTask(SyncRequestTask task, in PreExecute execute) {
             switch (task.TaskType) {
                 case create:
                 case upsert:

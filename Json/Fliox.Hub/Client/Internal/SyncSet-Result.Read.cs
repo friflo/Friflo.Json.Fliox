@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             var  entityErrorInfo = new TaskErrorInfo();
-            if (task.EntitiesType == EntitiesType.Values) {
+            if (result.entities.Type == EntitiesType.Values) {
                 AddReadEntity(ref entityErrorInfo, result, read, mapper.reader);
             } else {
                 AddReadObject(ref entityErrorInfo, result, read);
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             var  entityErrorInfo = new TaskErrorInfo();
-            if (task.EntitiesType == EntitiesType.Values) {
+            if (result.entities.Type == EntitiesType.Values) {
                 AddReadEntities(ref entityErrorInfo, result, read, mapper.reader);
             } else {
                 AddReadObjects(ref entityErrorInfo, result, read);
@@ -148,7 +148,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var current = peer.NullableEntity;
             if (current == null) {
-                peer.SetEntity((T)entityObj.obj);
+                peer.SetEntity(read.result);
+                read.result = (T)entityObj.obj;
                 return;
             }
             var typeMapper  = set.GetTypeMapper();
@@ -159,25 +160,29 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // SYNC_READ : read objects
         private TaskErrorInfo AddReadObjects(ref TaskErrorInfo entityErrorInfo, ReadEntitiesResult result, ReadTask<TKey, T> read)
         {
-            /* var objects = readEntities.objectMap;
-            foreach (var id in task.ids.GetReadOnlySpan()) {
-                if (!objects.TryGetValue(id, out object value)) {
-                    // AddEntityResponseError(id, entities, ref entityErrorInfo);
+            var objects     = result.entities.Objects;
+            var readResult  = read.result;
+            var typeMapper  = set.GetTypeMapper();
+            foreach (var obj in objects)
+            {
+                var key = KeyConvert.IdToKey(obj.key);
+                if (!readResult.ContainsKey(key)) {
                     continue;
                 }
-                // var json = value.Json;  // in case of RemoteClient json is "null"
-                // var value = json.IsNull();
-                if (value == null) {
-                    // don't remove missing requested peer from EntitySet.peers to preserve info about its absence
+                var peer    = set.GetOrCreatePeerByKey(key, obj.key);
+                var current = peer.NullableEntity;
+                var entity  = (T)obj.obj;
+                if (current == null) {
+                    peer.SetEntity(entity);
+                    readResult[key] = entity;
                     continue;
                 }
-                var key     = KeyConvert.IdToKey(id);
-                var peer    = set.GetOrCreatePeerByKey(key, id);
-                read.result[key] = peer.Entity;
+                typeMapper.MemberwiseCopy(entity, current);
+                readResult[key] = current;
             }
             foreach (var findTask in read.findTasks) {
-                findTask.SetFindResult(read.result);
-            } */
+                findTask.SetFindResult(read.result, null);
+            }
             return default;
         }
         

@@ -60,7 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             TableInfo       tableInfo,
             SyncContext     syncContext)
         {
-            if (query.EntitiesType == EntitiesType.Values) {
+            var typeMapper = query.typeMapper;
+            if (typeMapper == null) {
                 using var pooled = syncContext.pool.SQL2Json.Get();
                 var sql2Json = new SQL2JsonMapper(reader);
                 var buffer   = syncContext.MemoryBuffer;
@@ -68,7 +69,6 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
                 return new ReadEntitiesResult { entities = new Entities(array) };
             }
-            var typeMapper      = syncContext.GetTypeMapper(query.nativeType);
             var binaryReader    = new BinaryDbDataReader(reader);
             var objects         = new EntityObject[query.ids.Count];
             int count           = 0;
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             ReadEntities    query,
             SyncContext     syncContext)
         {
-            var typeMapper      = syncContext.GetTypeMapper(query.nativeType);
+            var typeMapper      = query.typeMapper;
             var binaryReader    = new BinaryDbDataReader(reader);
             var objects         = new EntityObject[query.ids.Count];
             int count           = 0;

@@ -43,9 +43,12 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             return new SQLServerContainer(name.AsString(), this, Pretty);
         }
         
-        public override bool IsSyncTask(SyncRequestTask task) {
+        public override bool IsSyncTask(SyncRequestTask task, in PreExecute execute) {
+            if (!execute.executeSync) {
+                return false;
+            }
             switch (task.TaskType) {
-                case TaskType.read: return ((ReadEntities)task).nativeType != null;
+                case TaskType.read: return true;
             }
             return false;
         }

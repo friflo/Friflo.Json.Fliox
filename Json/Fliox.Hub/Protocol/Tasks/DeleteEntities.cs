@@ -43,9 +43,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return false;
         }
         
-        public override bool PreExecute(EntityDatabase database, SharedEnv env) {
-            error = PrepareDelete(database);
-            return base.PreExecute(database, env);
+        public override bool PreExecute(in PreExecute execute) {
+            error = PrepareDelete(execute.db);
+            return base.PreExecute(execute);
         }
         
         private TaskErrorResult PrepareDelete(EntityDatabase database)

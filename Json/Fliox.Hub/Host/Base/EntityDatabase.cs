@@ -253,7 +253,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// return true to execute given <paramref name="task"/> synchronous. <br/>
         /// return false to execute the <paramref name="task"/> asynchronous
         /// </summary>
-        public   virtual    bool                IsSyncTask(SyncRequestTask task) => false;
+        public   virtual    bool  IsSyncTask(SyncRequestTask task, in PreExecute execute) => false;
     
         /// <summary>Create a container with the given <paramref name="name"/> in the database</summary>
         public abstract EntityContainer CreateContainer     (in ShortString name, EntityDatabase database);

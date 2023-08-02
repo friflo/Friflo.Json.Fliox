@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         public              EntityValue[]   Values  => (EntityValue[]) items;
         public              EntityObject[]  Objects => (EntityObject[])items;
         public              int             Length  => items is EntityValue[] values ? values.Length : ((EntityObject[])items).Length;
-        private             EntitiesType    Type    => items is EntityValue[] ? EntitiesType.Values : EntitiesType.Objects;
+        internal            EntitiesType    Type    => items is EntityObject[] ? EntitiesType.Objects : EntitiesType.Values;
 
         public override     string          ToString() => $"Length: {Length}, Type: {Type}";
 

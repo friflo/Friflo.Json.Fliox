@@ -188,7 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 ids         = ids,
                 references  = references,
                 intern      = new SyncTaskIntern(read),
-                //  nativeType  = typeof(T) 
+            //  typeMapper  = set.GetTypeMapper()
             };
         }
 
@@ -210,7 +210,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 ids         = ids,
                 references  = references,
                 intern      = new SyncTaskIntern(read),
-            //  nativeType  = typeof(T) 
+            //  typeMapper  = set.GetTypeMapper()
             };
         }
 

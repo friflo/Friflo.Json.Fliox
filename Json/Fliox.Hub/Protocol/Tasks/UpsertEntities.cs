@@ -37,9 +37,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   string              TaskName => $"container: '{container}'";
         public   override   bool                IsNop()  => entities.Count == 0;
         
-        public override bool PreExecute(EntityDatabase database, SharedEnv env) {
-            error = PrepareUpsert(database, env);
-            return base.PreExecute(database, env);
+        public override bool PreExecute(in PreExecute execute) {
+            error = PrepareUpsert(execute.db, execute.env);
+            return base.PreExecute(execute);
         }
         
         private TaskErrorResult PrepareUpsert(EntityDatabase database, SharedEnv env)

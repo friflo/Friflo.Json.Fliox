@@ -48,8 +48,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 
         public      override   string           ToString() => TaskName;
         
-        public virtual bool PreExecute(EntityDatabase database, SharedEnv env) {
-            var isSync              = database.IsSyncTask(this);
+        public virtual bool PreExecute(in PreExecute execute) {
+            var isSync              = execute.db.IsSyncTask(this, execute);
             intern.executionType    = isSync ? ExecutionType.Sync : ExecutionType.Async;
             return isSync;
         }
@@ -194,6 +194,19 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             index           = 0;
             executionType   = default;
             json            = null;
+        }
+    }
+    
+    public readonly struct PreExecute
+    {
+        public readonly EntityDatabase  db;
+        public readonly SharedEnv       env;
+        public readonly bool            executeSync;
+        
+        internal  PreExecute (EntityDatabase db, SharedEnv env, bool executeSync) {
+            this.db             = db;
+            this.env            = env;
+            this.executeSync    = executeSync;
         }
     }
 }
