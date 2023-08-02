@@ -39,14 +39,19 @@ namespace Friflo.Json.Tests.Provider
         
         internal static  readonly   string  TEST_DB_PROVIDER;
         
-        private  static bool    IsProvider  (string db1, string db2) => TEST_DB_PROVIDER == db1 || TEST_DB_PROVIDER == db2;
-        
+        private  static bool    IsProvider  (string db, string provider1, string provider2) {
+            return db == test_db && (TEST_DB_PROVIDER == provider1 || TEST_DB_PROVIDER == provider2);
+        }
+        internal static bool    IsProvider  (string db, string provider) {
+            return db == test_db && (TEST_DB_PROVIDER == provider);
+        }
+
         internal static bool    IsCosmosDB  (string db) => TEST_DB_PROVIDER == "cosmos"             && db == test_db;
-        internal static bool    IsMySQL     (string db) => IsProvider("mysql",     "mysql_rel")     && db == test_db;
-        internal static bool    IsMariaDB   (string db) => IsProvider("mariadb",   "mariadb_rel")   && db == test_db;
-        internal static bool    IsSQLServer (string db) => IsProvider("sqlserver", "sqlserver_rel") && db == test_db;
-        internal static bool    IsPostgres  (string db) => IsProvider("postgres",  "postgres_rel")  && db == test_db;
-        internal static bool    IsSQLite    (string db) =>(IsProvider("sqlite",    "sqlite_rel")    && db == test_db) || db == sqlite_db;
+        internal static bool    IsMySQL     (string db) => IsProvider(db, "mysql",     "mysql_rel");
+        internal static bool    IsMariaDB   (string db) => IsProvider(db, "mariadb",   "mariadb_rel");
+        internal static bool    IsSQLServer (string db) => IsProvider(db, "sqlserver", "sqlserver_rel");
+        internal static bool    IsPostgres  (string db) => IsProvider(db, "postgres",  "postgres_rel");
+        internal static bool    IsSQLite    (string db) => IsProvider(db, "sqlite",    "sqlite_rel") || db == sqlite_db;
         
         internal static bool    IsFileSystem            => TEST_DB_PROVIDER == "file"   || TEST_DB_PROVIDER == null;
         internal static bool    IsMemoryDB(string db)   => db == "memory_db"; 

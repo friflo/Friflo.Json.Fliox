@@ -188,7 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 ids         = ids,
                 references  = references,
                 intern      = new SyncTaskIntern(read),
-            //  typeMapper  = set.GetTypeMapper()
+                typeMapper  = set.client.Options.DebugReadObjects ? set.GetTypeMapper() : null
             };
         }
 
@@ -210,7 +210,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 ids         = ids,
                 references  = references,
                 intern      = new SyncTaskIntern(read),
-            //  typeMapper  = set.GetTypeMapper()
+                typeMapper  = set.client.Options.DebugReadObjects ? set.GetTypeMapper() : null
             };
         }
 

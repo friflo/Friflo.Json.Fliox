@@ -7,25 +7,32 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Provider.Env;
 
+// ReSharper disable HeuristicUnreachableCode
 namespace Friflo.Json.Tests.Provider.Perf
 {
-
     public static class TestPerf
     {
-        internal const int  SeedCount   = 1; // 5000;
-        internal const  int WarmupCount = 1; // 50_000;
-        internal const  int ReadCount   = 1; // 1_000;
+        private static bool SupportSync(string db) => IsSQLite(db) || IsProvider(db, "sqlserver_rel") || IsMemoryDB(db);
+        
+        private  const  bool    PerfRun     = false;
+            
+        internal const  int     SeedCount   = PerfRun ?  5_000 : 1;
+        internal const  int     WarmupCount = PerfRun ? 50_000 : 1;
+        internal const  int     ReadCount   = PerfRun ?  1_000 : 1;
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task Perf_Read_One(string db) {
+            if (!SupportSync(db)) return;
+            
             await SeedPosts(db);
             
             var client  = await GetClient(db, false);
+            client.Options.DebugReadObjects = true;
 
             // warmup
             for (int n = 0; n < WarmupCount; n++) {
                 client.posts.Find(n % SeedCount);
-                await client.SyncTasks();
+                client.SyncTasksSynchronous();
             }
 
             // measurement
@@ -34,10 +41,10 @@ namespace Friflo.Json.Tests.Provider.Perf
             var count = ReadCount;
             for (int n = 0; n < count; n++) {
                 client.posts.Find(n % SeedCount);
-                await client.SyncTasks();
+                client.SyncTasksSynchronous();
             }
             var duration = stopWatch.Elapsed.TotalMilliseconds;
-            Console.WriteLine($"Read. count: {count}, duration: {duration} ms");
+            Console.WriteLine($"{db,-12} Read. count: {count}, duration: {duration} ms");
         }
         
         // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]

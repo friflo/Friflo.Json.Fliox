@@ -29,6 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Changing the id would result in not receiving events a client subscribed with an old id.<br/>
         /// </remarks>
         public  IEventReceiver  DebugEventReceiver  { private get => eventReceiver; set => SetEventReceiver(value); }
+        
+        public  bool            DebugReadObjects    { get; set; }
 
         // --- private
         [Browse(Never)] internal    IEventReceiver  eventReceiver;
