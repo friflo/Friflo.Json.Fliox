@@ -114,6 +114,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public   readonly   ColumnInfo                      keyColumn;
         public   readonly   TableType                       tableType;
         public   readonly   string                          container;
+        public   readonly   TypeDef                         type;
         // --- internal
         private  readonly   Dictionary<string, ColumnInfo>  columnMap;
         // ReSharper disable once CollectionNeverQueried.Local
@@ -138,7 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             this.container  = container;
             columnMap       = new Dictionary<string, ColumnInfo>();
             indexMap        = new Dictionary<string, ColumnInfo>();
-            var type        = database.Schema.typeSchema.RootType.FindField(container).type;
+            type            = database.Schema.typeSchema.RootType.FindField(container).type;
             root            = AddTypeFields(type, null, "(Root)", -1);
             keyColumn       = columnMap[type.KeyField.name];
             columns         = new ColumnInfo[columnMap.Count];

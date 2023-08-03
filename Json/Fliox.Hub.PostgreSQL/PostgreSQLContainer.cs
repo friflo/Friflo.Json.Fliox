@@ -10,7 +10,6 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Schema.Definition;
 using Npgsql;
 using static Friflo.Json.Fliox.Hub.PostgreSQL.PostgreSQLUtils;
 using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
@@ -22,15 +21,12 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
     internal sealed partial class PostgreSQLContainer : EntityContainer, ISQLTable
     {
         internal readonly   TableInfo       tableInfo;
-        internal readonly   TypeDef         entityType;
         internal readonly   TableType       tableType;
         
         internal PostgreSQLContainer(string name, PostgreSQLDatabase database)
             : base(name, database)
         {
             tableInfo   = new TableInfo (database, name, '"', '"', database.TableType);
-            var types   = database.Schema.typeSchema.GetEntityTypes();
-            entityType  = types[name];
             tableType   = database.TableType;
         }
         
@@ -216,7 +212,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             if (command.type == AggregateType.count) {
                 var filter  = command.GetFilter();
-                var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter(entityType, tableType)}";
+                var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter(tableInfo.type, tableType)}";
                 var sql     = $"SELECT COUNT(*) from {name}{where}";
                 var result  = await ExecuteAsync(connection, sql).ConfigureAwait(false);
                 if (result.Failed) { return new AggregateEntitiesResult { Error = result.TaskError() }; }

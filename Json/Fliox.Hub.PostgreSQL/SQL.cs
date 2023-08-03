@@ -3,7 +3,6 @@
 
 using System.Text;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Hub.PostgreSQL;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 
@@ -30,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         internal static string Query(PostgreSQLContainer container, QueryEntities command) {
             var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "TRUE" : filter.PostgresFilter(container.entityType, container.tableType);
+            var where   = filter.IsTrue ? "TRUE" : filter.PostgresFilter(container.tableInfo.type, container.tableType);
             var sql     = SQLUtils.QueryEntitiesSQL(command, container.name, where, container.tableInfo);
             return sql;
         }
