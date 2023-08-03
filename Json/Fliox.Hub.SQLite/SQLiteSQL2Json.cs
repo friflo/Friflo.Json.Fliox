@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -212,6 +213,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                     throw new InvalidOperationException($"unexpected type: {column.type}");
             }
         }
+        
+        public List<EntityValue>       ReadEntitiesSync    (SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer) => throw new NotImplementedException();
+        public Task<List<EntityValue>> ReadEntitiesAsync    (SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer) => throw new NotImplementedException();
     }
 }
 

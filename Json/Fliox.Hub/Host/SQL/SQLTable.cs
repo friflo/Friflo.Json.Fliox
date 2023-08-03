@@ -56,6 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         public static ReadEntitiesResult ReadEntitiesSync(
             DbDataReader    reader,
+            ISQL2JsonMapper mapper,
             ReadEntities    query,
             TableInfo       tableInfo,
             SyncContext     syncContext)
@@ -63,9 +64,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var typeMapper = query.typeMapper;
             if (typeMapper == null) {
                 using var pooled = syncContext.pool.SQL2Json.Get();
-                var sql2Json = new SQL2JsonMapper(reader);
                 var buffer   = syncContext.MemoryBuffer;
-                var entities = sql2Json.ReadEntitiesSync(pooled.instance, tableInfo, buffer);
+                var entities = mapper.ReadEntitiesSync(pooled.instance, tableInfo, buffer);
                 var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
                 return new ReadEntitiesResult { entities = new Entities(array) };
             }
@@ -85,6 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         public static async Task<ReadEntitiesResult> ReadEntitiesAsync(
             DbDataReader    reader,
+            ISQL2JsonMapper mapper,
             ReadEntities    query,
             TableInfo       tableInfo,
             SyncContext     syncContext)
@@ -92,9 +93,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var typeMapper = query.typeMapper;
             if (typeMapper == null) {
                 using var pooled = syncContext.pool.SQL2Json.Get();
-                var sql2Json = new SQL2JsonMapper(reader);
                 var buffer   = syncContext.MemoryBuffer;
-                var entities = await sql2Json.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
+                var entities = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
                 var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
                 return new ReadEntitiesResult { entities = new Entities(array) };
             }

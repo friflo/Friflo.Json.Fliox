@@ -18,12 +18,12 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseIndexFromEndExpression
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
-    internal sealed class MySQLContainer : EntityContainer, ISQLTable
+    internal sealed partial class MySQLContainer : EntityContainer, ISQLTable
     {
-        private  readonly   TableInfo       tableInfo;
+        internal readonly   TableInfo       tableInfo;
         public   override   bool            Pretty      { get; }
-        private  readonly   MySQLProvider   provider;
-        private  readonly   TableType       tableType;
+        internal readonly   MySQLProvider   provider;
+        internal readonly   TableType       tableType;
         
         internal MySQLContainer(string name, MySQLDatabase database, bool pretty)
             : base(name, database)
@@ -150,24 +150,21 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return new UpsertEntitiesResult();
         }
 
+        /// <summary>async version of <see cref="ReadEntities"/></summary>
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
-            var sql = new StringBuilder();
-            if (tableType == TableType.Relational) {
-                sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
-                sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
-            } else {
-                sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
-            }
-            SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.BackSlash);
             try {
-                using var reader = await connection.ExecuteReaderAsync(sql.ToString()).ConfigureAwait(false);
                 if (tableType == TableType.Relational) {
-                    return await SQLTable.ReadEntitiesAsync(reader, command, tableInfo, syncContext).ConfigureAwait(false);
+                    var sql             = SQL.ReadRelational(this, command);
+                    using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
+                    var sql2Json        = new SQL2JsonMapper(reader);
+                    return await SQLTable.ReadEntitiesAsync(reader, sql2Json, command, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
+                    var sql             = SQL.ReadJsonColumn(this, command);
+                    using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                     return await SQLUtils.ReadJsonColumnAsync(reader, command).ConfigureAwait(false);
                 }
             } catch (MySqlException e) {
@@ -175,14 +172,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
         }
 
+        /// <summary>async version of <see cref="QueryEntities"/></summary>
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
             }
-            var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "TRUE" : filter.MySQLFilter(provider, tableType);
-            var sql     = SQLUtils.QueryEntitiesSQL(command, name, where, tableInfo);
+            var sql     = SQL.Query(this, command);
             try {
                 using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 List<EntityValue> entities;

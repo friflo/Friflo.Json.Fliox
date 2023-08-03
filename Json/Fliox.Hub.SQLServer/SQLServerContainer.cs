@@ -166,9 +166,10 @@ CREATE TABLE dbo.{name}";
             }
             try {
                 if (tableType == TableType.Relational) {
-                    var sql = SQL.ReadRelational(this, command);
-                    using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
-                    return await SQLTable.ReadEntitiesAsync(reader, command, tableInfo, syncContext).ConfigureAwait(false);
+                    var sql             = SQL.ReadRelational(this, command);
+                    using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
+                    var sql2Json        = new SQL2JsonMapper(reader);
+                    return await SQLTable.ReadEntitiesAsync(reader, sql2Json, command, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
                     var sql = SQL.ReadJsonColumn(this,command);
                     using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);

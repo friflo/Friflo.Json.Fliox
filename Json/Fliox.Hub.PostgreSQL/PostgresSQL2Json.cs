@@ -18,8 +18,24 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         internal PostgresSQL2Json(DbDataReader reader) {
             this.reader = reader;
         }
+
+        /// <summary>async version of <see cref="ReadEntitiesAsync"/></summary>
+        public List<EntityValue> ReadEntitiesSync(SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer)
+        {
+            sql2Json.InitMapper(this, tableInfo, buffer);
+            while (reader.Read())
+            {
+                foreach (var column in tableInfo.columns) {
+                    ReadCell(sql2Json, column, ref sql2Json.cells[column.ordinal]);
+                }
+                sql2Json.AddRow();
+            }
+            sql2Json.Cleanup();
+            return sql2Json.result;
+        }
         
-        internal async Task<List<EntityValue>> ReadEntitiesAsync(SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer)
+        /// <summary>async version of <see cref="ReadEntitiesSync"/></summary>
+        public async Task<List<EntityValue>> ReadEntitiesAsync(SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer)
         {
             sql2Json.InitMapper(this, tableInfo, buffer);
             while (await reader.ReadAsync().ConfigureAwait(false))

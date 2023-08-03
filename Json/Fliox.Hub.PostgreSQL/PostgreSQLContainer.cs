@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -20,11 +19,11 @@ using static Friflo.Json.Fliox.Hub.Host.SQL.SQLName;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
-    internal sealed class PostgreSQLContainer : EntityContainer, ISQLTable
+    internal sealed partial class PostgreSQLContainer : EntityContainer, ISQLTable
     {
-        private  readonly   TableInfo       tableInfo;
-        private  readonly   TypeDef         entityType;
-        private  readonly   TableType       tableType;
+        internal readonly   TableInfo       tableInfo;
+        internal readonly   TypeDef         entityType;
+        internal readonly   TableType       tableType;
         
         internal PostgreSQLContainer(string name, PostgreSQLDatabase database)
             : base(name, database)
@@ -164,29 +163,21 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             return new UpsertEntitiesResult();
         }
 
+        /// <summary>sync version of <see cref="ReadEntities"/></summary>
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
-            var sql = new StringBuilder();
-            if (tableType == TableType.Relational) {
-                sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
-                sql.Append($" FROM {name} WHERE \"{tableInfo.keyColumn.name}\" in\n");
-            } else {
-                sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
-            }
-            SQLUtils.AppendKeysSQL(sql,  command.ids, SQLEscape.Default);
             try {
-                using var reader = await connection.ExecuteReaderAsync(sql.ToString()).ConfigureAwait(false);
                 if (tableType == TableType.Relational) {
-                    using var pooled = syncContext.SQL2Json.Get();
-                    var mapper   = new PostgresSQL2Json(reader);
-                    var buffer   = syncContext.MemoryBuffer;
-                    var entities = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
-                    var array    = KeyValueUtils.EntityListToArray(entities, command.ids);
-                    return new ReadEntitiesResult { entities = new Entities(array) };
+                    var sql             = SQL.ReadRelational(this, command);
+                    using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
+                    var mapper          = new PostgresSQL2Json(reader);
+                    return await SQLTable.ReadEntitiesAsync(reader, mapper, command, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
+                    var sql = SQL.ReadJsonColumn(this,command);
+                    using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                     return await SQLUtils.ReadJsonColumnAsync(reader, command).ConfigureAwait(false);
                 }
             } catch (PostgresException e) {
@@ -194,14 +185,13 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
         }
 
+        /// <summary>sync version of <see cref="QueryEntities"/></summary>
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
             }
-            var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "TRUE" : filter.PostgresFilter(entityType, tableType);
-            var sql     = SQLUtils.QueryEntitiesSQL(command, name, where, tableInfo);
+            var sql = SQL.Query(this, command);
             try {
                 using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                 List<EntityValue> entities;

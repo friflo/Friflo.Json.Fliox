@@ -4,22 +4,17 @@
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
 using System.Collections.Generic;
-using System.Data;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using System.Data.SqlClient;
-using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
+using Npgsql;
 
 
-namespace Friflo.Json.Fliox.Hub.SQLServer
+namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
-    internal sealed partial class SQLServerContainer
+    internal sealed partial class PostgreSQLContainer
     {
-
-        SqlCommand      readCommand;
-        SqlParameter    sqlParam;
         
         /// <summary>sync version of <see cref="ReadEntitiesAsync"/></summary>
         public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
@@ -29,36 +24,18 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
             try {
                 if (tableType == TableType.Relational) {
-                    if (false) {
-                        var sql = SQL.ReadRelational(this, command);
-                        using var reader = connection.ExecuteReaderSync(sql);
-                        var sql2Json        = new SQL2JsonMapper(reader);
-                        return SQLTable.ReadEntitiesSync(reader, sql2Json, command, tableInfo, syncContext);
-                    } else {
-                        using var pooled = syncContext.SQL2Object.Get();
-                        var sql2Object = pooled.instance;
-                        if (readCommand == null) {
-                            var sql = sql2Object.sb;
-                            sql.Clear();
-                            sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
-                            sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in (@ids);\n");
-                            readCommand = new SqlCommand(sql.ToString(), connection.sqlInstance);
-                            sqlParam = readCommand.Parameters.Add("@ids", SqlDbType.NVarChar, 100);
-                            readCommand.Prepare();
-                        }
-                        sql2Object.sb.Clear();
-                        sqlParam.Value = SQLUtils.AppendKeysSQL2(sql2Object.sb, command.ids, SQLEscape.PrefixN).ToString();
-                        using var reader = connection.ExecuteReaderSync(readCommand);
-                        return SQLTable.ReadObjects(reader, command, sql2Object);
-                    }
+                    var sql             = SQL.ReadRelational(this, command);
+                    using var reader    = connection.ExecuteReaderSync(sql);
+                    var mapper          = new PostgresSQL2Json(reader);
+                    return SQLTable.ReadEntitiesSync(reader, mapper, command, tableInfo, syncContext);
                 } else {
                     var sql = SQL.ReadJsonColumn(this,command);
                     using var reader = connection.ExecuteReaderSync(sql);
                     return SQLUtils.ReadJsonColumnSync(reader, command);
                 }
             }
-            catch (SqlException e) {
-                return new ReadEntitiesResult { Error = new TaskExecuteError(GetErrMsg(e)) };
+            catch (PostgresException e) {
+                return new ReadEntitiesResult { Error = new TaskExecuteError(e.MessageText) };
             }
         }
         
@@ -79,8 +56,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 }
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
-            catch (SqlException e) {
-                return new QueryEntitiesResult { Error = new TaskExecuteError(GetErrMsg(e)), sql = sql };
+            catch (PostgresException e) {
+                return new QueryEntitiesResult { Error = new TaskExecuteError(e.MessageText), sql = sql };
             }
         }
     }

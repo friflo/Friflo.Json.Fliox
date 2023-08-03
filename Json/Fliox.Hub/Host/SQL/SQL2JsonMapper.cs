@@ -16,7 +16,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     /// </summary>
     public interface ISQL2JsonMapper
     {
-        void WriteJsonMember(SQL2Json sql2Json, ColumnInfo column);
+        void                    WriteJsonMember     (SQL2Json sql2Json, ColumnInfo column);
+        List<EntityValue>       ReadEntitiesSync    (SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer);
+        Task<List<EntityValue>> ReadEntitiesAsync   (SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer);
     }
     
     public sealed class SQL2JsonMapper : ISQL2JsonMapper
@@ -27,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             this.reader = reader;
         }
         
-        internal async Task<List<EntityValue>> ReadEntitiesAsync(SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer)
+        public async Task<List<EntityValue>> ReadEntitiesAsync(SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer)
         {
             sql2Json.InitMapper(this, tableInfo, buffer);
             while (await reader.ReadAsync().ConfigureAwait(false))
@@ -41,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return sql2Json.result;
         }
         
-        internal List<EntityValue> ReadEntitiesSync(SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer)
+        public List<EntityValue> ReadEntitiesSync(SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer)
         {
             sql2Json.InitMapper(this, tableInfo, buffer);
             while (reader.Read())
