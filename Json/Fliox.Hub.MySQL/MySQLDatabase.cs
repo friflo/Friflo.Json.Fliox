@@ -42,6 +42,23 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return new MySQLContainer(name.AsString(), this, Pretty);
         }
         
+        protected override ISyncConnection GetConnectionSync()  {
+            if (connectionPool.TryPop(out var syncConnection)) {
+                return syncConnection;
+            }
+            try {
+                var connection = new MySqlConnection(connectionString);
+                connection.Open();
+                return new SyncConnection(connection);                
+            }
+            catch(MySqlException e) {
+                return OpenError(e);
+            }
+            catch (Exception e) {
+                return new SyncConnectionError(e);
+            }
+        }
+        
         protected override async Task<ISyncConnection> GetConnectionAsync()  {
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
@@ -52,14 +69,18 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new SyncConnection(connection);                
             }
             catch(MySqlException e) {
-                if (e.ErrorCode == MySqlErrorCode.UnknownDatabase) {
-                    return SyncConnectionError.DatabaseDoesNotExist(name);
-                } 
-                return new SyncConnectionError(e);
+                return OpenError(e);
             }
             catch (Exception e) {
                 return new SyncConnectionError(e);
             }
+        }
+        
+        private SyncConnectionError OpenError(MySqlException e) {
+            if (e.ErrorCode == MySqlErrorCode.UnknownDatabase) {
+                return SyncConnectionError.DatabaseDoesNotExist(name);
+            } 
+            return new SyncConnectionError(e);
         }
         
         protected  override void ReturnConnection(ISyncConnection connection) {

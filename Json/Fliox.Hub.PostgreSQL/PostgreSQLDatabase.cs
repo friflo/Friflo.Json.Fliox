@@ -40,6 +40,23 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             return new PostgreSQLContainer(name.AsString(), this);
         }
         
+        protected override ISyncConnection GetConnectionSync()  {
+            if (connectionPool.TryPop(out var syncConnection)) {
+                return syncConnection;
+            }
+            try {
+                var connection = new NpgsqlConnection(connectionString);
+                connection.Open();
+                return new SyncConnection(connection);                
+            }
+            catch(PostgresException e) {
+                return OpenError(e);
+            }
+            catch (Exception e) {
+                return new SyncConnectionError(e);
+            }
+        }
+        
         protected override async Task<ISyncConnection> GetConnectionAsync()  {
             if (connectionPool.TryPop(out var syncConnection)) {
                 return syncConnection;
@@ -50,14 +67,18 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new SyncConnection(connection);                
             }
             catch(PostgresException e) {
-                if (e.SqlState == PostgresErrorCodes.InvalidCatalogName) {
-                    return SyncConnectionError.DatabaseDoesNotExist(name);
-                } 
-                return new SyncConnectionError(e);
+                return OpenError(e);
             }
             catch (Exception e) {
                 return new SyncConnectionError(e);
             }
+        }
+        
+        private SyncConnectionError OpenError(PostgresException e) {
+            if (e.SqlState == PostgresErrorCodes.InvalidCatalogName) {
+                return SyncConnectionError.DatabaseDoesNotExist(name);
+            } 
+            return new SyncConnectionError(e);
         }
         
         protected  override void ReturnConnection(ISyncConnection connection) {

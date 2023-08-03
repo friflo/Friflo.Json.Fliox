@@ -63,10 +63,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 return new SyncConnection(connection);
             }
             catch (SqlException e) {
-                if (e.Number == 4060) {
-                    return SyncConnectionError.DatabaseDoesNotExist(name);
-                }
-                return new SyncConnectionError(e);
+                return OpenError(e);
             }
             catch (Exception e) {
                 return new SyncConnectionError(e);
@@ -83,14 +80,18 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 return new SyncConnection(connection);
             }
             catch (SqlException e) {
-                if (e.Number == 4060) {
-                    return SyncConnectionError.DatabaseDoesNotExist(name);
-                }
-                return new SyncConnectionError(e);
+                return OpenError(e);
             }
             catch (Exception e) {
                 return new SyncConnectionError(e);
             }
+        }
+        
+        private SyncConnectionError OpenError(SqlException e) {
+            if (e.Number == 4060) {
+                return SyncConnectionError.DatabaseDoesNotExist(name);
+            }
+            return new SyncConnectionError(e);
         }
         
         protected  override void ReturnConnection(ISyncConnection connection) {
