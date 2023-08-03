@@ -147,10 +147,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
         
         /// <summary>
-        /// Prefer using <see cref="ReadEntitiesSync"/> for SQL Server for performance.<br/>
+        /// Prefer using <see cref="ReadJsonColumnSync"/> for SQL Server for performance.<br/>
         /// reading a single record - asynchronous: ~700 µs, synchronous: 100µs
         /// </summary>
-        public static async Task<ReadEntitiesResult> ReadEntitiesAsync(DbDataReader reader, ReadEntities query) {
+        public static async Task<ReadEntitiesResult> ReadJsonColumnAsync(DbDataReader reader, ReadEntities query) {
             var ids = query.ids;
             var rows        = new List<EntityValue>(ids.Count);
             while (await reader.ReadAsync().ConfigureAwait(false)) {
@@ -164,7 +164,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return new ReadEntitiesResult { entities = new Entities(entities) };
         }
         
-        public static ReadEntitiesResult ReadEntitiesSync(DbDataReader reader, ReadEntities query) {
+        public static ReadEntitiesResult ReadJsonColumnSync(DbDataReader reader, ReadEntities query) {
             var ids = query.ids;
             var rows        = new List<EntityValue>(ids.Count);
             while (reader.Read()) {
@@ -179,10 +179,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
         
         /// <summary>
-        /// Prefer using <see cref="QueryEntitiesSync"/> for SQL Server for performance.<br/>
+        /// Async version of <see cref="QueryJsonColumnSync"/><br/>
+        /// Prefer using <see cref="QueryJsonColumnSync"/> for SQL Server for performance.<br/>
         /// E.g. reading two records - asynchronous: ~700 µs, synchronous: 100µs
         /// </summary>
-        public static async Task<List<EntityValue>> QueryEntitiesAsync(DbDataReader reader) {
+        public static async Task<List<EntityValue>> QueryJsonColumnAsync(DbDataReader reader) {
             var entities = new List<EntityValue>();
             while (await reader.ReadAsync().ConfigureAwait(false)) {
                 var id      = reader.GetString(0);
@@ -194,7 +195,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return entities;
         }
         
-        public static List<EntityValue> QueryEntitiesSync(DbDataReader reader) {
+        /// <summary>sync version of <see cref="QueryJsonColumnAsync"/></summary>
+        public static List<EntityValue> QueryJsonColumnSync(DbDataReader reader) {
             var entities = new List<EntityValue>();
             while (reader.Read()) {
                 var id      = reader.GetString(0);

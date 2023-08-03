@@ -40,6 +40,20 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             sql2Json.Cleanup();
             return sql2Json.result;
         }
+        
+        internal List<EntityValue> ReadEntitiesSync(SQL2Json sql2Json, TableInfo tableInfo, MemoryBuffer buffer)
+        {
+            sql2Json.InitMapper(this, tableInfo, buffer);
+            while (reader.Read())
+            {
+                foreach (var column in tableInfo.columns) {
+                    ReadCell(sql2Json, column, ref sql2Json.cells[column.ordinal]);
+                }
+                sql2Json.AddRow();
+            }
+            sql2Json.Cleanup();
+            return sql2Json.result;
+        }
 
         private void ReadCell(SQL2Json sql2Json, ColumnInfo column, ref ReadCell cell) {
             var ordinal = column.ordinal;

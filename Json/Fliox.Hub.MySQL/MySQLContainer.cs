@@ -168,7 +168,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 if (tableType == TableType.Relational) {
                     return await SQLTable.ReadEntitiesAsync(reader, command, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
-                    return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
+                    return await SQLUtils.ReadJsonColumnAsync(reader, command).ConfigureAwait(false);
                 }
             } catch (MySqlException e) {
                 return new ReadEntitiesResult { Error = DatabaseError(e) };
@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 if (tableType == TableType.Relational) {
                     entities    = await SQLTable.QueryEntitiesAsync(reader, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
-                    entities    = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
+                    entities    = await SQLUtils.QueryJsonColumnAsync(reader).ConfigureAwait(false);
                 }
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }

@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     var array    = KeyValueUtils.EntityListToArray(entities, command.ids);
                     return new ReadEntitiesResult { entities = new Entities(array) };
                 } else {
-                    return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
+                    return await SQLUtils.ReadJsonColumnAsync(reader, command).ConfigureAwait(false);
                 }
             } catch (PostgresException e) {
                 return new ReadEntitiesResult { Error = new TaskExecuteError(e.MessageText) };
@@ -211,7 +211,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     var buffer  = syncContext.MemoryBuffer;
                     entities    = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
                 } else {
-                    entities = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
+                    entities = await SQLUtils.QueryJsonColumnAsync(reader).ConfigureAwait(false);
                 }
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             } catch (PostgresException e) {

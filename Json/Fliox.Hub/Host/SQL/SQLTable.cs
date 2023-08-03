@@ -54,6 +54,35 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             pooled.instance.AppendColumnValues(writer, entities, tableInfo);
         }
         
+        public static ReadEntitiesResult ReadEntitiesSync(
+            DbDataReader    reader,
+            ReadEntities    query,
+            TableInfo       tableInfo,
+            SyncContext     syncContext)
+        {
+            var typeMapper = query.typeMapper;
+            if (typeMapper == null) {
+                using var pooled = syncContext.pool.SQL2Json.Get();
+                var sql2Json = new SQL2JsonMapper(reader);
+                var buffer   = syncContext.MemoryBuffer;
+                var entities = sql2Json.ReadEntitiesSync(pooled.instance, tableInfo, buffer);
+                var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
+                return new ReadEntitiesResult { entities = new Entities(array) };
+            }
+            var binaryReader    = new BinaryDbDataReader();
+            binaryReader.Init(reader);
+            var objects         = new EntityObject[query.ids.Count];
+            int count           = 0;
+            while (reader.Read())
+            {
+                binaryReader.NextRow();
+                var obj = typeMapper.ReadBinary(binaryReader, null, out bool _);
+                var key = query.ids[count];
+                objects[count++] = new EntityObject(key, obj);
+            }
+            return new ReadEntitiesResult { entities = new Entities(objects) };
+        }
+        
         public static async Task<ReadEntitiesResult> ReadEntitiesAsync(
             DbDataReader    reader,
             ReadEntities    query,
@@ -112,6 +141,17 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             var mapper   = new SQL2JsonMapper(reader);
             var buffer   = syncContext.MemoryBuffer;
             return await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
+        }
+        
+        public static List<EntityValue> QueryEntitiesSync(
+            DbDataReader    reader,
+            TableInfo       tableInfo,
+            SyncContext     syncContext)
+        {
+            using var pooled = syncContext.pool.SQL2Json.Get();
+            var mapper   = new SQL2JsonMapper(reader);
+            var buffer   = syncContext.MemoryBuffer;
+            return mapper.ReadEntitiesSync(pooled.instance, tableInfo, buffer);
         }
         
         public static async Task<RawSqlResult> ReadRows(DbDataReader reader) {

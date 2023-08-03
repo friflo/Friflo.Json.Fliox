@@ -49,8 +49,7 @@ WHEN NOT MATCHED THEN
             var rowArray = new DataRow[count];  
             table.Rows.CopyTo(rowArray, 0);
             
-            var sqlConn = connection.instance as SqlConnection;
-            var bulk = new SqlBulkCopy(sqlConn);
+            var bulk = new SqlBulkCopy(connection.sqlInstance);
             bulk.DestinationTableName = name;
 
             await bulk.WriteToServerAsync(rowArray).ConfigureAwait(false);

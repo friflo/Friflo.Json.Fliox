@@ -3,63 +3,19 @@
 
 #if !UNITY_5_3_OR_NEWER || MYSQL
 
-using System;
-using System.Data;
-using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using MySqlConnector;
 
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
-    internal sealed class SyncConnection : ISyncConnection
+    internal sealed class SyncConnection : SyncDbConnection
     {
-        private readonly    MySqlConnection         instance;
+        private readonly   MySqlConnection   sqlInstance;
         
-        public  TaskExecuteError    Error       => throw new InvalidOperationException();
-        public  void                Dispose()   => instance.Dispose();
-        public  bool                IsOpen      => instance.State == ConnectionState.Open;
-        public  void                ClearPool() => MySqlConnection.ClearPool(instance);
+        public  override void       ClearPool() => MySqlConnection.ClearPool(sqlInstance);
         
-        public SyncConnection (MySqlConnection instance) {
-            this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
-        }
-        
-        internal async Task ExecuteNonQueryAsync (string sql) {
-            using var cmd = new MySqlCommand(sql, instance);
-            int tryCount = 0;
-            while (true) {
-                tryCount++;
-                try {
-                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-                    return;
-                }
-                catch (MySqlException) {
-                    if (instance.State != ConnectionState.Open && tryCount == 1) {
-                        await instance.OpenAsync().ConfigureAwait(false);
-                        continue;
-                    }
-                    throw;
-                }
-            }
-        }
-        
-        internal async Task<MySqlDataReader> ExecuteReaderAsync(string sql) {
-            using var command = new MySqlCommand(sql, instance);
-            int tryCount = 0;
-            while (true) {
-                tryCount++;
-                try {
-                    return await command.ExecuteReaderAsync().ConfigureAwait(false);
-                }
-                catch (MySqlException) {
-                    if (instance.State != ConnectionState.Open && tryCount == 1) {
-                        await instance.OpenAsync().ConfigureAwait(false);
-                        continue;
-                    }
-                    throw;
-                }
-            }
+        public SyncConnection (MySqlConnection instance) : base (instance) {
+            sqlInstance = instance;
         }
     }
 }

@@ -199,19 +199,6 @@ WHEN NOT MATCHED THEN
             p.TypeName  = "KeyType";
             await connection.ExecuteNonQueryAsync(sql, p).ConfigureAwait(false);
         }
-        
-        internal static async Task<SqlDataReader> ReadEntitiesCmd (SyncConnection connection, ListOne<JsonKey> ids, string table) {
-            var dataTable = new DataTable();
-            dataTable.Columns.Add(ID, typeof(string));
-            foreach(var id in ids) {
-                dataTable.Rows.Add(id.AsString());
-            }
-            var sql     = $"SELECT {ID}, {DATA} FROM {table} WHERE {ID} in (SELECT {ID} FROM @ids);";
-            var p       = new SqlParameter("@ids", SqlDbType.Structured);
-            p.Value     = dataTable;
-            p.TypeName  = "KeyType";
-            return await connection.ExecuteReaderAsync(sql, p).ConfigureAwait(false);
-        }
     }
 }
 

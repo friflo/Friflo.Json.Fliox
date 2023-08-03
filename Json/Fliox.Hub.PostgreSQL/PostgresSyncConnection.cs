@@ -3,63 +3,19 @@
 
 #if !UNITY_5_3_OR_NEWER || POSTGRESQL
 
-using System;
-using System.Data;
-using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Npgsql;
 
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
-    internal sealed class SyncConnection : ISyncConnection
+    internal sealed class SyncConnection : SyncDbConnection
     {
-        private readonly    NpgsqlConnection         instance;
+        private readonly   NpgsqlConnection   sqlInstance;
         
-        public  TaskExecuteError    Error       => throw new InvalidOperationException();
-        public  void                Dispose()   => instance.Close();
-        public  bool                IsOpen      => instance.State == ConnectionState.Open;
-        public  void                ClearPool() => NpgsqlConnection.ClearPool(instance);
+        public  override void       ClearPool() => NpgsqlConnection.ClearPool(sqlInstance);
         
-        public SyncConnection (NpgsqlConnection instance) {
-            this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
-        }
-        
-        internal async Task ExecuteNonQueryAsync (string sql) {
-            using var cmd = new NpgsqlCommand(sql, instance);
-            int tryCount = 0;
-            while (true) {
-                tryCount++;
-                try {
-                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-                    return;
-                }
-                catch (NpgsqlException) {
-                    if (instance.State != ConnectionState.Open && tryCount == 1) {
-                        await instance.OpenAsync().ConfigureAwait(false);
-                        continue;
-                    }
-                    throw;
-                }
-            }
-        }
-        
-        internal async Task<NpgsqlDataReader> ExecuteReaderAsync(string sql) {
-            using var command = new NpgsqlCommand(sql, instance);
-            int tryCount = 0;
-            while (true) {
-                tryCount++;
-                try {
-                    return await command.ExecuteReaderAsync().ConfigureAwait(false);
-                }
-                catch (NpgsqlException) {
-                    if (instance.State != ConnectionState.Open && tryCount == 1) {
-                        await instance.OpenAsync().ConfigureAwait(false);
-                        continue;
-                    }
-                    throw;
-                }
-            }
+        public SyncConnection (NpgsqlConnection instance) : base (instance) {
+            sqlInstance = instance;
         }
     }
 }

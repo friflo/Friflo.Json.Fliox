@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -22,9 +21,9 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     internal sealed partial class SQLServerContainer : EntityContainer, ISQLTable
     {
-        private  readonly   TableInfo           tableInfo;
+        internal readonly   TableInfo           tableInfo;
         public   override   bool                Pretty      { get; }
-        private  readonly   TableType           tableType;
+        internal readonly   TableType           tableType;
         
         // [Maximum capacity specifications for SQL Server - SQL Server | Microsoft Learn]
         // https://learn.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server?view=sql-server-ver16
@@ -159,35 +158,21 @@ CREATE TABLE dbo.{name}";
             return new UpsertEntitiesResult();
         }
         
-        // ReSharper disable once ConvertToConstant.Local
-        /// <summary>
-        /// Using asynchronous execution for SQL Server is significant slower.<br/>
-        /// <see cref="DbCommand.ExecuteReaderAsync()"/> ~7x slower than <see cref="DbCommand.ExecuteReader()"/>.
-        /// </summary>
-        private static readonly bool ExecuteAsync = false;
-
+        /// <summary>async version of <see cref="ReadEntities"/></summary>
         public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
             }
             try {
-                if (ExecuteAsync) {
-                    using var reader = await ReadEntitiesCmd(connection, command.ids, name).ConfigureAwait(false);
-                    return await SQLUtils.ReadEntitiesAsync(reader, command).ConfigureAwait(false);
-                }
-                var sql = new StringBuilder();
                 if (tableType == TableType.Relational) {
-                    sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
-                    sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in\n");
-                    SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.PrefixN);
-                    using var reader = await connection.ExecuteReaderSync(sql.ToString()).ConfigureAwait(false);
+                    var sql = SQL.ReadRelational(this, command);
+                    using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                     return await SQLTable.ReadEntitiesAsync(reader, command, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
-                    sql.Append($"SELECT {ID}, {DATA} FROM {name} WHERE {ID} in\n");
-                    SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.PrefixN);
-                    using var reader = await connection.ExecuteReaderSync(sql.ToString()).ConfigureAwait(false);
-                    return SQLUtils.ReadEntitiesSync(reader, command);
+                    var sql = SQL.ReadJsonColumn(this,command);
+                    using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
+                    return await SQLUtils.ReadJsonColumnAsync(reader, command).ConfigureAwait(false);
                 }
             } catch (SqlException e) {
                 var msg = GetErrMsg(e);
@@ -195,26 +180,20 @@ CREATE TABLE dbo.{name}";
             }
         }
 
+        /// <summary>async version of <see cref="QueryEntities"/></summary>
         public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
             }
-            var filter  = command.GetFilter();
-            var where   = filter.IsTrue ? "(1=1)" : filter.SQLServerFilter(tableType);
-            var sql     = SQLServerUtils.QueryEntities(command, name, where, tableInfo);
+            var sql = SQL.Query(this, command);
             try {
                 List<EntityValue> entities;
-                if (ExecuteAsync) {
-                    using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
-                    entities = await SQLUtils.QueryEntitiesAsync(reader).ConfigureAwait(false);
+                using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
+                if (tableType == TableType.Relational) {
+                    entities = await SQLTable.QueryEntitiesAsync(reader, tableInfo, syncContext).ConfigureAwait(false);
                 } else {
-                    using var reader = await connection.ExecuteReaderSync(sql).ConfigureAwait(false);
-                    if (tableType == TableType.Relational) {
-                        entities = await SQLTable.QueryEntitiesAsync(reader, tableInfo, syncContext).ConfigureAwait(false);
-                    } else {
-                        entities = SQLUtils.QueryEntitiesSync(reader);
-                    }
+                    entities = await SQLUtils.QueryJsonColumnAsync(reader).ConfigureAwait(false);
                 }
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
