@@ -147,7 +147,6 @@
     "[markdown]": {
         "editor.wordWrap": "off"
     },
-    "omnisharp.enableImportCompletion": true,
     "markdown.preview.doubleClickToSwitchToEditor": false,
     "markdown.preview.markEditorSelection": false,
     "workbench.colorCustomizations": {
@@ -158,5 +157,8 @@
         // The color must not be opaque so as not to hide underlying decorations.
         "diffEditor.insertedLineBackground": "#00ff0018",   // rest are new
         "diffEditor.removedLineBackground":  "#ff000018",
-    }
+    },
+    // "omnisharp.enableImportCompletion": true,
+    "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
+    "dotnet.defaultSolution": "Friflo.Json.Fliox.sln"
 }
