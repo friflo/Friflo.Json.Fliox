@@ -161,5 +161,7 @@
     // "omnisharp.enableImportCompletion": true,
     "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
     "dotnet.defaultSolution": "Friflo.Json.Fliox.sln",
-    "references.preferredLocation": "view"
+    "references.preferredLocation": "view",
+    // disable: Code Lens references in text editors
+    "editor.codeLens": false
 }
