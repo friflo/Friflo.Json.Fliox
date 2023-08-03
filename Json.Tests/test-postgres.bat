@@ -1,8 +1,7 @@
 dotnet build -c Release -f net6.0 --verbosity:quiet
 
 
-dotnet test -c Release -f net6.0 --consoleloggerparameters:ErrorsOnly --filter "FullyQualifiedName=Friflo.Json.Tests.Provider.Perf.TestPerf.Perf_Read_One" --no-build -e TEST_DB_PROVIDER=postgres_rel
-dotnet test -c Release -f net6.0 --consoleloggerparameters:ErrorsOnly --filter "FullyQualifiedName=Friflo.Json.Tests.Provider.Perf.TestPerf.Perf_Read_One" --no-build -e TEST_DB_PROVIDER=postgres
-
+dotnet test -c Release --consoleloggerparameters:ErrorsOnly --filter TestCategory=test_db --no-build -e TEST_DB_PROVIDER=postgres
+dotnet test -c Release --consoleloggerparameters:ErrorsOnly --filter TestCategory=test_db --no-build -e TEST_DB_PROVIDER=postgres_rel
 
 pause

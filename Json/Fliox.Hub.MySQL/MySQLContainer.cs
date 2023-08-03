@@ -102,6 +102,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return new SQLResult();
         }
         
+        /// <summary>async version of <see cref="CreateEntities"/> </summary>
         public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
@@ -110,22 +111,22 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (command.entities.Count == 0) {
                 return new CreateEntitiesResult();
             }
-            var sql = new StringBuilder();
-            if (tableType == TableType.Relational) {
-                sql.Append($"INSERT INTO {name}");
-                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext);
-            } else {
-                sql.Append($"INSERT INTO {name} ({ID},{DATA})\nVALUES ");
-                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
-            }
             try {
-                await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
-            } catch (MySqlException e) {
+                if (tableType == TableType.Relational) {
+                    var sql = SQL.CreateRelational(this, command, syncContext);
+                    await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+                } else {
+                    var sql = SQL.CreateJsonColumn(this, command);
+                    await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+                }
+            }
+            catch (MySqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e) };
             }
             return new CreateEntitiesResult();
         }
         
+        /// <summary>async version of <see cref="UpsertEntities"/> </summary>
         public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
@@ -134,17 +135,16 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             if (command.entities.Count == 0) {
                 return new UpsertEntitiesResult();
             }
-            var sql = new StringBuilder();
-            if (tableType == TableType.Relational) {
-                sql.Append($"REPLACE INTO {name}");
-                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash, tableInfo, syncContext);
-            } else {
-                sql.Append($"REPLACE INTO {name} ({ID},{DATA})\nVALUES");
-                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.BackSlash);
-            }
             try {
-                await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
-            } catch (MySqlException e) {
+                if (tableType == TableType.Relational) {
+                    var sql = SQL.UpsertRelational(this, command, syncContext);
+                    await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+                } else {
+                    var sql = SQL.UpsertJsonColumn(this, command);
+                    await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+                }
+            }
+            catch (MySqlException e) {
                 return new UpsertEntitiesResult { Error = DatabaseError(e) };
             }
             return new UpsertEntitiesResult();
@@ -167,7 +167,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     using var reader    = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                     return await SQLUtils.ReadJsonColumnAsync(reader, command).ConfigureAwait(false);
                 }
-            } catch (MySqlException e) {
+            }
+            catch (MySqlException e) {
                 return new ReadEntitiesResult { Error = DatabaseError(e) };
             }
         }
@@ -211,27 +212,23 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
         }
 
+        /// <summary>async version of <see cref="DeleteEntities"/> </summary>
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new DeleteEntitiesResult { Error = syncConnection.Error };
             }
-            if (command.all == true) {
-                var sql = $"DELETE from {name}";
-                var result = await Execute(connection, sql).ConfigureAwait(false);
-                if (result.Failed) { return new DeleteEntitiesResult { Error = result.TaskError() }; }
-                return new DeleteEntitiesResult();    
-            } else {
-                var sql = new StringBuilder();
-                var id = tableType == TableType.Relational ? tableInfo.keyColumn.name : ID;
-                sql.Append($"DELETE FROM  {name} WHERE {id} in\n");
-                SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.BackSlash);
-                try {
-                    await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
-                } catch (MySqlException e) {
-                    return new DeleteEntitiesResult { Error = DatabaseError(e) };
+            try {
+                if (command.all == true) {
+                    await connection.ExecuteNonQueryAsync($"DELETE from {name}").ConfigureAwait(false);
+                    return new DeleteEntitiesResult();    
                 }
+                var sql = SQL.Delete(this, command);
+                await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
                 return new DeleteEntitiesResult();
+            }
+            catch (MySqlException e) {
+                return new DeleteEntitiesResult { Error = DatabaseError(e) };
             }
         }
         
