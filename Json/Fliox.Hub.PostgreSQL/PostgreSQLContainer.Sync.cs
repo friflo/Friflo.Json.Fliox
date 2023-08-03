@@ -15,6 +15,52 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
     internal sealed partial class PostgreSQLContainer
     {
+
+        public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new CreateEntitiesResult { Error = syncConnection.Error };
+            }
+            if (command.entities.Count == 0) {
+                return new CreateEntitiesResult();
+            }
+            try {
+                if (tableType == TableType.Relational) {
+                    var sql = SQL.CreateRelational(this, command, syncContext);
+                    connection.ExecuteNonQuerySync(sql);
+                } else {
+                    var sql = SQL.CreateJsonColumn(this, command);
+                    connection.ExecuteNonQuerySync(sql);
+                }
+            }
+            catch (PostgresException e) {
+                return new CreateEntitiesResult { Error = DatabaseError(e.MessageText) };    
+            }
+            return new CreateEntitiesResult();
+        }
+        
+        public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new UpsertEntitiesResult { Error = syncConnection.Error };
+            }
+            if (command.entities.Count == 0) {
+                return new UpsertEntitiesResult();
+            }
+            try {
+                if (tableType == TableType.Relational) {
+                    var sql = SQL.UpsertRelational(this, command, syncContext);
+                    connection.ExecuteNonQuerySync(sql);
+                } else {
+                    var sql = SQL.UpsertJsonColumn(this, command);
+                    connection.ExecuteNonQuerySync(sql);
+                }
+            }
+            catch (PostgresException e) {
+                return new UpsertEntitiesResult { Error = DatabaseError(e.MessageText) };    
+            }
+            return new UpsertEntitiesResult();
+        }
         
         /// <summary>sync version of <see cref="ReadEntitiesAsync"/></summary>
         public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
@@ -58,6 +104,25 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             }
             catch (PostgresException e) {
                 return new QueryEntitiesResult { Error = new TaskExecuteError(e.MessageText), sql = sql };
+            }
+        }
+        
+        public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new DeleteEntitiesResult { Error = syncConnection.Error};
+            }
+            try {
+                if (command.all == true) {
+                    connection.ExecuteNonQuerySync($"DELETE from {name}");
+                    return new DeleteEntitiesResult();    
+                }
+                var sql = SQL.Delete(this, command);
+                connection.ExecuteNonQuerySync(sql);
+                return new DeleteEntitiesResult();
+            }
+            catch (PostgresException e) {
+                return new DeleteEntitiesResult { Error = DatabaseError(e.MessageText) };    
             }
         }
     }

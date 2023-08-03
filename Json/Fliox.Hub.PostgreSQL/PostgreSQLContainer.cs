@@ -56,7 +56,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 sb.Length -= 1;
                 sb.Append(");");
                 return await ExecuteAsync(connection, sb.ToString()).ConfigureAwait(false);
-            } catch (NpgsqlException e) {
+            }
+            catch (NpgsqlException e) {
                 return SQLResult.CreateError(e);
             }
         }
@@ -112,17 +113,16 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (command.entities.Count == 0) {
                 return new CreateEntitiesResult();
             }
-            var sql = new StringBuilder();
-            if (tableType == TableType.Relational) {
-                sql.Append($"INSERT INTO {name}");
-                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool, tableInfo, syncContext);
-            } else {
-                sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
-                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool);
-            }
             try {
-                await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
-            } catch (PostgresException e) {
+                if (tableType == TableType.Relational) {
+                    var sql = SQL.CreateRelational(this, command, syncContext);
+                    await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+                } else {
+                    var sql = SQL.CreateJsonColumn(this, command);
+                    await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+                }
+            }
+            catch (PostgresException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e.MessageText) };    
             }
             return new CreateEntitiesResult();
@@ -136,24 +136,16 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (command.entities.Count == 0) {
                 return new UpsertEntitiesResult();
             }
-            var sql = new StringBuilder();
-            if (tableType == TableType.Relational) {
-                sql.Append($"INSERT INTO {name}");
-                SQLTable.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool, tableInfo, syncContext);
-                sql.Append($"\nON CONFLICT(\"{tableInfo.keyColumn.name}\") DO UPDATE SET "); // {DATA} = excluded.{DATA};");
-                foreach (var column in tableInfo.columns) {
-                    sql.Append('"'); sql.Append(column.name); sql.Append("\"=excluded.\""); sql.Append(column.name); sql.Append("\", ");
-                }
-                sql.Length -= 2;
-                sql.Append(';');
-            } else {
-                sql.Append($"INSERT INTO {name} ({ID},{DATA}) VALUES\n");
-                SQLUtils.AppendValuesSQL(sql, command.entities, SQLEscape.HasBool);
-                sql.Append($"\nON CONFLICT({ID}) DO UPDATE SET {DATA} = excluded.{DATA};");
-            }
             try {
-                await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
-            } catch (PostgresException e) {
+                if (tableType == TableType.Relational) {
+                    var sql = SQL.UpsertRelational(this, command, syncContext);
+                    await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+                } else {
+                    var sql = SQL.UpsertJsonColumn(this, command);
+                    await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+                }
+            }
+            catch (PostgresException e) {
                 return new UpsertEntitiesResult { Error = DatabaseError(e.MessageText) };    
             }
             return new UpsertEntitiesResult();
@@ -176,7 +168,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                     return await SQLUtils.ReadJsonColumnAsync(reader, command).ConfigureAwait(false);
                 }
-            } catch (PostgresException e) {
+            }
+            catch (PostgresException e) {
                 return new ReadEntitiesResult { Error = new TaskExecuteError(e.MessageText) };
             }
         }
@@ -200,7 +193,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     entities = await SQLUtils.QueryJsonColumnAsync(reader).ConfigureAwait(false);
                 }
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
-            } catch (PostgresException e) {
+            }
+            catch (PostgresException e) {
                 return new QueryEntitiesResult { Error = new TaskExecuteError(e.MessageText), sql = sql };
             }
         }
@@ -227,22 +221,17 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             if (syncConnection is not SyncConnection connection) {
                 return new DeleteEntitiesResult { Error = syncConnection.Error};
             }
-            if (command.all == true) {
-                var sql = $"DELETE from {name}";
-                var result = await ExecuteAsync(connection, sql).ConfigureAwait(false);
-                if (result.Failed) { return new DeleteEntitiesResult { Error = result.TaskError() }; }
-                return new DeleteEntitiesResult();    
-            } else {
-                var sql = new StringBuilder();
-                var id = tableType == TableType.Relational ? tableInfo.keyColumn.name : ID;
-                sql.Append($"DELETE FROM  {name} WHERE {id} in\n");
-                SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.Default);
-                try {
-                    await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
-                } catch (PostgresException e) {
-                    return new DeleteEntitiesResult { Error = DatabaseError(e.MessageText) };    
+            try {
+                if (command.all == true) {
+                    await connection.ExecuteNonQueryAsync($"DELETE from {name}").ConfigureAwait(false);
+                    return new DeleteEntitiesResult();    
                 }
+                var sql = SQL.Delete(this, command);
+                await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
                 return new DeleteEntitiesResult();
+            }
+            catch (PostgresException e) {
+                return new DeleteEntitiesResult { Error = DatabaseError(e.MessageText) };    
             }
         }
         
