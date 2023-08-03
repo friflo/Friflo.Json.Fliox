@@ -103,14 +103,13 @@ AS ({asStr});";
         }
         
         // --- create / upsert using DataTable in SQL statement
-        internal static async Task CreateEntitiesCmdAsync (SyncConnection connection, List<JsonEntity> entities, string table) {
-            var sql = $"INSERT INTO {table} ({ID},{DATA}) select {ID}, {DATA} from @rows;";
-            var p = AddRows(entities);
-            await connection.ExecuteNonQueryAsync(sql, p).ConfigureAwait(false);
+        internal static SqlParameter CreateEntitiesCmdAsync (StringBuilder sql, List<JsonEntity> entities, string table) {
+            sql.Append($"INSERT INTO {table} ({ID},{DATA}) select {ID}, {DATA} from @rows;");
+            return AddRows(entities);
         }
         
-        internal static async Task UpsertEntitiesCmdAsync (SyncConnection connection, List<JsonEntity> entities, string table) {
-            var sql = $@"
+        internal static SqlParameter UpsertEntitiesCmdAsync (StringBuilder sql, List<JsonEntity> entities, string table) {
+            sql.Append($@"
 MERGE {table} AS target
 USING @rows as source
 ON source.{ID} = target.{ID}
@@ -118,9 +117,8 @@ WHEN MATCHED THEN
     UPDATE SET target.{DATA} = source.{DATA}
 WHEN NOT MATCHED THEN
     INSERT ({ID}, {DATA})
-    VALUES ({ID}, {DATA});";
-            var p = AddRows(entities);
-            await connection.ExecuteNonQueryAsync(sql, p).ConfigureAwait(false);
+    VALUES ({ID}, {DATA});");
+            return AddRows(entities);
         }
 
         private static SqlParameter AddRows(List<JsonEntity> entities) {
@@ -132,29 +130,26 @@ WHEN NOT MATCHED THEN
             return p;
         }
         
-        internal static async Task CreateRelationalValues (
-            SyncConnection      connection,
+        internal static void CreateRelationalValues (
+            StringBuilder       sql,
             List<JsonEntity>    entities,
             TableInfo           tableInfo,
             SyncContext         syncContext)
         {
-            var sql = new StringBuilder();
             sql.Append($"INSERT INTO {tableInfo.container} (");
             SQLTable.AppendColumnNames(sql, tableInfo);
             sql.Append(")\nVALUES\n");
             using var pooled    = syncContext.Json2SQL.Get();
             var writer          = new Json2SQLWriter(pooled.instance, sql, SQLEscape.BackSlash);
             pooled.instance.AppendColumnValues(writer, entities, tableInfo);
-            await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
         }
         
-        internal static async Task UpsertRelationalValues (
-            SyncConnection      connection,
+        internal static void UpsertRelationalValues (
+            StringBuilder       sql,
             List<JsonEntity>    entities,
             TableInfo           tableInfo,
             SyncContext         syncContext)
         {
-            var sql = new StringBuilder();
             var id  = tableInfo.tableType == TableType.JsonColumn ? ID : tableInfo.keyColumn.name;
             sql.Append(
 $@"MERGE {tableInfo.container} AS t USING (
@@ -184,20 +179,20 @@ WHEN NOT MATCHED THEN
             sql.Append(")\n    VALUES(");
             SQLTable.AppendColumnNames(sql, tableInfo);
             sql.Append(");");
-            await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
         }
         
-        internal static async Task DeleteEntitiesCmdAsync (SyncConnection connection, ListOne<JsonKey> ids, string table) {
+        internal static SqlParameter DeleteEntitiesCmdAsync (StringBuilder sql, ListOne<JsonKey> ids, string table) {
             var dataTable = new DataTable();
             dataTable.Columns.Add(ID, typeof(string));
             foreach(var id in ids) {
                 dataTable.Rows.Add(id.AsString());
             }
-            var sql     = $"DELETE FROM  {table} WHERE {ID} in (SELECT {ID} FROM @ids);";
+            sql.Append($"DELETE FROM  {table} WHERE {ID} in (SELECT {ID} FROM @ids);");
             var p       = new SqlParameter("@ids", SqlDbType.Structured);
             p.Value     = dataTable;
             p.TypeName  = "KeyType";
-            await connection.ExecuteNonQueryAsync(sql, p).ConfigureAwait(false);
+            return p;
+            
         }
     }
 }

@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
         }
         
+        /// <summary>async version of <see cref="ExecuteNonQuerySync"/></summary>
         public async Task ExecuteNonQueryAsync (string sql, DbParameter parameter = null) {
             using var cmd = instance.CreateCommand();
             cmd.CommandText = sql;
@@ -40,6 +41,30 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 catch (DbException) {
                     if (instance.State != ConnectionState.Open && tryCount == 1) {
                         await instance.OpenAsync().ConfigureAwait(false);
+                        continue;
+                    }
+                    throw;
+                }
+            }
+        }
+        
+        /// <summary>sync version of <see cref="ExecuteNonQueryAsync"/></summary>
+        public void ExecuteNonQuerySync (string sql, DbParameter parameter = null) {
+            using var cmd = instance.CreateCommand();
+            cmd.CommandText = sql;
+            if (parameter != null) {
+                cmd.Parameters.Add(parameter);
+            }
+            int tryCount = 0;
+            while (true) {
+                tryCount++;
+                try {
+                    cmd.ExecuteNonQuery();
+                    return;
+                }
+                catch (DbException) {
+                    if (instance.State != ConnectionState.Open && tryCount == 1) {
+                        instance.Open();
                         continue;
                     }
                     throw;

@@ -125,10 +125,13 @@ CREATE TABLE dbo.{name}";
                 return new CreateEntitiesResult();
             }
             try {
+                var sql = new StringBuilder();
                 if (tableType == TableType.Relational) {
-                    await CreateRelationalValues(connection, command.entities, tableInfo, syncContext).ConfigureAwait(false);
+                    CreateRelationalValues(sql, command.entities, tableInfo, syncContext); 
+                    await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
                 } else {
-                    await CreateEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
+                    var p = CreateEntitiesCmdAsync(sql, command.entities, name);
+                    await connection.ExecuteNonQueryAsync(sql.ToString(), p).ConfigureAwait(false);
                 }
             } catch (SqlException e) {
                 var msg = GetErrMsg(e);
@@ -146,10 +149,13 @@ CREATE TABLE dbo.{name}";
                 return new UpsertEntitiesResult();
             }
             try {
+                var sql = new StringBuilder();
                 if (tableType == TableType.Relational) {
-                    await UpsertRelationalValues(connection, command.entities, tableInfo, syncContext).ConfigureAwait(false);
+                    UpsertRelationalValues(sql, command.entities, tableInfo, syncContext);
+                    await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
                 } else {
-                    await UpsertEntitiesCmdAsync(connection, command.entities, name).ConfigureAwait(false);
+                    var p = UpsertEntitiesCmdAsync(sql, command.entities, name);
+                    await connection.ExecuteNonQueryAsync(sql.ToString(), p).ConfigureAwait(false);
                 }
             } catch (SqlException e) {
                 var msg = GetErrMsg(e);
@@ -233,18 +239,16 @@ CREATE TABLE dbo.{name}";
             }
             try {
                 if (command.all == true) {
-                    var sql = $"DELETE from {name}";
-                    var result = await Execute(connection, sql).ConfigureAwait(false);
-                    if (result.Failed) { return new DeleteEntitiesResult { Error = result.TaskError() }; }
-                    return new DeleteEntitiesResult();    
+                    await connection.ExecuteNonQueryAsync($"DELETE from {name}").ConfigureAwait(false);
+                    return new DeleteEntitiesResult();
                 }
                 if (tableType == TableType.Relational) {
-                    var sql = new StringBuilder();
-                    sql.Append($"DELETE FROM  {name} WHERE [{tableInfo.keyColumn.name}] in\n");
-                    SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.PrefixN);
-                    await connection.ExecuteNonQueryAsync(sql.ToString()).ConfigureAwait(false);
+                    var sql = SQL.DeleteRelational(this, command);
+                    await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
                 } else { 
-                    await DeleteEntitiesCmdAsync(connection, command.ids, name).ConfigureAwait(false);
+                    var sql = new StringBuilder();
+                    var p = DeleteEntitiesCmdAsync(sql, command.ids, name);
+                    await connection.ExecuteNonQueryAsync(sql.ToString(), p).ConfigureAwait(false);
                 }
                 return new DeleteEntitiesResult();
             }

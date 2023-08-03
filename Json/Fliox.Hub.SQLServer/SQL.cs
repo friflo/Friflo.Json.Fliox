@@ -33,6 +33,13 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             var sql     = SQLServerUtils.QueryEntities(command, container.name, where, container.tableInfo);
             return sql;
         }
+        
+        internal static string DeleteRelational(SQLServerContainer container, DeleteEntities command) {
+            var sql = new StringBuilder();
+            sql.Append($"DELETE FROM  {container.name} WHERE [{container.tableInfo.keyColumn.name}] in\n");
+            SQLUtils.AppendKeysSQL(sql, command.ids, SQLEscape.PrefixN);
+            return sql.ToString();
+        }
     }
 }
 

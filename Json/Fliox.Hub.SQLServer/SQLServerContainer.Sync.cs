@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using System.Data.SqlClient;
+using System.Text;
 using static Friflo.Json.Fliox.Hub.SQLServer.SQLServerUtils;
 
 
@@ -17,6 +18,54 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     internal sealed partial class SQLServerContainer
     {
+        
+        public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new CreateEntitiesResult { Error = syncConnection.Error };
+            }
+            if (command.entities.Count == 0) {
+                return new CreateEntitiesResult();
+            }
+            try {
+                var sql = new StringBuilder();
+                if (tableType == TableType.Relational) {
+                    CreateRelationalValues(sql, command.entities, tableInfo, syncContext); 
+                    connection.ExecuteNonQuerySync(sql.ToString());
+                } else {
+                    var p = CreateEntitiesCmdAsync(sql, command.entities, name);
+                    connection.ExecuteNonQuerySync(sql.ToString(), p);
+                }
+            } catch (SqlException e) {
+                var msg = GetErrMsg(e);
+                return new CreateEntitiesResult { Error = new TaskExecuteError(msg) };
+            }
+            return new CreateEntitiesResult();
+        }
+        
+        public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new UpsertEntitiesResult { Error = syncConnection.Error };
+            }
+            if (command.entities.Count == 0) {
+                return new UpsertEntitiesResult();
+            }
+            try {
+                var sql = new StringBuilder();
+                if (tableType == TableType.Relational) {
+                    UpsertRelationalValues(sql, command.entities, tableInfo, syncContext);
+                    connection.ExecuteNonQuerySync(sql.ToString());
+                } else {
+                    var p = UpsertEntitiesCmdAsync(sql, command.entities, name);
+                    connection.ExecuteNonQuerySync(sql.ToString(), p);
+                }
+            } catch (SqlException e) {
+                var msg = GetErrMsg(e);
+                return new UpsertEntitiesResult { Error = new TaskExecuteError(msg) };
+            }
+            return new UpsertEntitiesResult();
+        }
 
         SqlCommand      readCommand;
         SqlParameter    sqlParam;
