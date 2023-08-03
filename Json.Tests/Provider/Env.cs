@@ -149,21 +149,24 @@ namespace Friflo.Json.Tests.Provider
             throw new ArgumentException($"invalid provider: {provider}");
         }
         
-        internal static SqlKata.Compilers.Compiler GetCompiler() {
-            var db = TEST_DB_PROVIDER;
+        internal static SqlKata.Compilers.Compiler GetCompiler(string db) {
             switch (db) {
-                case  null:
-                case "sqlite":          
-                case "sqlite_rel":      return new SqlKata.Compilers.SqliteCompiler();
-                case "mysql":
-                case "mysql_rel":       return new SqlKata.Compilers.MySqlCompiler();
-                case "mariadb":
-                case "mariadb_rel":     return new SqlKata.Compilers.MySqlCompiler();
-                case "postgres":
-                case "postgres_rel":    return new SqlKata.Compilers.PostgresCompiler();
-                case "sqlserver":
-                case "sqlserver_rel":   return new SqlKata.Compilers.SqlServerCompiler();
-                default:                throw new NotSupportedException($"no compiler for db: {db}");
+                case "test_db":
+                    switch (TEST_DB_PROVIDER) {
+                        case "sqlite":          
+                        case "sqlite_rel":      return new SqlKata.Compilers.SqliteCompiler();
+                        case "mysql":
+                        case "mysql_rel":       return new SqlKata.Compilers.MySqlCompiler();
+                        case "mariadb":
+                        case "mariadb_rel":     return new SqlKata.Compilers.MySqlCompiler();
+                        case "postgres":
+                        case "postgres_rel":    return new SqlKata.Compilers.PostgresCompiler();
+                        case "sqlserver":
+                        case "sqlserver_rel":   return new SqlKata.Compilers.SqlServerCompiler();
+                        default:                throw new NotSupportedException($"no compiler for db: {TEST_DB_PROVIDER}");
+                    }
+                case "sqlite_db":               return new SqlKata.Compilers.SqliteCompiler();
+                default:                        throw new NotSupportedException($"no compiler for db: {db}");
             }
         }
 #endif

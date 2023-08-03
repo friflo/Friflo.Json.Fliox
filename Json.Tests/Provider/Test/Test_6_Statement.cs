@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestStatement_Select(string db) {
             if (!SupportSQL(db)) return;
             
-            var compiler    = GetCompiler();
+            var compiler    = GetCompiler(db);
             var query       = new Query("testreadtypes");
             var result      = compiler.Compile(query);
             
