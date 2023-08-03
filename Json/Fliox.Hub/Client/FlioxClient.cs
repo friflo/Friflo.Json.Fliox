@@ -217,15 +217,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <seealso cref="SetEventProcessor"/>
         public List<SyncTask> SubscribeAllChanges(Change change, ChangeSubscriptionHandler handler) {
             AssertSubscription();
-            var tasks = new List<SyncTask>();
-            var sets = entitySets;
+            var tasks   = new List<SyncTask>();
+            var sets    = entitySets;
             for (int n = 0; n < sets.Length; n++) {
                 var entitySet = sets[n];
                 if (entitySet == null) {
-                    var entityInfo  = _readonly.entityInfos[n];
-                    entitySet       = entityInfo.containerMember.CreateInstance(entityInfo.container, n, this);
-                    sets[n] = entitySet;
-                    _intern.SetByName[entityInfo.containerShort] = entitySet;
+                    entitySet = CreateEntitySet(n);
                 }
                 var task = entitySet.SubscribeChangesInternal(change);
                 tasks.Add(task);

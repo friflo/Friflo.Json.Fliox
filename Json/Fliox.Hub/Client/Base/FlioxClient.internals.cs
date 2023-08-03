@@ -31,6 +31,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal EntitySet  GetSetByName    (in ShortString name)                    => _intern.SetByName[name];
         internal bool       TryGetSetByName (in ShortString name, out EntitySet set) => _intern.SetByName.TryGetValue(name, out set);
         
+        internal EntitySet CreateEntitySet(int index) {
+            ref var entityInfo = ref _readonly.entityInfos[index];
+            var instance = entityInfo.containerMember.CreateInstance(entityInfo.container, index, this);
+            entitySets[index] = instance;
+            _intern.SetByName[entityInfo.containerShort] = instance;
+            return instance;
+        }
+        
         private string FormatToString() {
             var sb = new StringBuilder();
             sb.Append('\'');

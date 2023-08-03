@@ -615,11 +615,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (instance != null) {
                 return (EntitySetInstance<TKey,T>)instance;
             }
-            ref var entityInfo = ref client._readonly.entityInfos[index];
-            var newInstance = (EntitySetInstance<TKey,T>)entityInfo.containerMember.CreateInstance(entityInfo.container, index, client);
-            client.entitySets[index] = newInstance;
-            client._intern.SetByName[entityInfo.containerShort] = newInstance;
-            return newInstance;
+            return (EntitySetInstance<TKey,T>)client.CreateEntitySet(index);
         }
         #endregion
     }
