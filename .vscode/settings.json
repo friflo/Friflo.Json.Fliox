@@ -160,5 +160,6 @@
     },
     // "omnisharp.enableImportCompletion": true,
     "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
-    "dotnet.defaultSolution": "Friflo.Json.Fliox.sln"
+    "dotnet.defaultSolution": "Friflo.Json.Fliox.sln",
+    "references.preferredLocation": "view"
 }
