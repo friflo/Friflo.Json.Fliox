@@ -48,7 +48,13 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 return false;
             }
             switch (task.TaskType) {
-                case TaskType.read: return true;
+                case TaskType.read:
+                case TaskType.query:
+                case TaskType.create:
+                case TaskType.upsert:
+                case TaskType.delete:
+                case TaskType.aggregate:
+                    return true;
             }
             return false;
         }

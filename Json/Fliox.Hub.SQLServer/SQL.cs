@@ -34,6 +34,13 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             return sql;
         }
         
+        internal static string Count(SQLServerContainer container, AggregateEntities command) {
+            var filter  = command.GetFilter();
+            var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLServerFilter(container.tableType)}";
+            var sql     = $"SELECT COUNT(*) from {container.name}{where}";
+            return sql;
+        }
+        
         internal static string DeleteRelational(SQLServerContainer container, DeleteEntities command) {
             var sql = new StringBuilder();
             sql.Append($"DELETE FROM  {container.name} WHERE [{container.tableInfo.keyColumn.name}] in\n");

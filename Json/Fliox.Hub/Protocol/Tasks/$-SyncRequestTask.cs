@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public      abstract   Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext);
         // todo make abstract when SyncRequestTask are implemented
-        public      virtual    SyncTaskResult       Execute     (EntityDatabase database, SyncResponse response, SyncContext syncContext) => throw new NotImplementedException();
+        public      abstract   SyncTaskResult       Execute     (EntityDatabase database, SyncResponse response, SyncContext syncContext); // => throw new NotImplementedException();
         
         public      abstract   TaskType         TaskType { get; }
         public      abstract   string           TaskName { get; }

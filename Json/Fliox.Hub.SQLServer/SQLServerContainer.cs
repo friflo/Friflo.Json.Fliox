@@ -47,7 +47,7 @@ $@"IF NOT EXISTS (
     SELECT * FROM sys.tables t JOIN sys.schemas s ON (t.schema_id = s.schema_id)
     WHERE s.name = 'dbo' AND t.name = '{name}')
 CREATE TABLE dbo.{name} ({ColumnId} PRIMARY KEY, {ColumnData});";
-                return await Execute(connection, sql).ConfigureAwait(false);
+                return await connection.ExecuteAsync(sql).ConfigureAwait(false);
             } else {
                 var sql =
 $@"IF NOT EXISTS (
@@ -69,7 +69,7 @@ CREATE TABLE dbo.{name}";
                 }
                 sb.Length -= 1;
                 sb.Append(");");
-                return await Execute(connection, sb.ToString()).ConfigureAwait(false);
+                return await connection.ExecuteAsync(sb.ToString()).ConfigureAwait(false);
             }
         }
         
@@ -111,7 +111,7 @@ CREATE TABLE dbo.{name}";
                 }
                 var type    = ConvertContext.GetSqlType(column);
                 var sql     = $"ALTER TABLE {name} ADD [{column.name}] {type};";
-                var result  = await Execute(connection, sql).ConfigureAwait(false);
+                var result  = await connection.ExecuteAsync(sql).ConfigureAwait(false);
                 if (result.Failed) {
                     return result;
                 }
@@ -224,10 +224,8 @@ CREATE TABLE dbo.{name}";
             }
             try {
                 if (command.type == AggregateType.count) {
-                    var filter  = command.GetFilter();
-                    var where   = filter.IsTrue ? "" : $" WHERE {filter.SQLServerFilter(tableType)}";
-                    var sql     = $"SELECT COUNT(*) from {name}{where}";
-                    var result  = await Execute(connection, sql).ConfigureAwait(false);
+                    var sql     = SQL.Count(this, command);
+                    var result  = await connection.ExecuteAsync(sql).ConfigureAwait(false);
                     if (result.Failed) { return new AggregateEntitiesResult { Error = result.TaskError() }; }
                     return new AggregateEntitiesResult { value = (int)result.value };
                 }

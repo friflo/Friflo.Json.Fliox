@@ -63,6 +63,27 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             return result;
         }
+        
+        public override SyncTaskResult Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            if (container.IsNull())
+                return MissingContainer();
+            if (!QueryEntities.ValidateFilter (filterTree, filter, syncContext, ref filterLambda, out var error))
+                return error;
+            filterContext = new OperationContext();
+            if (!filterContext.Init(GetFilter(), out var message)) {
+                return InvalidTaskError($"invalid filter: {message}");
+            }
+            var entityContainer = database.GetOrCreateContainer(container);
+            if (entityContainer == null) {
+                return ContainerNotFound();
+            }
+            var result = entityContainer.AggregateEntities(this, syncContext);
+            
+            if (result.Error != null) {
+                return TaskError(result.Error);
+            }
+            return result;
+        }
     }
     
     // ----------------------------------- task result -----------------------------------

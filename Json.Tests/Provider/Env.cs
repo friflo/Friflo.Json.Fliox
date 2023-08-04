@@ -176,10 +176,12 @@ namespace Friflo.Json.Tests.Provider
     internal static class EnvExtensions
     {
         internal static async Task<SyncResult> SyncTasksEnv(this FlioxClient client) {
+            // return client.SyncTasksSynchronous();
             return await client.SyncTasks();
         }
         
         internal static async Task<SyncResult> TrySyncTasksEnv(this FlioxClient client) {
+            // return client.TrySyncTasksSynchronous();
             return await client.TrySyncTasks();
         }
     }

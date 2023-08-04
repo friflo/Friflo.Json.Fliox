@@ -72,6 +72,38 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
         }
         
+        public async Task<SQLResult> ExecuteAsync(string sql) {
+            using var cmd = instance.CreateCommand();
+            cmd.CommandText = sql;
+            try {
+                using var reader = await ExecuteReaderAsync(sql).ConfigureAwait(false);
+                while (await reader.ReadAsync().ConfigureAwait(false)) {
+                    var value = reader.GetValue(0);
+                    return SQLResult.Success(value); 
+                }
+                return default;
+            }
+            catch (DbException e) {
+                return SQLResult.CreateError(e);
+            }
+        }
+        
+        public SQLResult ExecuteSync(string sql) {
+            using var cmd = instance.CreateCommand();
+            cmd.CommandText = sql;
+            try {
+                using var reader = ExecuteReaderSync(sql);
+                while (reader.Read()) {
+                    var value = reader.GetValue(0);
+                    return SQLResult.Success(value); 
+                }
+                return default;
+            }
+            catch (DbException e) {
+                return SQLResult.CreateError(e);
+            }
+        }
+        
         /// <summary>
         /// Using asynchronous execution for SQL Server is significant slower.<br/>
         /// <see cref="DbCommand.ExecuteReaderAsync()"/> ~7x slower than <see cref="DbCommand.ExecuteReader()"/>.

@@ -23,27 +23,13 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             return error.Message;
         }
 
-        internal static async Task<SQLResult> Execute(SyncConnection connection, string sql) {
-            try {
-                using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
-                while (await reader.ReadAsync().ConfigureAwait(false)) {
-                    var value = reader.GetValue(0);
-                    return SQLResult.Success(value); 
-                }
-                return default;
-            }
-            catch (SqlException e) {
-                return SQLResult.CreateError(e);
-            }
-        }
-        
         internal static async Task<SQLResult> AddVirtualColumn(SyncConnection connection, string table, ColumnInfo column) {
             var asStr = GetColumnAs(column);
             var sql =
 $@"ALTER TABLE {table}
 ADD ""{column.name}""
 AS ({asStr});";
-            return await Execute(connection, sql).ConfigureAwait(false);
+            return await connection.ExecuteAsync(sql).ConfigureAwait(false);
         }
         
         private static string GetColumnAs(ColumnInfo column) {

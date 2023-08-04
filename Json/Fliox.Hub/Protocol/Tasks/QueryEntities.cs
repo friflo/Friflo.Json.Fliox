@@ -155,6 +155,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             return result;
         }
+        
+        public override SyncTaskResult Execute (EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            throw new NotImplementedException();
+        }
     }
     
     // ----------------------------------- task result -----------------------------------

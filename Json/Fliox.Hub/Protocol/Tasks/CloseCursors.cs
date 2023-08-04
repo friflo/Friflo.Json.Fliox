@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
@@ -37,6 +38,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var count               = entityContainer.cursors.Count;
             SyncTaskResult result   = new CloseCursorsResult { count = count };
             return Task.FromResult(result);
+        }
+        
+        public override SyncTaskResult Execute (EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            throw new NotImplementedException();
         }
         
         ///<summary> Note: A <paramref name="user"/> can remove only its own cursors </summary>
