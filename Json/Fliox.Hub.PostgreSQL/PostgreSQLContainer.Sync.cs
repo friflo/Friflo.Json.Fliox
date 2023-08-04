@@ -100,7 +100,10 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 List<EntityValue> entities;
                 using var reader = connection.ExecuteReaderSync(sql);
                 if (tableType == TableType.Relational) {
-                    entities = SQLTable.QueryEntitiesSync(reader, tableInfo, syncContext);
+                    using var pooled = syncContext.SQL2Json.Get();
+                    var mapper  = new PostgresSQL2Json(reader);
+                    var buffer  = syncContext.MemoryBuffer;
+                    entities    = mapper.ReadEntitiesSync(pooled.instance, tableInfo, buffer);
                 } else {
                     entities = SQLUtils.QueryJsonColumnSync(reader);
                 }

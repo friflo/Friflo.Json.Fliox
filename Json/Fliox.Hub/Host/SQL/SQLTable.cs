@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         Task<SQLResult> AddColumns          (ISyncConnection connection);
     }
     
-    public static class SQLTable
+    public static partial class SQLTable
     {
         public static void AppendColumnNames(StringBuilder sb, TableInfo tableInfo) {
             var isFirst = true;
@@ -54,35 +54,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             pooled.instance.AppendColumnValues(writer, entities, tableInfo);
         }
         
-        public static ReadEntitiesResult ReadEntitiesSync(
-            DbDataReader    reader,
-            ISQL2JsonMapper mapper,
-            ReadEntities    query,
-            TableInfo       tableInfo,
-            SyncContext     syncContext)
-        {
-            var typeMapper = query.typeMapper;
-            if (typeMapper == null) {
-                using var pooled = syncContext.pool.SQL2Json.Get();
-                var buffer   = syncContext.MemoryBuffer;
-                var entities = mapper.ReadEntitiesSync(pooled.instance, tableInfo, buffer);
-                var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
-                return new ReadEntitiesResult { entities = new Entities(array) };
-            }
-            var binaryReader    = new BinaryDbDataReader();
-            binaryReader.Init(reader);
-            var objects         = new EntityObject[query.ids.Count];
-            int count           = 0;
-            while (reader.Read())
-            {
-                binaryReader.NextRow();
-                var obj = typeMapper.ReadBinary(binaryReader, null, out bool _);
-                var key = query.ids[count];
-                objects[count++] = new EntityObject(key, obj);
-            }
-            return new ReadEntitiesResult { entities = new Entities(objects) };
-        }
+        // ---------------------------------------- sync / async ----------------------------------------
         
+        /// <summary> counterpart <see cref="ReadEntitiesSync"/></summary>
         public static async Task<ReadEntitiesResult> ReadEntitiesAsync(
             DbDataReader    reader,
             ISQL2JsonMapper mapper,
@@ -112,7 +86,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return new ReadEntitiesResult { entities = new Entities(objects) };
         }
         
-        public static  ReadEntitiesResult ReadObjects(
+        /// <summary> counterpart <see cref="ReadObjectsSync"/></summary>
+        public static async Task<ReadEntitiesResult> ReadObjectsAsync(
             DbDataReader    reader,
             ReadEntities    query,
             SQL2Object      sql2Object)
@@ -122,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             binaryReader.Init(reader);
             var objects         = new EntityObject[query.ids.Count];
             int count           = 0;
-            while (reader.Read())
+            while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 binaryReader.NextRow();
                 var obj = typeMapper.ReadBinary(binaryReader, null, out bool _);
@@ -132,6 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return new ReadEntitiesResult { entities = new Entities(objects) };
         }
         
+        /// <summary> counterpart <see cref="QueryEntitiesSync"/></summary>
         public static async Task<List<EntityValue>> QueryEntitiesAsync(
             DbDataReader    reader,
             TableInfo       tableInfo,
@@ -143,17 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
         }
         
-        public static List<EntityValue> QueryEntitiesSync(
-            DbDataReader    reader,
-            TableInfo       tableInfo,
-            SyncContext     syncContext)
-        {
-            using var pooled = syncContext.pool.SQL2Json.Get();
-            var mapper   = new SQL2JsonMapper(reader);
-            var buffer   = syncContext.MemoryBuffer;
-            return mapper.ReadEntitiesSync(pooled.instance, tableInfo, buffer);
-        }
-        
+        /// <summary> counterpart <see cref="ReadRowsSync"/></summary>
         public static async Task<RawSqlResult> ReadRowsAsync(DbDataReader reader) {
             var columns     = GetFieldTypes(reader);
             var data        = new JsonTable();
@@ -168,20 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return new RawSqlResult(columns, data, rowCount);
         }
         
-        public static RawSqlResult ReadRowsSync(DbDataReader reader) {
-            var columns     = GetFieldTypes(reader);
-            var data        = new JsonTable();
-            var readRawSql  = new ReadRawSql(reader);
-            var rowCount    = 0;
-            while (reader.Read())
-            {
-                rowCount++;
-                AddRow(reader, columns, data, readRawSql);
-                data.WriteNewRow();
-            }
-            return new RawSqlResult(columns, data, rowCount);
-        }
-        
+        // -------------------------------------- end: sync / async --------------------------------------
         
         // ReSharper disable once MemberCanBePrivate.Global
         public static RawSqlColumn[] GetFieldTypes(DbDataReader reader) {
