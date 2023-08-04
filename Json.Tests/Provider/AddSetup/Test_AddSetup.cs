@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Provider.AddSetup
             var hub = new FlioxHub(database);
             var client = new TestClientSetup(hub);
             var find    = client.testReadTypes.Read().Find("missing");
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             IsNull(find.Result);
         }
@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Provider.AddSetup
             var hub = new FlioxHub(database);
             var client = new TestClientSetup(hub);
             var read = client.testReadTypes.Read().Find("missing");
-            await client.TrySyncTasks();
+            await client.TrySyncTasksEnv();
             
             var kvStorage = IsFileSystem || IsMemoryDB(db);
             if (!kvStorage) {
@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Provider.AddSetup
             hub = new FlioxHub(database);
             client = new TestClientSetup(hub);
             var find    = client.testReadTypes.Read().Find("missing");
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             IsNull(find.Result);
         }

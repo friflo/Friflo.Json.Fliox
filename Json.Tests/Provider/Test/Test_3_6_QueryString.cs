@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testString.Query(c => c.str == "escape-\\-\b-\f-\n-\r-\t-");
             // AreEqual("c => c.str == 'str-1'",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             var result =  query.Result;
             AreEqual(1, result.Count);
@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testString.Query(c => c.str == "escape-\\-\b-\f-\n-\r-\t-");
             // AreEqual("c => c.str == 'str-1'",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             var result =  query.Result;
             AreEqual(1, result.Count);
@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testString.Query(c => c.str == "quote-'");
             // AreEqual("c => c.str == 'str-1'",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             var result =  query.Result;
             AreEqual(1, result.Count);

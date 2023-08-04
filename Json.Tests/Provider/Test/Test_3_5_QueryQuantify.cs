@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.intArray.Any(i => i == 1));
             AreEqual("t => t.intArray.Any(i => i == 1)",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.intList.Any(i => i == 1));
             AreEqual("t => t.intList.Any(i => i == 1)",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectArray.Any(o => o.int32 == 10));
             AreEqual("t => t.objectArray.Any(o => o.int32 == 10)",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(1, query.Result.Count);
         }
@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectList.Any(o => o.str == "str-10"));
             AreEqual("t => t.objectList.Any(o => o.str == 'str-10')",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(1, query.Result.Count);
         }
@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.intArray.All(i => i == 1));
             AreEqual("t => t.intArray.All(i => i == 1)",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(4, query.Result.Count);
         }
@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.intList.All(i => i == 1));
             AreEqual("t => t.intList.All(i => i == 1)",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(4, query.Result.Count);
         }
@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectArray.All(o => o.int32 == 10));
             AreEqual("t => t.objectArray.All(o => o.int32 == 10)",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(4, query.Result.Count);
         }
@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectList.All(o => o.str == "str-10"));
             AreEqual("t => t.objectList.All(o => o.str == 'str-10')",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(4, query.Result.Count);
         }
@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectList.Min(o => o.int32) >= 10);
             AreEqual("t => t.objectList.Min(o => o.int32) >= 10", query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
@@ -111,7 +111,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testQuantify.Query(t => t.objectList.Max(o => o.int32) >= 10);
             AreEqual("t => t.objectList.Max(o => o.int32) >= 10", query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }

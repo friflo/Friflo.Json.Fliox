@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual("t => 'e2' == t.enumValNull",  query5.filterLinq);
             AreEqual("t => null == t.enumValNull",  query6.filterLinq);
 
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             AreEqual(3, query1.Result.Count);
             AreEqual(1, query2.Result.Count);
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.int32 == 1);
             AreEqual("c => c.int32 == 1",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(1, query.Result.Count);
         }
@@ -68,7 +68,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.str == "str-1");
             AreEqual("c => c.str == 'str-1'",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(1, query.Result.Count);
         }
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.boolean == true);
             AreEqual("c => c.boolean == true",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(1, query.Result.Count);
         }
@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.boolean == false);
             AreEqual("c => c.boolean == false",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(1, query.Result.Count);
         }
@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.int32 == null);
             AreEqual("c => c.int32 == null",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(All - 2, query.Result.Count);
         }
@@ -108,7 +108,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => null ==  c.int32);
             AreEqual("c => null == c.int32",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(All - 2, query.Result.Count);
         }
@@ -118,7 +118,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.int32 != null);
             AreEqual("c => c.int32 != null",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
@@ -130,7 +130,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.int32 != 1);
             AreEqual("c => c.int32 != 1",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(All - 1, query.Result.Count);
         }
@@ -142,7 +142,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.str != "str-0");
             AreEqual("c => c.str != 'str-0'",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(All - 1, query.Result.Count);
         }
@@ -172,7 +172,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.int32 < 2);
             AreEqual("c => c.int32 < 2",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
@@ -182,7 +182,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.int32 <= 1);
             AreEqual("c => c.int32 <= 1",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
@@ -192,7 +192,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.int32 > 0);
             AreEqual("c => c.int32 > 0",      query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(1, query.Result.Count);
         }
@@ -203,7 +203,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.compare.Query(c => c.int32 >= 0);
             AreEqual("c => c.int32 >= 0",       query.filterLinq);
             AreEqual("c['int32'] >= 0",         query.filter.CosmosFilter());
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
@@ -213,7 +213,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => c.str.Length == 5);
             AreEqual("c => c.str.Length() == 5", query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(2, query.Result.Count);
         }
@@ -224,7 +224,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.compare.Query(c => Abs(c.int32.Value) > 0);
             AreEqual("c => Abs(c.int32) > 0", query.filterLinq);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(1, query.Result.Count);
         }

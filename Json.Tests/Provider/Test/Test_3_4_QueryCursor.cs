@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var query   = client.testCursor.QueryAll();
             query.limit = 2;
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             AreEqual(2, query.Result.Count);
         }
         
@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Provider.Test
             int iterations  = 0;
             while (true) {
                 iterations++;
-                await client.SyncTasks();
+                await client.SyncTasksEnv();
                 
                 count += query.Result.Count;
                 if (query.IsFinished)
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client      = await GetClient(db);
             var query       = client.testCursor.QueryAll();
             query.maxCount  = 100;      // query with cursor
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
                 
             AreEqual(5, query.Result.Count);
             IsNull(query.ResultCursor);
@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Provider.Test
             int iterations  = 0;
             while (true) {
                 iterations++;
-                await client.SyncTasks();
+                await client.SyncTasksEnv();
                 
                 count += query.Result.Count;
                 if (query.IsFinished)
@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query1          = client.testCursor.QueryAll();
             query1.maxCount     = 2;    // query with cursor
             var closeCursors1   = client.testCursor.CloseCursors(Array.Empty<string>());
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             AreEqual(2, query1.Result.Count);
             AreEqual(1, closeCursors1.Count);
@@ -97,7 +97,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var closeCursors2   = client.testCursor.CloseCursors(new[] { query1.ResultCursor });
             var query2          = client.testCursor.QueryAll(); // todo add QueryNext()
             query2.cursor       = query1.ResultCursor;
-            await client.TrySyncTasks();
+            await client.TrySyncTasksEnv();
             
             IsFalse(query2.Success);    // cursor was closed
             AreEqual(0, closeCursors2.Count);
@@ -111,7 +111,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query1          = client.testCursor.QueryAll();
             query1.maxCount     = 2;    // query with cursor
             var closeCursors1   = client.testCursor.CloseCursors(Array.Empty<string>());
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             AreEqual(2, query1.Result.Count);
             AreEqual(1, closeCursors1.Count);
@@ -119,7 +119,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var closeCursors2   = client.testCursor.CloseCursors(null);
             var query2          = client.testCursor.QueryAll(); // todo add QueryNext()
             query2.cursor       = query1.ResultCursor;
-            await client.TrySyncTasks();
+            await client.TrySyncTasksEnv();
             
             IsFalse(query2.Success);    // cursor was closed
             AreEqual(0, closeCursors2.Count);
@@ -130,7 +130,7 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestQuery_Cursor_CloseNullUnknown(string db) {
             var client          = await GetClient(db);
             var closeCursors    = client.testCursor.CloseCursors(new[] { null, "unknown-cursor" });
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             IsTrue(closeCursors.Success);
             AreEqual(0, closeCursors.Count);

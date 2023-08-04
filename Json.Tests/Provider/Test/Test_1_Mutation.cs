@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client      = await GetClient(db, false);
             var deleteAll   = client.testMutate.DeleteAll();
             var countAll    = client.testMutate.CountAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             IsTrue(deleteAll.Success);
             AreEqual(0, countAll.Result);
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Provider.Test
             }
             var upsert      = client.testMutate.UpsertRange(entities);
             var countAll    = client.testMutate.CountAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             IsTrue(upsert.Success);
             AreEqual(3, countAll.Result);
@@ -74,12 +74,12 @@ namespace Friflo.Json.Tests.Provider.Test
                 entities.Add(entity);
             }
             var upsert      = client.testMutate.UpsertRange(entities);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             IsTrue(upsert.Success);
                 
             var upsert2     = client.testMutate.UpsertRange(entities);
             var countAll    = client.testMutate.CountAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             IsTrue(upsert2.Success);
             AreEqual(3, countAll.Result);
@@ -100,7 +100,7 @@ namespace Friflo.Json.Tests.Provider.Test
             };
             var upsert      = client.testMutate.UpsertRange(entities);
             var countAll    = client.testMutate.CountAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             IsTrue(upsert.Success);
             AreEqual(3, countAll.Result);
@@ -122,7 +122,7 @@ namespace Friflo.Json.Tests.Provider.Test
             }
             var create      = client.testMutate.CreateRange(entities);
             var countAll    = client.testMutate.CountAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             IsTrue(create.Success);
             AreEqual(3, countAll.Result);
@@ -140,7 +140,7 @@ namespace Friflo.Json.Tests.Provider.Test
                 var deleteAll   = client.testMutate.DeleteAll();
                 var create1     = client.testMutate.Create(entity);
                 var countAll    = client.testMutate.CountAll();
-                await client.SyncTasks();
+                await client.SyncTasksEnv();
                 
                 IsTrue (create1.Success);
                 IsTrue(deleteAll.Success);
@@ -149,7 +149,7 @@ namespace Friflo.Json.Tests.Provider.Test
             {
                 var create2     = client.testMutate.Create(entity);
                 var countAll    = client.testMutate.CountAll();
-                await client.TrySyncTasks();
+                await client.TrySyncTasksEnv();
                 
                 IsFalse(create2.Success);
                 AreEqual(1, countAll.Result);
@@ -167,7 +167,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var upsert      = client.testMutate.Upsert(new TestMutate { id = "delete-1", val1 = 1, val2 = 2} );
             var delete      = client.testMutate.Delete("delete-1");
             var countAll    = client.testMutate.CountAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             IsTrue(delete.Success);
             AreEqual(0, countAll.Result);

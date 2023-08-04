@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Provider.Perf
             var client  = await GetClient(db, false);
             
             var postCount = client.posts.CountAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             if (postCount.Result < SeedCount) {
                 var chunkSize   = 1000;
                 var text        = new string('x', 2000);
@@ -93,12 +93,12 @@ namespace Friflo.Json.Tests.Provider.Perf
                     posts.Add(post);
                     if (posts.Count % chunkSize == 0) {
                         client.posts.UpsertRange(posts);
-                        await client.SyncTasks();
+                        await client.SyncTasksEnv();
                         posts.Clear();
                     }
                 }
                 client.posts.UpsertRange(posts);
-                await client.SyncTasks();
+                await client.SyncTasksEnv();
             }
         }
         
@@ -108,7 +108,7 @@ namespace Friflo.Json.Tests.Provider.Perf
             // warmup
             for (int n = 0; n < 1; n++) {
                 client.testOps.Query(i => i.id == "a-1");
-                await client.SyncTasks();
+                await client.SyncTasksEnv();
             }
             // measurement
             var stopWatch = new Stopwatch();
@@ -117,7 +117,7 @@ namespace Friflo.Json.Tests.Provider.Perf
 
             for (int n = 0; n < count; n++) {
                 client.testOps.Query(i => i.id == "a-1");
-                await client.SyncTasks();
+                await client.SyncTasksEnv();
             }
             var duration = stopWatch.ElapsedMilliseconds;
             Console.WriteLine($"QueryAll. count: {count}, duration: {duration} ms");
@@ -129,7 +129,7 @@ namespace Friflo.Json.Tests.Provider.Perf
             // warmup
             for (int n = 0; n < 1; n++) {
                 client.testOps.QueryAll();
-                await client.SyncTasks();
+                await client.SyncTasksEnv();
             }
             // measurement
             var stopWatch = new Stopwatch();
@@ -138,7 +138,7 @@ namespace Friflo.Json.Tests.Provider.Perf
 
             for (int n = 0; n < count; n++) {
                 client.testOps.QueryAll();
-                await client.SyncTasks();
+                await client.SyncTasksEnv();
             }
             var duration = stopWatch.ElapsedMilliseconds;
             Console.WriteLine($"QueryAll. count: {count}, duration: {duration} ms");
@@ -155,14 +155,14 @@ namespace Friflo.Json.Tests.Provider.Perf
             }
             // warmup
             var upsert = client.testMutate.UpsertRange(entities);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             IsTrue(upsert.Success);
             
             // measurement
             var stopWatch = new Stopwatch();
             stopWatch.Start();
             upsert = client.testMutate.UpsertRange(entities);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             var duration = stopWatch.ElapsedMilliseconds;
             Console.WriteLine($"Upsert. count: {count}, duration: {duration} ms");
             
@@ -178,7 +178,7 @@ namespace Friflo.Json.Tests.Provider.Perf
                 ids.Add($"perf-{n}");
             }
             var upsert = client.testMutate.DeleteRange(ids);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             IsTrue(upsert.Success);
         }
     }

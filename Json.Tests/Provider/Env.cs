@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Cosmos;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.MySQL;
@@ -170,5 +171,16 @@ namespace Friflo.Json.Tests.Provider
             }
         }
 #endif
+    }
+    
+    internal static class EnvExtensions
+    {
+        internal static async Task<SyncResult> SyncTasksEnv(this FlioxClient client) {
+            return await client.SyncTasks();
+        }
+        
+        internal static async Task<SyncResult> TrySyncTasksEnv(this FlioxClient client) {
+            return await client.TrySyncTasks();
+        }
     }
 }

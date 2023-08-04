@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual("c => c.obj.int32 == 0",   query.filterLinq);
             AreEqual("c['obj']['int32'] = 0",  query.filter.CosmosFilter());
             
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             // if (db == "postgres") { AreEqual("SELECT id, data FROM compare WHERE (data -> 'obj' ->> 'int32')::numeric = 0", query.SQL); }
             LogSQL(query.SQL);
             AreEqual(1, query.Result.Count);
@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var query   = client.compare.Query(c => c.obj.int32 != 0);
             AreEqual("c => c.obj.int32 != 0",   query.filterLinq);
             
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             LogSQL(query.SQL);
             AreEqual(3, query.Result.Count);
         }

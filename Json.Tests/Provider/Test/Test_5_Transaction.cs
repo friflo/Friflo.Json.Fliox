@@ -18,16 +18,16 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestTransaction_Commit_Implicit(string db) {
             var client  = await GetClient(db);
             client.testMutate.DeleteAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             var begin = client.std.TransactionBegin();
             client.testMutate.Create(new TestMutate { id = "op-1", val1 = 1, val2 = 1 });
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             AreEqual(TransactionCommand.Commit, begin.Result.executed);
             
             var count = client.testMutate.CountAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             AreEqual(2, count.Result);
         }
         
@@ -35,18 +35,18 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestTransaction_Commit_Explicit(string db) {
             var client  = await GetClient(db);
             client.testMutate.DeleteAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             var begin = client.std.TransactionBegin();
             client.testMutate.Create(new TestMutate { id = "op-1", val1 = 1, val2 = 1 });
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
             var end = client.std.TransactionCommit();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             AreEqual(TransactionCommand.Commit, begin.Result.executed);
             AreEqual(TransactionCommand.Commit, end.Result.executed);
             
             var count = client.testMutate.CountAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             AreEqual(2, count.Result);
         }
         
@@ -54,18 +54,18 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestTransaction_Rollback(string db) {
             var client  = await GetClient(db);
             client.testMutate.DeleteAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             var begin = client.std.TransactionBegin();
             client.testMutate.Create(new TestMutate { id = "op-1", val1 = 1, val2 = 1 });
             client.testMutate.Create(new TestMutate { id = "op-2", val1 = 2, val2 = 2 });
             var end = client.std.TransactionRollback();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             AreEqual(TransactionCommand.Rollback, begin.Result.executed);
             AreEqual(TransactionCommand.Rollback, end.Result.executed);
             
             var count = client.testMutate.CountAll();
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             if (SupportTransaction(db)) {
                 AreEqual(0, count.Result);
                 return;
@@ -78,12 +78,12 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             client.testMutate.DeleteAll();
             client.testMutate.Create(new TestMutate { id = "op-1", val1 = 1, val2 = 1 });
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             client      = await GetClient(db);
             var begin   = client.std.TransactionBegin();
             var create  = client.testMutate.Create(new TestMutate { id = "op-1", val1 = 2, val2 = 2 });
-            await client.TrySyncTasks();
+            await client.TrySyncTasksEnv();
 
             IsFalse(create.Success);
             AreEqual(TransactionCommand.Rollback, begin.Result.executed);
@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             
             var end = client.std.TransactionCommit();
-            await client.TrySyncTasks();
+            await client.TrySyncTasksEnv();
             
             AreEqual("CommandError ~ Missing begin transaction", end.Error.Message);
         }
@@ -104,7 +104,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             
             var end = client.std.TransactionRollback();
-            await client.TrySyncTasks();
+            await client.TrySyncTasksEnv();
             
             AreEqual("CommandError ~ Missing begin transaction", end.Error.Message);
         }
@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Provider.Test
             
             var begin1 = client.std.TransactionBegin();
             var begin2 = client.std.TransactionBegin();
-            await client.TrySyncTasks();
+            await client.TrySyncTasksEnv();
             
             IsTrue(begin1.Success);
             AreEqual("CommandError ~ Transaction already started", begin2.Error.Message);

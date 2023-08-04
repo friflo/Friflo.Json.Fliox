@@ -17,14 +17,14 @@ namespace Friflo.Json.Tests.Provider.Test
             var testDelete = new TestMutate { id = "test-delete-1" };
             client.testMutate.DeleteAll();
             client.testMutate.Create(testDelete);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             client.testMutate.Delete(testDelete);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             IsFalse(client.testMutate.Local.ContainsKey(testDelete.id));
             
             var find = client.testMutate.Find(testDelete.id);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             IsNull(find.Result);
             IsNull(client.testMutate.Local[testDelete.id]);
         }
@@ -37,18 +37,18 @@ namespace Friflo.Json.Tests.Provider.Test
             client1.testMutate.DeleteAll();
             client1.testMutate.Create(testDelete);
 
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2  = await GetClient(db);
             client2.testMutate.Find(testDelete.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             NotNull(client2.testMutate.Local[testDelete.id]);
             
             client1.testMutate.Delete(testDelete);
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var find = client2.testMutate.Find(testDelete.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             IsNull(find.Result);
             // Ensure Local entry is null when deleted by another client
             IsNull(client2.testMutate.Local[testDelete.id]);

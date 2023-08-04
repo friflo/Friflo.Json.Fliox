@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Provider.Test
         public static async Task TestRead_01_One(string db) {
             var client  = await GetClient(db);
             var find    = client.testOps.Find("a-1");
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             NotNull(find.Result);
         }
         
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var read    = client.testOps.Read();
             var find1   = read.Find("a-1");
             var find2   = read.Find("a-2");
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             NotNull(find1.Result);
             NotNull(find2.Result);
         }
@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var read    = client.testOps.Read();
             var find    = read.Find("unknown");
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             IsNull(find.Result);
         }
         
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var read    = client.testString.Read();
             var quote   = read.Find("s-quote");
             var escape  = read.Find("s-escape");
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             NotNull(quote.Result);
             NotNull(escape.Result);
             AreEqual("quote-'",                     quote.Result.str);
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var read    = client.testString.Read();
             var quote   = read.Find("id-quote-'");
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             NotNull(quote.Result);
         }
         
@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var read    = client.testString.Read();
             var quote   = read.Find("id-unicode-🔑");
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             NotNull(quote.Result);
         }
         
@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var read    = client.testIntKey.Read();
             var find    = read.Find(1);
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             NotNull(find.Result);
         }
         
@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var read    = client.testIntKey.Read();
             var range   = read.FindRange(new int [] { 1, 2 });
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             var result = range.Result;
             NotNull(result);
@@ -106,7 +106,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var read    = client.testGuidKey.Read();
             var find    = read.Find(new Guid("9fa5c8d6-9a24-4562-9861-0c4ffd9ea221"));
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             NotNull(find.Result);
         }
         
@@ -118,7 +118,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var read    = client.testGuidKey.Read();
             var range   = read.FindRange(new [] { guid9f, guidB3});
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             var result = range.Result;
             NotNull(result);
@@ -132,7 +132,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client  = await GetClient(db);
             var read    = client.testKeyName.Read();
             var range   = read.FindRange(new [] { "k-1", "k-2" });
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             var result = range.Result;
             NotNull(result);
@@ -146,12 +146,12 @@ namespace Friflo.Json.Tests.Provider.Test
             var client1 = await GetClient(db);
             var g1      = new TestReadTypes { id = "g1", guid = new Guid("ea8c4fbc-f908-4da5-bf8b-c347dfb62055") };
             client1.testReadTypes.Upsert(g1);
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var g1Read  = read.Find(g1.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             
             AreEqual(g1.guid,       g1Read.Result.guid);
         }
@@ -163,14 +163,14 @@ namespace Friflo.Json.Tests.Provider.Test
             var dt2     = new TestReadTypes { id = "dt2", dateTime = DateTime.Parse("2023-07-09 10:00:30.123456Z").ToUniversalTime() };
             var dt3     = new TestReadTypes { id = "dt3", dateTime = DateTime.Parse("2023-07-09 23:59:59.999999Z").ToUniversalTime() };
             client1.testReadTypes.UpsertRange(new [] { dt1, dt2, dt3 });
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var dt1Read = read.Find(dt1.id);
             var dt2Read = read.Find(dt2.id);
             var dt3Read = read.Find(dt3.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             
             AreEqual(dt1.dateTime,   dt1Read.Result.dateTime);
             AreEqual(dt2.dateTime,   dt2Read.Result.dateTime);
@@ -188,12 +188,12 @@ namespace Friflo.Json.Tests.Provider.Test
             };
             var int1      = new TestReadTypes { id = "int1", obj = obj };
             client1.testReadTypes.Upsert(int1);
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var int1Read = read.Find(int1.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             
             var result = int1Read.Result.obj;
             AreEqual(obj.i64, result.i64);
@@ -227,12 +227,12 @@ namespace Friflo.Json.Tests.Provider.Test
             };
             var flt1      = new TestReadTypes { id = "flt1", obj = obj };
             client1.testReadTypes.Upsert(flt1);
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var flt1Read = read.Find(flt1.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             
             var result = flt1Read.Result.obj;
             AreEqual(obj.f32, result.f32);
@@ -244,12 +244,12 @@ namespace Friflo.Json.Tests.Provider.Test
             var client1 = await GetClient(db);
             var i1      = new TestReadTypes { id = "i1", intArray = new [] { 42 } };
             client1.testReadTypes.Upsert(i1);
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var i1Read  = read.Find(i1.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             
             AreEqual(42, i1Read.Result.intArray[0]);
         }
@@ -259,12 +259,12 @@ namespace Friflo.Json.Tests.Provider.Test
             var client1 = await GetClient(db);
             var o1      = new TestReadTypes { id = "o1", objList = new List<ComponentType> { new() { str = "abc" }  } };
             client1.testReadTypes.Upsert(o1);
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var o1Read  = read.Find(o1.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             
             AreEqual("abc", o1Read.Result.objList[0].str);
         }
@@ -276,14 +276,14 @@ namespace Friflo.Json.Tests.Provider.Test
             var c2      = new TestReadTypes { id = "c2", obj = new ComponentType() };
             var c3      = new TestReadTypes { id = "c3", obj = null };
             client1.testReadTypes.UpsertRange(new [] { c1, c2, c3 });
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var c1Read  = read.Find(c1.id);
             var c2Read  = read.Find(c2.id);
             var c3Read  = read.Find(c3.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             
             AreEqual("abc-☀🌎♥👋", c1Read.Result.obj.str);
             NotNull (c2Read.Result.obj);
@@ -296,13 +296,13 @@ namespace Friflo.Json.Tests.Provider.Test
             var bi0     = new TestReadTypes { id = "bi0", bigInt = BigInteger.Zero };
             var bi1     = new TestReadTypes { id = "bi1", bigInt = BigInteger.Parse("1234567890123456789012345678901234567890") };
             client1.testReadTypes.UpsertRange(new [] { bi0, bi1 });
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var bi0Read = read.Find(bi0.id);
             var bi1Read = read.Find(bi1.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             
             AreEqual(bi0.bigInt,   bi0Read.Result.bigInt);
             AreEqual(bi1.bigInt,   bi1Read.Result.bigInt);
@@ -313,12 +313,12 @@ namespace Friflo.Json.Tests.Provider.Test
             var client1 = await GetClient(db);
             var ss0     = new TestReadTypes { id = "ss0", shortStr = new ShortString("short-string") };
             client1.testReadTypes.UpsertRange(new [] { ss0 });
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var bi0Read = read.Find(ss0.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             
             IsTrue(ss0.shortStr.IsEqual(bi0Read.Result.shortStr));
         }
@@ -328,12 +328,12 @@ namespace Friflo.Json.Tests.Provider.Test
             var client1 = await GetClient(db);
             var jk1     = new TestReadTypes { id = "jk1", jsonKey = new JsonKey("json-key") };
             client1.testReadTypes.UpsertRange(new [] { jk1 });
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
             var bi0Read = read.Find(jk1.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             
             var expected = jk1.jsonValue.AsString();
             var actual   = bi0Read.Result.jsonValue.AsString();
@@ -350,7 +350,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var jv5     = new TestReadTypes { id = "jv5", jsonValue = new JsonValue("[{\"item-1\":1},{\"item-2\":2}]") };
             var jv6     = new TestReadTypes { id = "jv6", jsonValue = new JsonValue("true") };
             client1.testReadTypes.UpsertRange(new [] { jv1, jv2, jv3, jv4, jv5, jv6 });
-            await client1.SyncTasks();
+            await client1.SyncTasksEnv();
             
             var client2 = await GetClient(db);
             var read    = client2.testReadTypes.Read();
@@ -360,7 +360,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var jv4Read = read.Find(jv4.id);
             var jv5Read = read.Find(jv5.id);
             var jv6Read = read.Find(jv6.id);
-            await client2.SyncTasks();
+            await client2.SyncTasksEnv();
             
             AreEqualJsonValue(jv1.jsonValue, jv1Read.Result.jsonValue);
             AreEqualJsonValue(jv2.jsonValue, jv2Read.Result.jsonValue);

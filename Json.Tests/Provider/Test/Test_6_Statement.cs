@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var client      = await GetClient(db, false);
             // var sql2        = "DROP TABLE IF EXISTS `testops`;";
             var sqlResult   = client.std.ExecuteRawSQL(new RawSql(result.Sql, true));
-            await client.SyncTasks();
+            await client.SyncTasksEnv();
             
             var raw         = sqlResult.Result;
             AreEqual(21, raw.rowCount);
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Provider.Test
             var sql1    = client.std.ExecuteRawSQL(new RawSql("select id, guid, ddd from testreadtypes;", true));
             var sql2    = client.std.ExecuteRawSQL(new RawSql("select id, guid, ddd from testreadtypes;"));
             var sql3    = client.std.ExecuteRawSQL(null);
-            await client.TrySyncTasks();
+            await client.TrySyncTasksEnv();
             
             IsFalse(sql1.Success);
             AreEqual(TaskErrorType.CommandError, sql1.Error.type);
@@ -107,7 +107,7 @@ namespace Friflo.Json.Tests.Provider.Test
             // ensure table doesn't exist on CREATE TABLE 
             client.std.ExecuteRawSQL(new RawSql("DROP TABLE test_create_table;"));
             var create  = client.std.ExecuteRawSQL(new RawSql("CREATE TABLE test_create_table (PersonID int);", true));
-            await client.TrySyncTasks();
+            await client.TrySyncTasksEnv();
             
             IsTrue(create.Success);
             AreEqual(0, create.Result.columns.Length);  // executed command with schema: true
