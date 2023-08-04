@@ -112,6 +112,21 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
         }
         
+        public override AggregateEntitiesResult AggregateEntities (AggregateEntities command, SyncContext syncContext)
+        {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new AggregateEntitiesResult { Error = syncConnection.Error };
+            }
+            if (command.type == AggregateType.count) {
+                var sql = SQL.Count(this, command);
+                var result  = connection.ExecuteSync(sql);
+                if (result.Failed) { return new AggregateEntitiesResult { Error = result.TaskError() }; }
+                return new AggregateEntitiesResult { value = (long)result.value };
+            }
+            return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
+        }
+        
         /// <summary>sync version of <see cref="DeleteEntitiesAsync"/> </summary>
         public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext)
         {

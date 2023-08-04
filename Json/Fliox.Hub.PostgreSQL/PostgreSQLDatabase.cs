@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Npgsql;
 using static Friflo.Json.Fliox.Hub.PostgreSQL.PostgreSQLUtils;
 
@@ -38,6 +39,23 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
         
         public override EntityContainer CreateContainer(in ShortString name, EntityDatabase database) {
             return new PostgreSQLContainer(name.AsString(), this);
+        }
+        
+        public override bool IsSyncTask(SyncRequestTask task, in PreExecute execute) {
+            if (!execute.executeSync) {
+                return false;
+            }
+            switch (task.TaskType) {
+                case TaskType.read:
+                case TaskType.query:
+                case TaskType.create:
+                case TaskType.upsert:
+                case TaskType.delete:
+                case TaskType.aggregate:
+                case TaskType.closeCursors:
+                    return true;
+            }
+            return false;
         }
         
         private SyncConnectionError OpenError(PostgresException e) {

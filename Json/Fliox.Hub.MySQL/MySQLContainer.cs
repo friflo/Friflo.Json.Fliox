@@ -210,11 +210,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 return new AggregateEntitiesResult { Error = syncConnection.Error };
             }
             if (command.type == AggregateType.count) {
-                var filter  = command.GetFilter();
-                var where   = filter.IsTrue ? "" : $" WHERE {filter.MySQLFilter(provider, tableType)}";
-                var sql     = $"SELECT COUNT(*) from {name}{where}";
-
-                var result  = await Execute(connection, sql).ConfigureAwait(false);
+                var sql = SQL.Count(this, command);
+                var result  = await connection.ExecuteAsync(sql).ConfigureAwait(false);
                 if (result.Failed) { return new AggregateEntitiesResult { Error = result.TaskError() }; }
                 return new AggregateEntitiesResult { value = (long)result.value };
             }

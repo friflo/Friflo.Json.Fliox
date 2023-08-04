@@ -214,16 +214,13 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new AggregateEntitiesResult { Error = syncConnection.Error };
             }
             if (command.type == AggregateType.count) {
-                var filter  = command.GetFilter();
-                var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter(tableInfo.type, tableType)}";
-                var sql     = $"SELECT COUNT(*) from {name}{where}";
-                var result  = await ExecuteAsync(connection, sql).ConfigureAwait(false);
+                var sql     = SQL.Count(this, command);
+                var result  = await connection.ExecuteAsync(sql).ConfigureAwait(false);
                 if (result.Failed) { return new AggregateEntitiesResult { Error = result.TaskError() }; }
                 return new AggregateEntitiesResult { value = (long)result.value };
             }
             return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
         }
-        
        
         public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext)
         {

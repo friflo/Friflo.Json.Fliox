@@ -68,6 +68,13 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return sql;
         }
         
+        // --- query
+        internal static string Count(MySQLContainer container, AggregateEntities command) {
+            var filter  = command.GetFilter();
+            var where   = filter.IsTrue ? "" : $" WHERE {filter.MySQLFilter(container.provider, container.tableType)}";
+            return $"SELECT COUNT(*) from {container.name}{where}";
+        }
+        
         // --- delete
         internal static string Delete(MySQLContainer container, DeleteEntities command) {
             var sql = new StringBuilder();

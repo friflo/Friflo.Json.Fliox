@@ -75,6 +75,13 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             return sql;
         }
         
+        // --- count
+        internal static string Count(PostgreSQLContainer container, AggregateEntities command) {
+            var filter  = command.GetFilter();
+            var where   = filter.IsTrue ? "" : $" WHERE {filter.PostgresFilter(container.tableInfo.type, container.tableType)}";
+            return $"SELECT COUNT(*) from {container.name}{where}";
+        }
+        
         // --- delete
         internal static string Delete(PostgreSQLContainer container, DeleteEntities command) {
             var sql = new StringBuilder();
