@@ -147,6 +147,15 @@ namespace Friflo.Json.Fliox.Hub.Host
             var command = new CommandDelegateAsync<TParam, TResult>(name, handler);
             handlers.Add(new ShortString(name), command);
         }
+        
+        private void AddCommandHandlerDual<TParam, TResult> (
+            string                                      name,
+            HostCommandHandler<TParam, TResult>         syncHandler,
+            HostCommandHandlerAsync<TParam, TResult>    asyncHandler)
+        {
+            var command = new CommandDelegateDual<TParam, TResult>(name, syncHandler, asyncHandler);
+            handlers.Add(new ShortString(name), command);
+        }
        
         /// <summary>
         /// Add all methods of the given class <paramref name="commands"/> with the parameters <br/>

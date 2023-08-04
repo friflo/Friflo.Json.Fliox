@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// Note: In case of adding transaction support for <see cref="SyncRequest"/>'s in future transaction data / state
     /// need to be handled by this class.
     /// </remarks>
-    public sealed class SyncContext
+    public sealed partial class SyncContext
     {
         // --- public
                         public  FlioxHub        Hub             => hub;
@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        internal async Task<TransResult> Transaction(TransCommand command, int taskIndex) {
+        internal async Task<TransResult> TransactionAsync(TransCommand command, int taskIndex) {
             var db      = Database;
             var trans   = transaction;
             switch (command)
@@ -196,7 +196,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         return new TransResult("Transaction already started");
                     }
                     transaction = new SyncTransaction(taskIndex);
-                    return await db.Transaction(this, TransCommand.Begin).ConfigureAwait(false);
+                    return await db.TransactionAsync(this, TransCommand.Begin).ConfigureAwait(false);
                 }
                 case TransCommand.Commit: {
                     if (trans == null) {
@@ -206,12 +206,12 @@ namespace Friflo.Json.Fliox.Hub.Host
                     bool success = !SyncTransaction.HasTaskErrors(response.tasks, trans.beginTask + 1, taskIndex);
                     TransResult result;
                     if (success) {
-                        result = await db.Transaction(this, TransCommand.Commit).ConfigureAwait(false);
+                        result = await db.TransactionAsync(this, TransCommand.Commit).ConfigureAwait(false);
                         if (result.error != null) {
-                            result = await db.Transaction(this, TransCommand.Rollback).ConfigureAwait(false);
+                            result = await db.TransactionAsync(this, TransCommand.Rollback).ConfigureAwait(false);
                         }
                     } else {
-                        result = await db.Transaction(this, TransCommand.Rollback).ConfigureAwait(false);
+                        result = await db.TransactionAsync(this, TransCommand.Rollback).ConfigureAwait(false);
                     }
                     UpdateTransactionBeginResult(trans.beginTask, result);
                     return result;
@@ -221,7 +221,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         return new TransResult("Missing begin transaction");
                     }
                     transaction = null;
-                    var result = await db.Transaction(this, TransCommand.Rollback).ConfigureAwait(false);
+                    var result = await db.TransactionAsync(this, TransCommand.Rollback).ConfigureAwait(false);
                     UpdateTransactionBeginResult(trans.beginTask, result);
                     return result;
                 }

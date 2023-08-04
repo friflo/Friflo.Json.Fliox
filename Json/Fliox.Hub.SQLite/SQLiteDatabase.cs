@@ -108,12 +108,12 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             raw.SetProvider(new SQLite3Provider_e_sqlite3());
         }
         
-        protected override Task<TransResult> Transaction(SyncContext syncContext, TransCommand command) {
-            var result = TransactionSync(syncContext, command);
+        protected override Task<TransResult> TransactionAsync(SyncContext syncContext, TransCommand command) {
+            var result = Transaction(syncContext, command);
             return Task.FromResult(result);
         }
         
-        private static TransResult TransactionSync(SyncContext syncContext, TransCommand command)
+        protected override TransResult Transaction(SyncContext syncContext, TransCommand command)
         {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {

@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return true; 
             }
             if (execute.db.service.TryGetMessage(name, out callback)) {
-                var isSync = callback.IsSynchronous;
+                var isSync = callback.IsSynchronous(execute);
                 intern.executionType = isSync ? ExecutionType.Sync : ExecutionType.Async;
                 return isSync;
             }

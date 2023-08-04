@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
             }
             if (syncContext.IsTransactionPending) {
-                await syncContext.Transaction(TransCommand.Commit, taskCount).ConfigureAwait(false);
+                await syncContext.TransactionAsync(TransCommand.Commit, taskCount).ConfigureAwait(false);
             }
             syncContext.ReturnConnection();
             PostExecute(syncRequest, response, syncContext);

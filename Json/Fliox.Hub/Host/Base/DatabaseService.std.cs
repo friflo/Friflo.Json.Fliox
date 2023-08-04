@@ -51,9 +51,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandler      <Empty,       DbMessages>        (Std.Messages,          Messages);
             AddCommandHandler      <Empty,       DbSchema>          (Std.Schema,            Schema);
             AddCommandHandlerAsync <string,      DbStats>           (Std.Stats,             Stats);
-            AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionBegin,  TransactionBegin);
-            AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionCommit, TransactionCommit);
-            AddCommandHandlerAsync <Empty,       TransactionResult> (Std.TransactionRollback,TransactionRollback);
+            AddCommandHandlerDual  <Empty,       TransactionResult> (Std.TransactionBegin,  TransactionBegin,     TransactionBeginAsync);
+            AddCommandHandlerDual  <Empty,       TransactionResult> (Std.TransactionCommit, TransactionCommit,    TransactionCommitAsync);
+            AddCommandHandlerDual  <Empty,       TransactionResult> (Std.TransactionRollback,TransactionRollback, TransactionRollbackAsync);
             AddCommandHandlerAsync <RawSql,      RawSqlResult>      (Std.ExecuteRawSQL,     ExecuteRawSQL);
             // --- host
             AddCommandHandler      <HostParam,   HostInfo>          (Std.HostInfo,          HostInfo);
@@ -182,27 +182,27 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// The returned result will be exchanged by <see cref="SyncContext.UpdateTransactionBeginResult"/>
         /// after execution of Begin or Rollback.
         /// </summary>
-        private static async Task<Result<TransactionResult>> TransactionBegin (Param<Empty> param, MessageContext context) {
+        private static async Task<Result<TransactionResult>> TransactionBeginAsync (Param<Empty> param, MessageContext context) {
             var taskIndex   = context.task.intern.index;
-            var result      = await context.syncContext.Transaction(TransCommand.Begin, taskIndex).ConfigureAwait(false);
+            var result      = await context.syncContext.TransactionAsync(TransCommand.Begin, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
                 return SyncTransaction.CreateResult(TransCommand.Rollback);
             }
             return Result.Error(result.error);
         }
         
-        private static async Task<Result<TransactionResult>> TransactionCommit (Param<Empty> param, MessageContext context) {
+        private static async Task<Result<TransactionResult>> TransactionCommitAsync (Param<Empty> param, MessageContext context) {
             var taskIndex   = context.task.intern.index;
-            var result      = await context.syncContext.Transaction(TransCommand.Commit, taskIndex).ConfigureAwait(false);
+            var result      = await context.syncContext.TransactionAsync(TransCommand.Commit, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
                 return SyncTransaction.CreateResult(result.state);
             }
             return Result.Error(result.error);
         }
         
-        private static async Task<Result<TransactionResult>> TransactionRollback (Param<Empty> param, MessageContext context) {
+        private static async Task<Result<TransactionResult>> TransactionRollbackAsync (Param<Empty> param, MessageContext context) {
             var taskIndex   = context.task.intern.index;
-            var result      = await context.syncContext.Transaction(TransCommand.Rollback, taskIndex).ConfigureAwait(false);
+            var result      = await context.syncContext.TransactionAsync(TransCommand.Rollback, taskIndex).ConfigureAwait(false);
             if (result.error == null) {
                 return SyncTransaction.CreateResult(TransCommand.Rollback);
             }

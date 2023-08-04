@@ -114,25 +114,44 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
         }
         
-        protected override async Task<TransResult> Transaction(SyncContext syncContext, TransCommand command) {
-            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SyncConnection connection) {
-                return new TransResult(syncConnection.Error.message);
-            }
-            var sql = command switch {
+        private static string GetTransactionCommand(TransCommand command) {
+            return command switch {
                 TransCommand.Begin      => "BEGIN TRANSACTION;",
                 TransCommand.Commit     => "COMMIT;",
                 TransCommand.Rollback   => "ROLLBACK;",
                 _                       => null
             };
+        }
+        
+        protected override TransResult Transaction(SyncContext syncContext, TransCommand command) {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new TransResult(syncConnection.Error.message);
+            }
+            var sql = GetTransactionCommand(command);
+            if (sql == null) return new TransResult($"invalid transaction command {command}");
+            try {
+                connection.ExecuteNonQuerySync(sql);
+                return new TransResult(command);
+            }
+            catch (SqlException e) {
+                return new TransResult(GetErrMsg(e));
+            }
+        }
+        
+        protected override async Task<TransResult> TransactionAsync(SyncContext syncContext, TransCommand command) {
+            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
+            if (syncConnection is not SyncConnection connection) {
+                return new TransResult(syncConnection.Error.message);
+            }
+            var sql = GetTransactionCommand(command);
             if (sql == null) return new TransResult($"invalid transaction command {command}");
             try {
                 await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
                 return new TransResult(command);
             }
             catch (SqlException e) {
-                var msg = GetErrMsg(e);
-                return new TransResult(msg);
+                return new TransResult(GetErrMsg(e));
             }
         }
         

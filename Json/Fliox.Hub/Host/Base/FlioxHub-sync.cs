@@ -3,6 +3,7 @@
 
 using System;
 // using System.Threading.Tasks; intentionally not used in sync version
+using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static Friflo.Json.Fliox.Hub.Host.ExecutionType;
@@ -89,6 +90,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                     var message = GetLogMessage(db.name, syncRequest.userId, index, task);
                     Logger.Log(HubLog.Error, message, e);
                 }
+            }
+            if (syncContext.IsTransactionPending) {
+                syncContext.Transaction(TransCommand.Commit, taskCount);
             }
             syncContext.ReturnConnection();
             PostExecute(syncRequest, response, syncContext);
