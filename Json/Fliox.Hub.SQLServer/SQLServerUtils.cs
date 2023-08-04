@@ -170,7 +170,7 @@ WHEN NOT MATCHED THEN
         internal static SqlParameter DeleteEntitiesCmdAsync (StringBuilder sql, ListOne<JsonKey> ids, string table) {
             var dataTable = new DataTable();
             dataTable.Columns.Add(ID, typeof(string));
-            foreach(var id in ids) {
+            foreach(var id in ids.GetReadOnlySpan()) {
                 dataTable.Rows.Add(id.AsString());
             }
             sql.Append($"DELETE FROM  {table} WHERE {ID} in (SELECT {ID} FROM @ids);");
