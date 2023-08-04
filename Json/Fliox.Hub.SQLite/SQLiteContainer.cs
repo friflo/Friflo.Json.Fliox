@@ -316,7 +316,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             return await Task.Run(() => AggregateEntities(command, syncContext)).ConfigureAwait(false);
         }
         
-        private AggregateEntitiesResult AggregateEntities (AggregateEntities command, SyncContext syncContext) {
+        public override AggregateEntitiesResult AggregateEntities (AggregateEntities command, SyncContext syncContext) {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new AggregateEntitiesResult { Error = syncConnection.Error };

@@ -138,7 +138,8 @@ CREATE TABLE dbo.{name}";
                     await connection.ExecuteNonQueryAsync(sql.ToString(), p).ConfigureAwait(false);
                 }
                 return new CreateEntitiesResult();
-            } catch (SqlException e) {
+            }
+            catch (SqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e) };
             }
         }
@@ -162,7 +163,8 @@ CREATE TABLE dbo.{name}";
                     await connection.ExecuteNonQueryAsync(sql.ToString(), p).ConfigureAwait(false);
                 }
                 return new UpsertEntitiesResult();
-            } catch (SqlException e) {
+            }
+            catch (SqlException e) {
                 return new UpsertEntitiesResult { Error = DatabaseError(e) };
             }
         }
@@ -185,7 +187,8 @@ CREATE TABLE dbo.{name}";
                     using var reader = await connection.ExecuteReaderAsync(sql).ConfigureAwait(false);
                     return await SQLUtils.ReadJsonColumnAsync(reader, command).ConfigureAwait(false);
                 }
-            } catch (SqlException e) {
+            }
+            catch (SqlException e) {
                 return new ReadEntitiesResult { Error = DatabaseError(e) };
             }
         }

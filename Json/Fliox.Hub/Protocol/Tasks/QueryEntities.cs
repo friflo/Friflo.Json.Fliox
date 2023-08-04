@@ -53,6 +53,21 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   TaskType            TaskType => TaskType.query;
         public   override   string              TaskName => $"container: '{container}', filter: {filter}";
         
+        public QueryEntities() { }
+        
+        public QueryEntities(
+            ShortString         container,
+            string              filter,
+            JsonValue           filterTree,
+            OperationContext    filterContext)
+        {
+            this.container      = container;
+            this.filter         = filter;
+            this.filterTree     = filterTree;
+            this.filterContext  = filterContext;
+            
+        }
+        
         public FilterOperation GetFilter() {
             if (filterLambda != null)
                 return filterLambda;

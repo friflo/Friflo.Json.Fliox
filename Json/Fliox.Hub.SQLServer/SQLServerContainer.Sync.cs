@@ -38,7 +38,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     connection.ExecuteNonQuerySync(sql.ToString(), p);
                 }
                 return new CreateEntitiesResult();
-            } catch (SqlException e) {
+            }
+            catch (SqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e) };
             }
         }
@@ -62,7 +63,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     connection.ExecuteNonQuerySync(sql.ToString(), p);
                 }
                 return new UpsertEntitiesResult();
-            } catch (SqlException e) {
+            }
+            catch (SqlException e) {
                 return new UpsertEntitiesResult { Error = DatabaseError(e) };
             }
         }

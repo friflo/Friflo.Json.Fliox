@@ -127,7 +127,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
+        public override Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
+            return Task.FromResult(AggregateEntities(command, syncContext));
+        }
+        
+        public override AggregateEntitiesResult AggregateEntities(AggregateEntities command, SyncContext syncContext) {
             var filter = command.GetFilter();
             switch (command.type) {
                 case AggregateType.count:
@@ -136,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         var count = keyValues.Count;
                         return new AggregateEntitiesResult { container = command.container, value = count };
                     }
-                    var result = await CountEntitiesAsync(command, syncContext).ConfigureAwait(false);
+                    var result = CountEntities(command, syncContext);
                     return result;
             }
             return new AggregateEntitiesResult { Error = new TaskExecuteError($"aggregate {command.type} not implement") };

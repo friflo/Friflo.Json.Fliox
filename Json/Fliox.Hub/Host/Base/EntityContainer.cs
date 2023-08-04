@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>Query entities using the filter in the given <paramref name="command"/></summary>
         public virtual QueryEntitiesResult     QueryEntities    (QueryEntities     command, SyncContext syncContext) => throw new NotImplementedException();
         
-        // not supported:  virtual AggregateEntitiesResult AggregateEntitiesSync(AggregateEntities command, SyncContext syncContext)
+        public virtual AggregateEntitiesResult AggregateEntities(AggregateEntities command, SyncContext syncContext) => throw new NotImplementedException();
         
         #endregion
 
@@ -210,22 +210,29 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
-        protected async Task<AggregateEntitiesResult> CountEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
-            var query = new QueryEntities {
-                container       = command.container,
-                filter          = command.filter,
-                filterTree      = command.filterTree,
-                filterContext   = command.filterContext
-            };
+        protected async Task<AggregateEntitiesResult> CountEntitiesAsync (AggregateEntities command, SyncContext syncContext)
+        {
+            var query = new QueryEntities (command.container, command.filter, command.filterTree, command.filterContext);
             var queryResult = await QueryEntitiesAsync(query, syncContext).ConfigureAwait(false);
             
             var queryError = queryResult.Error; 
             if (queryError != null) {
                 return new AggregateEntitiesResult { Error = queryError };
             }
-            var value   = queryResult.entities.Length;
-            var result  = new AggregateEntitiesResult { container = command.container, value = value };
-            return result;
+            return new AggregateEntitiesResult { container = command.container, value = queryResult.entities.Length };
+        }
+        
+        /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
+        protected AggregateEntitiesResult CountEntities (AggregateEntities command, SyncContext syncContext)
+        {
+            var query = new QueryEntities (command.container, command.filter, command.filterTree, command.filterContext);
+            var queryResult = QueryEntities(query, syncContext);
+            
+            var queryError = queryResult.Error; 
+            if (queryError != null) {
+                return new AggregateEntitiesResult { Error = queryError };
+            }
+            return new AggregateEntitiesResult { container = command.container, value = queryResult.entities.Length };
         }
 
         #endregion
