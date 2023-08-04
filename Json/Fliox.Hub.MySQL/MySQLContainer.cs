@@ -34,7 +34,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             tableType   = database.TableType;
         }
         
-        public async Task<SQLResult> CreateTable(ISyncConnection syncConnection) {
+        public async Task<SQLResult> CreateTable(ISyncConnection syncConnection)
+        {
             var connection = (SyncConnection)syncConnection;
             if (tableType == TableType.JsonColumn) {
                 // [MySQL :: MySQL 8.0 Reference Manual :: 11.7 Data Type Storage Requirements] https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html
@@ -59,12 +60,14 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return await Execute(connection, sb.ToString()).ConfigureAwait(false);
         }
         
-        private async Task<HashSet<string>> GetColumnNamesAsync(SyncConnection connection) {
+        private async Task<HashSet<string>> GetColumnNamesAsync(SyncConnection connection)
+        {
             using var reader = await connection.ExecuteReaderAsync($"SELECT * FROM {name} LIMIT 0").ConfigureAwait(false);
             return await SQLUtils.GetColumnNamesAsync(reader).ConfigureAwait(false);
         }
         
-        public async Task<SQLResult> AddVirtualColumns(ISyncConnection syncConnection) {
+        public async Task<SQLResult> AddVirtualColumns(ISyncConnection syncConnection)
+        {
             if (tableType != TableType.JsonColumn) {
                 return default;
             }
@@ -82,7 +85,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return new SQLResult();
         }
         
-        public async Task<SQLResult> AddColumns (ISyncConnection syncConnection) {
+        public async Task<SQLResult> AddColumns (ISyncConnection syncConnection)
+        {
             if (tableType != TableType.Relational) {
                 return default;
             }
@@ -103,7 +107,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
         
         /// <summary>async version of <see cref="CreateEntities"/> </summary>
-        public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
+        public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new CreateEntitiesResult { Error = syncConnection.Error };
@@ -119,15 +124,16 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     var sql = SQL.CreateJsonColumn(this, command);
                     await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
                 }
+                return new CreateEntitiesResult();
             }
             catch (MySqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e) };
             }
-            return new CreateEntitiesResult();
         }
         
         /// <summary>async version of <see cref="UpsertEntities"/> </summary>
-        public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
+        public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new UpsertEntitiesResult { Error = syncConnection.Error };
@@ -143,15 +149,16 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     var sql = SQL.UpsertJsonColumn(this, command);
                     await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
                 }
+                return new UpsertEntitiesResult();
             }
             catch (MySqlException e) {
                 return new UpsertEntitiesResult { Error = DatabaseError(e) };
             }
-            return new UpsertEntitiesResult();
         }
 
         /// <summary>async version of <see cref="ReadEntities"/></summary>
-        public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
+        public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
@@ -174,7 +181,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
 
         /// <summary>async version of <see cref="QueryEntities"/></summary>
-        public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
+        public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
@@ -195,7 +203,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             }
         }
         
-        public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
+        public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new AggregateEntitiesResult { Error = syncConnection.Error };
@@ -213,7 +222,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
 
         /// <summary>async version of <see cref="DeleteEntities"/> </summary>
-        public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
+        public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new DeleteEntitiesResult { Error = syncConnection.Error };

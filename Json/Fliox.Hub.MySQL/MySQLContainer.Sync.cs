@@ -16,7 +16,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
     internal sealed partial class MySQLContainer
     {
         /// <summary>sync version of <see cref="CreateEntitiesAsync"/> </summary>
-        public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
+        public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new CreateEntitiesResult { Error = syncConnection.Error };
@@ -32,15 +33,16 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     var sql = SQL.CreateJsonColumn(this, command);
                     connection.ExecuteNonQuerySync(sql);
                 }
+                return new CreateEntitiesResult();
             }
             catch (MySqlException e) {
                 return new CreateEntitiesResult { Error = DatabaseError(e) };
             }
-            return new CreateEntitiesResult();
         }
         
         /// <summary>sync version of <see cref="UpsertEntitiesAsync"/> </summary>
-        public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
+        public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new UpsertEntitiesResult { Error = syncConnection.Error };
@@ -56,15 +58,16 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                     var sql = SQL.UpsertJsonColumn(this, command);
                     connection.ExecuteNonQuerySync(sql);
                 }
+                return new UpsertEntitiesResult();
             }
             catch (MySqlException e) {
                 return new UpsertEntitiesResult { Error = DatabaseError(e) };
             }
-            return new UpsertEntitiesResult();
         }
         
         /// <summary>sync version of <see cref="ReadEntitiesAsync"/></summary>
-        public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
+        public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
@@ -87,7 +90,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
         
         /// <summary>sync version of <see cref="QueryEntitiesAsync"/></summary>
-        public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext) {
+        public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
@@ -109,7 +113,8 @@ namespace Friflo.Json.Fliox.Hub.MySQL
         }
         
         /// <summary>sync version of <see cref="DeleteEntitiesAsync"/> </summary>
-        public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {
+        public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new DeleteEntitiesResult { Error = syncConnection.Error };

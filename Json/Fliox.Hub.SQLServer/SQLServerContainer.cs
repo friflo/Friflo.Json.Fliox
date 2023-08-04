@@ -73,12 +73,14 @@ CREATE TABLE dbo.{name}";
             }
         }
         
-        private async Task<HashSet<string>> GetColumnNamesAsync(SyncConnection connection) {
+        private async Task<HashSet<string>> GetColumnNamesAsync(SyncConnection connection)
+        {
             using var reader = await connection.ExecuteReaderAsync($"SELECT TOP 0 * FROM {name}").ConfigureAwait(false);
             return await SQLUtils.GetColumnNamesAsync(reader).ConfigureAwait(false);
         }
         
-        public async Task<SQLResult> AddVirtualColumns(ISyncConnection syncConnection) {
+        public async Task<SQLResult> AddVirtualColumns(ISyncConnection syncConnection)
+        {
             if (tableType != TableType.JsonColumn) {
                 return default;
             }
@@ -96,7 +98,8 @@ CREATE TABLE dbo.{name}";
             return new SQLResult();
         }
         
-        public async Task<SQLResult> AddColumns (ISyncConnection syncConnection) {
+        public async Task<SQLResult> AddColumns (ISyncConnection syncConnection)
+        {
             if (tableType != TableType.Relational) {
                 return default;
             }
@@ -116,7 +119,8 @@ CREATE TABLE dbo.{name}";
             return new SQLResult();
         }
         
-        public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext) {
+        public override async Task<CreateEntitiesResult> CreateEntitiesAsync(CreateEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new CreateEntitiesResult { Error = syncConnection.Error };
@@ -133,14 +137,14 @@ CREATE TABLE dbo.{name}";
                     var p = CreateEntitiesCmdAsync(sql, command.entities, name);
                     await connection.ExecuteNonQueryAsync(sql.ToString(), p).ConfigureAwait(false);
                 }
+                return new CreateEntitiesResult();
             } catch (SqlException e) {
-                var msg = GetErrMsg(e);
-                return new CreateEntitiesResult { Error = new TaskExecuteError(msg) };
+                return new CreateEntitiesResult { Error = DatabaseError(e) };
             }
-            return new CreateEntitiesResult();
         }
         
-        public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext) {
+        public override async Task<UpsertEntitiesResult> UpsertEntitiesAsync(UpsertEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new UpsertEntitiesResult { Error = syncConnection.Error };
@@ -157,15 +161,15 @@ CREATE TABLE dbo.{name}";
                     var p = UpsertEntitiesCmdAsync(sql, command.entities, name);
                     await connection.ExecuteNonQueryAsync(sql.ToString(), p).ConfigureAwait(false);
                 }
+                return new UpsertEntitiesResult();
             } catch (SqlException e) {
-                var msg = GetErrMsg(e);
-                return new UpsertEntitiesResult { Error = new TaskExecuteError(msg) };
+                return new UpsertEntitiesResult { Error = DatabaseError(e) };
             }
-            return new UpsertEntitiesResult();
         }
         
         /// <summary>async version of <see cref="ReadEntities"/></summary>
-        public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext) {
+        public override async Task<ReadEntitiesResult> ReadEntitiesAsync(ReadEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
@@ -182,13 +186,13 @@ CREATE TABLE dbo.{name}";
                     return await SQLUtils.ReadJsonColumnAsync(reader, command).ConfigureAwait(false);
                 }
             } catch (SqlException e) {
-                var msg = GetErrMsg(e);
-                return new ReadEntitiesResult { Error = new TaskExecuteError(msg) };
+                return new ReadEntitiesResult { Error = DatabaseError(e) };
             }
         }
 
         /// <summary>async version of <see cref="QueryEntities"/></summary>
-        public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext) {
+        public override async Task<QueryEntitiesResult> QueryEntitiesAsync(QueryEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
@@ -205,12 +209,12 @@ CREATE TABLE dbo.{name}";
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
             catch (SqlException e) {
-                var msg = GetErrMsg(e);
-                return new QueryEntitiesResult { Error = new TaskExecuteError(msg), sql = sql };
+                return new QueryEntitiesResult { Error = DatabaseError(e), sql = sql };
             }
         }
         
-        public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {
+        public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new AggregateEntitiesResult { Error = syncConnection.Error };
@@ -227,12 +231,12 @@ CREATE TABLE dbo.{name}";
                 return new AggregateEntitiesResult { Error = NotImplemented($"type: {command.type}") };
             }
             catch (SqlException e) {
-                var msg = GetErrMsg(e);
-                return new AggregateEntitiesResult { Error = new TaskExecuteError(msg) };
+                return new AggregateEntitiesResult { Error = DatabaseError(e) };
             }
         }
 
-        public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext) {
+        public override async Task<DeleteEntitiesResult> DeleteEntitiesAsync(DeleteEntities command, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return new DeleteEntitiesResult { Error = syncConnection.Error };
@@ -253,9 +257,12 @@ CREATE TABLE dbo.{name}";
                 return new DeleteEntitiesResult();
             }
             catch (SqlException e) {
-                var msg = GetErrMsg(e);
-                return new DeleteEntitiesResult { Error = new TaskExecuteError(msg) };
+                return new DeleteEntitiesResult { Error = DatabaseError(e) };
             }
+        }
+        
+        private static TaskExecuteError DatabaseError(SqlException e) {
+            return new TaskExecuteError(TaskErrorType.DatabaseError, GetErrMsg(e) );
         }
     }
 }

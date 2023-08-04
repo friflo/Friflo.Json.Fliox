@@ -16,7 +16,8 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
     internal sealed partial class PostgreSQLContainer
     {
 
-        public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
+        public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new CreateEntitiesResult { Error = syncConnection.Error };
@@ -32,14 +33,15 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     var sql = SQL.CreateJsonColumn(this, command);
                     connection.ExecuteNonQuerySync(sql);
                 }
+                return new CreateEntitiesResult();
             }
             catch (PostgresException e) {
-                return new CreateEntitiesResult { Error = DatabaseError(e.MessageText) };    
+                return new CreateEntitiesResult { Error = DatabaseError(e) };    
             }
-            return new CreateEntitiesResult();
         }
         
-        public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
+        public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new UpsertEntitiesResult { Error = syncConnection.Error };
@@ -55,15 +57,16 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                     var sql = SQL.UpsertJsonColumn(this, command);
                     connection.ExecuteNonQuerySync(sql);
                 }
+                return new UpsertEntitiesResult();
             }
             catch (PostgresException e) {
-                return new UpsertEntitiesResult { Error = DatabaseError(e.MessageText) };    
+                return new UpsertEntitiesResult { Error = DatabaseError(e) };    
             }
-            return new UpsertEntitiesResult();
         }
         
         /// <summary>sync version of <see cref="ReadEntitiesAsync"/></summary>
-        public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
+        public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
@@ -81,12 +84,13 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 }
             }
             catch (PostgresException e) {
-                return new ReadEntitiesResult { Error = new TaskExecuteError(e.MessageText) };
+                return new ReadEntitiesResult { Error = DatabaseError(e) };
             }
         }
         
         /// <summary>sync version of <see cref="QueryEntitiesAsync"/></summary>
-        public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext) {
+        public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
@@ -103,11 +107,12 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return SQLUtils.CreateQueryEntitiesResult(entities, command, sql);
             }
             catch (PostgresException e) {
-                return new QueryEntitiesResult { Error = new TaskExecuteError(e.MessageText), sql = sql };
+                return new QueryEntitiesResult { Error = DatabaseError(e), sql = sql };
             }
         }
         
-        public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext) {
+        public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new DeleteEntitiesResult { Error = syncConnection.Error};
@@ -122,7 +127,7 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 return new DeleteEntitiesResult();
             }
             catch (PostgresException e) {
-                return new DeleteEntitiesResult { Error = DatabaseError(e.MessageText) };    
+                return new DeleteEntitiesResult { Error = DatabaseError(e) };    
             }
         }
     }

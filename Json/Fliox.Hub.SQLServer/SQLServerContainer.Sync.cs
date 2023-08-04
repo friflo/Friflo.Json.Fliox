@@ -19,7 +19,8 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
     internal sealed partial class SQLServerContainer
     {
         
-        public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext) {
+        public override CreateEntitiesResult CreateEntities(CreateEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new CreateEntitiesResult { Error = syncConnection.Error };
@@ -36,14 +37,14 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     var p = CreateEntitiesCmdAsync(sql, command.entities, name);
                     connection.ExecuteNonQuerySync(sql.ToString(), p);
                 }
+                return new CreateEntitiesResult();
             } catch (SqlException e) {
-                var msg = GetErrMsg(e);
-                return new CreateEntitiesResult { Error = new TaskExecuteError(msg) };
+                return new CreateEntitiesResult { Error = DatabaseError(e) };
             }
-            return new CreateEntitiesResult();
         }
         
-        public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext) {
+        public override UpsertEntitiesResult UpsertEntities(UpsertEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new UpsertEntitiesResult { Error = syncConnection.Error };
@@ -60,18 +61,18 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                     var p = UpsertEntitiesCmdAsync(sql, command.entities, name);
                     connection.ExecuteNonQuerySync(sql.ToString(), p);
                 }
+                return new UpsertEntitiesResult();
             } catch (SqlException e) {
-                var msg = GetErrMsg(e);
-                return new UpsertEntitiesResult { Error = new TaskExecuteError(msg) };
+                return new UpsertEntitiesResult { Error = DatabaseError(e) };
             }
-            return new UpsertEntitiesResult();
         }
 
         SqlCommand      readCommand;
         SqlParameter    sqlParam;
         
         /// <summary>sync version of <see cref="ReadEntitiesAsync"/></summary>
-        public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext) {
+        public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new ReadEntitiesResult { Error = syncConnection.Error };
@@ -107,12 +108,13 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 }
             }
             catch (SqlException e) {
-                return new ReadEntitiesResult { Error = new TaskExecuteError(GetErrMsg(e)) };
+                return new ReadEntitiesResult { Error = DatabaseError(e) };
             }
         }
         
         /// <summary>sync version of <see cref="QueryEntitiesAsync"/></summary>
-        public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext) {
+        public override QueryEntitiesResult QueryEntities(QueryEntities command, SyncContext syncContext)
+        {
             var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return new QueryEntitiesResult { Error = syncConnection.Error };
@@ -130,6 +132,32 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
             catch (SqlException e) {
                 return new QueryEntitiesResult { Error = new TaskExecuteError(GetErrMsg(e)), sql = sql };
+            }
+        }
+        
+        public override DeleteEntitiesResult DeleteEntities(DeleteEntities command, SyncContext syncContext)
+        {
+            var syncConnection = syncContext.GetConnectionSync();
+            if (syncConnection is not SyncConnection connection) {
+                return new DeleteEntitiesResult { Error = syncConnection.Error };
+            }
+            try {
+                if (command.all == true) {
+                    connection.ExecuteNonQuerySync($"DELETE from {name}");
+                    return new DeleteEntitiesResult();
+                }
+                if (tableType == TableType.Relational) {
+                    var sql = SQL.DeleteRelational(this, command);
+                    connection.ExecuteNonQuerySync(sql);
+                } else { 
+                    var sql = new StringBuilder();
+                    var p = DeleteEntitiesCmdAsync(sql, command.ids, name);
+                    connection.ExecuteNonQuerySync(sql.ToString(), p);
+                }
+                return new DeleteEntitiesResult();
+            }
+            catch (SqlException e) {
+                return new DeleteEntitiesResult { Error = DatabaseError(e) };
             }
         }
     }
