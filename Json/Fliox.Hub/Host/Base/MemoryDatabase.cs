@@ -52,11 +52,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override bool IsSyncTask(SyncRequestTask task, in PreExecute execute) {
             switch (task.TaskType) {
+                case read:
+                case query:
                 case create:
                 case upsert:
                 case merge:
                 case delete:
-                case read:
+                case aggregate:
+                case closeCursors:
                 case subscribeChanges:
                 case subscribeMessage:
                     return true;

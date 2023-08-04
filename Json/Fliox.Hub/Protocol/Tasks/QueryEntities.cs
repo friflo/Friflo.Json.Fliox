@@ -118,25 +118,37 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return false;
         }
         
-        public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            if (container.IsNull())
-                return MissingContainer();
-            if (!ValidReferences(references, out var error))
-                return error;
-            if (!ValidateFilter (filterTree, filter, syncContext, ref filterLambda, out error))
-                return error;
+        private EntityContainer PrepareQuery(
+            EntityDatabase          database,
+            SyncContext             syncContext,
+            out TaskErrorResult     error)
+        {
+            if (container.IsNull()) {
+                error = MissingContainer();
+                return null;
+            }
+            if (!ValidReferences(references, out error)) {
+                return null;
+            }
+            if (!ValidateFilter (filterTree, filter, syncContext, ref filterLambda, out error)) {
+                return null;
+            }
             filterContext = new OperationContext();
             if (!filterContext.Init(GetFilter(), out var message)) {
-                return InvalidTaskError($"invalid filter: {message}");
+                error = InvalidTaskError($"invalid filter: {message}");
+                return null;
             }
             var entityContainer = database.GetOrCreateContainer(container);
             if (entityContainer == null) {
-                return ContainerNotFound();
+                error = ContainerNotFound();
+                return null;
             }
-            var result = await entityContainer.QueryEntitiesAsync(this, syncContext).ConfigureAwait(false);
-            if (result.Error != null) {
-                return TaskError(result.Error);
-            }
+            error = null;
+            return entityContainer;
+        }
+        
+        private void ProcessQueryResult(QueryEntitiesResult result)
+        {
             var entities    = result.entities;
             var values      = entities.Values;
             if (orderByKey.HasValue) {
@@ -145,19 +157,46 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     Array.Reverse(values);
                 }
             }
-            if (references != null && references.Count > 0) {
-                var read = await entityContainer.ReadReferencesAsync(references, entities, container, "", syncContext).ConfigureAwait(false);
-                result.references   = read.references; 
-            }
             result.container = container;
             if (values.Length > 0) {
                 result.len = values.Length;
             }
+        }
+        
+        public override async Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext)
+        {
+            var entityContainer = PrepareQuery(database, syncContext, out var error);
+            if (error != null) {
+                return error;
+            }
+            var result = await entityContainer.QueryEntitiesAsync(this, syncContext).ConfigureAwait(false);
+            if (result.Error != null) {
+                return TaskError(result.Error);
+            }
+            ProcessQueryResult(result);
+            if (references != null && references.Count > 0) {
+                var read = await entityContainer.ReadReferencesAsync(references, result.entities, container, "", syncContext).ConfigureAwait(false);
+                result.references   = read.references; 
+            }
             return result;
         }
         
-        public override SyncTaskResult Execute (EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            throw new NotImplementedException();
+        public override SyncTaskResult Execute (EntityDatabase database, SyncResponse response, SyncContext syncContext)
+        {
+            var entityContainer = PrepareQuery(database, syncContext, out var error);
+            if (error != null) {
+                return error;
+            }
+            var result = entityContainer.QueryEntities(this, syncContext);
+            if (result.Error != null) {
+                return TaskError(result.Error);
+            }
+            ProcessQueryResult(result);
+            if (references != null && references.Count > 0) {
+                var read = entityContainer.ReadReferences(references, result.entities, container, "", syncContext);
+                result.references   = read.references; 
+            }
+            return result;
         }
     }
     

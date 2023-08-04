@@ -73,6 +73,7 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                 case TaskType.upsert:
                 case TaskType.delete:
                 case TaskType.aggregate:
+                case TaskType.closeCursors:
                     return true;
             }
             return false;

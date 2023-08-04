@@ -79,11 +79,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
-            var entities = result.entities;
-            
             if (references != null && references.Count > 0) {
                 var readRefResults =
-                    await entityContainer.ReadReferencesAsync(references, entities, entityContainer.nameShort, "", syncContext).ConfigureAwait(false);
+                    await entityContainer.ReadReferencesAsync(references, result.entities, entityContainer.nameShort, "", syncContext).ConfigureAwait(false);
                 // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
                 result.references = readRefResults.references;
             }
@@ -102,6 +100,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             
             if (result.Error != null) {
                 return TaskError(result.Error);
+            }
+            if (references != null && references.Count > 0) {
+                var readRefResults = entityContainer.ReadReferences(references, result.entities, entityContainer.nameShort, "", syncContext);
+                // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
+                result.references = readRefResults.references;
             }
             return result;
         }

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
@@ -26,22 +25,22 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   string          TaskName => $"container: '{container}', cursor: {cursors}";
 
         public override Task<SyncTaskResult> ExecuteAsync(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            if (container.IsNull())
-                return Task.FromResult<SyncTaskResult>(MissingContainer());
-            
-            var entityContainer     = database.GetOrCreateContainer(container);
-            if (entityContainer == null) {
-                return Task.FromResult<SyncTaskResult>(ContainerNotFound());
-            }
-            RemoveCursors(entityContainer, cursors, syncContext.User);
-            
-            var count               = entityContainer.cursors.Count;
-            SyncTaskResult result   = new CloseCursorsResult { count = count };
+            var result = Execute(database, response, syncContext);
             return Task.FromResult(result);
         }
         
         public override SyncTaskResult Execute (EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            throw new NotImplementedException();
+            if (container.IsNull()) {
+                return MissingContainer();
+            }
+            var entityContainer     = database.GetOrCreateContainer(container);
+            if (entityContainer == null) {
+                return ContainerNotFound();
+            }
+            RemoveCursors(entityContainer, cursors, syncContext.User);
+            
+            var count = entityContainer.cursors.Count;
+            return new CloseCursorsResult { count = count };
         }
         
         ///<summary> Note: A <paramref name="user"/> can remove only its own cursors </summary>

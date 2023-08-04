@@ -10,9 +10,9 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Tree;
 using static System.Diagnostics.DebuggerBrowsableState;
+using static Friflo.Json.Fliox.Hub.Host.EntityContainerUtils;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
@@ -53,10 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   See <see cref="FlioxHub.ExecuteRequestAsync"/> for proper error handling.
     /// </para>
     /// </remarks>
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public abstract class EntityContainer : IDisposable
+    public abstract partial class EntityContainer : IDisposable
     {
     #region - members
         /// <summary> container name </summary>
@@ -102,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public virtual DeleteEntitiesResult    DeleteEntities   (DeleteEntities    command, SyncContext syncContext) => throw new NotImplementedException();
         /// <summary>Query entities using the filter in the given <paramref name="command"/></summary>
         public virtual QueryEntitiesResult     QueryEntities    (QueryEntities     command, SyncContext syncContext) => throw new NotImplementedException();
-        
+        /// <summary>Performs an aggregation specified in the given <paramref name="command"/></summary>
         public virtual AggregateEntitiesResult AggregateEntities(AggregateEntities command, SyncContext syncContext) => throw new NotImplementedException();
         
         #endregion
@@ -270,7 +267,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// <summary>
-        /// Find the <paramref name="enumerator"/> for the given <paramref name="cursor"/> id.<br/>
+        /// Find the enumerator for the given <paramref name="cursor"/> id.<br/>
         /// Return true if the <paramref name="cursor"/> was found. Otherwise false.
         /// </summary>
         protected bool FindCursor(string cursor, SyncContext syncContext, out QueryEnumerator enumerator, out TaskExecuteError error) {
@@ -293,77 +290,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         /// <summary>
-        /// Return the ids - foreign keys - stored in the <see cref="References.selector"/> fields
-        /// of the given <paramref name="entities"/>.
-        /// </summary>
-        private static List<ReferencesResult> GetReferences(
-            List<References>    references,
-            in Entities         entities,
-            in ShortString      container,
-            SyncContext         syncContext)
-        {
-            if (references.Count == 0)
-                throw new InvalidOperationException("Expect references.Count > 0");
-            var referenceResults = new List<ReferencesResult>(references.Count);
-            
-            // prepare single ScalarSelect and references results
-            var selectors = new List<string>(references.Count);  // can be reused
-            foreach (var reference in references) {
-                selectors.Add(reference.selector);
-                var referenceResult = new ReferencesResult {
-                    container   = reference.container,
-                    foreignKeys = new ListOne<JsonKey>(),
-                    set         = new ListOne<JsonValue>()
-                };
-                referenceResults.Add(referenceResult);
-            }
-            var select  = new ScalarSelect(selectors);  // can be reused
-            var values  = entities.Values;
-            using (var pooled = syncContext.pool.ScalarSelector.Get()) {
-                ScalarSelector selector = pooled.instance;
-                // Get the selected refs for all entities.
-                // Select() is expensive as it requires a full JSON parse. By using an selector array only one
-                // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
-                for (int i = 0; i < values.Length; i++) {
-                    var entity = values[i];
-                    if (entity.Error != null)
-                        continue;
-                    var json = entity.Json;
-                    if (json.IsNull())
-                        continue;
-                    var selectorResults = selector.Select(json, select);
-                    if (selectorResults == null) {
-                        var error = new EntityError(EntityErrorType.ParseError, container, entity.key, selector.ErrorMessage);
-                        // entity.SetError(entity.key, error); - used when using class EntityValue
-                        values[i] = new EntityValue(entity.key, error);
-                        continue;
-                    }
-                    for (int n = 0; n < references.Count; n++) {
-                        // selectorResults[n] contains Select() result of selectors[n] 
-                        var referenceResult = referenceResults[n];
-                        var selectorResult  = selectorResults[n];
-                        selectorResult.AddKeysToList(referenceResult.foreignKeys);
-                    }
-                }
-            }
-            // --- remove duplicate ids 
-            var idSet = Helper.CreateHashSet(0, JsonKey.Equality);
-            for (int n = 0; n < referenceResults.Count; n++)
-            {
-                var referenceResult = referenceResults[n];
-                var foreignKeys = referenceResult.foreignKeys;
-                idSet.Clear();
-                idSet.UnionWith(foreignKeys); // deduplicate
-                foreignKeys.Clear();
-                foreach (var id in idSet) {
-                    foreignKeys.Add(id);
-                }
-                KeyValueUtils.OrderKeys(foreignKeys, references[n].orderByKey);
-            }
-            return referenceResults;
-        }
-
-        /// <summary>
         /// Return the <see cref="ReferencesResult.entities"/> referenced by the <see cref="References.selector"/> path
         /// of the given <paramref name="entities"/>
         /// </summary>
@@ -378,8 +304,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             
             for (int n = 0; n < references.Count; n++) {
                 var reference       = references[n];
-                var refContName     = reference.container;
-                var refCont         = database.GetOrCreateContainer(refContName);
+                var refCont         = database.GetOrCreateContainer(reference.container);
                 var referenceResult = referenceResults[n];
                 var foreignKeys     = referenceResult.foreignKeys;
                 if (foreignKeys.Count == 0) {
@@ -387,34 +312,16 @@ namespace Friflo.Json.Fliox.Hub.Host
                     continue;
                 }
                 var readRefIds  = new ReadEntities { ids = foreignKeys, keyName = reference.keyName, isIntKey = reference.isIntKey};
+                
                 // read all referenced entities with a single read command.
                 var refEntities = await refCont.ReadEntitiesAsync(readRefIds, syncContext).ConfigureAwait(false);
                 
-                var subPath = $"{selectorPath} -> {reference.selector}";
-                // In case of ReadEntities error: Assign error to result and continue with other references.
-                // Resolving other references are independent may be successful.
-                if (refEntities.Error != null) {
-                    var message = $"read references failed: '{container.AsString()}{subPath}' - {refEntities.Error.message}";
-                    referenceResult.error       = message;
-                    referenceResult.entities    = new Entities(Array.Empty<EntityValue>());
+                if (!ProcessRefEntities(reference, referenceResult, container, selectorPath, refEntities, out var subEntities, out var subPath)) {
                     continue;
                 }
-                referenceResult.entities = refEntities.entities;
-                
-                var subReferences = reference.references;
-                if (subReferences == null) {
-                    continue;
-                }
-                var subEntitiesArray    = new EntityValue [foreignKeys.Count];
-                var subEntities         = new Entities(subEntitiesArray);
-                var refValues           = refEntities.entities.Values;
-                for (int i = 0; i < refValues.Length; i++) {
-                    subEntitiesArray[i] = refValues[i];
-                }
-                var refReferencesResult =
-                    await ReadReferencesAsync(subReferences, subEntities, refContName, subPath, syncContext).ConfigureAwait(false);
-                // returned refReferencesResult.references is always set. Each references[] item contain either a result or an error.
-                referenceResult.references = refReferencesResult.references;
+                var refResult = await ReadReferencesAsync(reference.references, subEntities, reference.container, subPath, syncContext).ConfigureAwait(false);
+                // returned refResult.references is always set. Each references[] item contain either a result or an error.
+                referenceResult.references = refResult.references;
             }
             return new ReadReferencesResult { references = referenceResults };
         }
@@ -429,16 +336,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             errors.Add(error);
         }
         
-        public static TaskExecuteError NotImplemented (string message) {
+        protected static TaskExecuteError NotImplemented (string message) {
             return new TaskExecuteError(TaskErrorType.NotImplemented, message);
         }
         #endregion
     }
-
-    /// <see cref="ReadReferencesResult"/> is never serialized within a <see cref="SyncResponse"/> only its
-    /// fields <see cref="references"/>.
-    internal sealed class ReadReferencesResult
-    {
-        internal List<ReferencesResult> references;
-    } 
 }
