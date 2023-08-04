@@ -8,12 +8,77 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Transform.Tree;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
     internal static class EntityContainerUtils
     {
+        internal static List<JsonEntity> ApplyMerges(
+                EntityContainer     entityContainer,
+                MergeEntities       mergeEntities,
+                ReadEntitiesResult  readResult,
+                ListOne<JsonKey>    ids,
+                SharedEnv           env,
+            ref List<EntityError>   patchErrors,
+            out TaskExecuteError    taskError)
+        {
+            if (readResult.Error != null) {
+                taskError = readResult.Error; 
+                return null;
+            }
+            var values = readResult.entities.Values;
+            if (values.Length != ids.Count) {
+                throw new InvalidOperationException($"MergeEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {values.Length}");
+            }
+            
+            // --- Apply merges
+            // iterate all patches and merge them to the entities read above
+            var targets     = new List<JsonEntity>  (values.Length);
+            var container   = mergeEntities.container;
+            var patches     = mergeEntities.patches;
+            
+            using (var pooled = env.pool.JsonMerger.Get())
+            {
+                JsonMerger merger   = pooled.instance;
+                merger.Pretty       = entityContainer.Pretty;
+                for (int n = 0; n < patches.Count; n++) {
+                    var patch       = patches[n];
+                    var key         = ids[n];
+                    var entity      = values[n];
+                    var entityError = entity.Error; 
+                    if (entityError != null) {
+                        EntityContainer.AddEntityError(ref patchErrors, key, entityError);
+                        continue;
+                    }
+                    var target      = entity.Json;
+                    if (target.IsNull()) {
+                        var error = new EntityError(EntityErrorType.PatchError, container, key, "patch target not found");
+                        EntityContainer.AddEntityError(ref patchErrors, key, error);
+                        continue;
+                    }
+                    // patch is an object - ensured by GetKeysFromEntities() above
+                    var merge       = merger.Merge(target, patch.value);
+                    var mergeError  = merger.Error;
+                    if (mergeError != null) {
+                        entityError = new EntityError(EntityErrorType.PatchError, container, key, mergeError);
+                        EntityContainer.AddEntityError(ref patchErrors, key, entityError);
+                        continue;
+                    }
+                    targets.Add(new JsonEntity(key, merge));
+                }
+            }
+            var schema      = entityContainer.database.Schema;
+            var valError    = schema?.ValidateEntities(container, targets, env, EntityErrorType.PatchError, ref patchErrors);
+            if (valError != null) {
+                taskError = new TaskExecuteError(TaskErrorType.ValidationError, valError);
+                return null;
+            }
+            taskError = null;
+            return targets;
+        }
+        
         /// <summary>
         /// Return the ids - foreign keys - stored in the <see cref="References.selector"/> fields
         /// of the given <paramref name="entities"/>.

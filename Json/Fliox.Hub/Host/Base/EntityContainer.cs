@@ -10,7 +10,6 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Transform.Tree;
 using static System.Diagnostics.DebuggerBrowsableState;
 using static Friflo.Json.Fliox.Hub.Host.EntityContainerUtils;
 
@@ -139,7 +138,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </remarks>
         public virtual async Task<MergeEntitiesResult> MergeEntitiesAsync (MergeEntities mergeEntities, SyncContext syncContext) {
             var patches = mergeEntities.patches;
-            var env     = syncContext.sharedEnv;
             var ids     = new ListOne<JsonKey>(patches.Count);
             foreach (var patch in patches) {
                 ids.Add(patch.key);
@@ -148,59 +146,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             var readTask    = new ReadEntities { ids = ids, keyName = mergeEntities.keyName };
             var readResult  = await ReadEntitiesAsync(readTask, syncContext).ConfigureAwait(false);
             
-            if (readResult.Error != null) {
-                return new MergeEntitiesResult { Error = readResult.Error };
-            }
-            var values = readResult.entities.Values;
-            if (values.Length != ids.Count)
-                throw new InvalidOperationException($"MergeEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {values.Length}");
-            
-            // --- Apply merges
-            // iterate all patches and merge them to the entities read above
-            var targets     = new  List<JsonEntity>  (values.Length);
-            var container   = mergeEntities.container;
             List<EntityError> patchErrors = null;
-            using (var pooled = env.pool.JsonMerger.Get())
-            {
-                JsonMerger merger   = pooled.instance;
-                merger.Pretty       = Pretty;
-                for (int n = 0; n < patches.Count; n++) {
-                    var patch       = patches[n];
-                    var key         = ids[n];
-                    var entity      = values[n];
-                    var entityError = entity.Error; 
-                    if (entityError != null) {
-                        AddEntityError(ref patchErrors, key, entityError);
-                        continue;
-                    }
-                    var target      = entity.Json;
-                    if (target.IsNull()) {
-                        var error = new EntityError(EntityErrorType.PatchError, container, key, "patch target not found");
-                        AddEntityError(ref patchErrors, key, error);
-                        continue;
-                    }
-                    // patch is an object - ensured by GetKeysFromEntities() above
-                    var merge       = merger.Merge(target, patch.value);
-                    var mergeError  = merger.Error;
-                    if (mergeError != null) {
-                        entityError = new EntityError(EntityErrorType.PatchError, container, key, mergeError);
-                        AddEntityError(ref patchErrors, key, entityError);
-                        continue;
-                    }
-                    targets.Add(new JsonEntity(key, merge));
-                }
+            var targets = ApplyMerges(this, mergeEntities, readResult, ids, syncContext.sharedEnv, ref patchErrors, out var error);
+            if (error != null) {
+                return new MergeEntitiesResult { Error = error };   
             }
-            var valError = database.Schema?.ValidateEntities(container, targets, env, EntityErrorType.PatchError, ref patchErrors);
-            if (valError != null) {
-                return new MergeEntitiesResult{Error = new TaskExecuteError(TaskErrorType.ValidationError, valError)};
-            }
-            
             // --- write merged entities back
             var task            = new UpsertEntities { entities = targets };
             var upsertResult    = await UpsertEntitiesAsync(task, syncContext).ConfigureAwait(false);
             
             if (upsertResult.Error != null) {
-                return new MergeEntitiesResult {Error = upsertResult.Error};
+                return new MergeEntitiesResult { Error = upsertResult.Error };
             }
             SyncResponse.AddEntityErrors(ref patchErrors, upsertResult.errors);
             return new MergeEntitiesResult{ errors = patchErrors };
@@ -328,7 +284,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         #endregion
 
     #region - public static utils
-        protected static void AddEntityError(ref List<EntityError> errors, in JsonKey key, EntityError error) {
+        internal static void AddEntityError(ref List<EntityError> errors, in JsonKey key, EntityError error) {
             if (errors == null) {
                 errors = new List<EntityError>();
             }
