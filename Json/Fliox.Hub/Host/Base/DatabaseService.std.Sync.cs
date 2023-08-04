@@ -36,5 +36,22 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return Result.Error(result.error);
         }
+        
+        private static Result<RawSqlResult> ExecuteRawSQL (Param<RawSql> param, MessageContext context) {
+            if (!param.Validate(out string error)) {
+                return Result.Error(error);
+            }
+            var sql = param.Value;
+            if (sql == null) {
+                return Result.Error("missing SQL command: E.g. { \"command\": \"select * from table_name;\" }");
+            }
+            var database    = context.Database;
+            var result      = database.ExecuteRawSQL(sql, context.syncContext);
+            
+            if (result.Success && sql.schema != true) {
+                result.value.columns = null;
+            }
+            return result;
+        }
     }
 }

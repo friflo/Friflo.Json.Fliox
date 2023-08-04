@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return mapper.ReadEntitiesSync(pooled.instance, tableInfo, buffer);
         }
         
-        public static async Task<RawSqlResult> ReadRows(DbDataReader reader) {
+        public static async Task<RawSqlResult> ReadRowsAsync(DbDataReader reader) {
             var columns     = GetFieldTypes(reader);
             var data        = new JsonTable();
             var readRawSql  = new ReadRawSql(reader);
@@ -167,6 +167,21 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
             return new RawSqlResult(columns, data, rowCount);
         }
+        
+        public static RawSqlResult ReadRowsSync(DbDataReader reader) {
+            var columns     = GetFieldTypes(reader);
+            var data        = new JsonTable();
+            var readRawSql  = new ReadRawSql(reader);
+            var rowCount    = 0;
+            while (reader.Read())
+            {
+                rowCount++;
+                AddRow(reader, columns, data, readRawSql);
+                data.WriteNewRow();
+            }
+            return new RawSqlResult(columns, data, rowCount);
+        }
+        
         
         // ReSharper disable once MemberCanBePrivate.Global
         public static RawSqlColumn[] GetFieldTypes(DbDataReader reader) {

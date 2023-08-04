@@ -73,7 +73,7 @@ GENERATED ALWAYS AS (({asStr})::{type}) STORED;";
         }
         
         // ------ read raw SQL
-        internal static async Task<RawSqlResult> ReadRows(DbDataReader reader) {
+        internal static async Task<RawSqlResult> ReadRowsAsync(DbDataReader reader) {
             var columns     = GetFieldTypes(reader);
             var data        = new JsonTable();
             var readRawSql  = new ReadRawSql(reader);
@@ -86,6 +86,21 @@ GENERATED ALWAYS AS (({asStr})::{type}) STORED;";
             }
             return new RawSqlResult(columns, data, rowCount);
         }
+        
+        internal static RawSqlResult ReadRowsSync(DbDataReader reader) {
+            var columns     = GetFieldTypes(reader);
+            var data        = new JsonTable();
+            var readRawSql  = new ReadRawSql(reader);
+            var rowCount    = 0;
+            while (reader.Read())
+            {
+                rowCount++;
+                AddRow(reader, columns, data, readRawSql);
+                data.WriteNewRow();
+            }
+            return new RawSqlResult(columns, data, rowCount);
+        }
+        
         
         
         // ReSharper disable once MemberCanBePrivate.Global

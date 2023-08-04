@@ -332,8 +332,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new DbMessages { commands = commands, messages = messages };
         }
         
-        public virtual Task<Result<RawSqlResult>> ExecuteRawSQL(RawSql sql, SyncContext syncContext) {
-            return Task.FromResult<Result<RawSqlResult>>(Result.Error($"Not supported for database provider: {StorageType}"));
+        public virtual Result<RawSqlResult> ExecuteRawSQL(RawSql sql, SyncContext syncContext) {
+            return Result.Error($"Not supported for database provider: {StorageType}");
+        }
+        
+        public virtual Task<Result<RawSqlResult>> ExecuteRawSQLAsync(RawSql sql, SyncContext syncContext) {
+            var result = ExecuteRawSQL(sql, syncContext);
+            return Task.FromResult(result);
         }
 
         #endregion

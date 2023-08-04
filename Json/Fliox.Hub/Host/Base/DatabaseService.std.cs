@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandlerDual  <Empty,       TransactionResult> (Std.TransactionBegin,  TransactionBegin,     TransactionBeginAsync);
             AddCommandHandlerDual  <Empty,       TransactionResult> (Std.TransactionCommit, TransactionCommit,    TransactionCommitAsync);
             AddCommandHandlerDual  <Empty,       TransactionResult> (Std.TransactionRollback,TransactionRollback, TransactionRollbackAsync);
-            AddCommandHandlerAsync <RawSql,      RawSqlResult>      (Std.ExecuteRawSQL,     ExecuteRawSQL);
+            AddCommandHandlerDual  <RawSql,      RawSqlResult>      (Std.ExecuteRawSQL,     ExecuteRawSQL,        ExecuteRawSQLAsync);
             // --- host
             AddCommandHandler      <HostParam,   HostInfo>          (Std.HostInfo,          HostInfo);
             AddCommandHandlerAsync <Empty,       HostCluster>       (Std.HostCluster,       HostCluster);
@@ -209,7 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return Result.Error(result.error);
         }
         
-        private static async Task<Result<RawSqlResult>> ExecuteRawSQL (Param<RawSql> param, MessageContext context) {
+        private static async Task<Result<RawSqlResult>> ExecuteRawSQLAsync (Param<RawSql> param, MessageContext context) {
             if (!param.Validate(out string error)) {
                 return Result.Error(error);
             }
@@ -218,7 +218,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return Result.Error("missing SQL command: E.g. { \"command\": \"select * from table_name;\" }");
             }
             var database    = context.Database;
-            var result      = await database.ExecuteRawSQL(sql, context.syncContext).ConfigureAwait(false);
+            var result      = await database.ExecuteRawSQLAsync(sql, context.syncContext).ConfigureAwait(false);
             
             if (result.Success && sql.schema != true) {
                 result.value.columns = null;

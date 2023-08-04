@@ -14,7 +14,7 @@ using static Friflo.Json.Fliox.Hub.PostgreSQL.PostgreSQLUtils;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.PostgreSQL
 {
-    public sealed class PostgreSQLDatabase : EntityDatabase, ISQLDatabase
+    public sealed partial class PostgreSQLDatabase : EntityDatabase, ISQLDatabase
     {
         public              TableType   TableType               { get; init; } = TableType.Relational;
         
@@ -40,40 +40,6 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             return new PostgreSQLContainer(name.AsString(), this);
         }
         
-        protected override ISyncConnection GetConnectionSync()  {
-            if (connectionPool.TryPop(out var syncConnection)) {
-                return syncConnection;
-            }
-            try {
-                var connection = new NpgsqlConnection(connectionString);
-                connection.Open();
-                return new SyncConnection(connection);                
-            }
-            catch(PostgresException e) {
-                return OpenError(e);
-            }
-            catch (Exception e) {
-                return new SyncConnectionError(e);
-            }
-        }
-        
-        protected override async Task<ISyncConnection> GetConnectionAsync()  {
-            if (connectionPool.TryPop(out var syncConnection)) {
-                return syncConnection;
-            }
-            try {
-                var connection = new NpgsqlConnection(connectionString);
-                await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);                
-            }
-            catch(PostgresException e) {
-                return OpenError(e);
-            }
-            catch (Exception e) {
-                return new SyncConnectionError(e);
-            }
-        }
-        
         private SyncConnectionError OpenError(PostgresException e) {
             if (e.SqlState == PostgresErrorCodes.InvalidCatalogName) {
                 return SyncConnectionError.DatabaseDoesNotExist(name);
@@ -92,38 +58,6 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
                 TransCommand.Rollback   => "ROLLBACK;",
                 _                       => null
             };
-        }
-        
-        protected override TransResult Transaction(SyncContext syncContext, TransCommand command) {
-            var syncConnection = syncContext.GetConnectionSync();
-            if (syncConnection is not SyncConnection connection) {
-                return new TransResult(syncConnection.Error.message);
-            }
-            var sql = GetTransactionCommand(command);
-            if (sql == null) return new TransResult($"invalid transaction command {command}");
-            try {
-                connection.ExecuteNonQuerySync(sql);
-                return new TransResult(command);
-            }
-            catch (PostgresException e) {
-                return new TransResult(e.MessageText);
-            }
-        }
-        
-        protected override async Task<TransResult> TransactionAsync(SyncContext syncContext, TransCommand command) {
-            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SyncConnection connection) {
-                return new TransResult(syncConnection.Error.message);
-            }
-            var sql = GetTransactionCommand(command);
-            if (sql == null) return new TransResult($"invalid transaction command {command}");
-            try {
-                await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
-                return new TransResult(command);
-            }
-            catch (PostgresException e) {
-                return new TransResult(e.MessageText);
-            }
         }
         
         protected override async Task CreateDatabaseAsync() {
@@ -168,14 +102,51 @@ namespace Friflo.Json.Fliox.Hub.PostgreSQL
             await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
         }
         
-        public override async Task<Result<RawSqlResult>> ExecuteRawSQL(RawSql sql, SyncContext syncContext) {
+        // ------------------------------------------ sync / async ------------------------------------------
+        protected override async Task<ISyncConnection> GetConnectionAsync()
+        {
+            if (connectionPool.TryPop(out var syncConnection)) {
+                return syncConnection;
+            }
+            try {
+                var connection = new NpgsqlConnection(connectionString);
+                await connection.OpenAsync().ConfigureAwait(false);
+                return new SyncConnection(connection);                
+            }
+            catch(PostgresException e) {
+                return OpenError(e);
+            }
+            catch (Exception e) {
+                return new SyncConnectionError(e);
+            }
+        }
+        
+        protected override async Task<TransResult> TransactionAsync(SyncContext syncContext, TransCommand command)
+        {
+            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
+            if (syncConnection is not SyncConnection connection) {
+                return new TransResult(syncConnection.Error.message);
+            }
+            var sql = GetTransactionCommand(command);
+            if (sql == null) return new TransResult($"invalid transaction command {command}");
+            try {
+                await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+                return new TransResult(command);
+            }
+            catch (PostgresException e) {
+                return new TransResult(e.MessageText);
+            }
+        }
+        
+        public override async Task<Result<RawSqlResult>> ExecuteRawSQLAsync(RawSql sql, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return Result.Error(syncConnection.Error.message);
             }
             try {
                 using var reader = await connection.ExecuteReaderAsync(sql.command).ConfigureAwait(false);
-                return await ReadRows(reader).ConfigureAwait(false);
+                return await ReadRowsAsync(reader).ConfigureAwait(false);
             }
             catch (PostgresException e) {
                 return Result.Error(e.MessageText);

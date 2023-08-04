@@ -178,8 +178,9 @@ namespace Friflo.Json.Fliox.Hub.SQLite
         
         public Task CreateFunctions(ISyncConnection connection) => Task.CompletedTask;
         
-        public override async Task<Result<RawSqlResult>> ExecuteRawSQL(RawSql sql, SyncContext syncContext) {
-            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
+        
+        public override Result<RawSqlResult> ExecuteRawSQL(RawSql sql, SyncContext syncContext) {
+            var syncConnection = syncContext.GetConnectionSync();
             if (syncConnection is not SyncConnection connection) {
                 return Result.Error(syncConnection.Error.message);
             }
@@ -197,6 +198,11 @@ namespace Friflo.Json.Fliox.Hub.SQLite
             catch (Exception e) {
                 return Result.Error(e.Message);
             }
+        }
+        
+        public override Task<Result<RawSqlResult>> ExecuteRawSQLAsync(RawSql sql, SyncContext syncContext) {
+            var result = ExecuteRawSQL(sql, syncContext);
+            return Task.FromResult(result);
         }
     }
 

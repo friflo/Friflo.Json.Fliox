@@ -14,7 +14,7 @@ using static Friflo.Json.Fliox.Hub.MySQL.MySQLUtils;
 // ReSharper disable UseAwaitUsing
 namespace Friflo.Json.Fliox.Hub.MySQL
 {
-    public class MySQLDatabase : EntityDatabase, ISQLDatabase
+    public partial class MySQLDatabase : EntityDatabase, ISQLDatabase
     {
         public              bool            Pretty                  { get; init; } = false;
         public              TableType       TableType               { get; init; } = TableType.Relational;
@@ -42,39 +42,7 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             return new MySQLContainer(name.AsString(), this, Pretty);
         }
         
-        protected override ISyncConnection GetConnectionSync()  {
-            if (connectionPool.TryPop(out var syncConnection)) {
-                return syncConnection;
-            }
-            try {
-                var connection = new MySqlConnection(connectionString);
-                connection.Open();
-                return new SyncConnection(connection);                
-            }
-            catch(MySqlException e) {
-                return OpenError(e);
-            }
-            catch (Exception e) {
-                return new SyncConnectionError(e);
-            }
-        }
-        
-        protected override async Task<ISyncConnection> GetConnectionAsync()  {
-            if (connectionPool.TryPop(out var syncConnection)) {
-                return syncConnection;
-            }
-            try {
-                var connection = new MySqlConnection(connectionString);
-                await connection.OpenAsync().ConfigureAwait(false);
-                return new SyncConnection(connection);                
-            }
-            catch(MySqlException e) {
-                return OpenError(e);
-            }
-            catch (Exception e) {
-                return new SyncConnectionError(e);
-            }
-        }
+
         
         private SyncConnectionError OpenError(MySqlException e) {
             if (e.ErrorCode == MySqlErrorCode.UnknownDatabase) {
@@ -94,38 +62,6 @@ namespace Friflo.Json.Fliox.Hub.MySQL
                 TransCommand.Rollback   => "ROLLBACK;",
                 _                       => null
             };
-        }
-        
-        protected override TransResult Transaction(SyncContext syncContext, TransCommand command) {
-            var syncConnection = syncContext.GetConnectionSync();
-            if (syncConnection is not SyncConnection connection) {
-                return new TransResult(syncConnection.Error.message);
-            }
-            var sql = GetTransactionCommand(command);
-            if (sql == null) return new TransResult($"invalid transaction command {command}");
-            try {
-                connection.ExecuteNonQuerySync(sql);
-                return new TransResult(command);
-            }
-            catch (MySqlException e) {
-                return new TransResult(GetErrMsg(e));
-            }
-        }
-        
-        protected override async Task<TransResult> TransactionAsync(SyncContext syncContext, TransCommand command) {
-            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
-            if (syncConnection is not SyncConnection connection) {
-                return new TransResult(syncConnection.Error.message);
-            }
-            var sql = GetTransactionCommand(command);
-            if (sql == null) return new TransResult($"invalid transaction command {command}");
-            try {
-                await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
-                return new TransResult(command);
-            }
-            catch (MySqlException e) {
-                return new TransResult(GetErrMsg(e));
-            }
         }
         
         protected override async Task CreateDatabaseAsync() {
@@ -151,14 +87,51 @@ namespace Friflo.Json.Fliox.Hub.MySQL
             await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
         }
         
-        public override async Task<Result<RawSqlResult>> ExecuteRawSQL(RawSql sql, SyncContext syncContext) {
+        // ------------------------------------------ sync / async ------------------------------------------ 
+        protected override async Task<ISyncConnection> GetConnectionAsync()
+        {
+            if (connectionPool.TryPop(out var syncConnection)) {
+                return syncConnection;
+            }
+            try {
+                var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync().ConfigureAwait(false);
+                return new SyncConnection(connection);                
+            }
+            catch(MySqlException e) {
+                return OpenError(e);
+            }
+            catch (Exception e) {
+                return new SyncConnectionError(e);
+            }
+        }
+        
+        protected override async Task<TransResult> TransactionAsync(SyncContext syncContext, TransCommand command)
+        {
+            var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
+            if (syncConnection is not SyncConnection connection) {
+                return new TransResult(syncConnection.Error.message);
+            }
+            var sql = GetTransactionCommand(command);
+            if (sql == null) return new TransResult($"invalid transaction command {command}");
+            try {
+                await connection.ExecuteNonQueryAsync(sql).ConfigureAwait(false);
+                return new TransResult(command);
+            }
+            catch (MySqlException e) {
+                return new TransResult(GetErrMsg(e));
+            }
+        }
+        
+        public override async Task<Result<RawSqlResult>> ExecuteRawSQLAsync(RawSql sql, SyncContext syncContext)
+        {
             var syncConnection = await syncContext.GetConnectionAsync().ConfigureAwait(false);
             if (syncConnection is not SyncConnection connection) {
                 return Result.Error(syncConnection.Error.message);
             }
             try {
-                using var reader = await connection.ExecuteReaderAsync(sql.command).ConfigureAwait(false);
-                return await SQLTable.ReadRows(reader).ConfigureAwait(false);
+                using var reader    = await connection.ExecuteReaderAsync(sql.command).ConfigureAwait(false);
+                return await SQLTable.ReadRowsAsync(reader).ConfigureAwait(false);
             }
             catch (MySqlException e) {
                 var msg = GetErrMsg(e);
