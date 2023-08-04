@@ -120,77 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         #endregion
 
-    #region - public utils
-        /// <summary>Can be implemented used to merge entities synchronously for optimization</summary>
-        public virtual MergeEntitiesResult MergeEntities (MergeEntities mergeEntities, SyncContext syncContext)
-            => throw new NotSupportedException();
-        
-        /// <summary>Apply the given <paramref name="mergeEntities"/> to the container entities</summary>
-        /// <remarks>
-        /// Default implementation to apply patches to entities.
-        /// The implementation perform three steps:
-        /// 1. Read entities to be patches from a database
-        /// 2. Apply merge patches
-        /// 3. Write back the merged entities
-        ///
-        /// If the used database has integrated support for merging (patching) JSON its <see cref="EntityContainer"/>
-        /// implementation can override this method to replace two database requests by one.
-        /// </remarks>
-        public virtual async Task<MergeEntitiesResult> MergeEntitiesAsync (MergeEntities mergeEntities, SyncContext syncContext) {
-            var patches = mergeEntities.patches;
-            var ids     = new ListOne<JsonKey>(patches.Count);
-            foreach (var patch in patches) {
-                ids.Add(patch.key);
-            }
-            // --- Read entities to be patched
-            var readTask    = new ReadEntities { ids = ids, keyName = mergeEntities.keyName };
-            var readResult  = await ReadEntitiesAsync(readTask, syncContext).ConfigureAwait(false);
-            
-            List<EntityError> patchErrors = null;
-            var targets = ApplyMerges(this, mergeEntities, readResult, ids, syncContext.sharedEnv, ref patchErrors, out var error);
-            if (error != null) {
-                return new MergeEntitiesResult { Error = error };   
-            }
-            // --- write merged entities back
-            var task            = new UpsertEntities { entities = targets };
-            var upsertResult    = await UpsertEntitiesAsync(task, syncContext).ConfigureAwait(false);
-            
-            if (upsertResult.Error != null) {
-                return new MergeEntitiesResult { Error = upsertResult.Error };
-            }
-            SyncResponse.AddEntityErrors(ref patchErrors, upsertResult.errors);
-            return new MergeEntitiesResult{ errors = patchErrors };
-        }
-        
-        /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
-        protected async Task<AggregateEntitiesResult> CountEntitiesAsync (AggregateEntities command, SyncContext syncContext)
-        {
-            var query = new QueryEntities (command.container, command.filter, command.filterTree, command.filterContext);
-            var queryResult = await QueryEntitiesAsync(query, syncContext).ConfigureAwait(false);
-            
-            var queryError = queryResult.Error; 
-            if (queryError != null) {
-                return new AggregateEntitiesResult { Error = queryError };
-            }
-            return new AggregateEntitiesResult { container = command.container, value = queryResult.entities.Length };
-        }
-        
-        /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
-        protected AggregateEntitiesResult CountEntities (AggregateEntities command, SyncContext syncContext)
-        {
-            var query = new QueryEntities (command.container, command.filter, command.filterTree, command.filterContext);
-            var queryResult = QueryEntities(query, syncContext);
-            
-            var queryError = queryResult.Error; 
-            if (queryError != null) {
-                return new AggregateEntitiesResult { Error = queryError };
-            }
-            return new AggregateEntitiesResult { container = command.container, value = queryResult.entities.Length };
-        }
-
-        #endregion
-    
-    #region - internal methods
+    #region - cursor methods
         /// <summary>
         /// Create and return a unique cursor id and store the given <paramref name="enumerator"/> with this id.<br/>
         /// The cursor id created by a previous call for the given <paramref name="enumerator"/> will be removed.
@@ -244,10 +174,71 @@ namespace Friflo.Json.Fliox.Hub.Host
             error       = new TaskExecuteError(TaskErrorType.InvalidTask, $"cursor '{cursor}' not found");
             return false;
         }
+        #endregion
+        
+    #region - sync / async
+        // ----------------------------------------- sync / async -----------------------------------------
+        
+        /// <summary>Apply the given <paramref name="mergeEntities"/> to the container entities</summary>
+        /// <remarks>
+        /// Default implementation to apply patches to entities.
+        /// The implementation perform three steps:
+        /// 1. Read entities to be patches from a database
+        /// 2. Apply merge patches
+        /// 3. Write back the merged entities
+        ///
+        /// If the used database has integrated support for merging (patching) JSON its <see cref="EntityContainer"/>
+        /// implementation can override this method to replace two database requests by one.<br/>
+        /// <br/>
+        /// Counterpart of <see cref="MergeEntities"/>
+        /// </remarks>
+        public virtual async Task<MergeEntitiesResult> MergeEntitiesAsync (MergeEntities mergeEntities, SyncContext syncContext) {
+            var patches = mergeEntities.patches;
+            var ids     = new ListOne<JsonKey>(patches.Count);
+            foreach (var patch in patches) {
+                ids.Add(patch.key);
+            }
+            // --- Read entities to be patched
+            var readTask    = new ReadEntities { ids = ids, keyName = mergeEntities.keyName };
+            var readResult  = await ReadEntitiesAsync(readTask, syncContext).ConfigureAwait(false);
+            
+            List<EntityError> patchErrors = null;
+            var targets = ApplyMerges(this, mergeEntities, readResult, ids, syncContext.sharedEnv, ref patchErrors, out var error);
+            if (error != null) {
+                return new MergeEntitiesResult { Error = error };   
+            }
+            // --- write merged entities back
+            var task            = new UpsertEntities { entities = targets };
+            var upsertResult    = await UpsertEntitiesAsync(task, syncContext).ConfigureAwait(false);
+            
+            if (upsertResult.Error != null) {
+                return new MergeEntitiesResult { Error = upsertResult.Error };
+            }
+            SyncResponse.AddEntityErrors(ref patchErrors, upsertResult.errors);
+            return new MergeEntitiesResult{ errors = patchErrors };
+        }
+        
+        /// <summary>
+        /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets.<br/>
+        /// Counterpart <see cref="CountEntities"/>
+        /// </summary>
+        protected async Task<AggregateEntitiesResult> CountEntitiesAsync (AggregateEntities command, SyncContext syncContext)
+        {
+            var query = new QueryEntities (command.container, command.filter, command.filterTree, command.filterContext);
+            var queryResult = await QueryEntitiesAsync(query, syncContext).ConfigureAwait(false);
+            
+            var queryError = queryResult.Error; 
+            if (queryError != null) {
+                return new AggregateEntitiesResult { Error = queryError };
+            }
+            return new AggregateEntitiesResult { container = command.container, value = queryResult.entities.Length };
+        }
 
         /// <summary>
         /// Return the <see cref="ReferencesResult.entities"/> referenced by the <see cref="References.selector"/> path
-        /// of the given <paramref name="entities"/>
+        /// of the given <paramref name="entities"/>.<br/>
+        ///
+        /// Counterpart <see cref="ReadReferences"/>
         /// </summary>
         internal async Task<ReadReferencesResult> ReadReferencesAsync(
                 List<References>    references,
@@ -281,6 +272,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return new ReadReferencesResult { references = referenceResults };
         }
+        // --------------------------------------- end: sync / async ---------------------------------------
         #endregion
 
     #region - public static utils
