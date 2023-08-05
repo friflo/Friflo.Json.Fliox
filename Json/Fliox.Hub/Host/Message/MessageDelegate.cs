@@ -61,20 +61,20 @@ namespace Friflo.Json.Fliox.Hub.Host
     }
     
     // ----------------------------------- MessageDelegate<> -----------------------------------
-    internal sealed class MessageDelegate<TValue> : MessageDelegate
+    internal sealed class MessageDelegate<TParam> : MessageDelegate
     {
-        private  readonly   HostMessageHandler<TValue>  handler;
+        private  readonly   HostMessageHandler<TParam>  handler;
         
         internal override   MsgType     MsgType => MsgType.Message;
         internal override   bool        IsSynchronous(in PreExecute execute) => true;
 
-        internal MessageDelegate (string name, HostMessageHandler<TValue> handler) : base(name){
+        internal MessageDelegate (string name, HostMessageHandler<TParam> handler) : base(name){
             this.handler    = handler;
         }
         
         internal override InvokeResult InvokeDelegate(SyncMessageTask task, SyncContext syncContext) {
             var cmd     = new MessageContext(task, syncContext);
-            var param   = new Param<TValue> (task.param, syncContext); 
+            var param   = new Param<TParam> (task.param, syncContext); 
             handler(param, cmd);
             
             return new InvokeResult(new JsonValue());
