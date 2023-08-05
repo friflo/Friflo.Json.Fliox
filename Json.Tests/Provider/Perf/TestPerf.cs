@@ -12,7 +12,7 @@ namespace Friflo.Json.Tests.Provider.Perf
 {
     public static class TestPerf
     {
-        private static bool SupportSync(string db) => IsSQLite(db) || IsProvider(db, "sqlserver_rel") || IsMemoryDB(db);
+        // private static bool SupportSync(string db) => IsSQLite(db) || IsSQLServer(db) || IsMemoryDB(db);
         
         private  const  bool    PerfRun     = false;
             
@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Provider.Perf
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task Perf_Read_One(string db) {
-            if (!SupportSync(db)) return;
+            // if (!SupportSync(db)) return;
             
             await SeedPosts(db);
             
@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Provider.Perf
             // warmup
             for (int n = 0; n < WarmupCount; n++) {
                 client.posts.Find(n % SeedCount);
-                client.SyncTasksSynchronous();
+                await client.SyncTasksEnv();
             }
             
             int i = 0;
@@ -42,9 +42,9 @@ namespace Friflo.Json.Tests.Provider.Perf
             var count = ReadCount;
             for (int n = 0; n < count; n++) {
                 client.posts.Find(n % SeedCount);
-                client.SyncTasksSynchronous();
+                await client.SyncTasksEnv();
                 if ((++i % 10) == 0) {
-                    int x = 111;
+                    i = i;
                 }
             }
             var duration = stopWatch.Elapsed.TotalMilliseconds;

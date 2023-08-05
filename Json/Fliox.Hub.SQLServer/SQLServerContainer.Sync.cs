@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
             try {
                 if (tableType == TableType.Relational) {
-                    if (false) {
+                    if (command.typeMapper == null) {
                         var sql = SQL.ReadRelational(this, command);
                         using var reader = connection.ExecuteReaderSync(sql);
                         var sql2Json        = new SQL2JsonMapper(reader);

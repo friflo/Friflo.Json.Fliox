@@ -38,7 +38,8 @@ namespace Friflo.Json.Tests.Provider
         /// <summary> contains seeded databases </summary>
         private  static  readonly   HashSet<string>                 seededDatabases = new HashSet<string>();
         
-        internal static  readonly   string  TEST_DB_PROVIDER;
+        private  static  readonly   string  TEST_DB_PROVIDER;
+        internal static  readonly   bool    TEST_DB_SYNC;
         
         private  static bool    IsProvider  (string db, string provider1, string provider2) {
             return db == test_db && (TEST_DB_PROVIDER == provider1 || TEST_DB_PROVIDER == provider2);
@@ -62,7 +63,10 @@ namespace Friflo.Json.Tests.Provider
 
         static Env() {
             TEST_DB_PROVIDER = Environment.GetEnvironmentVariable(nameof(TEST_DB_PROVIDER));
-            Console.WriteLine($"------------------- {nameof(TEST_DB_PROVIDER)}={TEST_DB_PROVIDER} -------------------");
+            
+            var sync = Environment.GetEnvironmentVariable(nameof(TEST_DB_SYNC));
+            TEST_DB_SYNC     = sync != null && bool.Parse(sync);
+            Console.WriteLine($"------- {nameof(TEST_DB_PROVIDER)}={TEST_DB_PROVIDER} - {nameof(TEST_DB_SYNC)}={TEST_DB_SYNC} -------");
         }
         
         internal static readonly string TestDbFolder = CommonUtils.GetBasePath() + "assets~/DB/test_db";
@@ -176,12 +180,16 @@ namespace Friflo.Json.Tests.Provider
     internal static class EnvExtensions
     {
         internal static async Task<SyncResult> SyncTasksEnv(this FlioxClient client) {
-            // return client.SyncTasksSynchronous();
+            if (Env.TEST_DB_SYNC) {
+                return client.SyncTasksSynchronous();
+            }
             return await client.SyncTasks();
         }
         
         internal static async Task<SyncResult> TrySyncTasksEnv(this FlioxClient client) {
-            // return client.TrySyncTasksSynchronous();
+            if (Env.TEST_DB_SYNC) {
+                return client.TrySyncTasksSynchronous();
+            }
             return await client.TrySyncTasks();
         }
     }
