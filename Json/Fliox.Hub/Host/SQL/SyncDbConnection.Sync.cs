@@ -11,22 +11,11 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
-    public abstract partial class SyncDbConnection : ISyncConnection
+    public partial class SyncDbConnection
     {
-        private readonly   DbConnection   instance;
-        
-        public  TaskExecuteError    Error       => throw new InvalidOperationException();
-        public  void                Dispose()   => instance.Dispose();
-        public  bool                IsOpen      => instance.State == ConnectionState.Open;
-        public  abstract void       ClearPool();
-        
-        protected SyncDbConnection (DbConnection instance) {
-            this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
-        }
-        
-        // --------------------------------------- sync / async  --------------------------------------- 
-        /// <summary>async version of <see cref="ExecuteNonQuerySync"/></summary>
-        public async Task ExecuteNonQueryAsync (string sql, DbParameter parameter = null) {
+        // --------------------------------------- sync / async  ---------------------------------------
+        /// <summary>sync version of <see cref="ExecuteNonQueryAsync"/></summary>
+        public void ExecuteNonQuerySync (string sql, DbParameter parameter = null) {
             using var command = instance.CreateCommand();
             command.CommandText = sql;
             if (parameter != null) {
@@ -36,12 +25,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             while (true) {
                 tryCount++;
                 try {
-                    await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+                    command.ExecuteNonQuery();
                     return;
                 }
                 catch (DbException) {
                     if (instance.State != ConnectionState.Open && tryCount == 1) {
-                        await instance.OpenAsync().ConfigureAwait(false);
+                        instance.Open();
                         continue;
                     }
                     throw;
@@ -49,13 +38,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
         }
         
-        /// <summary>Counterpart of <see cref="ExecuteSync"/></summary>
-        public async Task<SQLResult> ExecuteAsync(string sql) {
+        /// <summary>Counterpart of <see cref="ExecuteAsync"/></summary>
+        public SQLResult ExecuteSync(string sql) {
             using var command = instance.CreateCommand();
             command.CommandText = sql;
             try {
-                using var reader = await ExecuteReaderAsync(sql).ConfigureAwait(false);
-                while (await reader.ReadAsync().ConfigureAwait(false)) {
+                using var reader = ExecuteReaderSync(sql);
+                while (reader.Read()) {
                     var value = reader.GetValue(0);
                     return SQLResult.Success(value); 
                 }
@@ -69,9 +58,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         /// <summary>
         /// Using asynchronous execution for SQL Server is significant slower.<br/>
         /// <see cref="DbCommand.ExecuteReaderAsync()"/> ~7x slower than <see cref="DbCommand.ExecuteReader()"/>.
-        /// <summary>Counterpart of <see cref="ExecuteReaderSync"/></summary>
+        /// <summary>Counterpart of <see cref="ExecuteReaderAsync"/></summary>
         /// </summary>
-        public async Task<DbDataReader> ExecuteReaderAsync(string sql, DbParameter parameter = null) {
+        public DbDataReader ExecuteReaderSync(string sql, DbParameter parameter = null) {
             using var command = instance.CreateCommand();
             command.CommandText = sql;
             if (parameter != null) {
@@ -81,11 +70,31 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             while (true) {
                 tryCount++;
                 try {
-                    return await command.ExecuteReaderAsync().ConfigureAwait(false);
+                    return command.ExecuteReader();
                 }
                 catch (DbException) {
                     if (instance.State != ConnectionState.Open && tryCount == 1) {
-                        await instance.OpenAsync().ConfigureAwait(false);
+                        instance.Open();
+                        continue;
+                    }
+                    throw;
+                }
+            }
+        }
+        
+        public DbDataReader ExecuteReaderCommandSync(DbCommand command) {
+            int tryCount = 0;
+            while (true) {
+                tryCount++;
+                try {
+                    // TODO check performance hit caused by many SqlBuffer instances
+                    // [Reading large data (binary, text) asynchronously is extremely slow · Issue #593 · dotnet/SqlClient]
+                    // https://github.com/dotnet/SqlClient/issues/593#issuecomment-1645441459
+                    return command.ExecuteReader(); // CommandBehavior.SingleResult | CommandBehavior.SingleRow | CommandBehavior.SequentialAccess);
+                }
+                catch (DbException) {
+                    if (instance.State != ConnectionState.Open && tryCount == 1) {
+                        instance.Open();
                         continue;
                     }
                     throw;

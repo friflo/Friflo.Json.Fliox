@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                         }
                         sql2Object.sb.Clear();
                         sqlParam.Value = SQLUtils.AppendKeysSQL2(sql2Object.sb, command.ids, SQLEscape.PrefixN).ToString();
-                        using var reader = connection.ExecuteReaderSync(readCommand);
+                        using var reader = connection.ExecuteReaderCommandSync(readCommand);
                         return SQLTable.ReadObjectsSync(reader, command, sql2Object);
                     }
                 } else {
