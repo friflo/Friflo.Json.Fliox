@@ -3,11 +3,8 @@
 
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
-using System;
 using System.Data;
 using System.Data.Common;
-using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
