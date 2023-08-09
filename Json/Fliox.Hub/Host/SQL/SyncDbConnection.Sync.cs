@@ -5,6 +5,7 @@
 
 using System.Data;
 using System.Data.Common;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
@@ -79,7 +80,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
         }
         
-        public DbDataReader ExecuteReaderCommandSync(DbCommand command) {
+        /// <summary>Counterpart of <see cref="ExecuteReaderCommandAsync"/></summary>
+        private DbDataReader ExecuteReaderCommandSync(DbCommand command) {
             int tryCount = 0;
             while (true) {
                 tryCount++;
@@ -97,6 +99,53 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     throw;
                 }
             }
+        }
+        
+        /// <summary>Counterpart of <see cref="PrepareAsync"/></summary>
+        private void Prepare(DbCommand command) {
+            int tryCount = 0;
+            while (true) {
+                tryCount++;
+                try {
+                    command.Prepare();
+                    return;
+                }
+                catch (DbException) {
+                    if (instance.State != ConnectionState.Open && tryCount == 1) {
+                        instance.Open();
+                        continue;
+                    }
+                    throw;
+                }
+            }
+        }
+        
+        /// <summary>counterpart of <see cref="ReadRelationalReaderAsync"/></summary>
+        public DbDataReader ReadRelationalReader(TableInfo tableInfo, ReadEntities read, SyncContext syncContext)
+        {
+            if (read.typeMapper == null) {
+                using var command = ReadRelational(tableInfo, read);
+                return ExecuteReaderCommandSync(command);
+            }
+            // [java - Why are prepared statements kept at a connection level by the JDBC drivers? - Stack Overflow]
+            // https://stackoverflow.com/questions/30034594/why-are-prepared-statements-kept-at-a-connection-level-by-the-jdbc-drivers
+            if (read.ids.Count == 1) {
+                if (!readOneCommands.TryGetValue(tableInfo.container, out var readOne)) {
+                    readOne = PrepareReadOne(tableInfo);
+                    Prepare(readOne);
+                    readOneCommands.Add(tableInfo.container, readOne);
+                }
+                readOne.Parameters[0].Value = (int)read.ids[0].AsLong();
+                return ExecuteReaderCommandSync(readOne);
+            }
+            if (!readManyCommands.TryGetValue(tableInfo.container, out var readMany)) {
+                readMany = PrepareReadMany(tableInfo);
+                Prepare(readMany);
+                readManyCommands.Add(tableInfo.container, readMany);
+            }
+            using var pooledMapper = syncContext.ObjectMapper.Get();
+            readMany.Parameters[0].Value = pooledMapper.instance.writer.Write(read.ids);
+            return ExecuteReaderCommandSync(readMany);
         }
     }
 }

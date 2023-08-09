@@ -48,11 +48,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         /// <summary> counterpart <see cref="ReadObjectsAsync"/></summary>
         public static  ReadEntitiesResult ReadObjectsSync(
             DbDataReader    reader,
-            ReadEntities    query,
-            SQL2Object      sql2Object)
+            ReadEntities    query)
         {
             var typeMapper      = query.typeMapper;
-            var binaryReader    = sql2Object.reader;
+            var binaryReader    = new BinaryDbDataReader();
             binaryReader.Init(reader);
             var objects         = new EntityObject[query.ids.Count];
             int count           = 0;

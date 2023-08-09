@@ -12,8 +12,6 @@ namespace Friflo.Json.Tests.Provider.Perf
 {
     public static class TestPerf
     {
-        // private static bool SupportSync(string db) => IsSQLite(db) || IsSQLServer(db) || IsMemoryDB(db);
-        
         private  const  bool    PerfRun     = false;
             
         internal const  int     SeedCount   = PerfRun ?  5_000 : 1;
@@ -21,9 +19,8 @@ namespace Friflo.Json.Tests.Provider.Perf
         internal const  int     ReadCount   = PerfRun ?  1_000 : 1;
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task Perf_Read_One(string db) {
-            // if (!SupportSync(db)) return;
-            
+        public static async Task Perf_Read_One(string db)
+        {
             await SeedPosts(db);
             
             var client  = await GetClient(db, false);
@@ -41,8 +38,12 @@ namespace Friflo.Json.Tests.Provider.Perf
             stopWatch.Start();
             var count = ReadCount;
             for (int n = 0; n < count; n++) {
-                client.posts.Find(n % SeedCount);
+                var id = n % SeedCount;
+                var find = client.posts.Find(id);
                 await client.SyncTasksEnv();
+                if (find.Result.Id != id) {
+                    Fail();
+                }
                 if ((++i % 10) == 0) {
                     i = i;
                 }
@@ -51,11 +52,9 @@ namespace Friflo.Json.Tests.Provider.Perf
             Console.WriteLine($"{db,-12} Read. count: {count}, duration: {duration} ms");
         }
         
-        // [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task Perf_Read_OneSynchronous(string db) {
-            var supportSync = IsMemoryDB(db) || IsSQLServer(db);
-            if (!supportSync) return;
-            
+        [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
+        public static async Task Perf_Read_Many(string db)
+        {
             await SeedPosts(db);
             
             var client  = await GetClient(db, false);
@@ -63,7 +62,7 @@ namespace Friflo.Json.Tests.Provider.Perf
             // warmup
             for (int n = 0; n < WarmupCount; n++) {
                 client.posts.Read().Find(n % SeedCount);
-                client.SyncTasksSynchronous();
+                await client.SyncTasksEnv();
             }
 
             // measurement
@@ -71,14 +70,24 @@ namespace Friflo.Json.Tests.Provider.Perf
             stopWatch.Start();
             var count = ReadCount;
             for (int n = 0; n < count; n++) {
-                client.posts.Read().Find(n % SeedCount);
-                client.SyncTasksSynchronous();
+                var id = n % SeedCount;
+                var read = client.posts.Read();
+                var find = read.Find(id);
+                read.Find(id + 1);
+                read.Find(id + 2);
+                read.Find(id + 3);
+                read.Find(id + 4);
+                await client.SyncTasksEnv();
+                if (find.Result.Id != id) {
+                    Fail();
+                }
             }
             var duration = stopWatch.Elapsed.TotalMilliseconds;
             Console.WriteLine($"Read. count: {count}, duration: {duration} ms");
         }
 
-        internal static async Task SeedPosts(string db) {
+        internal static async Task SeedPosts(string db)
+        {
             var client  = await GetClient(db, false);
             
             var postCount = client.posts.CountAll();
@@ -103,7 +112,8 @@ namespace Friflo.Json.Tests.Provider.Perf
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task Perf_QueryFilter(string db) {
+        public static async Task Perf_QueryFilter(string db)
+        {
             var client  = await GetClient(db);
             // warmup
             for (int n = 0; n < 1; n++) {
@@ -124,7 +134,8 @@ namespace Friflo.Json.Tests.Provider.Perf
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
-        public static async Task Perf_QueryAll(string db) {
+        public static async Task Perf_QueryAll(string db)
+        {
             var client  = await GetClient(db);
             // warmup
             for (int n = 0; n < 1; n++) {

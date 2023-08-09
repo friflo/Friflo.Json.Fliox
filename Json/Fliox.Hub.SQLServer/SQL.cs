@@ -12,14 +12,6 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
 {
     internal static class SQL
     {
-        internal static string ReadRelational(SQLServerContainer container, ReadEntities read) {
-            var sql = new StringBuilder();
-            sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, container.tableInfo);
-            sql.Append($" FROM {container.name} WHERE {container.tableInfo.keyColumn.name} in\n");
-            SQLUtils.AppendKeysSQL(sql, read.ids, SQLEscape.PrefixN);
-            return sql.ToString();
-        }
-        
         internal static string ReadJsonColumn(SQLServerContainer container, ReadEntities read) {
             var sql = new StringBuilder();
             sql.Append($"SELECT {ID}, {DATA} FROM {container.name} WHERE {ID} in\n");

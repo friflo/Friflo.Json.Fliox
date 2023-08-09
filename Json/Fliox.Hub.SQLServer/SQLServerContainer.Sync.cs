@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
 using System.Collections.Generic;
-using System.Data;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -69,9 +68,6 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
         }
 
-        SqlCommand      readCommand;
-        SqlParameter    sqlParam;
-        
         /// <summary>sync version of <see cref="ReadEntitiesAsync"/></summary>
         public override ReadEntitiesResult ReadEntities(ReadEntities command, SyncContext syncContext)
         {
@@ -81,28 +77,12 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             }
             try {
                 if (tableType == TableType.Relational) {
-                    if (command.typeMapper == null) {
-                        var sql = SQL.ReadRelational(this, command);
-                        using var reader = connection.ExecuteReaderSync(sql);
-                        var sql2Json        = new SQL2JsonMapper(reader);
-                        return SQLTable.ReadEntitiesSync(reader, sql2Json, command, tableInfo, syncContext);
-                    } else {
-                        using var pooled = syncContext.SQL2Object.Get();
-                        var sql2Object = pooled.instance;
-                        if (readCommand == null) {
-                            var sql = sql2Object.sb;
-                            sql.Clear();
-                            sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
-                            sql.Append($" FROM {name} WHERE {tableInfo.keyColumn.name} in (@ids);\n");
-                            readCommand = new SqlCommand(sql.ToString(), connection.sqlInstance);
-                            sqlParam = readCommand.Parameters.Add("@ids", SqlDbType.NVarChar, 100);
-                            readCommand.Prepare();
-                        }
-                        sql2Object.sb.Clear();
-                        sqlParam.Value = SQLUtils.AppendKeysSQL2(sql2Object.sb, command.ids, SQLEscape.PrefixN).ToString();
-                        using var reader = connection.ExecuteReaderCommandSync(readCommand);
-                        return SQLTable.ReadObjectsSync(reader, command, sql2Object);
+                    using var reader = connection.ReadRelationalReader(tableInfo, command, syncContext);
+                    if (command.typeMapper != null) {
+                        return SQLTable.ReadObjectsSync(reader, command);
                     }
+                    var sql2Json = new SQL2JsonMapper(reader);
+                    return SQLTable.ReadEntitiesSync(reader, sql2Json, command, tableInfo, syncContext);
                 } else {
                     var sql = SQL.ReadJsonColumn(this,command);
                     using var reader = connection.ExecuteReaderSync(sql);
