@@ -128,7 +128,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             while (true) {
                 tryCount++;
                 try {
+#if NETSTANDARD2_0
+                    // ReSharper disable once MethodHasAsyncOverload
+                    command.Prepare();
+#else
                     await command.PrepareAsync().ConfigureAwait(false);
+#endif
                     return;
                 }
                 catch (DbException) {
