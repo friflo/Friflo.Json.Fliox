@@ -16,8 +16,14 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     public abstract partial class SyncDbConnection : ISyncConnection
     {
         private  readonly   DbConnection                    instance;
-        private  readonly   Dictionary<string, DbCommand>   readManyCommands    = new ();
-        private  readonly   Dictionary<string, DbCommand>   readOneCommands     = new ();
+        
+        /// <summary>
+        /// Each prepared statements is bound to a specific connection<br/>
+        /// See: java - Why are prepared statements kept at a connection level by the JDBC drivers? - Stack Overflow
+        /// https://stackoverflow.com/questions/30034594/why-are-prepared-statements-kept-at-a-connection-level-by-the-jdbc-drivers
+        /// </summary>
+        private  readonly   Dictionary<string, DbCommand>   preparedReadOne     = new ();
+        private  readonly   Dictionary<string, DbCommand>   preparedReadMany    = new ();
         
         public  TaskExecuteError    Error       => throw new InvalidOperationException();
         public  void                Dispose()   => instance.Dispose();
@@ -153,21 +159,19 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 using var command = ReadRelational(tableInfo, read);
                 return await ExecuteReaderCommandAsync(command).ConfigureAwait(false);
             }
-            // [java - Why are prepared statements kept at a connection level by the JDBC drivers? - Stack Overflow]
-            // https://stackoverflow.com/questions/30034594/why-are-prepared-statements-kept-at-a-connection-level-by-the-jdbc-drivers
             if (read.ids.Count == 1) {
-                if (!readOneCommands.TryGetValue(tableInfo.container, out var readOne)) {
+                if (!preparedReadOne.TryGetValue(tableInfo.container, out var readOne)) {
                     readOne = PrepareReadOne(tableInfo);
                     await PrepareAsync(readOne).ConfigureAwait(false);
-                    readOneCommands.Add(tableInfo.container, readOne);
+                    preparedReadOne.Add(tableInfo.container, readOne);
                 }
                 readOne.Parameters[0].Value = (int)read.ids[0].AsLong();
                 return await ExecuteReaderCommandAsync(readOne).ConfigureAwait(false);
             }
-            if (!readManyCommands.TryGetValue(tableInfo.container, out var readMany)) {
+            if (!preparedReadMany.TryGetValue(tableInfo.container, out var readMany)) {
                 readMany = PrepareReadMany(tableInfo);
                 await PrepareAsync(readMany).ConfigureAwait(false);
-                readManyCommands.Add(tableInfo.container, readMany);
+                preparedReadMany.Add(tableInfo.container, readMany);
             }
             using var pooledMapper = syncContext.ObjectMapper.Get();
             readMany.Parameters[0].Value = pooledMapper.instance.writer.Write(read.ids);

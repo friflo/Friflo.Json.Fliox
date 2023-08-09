@@ -127,21 +127,19 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 using var command = ReadRelational(tableInfo, read);
                 return ExecuteReaderCommandSync(command);
             }
-            // [java - Why are prepared statements kept at a connection level by the JDBC drivers? - Stack Overflow]
-            // https://stackoverflow.com/questions/30034594/why-are-prepared-statements-kept-at-a-connection-level-by-the-jdbc-drivers
             if (read.ids.Count == 1) {
-                if (!readOneCommands.TryGetValue(tableInfo.container, out var readOne)) {
+                if (!preparedReadOne.TryGetValue(tableInfo.container, out var readOne)) {
                     readOne = PrepareReadOne(tableInfo);
                     Prepare(readOne);
-                    readOneCommands.Add(tableInfo.container, readOne);
+                    preparedReadOne.Add(tableInfo.container, readOne);
                 }
                 readOne.Parameters[0].Value = (int)read.ids[0].AsLong();
                 return ExecuteReaderCommandSync(readOne);
             }
-            if (!readManyCommands.TryGetValue(tableInfo.container, out var readMany)) {
+            if (!preparedReadMany.TryGetValue(tableInfo.container, out var readMany)) {
                 readMany = PrepareReadMany(tableInfo);
                 Prepare(readMany);
-                readManyCommands.Add(tableInfo.container, readMany);
+                preparedReadMany.Add(tableInfo.container, readMany);
             }
             using var pooledMapper = syncContext.ObjectMapper.Get();
             readMany.Parameters[0].Value = pooledMapper.instance.writer.Write(read.ids);
