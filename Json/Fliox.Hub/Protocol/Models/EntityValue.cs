@@ -79,12 +79,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </remarks>
     public readonly struct Entities
     {
-        private readonly    object          items;
+        private readonly    object              items;
         
-        public              EntityValue[]   Values  => (EntityValue[]) items;
-        public              EntityObject[]  Objects => (EntityObject[])items;
-        public              int             Length  => items is EntityValue[] values ? values.Length : ((EntityObject[])items).Length;
-        internal            EntitiesType    Type    => items is EntityObject[] ? EntitiesType.Objects : EntitiesType.Values;
+        public              EntityValue[]       Values  => (EntityValue[])      items;
+        public              List<EntityObject>  Objects => (List<EntityObject>) items;
+        public              int                 Length  => items is EntityValue[] values ? values.Length : ((List<EntityObject>)items).Count;
+        internal            EntitiesType        Type    => items is List<EntityObject> ? EntitiesType.Objects : EntitiesType.Values;
 
         public override     string          ToString() => $"Length: {Length}, Type: {Type}";
 
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
             items = values.ToArray();
         }
         
-        public  Entities (EntityObject[] objects) {
+        public  Entities (List<EntityObject> objects) {
             items = objects;
         }
     }

@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var objects = result.entities.Objects;
             var id      = KeyConvert.KeyToId(read.key);
             var peer    = set.GetOrCreatePeerByKey(read.key, id);
-            if (objects.Length == 0) {
+            if (objects.Count == 0) {
                 peer.SetEntity(null);
                 return;
             }
