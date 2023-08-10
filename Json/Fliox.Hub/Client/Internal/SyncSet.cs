@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -26,6 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal sealed partial class SyncSet<TKey, T> : SyncSetBase<T> where T : class
     {
         private static readonly KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
+        private static readonly EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
 
         // --- internal fields
         internal  readonly  EntitySetInstance<TKey, T>  set;

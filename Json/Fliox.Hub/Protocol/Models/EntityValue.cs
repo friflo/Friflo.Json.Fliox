@@ -62,14 +62,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     
     public readonly struct EntityObject
     {
-        [Ignore]    public  readonly    JsonKey     key;
-        [Ignore]    public  readonly    object      obj;
+        public  readonly    object      obj;
 
-                    public  override    string      ToString() => key.AsString();
-
-        public EntityObject(JsonKey key, object obj) {
-            this.key    = key;
-            this.obj    = obj;
+        public EntityObject(object obj) {
+            this.obj = obj ?? throw new ArgumentNullException(nameof(obj));
         }
     }
     

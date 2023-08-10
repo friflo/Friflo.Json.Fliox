@@ -141,19 +141,20 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 peer.SetEntity(null);
                 return;
             }
-            var entityObj   = objects[0];
-            if (!id.IsEqual(entityObj.key)) {
-                entityErrorInfo = new TaskErrorInfo(TaskErrorType.InvalidResponse, $"expect id {entityObj.key}");
+            var obj     = (T)objects[0].obj;
+            var objId   = EntityKeyTMap.GetId(obj);
+            if (!id.IsEqual(objId)) {
+                entityErrorInfo = new TaskErrorInfo(TaskErrorType.InvalidResponse, $"expect id {id}");
                 return;
             }
             var current = peer.NullableEntity;
             if (current == null) {
                 peer.SetEntity(read.result);
-                read.result = (T)entityObj.obj;
+                read.result = obj;
                 return;
             }
             var typeMapper  = set.GetTypeMapper();
-            typeMapper.MemberwiseCopy(entityObj.obj, current);
+            typeMapper.MemberwiseCopy(obj, current);
             read.result = current;
         }
         
@@ -165,13 +166,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var typeMapper  = set.GetTypeMapper();
             foreach (var obj in objects)
             {
-                var key = KeyConvert.IdToKey(obj.key);
+                var entity  = (T)obj.obj;
+                var key     = EntityKeyTMap.GetKey(entity);
                 if (!readResult.ContainsKey(key)) {
                     continue;
                 }
-                var peer    = set.GetOrCreatePeerByKey(key, obj.key);
+                var id      = KeyConvert.KeyToId(key);
+                var peer    = set.GetOrCreatePeerByKey(key, id);
                 var current = peer.NullableEntity;
-                var entity  = (T)obj.obj;
+
                 if (current == null) {
                     peer.SetEntity(entity);
                     readResult[key] = entity;
