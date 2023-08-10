@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
@@ -30,9 +29,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 var entities = mapper.ReadEntitiesSync(pooled.instance, tableInfo, buffer);
                 return new ReadEntitiesResult { entities = new Entities(entities) };
             }
-            var binaryReader    = new BinaryDbDataReader();
+            var binaryReader        = new BinaryDbDataReader(syncContext.ObjectMapper);
             binaryReader.Init(reader);
-            var objects         = new List<EntityObject>(query.ids.Count);
+            var objects             = new List<EntityObject>(query.ids.Count);
             while (reader.Read())
             {
                 binaryReader.NextRow();
@@ -45,10 +44,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         /// <summary> counterpart <see cref="ReadObjectsAsync"/></summary>
         public static  ReadEntitiesResult ReadObjectsSync(
             DbDataReader    reader,
-            ReadEntities    query)
+            ReadEntities    query,
+            SyncContext     syncContext)
         {
             var typeMapper      = query.typeMapper;
-            var binaryReader    = new BinaryDbDataReader();
+            var binaryReader    = new BinaryDbDataReader(syncContext.pool.ObjectMapper);
             binaryReader.Init(reader);
             var objects         = new List<EntityObject>(query.ids.Count);
             while (reader.Read())

@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
                 if (tableType == TableType.Relational) {
                     using var reader = connection.ReadRelationalReader(tableInfo, command, syncContext);
                     if (command.typeMapper != null) {
-                        return SQLTable.ReadObjectsSync(reader, command);
+                        return SQLTable.ReadObjectsSync(reader, command, syncContext);
                     }
                     var sql2Json = new SQL2JsonMapper(reader);
                     return SQLTable.ReadEntitiesSync(reader, sql2Json, command, tableInfo, syncContext);

@@ -7,7 +7,6 @@ using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
@@ -71,9 +70,9 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 var entities = await mapper.ReadEntitiesAsync(pooled.instance, tableInfo, buffer).ConfigureAwait(false);
                 return new ReadEntitiesResult { entities = new Entities(entities) };
             }
-            var binaryReader    = new BinaryDbDataReader();
+            var binaryReader        = new BinaryDbDataReader(syncContext.pool.ObjectMapper);
             binaryReader.Init(reader);
-            var objects         = new List<EntityObject>(query.ids.Count);
+            var objects             = new List<EntityObject>(query.ids.Count);
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 binaryReader.NextRow();
@@ -86,12 +85,13 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         /// <summary> counterpart <see cref="ReadObjectsSync"/></summary>
         public static async Task<ReadEntitiesResult> ReadObjectsAsync(
             DbDataReader    reader,
-            ReadEntities    query)
+            ReadEntities    query,
+            SyncContext     syncContext)    
         {
-            var typeMapper      = query.typeMapper;
-            var binaryReader    = new BinaryDbDataReader();
+            var typeMapper          = query.typeMapper;
+            var binaryReader        = new BinaryDbDataReader(syncContext.pool.ObjectMapper);
             binaryReader.Init(reader);
-            var objects         = new List<EntityObject>(query.ids.Count);
+            var objects             = new List<EntityObject>(query.ids.Count);
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 binaryReader.NextRow();

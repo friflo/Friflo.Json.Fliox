@@ -33,9 +33,10 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         JsonKey     = 13,
         JsonEntity  = 15,
         Enum        = 16,
+    //  JsonTable   = 17,
         //
-        Array       = 17,
-        Object      = 18
+        Object      = 18,
+        Array       = 19,
     }
     
     public interface IObjectMember { }

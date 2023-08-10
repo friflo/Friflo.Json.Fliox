@@ -180,14 +180,15 @@ namespace Friflo.Json.Tests.Provider
     internal static class EnvExtensions
     {
         internal static async Task<SyncResult> SyncTasksEnv(this FlioxClient client) {
+            // client.Options.DebugReadObjects = true;
             if (Env.TEST_DB_SYNC) {
-                // client.Options.DebugReadObjects = true;
                 return client.SyncTasksSynchronous();
             }
             return await client.SyncTasks();
         }
         
         internal static async Task<SyncResult> TrySyncTasksEnv(this FlioxClient client) {
+            // client.Options.DebugReadObjects = true;
             if (Env.TEST_DB_SYNC) {
                 return client.TrySyncTasksSynchronous();
             }

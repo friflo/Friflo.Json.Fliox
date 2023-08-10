@@ -180,7 +180,7 @@ CREATE TABLE dbo.{name}";
                 if (tableType == TableType.Relational) {
                     using var reader = await connection.ReadRelationalReaderAsync(tableInfo, command, syncContext).ConfigureAwait(false);
                     if (command.typeMapper != null) {
-                        return await SQLTable.ReadObjectsAsync(reader, command).ConfigureAwait(false);
+                        return await SQLTable.ReadObjectsAsync(reader, command, syncContext).ConfigureAwait(false);
                     }
                     var sql2Json = new SQL2JsonMapper(reader);
                     return await SQLTable.ReadEntitiesAsync(reader, sql2Json, command, tableInfo, syncContext).ConfigureAwait(false);

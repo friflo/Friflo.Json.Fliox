@@ -31,6 +31,9 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public abstract     TypeDef     JsonTable   { get; }
     }
     
+    /// <summary>
+    /// Same value ids as in Friflo.Json.Fliox.Hub.Host.SQL.ColumnType
+    /// </summary>
     public enum StandardTypeId
     {
         None        = 0,
@@ -54,5 +57,9 @@ namespace Friflo.Json.Fliox.Schema.Definition
         JsonEntity  = 15,
         Enum        = 16,
         JsonTable   = 17,
+        //
+        Object      = 18,
+        Array       = 19,
+        Dictionary  = 20,
     }
 }

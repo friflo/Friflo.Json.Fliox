@@ -45,6 +45,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public   readonly   string          docs;
         public   readonly   string          relation;
         public   readonly   StandardTypeId  typeId;
+        public   readonly   bool            isNullable;
         internal readonly   BytesHash       nameKey;
         internal            Bytes           nameBytes;          // don't mutate
         public              Bytes           firstMember;        // don't mutate
@@ -95,11 +96,25 @@ namespace Friflo.Json.Fliox.Mapper.Map
             this.required   = required;
             this.docs       = docs;
             this.relation   = GetRelationAttributeType();
-            var type = fieldType.isValueType && fieldType.isNullable ? fieldType.nullableUnderlyingType : fieldType.type; 
-            if (NativeStandardTypes.Types.TryGetValue(type, out var typeInfo)) {
-                typeId = typeInfo.typeId;
-            } else {
-                typeId = StandardTypeId.JsonEntity;
+            this.isNullable = fieldType.isNullable;
+            var nativeType  = fieldType.type;
+            // if (name == "intArray") { int n = 1; }
+            if      (fieldType.IsArray) {
+                typeId = StandardTypeId.Array;
+            }
+            else if (fieldType.IsComplex) {
+                typeId = StandardTypeId.Object;
+            }
+            else if (fieldType.IsDictionary) {
+                typeId = StandardTypeId.Dictionary;
+            }
+            else {
+                var type = nativeType.IsValueType && fieldType.nullableUnderlyingType != null ? fieldType.nullableUnderlyingType : nativeType; 
+                if (NativeStandardTypes.Types.TryGetValue(type, out var typeInfo)) {
+                    typeId = typeInfo.typeId;
+                } else {
+                    typeId = StandardTypeId.JsonEntity; // TODO check: unexpected state
+                }
             }
         }
         

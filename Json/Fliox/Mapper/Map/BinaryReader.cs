@@ -4,7 +4,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
     {
         protected   int             currentOrdinal;
         
-        public abstract Var     GetVar          (PropField field);
-        public abstract bool    HasObject       (TypeMapper mapper);
+        public abstract Var     GetVar      (PropField field);
+        public abstract bool    HasObject   (TypeMapper mapper);
     }
 }

@@ -49,7 +49,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
             this.isNullable             = isNullable;
             this.isValueType            = isValueType;
             this.nullableUnderlyingType = Nullable.GetUnderlyingType(type);
-            if (type != typeof(JsonKey) && type != typeof(ShortString)) { // todo more elegant
+            if (type != typeof(JsonKey)     &&
+                type != typeof(ShortString) &&
+                type != typeof(JsonValue))
+            {   // todo more elegant
                 bool isNull = nullableUnderlyingType != null || !type.IsValueType;
                 if (isNull != isNullable)
                     throw new Invalid("invalid parameter: isNullable");

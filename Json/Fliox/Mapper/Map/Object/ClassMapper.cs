@@ -450,23 +450,23 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             var fields = propFields.fields;
             foreach (var field in fields)
             {
-                if (field.typeId == StandardTypeId.JsonEntity)
-                {
-                    var objType = field.fieldType;
-                    if (!reader.HasObject(objType)) {
+                if (field.typeId != StandardTypeId.Object) {
+                    Var memberVal = reader.GetVar(field);
+                    field.member.SetVar(objRef, memberVal);
+                } else {
+                    // typeId == StandardTypeId.Object
+                    var fieldType = field.fieldType;
+                    if (!reader.HasObject(field.fieldType)) {
                         field.member.SetVar(objRef, new Var((object)null));
                         continue;
                     }
                     Var memberObj   = field.member.GetVar(objRef);
                     var curObj      = memberObj.Object;
-                    var obj         = objType.ReadBinary(reader, curObj, out success);
+                    var obj         = fieldType.ReadBinary(reader, curObj, out success);
                     if (ReferenceEquals(curObj, obj)) {
                         continue;
                     }
                     field.member.SetVar(objRef, new Var(obj));
-                } else {
-                    Var memberVal = reader.GetVar(field);
-                    field.member.SetVar(objRef, memberVal);
                 }
             }
             success = false;

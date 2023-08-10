@@ -3,16 +3,22 @@
 
 using System;
 using System.Data.Common;
+using System.Numerics;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
     public sealed class BinaryDbDataReader : BinaryReader
     { 
-        private DbDataReader    reader;
+        private DbDataReader                reader;
+        private ObjectPool<ObjectMapper>    objectMapper;
         
-        public BinaryDbDataReader() { }
+        public BinaryDbDataReader(ObjectPool<ObjectMapper> objectMapper) {
+            this.objectMapper = objectMapper;
+        }
        
         public void Init(DbDataReader reader) {
             this.reader = reader;
@@ -25,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         public override bool HasObject (TypeMapper mapper) {
             int ordinal = currentOrdinal++;
-            bool hasObject = !reader.IsDBNull(ordinal) && reader.GetBoolean(ordinal);
+            bool hasObject = !reader.IsDBNull(ordinal) && reader.GetByte(ordinal) != 0;
             if (hasObject) {
                 return true;
             }
@@ -35,19 +41,19 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             }
             return false;
         }
-
+        
         public override Var GetVar(PropField field)
         {
             int ordinal = currentOrdinal++;
             /* if (reader.IsDBNull(ordinal)) {
                 return new Var(field.fieldType.varType.DefaultValue);
             } */
-            if (!field.fieldType.isNullable)
+            if (!field.isNullable)
             {
                 switch (field.typeId)
                 {
                     case StandardTypeId.Boolean:    return new Var(reader.GetBoolean    (ordinal));
-                    case StandardTypeId.String:     return new Var(reader.GetString     (ordinal));
+                    case StandardTypeId.String:     return GetString(reader.GetString   (ordinal), field);
                     //
                     case StandardTypeId.Uint8:      return new Var(reader.GetByte       (ordinal));
                     case StandardTypeId.Int16:      return new Var(reader.GetInt16      (ordinal));
@@ -59,6 +65,11 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     //
                     case StandardTypeId.DateTime:   return new Var(reader.GetDateTime   (ordinal));
                     case StandardTypeId.Guid:       return new Var(reader.GetGuid       (ordinal));
+                    //
+                    case StandardTypeId.JsonKey:    return new Var(new JsonKey(     reader.GetString(ordinal)));
+                    case StandardTypeId.BigInteger: return new Var(BigInteger.Parse(reader.GetString(ordinal)));
+                    case StandardTypeId.JsonValue:  return new Var(new JsonValue(   reader.GetString(ordinal)));
+                    case StandardTypeId.Array:      return new Var(GetArray(field,                   ordinal));
                 }
                 throw new NotImplementedException($"GetVar() {field.typeId}");
             }
@@ -69,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             switch (field.typeId)
             {
                 case StandardTypeId.Boolean:    return new Var((bool?)      value);
-                case StandardTypeId.String:     return new Var(             value);
+                case StandardTypeId.String:     return GetString((string)   value, field);
                 //
                 case StandardTypeId.Uint8:      return new Var((byte?)      value);
                 case StandardTypeId.Int16:      return new Var((short?)     value);
@@ -81,8 +92,30 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 //
                 case StandardTypeId.DateTime:   return new Var((DateTime?)  value);
                 case StandardTypeId.Guid:       return new Var((Guid?)      value);
+                //
+                case StandardTypeId.JsonKey:    return new Var(new JsonKey(     reader.GetString(ordinal)));
+                case StandardTypeId.BigInteger: return new Var(BigInteger.Parse(reader.GetString(ordinal)));
+                case StandardTypeId.JsonValue:  return new Var(new JsonValue(   reader.GetString(ordinal)));
+                case StandardTypeId.Array:      return new Var(GetArray(field,                   ordinal));
             }
             throw new NotImplementedException($"GetVar() {field.typeId}");
+        }
+        
+        private static Var GetString(string value, PropField field) {
+            if (field.fieldType.type == typeof(string)) {
+                return new Var(value);
+            }
+            return new Var(new ShortString(value));
+        }
+        
+        private object GetArray(PropField field, int ordinal) {
+            var jsonArray = reader.GetString(ordinal);
+            if (jsonArray == null) {
+                return null;
+            }
+            using var pooled = objectMapper.Get();  // TODO cache mapper to avoid .Get()
+            var obj = pooled.instance.ReadObject(jsonArray, field.fieldType.type);
+            return obj;
         }
     }
 }
