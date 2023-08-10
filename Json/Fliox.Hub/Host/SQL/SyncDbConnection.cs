@@ -38,6 +38,19 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
         }
         
+        private static void SetParameter(DbParameter idParam, ColumnType type, in JsonKey id)
+        {
+            switch (type) {
+                case ColumnType.Uint8:  idParam.Value = (byte)  id.AsLong();    break;
+                case ColumnType.Int16:  idParam.Value = (short) id.AsLong();    break;
+                case ColumnType.Int32:  idParam.Value = (int)   id.AsLong();    break;
+                case ColumnType.Int64:  idParam.Value =         id.AsLong();    break;
+                case ColumnType.String: idParam.Value =         id.AsString();  break;
+                case ColumnType.Guid:   idParam.Value =         id.AsGuid();    break;
+                default: throw new InvalidOperationException($"invalid type: {type}");
+            }
+        }
+        
         // --------------------------------------- sync / async  --------------------------------------- 
         /// <summary>async version of <see cref="ExecuteNonQuerySync"/></summary>
         public async Task ExecuteNonQueryAsync (string sql, DbParameter parameter = null) {
@@ -165,7 +178,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     await PrepareAsync(readOne).ConfigureAwait(false);
                     preparedReadOne.Add(tableInfo.container, readOne);
                 }
-                readOne.Parameters[0].Value = (int)read.ids[0].AsLong();
+                DbParameter idParam = readOne.Parameters[0];
+                SetParameter(idParam, tableInfo.keyColumn.type, read.ids[0]);
                 return await ExecuteReaderCommandAsync(readOne).ConfigureAwait(false);
             }
             if (!preparedReadMany.TryGetValue(tableInfo.container, out var readMany)) {

@@ -3,6 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
+using System;
 using System.Data;
 using System.Data.Common;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -133,7 +134,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                     Prepare(readOne);
                     preparedReadOne.Add(tableInfo.container, readOne);
                 }
-                readOne.Parameters[0].Value = (int)read.ids[0].AsLong();
+                DbParameter idParam = readOne.Parameters[0];
+                SetParameter(idParam, tableInfo.keyColumn.type, read.ids[0]);
                 return ExecuteReaderCommandSync(readOne);
             }
             if (!preparedReadMany.TryGetValue(tableInfo.container, out var readMany)) {

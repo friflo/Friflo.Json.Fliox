@@ -25,11 +25,14 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         
         public override bool HasObject (TypeMapper mapper) {
             int ordinal = currentOrdinal++;
-            bool result = reader.GetBoolean(ordinal);
-            if (result) {
+            bool hasObject = !reader.IsDBNull(ordinal) && reader.GetBoolean(ordinal);
+            if (hasObject) {
                 return true;
             }
-            currentOrdinal += mapper.PropFields.fields.Length;
+            var propFields = mapper.PropFields;
+            if (propFields != null) {
+                currentOrdinal += propFields.fields.Length;
+            }
             return false;
         }
 

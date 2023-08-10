@@ -181,6 +181,7 @@ namespace Friflo.Json.Tests.Provider
     {
         internal static async Task<SyncResult> SyncTasksEnv(this FlioxClient client) {
             if (Env.TEST_DB_SYNC) {
+                // client.Options.DebugReadObjects = true;
                 return client.SyncTasksSynchronous();
             }
             return await client.SyncTasks();

@@ -3,6 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER || SQLSERVER
 
+using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -35,8 +36,18 @@ namespace Friflo.Json.Fliox.Hub.SQLServer
             var sql = new StringBuilder();
             sql.Append("SELECT "); SQLTable.AppendColumnNames(sql, tableInfo);
             sql.Append($" FROM {tableInfo.container} WHERE {tableInfo.keyColumn.name} = @id;");
-            var readOne = new SqlCommand(sql.ToString(), sqlInstance);
-            readOne.Parameters.Add("@id", SqlDbType.Int);
+            var readOne     = new SqlCommand(sql.ToString(), sqlInstance);
+            var type        = tableInfo.keyColumn.type;
+            var parameters  = readOne.Parameters;
+            switch (type) {
+                case ColumnType.Uint8:  parameters.Add("@id", SqlDbType.TinyInt);           break;
+                case ColumnType.Int16:  parameters.Add("@id", SqlDbType.SmallInt);          break;
+                case ColumnType.Int32:  parameters.Add("@id", SqlDbType.Int);               break;
+                case ColumnType.Int64:  parameters.Add("@id", SqlDbType.BigInt);            break;
+                case ColumnType.Guid:   parameters.Add("@id", SqlDbType.UniqueIdentifier);  break;
+                case ColumnType.String: parameters.Add("@id", SqlDbType.NVarChar, 255);     break;
+                default: throw new InvalidOperationException($"invalid key type: {type}");
+            }
             return readOne;
         }
         
