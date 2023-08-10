@@ -138,8 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 var reader      = pooled.instance.reader;
                 var documents   = await CosmosUtils.ReadDocuments(reader, response.Content, buffer).ConfigureAwait(false);
                 KeyValueUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, destEntities, syncContext);
-                var entities    = KeyValueUtils.EntityListToArray(destEntities, keys);
-                return new ReadEntitiesResult { entities = new Entities(entities) };
+                return new ReadEntitiesResult { entities = new Entities(destEntities) };
             }
         }
 
@@ -185,7 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 throw new NotImplementedException();
                 // return FilterEntities(command, entities, syncContext);
             }
-            return new QueryEntitiesResult{ entities = new Entities(entities.ToArray()), cursor = continuationToken, sql = sql};
+            return new QueryEntitiesResult{ entities = new Entities(entities), cursor = continuationToken, sql = sql};
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntitiesAsync (AggregateEntities command, SyncContext syncContext) {

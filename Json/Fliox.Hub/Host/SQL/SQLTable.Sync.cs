@@ -28,8 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 using var pooled = syncContext.pool.SQL2Json.Get();
                 var buffer   = syncContext.MemoryBuffer;
                 var entities = mapper.ReadEntitiesSync(pooled.instance, tableInfo, buffer);
-                var array    = KeyValueUtils.EntityListToArray(entities, query.ids);
-                return new ReadEntitiesResult { entities = new Entities(array) };
+                return new ReadEntitiesResult { entities = new Entities(entities) };
             }
             var binaryReader    = new BinaryDbDataReader();
             binaryReader.Init(reader);

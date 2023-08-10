@@ -122,11 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     public  List<EntityError>       errors;
         /// <summary>the referenced entities specified in <see cref="ReadEntities.references"/></summary>
                     public  List<ReferencesResult>  references;
-        /// <summary>
-        /// <b>Note!</b> The order and count of elements in this array must match <see cref="ReadEntities.ids"/>.
-        /// <code>         entities[index].key == ids[index]         </code>
-        /// Use <see cref="KeyValueUtils.EntityListToArray"/> create an array from a list of unordered or missing key/values.   
-        /// </summary>
+
         [Ignore]    public  Entities                entities;
         
         [Ignore]    public  TaskExecuteError        Error       { get; set; }

@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     break;
                 }
             }
-            result.entities = new Entities(filterContext.Result.ToArray());
+            result.entities = new Entities(filterContext.Result);
             return result;
         }
         
