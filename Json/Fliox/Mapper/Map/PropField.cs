@@ -97,25 +97,28 @@ namespace Friflo.Json.Fliox.Mapper.Map
             this.docs       = docs;
             this.relation   = GetRelationAttributeType();
             this.isNullable = fieldType.isNullable;
+            typeId          = GetTypeId(fieldType);
+        }
+        
+        private static StandardTypeId GetTypeId(TypeMapper fieldType) {
             var nativeType  = fieldType.type;
-            // if (name == "intArray") { int n = 1; }
             if      (fieldType.IsArray) {
-                typeId = StandardTypeId.Array;
+                return StandardTypeId.Array;
             }
-            else if (fieldType.IsComplex) {
-                typeId = StandardTypeId.Object;
+            if (fieldType.IsComplex) {
+                return StandardTypeId.Object;
             }
-            else if (fieldType.IsDictionary) {
-                typeId = StandardTypeId.Dictionary;
+            if (fieldType.IsDictionary) {
+                return StandardTypeId.Dictionary;
             }
-            else {
-                var type = nativeType.IsValueType && fieldType.nullableUnderlyingType != null ? fieldType.nullableUnderlyingType : nativeType; 
-                if (NativeStandardTypes.Types.TryGetValue(type, out var typeInfo)) {
-                    typeId = typeInfo.typeId;
-                } else {
-                    typeId = StandardTypeId.JsonEntity; // TODO check: unexpected state
-                }
+            var type = nativeType.IsValueType && fieldType.nullableUnderlyingType != null ? fieldType.nullableUnderlyingType : nativeType;
+            if (type.IsEnum) {
+                return StandardTypeId.Enum;    
             }
+            if (!NativeStandardTypes.Types.TryGetValue(type, out var typeInfo)) {
+                throw new InvalidOperationException($"invalid standard type. was: {type}");    
+            }
+            return typeInfo.typeId;
         }
         
         public MemberInfo   Member { get {
