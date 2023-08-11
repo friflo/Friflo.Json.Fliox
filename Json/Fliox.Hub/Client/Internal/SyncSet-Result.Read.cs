@@ -141,20 +141,20 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 peer.SetEntity(null);
                 return;
             }
-            var obj     = (T)objects[0].obj;
-            var objId   = EntityKeyTMap.GetId(obj);
+            var entity  = (T)objects[0].entity;
+            var objId   = EntityKeyTMap.GetId(entity);
             if (!id.IsEqual(objId)) {
                 entityErrorInfo = new TaskErrorInfo(TaskErrorType.InvalidResponse, $"expect id {id}");
                 return;
             }
             var current = peer.NullableEntity;
             if (current == null) {
-                peer.SetEntity(read.result);
-                read.result = obj;
+                peer.SetEntity(entity);
+                read.result = entity;
                 return;
             }
             var typeMapper  = set.GetTypeMapper();
-            typeMapper.MemberwiseCopy(obj, current);
+            typeMapper.MemberwiseCopy(entity, current);
             read.result = current;
         }
         
@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var typeMapper  = set.GetTypeMapper();
             foreach (var obj in objects)
             {
-                var entity  = (T)obj.obj;
+                var entity  = (T)obj.entity;
                 var key     = EntityKeyTMap.GetKey(entity);
                 if (!readResult.ContainsKey(key)) {
                     continue;

@@ -35,8 +35,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             while (reader.Read())
             {
                 binaryReader.NextRow();
-                var obj = typeMapper.ReadBinary(binaryReader, null, out bool _);
-                objects.Add(new EntityObject(obj));
+                var entity = typeMapper.ReadBinary(binaryReader, null, out bool _);
+                objects.Add(new EntityObject(entity));
             }
             return new ReadEntitiesResult { entities = new Entities(objects) };
         }
@@ -54,8 +54,8 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             while (reader.Read())
             {
                 binaryReader.NextRow();
-                var obj = typeMapper.ReadBinary(binaryReader, null, out bool _);
-                objects.Add(new EntityObject(obj));
+                var entity = typeMapper.ReadBinary(binaryReader, null, out bool _);
+                objects.Add(new EntityObject(entity));
             }
             return new ReadEntitiesResult { entities = new Entities(objects) };
         }

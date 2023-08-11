@@ -62,10 +62,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     
     public readonly struct EntityObject
     {
-        public  readonly    object      obj;
+        public  readonly    object      entity;
 
-        public EntityObject(object obj) {
-            this.obj = obj ?? throw new ArgumentNullException(nameof(obj));
+        public EntityObject(object entity) {
+            this.entity = entity ?? throw new ArgumentNullException(nameof(entity));
         }
     }
     
