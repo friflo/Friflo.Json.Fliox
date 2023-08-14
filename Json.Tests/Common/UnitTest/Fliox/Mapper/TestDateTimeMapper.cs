@@ -3,6 +3,7 @@
 
 using System;
 using System.Globalization;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
 
@@ -11,13 +12,18 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     /// <summary>
+    /// <see cref="DateTime"/> values are persisted in all databases as UTC.<br/>
+    /// - in Key/Value or document databases as ISO 8601 UTC using suffix Z (Zulu) see <see cref="Bytes.DateTimeFormat"/><br/>
+    /// - in SQL relational tables as Timestamp (without time zone). 
+    /// </summary>
+    /// <remarks>
     /// grep:
     ///     DateTime.TryParse
     ///     DateTime.SpecifyKind
     ///     DateTime2Lng
     ///     Lng2DateTime
     ///     ToUniversalTime
-    /// </summary>
+    /// </remarks>
     public static class TestDateTimeMapper
     {
         private const string StringUtc  =   "2021-01-14T11:11:00.555Z";
