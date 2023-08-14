@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                 case ColumnType.Float:      cell.dbl = reader.GetFloat          (ordinal);  return;
                 case ColumnType.Double:     cell.dbl = reader.GetDouble         (ordinal);  return;
                 //
-                case ColumnType.DateTime:   cell.date= reader.GetDateTime       (ordinal);  return;
+                case ColumnType.DateTime:   cell.date= DateTime.SpecifyKind(reader.GetDateTime(ordinal), DateTimeKind.Utc);  return;
                 case ColumnType.Guid:       cell.guid= reader.GetGuid           (ordinal);  return;
                 //
                 case ColumnType.JsonValue:

@@ -160,7 +160,8 @@ namespace Friflo.Json.Fliox.Hub.SQLite
                         var dateStr = new Bytes(text).ToString();
                         return new SQLError($"invalid datetime: {dateStr}, PK: {sql2Json.DebugKey()}");
                     }
-                    cell.date = dateTime.ToUniversalTime();
+                    if (dateTime.Kind != DateTimeKind.Utc) throw new InvalidOperationException("expect DateTime in UTC)");
+                    cell.date = dateTime;
                     break;
                 }
                 case ColumnType.BigInteger:

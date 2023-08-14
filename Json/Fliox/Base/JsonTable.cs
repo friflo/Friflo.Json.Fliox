@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Fliox.Mapper.Map;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 // ReSharper disable once CheckNamespace
@@ -216,7 +217,8 @@ namespace Friflo.Json.Fliox
             bytes.EnsureCapacity(9);
             int start = bytes.end;
             bytes.buffer[start] = (byte)JsonItemType.DateTime;
-            bytes.WriteInt64(start + 1, value.ToBinary());
+            var lng = Var.DateTime2Lng(value);
+            bytes.WriteInt64(start + 1, lng);
             bytes.end = start + 9;
         }
         
@@ -343,7 +345,7 @@ namespace Friflo.Json.Fliox
 
         public DateTime ReadDateTime(int pos) {
             var lng = bytes.ReadInt64(pos + 1);
-            return DateTime.FromBinary(lng);
+            return Var.Lng2DateTime(lng);
         }
         
         public Guid ReadGuid(int pos) {

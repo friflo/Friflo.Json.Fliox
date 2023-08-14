@@ -216,7 +216,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                             break;
                         }
                         if (Bytes.TryParseDateTime(span, out var dateTime)) {
-                            dateTime = dateTime.ToUniversalTime();
                             value.WriteDateTime(dateTime);
                             break;
                         }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Friflo.Json.Burst.Utils;
@@ -498,7 +499,8 @@ namespace Friflo.Json.Burst
                 fixed (byte* ptr = bytes) {
                     // GetString(ReadOnlySpan<byte> bytes) not available in netstandard2.0
                     var str = Encoding.UTF8.GetString(ptr, bytes.Length);
-                    return DateTime.TryParse(str, out dateTime);
+                    var success = DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out dateTime);
+                    return success;
                 }
             }
 #else
@@ -506,7 +508,8 @@ namespace Friflo.Json.Burst
             for (int n = 0; n < len; n++) {
                 span[n] = (char)bytes[n];
             }
-            return DateTime.TryParse(span, out dateTime);
+            var success = DateTime.TryParse(span, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out dateTime);
+            return success;
 #endif
         }
         
@@ -514,8 +517,9 @@ namespace Friflo.Json.Burst
 #if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
             AppendString(dateTime.ToString(Bytes.DateTimeFormat));
 #else
-            if (!dateTime.TryFormat(buf, out var len, DateTimeFormat))
+            if (!dateTime.TryFormat(buf, out var len, DateTimeFormat)) {
                 throw new InvalidOperationException($"DateTime.TryFormat failed: {dateTime}");
+            }
             EnsureCapacity(len);
             int thisEnd = end;
             for (int n = 0; n < len; n++) {

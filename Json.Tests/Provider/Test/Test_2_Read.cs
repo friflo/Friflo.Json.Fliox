@@ -175,6 +175,8 @@ namespace Friflo.Json.Tests.Provider.Test
             AreEqual(dt1.dateTime,   dt1Read.Result.dateTime);
             AreEqual(dt2.dateTime,   dt2Read.Result.dateTime);
             AreEqual(dt3.dateTime,   dt3Read.Result.dateTime);
+            
+            AreEqual(DateTimeKind.Utc,   dt1Read.Result.dateTime.Value.Kind);
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]

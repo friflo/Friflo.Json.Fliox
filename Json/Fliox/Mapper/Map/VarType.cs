@@ -388,7 +388,7 @@ public partial struct Var {
         // ReSharper disable once CompareOfFloatsByEqualityOperator
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng;
         internal  override  bool    IsNull      (in Var value)             => false;
-        internal  override  string  AsString    (in Var value)             => DateTime.FromBinary(value.lng).ToString(Bytes.DateTimeFormat);
+        internal  override  string  AsString    (in Var value)             => Lng2DateTime(value.lng).ToString(Bytes.DateTimeFormat);
         public    override  Var     DefaultValue                           => new Var((DateTime)default);
         public    override  Var     FromObject  (object obj)               => new Var((DateTime)obj);
         public    override  object  ToObject    (in Var value)             => value.DateTime;
@@ -404,7 +404,7 @@ public partial struct Var {
         // ReSharper disable once CompareOfFloatsByEqualityOperator
         internal  override  bool    AreEqual    (in Var val1, in Var val2) => val1.lng == val2.lng && val1.obj == val2.obj;
         internal  override  bool    IsNull      (in Var value)             => value.obj == null;
-        internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : value.lng != 0 ? DateTime.FromBinary(value.lng).ToString(Bytes.DateTimeFormat) : default;
+        internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : value.lng != 0 ? Lng2DateTime(value.lng).ToString(Bytes.DateTimeFormat) : default;
         public    override  Var     DefaultValue                           => new Var((DateTime?)null);
         public    override  Var     FromObject  (object obj)               => new Var((DateTime?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? value.DateTimeNull : null;

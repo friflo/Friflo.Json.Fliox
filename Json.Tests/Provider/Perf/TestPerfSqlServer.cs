@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Provider.Perf
                 using (var reader = command.ExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow))
                 {
                     reader.Read();
-                    new Post {
+                    var post = new Post {
                         Id = reader.GetInt32(0),
                         Text = reader.GetNullableString(1),
                         CreationDate = reader.GetDateTime(2),

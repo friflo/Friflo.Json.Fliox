@@ -50,8 +50,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         public bool         blnPrp { get; set; }
         public DateTime     dtPrp  { get; set; }
         
-        public static readonly DateTime DateTimeProp  = DateTime.Parse("2023-07-13T11:11:11Z").ToUniversalTime();
-        public static readonly DateTime DateTimeField = DateTime.Parse("2023-07-13T22:22:22Z").ToUniversalTime(); 
+        public static readonly DateTime DateTimeProp  = DateTime.Parse("2023-07-13T11:11:11Z");
+        public static readonly DateTime DateTimeField = DateTime.Parse("2023-07-13T22:22:22Z").ToUniversalTime();
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
@@ -557,7 +557,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                         AreEqual(dateTimeStr, result);
                         
                         // Nullable
-                        DateTime? nullExpect = DateTime.Parse(dateTime);
+                        DateTime? nullExpect = DateTime.Parse(dateTime).ToUniversalTime();
                         DateTime? nullValue = Read<DateTime?>(dateTimeStr);
                         AreEqual(expect, nullValue);
                         

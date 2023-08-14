@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Globalization;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Diff;
-using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
@@ -46,15 +46,17 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             if (reader.parser.Event != JsonEvent.ValueString)
                 return reader.HandleEvent(this, out success);
             var str = value.AsString();
-            if (!DateTime.TryParse(str, out slot))
+            if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var result)) {
                 return reader.ErrorMsg<DateTime>("Failed parsing DateTime. value: ", str, out success);
+            }
             success = true;
-            return slot.ToUniversalTime();
+            return result;
         }
         
         /// <summary>uses same format as <see cref="Bytes.AppendDateTime"/></summary>
         public static string ToRFC_3339(in DateTime value) {
-            return value.ToUniversalTime().ToString(Bytes.DateTimeFormat);
+            var utc = value.ToUniversalTime();
+            return utc.ToString(Bytes.DateTimeFormat);
         }
     }
     
@@ -76,7 +78,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void Write(ref Writer writer, DateTime? value) {
             if (value.HasValue) {
-                writer.WriteDateTime(value.Value.ToUniversalTime());
+                writer.WriteDateTime(value.Value);
             } else {
                 writer.AppendNull();
             }
@@ -88,10 +90,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 return reader.HandleEvent(this, out success);
             ref var value = ref reader.parser.value;
             var str = value.AsString();
-            if (!DateTime.TryParse(str, out var result))     
+            if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var result)) {
                 return reader.ErrorMsg<DateTime?>("Failed parsing DateTime. value: ", str, out success);
+            }
             success = true;
-            return result.ToUniversalTime();
+            return result;
         }
     }
 }
