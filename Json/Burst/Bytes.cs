@@ -514,10 +514,11 @@ namespace Friflo.Json.Burst
         }
         
         public void AppendDateTime (in DateTime dateTime, Span<char> buf) {
+            var utc = dateTime.ToUniversalTime();
 #if UNITY_5_3_OR_NEWER || NETSTANDARD2_0
-            AppendString(dateTime.ToString(Bytes.DateTimeFormat));
+            AppendString(utc.ToString(Bytes.DateTimeFormat));
 #else
-            if (!dateTime.TryFormat(buf, out var len, DateTimeFormat)) {
+            if (!utc.TryFormat(buf, out var len, DateTimeFormat)) {
                 throw new InvalidOperationException($"DateTime.TryFormat failed: {dateTime}");
             }
             EnsureCapacity(len);

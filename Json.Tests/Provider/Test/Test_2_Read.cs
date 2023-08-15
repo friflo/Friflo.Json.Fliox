@@ -159,9 +159,13 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task TestRead_21_DateTime(string db) {
             var client1 = await GetClient(db);
-            var dt1     = new TestReadTypes { id = "dt1", dateTime = DateTime.Parse("2023-07-09 00:00:00Z").ToUniversalTime() };
-            var dt2     = new TestReadTypes { id = "dt2", dateTime = DateTime.Parse("2023-07-09 10:00:30.123456Z").ToUniversalTime() };
-            var dt3     = new TestReadTypes { id = "dt3", dateTime = DateTime.Parse("2023-07-09 23:59:59.999999Z").ToUniversalTime() };
+            var dateTime1 = DateTime.Parse("2023-07-09 00:00:00Z").ToUniversalTime();
+            var dateTime2 = DateTime.Parse("2023-07-09 10:00:30.123456Z").ToUniversalTime();
+            var dateTime3 = DateTime.Parse("2023-07-09 23:59:59.999999Z").ToUniversalTime();
+            
+            var dt1     = new TestReadTypes { id = "dt1", dateTime = dateTime1.ToLocalTime() }; // local times are serialized as UTC
+            var dt2     = new TestReadTypes { id = "dt2", dateTime = dateTime2 };
+            var dt3     = new TestReadTypes { id = "dt3", dateTime = dateTime3 };
             client1.testReadTypes.UpsertRange(new [] { dt1, dt2, dt3 });
             await client1.SyncTasksEnv();
             
@@ -172,11 +176,11 @@ namespace Friflo.Json.Tests.Provider.Test
             var dt3Read = read.Find(dt3.id);
             await client2.SyncTasksEnv();
             
-            AreEqual(dt1.dateTime,   dt1Read.Result.dateTime);
-            AreEqual(dt2.dateTime,   dt2Read.Result.dateTime);
-            AreEqual(dt3.dateTime,   dt3Read.Result.dateTime);
+            AreEqual(dateTime1,   dt1Read.Result.dateTime);
+            AreEqual(dateTime2,   dt2Read.Result.dateTime);
+            AreEqual(dateTime3,   dt3Read.Result.dateTime);
             
-            AreEqual(DateTimeKind.Utc,   dt1Read.Result.dateTime.Value.Kind);
+            AreEqual(DateTimeKind.Utc,   dt1Read.Result.dateTime.Value.Kind);   // deserialized DateTime is always UTC
         }
         
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
