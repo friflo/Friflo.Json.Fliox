@@ -3,14 +3,25 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using static System.Diagnostics.DebuggerBrowsableState;
-using static System.BitConverter;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 using static Friflo.Json.Fliox.Mapper.Map.Var.Static;
 
 // ReSharper disable MergeConditionalExpression
 namespace Friflo.Json.Fliox.Mapper.Map
 {
+    /// <summary>
+    /// Use as "union type" struct to store either a long, double or DateTime
+    /// </summary>
+    [StructLayout(LayoutKind.Explicit)]
+    internal struct VarIntern
+    {
+        [FieldOffset(0)] internal   double      dbl;
+        [FieldOffset(0)] internal   long        lng;
+        [FieldOffset(0)] internal   DateTime    dt;
+    }
+    
     /// <summary>
     /// <see cref="Var"/> is used to prevent boxing of primitives types when: <br/>
     /// - serializing primitive JSON values like: 123, "abc", true or false <br/>
@@ -22,11 +33,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public override int     GetHashCode()       => throw new InvalidOperationException("not implemented intentionally");
 
         // --- Note! All fields must be private to ensure using only the type checked properties 
-        private   readonly      VarType type;
-        private   readonly      object  obj;
-        private   readonly      long    lng;            // holds also the value of floating point value Dbl
-                        
-        private                 double  Dbl             => Int64BitsToDouble(lng);
+        private   readonly      VarType     type;   // 8 bytes
+        private   readonly      object      obj;    // 8 bytes
+        private   readonly      VarIntern   intern; // 8 bytes
                         
         internal                object  TryGetObject()  =>  type.TryGetObject(this);
         internal                object  ToObject()      =>  type.ToObject(this);
@@ -40,31 +49,31 @@ namespace Friflo.Json.Fliox.Mapper.Map
         [Browse(Never)] public  string  String      { get { AssertType(TypeString.Instance); return (string)obj;   } }
         
         // --- primitives
-        [Browse(Never)] public  bool    Bool        { get { AssertType(TypeBool.Instance);   return lng != 0;        } }
-        [Browse(Never)] public  char    Char        { get { AssertType(TypeChar.Instance);   return (char) lng;      } }
+        [Browse(Never)] public  bool    Bool        { get { AssertType(TypeBool.Instance);   return intern.lng != 0;        } }
+        [Browse(Never)] public  char    Char        { get { AssertType(TypeChar.Instance);   return (char) intern.lng;      } }
 
-        [Browse(Never)] public  byte    Int8        { get { AssertType(TypeInt8.Instance);   return (byte) lng;      } }
-        [Browse(Never)] public  short   Int16       { get { AssertType(TypeInt16.Instance);  return (short)lng;      } }
-        [Browse(Never)] public  int     Int32       { get { AssertType(TypeInt32.Instance);  return (int)  lng;      } }
-        [Browse(Never)] public  long    Int64       { get { AssertType(TypeInt64.Instance);  return        lng;      } }
+        [Browse(Never)] public  byte    Int8        { get { AssertType(TypeInt8.Instance);   return (byte) intern.lng;      } }
+        [Browse(Never)] public  short   Int16       { get { AssertType(TypeInt16.Instance);  return (short)intern.lng;      } }
+        [Browse(Never)] public  int     Int32       { get { AssertType(TypeInt32.Instance);  return (int)  intern.lng;      } }
+        [Browse(Never)] public  long    Int64       { get { AssertType(TypeInt64.Instance);  return        intern.lng;      } }
         
-        [Browse(Never)] public  float   Flt32       { get { AssertType(TypeFlt.Instance);    return (float)Dbl;      } }
-        [Browse(Never)] public  double  Flt64       { get { AssertType(TypeDbl.Instance);    return        Dbl;      } }
+        [Browse(Never)] public  float   Flt32       { get { AssertType(TypeFlt.Instance);    return (float)intern.dbl;      } }
+        [Browse(Never)] public  double  Flt64       { get { AssertType(TypeDbl.Instance);    return        intern.dbl;      } }
         
-        [Browse(Never)] public  DateTime DateTime   { get { AssertType(TypeDateTime.Instance);return       Lng2DateTime(lng); } }
+        [Browse(Never)] public  DateTime DateTime   { get { AssertType(TypeDateTime.Instance);return       intern.dt; } }
         
         // --- nullable
-        [Browse(Never)] public  bool?   BoolNull    { get { AssertType(TypeNullableBool.Instance);  return obj != null ? lng != 0 : (bool?)null; } }
-        [Browse(Never)] public  char?   CharNull    { get { AssertType(TypeNullableChar.Instance);  return obj != null ? (char?)  lng : null; } }
+        [Browse(Never)] public  bool?   BoolNull    { get { AssertType(TypeNullableBool.Instance);  return obj != null ? intern.lng != 0 : (bool?)null; } }
+        [Browse(Never)] public  char?   CharNull    { get { AssertType(TypeNullableChar.Instance);  return obj != null ? (char?)  intern.lng : null; } }
 
-        [Browse(Never)] public  byte?   Int8Null    { get { AssertType(TypeNullableInt8.Instance);  return obj != null ? (byte?)  lng : null; } }
-        [Browse(Never)] public  short?  Int16Null   { get { AssertType(TypeNullableInt16.Instance); return obj != null ? (short?) lng : null; } }
-        [Browse(Never)] public  int?    Int32Null   { get { AssertType(TypeNullableInt32.Instance); return obj != null ? (int?)   lng : null; } }
-        [Browse(Never)] public  long?   Int64Null   { get { AssertType(TypeNullableInt64.Instance); return obj != null ? (long?)  lng : null; } }
+        [Browse(Never)] public  byte?   Int8Null    { get { AssertType(TypeNullableInt8.Instance);  return obj != null ? (byte?)  intern.lng : null; } }
+        [Browse(Never)] public  short?  Int16Null   { get { AssertType(TypeNullableInt16.Instance); return obj != null ? (short?) intern.lng : null; } }
+        [Browse(Never)] public  int?    Int32Null   { get { AssertType(TypeNullableInt32.Instance); return obj != null ? (int?)   intern.lng : null; } }
+        [Browse(Never)] public  long?   Int64Null   { get { AssertType(TypeNullableInt64.Instance); return obj != null ? (long?)  intern.lng : null; } }
         
-        [Browse(Never)] public  float?  Flt32Null   { get { AssertType(TypeNullableFlt.Instance);   return obj != null ? (float?) Dbl : null; } }
-        [Browse(Never)] public  double? Flt64Null   { get { AssertType(TypeNullableDbl.Instance);   return obj != null ? (double?)Dbl : null; } }
-        [Browse(Never)] public DateTime?DateTimeNull{ get { AssertType(TypeNullableDateTime.Instance);return obj!=null ? (DateTime?)Lng2DateTime(lng) : null; } }
+        [Browse(Never)] public  float?  Flt32Null   { get { AssertType(TypeNullableFlt.Instance);   return obj != null ? (float?) intern.dbl : null; } }
+        [Browse(Never)] public  double? Flt64Null   { get { AssertType(TypeNullableDbl.Instance);   return obj != null ? (double?)intern.dbl : null; } }
+        [Browse(Never)] public DateTime?DateTimeNull{ get { AssertType(TypeNullableDateTime.Instance);return obj!=null ? (DateTime?)intern.dt : null; } }
 
         public              string  AsString() =>  type.AsString(this);
         public  override    string  ToString() =>  $"{{{type}}} {type.AsString(this)}";
@@ -99,34 +108,34 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         // --- object ---
-        public Var (object value)  { type = TypeObject.Instance; obj = value; lng = 0; }
-        public Var (string value)  { type = TypeString.Instance; obj = value; lng = 0; }
+        public Var (object value)  { type = TypeObject.Instance; obj = value; intern = default; }
+        public Var (string value)  { type = TypeString.Instance; obj = value; intern = default; }
         
         // --- primitives
-        public Var (char    value) { type = TypeChar.Instance;   obj = HasValue; lng = value; }
+        public Var (char    value) { type = TypeChar.Instance;   obj = HasValue; intern = new VarIntern { lng = value }; }
         
-        public Var (byte    value) { type = TypeInt8.Instance;   obj = HasValue; lng = value; }
-        public Var (short   value) { type = TypeInt16.Instance;  obj = HasValue; lng = value; }
-        public Var (int     value) { type = TypeInt32.Instance;  obj = HasValue; lng = value; }
-        public Var (long    value) { type = TypeInt64.Instance;  obj = HasValue; lng = value; }
+        public Var (byte    value) { type = TypeInt8.Instance;   obj = HasValue; intern = new VarIntern { lng = value }; }
+        public Var (short   value) { type = TypeInt16.Instance;  obj = HasValue; intern = new VarIntern { lng = value }; }
+        public Var (int     value) { type = TypeInt32.Instance;  obj = HasValue; intern = new VarIntern { lng = value }; }
+        public Var (long    value) { type = TypeInt64.Instance;  obj = HasValue; intern = new VarIntern { lng = value }; }
 
-        public Var (float   value) { type = TypeFlt.Instance;    obj = HasValue; lng = DoubleToInt64Bits (value);  }
-        public Var (double  value) { type = TypeDbl.Instance;    obj = HasValue; lng = DoubleToInt64Bits (value); }
-        public Var (DateTime value){ type = TypeDateTime.Instance;obj= HasValue; lng = DateTime2Lng(value); }
+        public Var (float   value) { type = TypeFlt.Instance;    obj = HasValue; intern = new VarIntern { dbl = value }; }
+        public Var (double  value) { type = TypeDbl.Instance;    obj = HasValue; intern = new VarIntern { dbl = value }; }
+        public Var (DateTime value){ type = TypeDateTime.Instance;obj= HasValue; intern = new VarIntern { dt  = value }; }
 
         // --- nullable primitives
-        public Var (char? value)   { type = TypeNullableChar.Instance;  obj = value.HasValue ? HasValue : null; lng = value ?? 0; }
+        public Var (char? value)   { type = TypeNullableChar.Instance;  obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = value ?? 0 }; }
         
-        public Var (byte?   value) { type = TypeNullableInt8.Instance;  obj = value.HasValue ? HasValue : null; lng = value ?? 0; }
-        public Var (short?  value) { type = TypeNullableInt16.Instance; obj = value.HasValue ? HasValue : null; lng = value ?? 0; }
-        public Var (int?    value) { type = TypeNullableInt32.Instance; obj = value.HasValue ? HasValue : null; lng = value ?? 0; }
-        public Var (long?   value) { type = TypeNullableInt64.Instance; obj = value.HasValue ? HasValue : null; lng = value ?? 0; }
+        public Var (byte?   value) { type = TypeNullableInt8.Instance;  obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = value ?? 0 }; }
+        public Var (short?  value) { type = TypeNullableInt16.Instance; obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = value ?? 0 }; }
+        public Var (int?    value) { type = TypeNullableInt32.Instance; obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = value ?? 0 }; }
+        public Var (long?   value) { type = TypeNullableInt64.Instance; obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = value ?? 0 }; }
 
-        public Var (float?  value) { type = TypeNullableFlt.Instance;   obj = value.HasValue ? HasValue : null; lng = value.HasValue ? DoubleToInt64Bits (value.Value) : 0; }
-        public Var (double? value) { type = TypeNullableDbl.Instance;   obj = value.HasValue ? HasValue : null; lng = value.HasValue ? DoubleToInt64Bits (value.Value) : 0; }
-        public Var (DateTime?value){ type = TypeNullableDateTime.Instance;obj=value.HasValue ? HasValue : null; lng = value.HasValue ? DateTime2Lng(value.Value) : default;  }
-        
-        /// <summary>using instead of <see cref="DateTime.ToBinary"/> which degrade performance by x100</summary>
+        public Var (float?  value) { type = TypeNullableFlt.Instance;   obj = value.HasValue ? HasValue : null; intern = new VarIntern { dbl = value.HasValue ? value.Value : 0 }; }
+        public Var (double? value) { type = TypeNullableDbl.Instance;   obj = value.HasValue ? HasValue : null; intern = new VarIntern { dbl = value.HasValue ? value.Value : 0 }; }
+        public Var (DateTime?value){ type = TypeNullableDateTime.Instance;obj=value.HasValue ? HasValue : null; intern = new VarIntern { dt  = value.HasValue ? value.Value : default };  }
+
+  /*    /// <summary>using instead of <see cref="DateTime.ToBinary"/> which degrade performance by x100</summary>
         internal static long DateTime2Lng(DateTime dateTime) {
             return dateTime.Ticks | (long)dateTime.Kind << DateTimeKindShift;
         }
@@ -138,19 +147,19 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         private const int   DateTimeKindShift = 62;
         private const long  DateTimeMaskTicks = 0x3FFFFFFFFFFFFFFF;
-        
 
+        */
         // --- bool ---
         public Var (bool value) {
             type    = TypeBool.Instance;
             obj     = HasValue;
-            lng     = value ? 1 : 0;
+            intern  = new VarIntern { lng = value ? 1 : 0 };
         }
 
         public Var (bool? value) {
             type    = TypeNullableBool.Instance;
             obj     = value.HasValue ? HasValue : null;
-            lng     = value.HasValue ? value.Value ? 1 : 0 : 0;
+            intern  = new VarIntern { lng = value.HasValue ? value.Value ? 1 : 0 : 0 };
         }
         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>

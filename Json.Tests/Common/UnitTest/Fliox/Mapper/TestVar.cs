@@ -18,6 +18,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
     public static class TestVar
     {
         [Test]
+        public static void TestVar_SizeOfVar()
+        {
+            var start = Mem.GetAllocatedBytes();
+            // ReSharper disable once UseArrayEmptyMethod
+            _ = new Var[10];
+            var diff  = Mem.GetAllocationDiff(start);
+            const int arrayOverhead = 24;
+            AreEqual(24, (diff - arrayOverhead) / 10);
+        }
+        
+        [Test]
         public static void TestVarGetAndSet()
         {
             // --- object

@@ -66,6 +66,19 @@ namespace Friflo.Json.Fliox
             bytes.end       = 0;
         }
         
+        /// <summary>using instead of <see cref="DateTime.ToBinary"/> which degrade performance by x100</summary>
+        private static long DateTime2Lng(DateTime dateTime) {
+            return dateTime.Ticks | (long)dateTime.Kind << DateTimeKindShift;
+        }
+        
+        /// <summary>using instead of <see cref="DateTime.FromBinary"/> which degrade performance by x100</summary>
+        private static DateTime Lng2DateTime(long lng) {
+            return new DateTime(lng & DateTimeMaskTicks, (DateTimeKind)((ulong)lng >> DateTimeKindShift));
+        }
+        
+        private const int   DateTimeKindShift = 62;
+        private const long  DateTimeMaskTicks = 0x3FFFFFFFFFFFFFFF;
+        
         // -------------------------------------------- write --------------------------------------------
         public void WriteNull() {
             bytes.EnsureCapacity(1);
@@ -217,7 +230,7 @@ namespace Friflo.Json.Fliox
             bytes.EnsureCapacity(9);
             int start = bytes.end;
             bytes.buffer[start] = (byte)JsonItemType.DateTime;
-            var lng = Var.DateTime2Lng(value);
+            var lng = DateTime2Lng(value);
             bytes.WriteInt64(start + 1, lng);
             bytes.end = start + 9;
         }
@@ -345,7 +358,7 @@ namespace Friflo.Json.Fliox
 
         public DateTime ReadDateTime(int pos) {
             var lng = bytes.ReadInt64(pos + 1);
-            return Var.Lng2DateTime(lng);
+            return Lng2DateTime(lng);
         }
         
         public Guid ReadGuid(int pos) {
