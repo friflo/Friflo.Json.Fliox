@@ -87,14 +87,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
                 throw new InvalidTypeException(msg2);
             }
             bool auto = AttributeUtils.IsAutoIncrement(property.CustomAttributes);
-            if (propType == typeof(string))     return new EntityKeyStringProperty<T>       (property, idGetMethod, idSetMethod);
-            if (propType == typeof(ShortString))return new EntityKeyShortStringProperty<T>  (property, idGetMethod, idSetMethod);
-            if (propType == typeof(Guid))       return new EntityKeyGuidProperty<T>         (property, idGetMethod, idSetMethod);
-            if (propType == typeof(int))        return new EntityKeyIntProperty<T>          (property, idGetMethod, idSetMethod);
-            if (propType == typeof(long))       return new EntityKeyLongProperty<T>         (property, idGetMethod, idSetMethod);
-            if (propType == typeof(short))      return new EntityKeyShortProperty<T>        (property, idGetMethod, idSetMethod);
-            if (propType == typeof(byte))       return new EntityKeyByteProperty<T>         (property, idGetMethod, idSetMethod);
-            if (propType == typeof(JsonKey))    return new EntityKeyJsonKeyProperty<T>      (property, idGetMethod, idSetMethod);
+            if (propType == typeof(string))     return new EntityKeyStringProperty<T>       (property);
+            if (propType == typeof(ShortString))return new EntityKeyShortStringProperty<T>  (property);
+            if (propType == typeof(Guid))       return new EntityKeyGuidProperty<T>         (property);
+            if (propType == typeof(int))        return new EntityKeyIntProperty<T>          (property);
+            if (propType == typeof(long))       return new EntityKeyLongProperty<T>         (property);
+            if (propType == typeof(short))      return new EntityKeyShortProperty<T>        (property);
+            if (propType == typeof(byte))       return new EntityKeyByteProperty<T>         (property);
+            if (propType == typeof(JsonKey))    return new EntityKeyJsonKeyProperty<T>      (property);
             var msg = UnsupportedTypeMessage(type, property, propType);
             throw new InvalidTypeException(msg);
         }
@@ -119,6 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
             return $"unsupported TKey Type: EntitySet<{memberType.Name},{type.Name}> {member.Name}";
         }
         
+        // --- field getter / setter
         internal static Func<TEntity,TField> GetFieldGet<TEntity, TField>(FieldInfo field) {
             var instanceType    = field.DeclaringType;
             var instExp         = Expression.Parameter(instanceType,    "instance");
@@ -132,6 +133,24 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
             var instExp         = Expression.Parameter(instanceType,    "instance");
             var valueExp        = Expression.Parameter(fieldType,       "value");
             var fieldExp        = Expression.Field(instExp, field);
+            var assignExpr      = Expression.Assign (fieldExp, valueExp);
+            return                Expression.Lambda<Action<TEntity, TField>>(assignExpr, instExp, valueExp).Compile();
+        }
+        
+        // --- property getter / setter
+        internal static Func<TEntity,TField> GetPropertyGet<TEntity, TField>(PropertyInfo property) {
+            var instanceType    = property.DeclaringType;
+            var instExp         = Expression.Parameter(instanceType,    "instance");
+            var fieldExp        = Expression.Property(instExp, property);
+            return                Expression.Lambda<Func<TEntity, TField>>(fieldExp, instExp).Compile();
+        }
+        
+        internal static Action<TEntity,TField> GetPropertySet<TEntity, TField>(PropertyInfo property) {
+            var instanceType    = property.DeclaringType;
+            var fieldType       = property.PropertyType;
+            var instExp         = Expression.Parameter(instanceType,    "instance");
+            var valueExp        = Expression.Parameter(fieldType,       "value");
+            var fieldExp        = Expression.Property(instExp, property);
             var assignExpr      = Expression.Assign (fieldExp, valueExp);
             return                Expression.Lambda<Action<TEntity, TField>>(assignExpr, instExp, valueExp).Compile();
         }

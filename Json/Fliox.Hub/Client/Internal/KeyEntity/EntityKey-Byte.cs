@@ -38,10 +38,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
         internal override   Type                GetKeyType() => typeof(byte);
         internal override   string              GetKeyName() => property.Name;
 
-        internal EntityKeyByteProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) : base (property) {
+        internal EntityKeyByteProperty(PropertyInfo property) : base (property) {
             this.property = property;
-            propertyGet = (Func  <T, byte>) Delegate.CreateDelegate (typeof(Func  <T, byte>), idGetMethod);
-            propertySet = (Action<T, byte>) Delegate.CreateDelegate (typeof(Action<T, byte>), idSetMethod);
+            propertyGet = GetPropertyGet<T, byte>(property);
+            propertySet = GetPropertySet<T, byte>(property);
         }
 
         internal override   byte  GetKey (T entity) {

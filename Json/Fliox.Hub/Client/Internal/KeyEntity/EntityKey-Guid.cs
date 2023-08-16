@@ -30,7 +30,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
         }
     }
     
-    
     internal sealed class EntityKeyGuidProperty<T> : EntityKeyT<Guid, T> where T : class {
         private  readonly   PropertyInfo        property;
         private  readonly   Func  <T, Guid>     propertyGet;
@@ -40,10 +39,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
         internal override   string              GetKeyName() => property.Name;
         internal override   bool                IsIntKey()   => false;
 
-        internal EntityKeyGuidProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) : base (property) {
+        internal EntityKeyGuidProperty(PropertyInfo property) : base (property) {
             this.property = property;
-            propertyGet = (Func  <T, Guid>) Delegate.CreateDelegate (typeof(Func  <T, Guid>), idGetMethod);
-            propertySet = (Action<T, Guid>) Delegate.CreateDelegate (typeof(Action<T, Guid>), idSetMethod);
+            propertyGet = GetPropertyGet<T, Guid>(property);
+            propertySet = GetPropertySet<T, Guid>(property);
         }
 
         internal override   Guid  GetKey (T entity) {

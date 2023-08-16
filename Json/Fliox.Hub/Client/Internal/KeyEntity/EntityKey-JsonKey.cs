@@ -42,10 +42,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
         internal override   bool                IsIntKey()                  => false;
         internal override   bool                IsEntityKeyNull (T entity)  => GetKey(entity).IsNull();
 
-        internal EntityKeyJsonKeyProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) : base (property) {
+        internal EntityKeyJsonKeyProperty(PropertyInfo property) : base (property) {
             this.property = property;
-            propertyGet = (Func  <T, JsonKey>) Delegate.CreateDelegate (typeof(Func<T, JsonKey>),   idGetMethod);
-            propertySet = (Action<T, JsonKey>) Delegate.CreateDelegate (typeof(Action<T, JsonKey>), idSetMethod);
+            propertyGet = GetPropertyGet<T, JsonKey>(property);
+            propertySet = GetPropertySet<T, JsonKey>(property);
         }
 
         internal override   JsonKey  GetKey (T entity) {

@@ -5,6 +5,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map.Val;
 using static Friflo.Json.Fliox.Mapper.Map.Var;
@@ -23,6 +24,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public   abstract object    ToObject        (in Var value);
         internal virtual  object    TryGetObject    (in Var value) => null;
         internal abstract Member    CreateMember<T> (MemberMethods mm);
+        internal virtual  Member    CreateField<T> (FieldInfo info) => throw new NotImplementedException();
+        internal virtual  Member    CreateProperty<T> (PropertyInfo info) => throw new NotImplementedException();
 
         public   override string    ToString() => Name;
         
@@ -172,6 +175,8 @@ public partial struct Var {
         public    override  Var     FromObject  (object obj)               => new Var((int)obj);
         public    override  object  ToObject    (in Var value)             => (int)value.intern.lng;
         internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberInt32<T>(mm);
+        internal  override  Member  CreateField<T>(FieldInfo info)          => new MemberInt32<T>(info);
+        internal  override  Member  CreateProperty<T> (PropertyInfo info)   => new MemberInt32<T>(info);
     }
     
     internal sealed class TypeInt64 : TypeLong
@@ -393,6 +398,7 @@ public partial struct Var {
         public    override  Var     FromObject  (object obj)               => new Var((DateTime)obj);
         public    override  object  ToObject    (in Var value)             => value.DateTime;
         internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberDateTime<T>(mm);
+        internal  override  Member  CreateProperty<T> (PropertyInfo info)  => new MemberDateTime<T>(info);
     }
     
     internal sealed class TypeNullableDateTime : VarType

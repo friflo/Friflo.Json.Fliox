@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
     /// May use generic type T in future to avoid casting object to T in <see cref="ClassMapper{T}"/> implementations. <br/>
     /// E.g. In calls <see cref="Var.Member.GetVar"/> in <see cref="ClassMapper{T}.Read"/>
     /// </summary>
-    public sealed class PropField<T> : PropField // dont remove T - see docs
+    public sealed class PropField<T> : PropField // don't remove T - see docs
     {
         public PropField(string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property, Var.Member member,
             int fieldIndex, int genIndex, bool required, string docs)
@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return typeInfo.typeId;
         }
         
-        public MemberInfo   Member { get {
+        internal MemberInfo   Member { get {
             if (field != null)
                 return field;
             return property;
@@ -145,12 +145,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         internal static Var.Member CreateMember<T> (TypeMapper fieldType, FieldInfo field, PropertyInfo property) {
             if (field != null) {
+                // return fieldType.varType.CreateField<T>(field);
                 return new MemberField(fieldType.varType, field);
             }
             // Is struct?
             if (typeof(T).IsValueType) {
                 return new MemberProperty(fieldType.varType, property);    
             }
+            // return fieldType.varType.CreateProperty<T>(property);
             var getter          = property.GetGetMethod(true);
             var setter          = property.GetSetMethod(true);
             var memberMethods   = new Var.MemberMethods(getter, setter);

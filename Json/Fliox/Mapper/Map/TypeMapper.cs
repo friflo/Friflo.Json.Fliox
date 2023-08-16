@@ -41,6 +41,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public virtual      int             Count(object array) => throw new Invalid("Count not applicable");
         public virtual      string          DataTypeName()      => type.Name;
         public virtual      PropertyFields  PropFields          => null;
+        public              Var.Member      GetMember(string name) => PropFields?.GetPropField(name).member;
+
 
         protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) {
             this.type                   = type;
