@@ -125,8 +125,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
             }
             var taskError = entityErrorInfo.TaskError;
+            var keyBuffer = set.intern.GetKeysBuf();
             foreach (var findTask in read.findTasks) {
-                findTask.SetFindResult(read.result, taskError);
+                findTask.SetFindResult(read.result, taskError, keyBuffer);
             }
         }
         
@@ -183,8 +184,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 typeMapper.MemberwiseCopy(entity, current);
                 readResult[key] = current;
             }
+            var keyBuffer = set.intern.GetKeysBuf();
             foreach (var findTask in read.findTasks) {
-                findTask.SetFindResult(read.result, null);
+                findTask.SetFindResult(read.result, null, keyBuffer);
             }
             return default;
         }

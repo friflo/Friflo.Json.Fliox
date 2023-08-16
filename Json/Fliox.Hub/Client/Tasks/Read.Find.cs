@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return false;
         }
         
-        internal abstract void SetFindResult(Dictionary<TKey, T> values, TaskError taskError);
+        internal abstract void SetFindResult(Dictionary<TKey, T> values, TaskError taskError, List<TKey> keyBuffer);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.key     = key;
         }
         
-        internal override void SetFindResult(Dictionary<TKey, T> values, TaskError taskError) {
+        internal override void SetFindResult(Dictionary<TKey, T> values, TaskError taskError, List<TKey> keyBuffer) {
             findState.Executed  = true;
             result              = values[key];
             rawResult           = default;
@@ -120,11 +120,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             return rawResults;
         }
         
-        internal override void SetFindResult(Dictionary<TKey, T> values, TaskError taskError) {
+        internal override void SetFindResult(Dictionary<TKey, T> values, TaskError taskError, List<TKey> keyBuffer) {
             var errorInfo       = new TaskErrorInfo();
             var entityErrors    = taskError?.entityErrors;
-            foreach (var result in results) {
-                var key = result.Key;
+            keyBuffer.Clear();
+            foreach (var entry in results) {
+                keyBuffer.Add(entry.Key);
+            }
+            foreach (var key in keyBuffer) { 
                 results[key] = values[key];
                 if (entityErrors == null) {
                     continue;

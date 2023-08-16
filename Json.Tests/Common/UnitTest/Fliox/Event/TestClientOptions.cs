@@ -23,10 +23,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Event
         }
         
         [Test]
-        public static async Task TestClientOptions_EventReceiver_2() {
+        public static void TestClientOptions_EventReceiver_2() {
             var hub     = new FlioxHub(new MemoryDatabase("test"));
             var client  = new PocStore(hub);
-            await client.SyncTasks();
+            client.SyncTasksSynchronous();
             
             var e = Throws<InvalidOperationException> (() => {
                 client.Options.DebugEventReceiver = null;

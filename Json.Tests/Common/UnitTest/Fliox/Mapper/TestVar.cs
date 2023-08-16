@@ -17,6 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
     
     public static class TestVar
     {
+#if !UNITY_5_3_OR_NEWER
         [Test]
         public static void TestVar_SizeOfVar()
         {
@@ -27,6 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             const int arrayOverhead = 24;
             AreEqual(24, (diff - arrayOverhead) / 10);
         }
+#endif
         
         [Test]
         public static void TestVarGetAndSet()
