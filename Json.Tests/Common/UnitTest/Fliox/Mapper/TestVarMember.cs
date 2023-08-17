@@ -65,22 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        // [Test]
-        public static void TestVarMember_PerfCopy()
-        {
-            var mapper      = GetMapper<Post>();
-            var fields      = mapper.PropFields.fields;
-            var source      = new Post();
-            var target      = new Post();
-
-            for (long n = 0; n < 10_000_000L; n++) {
-                foreach (var field in fields) {
-                    field.member.Copy(source, target);
-                }
-            }
-        }
-        
-        // [Test]
+        [Test]
         public static void TestVarMember_PerfCopyRef()
         {
             var mi          = typeof(TestMemberClass).GetField(nameof(TestMemberClass.int32));
@@ -89,10 +74,82 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var source      = new TestMemberClass { int32 = 123 };
             var target      = new TestMemberClass();
 
-            for (long n = 0; n < 1_000_000_000L; n++) {
+            for (long n = 0; n < Count; n++) {
                 setter(target, getter(source));
                 // target.int32 = source.int32;
             }
+        }
+        
+        private const long PostCount = 1; // 100_000_000L;
+        
+        [Test]
+        public static void TestVarMember_PerfPostCopy()
+        {
+            var mapper      = GetMapper<Post>();
+            var fields      = mapper.PropFields.fields;
+            var source      = new Post();
+            var target      = new Post();
+
+            for (long n = 0; n < PostCount; n++) {
+                foreach (var field in fields) {
+                    field.member.Copy(source, target);
+                }
+            }
+        }
+        
+        private static readonly Var[] PostVars =  new Var[] {
+            new Var(1),
+            new Var("abc"),
+            new Var(DateTime.Now),
+            new Var(DateTime.Now),
+            new Var((int?)null),
+            new Var((int?)null),
+            new Var((int?)null),
+            new Var((int?)null),
+            new Var((int?)null),
+            new Var((int?)null),
+            new Var((int?)null),
+            new Var((int?)null),
+            new Var((int?)null),
+        };
+
+        [Test]
+        public static void TestVarMember_PerfPostSetVar()
+        {
+            var mapper      = GetMapper<Post>();
+            var fields      = mapper.PropFields.fields;
+            var target      = new Post();
+            for (long n = 0; n < PostCount; n++) {
+                for (int i = 0; i < fields.Length; i++) {
+                    fields[i].member.SetVar(target, PostVars[i]);
+                }
+            }
+        }
+        
+        [Test]
+        public static void TestVarMember_PerfPostReadVars()
+        {
+            var target      = new Post();
+            for (long n = 0; n < PostCount; n++) {
+                ReadVars(target, PostVars);
+            }
+        }
+        
+        private static void ReadVars(Post obj, Var[] vars)
+        {
+            obj.Id                  = vars[0].Int32;
+            obj.Text                = vars[1].String;
+            obj.CreationDate        = vars[2].DateTime;
+            obj.LastChangeDate      = vars[3].DateTime;
+            obj.Counter1            = vars[4].Int32Null;
+            obj.Counter2            = vars[5].Int32Null;
+            obj.Counter3            = vars[6].Int32Null;
+            obj.Counter4            = vars[7].Int32Null;
+            obj.Counter5            = vars[8].Int32Null;
+            obj.Counter6            = vars[9].Int32Null;
+            obj.Counter7            = vars[10].Int32Null;
+            obj.Counter8            = vars[11].Int32Null;
+            obj.Counter9            = vars[12].Int32Null;
         }
         
         private static TypeMapper<T> GetMapper<T>() {
