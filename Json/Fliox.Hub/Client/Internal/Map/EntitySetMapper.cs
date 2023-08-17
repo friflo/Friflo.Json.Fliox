@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         internal GenericContainerMember(Type type, string container) {
             FieldInfo field = type.GetField(container);
             if (field != null) {
-                setter = DelegateUtils.CreateFieldSetter<FlioxClient,EntitySet<TKey, T>>(field);
+                setter = DelegateUtils.CreateFieldSetterIL<FlioxClient,EntitySet<TKey, T>>(field);
                 return;
             }
             PropertyInfo property = type.GetProperty(container);

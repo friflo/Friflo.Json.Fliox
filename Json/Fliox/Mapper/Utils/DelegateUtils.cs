@@ -108,7 +108,10 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             memberType = property.PropertyType;
         }
         
-        public static Action<TInstance, TField> CreateFieldSetter<TInstance,TField>(FieldInfo field)
+        /// <summary>
+        /// In contrast to expression based delegate IL based delegate is able to change <b>readonly</b> fields 
+        /// </summary>
+        public static Action<TInstance, TField> CreateFieldSetterIL<TInstance,TField>(FieldInfo field)
         {
 #if ENABLE_IL2CPP || NETSTANDARD2_0
             return (instance, value) => field.SetValue(instance, value);
