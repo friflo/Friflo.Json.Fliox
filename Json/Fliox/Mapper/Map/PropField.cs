@@ -144,7 +144,15 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         internal static Var.Member CreateMember<T> (TypeMapper fieldType, FieldInfo field, PropertyInfo property) {
-            if (field != null) {
+            // ReSharper disable once PossibleNullReferenceException
+            // if (field  != null) {
+            if (field  != null && (field.DeclaringType.IsValueType)) {
+                return new MemberField(fieldType.varType, field);
+            }
+            MemberInfo mi = field != null ? field : property;
+            return fieldType.varType.CreateMember<T>(mi);
+            
+        /*  if (field != null) {
                 // return fieldType.varType.CreateField<T>(field);
                 return new MemberField(fieldType.varType, field);
             }
@@ -160,7 +168,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (member != null)
                 return member;
             // object (string, structs, classes) are using a generic MemberProperty  
-            return new MemberProperty(fieldType.varType, property);
+            return new MemberProperty(fieldType.varType, property); */
         }
     }
 }

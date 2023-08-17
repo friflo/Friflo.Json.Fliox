@@ -23,9 +23,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public   abstract Var       FromObject      (object obj);
         public   abstract object    ToObject        (in Var value);
         internal virtual  object    TryGetObject    (in Var value) => null;
-        internal abstract Member    CreateMember<T> (MemberMethods mm);
-        internal virtual  Member    CreateField<T> (FieldInfo info) => throw new NotImplementedException();
-        internal virtual  Member    CreateProperty<T> (PropertyInfo info) => throw new NotImplementedException();
+        internal abstract Member    CreateMember<T> (MemberInfo mi);
 
         public   override string    ToString() => Name;
         
@@ -57,8 +55,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (type == typeof(DateTime?))  return TypeNullableDateTime.Instance;
 
             // --- reference type
-            if (type == typeof(string)) return TypeString.Instance;
-
+            if (type == typeof(string))     return TypeString.Instance;
+            
             return TypeObject.Instance;
         }
         
@@ -95,7 +93,7 @@ public partial struct Var {
         public    override  Var     FromObject  (object obj)               => new Var(obj);
         public    override  object  ToObject    (in Var value)             => value.obj;
         internal  override  object  TryGetObject(in Var value)             => value.obj;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => null;
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberObject<T>(mi);
         
         private static string GetString(in Var value) {
             var obj = value.obj;
@@ -126,7 +124,7 @@ public partial struct Var {
         public    override  Var     FromObject  (object obj)               => new Var((string)obj);
         public    override  object  ToObject    (in Var value)             => value.obj;
         internal  override  object  TryGetObject(in Var value)             => value.obj;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => null;
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberString<T>(mi);
     }
     
     
@@ -148,7 +146,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((byte)default);
         public    override  Var     FromObject  (object obj)               => new Var((byte)obj);
         public    override  object  ToObject    (in Var value)             => (byte)value.intern.lng;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberInt8<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberInt8<T>(mi);
     }
     
     internal sealed class TypeInt16 : TypeLong
@@ -161,7 +159,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((short)default);
         public    override  Var     FromObject  (object obj)               => new Var((short)obj);
         public    override  object  ToObject    (in Var value)             => (short)value.intern.lng;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberInt16<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberInt16<T>(mi);
     }
     
     internal sealed class TypeInt32 : TypeLong
@@ -174,9 +172,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((int)default);
         public    override  Var     FromObject  (object obj)               => new Var((int)obj);
         public    override  object  ToObject    (in Var value)             => (int)value.intern.lng;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberInt32<T>(mm);
-        internal  override  Member  CreateField<T>(FieldInfo info)          => new MemberInt32<T>(info);
-        internal  override  Member  CreateProperty<T> (PropertyInfo info)   => new MemberInt32<T>(info);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberInt32<T>(mi);
     }
     
     internal sealed class TypeInt64 : TypeLong
@@ -189,7 +185,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((long)default);
         public    override  Var     FromObject  (object obj)               => new Var((long)obj);
         public    override  object  ToObject    (in Var value)             => value.intern.lng;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberInt64<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberInt64<T>(mi);
     }
     
     
@@ -211,7 +207,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((byte?)null);
         public    override  Var     FromObject  (object obj)               => new Var((byte?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (byte?)value.intern.lng : null;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberInt8Null<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberInt8Null<T>(mi);
     }
     
     internal sealed class TypeNullableInt16 : TypeNullableLong
@@ -223,7 +219,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((short?)null);
         public    override  Var     FromObject  (object obj)               => new Var((short?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (short?)value.intern.lng : null;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberInt16Null<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberInt16Null<T>(mi);
     }
     
     internal sealed class TypeNullableInt32 : TypeNullableLong
@@ -235,7 +231,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((int?)null);
         public    override  Var     FromObject  (object obj)               => new Var((int?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (int?)value.intern.lng : null;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberInt32Null<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberInt32Null<T>(mi);
     }
     
     internal sealed class TypeNullableInt64 : TypeNullableLong
@@ -247,7 +243,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((long?)null);
         public    override  Var     FromObject  (object obj)               => new Var((long?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (long?) value.intern.lng : null;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberInt64Null<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberInt64Null<T>(mi);
     }
     
     // --- float (32 bit) ---
@@ -264,7 +260,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((float)default);
         public    override  Var     FromObject  (object obj)               => new Var((float)obj);
         public    override  object  ToObject    (in Var value)             => (float)value.intern.dbl;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberFlt<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberFlt<T>(mi);
     }
     
     internal sealed class TypeNullableFlt : VarType
@@ -280,7 +276,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((float?)null);
         public    override  Var     FromObject  (object obj)               => new Var((float?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (float?)value.intern.dbl : null;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberFltNull<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberFltNull<T>(mi);
     }
     
     // --- double (64 bit) ---
@@ -297,7 +293,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((double)default);
         public    override  Var     FromObject  (object obj)               => new Var((double)obj);
         public    override  object  ToObject    (in Var value)             => value.intern.dbl;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberDbl<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberDbl<T>(mi);
     }
     
     internal sealed class TypeNullableDbl : VarType
@@ -313,7 +309,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((double?)null);
         public    override  Var     FromObject  (object obj)               => new Var((double?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (double?) value.intern.dbl : null;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberDblNull<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberDblNull<T>(mi);
     }
     
     // --- bool ---
@@ -330,7 +326,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((bool)default);
         public    override  Var     FromObject  (object obj)               => new Var((bool)obj);
         public    override  object  ToObject    (in Var value)             => value.intern.lng != 0;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberBool<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberBool<T>(mi);
     }
     
     internal sealed class TypeNullableBool : VarType
@@ -346,7 +342,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((bool?)null);
         public    override  Var     FromObject  (object obj)               => new Var((bool?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (bool?)(value.intern.lng != 0) : null;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberBoolNull<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberBoolNull<T>(mi);
     }
     
     
@@ -364,7 +360,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((char)default);
         public    override  Var     FromObject  (object obj)               => new Var((char)obj);
         public    override  object  ToObject    (in Var value)             => (char)value.intern.lng;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberChar<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberChar<T>(mi);
     }
     
     internal sealed class TypeNullableChar : VarType
@@ -380,7 +376,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((char?)null);
         public    override  Var     FromObject  (object obj)               => new Var((char?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (char?)value.intern.lng : null;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberCharNull<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberCharNull<T>(mi);
     }
     
     // --- DateTime ---
@@ -397,8 +393,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((DateTime)default);
         public    override  Var     FromObject  (object obj)               => new Var((DateTime)obj);
         public    override  object  ToObject    (in Var value)             => value.DateTime;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberDateTime<T>(mm);
-        internal  override  Member  CreateProperty<T> (PropertyInfo info)  => new MemberDateTime<T>(info);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberDateTime<T>(mi);
     }
     
     internal sealed class TypeNullableDateTime : VarType
@@ -414,7 +409,7 @@ public partial struct Var {
         public    override  Var     DefaultValue                           => new Var((DateTime?)null);
         public    override  Var     FromObject  (object obj)               => new Var((DateTime?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? value.DateTimeNull : null;
-        internal  override  Member  CreateMember<T>(MemberMethods mm)      => new MemberDateTimeNull<T>(mm);
+        internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberDateTimeNull<T>(mi);
     }
 }
 }

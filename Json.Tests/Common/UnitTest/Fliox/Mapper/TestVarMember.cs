@@ -3,34 +3,33 @@
 
 using System;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Mapper.Utils;
 using NUnit.Framework;
+using static NUnit.Framework.Assert;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedField.Global
 // ReSharper disable UnusedMember.Local
 // ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
-    public class TestMemberClass2 {
-        public DateTime DateTime { get; set; }
-    }
-    
     public class TestMemberClass {
-        public DateTime DateTime    { get; set; }
-        public DateTime dateTime;
-        public Guid     Guid        { get; set; }
-        public Guid     guid;
-        public long     Lng         { get; set; }
-        public long     lng;
-        public int      Int32       { get; set; }
-        public int      int32;
-        
-        public MemberStruct      struct16;
+        public DateTime     DateTime    { get; set; }
+        public DateTime     dateTime;
+        public Guid         Guid        { get; set; }
+        public Guid         guid;
+        public long         Lng         { get; set; }
+        public long         lng;
+        public int          Int32       { get; set; }
+        public int          int32;
+        public MemberStruct struct16;
     }
     
     public struct MemberStruct {
         public Guid     guid1;
         public Guid     guid2;
     }
-    
 
     
     public static class TestVarMember
@@ -38,21 +37,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         private const long Count = 1; // 1_000_000_000L;
         
         [Test]
-        public static void TestVarMember_Get() {
-            
-            var typeStore = new TypeStore();
-            var mapper = typeStore.GetTypeMapper<TestMemberClass2>();
-            var instance = new TestMemberClass2 { DateTime = DateTime.Now };
-            
-            
-            var member = mapper.GetMember("DateTime");
-            var result = 0;
+        public static void TestVarMember_PerfGetVar()
+        {
+            var mapper      = GetMapper<TestMemberClass>();
+            var instance    = new TestMemberClass { int32 = 123 };
+            var member      = mapper.GetMember("int32");
+            var start       = Mem.GetAllocatedBytes();
             for (long n = 0; n < Count; n++) {
-                // result ^= instance.val;
-                var _ = member.GetVar(instance).DateTime;
-                // var _ = instance.val;
+                _ = member.GetVar(instance).Int32;
+                // _ = instance.int32;
             }
-            Console.WriteLine(result);
+            var diff = Mem.GetAllocationDiff(start);
+            AreEqual(0, diff);
+        }
+        
+        [Test]
+        public static void TestVarMember_PerfDelegate()
+        {
+            var mi          = typeof(TestMemberClass).GetField(nameof(TestMemberClass.int32));
+            var getter      = DelegateUtils.CreateMemberGetter<TestMemberClass, int>(mi);
+            var instance    = new TestMemberClass { int32 = 123 };
+
+            for (long n = 0; n < Count; n++) {
+                var _ = getter(instance);
+                // var _ = new Var(getter(instance));
+            }
+        }
+        
+        private static TypeMapper<T> GetMapper<T>() {
+            var typeStore   = new TypeStore();
+            return typeStore.GetTypeMapper<T>();
         }
         
         // -- getter / setter used to explore generate IL code

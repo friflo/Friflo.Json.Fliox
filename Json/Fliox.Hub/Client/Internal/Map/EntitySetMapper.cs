@@ -76,8 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                 return;
             }
             PropertyInfo property = type.GetProperty(container);
-            var setExp = DelegateUtils.CreateSetLambda<FlioxClient,EntitySet<TKey, T>>(property);
-            setter = setExp.Compile();
+            setter = DelegateUtils.CreateMemberSetter<FlioxClient,EntitySet<TKey, T>>(property);
         }
         
         public void SetContainerMember(FlioxClient client, int index) {
