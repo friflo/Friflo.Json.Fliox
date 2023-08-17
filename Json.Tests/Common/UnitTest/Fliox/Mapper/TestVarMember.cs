@@ -5,6 +5,7 @@ using System;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Utils;
+using Friflo.Json.Tests.Provider.Client;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -61,6 +62,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             for (long n = 0; n < Count; n++) {
                 var _ = getter(instance);
                 // var _ = new Var(getter(instance));
+            }
+        }
+        
+        // [Test]
+        public static void TestVarMember_PerfCopy()
+        {
+            var mapper      = GetMapper<Post>();
+            var fields      = mapper.PropFields.fields;
+            var source      = new Post();
+            var target      = new Post();
+
+            for (long n = 0; n < 10_000_000L; n++) {
+                foreach (var field in fields) {
+                    field.member.Copy(source, target);
+                }
+            }
+        }
+        
+        // [Test]
+        public static void TestVarMember_PerfCopyRef()
+        {
+            var mi          = typeof(TestMemberClass).GetField(nameof(TestMemberClass.int32));
+            var getter      = DelegateUtils.CreateMemberGetter<TestMemberClass, int>(mi);
+            var setter      = DelegateUtils.CreateMemberSetter<TestMemberClass, int>(mi);
+            var source      = new TestMemberClass { int32 = 123 };
+            var target      = new TestMemberClass();
+
+            for (long n = 0; n < 1_000_000_000L; n++) {
+                setter(target, getter(source));
+                // target.int32 = source.int32;
             }
         }
         

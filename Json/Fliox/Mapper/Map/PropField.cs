@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
     //  private  readonly   Delegate                            getDelegate;
     //  private  readonly   MethodInfo                          setMethod;
     //  private  readonly   Action<object, object>              setLambda;
-        internal readonly   Var.Member                          member;
+        public   readonly   Var.Member                          member;
 
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property, Var.Member member,

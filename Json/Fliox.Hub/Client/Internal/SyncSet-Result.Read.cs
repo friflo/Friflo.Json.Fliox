@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
@@ -154,8 +155,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 read.result = entity;
                 return;
             }
-            var typeMapper  = set.GetTypeMapper();
-            typeMapper.MemberwiseCopy(entity, current);
+            var fields  = set.GetTypeMapper().PropFields.fields;
+            MemberwiseCopy(entity, current, fields);
             read.result = current;
         }
         
@@ -164,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         {
             var objects     = result.entities.Objects;
             var readResult  = read.result;
-            var typeMapper  = set.GetTypeMapper();
+            var fields      = set.GetTypeMapper().PropFields.fields;
             foreach (var obj in objects)
             {
                 var entity  = (T)obj.entity;
@@ -181,7 +182,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     readResult[key] = entity;
                     continue;
                 }
-                typeMapper.MemberwiseCopy(entity, current);
+                MemberwiseCopy(entity, current, fields);
                 readResult[key] = current;
             }
             var keyBuffer = set.intern.GetKeysBuf();
@@ -189,6 +190,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 findTask.SetFindResult(read.result, null, keyBuffer);
             }
             return default;
+        }
+        
+        private static void MemberwiseCopy(object source, object target, PropField[] fields) {
+            foreach (var field in fields) {
+                field.member.Copy(source, target);
+            }
         }
         
         // ---------------------------------------- query values ----------------------------------------

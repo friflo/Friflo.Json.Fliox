@@ -9,6 +9,7 @@ public partial struct Var
     public abstract class Member {
         public      abstract    Var     GetVar (object obj);
         public      abstract    void    SetVar (object obj, in Var value);
+        public      abstract    void    Copy   (object from, object to);
     }
     
     // --- object
@@ -25,6 +26,7 @@ public partial struct Var
             }
             setter((T)obj, defaultValue);
         }
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
 
         internal    MemberObject(MemberInfo mi) {
             var type    = mi is FieldInfo field ? field.FieldType : (mi as PropertyInfo).PropertyType;
@@ -42,6 +44,7 @@ public partial struct Var
         private     readonly    Action<T, string>   setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.String);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberString(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,string>(mi);
@@ -55,6 +58,7 @@ public partial struct Var
         private     readonly    Action<T, byte>     setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int8);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberInt8(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,byte>(mi);
@@ -67,6 +71,7 @@ public partial struct Var
         private     readonly    Action<T, short>    setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int16);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberInt16(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,short>(mi);
@@ -79,6 +84,7 @@ public partial struct Var
         private     readonly    Action<T, int>      setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int32);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberInt32(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,int>(mi);
@@ -91,6 +97,7 @@ public partial struct Var
         private     readonly    Action<T, long>     setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int64);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberInt64(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,long>(mi);
@@ -104,6 +111,7 @@ public partial struct Var
         private     readonly    Action<T, byte?>    setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int8Null);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberInt8Null(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,byte?>(mi);
@@ -116,6 +124,7 @@ public partial struct Var
         private     readonly    Action<T, short?>   setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int16Null);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberInt16Null(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,short?>(mi);
@@ -128,6 +137,7 @@ public partial struct Var
         private     readonly    Action<T, int?>     setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int32Null);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberInt32Null(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,int?>(mi);
@@ -140,6 +150,7 @@ public partial struct Var
         private     readonly    Action<T, long?>    setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Int64Null);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberInt64Null(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,long?>(mi);
@@ -153,7 +164,8 @@ public partial struct Var
         private     readonly    Action<T, float>    setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Flt32);
-    
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
+
         internal    MemberFlt(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,float>(mi);
             setter = DelegateUtils.CreateMemberSetter<T,float>(mi);
@@ -165,7 +177,8 @@ public partial struct Var
         private     readonly    Action<T, float?>   setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Flt32Null);
-    
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
+
         internal    MemberFltNull(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,float?>(mi);
             setter = DelegateUtils.CreateMemberSetter<T,float?>(mi);
@@ -178,6 +191,7 @@ public partial struct Var
         private     readonly    Action<T, double>   setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Flt64);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberDbl(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,double>(mi);
@@ -190,6 +204,7 @@ public partial struct Var
         private     readonly    Action<T, double?>  setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Flt64Null);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberDblNull(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,double?>(mi);
@@ -203,6 +218,8 @@ public partial struct Var
         private     readonly    Action<T, bool>     setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Bool);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
+
     
         internal    MemberBool(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,bool>(mi);
@@ -215,6 +232,7 @@ public partial struct Var
         private     readonly    Action<T, bool?>    setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.BoolNull);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberBoolNull(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,bool?>(mi);
@@ -228,6 +246,7 @@ public partial struct Var
         private     readonly    Action<T, char>     setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.Char);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberChar(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,char>(mi);
@@ -240,6 +259,7 @@ public partial struct Var
         private     readonly    Action<T, char?>    setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.CharNull);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberCharNull(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,char?>(mi);
@@ -253,6 +273,7 @@ public partial struct Var
         private     readonly    Action<T, DateTime> setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.DateTime);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberDateTime(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,DateTime>(mi);
@@ -265,6 +286,7 @@ public partial struct Var
         private     readonly    Action<T,DateTime?> setter;
         public      override    Var                 GetVar (object obj)                 => new Var(getter((T)obj));
         public      override    void                SetVar (object obj, in Var value)   => setter((T)obj, value.DateTimeNull);
+        public      override    void                Copy   (object from, object to)     => setter((T)to, getter((T)from));
     
         internal    MemberDateTimeNull(MemberInfo mi) {
             getter = DelegateUtils.CreateMemberGetter<T,DateTime?>(mi);

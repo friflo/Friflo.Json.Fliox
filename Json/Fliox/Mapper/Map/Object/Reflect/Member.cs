@@ -28,6 +28,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             // if (useDirect) { field.SetValueDirect(__makeref(obj), value); return; }
             field.SetValue(obj, valueObject); // todo use Expression - but not for Unity
         }
+        
+        public      override    void    Copy   (object from, object to) {
+            var value = field.GetValue(from);
+            field.SetValue(to, value);
+        }
     }
     
     // --- properties
@@ -51,5 +56,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             var valueObject = varType.ToObject(value);
             setter(obj, valueObject);
         }
+        
+        public    override    void    Copy   (object from, object to) => throw new NotImplementedException();
     }
 }
