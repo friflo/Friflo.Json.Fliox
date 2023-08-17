@@ -12,7 +12,6 @@ using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Map.Val;
 using Friflo.Json.Fliox.Mapper.Utils;
-using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform.Select;
 using static Friflo.Json.Fliox.Mapper.Map.TypeMapperUtils;
 
@@ -439,38 +438,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
                 fieldType.CopyVar(srcMemberVar, ref dstMemberVar);
                 member.SetVar(dst, dstMemberVar);
             }
-        }
-        
-        public override object ReadBinary(BinaryReader reader, object slot, out bool success)
-        {
-            object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
-            if (objRef == null) {
-                objRef = NewInstance();
-            }
-            var fields = propFields.fields;
-            foreach (var field in fields)
-            {
-                if (field.typeId != StandardTypeId.Object) {
-                    Var memberVal = reader.GetVar(field);
-                    field.member.SetVar(objRef, memberVal);
-                } else {
-                    // typeId == StandardTypeId.Object
-                    var fieldType = field.fieldType;
-                    if (!reader.HasObject(field.fieldType)) {
-                        field.member.SetVar(objRef, new Var((object)null));
-                        continue;
-                    }
-                    Var memberObj   = field.member.GetVar(objRef);
-                    var curObj      = memberObj.Object;
-                    var obj         = fieldType.ReadBinary(reader, curObj, out success);
-                    if (ReferenceEquals(curObj, obj)) {
-                        continue;
-                    }
-                    field.member.SetVar(objRef, new Var(obj));
-                }
-            }
-            success = false;
-            return (T)objRef;
         }
     }
 }

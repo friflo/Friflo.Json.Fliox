@@ -11,10 +11,11 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host.SQL
 {
-    public sealed class BinaryDbDataReader : BinaryReader
-    { 
-        private DbDataReader                reader;
-        private ObjectPool<ObjectMapper>    objectMapper;
+    public sealed class BinaryDbDataReader
+    {
+        private     int                         currentOrdinal;
+        private     DbDataReader                reader;
+        private     ObjectPool<ObjectMapper>    objectMapper;
         
         public BinaryDbDataReader(ObjectPool<ObjectMapper> objectMapper) {
             this.objectMapper = objectMapper;
@@ -25,11 +26,40 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             currentOrdinal = 0;
         }
         
-        public void NextRow() {
+        public object Read(TypeMapper mapper, object obj) {
             currentOrdinal = 0;
+            return ReadIntern(mapper, obj);
         }
         
-        public override bool HasObject (TypeMapper mapper) {
+        private object ReadIntern(TypeMapper mapper, object obj)
+        {
+            obj         ??= mapper.NewInstance();
+            var fields    = mapper.PropFields.fields;
+            foreach (var field in fields)
+            {
+                if (field.typeId != StandardTypeId.Object) {
+                    Var memberVal = GetVar(field);
+                    field.member.SetVar(obj, memberVal);
+                } else {
+                    // typeId == StandardTypeId.Object
+                    var fieldType = field.fieldType;
+                    if (!HasObject(field.fieldType)) {
+                        field.member.SetVar(obj, new Var((object)null));
+                        continue;
+                    }
+                    Var memberObjVar    = field.member.GetVar(obj);
+                    var memberObjCur    = memberObjVar.Object;
+                    var memberObj       = ReadIntern(fieldType, memberObjCur);
+                    if (ReferenceEquals(memberObjCur, memberObj)) {
+                        continue;
+                    }
+                    field.member.SetVar(obj, new Var(memberObj));
+                }
+            }
+            return obj;
+        }
+        
+        private bool HasObject (TypeMapper mapper) {
             int ordinal = currentOrdinal++;
             bool hasObject = !reader.IsDBNull(ordinal) && reader.GetByte(ordinal) != 0;
             if (hasObject) {
@@ -42,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
             return false;
         }
         
-        public override Var GetVar(PropField field)
+        private Var GetVar(PropField field)
         {
             int ordinal = currentOrdinal++;
             /* if (reader.IsDBNull(ordinal)) {
