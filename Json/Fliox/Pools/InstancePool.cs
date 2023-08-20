@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Pools
 {
@@ -17,7 +16,6 @@ namespace Friflo.Json.Fliox.Pools
     public sealed class InstancePool<T> : InstancePool where T : class, new() // constraint class is not necessary but improves new T() calls.
     {
         private  readonly   InstancePools   pools;
-        private  readonly   TypeMapper<T>   mapper;
         private             PoolIntern<T>   pool;
         
         internal  override  int             Used        => pool.used;
@@ -28,7 +26,6 @@ namespace Friflo.Json.Fliox.Pools
         public InstancePool(InstancePools pools) {
             this.pools  = pools;
             pools.pools.Add(this);
-            mapper      = pools.typeStore.GetTypeMapper<T>();
             pool        = new PoolIntern<T>(new T[4]);
         }
         
@@ -36,10 +33,10 @@ namespace Friflo.Json.Fliox.Pools
 
         public T Create()
         {
-            var version = pools.version;
-            var objects = pool.objects;
-            if (pool.version != version) {
-                pool.version = version;
+            var curVersion  = pools.version;
+            var objects     = pool.objects;
+            if (pool.version != curVersion) {
+                pool.version = curVersion;
                 if (pool.count > 0) {
                     pool.used = 1;
                     return objects[0];

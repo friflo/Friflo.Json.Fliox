@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return syncContext;
                 }
             }
-            var syncPools       = new SyncPools(hub.sharedEnv.typeStore);
+            var syncPools       = new SyncPools();
             var syncBuffers     = new SyncBuffers(new List<SyncRequestTask>(), new List<SyncRequestTask>(), new List<JsonValue>());
             var memoryBuffer    = new MemoryBuffer(4 * 1024);
             syncContext         = new SyncContext(hub.sharedEnv, this, syncBuffers, syncPools) { Host = host }; // reused context

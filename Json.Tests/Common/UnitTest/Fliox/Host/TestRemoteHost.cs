@@ -121,7 +121,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
             cx.mapper.Pretty            = true;
             cx.mapper.WriteNullMembers  = false;
             cx.mapper.reader.ReaderPool = new ReaderPool(typeStore);
-            cx.syncPools        = new SyncPools(typeStore);
+            cx.syncPools        = new SyncPools();
 
             // -- create request with upsert task
             var syncWrite = new SyncRequest {

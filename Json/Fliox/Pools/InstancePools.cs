@@ -11,14 +11,10 @@ namespace Friflo.Json.Fliox.Pools
     public sealed class InstancePools
     {
         internal            int                 version;
-        internal  readonly  TypeStore           typeStore;
-        internal  readonly  List<InstancePool>  pools;
-        public    override  string              ToString() => GetString();
+        internal  readonly  List<InstancePool>  pools       =  new List<InstancePool>();
+        public    override  string              ToString()  => GetString();
 
-        public InstancePools(TypeStore typeStore) {
-            this.typeStore  = typeStore;
-            pools           = new List<InstancePool>();
-        }
+        public InstancePools() { }
 
         public void Reuse() {
             version++;

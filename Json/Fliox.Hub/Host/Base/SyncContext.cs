@@ -277,8 +277,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal readonly InstancePool<UpsertEntitiesResult>    upsertResultPool;
         internal readonly InstancePool<SendMessageResult>       messageResultPool;
         
-        public SyncPools(TypeStore typeStore) {
-            pools               = new InstancePools(typeStore);
+        public SyncPools() {
+            pools               = new InstancePools();
             taskResultsPool     = new InstancePool<ListOne<SyncTaskResult>>(pools);
             responsePool        = new InstancePool<SyncResponse>        (pools);
             upsertResultPool    = new InstancePool<UpsertEntitiesResult>(pools);
