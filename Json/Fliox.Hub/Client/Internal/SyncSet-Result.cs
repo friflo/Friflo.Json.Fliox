@@ -8,9 +8,8 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
-    internal abstract class SyncSet
+    internal partial class EntitySet
     {
-        internal  abstract  EntitySet           EntitySet   { get; }
 
         internal  abstract  AggregateEntities   AggregateEntities   (AggregateTask      aggregate, in CreateTaskContext context);
         internal  abstract  CloseCursors        CloseCursors        (CloseCursorsTask   closeCursor);
@@ -26,8 +25,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, SyncTaskResult result);
         internal  abstract  void    SubscribeChangesResult  (SubscribeChanges   task, SyncTaskResult result);
         
-        internal  abstract  void    Reuse  ();
-
         internal static string SyncKeyName (string keyName) {
             if (keyName == "id")
                 return null;
@@ -55,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
     }
 
-    internal partial class SyncSet<TKey, T>
+    internal partial class EntitySetInstance<TKey, T>
     {
         internal override void ReserveKeysResult (ReserveKeys task, SyncTaskResult result) {
             var reserve = (ReserveKeysTask<TKey, T>)task.intern.syncTask;
@@ -115,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     continue;
                 }
                 var key     = KeyConvert.IdToKey(id);
-                var peer    = set.GetOrCreatePeerByKey(key, id);
+                var peer    = GetOrCreatePeerByKey(key, id);
                 peer.state  = PeerState.None;
                 peer.SetPatchSource(entity.value);
             }
@@ -151,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         private void AddEntityResponseError(in JsonKey id, Dictionary<JsonKey, EntityValue> entities, ref TaskErrorInfo entityErrorInfo) {
-            var responseError = new EntityError(EntityErrorType.ReadError, set.nameShort, id, "requested entity missing in response results");
+            var responseError = new EntityError(EntityErrorType.ReadError, nameShort, id, "requested entity missing in response results");
             entityErrorInfo.AddEntityError(responseError);
             var value = new EntityValue(id, responseError); 
             entities.Add(id, value);
@@ -211,7 +208,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             } else {
                 foreach (var entityPatch in patches) {
                     var key     = entityPatch.Key;
-                    var peer    = set.GetOrCreatePeerByKey(key, default);
+                    var peer    = GetOrCreatePeerByKey(key, default);
                     var nextPatchSource = peer.NextPatchSource;
                     if (nextPatchSource.IsNull())
                         continue;
@@ -240,7 +237,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var ids = task.ids;
             if (ids != null) {
                 foreach (var id in ids.GetReadOnlySpan()) {
-                    set.DeletePeer(id);
+                    DeletePeer(id);
                 }
             }
             var deleteResult = (DeleteEntitiesResult)result;
@@ -265,12 +262,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 subscribeChanges.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            set.intern.subscription = task.changes.Count > 0 ? task : null;
+            intern.subscription = task.changes.Count > 0 ? task : null;
             subscribeChanges.state.Executed = true;
-        }
-        
-        internal  override  void    Reuse  () {
-            set.syncSetBuffer.Add(this);
         }
     }
 }

@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
-    internal partial class SyncSet<TKey, T>
+    internal partial class EntitySetInstance<TKey, T>
     {
         // --- read one entity
         private void ReadEntityResult(ReadEntities task, ReadEntitiesResult result, FindTask<TKey, T> read, ObjectMapper mapper) {
@@ -77,9 +77,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // SYNC_READ : read entity
         private void AddReadEntity(ref TaskErrorInfo entityErrorInfo, ReadEntitiesResult result, FindTask<TKey, T> read, ObjectReader reader)
         {
-            var values  = set.GetReadResultValues(result);
+            var values  = GetReadResultValues(result);
             var id      = KeyConvert.KeyToId(read.key);
-            var peer    = set.GetOrCreatePeerByKey(read.key, id);
+            var peer    = GetOrCreatePeerByKey(read.key, id);
             if (values.Length == 0) {
                 peer.SetPatchSourceNull();
                 peer.SetEntity(null);
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 entityErrorInfo = new TaskErrorInfo(TaskErrorType.InvalidResponse, $"expect id {value.key}");
                 return;
             }
-            read.result = set.AddEntity(value, peer, reader, out var error);
+            read.result = AddEntity(value, peer, reader, out var error);
             if (error == null) {
                 return;
             }
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // SYNC_READ : read entities
         private void AddReadEntities(ref TaskErrorInfo entityErrorInfo, ReadEntitiesResult result, ReadTask<TKey, T> read, ObjectReader reader)
         {
-            var values      = set.GetReadResultValues(result);
+            var values      = GetReadResultValues(result);
             var readResult  = read.result;
             
             foreach (var value in values) {
@@ -108,8 +108,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 if (!readResult.ContainsKey(id)) {
                     continue;
                 }
-                var peer = set.GetOrCreatePeerByKey(id, value.key);
-                readResult[id] = set.AddEntity(value, peer, reader, out var error);
+                var peer = GetOrCreatePeerByKey(id, value.key);
+                readResult[id] = AddEntity(value, peer, reader, out var error);
                 if (error == null) {
                     continue;
                 }
@@ -120,13 +120,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 if (pair.Value != default) {
                     continue;
                 }
-                if (!set.TryGetPeerByKey(pair.Key, out var peer)) {
+                if (!TryGetPeerByKey(pair.Key, out var peer)) {
                     // peer.SetPatchSourceNull();
                     // peer.SetEntity(null);
                 }
             }
             var taskError = entityErrorInfo.TaskError;
-            var keyBuffer = set.intern.GetKeysBuf();
+            var keyBuffer = intern.GetKeysBuf();
             foreach (var findTask in read.findTasks) {
                 findTask.SetFindResult(read.result, taskError, keyBuffer);
             }
@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         {
             var objects = result.entities.Objects;
             var id      = KeyConvert.KeyToId(read.key);
-            var peer    = set.GetOrCreatePeerByKey(read.key, id);
+            var peer    = GetOrCreatePeerByKey(read.key, id);
             if (objects.Count == 0) {
                 peer.SetEntity(null);
                 return;
@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 read.result = entity;
                 return;
             }
-            var fields  = set.GetTypeMapper().PropFields.fields;
+            var fields  = GetTypeMapper().PropFields.fields;
             MemberwiseCopy(entity, current, fields);
             read.result = current;
         }
@@ -165,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         {
             var objects     = result.entities.Objects;
             var readResult  = read.result;
-            var fields      = set.GetTypeMapper().PropFields.fields;
+            var fields      = GetTypeMapper().PropFields.fields;
             foreach (var obj in objects)
             {
                 var entity  = (T)obj.entity;
@@ -174,7 +174,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     continue;
                 }
                 var id      = KeyConvert.KeyToId(key);
-                var peer    = set.GetOrCreatePeerByKey(key, id);
+                var peer    = GetOrCreatePeerByKey(key, id);
                 var current = peer.NullableEntity;
 
                 if (current == null) {
@@ -185,7 +185,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 MemberwiseCopy(entity, current, fields);
                 readResult[key] = current;
             }
-            var keyBuffer = set.intern.GetKeysBuf();
+            var keyBuffer = intern.GetKeysBuf();
             foreach (var findTask in read.findTasks) {
                 findTask.SetFindResult(read.result, null, keyBuffer);
             }
@@ -208,14 +208,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var entityErrorInfo = new TaskErrorInfo();
             query.sql           = queryResult.sql;
             query.resultCursor  = queryResult.cursor;
-            var values          = set.GetQueryResultValues(queryResult);
+            var values          = GetQueryResultValues(queryResult);
             query.entities      = values;
             var results         = query.result = new List<T>(values.Length);
             foreach (var value in values)
             {
                 var key     = KeyConvert.IdToKey(value.key);
-                var peer    = set.GetOrCreatePeerByKey(key, value.key);
-                var entity  = set.AddEntity(value, peer, reader, out var error);
+                var peer    = GetOrCreatePeerByKey(key, value.key);
+                var entity  = AddEntity(value, peer, reader, out var error);
                 if (error == null) {
                     results.Add(entity);
                     continue;
@@ -244,7 +244,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             for (int n = 0; n < references.Count; n++) {
                 References              reference    = references[n];
                 ReferencesResult        refResult    = referencesResult[n];
-                EntitySet               refContainer = set.client.GetSetByName(reference.container);
+                EntitySet               refContainer = client.GetSetByName(reference.container);
                 ReadRelationsFunction   subRelation  = relations[reference.selector];
                 if (refResult.error != null) {
                     var taskError       = new TaskErrorResult (TaskErrorType.DatabaseError, refResult.error);

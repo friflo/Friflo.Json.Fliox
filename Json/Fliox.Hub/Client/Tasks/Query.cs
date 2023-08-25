@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            EntityValue[]   entities;
         internal            string          resultCursor;
         private  readonly   FlioxClient     client;
-        private  readonly   SyncSet<TKey,T> syncSet;
+        private  readonly   EntitySetInstance<TKey,T> entitySet;
 
         public              List<T>         Result          => IsOk("QueryTask.Result",   out Exception e) ? result   : throw e;
         public              EntityValue[]   RawResult       => IsOk("QueryTask.RawResult",out Exception e) ? entities : throw e;
@@ -59,20 +59,20 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              SyncTask        Task            => this;
       
 
-        internal QueryTask(FilterOperation filter, FlioxClient client, SyncSet<TKey,T> syncSet) : base(syncSet) {
+        internal QueryTask(FilterOperation filter, FlioxClient client, EntitySetInstance<TKey,T> entitySet) : base(entitySet) {
             relations       = new Relations(this);
             this.filter     = filter;
             this.filterLinq = filter.Linq;
             this.client     = client;
-            this.syncSet    = syncSet;
+            this.entitySet  = entitySet;
         }
         
-        private QueryTask(QueryTask<TKey, T> query, SyncSet<TKey,T> syncSet) : base(syncSet) {
+        private QueryTask(QueryTask<TKey, T> query, EntitySetInstance<TKey,T> entitySet) : base(entitySet) {
             relations       = new Relations(this);
             filter          = query.filter;
             filterLinq      = query.filterLinq;
             client          = query.client;
-            this.syncSet    = syncSet;
+            this.entitySet  = entitySet;
         }
         
         private bool GetIsFinished() {
@@ -88,8 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public QueryTask<TKey, T> QueryNext() {
             if (IsOk("QueryTask.QueryNext()", out Exception e)) {
                 if (resultCursor == null) throw new InvalidOperationException("cursor query reached end");
-                var instance    = syncSet.set.GetSyncSet();
-                var query       = new QueryTask<TKey, T>(this, instance) { cursor = resultCursor, maxCount = maxCount };
+                var query       = new QueryTask<TKey, T>(this, entitySet) { cursor = resultCursor, maxCount = maxCount };
                 client.AddTask(query);
                 return query;
             }
@@ -97,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return syncSet.QueryEntities(this, context);
+            return entitySet.QueryEntities(this, context);
         }
         
         // --- IReadRelationsTask<T>

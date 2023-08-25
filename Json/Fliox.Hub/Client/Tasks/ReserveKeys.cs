@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            long[]          keys;
         internal            Guid            token;
         public              int             Count       => count;
-        private readonly    SyncSet<TKey,T> syncSet;
+        private readonly    EntitySetInstance<TKey,T> entitySet;
         
         [DebuggerBrowsable(Never)]
         internal            TaskState       state;
@@ -27,13 +27,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public              long[]          Keys        => IsOk("ReserveKeysTask.Keys", out Exception e) ? keys : throw e;
         
-        internal ReserveKeysTask(int count, SyncSet<TKey,T> syncSet) : base(syncSet) {
+        internal ReserveKeysTask(int count, EntitySetInstance<TKey,T> entitySet) : base(entitySet) {
             this.count      = count;
-            this.syncSet    = syncSet;
+            this.entitySet    = entitySet;
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return syncSet.ReserveKeys(this);
+            return entitySet.ReserveKeys(this);
         }
     }
 }

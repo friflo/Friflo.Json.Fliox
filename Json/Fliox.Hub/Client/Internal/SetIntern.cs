@@ -23,8 +23,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         public    override  string              ToString()  => "";
         
-        internal            SyncSet             SyncSet => entitySet.syncSet;
-        
         internal List<TKey>     GetKeysBuf()    => keysBuf      ??= new List<TKey>();
 
         /*

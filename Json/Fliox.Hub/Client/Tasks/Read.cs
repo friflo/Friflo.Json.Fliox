@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              T           Result      => IsOk("FindTask.Result", out Exception e) ? result : throw e;
         public   override   string      Details     => $"FindTask<{typeof(T).Name}> (id: {key})";
 
-        internal FindTask(SyncSet<TKey, T> syncSet, TKey key) : base (syncSet) {
+        internal FindTask(EntitySetInstance<TKey, T> syncSet, TKey key) : base (syncSet) {
             relations       = new Relations(this);
             this.key        = key;
         }
@@ -35,21 +35,21 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return syncSet.ReadEntity(this);
+            return set.ReadEntity(this);
         }
     }
 
     // --------------------------------- read multiple entities ---------------------------------
     public sealed class ReadTask<TKey, T> : ReadTaskBase<TKey, T> where T : class
     {
-        internal readonly   Dictionary<TKey, T>         result      = SyncSet.CreateDictionary<TKey,T>();
+        internal readonly   Dictionary<TKey, T>         result      = EntitySet.CreateDictionary<TKey,T>();
         internal readonly   List<FindFunction<TKey, T>> findTasks   = new List<FindFunction<TKey, T>>();
         
         public              Dictionary<TKey, T>         Result      => IsOk("ReadTask.Result", out Exception e) ? result      : throw e;
         public   override   string                      Details     => $"ReadTask<{typeof(T).Name}> (ids: {result.Count})";
 
         
-        internal ReadTask(SyncSet<TKey, T> syncSet) : base (syncSet) {
+        internal ReadTask(EntitySetInstance<TKey, T> entitySet) : base (entitySet) {
             relations       = new Relations(this);
         }
 
@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return syncSet.ReadEntities(this);
+            return set.ReadEntities(this);
         }
     }
     
@@ -119,8 +119,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         internal            TaskState                   state;
         [DebuggerBrowsable(Never)]
-        internal readonly   SyncSet<TKey, T>            syncSet;
-        [DebuggerBrowsable(Never)]
         internal readonly   EntitySetInstance<TKey, T>  set;
         internal            Relations                   relations;
         internal override   TaskState                   State       => state;
@@ -128,10 +126,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskType                    TaskType    => TaskType.read;
         public              SyncTask                    Task        => this;
 
-        internal ReadTaskBase(SyncSet<TKey, T> syncSet) : base(syncSet) {
+        internal ReadTaskBase(EntitySetInstance<TKey, T> entitySet) : base(entitySet) {
             relations       = new Relations(this);
-            this.syncSet    = syncSet;
-            this.set        = syncSet.set;
+            this.set        = entitySet;
         }
 
         // --- Relation

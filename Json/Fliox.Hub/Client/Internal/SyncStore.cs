@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
@@ -9,26 +8,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal sealed class SyncStore
     {
-        internal    ListOne<SyncTask>               tasks               = new ListOne<SyncTask>();
+        internal readonly   ListOne<SyncTask>       tasks               = new ListOne<SyncTask>();
         
-        private     List<DetectAllPatches>          detectAllPatches;
-        private     List<DetectAllPatches>          DetectAllPatches()  => detectAllPatches ??= new List<DetectAllPatches>();
+        private             List<DetectAllPatches>  detectAllPatches;
+        private             List<DetectAllPatches>  DetectAllPatches()  => detectAllPatches ??= new List<DetectAllPatches>();
         
-        internal void Reuse(int entitySetCount) {
-            Span<bool> reusedSyncSets = stackalloc bool[entitySetCount];
+        internal void Reuse() {
             foreach (var task in tasks.GetReadOnlySpan()) {
                 task.Reuse();
-                var syncSet = task.taskSyncSet;
-                if (syncSet == null) {
-                    continue;
-                }
-                var index = syncSet.EntitySet.index;
-                // Ensure SyncSet is reused only once
-                if (reusedSyncSets[index]) {
-                    continue;
-                }
-                reusedSyncSets[index] = true;
-                syncSet.Reuse();
             }
             detectAllPatches?.Clear();
             tasks.Clear();

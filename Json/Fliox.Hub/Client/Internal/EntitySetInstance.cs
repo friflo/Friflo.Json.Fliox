@@ -19,8 +19,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //          Peers, Tasks
                         internal            SetIntern<TKey, T>          intern;         // Use intern struct as first field 
                         
-        /// <summary> available in debugger via <see cref="SetIntern{TKey,T}.SyncSet"/> </summary>
-        [Browse(Never)] internal            SyncSet<TKey, T>            syncSet;
         /// <summary> key: <see cref="Peer{T}.entity"/>.id </summary>
         [Browse(Never)] private  readonly   Dictionary<TKey, Peer<T>>   peerMap;        //  Note: must be private by all means
         
@@ -33,11 +31,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         [Browse(Never)] private             LocalEntities<TKey,T>       local;
         /// <summary> Note! Must be called only from <see cref="LocalEntities{TKey,T}"/> to preserve maintainability </summary>
                         internal            Dictionary<TKey, Peer<T>>   GetPeers()      => peerMap;
-                        internal            SyncSet<TKey, T>            GetSyncSet()    => syncSet ??= syncSetBuffer.Get() ?? new SyncSet<TKey, T>(this);
-                        internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
                         public   override   string                      ToString()      => SetInfo.ToString();
 
-        [Browse(Never)] internal override   SyncSet                     SyncSet         => syncSet;
         [Browse(Never)] internal override   SetInfo                     SetInfo         => GetSetInfo();
         [Browse(Never)] internal override   Type                        KeyType         => typeof(TKey);
         [Browse(Never)] internal override   Type                        EntityType      => typeof(T);
@@ -49,19 +44,19 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal    InstanceBuffer<DeleteTask<TKey,T>>                  deleteBuffer;
         internal    InstanceBuffer<ReadTask<TKey, T>>                   readBuffer;
-        internal    InstanceBuffer<SyncSet<TKey,T>>                     syncSetBuffer;
 
+        /*
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
-        private static class Static  {
-            internal static  readonly       EntityKeyT<TKey, T>         EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
-            internal static  readonly       KeyConverter<TKey>          KeyConvert      = KeyConverter.GetConverter<TKey>();
-        }
+        // private static class Static  { } */
+        private static  readonly       EntityKeyT<TKey, T>         EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
+        private static  readonly       KeyConverter<TKey>          KeyConvert      = KeyConverter.GetConverter<TKey>();
+        
 
         internal EntitySetInstance(string name, int index, FlioxClient client) : base (name, index, client) {
             // ValidateKeyType(typeof(TKey)); // only required if constructor is public
             // intern    = new SetIntern<TKey, T>(this);
             intern.entitySet    = this;
-            peerMap             = SyncSet.CreateDictionary<TKey,Peer<T>>();
+            peerMap             = CreateDictionary<TKey,Peer<T>>();
         }
     }
 }

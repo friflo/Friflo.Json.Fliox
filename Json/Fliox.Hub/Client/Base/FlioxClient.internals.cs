@@ -174,6 +174,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncStore, ObjectMapper mapper) {
             syncStore           = _intern.syncStore;
+            // create new SyncStore to collect future SyncTask's and execute them via the next SyncTasks() call 
             _intern.syncStore   = _intern.syncStoreBuffer.Get() ?? new SyncStore();
             
             var tasks           = syncStore.tasks;
@@ -186,10 +187,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var requestTask = task.CreateRequestTask(context);
                 syncRequest.tasks.Add(requestTask);
             }
-            // --- create new SyncStore and SyncSet's to collect future SyncTask's and execute them via the next SyncTasks() call 
-            foreach (var set in entitySets) {
-                set?.ResetSync();
-            }
             return syncRequest;
         }
         
@@ -200,10 +197,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncRequest.token       = _intern.token;
             syncRequest.eventAck    = _intern.lastEventSeq;
         }
+        
+        private static readonly IDictionary<JsonKey, EntityError> NoErrors = new EmptyDictionary<JsonKey, EntityError>();
 
         internal static IDictionary<JsonKey, EntityError> ErrorsAsMap(List<EntityError> errors, in ShortString container) {
             if (errors == null) {
-                return Static.NoErrors;
+                return NoErrors;
             }
             foreach (var error in errors) {
                 // error .container is not serialized as it is redundant data.
@@ -324,47 +323,47 @@ namespace Friflo.Json.Fliox.Hub.Client
             switch (task.TaskType) {
                 case TaskType.reserveKeys: {
                     var reserveKeys =       (ReserveKeys)       task;
-                    syncTasks.taskSyncSet.ReserveKeysResult(reserveKeys, result);
+                    syncTasks.taskSet.ReserveKeysResult(reserveKeys, result);
                     break;
                 }
                 case TaskType.create: {
                     var create =            (CreateEntities)    task;
-                    syncTasks.taskSyncSet.CreateEntitiesResult(create, result);
+                    syncTasks.taskSet.CreateEntitiesResult(create, result);
                     break;
                 }
                 case TaskType.upsert: {
                     var upsert =            (UpsertEntities)    task;
-                    syncTasks.taskSyncSet.UpsertEntitiesResult(upsert, result);
+                    syncTasks.taskSet.UpsertEntitiesResult(upsert, result);
                     break;
                 }
                 case TaskType.read: {
                     var readList =          (ReadEntities)      task;
-                    syncTasks.taskSyncSet.ReadEntitiesResult(readList, result, mapper);
+                    syncTasks.taskSet.ReadEntitiesResult(readList, result, mapper);
                     break;
                 }
                 case TaskType.query: {
                     var query =             (QueryEntities)     task;
-                    syncTasks.taskSyncSet.QueryEntitiesResult(query, result, mapper);
+                    syncTasks.taskSet.QueryEntitiesResult(query, result, mapper);
                     break;
                 }
                 case TaskType.closeCursors: {
                     var closeCursors =      (CloseCursors)      task;
-                    syncTasks.taskSyncSet.CloseCursorsResult(closeCursors, result);
+                    syncTasks.taskSet.CloseCursorsResult(closeCursors, result);
                     break;
                 }
                 case TaskType.aggregate: {
                     var aggregate =         (AggregateEntities) task;
-                    syncTasks.taskSyncSet.AggregateEntitiesResult(aggregate, result);
+                    syncTasks.taskSet.AggregateEntitiesResult(aggregate, result);
                     break;
                 }
                 case TaskType.merge: {
                     var patch =             (MergeEntities)     task;
-                    syncTasks.taskSyncSet.PatchEntitiesResult(patch, result);
+                    syncTasks.taskSet.PatchEntitiesResult(patch, result);
                     break;
                 }
                 case TaskType.delete: {
                     var delete =            (DeleteEntities)    task;
-                    syncTasks.taskSyncSet.DeleteEntitiesResult(delete, result);
+                    syncTasks.taskSet.DeleteEntitiesResult(delete, result);
                     break;
                 }
                 case TaskType.message: {
@@ -379,7 +378,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
                 case TaskType.subscribeChanges: {
                     var subscribeChanges =  (SubscribeChanges)  task;
-                    syncTasks.taskSyncSet.SubscribeChangesResult(subscribeChanges, result);
+                    syncTasks.taskSet.SubscribeChangesResult(subscribeChanges, result);
                     break;
                 }
                 case TaskType.subscribeMessage: {

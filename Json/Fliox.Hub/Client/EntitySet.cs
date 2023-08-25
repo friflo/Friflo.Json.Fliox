@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
         public ReadTask<TKey, T> Read() {
             var instance = GetInstance();
-            var task = instance.GetSyncSet().Read();
+            var task = instance.Read();
             client.AddTask(task);
             return task;
         }
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
         public FindTask<TKey, T> Find(TKey key) {
             var instance = GetInstance();
-            var task = instance.GetSyncSet().Find(key);
+            var task = instance.Find(key);
             client.AddTask(task);
             return task;
         }
@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Query() filter must not be null. EntitySet: {instance.name}");
             var op = Operation.FromFilter(filter, ClientStatic.RefQueryPath);
-            var task = instance.GetSyncSet().QueryFilter(op);
+            var task = instance.QueryFilter(op);
             client.AddTask(task);
             return task;
         }
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var instance = GetInstance();
             if (filter == null)
                 throw new ArgumentException($"EntitySet.QueryByFilter() filter must not be null. EntitySet: {instance.name}");
-            var task = instance.GetSyncSet().QueryFilter(filter.op);
+            var task = instance.QueryFilter(filter.op);
             client.AddTask(task);
             return task;
         }
@@ -156,7 +156,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public QueryTask<TKey, T> QueryAll() {
             var instance = GetInstance();
             var all = Operation.FilterTrue;
-            var task = instance.GetSyncSet().QueryFilter(all);
+            var task = instance.QueryFilter(all);
             client.AddTask(task);
             return task;
         }
@@ -167,7 +167,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
         public CloseCursorsTask CloseCursors(IEnumerable<string> cursors) {
             var instance = GetInstance();
-            var task = instance.GetSyncSet().CloseCursors(cursors);
+            var task = instance.CloseCursors(cursors);
             client.AddTask(task);
             return task;
         }
@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Aggregate() filter must not be null. EntitySet: {instance.name}");
             var op = Operation.FromFilter(filter, ClientStatic.RefQueryPath);
-            var task = instance.GetSyncSet().CountFilter(op);
+            var task = instance.CountFilter(op);
             client.AddTask(task);
             return task;
         }
@@ -197,7 +197,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var instance = GetInstance();
             if (filter == null)
                 throw new ArgumentException($"EntitySet.AggregateByFilter() filter must not be null. EntitySet: {instance.name}");
-            var task = instance.GetSyncSet().CountFilter(filter.op);
+            var task = instance.CountFilter(filter.op);
             client.AddTask(task);
             return task;
         }
@@ -209,7 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CountTask<T> CountAll() {
             var instance = GetInstance();
             var all = Operation.FilterTrue;
-            var task = instance.GetSyncSet().CountFilter(all);
+            var task = instance.CountFilter(all);
             client.AddTask(task);
             return task;
         }
@@ -238,7 +238,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
             client.AssertSubscription();
             var op = Operation.FromFilter(filter);
-            var task = instance.GetSyncSet().SubscribeChangesFilter(change, op);
+            var task = instance.SubscribeChangesFilter(change, op);
             client.AddTask(task);
             instance.changeCallback = new GenericChangeCallback<TKey,T>(handler);
             return task;
@@ -261,7 +261,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
             client.AssertSubscription();
-            var task = instance.GetSyncSet().SubscribeChangesFilter(change, filter.op);
+            var task = instance.SubscribeChangesFilter(change, filter.op);
             client.AddTask(task);
             instance.changeCallback = new GenericChangeCallback<TKey,T>(handler);
             return task;
@@ -281,7 +281,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             client.AssertSubscription();
             var all = Operation.FilterTrue;
-            var task = instance.GetSyncSet().SubscribeChangesFilter(change, all);
+            var task = instance.SubscribeChangesFilter(change, all);
             client.AddTask(task);
             instance.changeCallback = new GenericChangeCallback<TKey,T>(handler);
             return task;
@@ -291,7 +291,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region - ReserveKeys
         public ReserveKeysTask<TKey, T> ReserveKeys(int count) {
             var instance = GetInstance();
-            var task = instance.GetSyncSet().ReserveKeys(count);
+            var task = instance.ReserveKeys(count);
             client.AddTask(task);
             return task;
         }
@@ -306,8 +306,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var instance = GetInstance();
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Create() entity must not be null. EntitySet: {instance.name}");
-            var sync    = instance.GetSyncSet();
-            var create  = sync.CreateCreateTask();
+            var create  = instance.CreateCreateTask();
             create.Add(entity);
             client.AddTask(create);
             return create;
@@ -326,8 +325,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
                     throw new ArgumentException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {instance.name}");
             }
-            var sync    = instance.GetSyncSet();
-            var create  = sync.CreateCreateTask();
+            var create  = instance.CreateCreateTask();
             create.AddRange(entities);
             client.AddTask(create);
             return create;
@@ -346,8 +344,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
                     throw new ArgumentException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {instance.name}");
             }
-            var sync    = instance.GetSyncSet();
-            var create  = sync.CreateCreateTask();
+            var create  = instance.CreateCreateTask();
             create.AddRange(entities);
             client.AddTask(create);
             return create;
@@ -366,8 +363,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new ArgumentException($"EntitySet.Upsert() entity must not be null. EntitySet: {instance.name}");
             if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
                 throw new ArgumentException($"EntitySet.Upsert() entity.id must not be null. EntitySet: {instance.name}");
-            var sync    = instance.GetSyncSet();
-            var upsert  = sync.CreateUpsertTask();
+            var upsert  = instance.CreateUpsertTask();
             upsert.Add(entity);
             client.AddTask(upsert);
             return upsert;
@@ -385,8 +381,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
                     throw new ArgumentException($"EntitySet.UpsertRange() entity.id must not be null. EntitySet: {instance.name}");
             }
-            var sync    = instance.GetSyncSet();
-            var upsert  = sync.CreateUpsertTask();
+            var upsert  = instance.CreateUpsertTask();
             upsert.AddRange(entities);
             client.AddTask(upsert);
             return upsert;
@@ -405,8 +400,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (Static.EntityKeyTMap.IsEntityKeyNull(entity))
                     throw new ArgumentException($"EntitySet.UpsertRange() entity.id must not be null. EntitySet: {instance.name}");
             }
-            var sync    = instance.GetSyncSet();
-            var upsert  = sync.CreateUpsertTask();
+            var upsert  = instance.CreateUpsertTask();
             upsert.AddRange(entities);
             client.AddTask(upsert);
             return upsert;
@@ -426,8 +420,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var key = EntitySetInstance<TKey,T>.GetEntityKey(entity);
             if (key == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {instance.name}");
-            var sync    = instance.GetSyncSet();
-            var delete  = sync.CreateDeleteTask();
+            var delete  = instance.CreateDeleteTask();
             delete.Add(key);
             client.AddTask(delete);
             return delete;
@@ -442,8 +435,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
             if (key == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {instance.name}");
-            var sync    = instance.GetSyncSet();
-            var delete  = sync.CreateDeleteTask();
+            var delete  = instance.CreateDeleteTask();
             delete.Add(key);
             client.AddTask(delete);
             return delete;
@@ -466,8 +458,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var key in keys) {
                 if (key == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {instance.name}");
             }
-            var sync    = instance.GetSyncSet();
-            var delete  = sync.CreateDeleteTask();
+            var delete  = instance.CreateDeleteTask();
             delete.AddRange(keys);
             client.AddTask(delete);
             return delete;
@@ -485,8 +476,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var key in keys) {
                 if (key == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {instance.name}");
             }
-            var sync    = instance.GetSyncSet();
-            var delete  = sync.CreateDeleteTask();
+            var delete  = instance.CreateDeleteTask();
             delete.AddRange(keys);
             client.AddTask(delete);
             return delete;
@@ -503,8 +493,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var key in keys) {
                 if (key == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {instance.name}");
             }
-            var sync    = instance.GetSyncSet();
-            var delete  = sync.CreateDeleteTask();
+            var delete  = instance.CreateDeleteTask();
             delete.AddRange(keys);
             client.AddTask(delete);
             return delete;
@@ -516,7 +505,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <remarks> To execute the task call <see cref="FlioxClient.SyncTasks"/> </remarks>
         public DeleteAllTask<TKey, T> DeleteAll() {
             var instance = GetInstance();
-            var task = instance.GetSyncSet().DeleteAll();
+            var task = instance.DeleteAll();
             client.AddTask(task);
             return task;
         }
@@ -546,11 +535,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             var key     = Static.EntityKeyTMap.GetKey(entity);
             if (Static.KeyConvert.IsKeyNull(key))           throw new ArgumentException($"entity key must not be null.");
             if (!instance.TryGetPeerByKey(key, out var peer))        throw new ArgumentException($"entity is not tracked. key: {key}");
-            var set     = instance.GetSyncSet();
-            var task    = new DetectPatchesTask<TKey,T>(set);
-            set.AddDetectPatches(task);
+            var task    = new DetectPatchesTask<TKey,T>(instance);
+            instance.AddDetectPatches(task);
             using (var pooled = client.ObjectMapper.Get()) {
-                set.DetectPeerPatches(key, peer, task, pooled.instance);
+                instance.DetectPeerPatches(key, peer, task, pooled.instance);
             }
             client.AddTask(task);
             return task;
@@ -564,16 +552,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             var instance = GetInstance();
             if(entities == null)                            throw new ArgumentNullException(nameof(entities));
             int n       = 0;
-            var set     = instance.GetSyncSet();
-            var task    = new DetectPatchesTask<TKey,T>(set);
-            set.AddDetectPatches(task);
+            var task    = new DetectPatchesTask<TKey,T>(instance);
+            instance.AddDetectPatches(task);
             using (var pooled = client.ObjectMapper.Get()) {
                 foreach (var entity in entities) {
                     if (entity == null)                         throw new ArgumentException($"entities[{n}] is null");
                     var key     = Static.EntityKeyTMap.GetKey(entity);
                     if (Static.KeyConvert.IsKeyNull(key))       throw new ArgumentException($"entity key must not be null. entities[{n}]");
                     if (!instance.TryGetPeerByKey(key, out var peer))    throw new ArgumentException($"entity is not tracked. entities[{n}] key: {key}");
-                    set.DetectPeerPatches(key, peer, task, pooled.instance);
+                    instance.DetectPeerPatches(key, peer, task, pooled.instance);
                     n++;
                 }
             }

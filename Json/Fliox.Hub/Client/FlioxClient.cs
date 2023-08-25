@@ -8,7 +8,6 @@ using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -127,7 +126,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             /// </summary>
             internal const  bool    OriginalContext = true;
             internal const  int     MemoryBufferCapacity = 1024;
-            internal static readonly IDictionary<JsonKey, EntityError> NoErrors = new EmptyDictionary<JsonKey, EntityError>();
         }
 
         #endregion

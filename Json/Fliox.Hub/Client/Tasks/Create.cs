@@ -15,15 +15,13 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class CreateTask<T> : WriteTask<T> where T : class
     {
         private readonly    EntitySetBase<T>    set;
-        private readonly    SyncSetBase<T>      syncSet;
 
         public   override   string              Details => $"CreateTask<{typeof(T).Name}> (entities: {entities.Count})";
         internal override   TaskType            TaskType=> TaskType.create;
         
         
-        internal CreateTask(EntitySetBase<T> set, SyncSetBase<T>  syncSet) : base(syncSet) {
+        internal CreateTask(EntitySetBase<T> set) : base(set) {
             this.set        = set;
-            this.syncSet    = syncSet;
         }
         
         private void AddPeer (Peer<T> peer) {
@@ -68,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return syncSet.CreateEntities(this, context);
+            return set.CreateEntities(this, context);
         }
     }
 }

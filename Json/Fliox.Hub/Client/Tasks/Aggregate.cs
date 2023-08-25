@@ -28,13 +28,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal abstract   AggregateType   Type        { get; }
 
-        internal AggregateTask(FilterOperation filter, SyncSet syncSet) : base(syncSet) {
+        internal AggregateTask(FilterOperation filter, EntitySet entitySet) : base(entitySet) {
             this.filter     = filter;
             this.filterLinq = filter.Linq;
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return taskSyncSet.AggregateEntities(this, context);
+            return taskSet.AggregateEntities(this, context);
         }
     }
     
@@ -45,8 +45,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string          Details => $"CountTask<{typeof(T).Name}> (filter: {filterLinq})";
         internal override   AggregateType   Type    => AggregateType.count;
 
-        internal CountTask(FilterOperation filter, SyncSet syncSet)
-            : base(filter, syncSet)
+        internal CountTask(FilterOperation filter, EntitySet entitySet)
+            : base(filter, entitySet)
         { }
     }
 }

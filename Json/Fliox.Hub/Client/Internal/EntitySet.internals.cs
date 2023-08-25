@@ -18,7 +18,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     // --------------------------------------- EntitySet ---------------------------------------
-    internal abstract class EntitySet
+    internal abstract partial class EntitySet
     {
         [DebuggerBrowsable(Never)] internal readonly    FlioxClient     client;
         [DebuggerBrowsable(Never)] internal readonly    string          name;
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         [DebuggerBrowsable(Never)] internal             ChangeCallback  changeCallback;
         
 
-        internal  abstract  SyncSet     SyncSet     { get; }
+
         internal  abstract  SetInfo     SetInfo     { get; }
         internal  abstract  Type        KeyType     { get; }
         internal  abstract  Type        EntityType  { get; }
@@ -36,7 +36,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal  abstract  void                Reset                   ();
         internal  abstract  void                DetectSetPatchesInternal(DetectAllPatches task, ObjectMapper mapper);
-        internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(Change change);
         internal  abstract  SubscribeChanges    GetSubscription();
         internal  abstract  string              GetKeyName();
@@ -140,13 +139,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     }
     
     // --------------------------------------- EntitySetBase<T> ---------------------------------------
-    internal abstract class EntitySetBase<T> : EntitySet where T : class
+    internal abstract partial class EntitySetBase<T> : EntitySet where T : class
     {
         internal  InstanceBuffer<CreateTask<T>>     createBuffer;
         internal  InstanceBuffer<UpsertTask<T>>     upsertBuffer;
         internal  InstanceBuffer<UpsertEntities>    upsertEntitiesBuffer;
         
-        internal  abstract  SyncSetBase<T>  GetSyncSetBase  ();
         internal  abstract  Peer<T>         GetPeerById     (in JsonKey id);
         internal  abstract  Peer<T>         CreatePeer      (T entity);
         internal  abstract  JsonKey         GetEntityId     (T entity);
@@ -175,7 +173,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
     internal partial class EntitySetInstance<TKey, T>
     {
-        internal TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._readonly.typeStore.GetTypeMapper(typeof(T));
+        private TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._readonly.typeStore.GetTypeMapper(typeof(T));
 
         
         private SetInfo GetSetInfo() {
@@ -189,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var allTasks    = client._intern.syncStore.tasks.GetReadOnlySpan();
             var count       = 0;
             foreach (var task in allTasks) {
-                if (task.entitySetName == name) {
+                if (task.taskSet == this) {
                     count++;
                 }
             }
@@ -199,7 +197,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var tasks = new SyncTask[count];
             var n = 0;
             foreach (var task in allTasks) {
-                if (task.entitySetName == name) {
+                if (task.taskSet == this) {
                     tasks[n++] = task;
                 }
             }
@@ -207,14 +205,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal DetectPatchesTask<TKey,T> DetectPatches() {
-            var set     = GetSyncSet();
-            var task    = new DetectPatchesTask<TKey,T>(set);
-            set.AddDetectPatches(task);
+            var task    = new DetectPatchesTask<TKey,T>(this);
+            AddDetectPatches(task);
             using (var pooled = client.ObjectMapper.Get()) {
                 foreach (var peerPair in peerMap) {
                     TKey    key  = peerPair.Key;
                     Peer<T> peer = peerPair.Value;
-                    set.DetectPeerPatches(key, peer, task, pooled.instance);
+                    DetectPeerPatches(key, peer, task, pooled.instance);
                 }
             }
             return task;
@@ -224,26 +221,24 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             peerMap.Clear();
             intern.writePretty  = ClientStatic.DefaultWritePretty;
             intern.writeNull    = ClientStatic.DefaultWriteNull;
-            syncSet             = null;
         }
 
         // --- internal generic entity utility methods - there public counterparts are at EntityUtils<TKey,T>
-        private  static     void    SetEntityId (T entity, in JsonKey id)   => Static.EntityKeyTMap.SetId(entity, id);
-        internal override   JsonKey GetEntityId (T entity)                  => Static.EntityKeyTMap.GetId(entity);
-        internal static     TKey    GetEntityKey(T entity)                  => Static.EntityKeyTMap.GetKey(entity);
+        private  static     void    SetEntityId (T entity, in JsonKey id)   => EntityKeyTMap.SetId(entity, id);
+        internal override   JsonKey GetEntityId (T entity)                  => EntityKeyTMap.GetId(entity);
+        internal static     TKey    GetEntityKey(T entity)                  => EntityKeyTMap.GetKey(entity);
 
         internal override void DetectSetPatchesInternal(DetectAllPatches allPatches, ObjectMapper mapper) {
-            var set     = GetSyncSet();
-            var task    = new DetectPatchesTask<TKey,T>(set);
+            var task    = new DetectPatchesTask<TKey,T>(this);
             var peers   = peerMap;
             foreach (var peerPair in peers) {
                 TKey    key     = peerPair.Key;
                 Peer<T> peer    = peerPair.Value;
-                set.DetectPeerPatches(key, peer, task, mapper);
+                DetectPeerPatches(key, peer, task, mapper);
             }
             if (task.Patches.Count > 0) {
                 allPatches.entitySetPatches.Add(task);
-                set.AddDetectPatches(task);
+                AddDetectPatches(task);
                 client.AddTask(task);
             }
         }
@@ -255,20 +250,20 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 peer.SetEntity(entity);
                 return peer;
             }
-            var id  = Static.KeyConvert.KeyToId(key);
+            var id  = KeyConvert.KeyToId(key);
             peer    = new Peer<T>(entity, id);
             peers.Add(key, peer);
             return peer;
         }
         
-        internal void DeletePeer (in JsonKey id) {
-            var key = Static.KeyConvert.IdToKey(id);
+        private void DeletePeer (in JsonKey id) {
+            var key = KeyConvert.IdToKey(id);
             peerMap.Remove(key);
         }
         
         [Conditional("DEBUG")]
         private static void AssertId(TKey key, in JsonKey id) {
-            var expect = Static.KeyConvert.KeyToId(key);
+            var expect = KeyConvert.KeyToId(key);
             if (!id.IsEqual(expect))
                 throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
         }
@@ -277,12 +272,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return peerMap.TryGetValue(key, out value);
         }
         
-        internal Peer<T> GetOrCreatePeerByKey(TKey key, JsonKey id) {
+        private Peer<T> GetOrCreatePeerByKey(TKey key, JsonKey id) {
             if (peerMap.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
             if (id.IsNull()) {
-                id = Static.KeyConvert.KeyToId(key);
+                id = KeyConvert.KeyToId(key);
             } else {
                 AssertId(key, id);
             }
@@ -293,7 +288,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         /// use <see cref="GetOrCreatePeerByKey"/> if possible
         internal override Peer<T> GetPeerById(in JsonKey id) {
-            var key = Static.KeyConvert.IdToKey(id);
+            var key = KeyConvert.IdToKey(id);
             var peers = peerMap;
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
@@ -305,7 +300,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         // ReSharper disable once UnusedMember.Local
         private bool TryGetPeerByEntity(T entity, out Peer<T> value) {
-            var key     = Static.EntityKeyTMap.GetKey(entity); 
+            var key     = EntityKeyTMap.GetKey(entity); 
             return peerMap.TryGetValue(key, out value);
         }
         
@@ -342,12 +337,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 } else {
                     applyType |= ApplyInfoType.ParseError;
                 }
-                var key = Static.KeyConvert.IdToKey(id);
+                var key = KeyConvert.IdToKey(id);
                 applyInfos.Add(new ApplyInfo<TKey,T>(applyType, key, entity, value));
             }
         }
         
-        internal T AddEntity (in EntityValue value, Peer<T> peer, ObjectReader reader, out EntityError entityError) {
+        private T AddEntity (in EntityValue value, Peer<T> peer, ObjectReader reader, out EntityError entityError) {
             var error = value.Error;
             if (error != null) {
                 entityError     = error;
@@ -379,14 +374,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         // ---------------------------- get EntityValue[] from results ----------------------------
         /// <summary>Counterpart of <see cref="RemoteHostUtils.ResponseToJson"/></summary>
-        internal EntityValue[] GetReadResultValues (ReadEntitiesResult result) {
+        private EntityValue[] GetReadResultValues (ReadEntitiesResult result) {
             if (!client._readonly.isRemoteHub) {
                 return result.entities.Values;
             }
             return JsonToEntities(result.set, result.notFound, result.errors);
         }
         
-        internal EntityValue[] GetQueryResultValues (QueryEntitiesResult result) {
+        private EntityValue[] GetQueryResultValues (QueryEntitiesResult result) {
             if (!client._readonly.isRemoteHub) {
                 return result.entities.Values;
             }
@@ -406,7 +401,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             
             for (int n = 0; n < values.Length; n++) {
                 var value   = values[n];
-                var id      = Static.KeyConvert.IdToKey(value.key);
+                var id      = KeyConvert.IdToKey(value.key);
                 var peer    = GetOrCreatePeerByKey(id, value.key);
                 AddEntity(value, peer, reader, out var error);
                 if (error != null) {
@@ -441,13 +436,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
 
-        internal override void ResetSync() {
-            syncSet    = null;
-        }
-        
         internal override SyncTask SubscribeChangesInternal(Change change) {
             var all = Operation.FilterTrue;
-            var task = GetSyncSet().SubscribeChangesFilter(change, all);
+            var task = SubscribeChangesFilter(change, all);
             client.AddTask(task);
             return task;
         }
@@ -457,11 +448,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal override string GetKeyName() {
-            return Static.EntityKeyTMap.GetKeyName();
+            return EntityKeyTMap.GetKeyName();
         }
         
         internal override bool IsIntKey() {
-            return Static.EntityKeyTMap.IsIntKey();
+            return EntityKeyTMap.IsIntKey();
         }
         
         internal override  void GetRawEntities(List<object> result) {

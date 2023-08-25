@@ -15,16 +15,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class UpsertTask<T> : WriteTask<T> where T : class
     {
         private  readonly   EntitySetBase<T>    set;
-        private  readonly   SyncSetBase<T>      syncSet;
         private             UpsertEntities      upsertEntities;
 
         public   override   string              Details     => $"UpsertTask<{typeof(T).Name}> (entities: {entities.Count})";
         internal override   TaskType            TaskType    => TaskType.upsert;
         
         
-        internal UpsertTask(EntitySetBase<T> set, SyncSetBase<T> syncSet) : base(syncSet) {
+        internal UpsertTask(EntitySetBase<T> set) : base(set) {
             this.set        = set;
-            this.syncSet    = syncSet;
         }
         
         private void AddPeer (Peer<T> peer) {
@@ -72,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return upsertEntities = syncSet.UpsertEntities(this, context);
+            return upsertEntities = set.UpsertEntities(this, context);
         }
     }
 }
