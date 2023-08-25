@@ -272,9 +272,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             return failed;
         }
 
-        private void ProcessSyncTasks(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper)
+        private static void ProcessSyncTasks(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper)
         {
-            var tasks       = syncRequest.tasks;
+            var tasks       = syncRequest.tasks.GetReadOnlySpan();
+            var taskCount   = tasks.Length;
             var syncTasks   = syncStore.tasks;
             var error       = response.error;
             
@@ -282,9 +283,10 @@ namespace Friflo.Json.Fliox.Hub.Client
                 // ----------- handle ErrorResponse -----------
                 var syncError       = new TaskErrorResult (TaskErrorType.SyncError, error.message);
                 // process all task using by passing an error 
-                for (int n = 0; n < tasks.Count; n++) {
-                    SyncRequestTask task    = tasks[n];
-                    ProcessTaskResult(task, syncTasks[n], syncError, mapper);
+                for (int n = 0; n < taskCount; n++) {
+                    var task        = tasks[n];
+                    var syncTask    = syncTasks[n];
+                    ProcessTaskResult(task, syncTask, syncError, mapper);
                 }
                 return;
             }
@@ -292,25 +294,18 @@ namespace Friflo.Json.Fliox.Hub.Client
             response.success.AssertResponse(syncRequest);
             var responseTasks   = response.success.tasks;
             // Ensure every response task result type matches its task
-            for (int n = 0; n < tasks.Count; n++) {
+            for (int n = 0; n < taskCount; n++) {
                 var task        = tasks[n];
                 var taskType    = task.TaskType;
                 var result      = responseTasks[n];
                 var actual      = result.TaskType;
-                if (actual == TaskType.error)
+                if (taskType == actual || actual == TaskType.error) {
+                    var syncTask    = syncTasks[n];
+                    ProcessTaskResult(task, syncTask, result, mapper);
                     continue;
-                if (taskType == actual)
-                    continue;
+                }
                 var msg = $"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}";
                 throw new InvalidOperationException(msg);
-            }
-            
-            // process all tasks by passing the related response task result
-            for (int n = 0; n < tasks.Count; n++) {
-                SyncRequestTask task        = tasks[n];
-                SyncTaskResult  result      = responseTasks[n];
-                SyncTask        syncTask    = syncTasks[n];
-                ProcessTaskResult(task, syncTask, result, mapper);
             }
         }
         
