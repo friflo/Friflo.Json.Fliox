@@ -58,11 +58,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             patches.Add(patch);
         }
         
-        internal void SetResult() {
+        internal void SetResult(IDictionary<JsonKey, EntityError> patchErrors) {
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var patch in patches) {
                 var id = KeyConvert.KeyToId(patch.Key);
-                if (syncSet.errorsPatch.TryGetValue(id, out EntityError error)) {
+                if (patchErrors.TryGetValue(id, out EntityError error)) {
                     entityErrorInfo.AddEntityError(error);
                 }
             }

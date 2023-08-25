@@ -201,63 +201,22 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncRequest.eventAck    = _intern.lastEventSeq;
         }
 
-        private static void CopyEntityErrorsToMap(List<EntityError> errors, in ShortString container, ref IDictionary<JsonKey, EntityError> errorMap) {
+        internal static IDictionary<JsonKey, EntityError> ErrorsAsMap(List<EntityError> errors, in ShortString container) {
+            if (errors == null) {
+                return Static.NoErrors;
+            }
             foreach (var error in errors) {
                 // error .container is not serialized as it is redundant data.
                 // Infer its value from containing error List
                 error.container = container;
             }
-            if (errorMap == SyncSet.NoErrors) {
-                errorMap = new Dictionary<JsonKey, EntityError>(errors.Count, JsonKey.Equality);
-            }
+            var errorMap = new Dictionary<JsonKey, EntityError>(errors.Count, JsonKey.Equality);
             foreach (var error in errors) {
                 errorMap.Add(error.id, error);
             }
+            return errorMap;
         }
 
-        private static void CopyEntityErrors(ListOne<SyncRequestTask> tasks, ListOne<SyncTaskResult> responseTasks, SyncStore syncStore) {
-            var syncTasks = syncStore.tasks;
-            int n = 0;
-            foreach (var task in tasks.GetReadOnlySpan()) {
-                var responseTask    = responseTasks[n];
-                switch (responseTask.TaskType) {
-                    case TaskType.upsert:
-                        var upsertResult    = (UpsertEntitiesResult)responseTask;
-                        if (upsertResult.errors == null)
-                            continue;
-                        var container   = ((UpsertEntities)task).container;
-                        var syncSet     = syncTasks[n].taskSyncSet;
-                        CopyEntityErrorsToMap(upsertResult.errors,  container, ref syncSet.errorsUpsert);
-                        break; 
-                    case TaskType.create:
-                        var createResult    = (CreateEntitiesResult)responseTask;
-                        if (createResult.errors == null)
-                            continue;
-                        container           = ((CreateEntities)task).container;
-                        syncSet             = syncTasks[n].taskSyncSet;
-                        CopyEntityErrorsToMap(createResult.errors,  container, ref syncSet.errorsCreate);
-                        break;
-                    case TaskType.merge:
-                        var patchResult     = (MergeEntitiesResult)responseTask;
-                        if (patchResult.errors == null)
-                            continue;
-                        container           = ((MergeEntities)task).container;
-                        syncSet             = syncTasks[n].taskSyncSet;
-                        CopyEntityErrorsToMap(patchResult.errors,   container, ref syncSet.errorsPatch);
-                        break;
-                    case TaskType.delete:
-                        var deleteResult    = (DeleteEntitiesResult)responseTask;
-                        if (deleteResult.errors == null)
-                            continue;
-                        container           = ((DeleteEntities)task).container;
-                        syncSet             = syncTasks[n].taskSyncSet;
-                        CopyEntityErrorsToMap(deleteResult.errors,  container, ref syncSet.errorsDelete);
-                        break;
-                }
-                n++;
-            }
-        }
-        
         private SyncResult HandleSyncResponse(
             SyncRequest         syncRequest,
             ExecuteSyncResult   response,
@@ -346,7 +305,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var msg = $"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}";
                 throw new InvalidOperationException(msg);
             }
-            CopyEntityErrors(tasks, responseTasks, syncStore);
             
             // process all tasks by passing the related response task result
             for (int n = 0; n < tasks.Count; n++) {
