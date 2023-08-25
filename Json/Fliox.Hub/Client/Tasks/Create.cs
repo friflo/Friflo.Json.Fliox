@@ -14,13 +14,13 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class CreateTask<T> : WriteTask<T> where T : class
     {
-        private readonly    EntitySetBase<T>    set;
+        private readonly    Set<T>      set;
 
-        public   override   string              Details => $"CreateTask<{typeof(T).Name}> (entities: {entities.Count})";
-        internal override   TaskType            TaskType=> TaskType.create;
+        public   override   string      Details => $"CreateTask<{typeof(T).Name}> (entities: {entities.Count})";
+        internal override   TaskType    TaskType=> TaskType.create;
         
         
-        internal CreateTask(EntitySetBase<T> set) : base(set) {
+        internal CreateTask(Set<T> set) : base(set) {
             this.set        = set;
         }
         

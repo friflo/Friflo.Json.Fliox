@@ -21,14 +21,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            FilterOperation     filter;
         private             string              filterLinq; // use as string identifier of a filter
         [DebuggerBrowsable(Never)]
-        private readonly    EntitySetBase<T>    entitySetBase;
+        private readonly    Set<T>          setBase;
             
         internal override   TaskState           State   => state;
         public   override   string              Details => $"SubscribeChangesTask<{typeof(T).Name}> (filter: {filterLinq})";
         internal override   TaskType            TaskType=> TaskType.subscribeChanges;
         
-        internal  SubscribeChangesTask(EntitySetBase<T> entitySet) : base(entitySet) {
-            entitySetBase    = entitySet;
+        internal  SubscribeChangesTask(Set<T> set) : base(set) {
+            setBase    = set;
         }
             
         internal void Set(IEnumerable<EntityChange> changes, FilterOperation filter) {
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return entitySetBase.SubscribeChanges(this, context);
+            return setBase.SubscribeChanges(this, context);
         }
     }
     

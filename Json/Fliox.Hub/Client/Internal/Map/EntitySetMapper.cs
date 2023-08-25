@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
-            EntitySetBase<TEntity>.ValidateKeyType(typeof(TKey));
+            Set<TEntity>.ValidateKeyType(typeof(TKey));
             var entityType  = typeof(TEntity);
             elementType     = typeStore.GetTypeMapper(entityType);
         }
@@ -83,8 +83,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             setter(client, new EntitySet<TKey, T>(client, index));
         }
         
-        public EntitySet CreateInstance(string container, int index, FlioxClient client) {
-            var result = new InternSet<TKey,T>(container, index, client) {
+        public Set CreateInstance(string container, int index, FlioxClient client) {
+            var result = new Set<TKey,T>(container, index, client) {
                 WritePretty = client.Options.writePretty,
                 WriteNull   = client.Options.writeNull,
             };
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
 
     internal interface IContainerMember
     {
-        void        SetContainerMember(FlioxClient client, int index);
-        EntitySet   CreateInstance(string container, int index, FlioxClient client);
+        void    SetContainerMember(FlioxClient client, int index);
+        Set     CreateInstance(string container, int index, FlioxClient client);
     }
 }

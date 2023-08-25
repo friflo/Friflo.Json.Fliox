@@ -13,7 +13,7 @@ using Friflo.Json.Fliox.Transform;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
-    internal partial class EntitySetBase <T>
+    internal partial class Set <T>
     {
         internal abstract SubscribeChanges  SubscribeChanges(SubscribeChangesTask<T>    sub,    in CreateTaskContext context);
         internal abstract CreateEntities    CreateEntities  (CreateTask<T>              create, in CreateTaskContext context);
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
     /// Multiple instances of this class can be created when calling <see cref="FlioxClient.SyncTasks"/> without
     /// awaiting the result. Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
-    internal sealed partial class InternSet<TKey, T>
+    internal sealed partial class Set<TKey, T>
     {
         // --- Read
         internal ReadTask<TKey, T> Read() {

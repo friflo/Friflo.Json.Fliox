@@ -28,10 +28,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     public partial class FlioxClient
     {
     #region - internal methods
-        internal EntitySet  GetSetByName    (in ShortString name)                    => _intern.SetByName[name];
-        internal bool       TryGetSetByName (in ShortString name, out EntitySet set) => _intern.SetByName.TryGetValue(name, out set);
+        internal Set    GetSetByName    (in ShortString name)               => _intern.SetByName[name];
+        internal bool   TryGetSetByName (in ShortString name, out Set set)  => _intern.SetByName.TryGetValue(name, out set);
         
-        internal EntitySet CreateEntitySet(int index) {
+        internal Set CreateEntitySet(int index) {
             ref var entityInfo = ref _readonly.entityInfos[index];
             var instance = entityInfo.containerMember.CreateInstance(entityInfo.container, index, this);
             entitySets[index] = instance;
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             _intern.syncStore.tasks.Add(task);
         }
         
-        internal EntitySet GetEntitySet(in ShortString name) {
+        internal Set GetEntitySet(in ShortString name) {
             if (TryGetSetByName(name, out var entitySet))
                 return entitySet;
             throw new InvalidOperationException($"unknown EntitySet. name: {name}");

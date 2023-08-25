@@ -8,9 +8,8 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
-    internal partial class EntitySet
+    internal partial class Set
     {
-
         internal  abstract  AggregateEntities   AggregateEntities   (AggregateTask      aggregate, in CreateTaskContext context);
         internal  abstract  CloseCursors        CloseCursors        (CloseCursorsTask   closeCursor);
         
@@ -52,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
     }
 
-    internal partial class InternSet<TKey, T>
+    internal partial class Set<TKey, T>
     {
         internal override void ReserveKeysResult (ReserveKeys task, SyncTaskResult result) {
             var reserve = (ReserveKeysTask<TKey, T>)task.intern.syncTask;

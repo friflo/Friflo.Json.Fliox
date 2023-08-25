@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public abstract class SyncTask
     {
-        internal  readonly  EntitySet       taskSet;
+        internal  readonly  Set       taskSet;
         
         internal  abstract  TaskType        TaskType { get; }
         internal  abstract  SyncRequestTask CreateRequestTask(in CreateTaskContext context);
@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal SyncTask() { }
                                     
-        internal SyncTask(EntitySet set) {
+        internal SyncTask(Set set) {
             taskSet = set; 
         }
                                     

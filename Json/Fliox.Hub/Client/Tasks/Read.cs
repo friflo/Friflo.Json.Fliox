@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              T           Result      => IsOk("FindTask.Result", out Exception e) ? result : throw e;
         public   override   string      Details     => $"FindTask<{typeof(T).Name}> (id: {key})";
 
-        internal FindTask(InternSet<TKey, T> set, TKey key) : base (set) {
+        internal FindTask(Set<TKey, T> set, TKey key) : base (set) {
             relations       = new Relations(this);
             this.key        = key;
         }
@@ -42,14 +42,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     // --------------------------------- read multiple entities ---------------------------------
     public sealed class ReadTask<TKey, T> : ReadTaskBase<TKey, T> where T : class
     {
-        internal readonly   Dictionary<TKey, T>         result      = EntitySet.CreateDictionary<TKey,T>();
+        internal readonly   Dictionary<TKey, T>         result      = Set.CreateDictionary<TKey,T>();
         internal readonly   List<FindFunction<TKey, T>> findTasks   = new List<FindFunction<TKey, T>>();
         
         public              Dictionary<TKey, T>         Result      => IsOk("ReadTask.Result", out Exception e) ? result      : throw e;
         public   override   string                      Details     => $"ReadTask<{typeof(T).Name}> (ids: {result.Count})";
 
         
-        internal ReadTask(InternSet<TKey, T> set) : base (set) {
+        internal ReadTask(Set<TKey, T> set) : base (set) {
             relations = new Relations(this);
         }
 
@@ -117,16 +117,16 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class ReadTaskBase <TKey, T> : SyncTask, IRelationsParent, IReadRelationsTask<T> where T : class
     {
         [DebuggerBrowsable(Never)]
-        internal            TaskState           state;
+        internal            TaskState       state;
         [DebuggerBrowsable(Never)]
-        internal readonly   InternSet<TKey, T>  set;
-        internal            Relations           relations;
-        internal override   TaskState           State       => state;
-        public              string              Label       => taskName ?? Details;
-        internal override   TaskType            TaskType    => TaskType.read;
-        public              SyncTask            Task        => this;
+        internal readonly   Set<TKey, T>    set;
+        internal            Relations       relations;
+        internal override   TaskState       State       => state;
+        public              string          Label       => taskName ?? Details;
+        internal override   TaskType        TaskType    => TaskType.read;
+        public              SyncTask        Task        => this;
 
-        internal ReadTaskBase(InternSet<TKey, T> set) : base(set) {
+        internal ReadTaskBase(Set<TKey, T> set) : base(set) {
             relations       = new Relations(this);
             this.set        = set;
         }
@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             throw new NotImplementedException("ReadAllRefs() planned to be implemented");
         } */
         
-        private ReadRelation<TRef> ReadRefByPath<TRef>(EntitySet relation, string path) where TRef : class {
+        private ReadRelation<TRef> ReadRefByPath<TRef>(Set relation, string path) where TRef : class {
             if (relations.subRelations.TryGetTask(path, out ReadRelationsFunction readRelationsFunction))
                 return (ReadRelation<TRef>)readRelationsFunction;
             // var relation = set.client._intern.GetSetByType(typeof(TRef));

@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal abstract   AggregateType   Type        { get; }
 
-        internal AggregateTask(FilterOperation filter, EntitySet entitySet) : base(entitySet) {
+        internal AggregateTask(FilterOperation filter, Set entitySet) : base(entitySet) {
             this.filter     = filter;
             this.filterLinq = filter.Linq;
         }
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string          Details => $"CountTask<{typeof(T).Name}> (filter: {filterLinq})";
         internal override   AggregateType   Type    => AggregateType.count;
 
-        internal CountTask(FilterOperation filter, EntitySet entitySet)
+        internal CountTask(FilterOperation filter, Set entitySet)
             : base(filter, entitySet)
         { }
     }

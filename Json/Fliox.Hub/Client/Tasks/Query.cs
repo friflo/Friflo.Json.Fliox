@@ -25,23 +25,23 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// After task execution <see cref="ResultCursor"/> is not null if more entities available.
         /// To access them create new query and assign <see cref="ResultCursor"/> to its <see cref="cursor"/>.   
         /// </summary>
-        public              int?                maxCount;
+        public              int?            maxCount;
         /// <summary> <see cref="cursor"/> is used to proceed iterating entities of a previous query
         /// which set <see cref="maxCount"/>. <br/>
         /// Therefore assign <see cref="ResultCursor"/> of the previous to <see cref="cursor"/>. </summary>
-        public              string              cursor;
+        public              string          cursor;
         
         [DebuggerBrowsable(Never)]
-        internal            TaskState           state;
-        internal            Relations           relations;
-        public   readonly   FilterOperation     filter;
-        public   readonly   string              filterLinq; // use as string identifier of a filter 
-        internal            List<T>             result;
-        internal            string              sql;
-        internal            EntityValue[]       entities;
-        internal            string              resultCursor;
-        private  readonly   FlioxClient         client;
-        private  readonly   InternSet<TKey,T>   set;
+        internal            TaskState       state;
+        internal            Relations       relations;
+        public   readonly   FilterOperation filter;
+        public   readonly   string          filterLinq; // use as string identifier of a filter 
+        internal            List<T>         result;
+        internal            string          sql;
+        internal            EntityValue[]   entities;
+        internal            string          resultCursor;
+        private  readonly   FlioxClient     client;
+        private  readonly   Set<TKey,T>     set;
 
         public              List<T>         Result          => IsOk("QueryTask.Result",   out Exception e) ? result   : throw e;
         public              EntityValue[]   RawResult       => IsOk("QueryTask.RawResult",out Exception e) ? entities : throw e;
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              SyncTask        Task            => this;
       
 
-        internal QueryTask(FilterOperation filter, FlioxClient client, InternSet<TKey,T> set) : base(set) {
+        internal QueryTask(FilterOperation filter, FlioxClient client, Set<TKey,T> set) : base(set) {
             relations       = new Relations(this);
             this.filter     = filter;
             this.filterLinq = filter.Linq;
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.set  = set;
         }
         
-        private QueryTask(QueryTask<TKey, T> query, InternSet<TKey,T> set) : base(set) {
+        private QueryTask(QueryTask<TKey, T> query, Set<TKey,T> set) : base(set) {
             relations       = new Relations(this);
             filter          = query.filter;
             filterLinq      = query.filterLinq;

@@ -16,17 +16,17 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class DeleteTask<TKey, T> : SyncTask where T : class
     {
-        private  readonly   InternSet<TKey, T>  set;
-        internal readonly   List<TKey>          keys;
+        private  readonly   Set<TKey, T>    set;
+        internal readonly   List<TKey>      keys;
         
         [DebuggerBrowsable(Never)]
-        internal            TaskState           state;
-        internal override   TaskState           State       => state;
-        public   override   string              Details     => $"DeleteTask<{typeof(T).Name}> (entities: {keys.Count})";
-        internal override   TaskType            TaskType    => TaskType.delete;
+        internal            TaskState       state;
+        internal override   TaskState       State       => state;
+        public   override   string          Details     => $"DeleteTask<{typeof(T).Name}> (entities: {keys.Count})";
+        internal override   TaskType        TaskType    => TaskType.delete;
 
 
-        internal DeleteTask(List<TKey> ids, InternSet<TKey, T> set) : base(set) {
+        internal DeleteTask(List<TKey> ids, Set<TKey, T> set) : base(set) {
             this.set  = set;
             this.keys       = ids;
         }
@@ -57,15 +57,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class DeleteAllTask<TKey, T> : SyncTask where T : class
     {
-        private  readonly   InternSet<TKey, T>  set;
+        private  readonly   Set<TKey, T>    set;
         [DebuggerBrowsable(Never)]
-        internal            TaskState           state;
-        internal override   TaskState           State       => state;
+        internal            TaskState       state;
+        internal override   TaskState       State       => state;
 
-        public   override   string              Details     => $"DeleteAllTask<{typeof(T).Name}>";
-        internal override   TaskType            TaskType    => TaskType.delete;
+        public   override   string          Details     => $"DeleteAllTask<{typeof(T).Name}>";
+        internal override   TaskType        TaskType    => TaskType.delete;
 
-        internal DeleteAllTask(InternSet<TKey, T> set) : base(set) {
+        internal DeleteAllTask(Set<TKey, T> set) : base(set) {
             this.set = set;
         }
         

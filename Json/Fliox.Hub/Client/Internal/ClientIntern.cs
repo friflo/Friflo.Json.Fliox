@@ -32,8 +32,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     ObjectMapper                    objectMapper;       // create on demand
         private     ReaderPool                      eventReaderPool;    // create on demand
 
-        private     Dictionary<ShortString, EntitySet>          setByName;
-        internal    Dictionary<ShortString, EntitySet>          SetByName => setByName ??= new Dictionary<ShortString, EntitySet>(ShortString.Equality);
+        private     Dictionary<ShortString, Set>    setByName;
+        internal    Dictionary<ShortString, Set>    SetByName => setByName ??= new Dictionary<ShortString, Set>(ShortString.Equality);
         
         [DebuggerBrowsable(Never)]
         internal    Dictionary<ShortString, MessageSubscriber>  subscriptions;          // create on demand - only used for subscriptions

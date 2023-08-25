@@ -35,22 +35,22 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region - members
         /// <summary> return number of tracked entities </summary>
         [DebuggerBrowsable(Never)]
-        public              int                 Count       => GetCount();
+        public              int             Count       => GetCount();
         /// <summary> Return the keys of all tracked entities in the <see cref="EntitySet{TKey,T}"/> </summary>
-        public              TKey[]              Keys        => KeysToArray();
+        public              TKey[]          Keys        => KeysToArray();
         /// <summary> Return all tracked entities in the <see cref="EntitySet{TKey,T}"/> </summary>
-        public              T[]                 Entities    => EntitiesToArray();
+        public              T[]             Entities    => EntitiesToArray();
 
-        private  readonly   InternSet<TKey, T>  set;
+        private  readonly   Set<TKey, T>    set;
         
-        public   override   string              ToString() => $"{set.name}: {GetCount()}";
+        public   override   string          ToString() => $"{set.name}: {GetCount()}";
         
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         #endregion
 
     #region - initialize
-        internal LocalEntities (InternSet<TKey, T> set) {
+        internal LocalEntities (Set<TKey, T> set) {
             this.set  = set;
         }
         #endregion
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         /// <summary>
-        /// Get the <paramref name="entity"/> with the passed <paramref name="key"/> from the <see cref="EntitySet"/>.
+        /// Get the <paramref name="entity"/> with the passed <paramref name="key"/> from the <see cref="Set"/>.
         /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the given key. Otherwise false.
         /// </summary>
         public bool TryGetEntity(TKey key, out T entity) {
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             private             Dictionary<TKey,Peer<T>>.Enumerator enumerator;
             private  readonly   bool                                isEmpty;
 
-            internal Enumerator(InternSet<TKey, T> set) {
+            internal Enumerator(Set<TKey, T> set) {
                 var peers   = set.GetPeers();
                 if (peers == null) {
                     isEmpty     = true;

@@ -18,28 +18,28 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   abstract   IReadOnlyList<EntityPatchInfo>  GetPatches();
         internal abstract   int                             GetPatchCount();
 
-        internal DetectPatchesTask(EntitySet set) : base(set) { }
+        internal DetectPatchesTask(Set set) : base(set) { }
     }
     
     public sealed class DetectPatchesTask<TKey,T> : DetectPatchesTask  where T : class
     {
-        public              IReadOnlyList<EntityPatchInfo<TKey,T>>   Patches     => patches;
+        public              IReadOnlyList<EntityPatchInfo<TKey,T>>  Patches     => patches;
         [DebuggerBrowsable(Never)]
-        internal readonly   List<EntityPatchInfo<TKey,T>>       patches;
-        private  readonly   InternSet<TKey,T>                   set;
+        internal readonly   List<EntityPatchInfo<TKey,T>>           patches;
+        private  readonly   Set<TKey,T> set;
 
         [DebuggerBrowsable(Never)]
-        internal            TaskState                           state;
-        internal override   TaskState                           State   => state;
-        public   override   string                              Details => $"DetectPatchesTask (container: {Container}, patches: {patches.Count})";
-        internal override   TaskType                            TaskType=> TaskType.merge;
+        internal            TaskState   state;
+        internal override   TaskState   State   => state;
+        public   override   string      Details => $"DetectPatchesTask (container: {Container}, patches: {patches.Count})";
+        internal override   TaskType    TaskType=> TaskType.merge;
         
-        public   override   string                              Container       => set.name;
-        internal override   int                                 GetPatchCount() => patches.Count;
+        public   override   string      Container       => set.name;
+        internal override   int         GetPatchCount() => patches.Count;
         
         private static readonly KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
 
-        internal DetectPatchesTask(InternSet<TKey,T> set) : base(set) {
+        internal DetectPatchesTask(Set<TKey,T> set) : base(set) {
             this.set    = set;
             patches     = new List<EntityPatchInfo<TKey,T>>();
         }

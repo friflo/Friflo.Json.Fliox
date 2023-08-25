@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
-    internal partial class InternSet<TKey, T>
+    internal partial class Set<TKey, T>
     {
         // --- read one entity
         private void ReadEntityResult(ReadEntities task, ReadEntitiesResult result, FindTask<TKey, T> read, ObjectMapper mapper) {
@@ -242,9 +242,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (references == null || referencesResult == null)
                 return;
             for (int n = 0; n < references.Count; n++) {
-                References              reference    = references[n];
-                ReferencesResult        refResult    = referencesResult[n];
-                EntitySet               refContainer = client.GetSetByName(reference.container);
+                References          reference    = references[n];
+                ReferencesResult    refResult    = referencesResult[n];
+                var                 refContainer = client.GetSetByName(reference.container);
                 ReadRelationsFunction   subRelation  = relations[reference.selector];
                 if (refResult.error != null) {
                     var taskError       = new TaskErrorResult (TaskErrorType.DatabaseError, refResult.error);

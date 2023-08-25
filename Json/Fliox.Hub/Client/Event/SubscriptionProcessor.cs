@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             // --- invoke changes handlers
             foreach (var change in contextChanges) {
-                client.TryGetSetByName(change.ContainerShort, out EntitySet set);
+                client.TryGetSetByName(change.ContainerShort, out Set set);
                 set.changeCallback?.InvokeCallback(change, eventContext);
             }
             if (contextChanges.Count > 0) {
@@ -193,7 +193,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             entityChanges.added = true;
         }
         
-        internal Changes GetChanges (EntitySet entitySet) {
+        internal Changes GetChanges (Set entitySet) {
             if (changes.TryGetValue(entitySet.nameShort, out var change))
                 return change;
             object[] constructorParams = { entitySet, intern };

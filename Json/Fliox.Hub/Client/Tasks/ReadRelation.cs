@@ -43,13 +43,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.IsIntKey   = isIntKey;
         }
         
-        internal override void SetResult(EntitySet set, EntityValue[] values) {
+        internal override void SetResult(Set set, EntityValue[] values) {
             if (values.Length == 0) {
                 return;
             }
             if (values.Length != 1)
                 throw new InvalidOperationException($"Expect values with one element. got: {values.Length}, task: {this}");
-            var entitySet = (EntitySetBase<T>) set;
+            var entitySet = (Set<T>) set;
             var id      = values[0].key;
             var peer    = entitySet.GetPeerById(id);
             if (peer.error == null) {

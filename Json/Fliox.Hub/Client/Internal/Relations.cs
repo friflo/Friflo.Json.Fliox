@@ -18,12 +18,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.subRelations   = new SubRelations();
         }
 
-        internal ReadRelations<TRef> ReadRelationsByExpression<TRef>(EntitySet relation, Expression expression, FlioxClient client, IRelationsParent parent) where TRef : class {
+        internal ReadRelations<TRef> ReadRelationsByExpression<TRef>(Set relation, Expression expression, FlioxClient client, IRelationsParent parent) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(expression, out _);
             return ReadRelationsByPath<TRef>(relation, path, client, parent);
         }
         
-        internal ReadRelations<TRef> ReadRelationsByPath<TRef>(EntitySet relation, string selector, FlioxClient client, IRelationsParent parent) where TRef : class {
+        internal ReadRelations<TRef> ReadRelationsByPath<TRef>(Set relation, string selector, FlioxClient client, IRelationsParent parent) where TRef : class {
             if (subRelations.TryGetTask(selector, out ReadRelationsFunction readRelationsFunction))
                 return (ReadRelations<TRef>)readRelationsFunction;
             // var relation = store._intern.GetSetByType(typeof(TValue));

@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // ReSharper disable once InconsistentNaming
                         internal            ClientIntern    _intern;        // Use intern struct as first field
 
-        [Browse(Never)] internal readonly   EntitySet[]     entitySets;
+        [Browse(Never)] internal readonly   Set[]           entitySets;
         
         // exposed only for access in debugger - not used by internally
         // ReSharper disable once UnusedMember.Local
@@ -146,7 +146,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new InvalidTypeException(typeError);
             }
             _intern.Init(this);
-            entitySets          = new EntitySet[_readonly.entityInfos.Length];
+            entitySets          = new Set[_readonly.entityInfos.Length];
             send                = new SendTask(this, _readonly.messagePrefix);
             hub.sharedEnv.sharedCache.AddRootType(type);
         }
@@ -406,7 +406,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public static void GetRawEntities(FlioxClient client, string entitySet, List<object> result) {
             result.Clear();
             var name = new ShortString(entitySet);
-            if (!client.TryGetSetByName(name, out EntitySet set)) {
+            if (!client.TryGetSetByName(name, out Set set)) {
                 return;
             }
             set.GetRawEntities(result);

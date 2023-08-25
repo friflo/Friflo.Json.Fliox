@@ -11,135 +11,13 @@ using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Transform;
-using static System.Diagnostics.DebuggerBrowsableState;
 
 // EntitySet & EntitySetBase<T> are not intended as a public API.
 // These classes are declared here to simplify navigation to EntitySet<TKey, T>.
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
-    // --------------------------------------- EntitySet ---------------------------------------
-    internal abstract partial class EntitySet
-    {
-        [DebuggerBrowsable(Never)] internal readonly    FlioxClient     client;
-        [DebuggerBrowsable(Never)] internal readonly    string          name;
-        [DebuggerBrowsable(Never)] internal readonly    int             index;
-        [DebuggerBrowsable(Never)] internal readonly    ShortString     nameShort;
-        [DebuggerBrowsable(Never)] internal             ChangeCallback  changeCallback;
-        
-
-
-        internal  abstract  SetInfo     SetInfo     { get; }
-        internal  abstract  Type        KeyType     { get; }
-        internal  abstract  Type        EntityType  { get; }
-        internal  abstract  bool        WritePretty { get; set; }
-        internal  abstract  bool        WriteNull   { get; set; }
-        
-        internal  abstract  void                Reset                   ();
-        internal  abstract  void                DetectSetPatchesInternal(DetectAllPatches task, ObjectMapper mapper);
-        internal  abstract  SyncTask            SubscribeChangesInternal(Change change);
-        internal  abstract  SubscribeChanges    GetSubscription();
-        internal  abstract  string              GetKeyName();
-        internal  abstract  bool                IsIntKey();
-        internal  abstract  void                GetRawEntities(List<object> result);
-        internal  abstract   EntityValue[]      AddReferencedEntities (ReferencesResult referenceResult, ObjectReader reader);
-        
-        protected EntitySet(string name, int index, FlioxClient client) {
-            this.name   = name;
-            this.index  = index;
-            this.client = client;
-            nameShort   = new ShortString(name);
-        }
-        
-        internal static void SetTaskInfo(ref SetInfo info, SyncTask[] tasks) {
-            foreach (var syncTask in tasks) {
-                switch (syncTask.TaskType) {
-                    case TaskType.read:             info.read++;                break;
-                    case TaskType.query:            info.query++;               break;
-                    case TaskType.aggregate:        info.aggregate++;           break;
-                    case TaskType.create:           info.create++;              break;
-                    case TaskType.upsert:           info.upsert++;              break;
-                    case TaskType.merge:            info.merge++;               break;
-                    case TaskType.delete:           info.delete++;              break;
-                    case TaskType.closeCursors:     info.closeCursors++;        break;
-                    case TaskType.subscribeChanges: info.subscribeChanges++;    break;
-                    case TaskType.reserveKeys:      info.reserveKeys++;         break;
-                }
-            }
-            info.tasks =
-                info.read               +
-                info.query              +
-                info.aggregate          +
-                info.closeCursors       +
-                info.create             +
-                info.upsert             +
-                info.merge              +
-                info.delete             +
-                info.subscribeChanges   +
-                info.reserveKeys;
-        }
-        
-        /// <summary>Counterpart of <see cref="EntitiesToJson"/></summary>
-        //  SYNC_READ : JSON -> entities
-        internal EntityValue[] JsonToEntities(
-            ListOne<JsonValue>  set,
-            List<JsonKey>       notFound,
-            List<EntityError>   errors)
-        {
-            var processor   = client._intern.EntityProcessor();
-            var keyName     = GetKeyName();
-            var values = new EntityValue[set.Count + (notFound?.Count ?? 0) + (errors?.Count ?? 0)];
-            var n = 0;
-            foreach (var value in set.GetReadOnlySpan()) {
-                if (processor.GetEntityKey(value, keyName, out var key, out var error)) {
-                    values[n++] = new EntityValue(key, value);
-                } else {
-                    throw new InvalidOperationException($"missing key int result: {error}");
-                }
-            }
-            if (notFound != null) {
-                foreach (var key in notFound) {
-                    values[n++] = new EntityValue(key);
-                }
-            }
-            if (errors != null) {
-                foreach (var error in errors) {
-                    error.container = nameShort; // container name is not serialized as it is redundant data.
-                    values[n++]     = new EntityValue(error.id, error);
-                }
-            }
-            return values;
-        }
-        
-        /// <summary>Counterpart of <see cref="JsonToEntities"/></summary>
-        //  SYNC_READ : entities -> JSON
-        internal static void EntitiesToJson(
-            EntityValue[]           values,
-            out ListOne<JsonValue>  set,
-            out List<JsonKey>       notFound,
-            out List<EntityError>   errors)
-        {
-            set         = new ListOne<JsonValue>(values.Length);
-            errors      = null;
-            notFound    = null;
-            foreach (var value in values) {
-                var error = value.Error;
-                if (error != null) {
-                    errors ??= new List<EntityError>();
-                    errors.Add(error);
-                    continue;
-                }
-                if (!value.Json.IsNull()) {
-                    set.Add(value.Json);
-                } else {
-                    notFound ??= new List<JsonKey>();
-                    notFound.Add(value.key);
-                }
-            }
-        }
-    }
-    
     // --------------------------------------- EntitySetBase<T> ---------------------------------------
-    internal abstract partial class EntitySetBase<T> : EntitySet where T : class
+    internal abstract partial class Set<T> : Set where T : class
     {
         internal  InstanceBuffer<CreateTask<T>>     createBuffer;
         internal  InstanceBuffer<UpsertTask<T>>     upsertBuffer;
@@ -149,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  Peer<T>         CreatePeer      (T entity);
         internal  abstract  JsonKey         GetEntityId     (T entity);
         
-        protected EntitySetBase(string name, int index, FlioxClient client) : base(name, index, client) { }
+        protected Set(string name, int index, FlioxClient client) : base(name, index, client) { }
         
         internal static void ValidateKeyType(Type keyType) {
             var entityId        = EntityKey.GetEntityKey<T>();
@@ -171,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     }
 
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
-    internal partial class InternSet<TKey, T>
+    internal partial class Set<TKey, T>
     {
         private TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._readonly.typeStore.GetTypeMapper(typeof(T));
 

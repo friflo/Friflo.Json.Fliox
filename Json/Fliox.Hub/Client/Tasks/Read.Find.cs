@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
         
         internal FindRange(ICollection<TKey> keys) {
-            results = EntitySet.CreateDictionary<TKey, T>(keys.Count);
+            results = Set.CreateDictionary<TKey, T>(keys.Count);
             foreach (var key in keys) {
                 results.TryAdd(key, null);
             }

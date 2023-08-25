@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         [Browse(Never)] private readonly int            index;
 
-                        private InternSet<TKey, T>      Instance    => (InternSet<TKey, T>)client.entitySets[index];
+                        private Set<TKey, T>            Instance    => (Set<TKey, T>)client.entitySets[index];
         
                         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
@@ -417,7 +417,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Delete() entity must not be null. EntitySet: {instance.name}");
-            var key = InternSet<TKey,T>.GetEntityKey(entity);
+            var key = Set<TKey,T>.GetEntityKey(entity);
             if (key == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {instance.name}");
             var delete  = instance.CreateDeleteTask();
@@ -452,7 +452,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new ArgumentException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {instance.name}");
             var keys = new List<TKey>(entities.Count);
             foreach (var entity in entities) {
-                var key = InternSet<TKey,T>.GetEntityKey(entity);
+                var key = Set<TKey,T>.GetEntityKey(entity);
                 keys.Add(key);
             }
             foreach (var key in keys) {
@@ -597,12 +597,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             return instance.SetInfo.ToString();
         }
 
-        internal InternSet<TKey, T> GetInstance() {
+        internal Set<TKey, T> GetInstance() {
             var instance = client.entitySets[index];
             if (instance != null) {
-                return (InternSet<TKey,T>)instance;
+                return (Set<TKey,T>)instance;
             }
-            return (InternSet<TKey,T>)client.CreateEntitySet(index);
+            return (Set<TKey,T>)client.CreateEntitySet(index);
         }
         #endregion
     }

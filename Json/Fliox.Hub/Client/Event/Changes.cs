@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [Browse(Never)] internal            ChangeInfo          changeInfo;
 
         internal  abstract  void        Clear       ();
-        internal  abstract  void        ApplyChangesToInternal  (EntitySet entitySet);
+        internal  abstract  void        ApplyChangesToInternal  (Set entitySet);
         
         protected Changes() {
             raw = new RawChanges(null);
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         /// <summary> called via <see cref="SubscriptionProcessor.GetChanges"/> </summary>
-        internal Changes(InternSet<TKey, T> set, SubscriptionIntern intern) {
+        internal Changes(Set<TKey, T> set, SubscriptionIntern intern) {
             keyName         = set.GetKeyName();
             Container       = set.name;
             ContainerShort  = set.nameShort;
@@ -192,8 +192,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             return patches;
         }
         
-        internal override void ApplyChangesToInternal  (EntitySet entitySet) {
-            var set = (InternSet<TKey, T>)entitySet;
+        internal override void ApplyChangesToInternal  (Set entitySet) {
+            var set = (Set<TKey, T>)entitySet;
             ApplyChangesToInternal(set);
         }
         
@@ -203,7 +203,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return ApplyChangesToInternal(instance, change);
         }
         
-        private ApplyResult<TKey,T> ApplyChangesToInternal(InternSet<TKey, T> set, Change change = Change.All) {
+        private ApplyResult<TKey,T> ApplyChangesToInternal(Set<TKey, T> set, Change change = Change.All) {
             applyInfos.Clear();
             if (Count == 0)
                 return new ApplyResult<TKey,T>(applyInfos);
