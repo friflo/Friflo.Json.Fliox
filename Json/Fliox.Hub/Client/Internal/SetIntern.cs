@@ -12,7 +12,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal struct SetIntern<TKey, T> where T : class
     {
         [DebuggerBrowsable(Never)]
-        internal            EntitySetInstance<TKey,T>   entitySet;
         internal            TypeMapper<T>       typeMapper;     // set/create on demand
         private             List<TKey>          keysBuf;        // create on demand
         internal            SubscribeChanges    subscription;

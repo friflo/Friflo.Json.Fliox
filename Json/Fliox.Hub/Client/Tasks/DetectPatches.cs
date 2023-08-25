@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   abstract   IReadOnlyList<EntityPatchInfo>  GetPatches();
         internal abstract   int                             GetPatchCount();
 
-        internal DetectPatchesTask(EntitySet entitySet) : base(entitySet) { }
+        internal DetectPatchesTask(EntitySet set) : base(set) { }
     }
     
     public sealed class DetectPatchesTask<TKey,T> : DetectPatchesTask  where T : class
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<EntityPatchInfo<TKey,T>>   Patches     => patches;
         [DebuggerBrowsable(Never)]
         internal readonly   List<EntityPatchInfo<TKey,T>>       patches;
-        private  readonly   EntitySetInstance<TKey,T>           entitySet;
+        private  readonly   InternSet<TKey,T>                   set;
 
         [DebuggerBrowsable(Never)]
         internal            TaskState                           state;
@@ -34,14 +34,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string                              Details => $"DetectPatchesTask (container: {Container}, patches: {patches.Count})";
         internal override   TaskType                            TaskType=> TaskType.merge;
         
-        public   override   string                              Container       => entitySet.name;
+        public   override   string                              Container       => set.name;
         internal override   int                                 GetPatchCount() => patches.Count;
         
         private static readonly KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
 
-        internal DetectPatchesTask(EntitySetInstance<TKey,T> entitySet) : base(entitySet) {
-            this.entitySet  = entitySet;
-            patches         = new List<EntityPatchInfo<TKey,T>>();
+        internal DetectPatchesTask(InternSet<TKey,T> set) : base(set) {
+            this.set    = set;
+            patches     = new List<EntityPatchInfo<TKey,T>>();
         }
         
         public override IReadOnlyList<EntityPatchInfo> GetPatches() {
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return entitySet.MergeEntities(this);
+            return set.MergeEntities(this);
         }
     }
 }

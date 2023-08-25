@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              T           Result      => IsOk("FindTask.Result", out Exception e) ? result : throw e;
         public   override   string      Details     => $"FindTask<{typeof(T).Name}> (id: {key})";
 
-        internal FindTask(EntitySetInstance<TKey, T> syncSet, TKey key) : base (syncSet) {
+        internal FindTask(InternSet<TKey, T> set, TKey key) : base (set) {
             relations       = new Relations(this);
             this.key        = key;
         }
@@ -49,8 +49,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string                      Details     => $"ReadTask<{typeof(T).Name}> (ids: {result.Count})";
 
         
-        internal ReadTask(EntitySetInstance<TKey, T> entitySet) : base (entitySet) {
-            relations       = new Relations(this);
+        internal ReadTask(InternSet<TKey, T> set) : base (set) {
+            relations = new Relations(this);
         }
 
         public Find<TKey, T> Find(TKey key) {
@@ -117,18 +117,18 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class ReadTaskBase <TKey, T> : SyncTask, IRelationsParent, IReadRelationsTask<T> where T : class
     {
         [DebuggerBrowsable(Never)]
-        internal            TaskState                   state;
+        internal            TaskState           state;
         [DebuggerBrowsable(Never)]
-        internal readonly   EntitySetInstance<TKey, T>  set;
-        internal            Relations                   relations;
-        internal override   TaskState                   State       => state;
-        public              string                      Label       => taskName ?? Details;
-        internal override   TaskType                    TaskType    => TaskType.read;
-        public              SyncTask                    Task        => this;
+        internal readonly   InternSet<TKey, T>  set;
+        internal            Relations           relations;
+        internal override   TaskState           State       => state;
+        public              string              Label       => taskName ?? Details;
+        internal override   TaskType            TaskType    => TaskType.read;
+        public              SyncTask            Task        => this;
 
-        internal ReadTaskBase(EntitySetInstance<TKey, T> entitySet) : base(entitySet) {
+        internal ReadTaskBase(InternSet<TKey, T> set) : base(set) {
             relations       = new Relations(this);
-            this.set        = entitySet;
+            this.set        = set;
         }
 
         // --- Relation

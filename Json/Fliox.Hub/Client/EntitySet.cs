@@ -63,11 +63,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
                         
     #region - internal fields
-                        private readonly FlioxClient                client;
+                        private readonly FlioxClient    client;
 
-        [Browse(Never)] private readonly int                        index;
+        [Browse(Never)] private readonly int            index;
 
-                        private         EntitySetInstance<TKey, T>  Instance    => (EntitySetInstance<TKey, T>)client.entitySets[index];
+                        private InternSet<TKey, T>      Instance    => (InternSet<TKey, T>)client.entitySets[index];
         
                         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
@@ -417,7 +417,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Delete() entity must not be null. EntitySet: {instance.name}");
-            var key = EntitySetInstance<TKey,T>.GetEntityKey(entity);
+            var key = InternSet<TKey,T>.GetEntityKey(entity);
             if (key == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {instance.name}");
             var delete  = instance.CreateDeleteTask();
@@ -452,7 +452,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new ArgumentException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {instance.name}");
             var keys = new List<TKey>(entities.Count);
             foreach (var entity in entities) {
-                var key = EntitySetInstance<TKey,T>.GetEntityKey(entity);
+                var key = InternSet<TKey,T>.GetEntityKey(entity);
                 keys.Add(key);
             }
             foreach (var key in keys) {
@@ -597,12 +597,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             return instance.SetInfo.ToString();
         }
 
-        internal EntitySetInstance<TKey, T> GetInstance() {
+        internal InternSet<TKey, T> GetInstance() {
             var instance = client.entitySets[index];
             if (instance != null) {
-                return (EntitySetInstance<TKey,T>)instance;
+                return (InternSet<TKey,T>)instance;
             }
-            return (EntitySetInstance<TKey,T>)client.CreateEntitySet(index);
+            return (InternSet<TKey,T>)client.CreateEntitySet(index);
         }
         #endregion
     }

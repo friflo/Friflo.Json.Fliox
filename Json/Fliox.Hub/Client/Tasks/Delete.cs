@@ -16,8 +16,8 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class DeleteTask<TKey, T> : SyncTask where T : class
     {
-        private  readonly   EntitySetInstance<TKey, T>  entitySet;
-        internal readonly   List<TKey>                  keys;
+        private  readonly   InternSet<TKey, T>  set;
+        internal readonly   List<TKey>          keys;
         
         [DebuggerBrowsable(Never)]
         internal            TaskState           state;
@@ -26,8 +26,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskType            TaskType    => TaskType.delete;
 
 
-        internal DeleteTask(List<TKey> ids, EntitySetInstance<TKey, T> entitySet) : base(entitySet) {
-            this.entitySet  = entitySet;
+        internal DeleteTask(List<TKey> ids, InternSet<TKey, T> set) : base(set) {
+            this.set  = set;
             this.keys       = ids;
         }
 
@@ -47,17 +47,17 @@ namespace Friflo.Json.Fliox.Hub.Client
             keys.Clear();
             state       = default;
             taskName    = null;
-            entitySet.deleteBuffer.Add(this);
+            set.deleteBuffer.Add(this);
         }
 
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return entitySet.DeleteEntities(this);
+            return set.DeleteEntities(this);
         }
     }
     
     public sealed class DeleteAllTask<TKey, T> : SyncTask where T : class
     {
-        private  readonly   EntitySetInstance<TKey, T>    entitySet;
+        private  readonly   InternSet<TKey, T>  set;
         [DebuggerBrowsable(Never)]
         internal            TaskState           state;
         internal override   TaskState           State       => state;
@@ -65,13 +65,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string              Details     => $"DeleteAllTask<{typeof(T).Name}>";
         internal override   TaskType            TaskType    => TaskType.delete;
 
-        internal DeleteAllTask(EntitySetInstance<TKey, T>  entitySet) : base(entitySet) {
-            this.entitySet = entitySet;
+        internal DeleteAllTask(InternSet<TKey, T> set) : base(set) {
+            this.set = set;
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
             return new DeleteEntities {
-                container   = entitySet.nameShort,
+                container   = set.nameShort,
                 all         = true,
                 intern      = new SyncTaskIntern(this) 
             };

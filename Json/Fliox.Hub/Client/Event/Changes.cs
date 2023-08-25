@@ -95,10 +95,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         /// <summary> called via <see cref="SubscriptionProcessor.GetChanges"/> </summary>
-        internal Changes(EntitySetInstance<TKey, T> entitySet, SubscriptionIntern intern) {
-            keyName         = entitySet.GetKeyName();
-            Container       = entitySet.name;
-            ContainerShort  = entitySet.nameShort;
+        internal Changes(InternSet<TKey, T> set, SubscriptionIntern intern) {
+            keyName         = set.GetKeyName();
+            Container       = set.name;
+            ContainerShort  = set.nameShort;
             this.intern     = intern;
         }
         
@@ -193,7 +193,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override void ApplyChangesToInternal  (EntitySet entitySet) {
-            var set = (EntitySetInstance<TKey, T>)entitySet;
+            var set = (InternSet<TKey, T>)entitySet;
             ApplyChangesToInternal(set);
         }
         
@@ -203,25 +203,25 @@ namespace Friflo.Json.Fliox.Hub.Client
             return ApplyChangesToInternal(instance, change);
         }
         
-        private ApplyResult<TKey,T> ApplyChangesToInternal(EntitySetInstance<TKey, T> entitySet, Change change = Change.All) {
+        private ApplyResult<TKey,T> ApplyChangesToInternal(InternSet<TKey, T> set, Change change = Change.All) {
             applyInfos.Clear();
             if (Count == 0)
                 return new ApplyResult<TKey,T>(applyInfos);
             var localCreates    = raw.creates;
             if ((change & Change.create) != 0 && localCreates.Count > 0) {
                 GetKeysFromEntities (localCreates, intern.keys);
-                entitySet.SyncPeerEntities(localCreates, intern.keys, intern.objectMapper, applyInfos);
+                set.SyncPeerEntities(localCreates, intern.keys, intern.objectMapper, applyInfos);
             }
             var localUpserts    = raw.upserts;
             if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
                 GetKeysFromEntities (localUpserts, intern.keys);
-                entitySet.SyncPeerEntities(localUpserts, intern.keys, intern.objectMapper, applyInfos);
+                set.SyncPeerEntities(localUpserts, intern.keys, intern.objectMapper, applyInfos);
             }
             if ((change & Change.merge)  != 0 && raw.patches.Count > 0) {
-                entitySet.PatchPeerEntities(Patches, intern.objectMapper, applyInfos);
+                set.PatchPeerEntities(Patches, intern.objectMapper, applyInfos);
             }
             if ((change & Change.delete) != 0 && raw.deletes.Count > 0) {
-                entitySet.DeletePeerEntities(Deletes, applyInfos);
+                set.DeletePeerEntities(Deletes, applyInfos);
             }
             return new ApplyResult<TKey,T>(applyInfos);
         }

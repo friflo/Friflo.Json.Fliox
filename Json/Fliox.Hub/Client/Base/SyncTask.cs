@@ -51,8 +51,8 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal SyncTask() { }
                                     
-        internal SyncTask(EntitySet entitySet) {
-            taskSet = entitySet; 
+        internal SyncTask(EntitySet set) {
+            taskSet = set; 
         }
                                     
         /// <summary>

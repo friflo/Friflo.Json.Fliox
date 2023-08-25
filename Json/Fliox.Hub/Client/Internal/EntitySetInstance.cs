@@ -11,7 +11,7 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
-    internal sealed partial class EntitySetInstance<TKey, T> : EntitySetBase<T>  where T : class
+    internal sealed partial class InternSet<TKey, T> : EntitySetBase<T>  where T : class
     {
         // Keep all utility related fields of EntitySet in SetIntern (intern) to enhance debugging overview.
         // Reason:  EntitySet<,> is used as field or property by an application which is mainly interested
@@ -52,11 +52,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static  readonly       KeyConverter<TKey>          KeyConvert      = KeyConverter.GetConverter<TKey>();
         
 
-        internal EntitySetInstance(string name, int index, FlioxClient client) : base (name, index, client) {
+        internal InternSet(string name, int index, FlioxClient client) : base (name, index, client) {
             // ValidateKeyType(typeof(TKey)); // only required if constructor is public
             // intern    = new SetIntern<TKey, T>(this);
-            intern.entitySet    = this;
-            peerMap             = CreateDictionary<TKey,Peer<T>>();
+            peerMap = CreateDictionary<TKey,Peer<T>>();
         }
     }
 }

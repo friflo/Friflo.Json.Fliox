@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
     }
 
-    internal partial class EntitySetInstance<TKey, T>
+    internal partial class InternSet<TKey, T>
     {
         internal override void ReserveKeysResult (ReserveKeys task, SyncTaskResult result) {
             var reserve = (ReserveKeysTask<TKey, T>)task.intern.syncTask;

@@ -41,17 +41,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Return all tracked entities in the <see cref="EntitySet{TKey,T}"/> </summary>
         public              T[]                 Entities    => EntitiesToArray();
 
-        private  readonly   EntitySetInstance<TKey, T>  entitySet;
+        private  readonly   InternSet<TKey, T>  set;
         
-        public   override   string              ToString() => $"{entitySet.name}: {GetCount()}";
+        public   override   string              ToString() => $"{set.name}: {GetCount()}";
         
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         #endregion
 
     #region - initialize
-        internal LocalEntities (EntitySetInstance<TKey, T> entitySet) {
-            this.entitySet  = entitySet;
+        internal LocalEntities (InternSet<TKey, T> set) {
+            this.set  = set;
         }
         #endregion
     
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the passed <paramref name="key"/>
         /// </summary>
         public bool ContainsKey(TKey key) {
-            var peers = entitySet.GetPeers();
+            var peers = set.GetPeers();
             if (peers == null)
                 return false;
             return peers.ContainsKey(key);
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the given key. Otherwise false.
         /// </summary>
         public bool TryGetEntity(TKey key, out T entity) {
-            var peers = entitySet.GetPeers();
+            var peers = set.GetPeers();
             if (peers != null && peers.TryGetValue(key, out Peer<T> peer)) {
                 entity = peer.NullableEntity;
                 return true;
@@ -84,27 +84,27 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Gets the tracked entity associated with the specified <paramref name="key"/>.
         /// </summary>
         public T this[TKey key] { get {
-            var peers = entitySet.GetPeers();
+            var peers = set.GetPeers();
             if (peers != null && peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer.NullableEntity;
             }
-            var msg = $"key '{key}' not found in {entitySet.name}.Local";
+            var msg = $"key '{key}' not found in {set.name}.Local";
             throw new KeyNotFoundException(msg);
         } }
         
         
         public T GetByKey(in JsonKey key) {
-            var peers   = entitySet.GetPeers();
+            var peers   = set.GetPeers();
             var id      = KeyConvert.IdToKey(key);
             if (peers != null && peers.TryGetValue(id, out Peer<T> peer)) {
                 return peer.NullableEntity;
             }
-            var msg = $"key '{key}' not found in {entitySet.name}.Local";
+            var msg = $"key '{key}' not found in {set.name}.Local";
             throw new KeyNotFoundException(msg);
         }
         
         public bool TryGetEntityByKey(in JsonKey key, out T entity) {
-            var peers   = entitySet.GetPeers();
+            var peers   = set.GetPeers();
             var id      = KeyConvert.IdToKey(key);
             if (peers != null && peers.TryGetValue(id, out Peer<T> peer)) {
                 entity = peer.NullableEntity;
@@ -115,18 +115,18 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public void Add(T entity) {
-            entitySet.CreatePeer(entity);
+            set.CreatePeer(entity);
         }
 
         private int GetCount() {
-            var peers   = entitySet.GetPeers();
+            var peers   = set.GetPeers();
             if (peers == null)
                 return 0;
             return peers.Count;
         }
         
         private TKey[] KeysToArray() {
-            var peers   = entitySet.GetPeers();
+            var peers   = set.GetPeers();
             if (peers == null) {
                 return Array.Empty<TKey>();
             }
@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private T[] EntitiesToArray() {
-            var peers   = entitySet.GetPeers();
+            var peers   = set.GetPeers();
             if (peers == null) {
                 return Array.Empty<T>();
             }
@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region - IEnumerable<>
         /// <summary> Returns an enumerator that iterates through the <see cref="LocalEntities{TKey,T}"/> </summary>
         public IEnumerator<KeyValuePair<TKey, T>> GetEnumerator() {
-            return new Enumerator(entitySet);
+            return new Enumerator(set);
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
@@ -171,8 +171,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             private             Dictionary<TKey,Peer<T>>.Enumerator enumerator;
             private  readonly   bool                                isEmpty;
 
-            internal Enumerator(EntitySetInstance<TKey, T> entitySet) {
-                var peers   = entitySet.GetPeers();
+            internal Enumerator(InternSet<TKey, T> set) {
+                var peers   = set.GetPeers();
                 if (peers == null) {
                     isEmpty     = true;
                     enumerator  = default;

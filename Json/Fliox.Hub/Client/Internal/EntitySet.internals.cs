@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     }
 
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
-    internal partial class EntitySetInstance<TKey, T>
+    internal partial class InternSet<TKey, T>
     {
         private TypeMapper<T>  GetTypeMapper() => intern.typeMapper   ??= (TypeMapper<T>)client._readonly.typeStore.GetTypeMapper(typeof(T));
 
