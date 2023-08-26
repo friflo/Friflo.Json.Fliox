@@ -75,7 +75,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         [Browse(Never)]
         public              IHubLogger          Logger          => sharedEnv.hubLogger;
         
-        public              bool                PrettyCommandResults { get; set; } = false;
+        public              bool                PrettyCommandResults    { get; set; } = false;
+        public              MonitorAccess       MonitorAccess           { get; set; }
         
         /// <summary>
         /// An optional <see cref="Event.EventDispatcher"/> used to enable Pub-Sub. <br/>
@@ -259,10 +260,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// Execute at the end of <see cref="ExecuteRequestAsync"/> and <see cref="ExecuteRequest"/>
         /// </summary>
         private void PostExecute(SyncRequest syncRequest, SyncResponse response, SyncContext syncContext) {
-            hostStats.Update(syncRequest);
             var db = syncRequest.intern.db;
-            UpdateRequestStats(db.nameShort, syncRequest, syncContext);
-
+            var access = MonitorAccess; 
+            if ((access & MonitorAccess.Host) != 0) {
+                hostStats.Update(syncRequest);
+            }
+            if ((access & MonitorAccess.User) != 0) {
+                UpdateRequestStats(db.nameShort, syncRequest, syncContext);
+            }
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
             // So next request will create a new valid client id.
@@ -359,5 +364,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         
 
         #endregion
+    }
+    
+    [Flags]
+    public enum MonitorAccess
+    {
+        User    = 1,
+        Host    = 2,
+        All     = User | Host
     }
 }
