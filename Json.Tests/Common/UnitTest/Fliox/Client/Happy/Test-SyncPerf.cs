@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var database    = new MemoryDatabase("sync_perf_db");
             var hub         = new FlioxHub(database);
             
-            var store       = new SimpleStore(hub) { ClientId = "sync_perf"};
+            var store       = new SimpleStore(hub); // { ClientId = "sync_perf" };  ClientId impact performance by AuthenticateNone
             var entities    = new List<SimplyEntity>();
 
             for (int n = 0; n < 10; n++) {
