@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  Peer<T>         CreatePeer      (T entity);
         internal  abstract  JsonKey         GetEntityId     (T entity);
         
-        protected Set(string name, int index, FlioxClient client) : base(name, index, client) { }
+        protected Set(in SetInit init) : base(init) { }
         
         internal static void ValidateKeyType(Type keyType) {
             var entityId        = EntityKey.GetEntityKey<T>();
@@ -323,14 +323,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal override SubscribeChanges GetSubscription() {
             return intern.subscription;
-        }
-        
-        internal override string GetKeyName() {
-            return EntityKeyTMap.GetKeyName();
-        }
-        
-        internal override bool IsIntKey() {
-            return EntityKeyTMap.IsIntKey();
         }
         
         internal override  void GetRawEntities(List<object> result) {

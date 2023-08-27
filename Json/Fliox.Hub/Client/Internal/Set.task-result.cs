@@ -24,17 +24,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, SyncTaskResult result);
         internal  abstract  void    SubscribeChangesResult  (SubscribeChanges   task, SyncTaskResult result);
         
-        internal static string SyncKeyName (string keyName) {
-            if (keyName == "id")
-                return null;
-            return keyName;
-        }
-        
-        internal static bool? IsIntKey (bool isIntKey) {
-            if (isIntKey)
-                return true;
-            return null;
-        }
+        internal static string  SyncKeyName (string keyName)    => keyName == "id" ? null : keyName;
+        internal static bool?   IsIntKey    (bool isIntKey)     => isIntKey ? true : null;
         
         internal static HashSet<TKey> CreateHashSet<TKey>(int capacity = 0) {
             if (typeof(TKey) == typeof(JsonKey))

@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         /// <summary> called via <see cref="SubscriptionProcessor.GetChanges"/> </summary>
         internal Changes(Set<TKey, T> set, SubscriptionIntern intern) {
-            keyName         = set.GetKeyName();
+            keyName         = set.keyName;
             Container       = set.name;
             ContainerShort  = set.nameShort;
             this.intern     = intern;

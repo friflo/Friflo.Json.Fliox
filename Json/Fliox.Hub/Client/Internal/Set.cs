@@ -21,6 +21,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         [Browse(Never)] internal readonly   string          name;
         [Browse(Never)] internal readonly   int             index;
         [Browse(Never)] internal readonly   ShortString     nameShort;
+        [Browse(Never)] internal readonly   string          keyName;
+        [Browse(Never)] internal readonly   bool            isIntKey;
         [Browse(Never)] internal            ChangeCallback  changeCallback;
         
         [Browse(Never)] internal            InstanceBuffer<UpsertEntities>  upsertEntitiesBuffer;
@@ -37,15 +39,32 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void                DetectSetPatchesInternal(DetectAllPatches task, ObjectMapper mapper);
         internal  abstract  SyncTask            SubscribeChangesInternal(Change change);
         internal  abstract  SubscribeChanges    GetSubscription();
-        internal  abstract  string              GetKeyName();
-        internal  abstract  bool                IsIntKey();
         internal  abstract  void                GetRawEntities(List<object> result);
         internal  abstract  EntityValue[]       AddReferencedEntities (ReferencesResult referenceResult, ObjectReader reader);
         
-        protected Set(string name, int index, FlioxClient client) {
-            this.name   = name;
-            this.index  = index;
-            this.client = client;
+        internal readonly struct SetInit
+        {
+            internal readonly   FlioxClient     client;
+            internal readonly   string          name;
+            internal readonly   int             index;
+            internal readonly   string          keyName;
+            internal readonly   bool            isIntKey;
+            
+            internal SetInit (string name, int index, string keyName, bool isIntKey, FlioxClient client) {
+                this.name       = name;
+                this.index      = index;
+                this.client     = client;
+                this.keyName    = keyName;
+                this.isIntKey   = isIntKey;
+            }
+        }
+        
+        protected Set(in SetInit init) {
+            name        = init.name;
+            index       = init.index;
+            client      = init.client;
+            keyName     = init.keyName;
+            isIntKey    = init.isIntKey;
             nameShort   = new ShortString(name);
         }
         
@@ -85,7 +104,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             List<EntityError>   errors)
         {
             var processor   = client._intern.EntityProcessor();
-            var keyName     = GetKeyName();
             var values = new EntityValue[set.Count + (notFound?.Count ?? 0) + (errors?.Count ?? 0)];
             var n = 0;
             foreach (var value in set.GetReadOnlySpan()) {
@@ -179,7 +197,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static  readonly       KeyConverter<TKey>          KeyConvert      = KeyConverter.GetConverter<TKey>();
         
 
-        internal Set(string name, int index, FlioxClient client) : base (name, index, client) {
+        internal Set(string name, int index, FlioxClient client)
+            : base (new SetInit(name, index, EntityKeyTMap.GetKeyName(), EntityKeyTMap.IsIntKey(), client))
+        {
             // ValidateKeyType(typeof(TKey)); // only required if constructor is public
             // intern    = new SetIntern<TKey, T>(this);
             peerMap = CreateDictionary<TKey,Peer<T>>();

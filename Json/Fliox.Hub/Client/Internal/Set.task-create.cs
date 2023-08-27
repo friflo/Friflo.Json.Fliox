@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             return new CreateEntities {
                 container       = nameShort,
-                keyName         = SyncKeyName(GetKeyName()),
+                keyName         = SyncKeyName(keyName),
                 entities        = entities,
                 reservedToken   = new Guid(), // todo
                 intern          = new SyncTaskIntern(create)
@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 entities.Add(new JsonEntity(keyEntity.key, value));
             }
             upsertEntities.container        = nameShort;
-            upsertEntities.keyName          = SyncKeyName(GetKeyName());
+            upsertEntities.keyName          = SyncKeyName(keyName);
             upsertEntities.entities         = entities;
             upsertEntities.intern.syncTask  = upsert;
             return upsertEntities;
@@ -169,8 +169,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var task    = CreateReadEntities(1);
             task.ids.Add(id);
             task.container   = nameShort;
-            task.keyName     = SyncKeyName(GetKeyName());   // TODO add keyName to Set
-            task.isIntKey    = IsIntKey(IsIntKey());        // TODO add isIntKey to Set
+            task.keyName     = SyncKeyName(keyName);
+            task.isIntKey    = IsIntKey(isIntKey);
             task.references  = references;
             task.intern      = new SyncTaskIntern(read);
             task.typeMapper  = client.Options.DebugReadObjects ? GetTypeMapper() : null;
@@ -190,8 +190,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 ids.Add(id);
             }
             task.container   = nameShort;
-            task.keyName     = SyncKeyName(GetKeyName());   // TODO add keyName to Set
-            task.isIntKey    = IsIntKey(IsIntKey());        // TODO add isIntKey to Set
+            task.keyName     = SyncKeyName(keyName);
+            task.isIntKey    = IsIntKey(isIntKey);
             task.references  = references;
             task.intern      = new SyncTaskIntern(read);
             task.typeMapper  = client.Options.DebugReadObjects ? GetTypeMapper() : null;
@@ -216,8 +216,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var filterTree  = FilterToJson(query.filter, context.mapper);
             return new QueryEntities {
                 container   = nameShort,
-                keyName     = SyncKeyName(GetKeyName()),
-                isIntKey    = IsIntKey(IsIntKey()),
+                keyName     = SyncKeyName(keyName),
+                isIntKey    = IsIntKey(isIntKey),
                 // using filter is sufficient. Pass filterTree to avoid parsing filter in Protocol.Tasks.QueryEntities
                 filterTree  = filterTree, // default,
                 filter      = query.filterLinq,
@@ -266,7 +266,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             return new MergeEntities {
                 container   = nameShort,
-                keyName     = SyncKeyName(GetKeyName()),
+                keyName     = SyncKeyName(keyName),
                 patches     = list,
                 intern      = new SyncTaskIntern(detectPatches) 
             };
@@ -310,8 +310,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var relation = readRefs.Relation;
                 var queryReference = new References {
                     container   = relation.nameShort,
-                    keyName     = SyncKeyName(relation.GetKeyName()),
-                    isIntKey    = IsIntKey(relation.IsIntKey()),
+                    keyName     = SyncKeyName(relation.keyName),
+                    isIntKey    = IsIntKey(relation.isIntKey),
                     selector    = readRefs.Selector
                 };
                 references.Add(queryReference);
