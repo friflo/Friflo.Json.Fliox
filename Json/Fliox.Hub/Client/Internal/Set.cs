@@ -17,11 +17,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // --------------------------------------- EntitySet ---------------------------------------
     internal abstract partial class Set
     {
-        [Browse(Never)] internal readonly    FlioxClient     client;
-        [Browse(Never)] internal readonly    string          name;
-        [Browse(Never)] internal readonly    int             index;
-        [Browse(Never)] internal readonly    ShortString     nameShort;
-        [Browse(Never)] internal             ChangeCallback  changeCallback;
+        [Browse(Never)] internal readonly   FlioxClient     client;
+        [Browse(Never)] internal readonly   string          name;
+        [Browse(Never)] internal readonly   int             index;
+        [Browse(Never)] internal readonly   ShortString     nameShort;
+        [Browse(Never)] internal            ChangeCallback  changeCallback;
+        
+        [Browse(Never)] internal            InstanceBuffer<UpsertEntities>  upsertEntitiesBuffer;
+        [Browse(Never)] internal            InstanceBuffer<ReadEntities>    readEntitiesBuffer;
 
 
         internal  abstract  SetInfo     SetInfo     { get; }

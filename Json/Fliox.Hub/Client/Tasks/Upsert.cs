@@ -14,8 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class UpsertTask<T> : WriteTask<T> where T : class
     {
-        private  readonly   Set<T>          set;
-        private             UpsertEntities      upsertEntities;
+        private  readonly   Set<T>              set;
 
         public   override   string              Details     => $"UpsertTask<{typeof(T).Name}> (entities: {entities.Count})";
         internal override   TaskType            TaskType    => TaskType.upsert;
@@ -60,9 +59,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         protected internal override void Reuse() {
-            upsertEntities.entities.Clear();
-            set.upsertEntitiesBuffer.Add(upsertEntities);
-                
             entities.Clear();
             state       = default;
             taskName    = null;
@@ -70,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncRequestTask CreateRequestTask(in CreateTaskContext context) {
-            return upsertEntities = set.UpsertEntities(this, context);
+            return set.UpsertEntities(this, context);
         }
     }
 }

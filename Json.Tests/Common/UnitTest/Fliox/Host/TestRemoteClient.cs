@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         [Test]
         public static  void TestRemoteClient_ReadMemory() {
             var dif         = ReadMemory();
-            var expected    = TestUtils.IsDebug() ? 560 : 536;  // Test Debug & Release
+            var expected    = TestUtils.IsDebug() ? 368 : 344;  // Test Debug & Release
             Mem.AreEqual(expected, dif);
         }
         

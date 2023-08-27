@@ -57,11 +57,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal    ShortString                     clientId;
         internal    ShortString                     token;
 
-        internal    InstanceBuffer<SyncStore>       syncStoreBuffer;
+        // --- usage: internal - SyncContext / SyncRequest
+        internal    InstanceBuffer<SyncContext>     syncContextBuffer;
         internal    InstanceBuffer<SyncRequest>     syncRequestBuffer;
         internal    InstanceBuffer<MemoryBuffer>    memoryBufferPool;
+        internal    InstanceBuffer<SyncStore>       syncStoreBuffer;
+        // --- usage: API
         internal    InstanceBuffer<SyncResult>      syncResultBuffer;
-        internal    InstanceBuffer<SyncContext>     syncContextBuffer;
 
         private static readonly SynchronousEventProcessor           DefaultEventProcessor   = new SynchronousEventProcessor();
 

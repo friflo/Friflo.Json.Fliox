@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            FilterOperation     filter;
         private             string              filterLinq; // use as string identifier of a filter
         [DebuggerBrowsable(Never)]
-        private readonly    Set<T>          setBase;
+        private readonly    Set<T>              setBase;
             
         internal override   TaskState           State   => state;
         public   override   string              Details => $"SubscribeChangesTask<{typeof(T).Name}> (filter: {filterLinq})";

@@ -18,8 +18,6 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public              IReadOnlyList<SyncTask>     Tasks       => tasks;
         public              IReadOnlyList<SyncTask>     Failed      => GetFailed();
-        
-        private             SyncRequest                 syncRequest;
         private             SyncStore                   syncStore;
         private             MemoryBuffer                memoryBuffer;
         private             ListOne<SyncTask>           tasks;
@@ -42,14 +40,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal void Init (
-            SyncRequest             syncRequest,
             SyncStore               syncStore,
             MemoryBuffer            memoryBuffer,
             ListOne<SyncTask>       tasks,
             ListOne<SyncTask>       failed,
             ErrorResponse           errorResponse)
         {
-            this.syncRequest    = syncRequest;
             this.syncStore      = syncStore;
             this.memoryBuffer   = memoryBuffer;
             this.tasks          = tasks;
@@ -64,10 +60,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncStore.Reuse();
             client._intern.syncStoreBuffer.Add(syncStore);
             syncStore       = null;
-            
-            syncRequest.tasks.Clear();
-            client._intern.syncRequestBuffer.Add(syncRequest);
-            syncRequest     = null;
 
             client._intern.memoryBufferPool.Add(memoryBuffer);
             memoryBuffer    = null;

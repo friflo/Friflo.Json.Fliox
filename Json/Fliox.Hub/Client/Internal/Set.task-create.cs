@@ -165,18 +165,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 references = new List<References>(read.relations.subRelations.Count);
                 AddReferences(references, read.relations.subRelations);
             }
-            var ids = new ListOne<JsonKey>(1);
-            var id  = KeyConvert.KeyToId(read.key);
-            ids.Add(id);
-            return new ReadEntities {
-                container   = nameShort,
-                keyName     = SyncKeyName(GetKeyName()),
-                isIntKey    = IsIntKey(IsIntKey()),
-                ids         = ids,
-                references  = references,
-                intern      = new SyncTaskIntern(read),
-                typeMapper  = client.Options.DebugReadObjects ? GetTypeMapper() : null
-            };
+            var id      = KeyConvert.KeyToId(read.key);
+            var task    = CreateReadEntities(1);
+            task.ids.Add(id);
+            task.container   = nameShort;
+            task.keyName     = SyncKeyName(GetKeyName());   // TODO add keyName to Set
+            task.isIntKey    = IsIntKey(IsIntKey());        // TODO add isIntKey to Set
+            task.references  = references;
+            task.intern      = new SyncTaskIntern(read);
+            task.typeMapper  = client.Options.DebugReadObjects ? GetTypeMapper() : null;
+            return task;
         }
 
         internal SyncRequestTask ReadEntities(ReadTask<TKey,T> read) {
@@ -185,20 +183,27 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 references = new List<References>(read.relations.subRelations.Count);
                 AddReferences(references, read.relations.subRelations);
             }
-            var ids = new ListOne<JsonKey>(read.result.Keys.Count);
-            foreach (var key in read.result.Keys) {
-                var id = KeyConvert.KeyToId(key);
+            var task    = CreateReadEntities(read.result.Count);
+            var ids     = task.ids;
+            foreach (var pair in read.result) {
+                var id = KeyConvert.KeyToId(pair.Key);
                 ids.Add(id);
             }
-            return new ReadEntities {
-                container   = nameShort,
-                keyName     = SyncKeyName(GetKeyName()),
-                isIntKey    = IsIntKey(IsIntKey()),
-                ids         = ids,
-                references  = references,
-                intern      = new SyncTaskIntern(read),
-                typeMapper  = client.Options.DebugReadObjects ? GetTypeMapper() : null
-            };
+            task.container   = nameShort;
+            task.keyName     = SyncKeyName(GetKeyName());   // TODO add keyName to Set
+            task.isIntKey    = IsIntKey(IsIntKey());        // TODO add isIntKey to Set
+            task.references  = references;
+            task.intern      = new SyncTaskIntern(read);
+            task.typeMapper  = client.Options.DebugReadObjects ? GetTypeMapper() : null;
+            return task;
+        }
+        
+        private ReadEntities CreateReadEntities(int idsCount) {
+            var read = readEntitiesBuffer.Get();
+            if (read != null) {
+                return read;
+            }
+            return new ReadEntities { ids = new ListOne<JsonKey>(idsCount) };
         }
 
         internal QueryEntities QueryEntities(QueryTask<TKey, T> query, in CreateTaskContext context) {

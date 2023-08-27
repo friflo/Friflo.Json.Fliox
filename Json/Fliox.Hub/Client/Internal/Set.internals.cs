@@ -19,9 +19,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // --------------------------------------- EntitySetBase<T> ---------------------------------------
     internal abstract partial class Set<T> : Set where T : class
     {
-        internal  InstanceBuffer<CreateTask<T>>     createBuffer;
-        internal  InstanceBuffer<UpsertTask<T>>     upsertBuffer;
-        internal  InstanceBuffer<UpsertEntities>    upsertEntitiesBuffer;
+        internal    InstanceBuffer<CreateTask<T>>   createBuffer;
+        internal    InstanceBuffer<UpsertTask<T>>   upsertBuffer;
+
         
         internal  abstract  Peer<T>         GetPeerById     (in JsonKey id);
         internal  abstract  Peer<T>         CreatePeer      (T entity);

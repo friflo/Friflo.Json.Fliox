@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 default:    syncResult =       Execute       (syncRequest, syncContext);                                         break;
             }
             var result      = HandleSyncResponse(syncRequest, syncResult, syncStore, buffer);
-            ReuseSyncContext(syncContext);
+            ReuseSyncContext(syncContext, syncRequest);
             if (!result.Success) {
                 throw new SyncTasksException(syncResult.error, result.failed);
             }
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 default:    syncResult =       Execute       (syncRequest, syncContext);                                                break;
             }
             var result = HandleSyncResponse(syncRequest, syncResult, syncStore, buffer);
-            ReuseSyncContext(syncContext);
+            ReuseSyncContext(syncContext, syncRequest);
             return result;
         }
         

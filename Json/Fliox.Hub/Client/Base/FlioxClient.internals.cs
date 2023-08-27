@@ -159,10 +159,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             return syncContext;
         }
         
-        private void ReuseSyncContext(SyncContext syncContext) {
+        private void ReuseSyncContext(SyncContext syncContext, SyncRequest syncRequest) {
             _readonly.responseReaderPool?.Return(syncContext.responseReaderPool);
             _intern.syncContextBuffer.Add(syncContext);
             syncContext.Init();
+            syncRequest.tasks.Clear();
+            _intern.syncRequestBuffer.Add(syncRequest);
         }
 
         /// <summary>
@@ -185,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var context         = new CreateTaskContext (mapper);
             foreach (var task in tasks.GetReadOnlySpan()) {
                 var requestTask = task.CreateRequestTask(context);
-                syncRequest.tasks.Add(requestTask);
+                requestTasks.Add(requestTask);
             }
             return syncRequest;
         }
@@ -232,7 +234,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     var tasks   = syncStore.tasks;
                     var failed  = GetFailedFunctions(tasks);
                     syncResult  = _intern.syncResultBuffer.Get() ?? new SyncResult(this);
-                    syncResult.Init(syncRequest, syncStore, memoryBuffer, tasks, failed, response.error);
+                    syncResult.Init(syncStore, memoryBuffer, tasks, failed, response.error);
                     
                     foreach (var task in tasks.GetReadOnlySpan()) {
                         var onSync  = task.OnSync;
@@ -329,11 +331,15 @@ namespace Friflo.Json.Fliox.Hub.Client
                 case TaskType.upsert: {
                     var upsert =            (UpsertEntities)    task;
                     syncTasks.taskSet.UpsertEntitiesResult(upsert, result);
+                    upsert.entities.Clear();
+                    syncTasks.taskSet.upsertEntitiesBuffer.Add(upsert);
                     break;
                 }
                 case TaskType.read: {
-                    var readList =          (ReadEntities)      task;
-                    syncTasks.taskSet.ReadEntitiesResult(readList, result, mapper);
+                    var read =              (ReadEntities)      task;
+                    syncTasks.taskSet.ReadEntitiesResult(read, result, mapper);
+                    read.ids.Clear();
+                    syncTasks.taskSet.readEntitiesBuffer.Add(read);
                     break;
                 }
                 case TaskType.query: {
