@@ -307,10 +307,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // ----------------------------------- helper methods -----------------------------------
         private static void AddReferences(List<References> references, SubRelations relations) {
             foreach (var readRefs in relations) {
+                var relation = readRefs.Relation;
                 var queryReference = new References {
-                    container   = readRefs.Container,
-                    keyName     = SyncKeyName(readRefs.KeyName),
-                    isIntKey    = IsIntKey(readRefs.IsIntKey),
+                    container   = relation.nameShort,
+                    keyName     = SyncKeyName(relation.GetKeyName()),
+                    isIntKey    = IsIntKey(relation.IsIntKey()),
                     selector    = readRefs.Selector
                 };
                 references.Add(queryReference);

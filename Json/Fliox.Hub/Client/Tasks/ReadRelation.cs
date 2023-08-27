@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
@@ -25,22 +24,18 @@ namespace Friflo.Json.Fliox.Hub.Client
         public    override  string      Details => $"{parent.Details} -> {Selector}";
                 
         internal  override  string      Selector    { get; }
-        internal  override  ShortString Container   { get; }
-        internal  override  string      KeyName     { get; }
-        internal  override  bool        IsIntKey    { get; }
+        internal  override  Set         Relation   { get; }
         public    override  SyncTask    Task        => parent.Task;
 
         internal override   SubRelations SubRelations => relations.subRelations;
 
-        internal ReadRelation(IRelationsParent parent, string selector, in ShortString container, string keyName, bool isIntKey, FlioxClient client)
+        internal ReadRelation(IRelationsParent parent, string selector, Set relation, FlioxClient client)
             : base(client, parent)
         {
             relations       = new Relations(parent);
             this.parent     = parent;
             this.Selector   = selector;
-            this.Container  = container;
-            this.KeyName    = keyName;
-            this.IsIntKey   = isIntKey;
+            this.Relation   = relation;
         }
         
         internal override void SetResult(Set set, EntityValue[] values) {

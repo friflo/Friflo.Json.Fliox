@@ -193,9 +193,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (relations.subRelations.TryGetTask(path, out ReadRelationsFunction readRelationsFunction))
                 return (ReadRelation<TRef>)readRelationsFunction;
             // var relation = set.client._intern.GetSetByType(typeof(TRef));
-            var keyName         = relation.GetKeyName();
-            var isIntKey        = relation.IsIntKey();
-            var readRelation    = new ReadRelation<TRef>(this, path, relation.nameShort, keyName, isIntKey, set.client);
+            var readRelation    = new ReadRelation<TRef>(this, path, relation, set.client);
             relations.subRelations.AddReadRelations(path, readRelation);
             // set.client.AddFunction(readRelation);
             return readRelation;
