@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             var entity  = peer.Entity;
             var differ  = client._intern.ObjectDiffer();
-            var source  = mapper.Read<T>(patchSource);
+            var source  = mapper.reader.Read<T>(patchSource);
             var diff    = differ.GetDiff(source, entity, DiffKind.DiffArrays);
             if (diff == null)
                 return;

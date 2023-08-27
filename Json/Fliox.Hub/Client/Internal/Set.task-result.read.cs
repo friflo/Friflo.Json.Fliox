@@ -13,7 +13,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal partial class Set<TKey, T>
     {
         // --- read one entity
-        private void ReadEntityResult(ReadEntities task, ReadEntitiesResult result, FindTask<TKey, T> read, ObjectMapper mapper) {
+        private void ReadEntityResult(ReadEntities task, ReadEntitiesResult result, FindTask<TKey, T> read) {
+            var reader = read.taskSet.client.ObjectMapper().reader;
             if (result.Error != null) {
                 var taskError = SyncRequestTask.TaskError(result.Error);
                 SetReadOneTaskError(read, taskError);
@@ -21,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var  entityErrorInfo = new TaskErrorInfo();
             if (result.entities.Type == EntitiesType.Values) {
-                AddReadEntity(ref entityErrorInfo, result, read, mapper.reader);
+                AddReadEntity(ref entityErrorInfo, result, read, reader);
             } else {
                 AddReadObject(ref entityErrorInfo, result, read);
             }
@@ -32,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             read.state.Executed = true;
-            AddReferencesResult(task.references, result.references, read.relations.subRelations, mapper.reader);
+            AddReferencesResult(task.references, result.references, read.relations.subRelations, reader);
         }
         
         private static void SetReadOneTaskError(FindTask<TKey, T> read, TaskErrorResult taskError) {
@@ -42,7 +43,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         // --- read multiple entities
-        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<TKey, T> read, ObjectMapper mapper) {
+        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<TKey, T> read) {
+            var reader = read.taskSet.client.ObjectMapper().reader;
             if (result.Error != null) {
                 var taskError = SyncRequestTask.TaskError(result.Error);
                 SetReadTaskError(read, taskError);
@@ -50,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var  entityErrorInfo = new TaskErrorInfo();
             if (result.entities.Type == EntitiesType.Values) {
-                AddReadEntities(ref entityErrorInfo, result, read, mapper.reader);
+                AddReadEntities(ref entityErrorInfo, result, read, reader);
             } else {
                 AddReadObjects(ref entityErrorInfo, result, read);
             }
@@ -61,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             read.state.Executed = true;
-            AddReferencesResult(task.references, result.references, read.relations.subRelations, mapper.reader);
+            AddReferencesResult(task.references, result.references, read.relations.subRelations, reader);
         }
         
         private static void SetReadTaskError(ReadTask<TKey, T> read, TaskErrorResult taskError) {
@@ -202,9 +204,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private void QueryEntitiesResult(
             QueryEntities       task,
             QueryEntitiesResult queryResult,
-            QueryTask<TKey, T>  query,
-            ObjectReader        reader)
+            QueryTask<TKey, T>  query)
         {
+            var reader          = query.taskSet.client.ObjectMapper().reader;
             var entityErrorInfo = new TaskErrorInfo();
             query.sql           = queryResult.sql;
             query.resultCursor  = queryResult.cursor;

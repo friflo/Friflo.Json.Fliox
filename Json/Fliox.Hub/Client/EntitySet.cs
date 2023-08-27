@@ -537,9 +537,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (!instance.TryGetPeerByKey(key, out var peer))        throw new ArgumentException($"entity is not tracked. key: {key}");
             var task    = new DetectPatchesTask<TKey,T>(instance);
             instance.AddDetectPatches(task);
-            using (var pooled = client.ObjectMapper.Get()) {
-                instance.DetectPeerPatches(key, peer, task, pooled.instance);
-            }
+            var objectMapper = client.ObjectMapper();
+            instance.DetectPeerPatches(key, peer, task, objectMapper);
             client.AddTask(task);
             return task;
         }
@@ -554,15 +553,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             int n       = 0;
             var task    = new DetectPatchesTask<TKey,T>(instance);
             instance.AddDetectPatches(task);
-            using (var pooled = client.ObjectMapper.Get()) {
-                foreach (var entity in entities) {
-                    if (entity == null)                         throw new ArgumentException($"entities[{n}] is null");
-                    var key     = Static.EntityKeyTMap.GetKey(entity);
-                    if (Static.KeyConvert.IsKeyNull(key))       throw new ArgumentException($"entity key must not be null. entities[{n}]");
-                    if (!instance.TryGetPeerByKey(key, out var peer))    throw new ArgumentException($"entity is not tracked. entities[{n}] key: {key}");
-                    instance.DetectPeerPatches(key, peer, task, pooled.instance);
-                    n++;
-                }
+            var mapper = client.ObjectMapper();
+            foreach (var entity in entities) {
+                if (entity == null)                         throw new ArgumentException($"entities[{n}] is null");
+                var key     = Static.EntityKeyTMap.GetKey(entity);
+                if (Static.KeyConvert.IsKeyNull(key))       throw new ArgumentException($"entity key must not be null. entities[{n}]");
+                if (!instance.TryGetPeerByKey(key, out var peer))    throw new ArgumentException($"entity is not tracked. entities[{n}] key: {key}");
+                instance.DetectPeerPatches(key, peer, task, mapper);
+                n++;
             }
             client.AddTask(task);
             return task;

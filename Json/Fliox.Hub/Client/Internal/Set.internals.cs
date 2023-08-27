@@ -85,12 +85,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal DetectPatchesTask<TKey,T> DetectPatches() {
             var task    = new DetectPatchesTask<TKey,T>(this);
             AddDetectPatches(task);
-            using (var pooled = client.ObjectMapper.Get()) {
-                foreach (var peerPair in peerMap) {
-                    TKey    key  = peerPair.Key;
-                    Peer<T> peer = peerPair.Value;
-                    DetectPeerPatches(key, peer, task, pooled.instance);
-                }
+            var mapper = client.ObjectMapper();
+            foreach (var peerPair in peerMap) {
+                TKey    key  = peerPair.Key;
+                Peer<T> peer = peerPair.Value;
+                DetectPeerPatches(key, peer, task, mapper);
             }
             return task;
         }

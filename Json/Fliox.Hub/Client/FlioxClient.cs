@@ -114,7 +114,8 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         [Browse(Never)] internal readonly   Type            type;
 
-        [Browse(Never)] internal ObjectPool<ObjectMapper>   ObjectMapper    => _readonly.pool.ObjectMapper;
+                        internal            ObjectMapper    ObjectMapper()  => objectMapper ??= new ObjectMapper(_readonly.typeStore);
+        [Browse(Never)] private             ObjectMapper    objectMapper;
 
         
         /// <summary> using a static class prevents noise in form of 'Static members' for class instances in Debugger </summary>
@@ -175,10 +176,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </remarks>
         public DetectAllPatches DetectAllPatches() {
             var task = _intern.syncStore.CreateDetectAllPatchesTask();
-            using (var pooled = ObjectMapper.Get()) {
-                foreach (var set in entitySets) {
-                    set?.DetectSetPatchesInternal(task, pooled.instance);
-                }
+            var mapper = ObjectMapper();
+            foreach (var set in entitySets) {
+                set?.DetectSetPatchesInternal(task, mapper);
             }
             return task;
         }
@@ -343,13 +343,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the message and its signature to the <see cref="DatabaseSchema"/>. 
         /// </remarks>
         public MessageTask SendMessage<TMessage>(string name, TMessage param) {
-            using (var pooled = ObjectMapper.Get()) {
-                var writer  = pooled.instance.writer;
-                var json    = writer.WriteAsValue(param);
-                var task    = new MessageTask(new ShortString(name), json);
-                AddTask(task);
-                return task;
-            }
+            var writer  = ObjectMapper().writer;
+            var json    = writer.WriteAsValue(param);
+            var task    = new MessageTask(new ShortString(name), json);
+            AddTask(task);
+            return task;
         }
 
         /// <summary>
@@ -375,13 +373,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its signature to the <see cref="DatabaseSchema"/>. 
         /// </remarks>
         public CommandTask<TResult> SendCommand<TParam, TResult>(string name, TParam param) {
-            using (var pooled = ObjectMapper.Get()) {
-                var mapper  = pooled.instance;
-                var json    = mapper.WriteAsValue(param);
-                var task    = new CommandTask<TResult>(new ShortString(name), json, _readonly.pool);
-                AddTask(task);
-                return task;
-            }
+            var writer  = ObjectMapper().writer;
+            var json    = writer.WriteAsValue(param);
+            var task    = new CommandTask<TResult>(new ShortString(name), json, _readonly.pool);
+            AddTask(task);
+            return task;
         }
         #endregion
         

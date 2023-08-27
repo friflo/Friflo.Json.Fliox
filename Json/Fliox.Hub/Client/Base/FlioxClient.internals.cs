@@ -136,9 +136,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private SyncRequest CreateSyncRequest(out SyncStore syncStore) {
-            using (var pooled = ObjectMapper.Get()) {
-                return CreateSyncRequest(out syncStore, pooled.instance);
-            }
+            var mapper = ObjectMapper();
+            return CreateSyncRequest(out syncStore, mapper);
         }
         
         /// <summary>
@@ -224,34 +223,32 @@ namespace Friflo.Json.Fliox.Hub.Client
             SyncStore           syncStore,
             MemoryBuffer        memoryBuffer)
         {
-            using (var pooled = ObjectMapper.Get()) {
-                SyncResult syncResult;
-                try {
-                    ProcessSyncTasks(syncRequest, response, syncStore, pooled.instance);
-                    syncStore.DetectPatchesResults();
-                }
-                finally {
-                    var tasks   = syncStore.tasks;
-                    var failed  = GetFailedFunctions(tasks);
-                    syncResult  = _intern.syncResultBuffer.Get() ?? new SyncResult(this);
-                    syncResult.Init(syncStore, memoryBuffer, tasks, failed, response.error);
-                    
-                    foreach (var task in tasks.GetReadOnlySpan()) {
-                        var onSync  = task.OnSync;
-                        if (onSync == null)
-                            continue;
-                        var taskError = task.State.Error.TaskError;
-                        try {
-                            onSync(taskError);
-                        }
-                        catch (Exception e) {
-                            var error = $"OnSync Exception in {task.GetLabel()}";
-                            Logger.Log(HubLog.Error, error, e);
-                        }
+            SyncResult syncResult;
+            try {
+                ProcessSyncTasks(syncRequest, response, syncStore);
+                syncStore.DetectPatchesResults();
+            }
+            finally {
+                var tasks   = syncStore.tasks;
+                var failed  = GetFailedFunctions(tasks);
+                syncResult  = _intern.syncResultBuffer.Get() ?? new SyncResult(this);
+                syncResult.Init(syncStore, memoryBuffer, tasks, failed, response.error);
+                
+                foreach (var task in tasks.GetReadOnlySpan()) {
+                    var onSync  = task.OnSync;
+                    if (onSync == null)
+                        continue;
+                    var taskError = task.State.Error.TaskError;
+                    try {
+                        onSync(taskError);
+                    }
+                    catch (Exception e) {
+                        var error = $"OnSync Exception in {task.GetLabel()}";
+                        Logger.Log(HubLog.Error, error, e);
                     }
                 }
-                return syncResult;
             }
+            return syncResult;
         }
         
         private static ListOne<SyncTask> GetFailedFunctions(ListOne<SyncTask> tasks) {
@@ -274,7 +271,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return failed;
         }
 
-        private static void ProcessSyncTasks(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper)
+        private static void ProcessSyncTasks(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore)
         {
             var tasks       = syncRequest.tasks.GetReadOnlySpan();
             var taskCount   = tasks.Length;
@@ -288,7 +285,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 for (int n = 0; n < taskCount; n++) {
                     var task        = tasks[n];
                     var syncTask    = syncTasks[n];
-                    ProcessTaskResult(task, syncTask, syncError, mapper);
+                    ProcessTaskResult(task, syncTask, syncError);
                 }
                 return;
             }
@@ -303,7 +300,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var actual      = result.TaskType;
                 if (taskType == actual || actual == TaskType.error) {
                     var syncTask    = syncTasks[n];
-                    ProcessTaskResult(task, syncTask, result, mapper);
+                    ProcessTaskResult(task, syncTask, result);
                     continue;
                 }
                 var msg = $"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}";
@@ -314,8 +311,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private static void ProcessTaskResult (
             SyncRequestTask         task,
             SyncTask                syncTasks,
-            SyncTaskResult          result,
-            ObjectMapper            mapper)
+            SyncTaskResult          result)
         {
             switch (task.TaskType) {
                 case TaskType.reserveKeys: {
@@ -337,14 +333,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
                 case TaskType.read: {
                     var read =              (ReadEntities)      task;
-                    syncTasks.taskSet.ReadEntitiesResult(read, result, mapper);
+                    syncTasks.taskSet.ReadEntitiesResult(read, result);
                     read.ids.Clear();
                     syncTasks.taskSet.readEntitiesBuffer.Add(read);
                     break;
                 }
                 case TaskType.query: {
                     var query =             (QueryEntities)     task;
-                    syncTasks.taskSet.QueryEntitiesResult(query, result, mapper);
+                    syncTasks.taskSet.QueryEntitiesResult(query, result);
                     break;
                 }
                 case TaskType.closeCursors: {

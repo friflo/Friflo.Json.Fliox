@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
@@ -16,8 +15,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);
         internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result);
         internal  abstract  void    UpsertEntitiesResult    (UpsertEntities     task, SyncTaskResult result);
-        internal  abstract  void    ReadEntitiesResult      (ReadEntities       task, SyncTaskResult result, ObjectMapper mapper);
-        internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, SyncTaskResult result, ObjectMapper mapper);
+        internal  abstract  void    ReadEntitiesResult      (ReadEntities       task, SyncTaskResult result);
+        internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, SyncTaskResult result);
         internal  abstract  void    AggregateEntitiesResult (AggregateEntities  task, SyncTaskResult result);
         internal  abstract  void    CloseCursorsResult      (CloseCursors       task, SyncTaskResult result);
         internal  abstract  void    PatchEntitiesResult     (MergeEntities      task, SyncTaskResult result);
@@ -120,20 +119,20 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             writeTask.state.Executed = true;
         }
 
-        internal override void ReadEntitiesResult(ReadEntities task, SyncTaskResult result, ObjectMapper mapper) {
+        internal override void ReadEntitiesResult(ReadEntities task, SyncTaskResult result) {
             if (task.intern.syncTask is FindTask<TKey, T> readOneTask) {
                 if (result is TaskErrorResult taskError) {
                     SetReadOneTaskError(readOneTask, taskError);
                     return;
                 }
-                ReadEntityResult(task, (ReadEntitiesResult)result, readOneTask, mapper);
+                ReadEntityResult(task, (ReadEntitiesResult)result, readOneTask);
             } else {
                 var readTask    = (ReadTask<TKey,T>)task.intern.syncTask;
                 if (result is TaskErrorResult taskError) {
                     SetReadTaskError(readTask, taskError);
                     return;
                 }
-                ReadEntitiesResult(task, (ReadEntitiesResult)result, readTask, mapper);
+                ReadEntitiesResult(task, (ReadEntitiesResult)result, readTask);
             }
         }
 
@@ -144,7 +143,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             entities.Add(id, value);
         }
         
-        internal override void QueryEntitiesResult(QueryEntities task, SyncTaskResult result, ObjectMapper mapper) {
+        internal override void QueryEntitiesResult(QueryEntities task, SyncTaskResult result) {
             var query   = (QueryTask<TKey, T>)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
                 var taskErrorInfo = new TaskErrorInfo(taskError);
@@ -153,7 +152,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             var queryResult = (QueryEntitiesResult)result;
-            QueryEntitiesResult(task, queryResult, query, mapper.reader);
+            QueryEntitiesResult(task, queryResult, query);
         }
 
         internal override void AggregateEntitiesResult (AggregateEntities task, SyncTaskResult result) {
