@@ -28,12 +28,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         }
         
         private void OnCloseTimerEvent(object source, ElapsedEventArgs e) {
-            var now = Environment.TickCount64;
+            var now = Environment.TickCount;
             lock (connectionPool) {
                 while (connectionPool.Count > 0) {
                     // Peek() - returns a connection from the beginning of the queue
                     var connection = connectionPool.Peek();
-                    var diff = now - connection.idleStart;
+                    int diff = now - connection.idleStart;
                     if (diff < IdleTimeout) {
                         return;
                     }
@@ -85,12 +85,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     
     internal readonly struct Connection<T> where T : ISyncConnection
     {
-        internal readonly T         instance;
-        internal readonly long      idleStart;
+        internal readonly T     instance;
+        internal readonly int   idleStart;
         
         internal Connection(T instance) {
             this.instance   = instance;
-            this.idleStart  = Environment.TickCount64;
+            this.idleStart  = Environment.TickCount;
         }
     }
 }
