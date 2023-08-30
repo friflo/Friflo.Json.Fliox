@@ -175,18 +175,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //          Peers, Tasks
                         internal            SetIntern<TKey, T>          intern;         // Use intern struct as first field 
                         
-        /// <summary> key: <see cref="Peer{T}.entity"/>.id </summary>
-        [Browse(Never)] private  readonly   Dictionary<TKey, Peer<T>>   peerMap;        //  Note: must be private by all means
+        /// <summary> key: <see cref="Peer{TKey,T}.entity"/>.id </summary>
+        [Browse(Never)] private  readonly   Dictionary<TKey, Peer<TKey, T>>   peerMap;        //  Note: must be private by all means
         
         /// <summary> enable access to entities in debugger. Not used internally. </summary>
         // Note: using Dictionary.Values is okay. The ValueCollection is instantiated only once for a Dictionary instance
         // ReSharper disable once UnusedMember.Local
-                        private            IReadOnlyCollection<Peer<T>> Peers           => peerMap.Values;
+                        private            IReadOnlyCollection<Peer<TKey, T>> Peers           => peerMap.Values;
         
         [Browse(Never)] internal            LocalEntities<TKey,T>       Local           => local   ??= new LocalEntities<TKey, T>(this);
         [Browse(Never)] private             LocalEntities<TKey,T>       local;
         /// <summary> Note! Must be called only from <see cref="LocalEntities{TKey,T}"/> to preserve maintainability </summary>
-                        internal            Dictionary<TKey, Peer<T>>   GetPeers()      => peerMap;
+                        internal            Dictionary<TKey, Peer<TKey, T>>   GetPeers()      => peerMap;
                         public   override   string                      ToString()      => SetInfo.ToString();
 
         [Browse(Never)] internal override   SetInfo                     SetInfo         => GetSetInfo();
@@ -213,7 +213,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         {
             // ValidateKeyType(typeof(TKey)); // only required if constructor is public
             // intern    = new SetIntern<TKey, T>(this);
-            peerMap = CreateDictionary<TKey,Peer<T>>();
+            peerMap = CreateDictionary<TKey,Peer<TKey, T>>();
         }
     }
 }

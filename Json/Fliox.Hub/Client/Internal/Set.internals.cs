@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -85,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var mapper = client.ObjectMapper();
             foreach (var peerPair in peerMap) {
                 TKey    key  = peerPair.Key;
-                Peer<T> peer = peerPair.Value;
+                var     peer = peerPair.Value;
                 DetectPeerPatches(key, peer, task, mapper);
             }
             return task;
@@ -98,15 +97,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // --- internal generic entity utility methods - there public counterparts are at EntityUtils<TKey,T>
-        private  static     void    SetEntityId (T entity, in JsonKey id)   => EntityKeyTMap.SetId(entity, id);
-        internal static     TKey    GetEntityKey(T entity)                  => EntityKeyTMap.GetKey(entity);
+        internal static     TKey    GetEntityKey(T entity)              => EntityKeyTMap.GetKey(entity);
 
         internal override void DetectSetPatchesInternal(DetectAllPatches allPatches, ObjectMapper mapper) {
             var task    = new DetectPatchesTask<TKey,T>(this);
             var peers   = peerMap;
             foreach (var peerPair in peers) {
                 TKey    key     = peerPair.Key;
-                Peer<T> peer    = peerPair.Value;
+                Peer<TKey,T> peer    = peerPair.Value;
                 DetectPeerPatches(key, peer, task, mapper);
             }
             if (task.Patches.Count > 0) {
@@ -117,15 +115,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal override JsonKey TrackEntity (T entity, PeerState state) {
-            var key   = GetEntityKey(entity);
+            var key     = EntityKeyTMap.GetKey(entity);
+            var id      = KeyConvert.KeyToId(key);
             var peers = peerMap;
-            if (peers.TryGetValue(key, out Peer<T> peer)) {
+            if (peers.TryGetValue(key, out Peer<TKey, T> peer)) {
                 peer.SetEntity(entity);
                 peer.state = state;
-                return peer.id;
+                return id;
             }
-            var id  = KeyConvert.KeyToId(key);
-            peer    = new Peer<T>(entity, id);
+            peer    = new Peer<TKey, T>(key, entity);
             peer.state = state;
             peers.Add(key, peer);
             return id;
@@ -140,43 +138,32 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             peerMap.Remove(key);
         }
         
-        [Conditional("DEBUG")]
-        private static void AssertId(TKey key, in JsonKey id) {
-            var expect = KeyConvert.KeyToId(key);
-            if (!id.IsEqual(expect))
-                throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
-        }
-        
-        internal bool TryGetPeer(TKey key, out Peer<T> value) {
+        internal bool TryGetPeer(TKey key, out Peer<TKey, T> value) {
             return peerMap.TryGetValue(key, out value);
         }
         
-        private T GetOrCreateEntity(TKey key, JsonKey id, out  Peer<T> peer) {
+        private T GetOrCreateEntity(TKey key, out  Peer<TKey, T> peer) {
             if (peerMap.TryGetValue(key, out peer)) {
                 return peer.NullableEntity;
             }
-            if (id.IsNull()) {
-                id = KeyConvert.KeyToId(key);
-            } else {
-                AssertId(key, id);
-            }
-            peer = new Peer<T>(id);
+            peer = new Peer<TKey, T>(key);
             peerMap.Add(key, peer);
             return peer.NullableEntity;
         }
 
-        private Peer<T> GetPeerById(in JsonKey id) {
+        private Peer<TKey, T> GetPeerById(in JsonKey id) {
             var key = KeyConvert.IdToKey(id);
             var peers = peerMap;
-            if (peers.TryGetValue(key, out Peer<T> peer)) {
+            if (peers.TryGetValue(key, out Peer<TKey, T> peer)) {
                 return peer;
             }
-            peer = new Peer<T>(id);
+            peer = new Peer<TKey, T>(key);
             peers.Add(key, peer);
             return peer;
         }
         
         // --- EntitySet
+        /// called on create and upsert events
         internal void SyncPeerEntities(
             List<JsonValue>         values,
             List<JsonKey>           keys,
@@ -197,7 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 if (entity == null) {
                     applyType   = ApplyInfoType.EntityCreated;
                     entity      = (T)typeMapper.NewInstance();
-                    SetEntityId(entity, id);
+                    EntityKeyTMap.SetKey(entity, peer.key);
                     peer.SetEntity(entity);
                 } else {
                     applyType   = ApplyInfoType.EntityUpdated;
@@ -215,8 +202,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         private Entity ReadEntity (in EntityValue value, ObjectReader reader) {
-            var id      = KeyConvert.IdToKey(value.key);
-            var entity  = GetOrCreateEntity(id, value.key, out var peer);
+            var key     = KeyConvert.IdToKey(value.key);
+            var entity  = GetOrCreateEntity(key, out var peer);
             var error = value.Error;
             if (error != null) {
                 peer.SetError(value.Error);
@@ -231,7 +218,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var typeMapper  = GetTypeMapper();
             if (entity == null) {
                 entity          = (T)typeMapper.NewInstance();
-                SetEntityId(entity, peer.id);
+                EntityKeyTMap.SetKey(entity, key);
                 peer.SetEntity(entity);
             }
             reader.ReadToMapper(typeMapper, json, entity, false);
@@ -239,7 +226,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 peer.SetPatchSource(json);
                 return new Entity(entity, null);
             }
-            var entityError = new EntityError(EntityErrorType.ParseError, nameShort, peer.id, reader.Error.msg.ToString());
+            var entityError = new EntityError(EntityErrorType.ParseError, nameShort, value.key, reader.Error.msg.ToString());
             return new Entity(null, entityError);
         }
         

@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //   the entity to find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
         //   In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
         //   which is not already assigned)
-        internal void DetectPeerPatches(TKey key, Peer<T> peer, DetectPatchesTask<TKey,T> detectPatchesTask, ObjectMapper mapper) {
+        internal void DetectPeerPatches(TKey key, Peer<TKey, T> peer, DetectPatchesTask<TKey,T> detectPatchesTask, ObjectMapper mapper) {
             if ((peer.state & (PeerState.Create | PeerState.Upsert)) != 0) {
                 // tracer.Trace(peer.Entity);
                 return;
@@ -323,7 +323,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
 
-        private static void SetNextPatchSource(Peer<T> peer, ObjectMapper mapper) {
+        private static void SetNextPatchSource(Peer<TKey, T> peer, ObjectMapper mapper) {
             var json   = mapper.writer.WriteAsValue(peer.Entity);
             peer.SetNextPatchSource(json);
         }

@@ -105,13 +105,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var readResult  = read.result;
             
             foreach (var value in values) {
-                var id = KeyConvert.IdToKey(value.key);
-                if (!readResult.ContainsKey(id)) {
+                var key = KeyConvert.IdToKey(value.key);
+                if (!readResult.ContainsKey(key)) {
                     continue;
                 }
                 var entity = ReadEntity(value, reader);
                 if (entity.error == null) {
-                    readResult[id] = (T)entity.value;
+                    readResult[key] = (T)entity.value;
                     continue;
                 }
                 entityErrorInfo.AddEntityError(entity.error);

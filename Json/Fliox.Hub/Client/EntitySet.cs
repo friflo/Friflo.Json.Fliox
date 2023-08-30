@@ -418,8 +418,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Delete() entity must not be null. EntitySet: {instance.name}");
             var key = Set<TKey,T>.GetEntityKey(entity);
-            if (key == null)
+            if (key == null) {
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {instance.name}");
+            }
             var delete  = instance.CreateDeleteTask();
             delete.Add(key);
             client.AddTask(delete);

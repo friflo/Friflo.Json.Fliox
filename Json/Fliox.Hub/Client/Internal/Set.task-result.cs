@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private void CreateUpsertEntitiesResult(
             List<JsonEntity>                    entities,
             WriteTask<T>                        writeTask,
-            IDictionary<JsonKey, EntityError>    writeErrors)
+            IDictionary<JsonKey, EntityError>   writeErrors)
         {
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
