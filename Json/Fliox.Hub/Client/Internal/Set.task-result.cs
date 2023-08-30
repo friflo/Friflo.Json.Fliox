@@ -100,10 +100,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 if (writeErrors.TryGetValue(id, out EntityError _)) {
                     continue;
                 }
-                var key     = KeyConvert.IdToKey(id);
-                var peer    = GetOrCreatePeerByKey(key, id);
-                peer.state  = PeerState.None;
-                peer.SetPatchSource(entity.value);
+                var key = KeyConvert.IdToKey(id);
+                if (TryGetPeer(key, out var peer)) {
+                    peer.state  = PeerState.None;
+                    peer.SetPatchSource(entity.value);
+                }
             }
 
             var entityErrorInfo = new TaskErrorInfo();
@@ -197,10 +198,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             } else {
                 foreach (var entityPatch in patches) {
                     var key     = entityPatch.Key;
-                    var peer    = GetOrCreatePeerByKey(key, default);
-                    var nextPatchSource = peer.NextPatchSource;
-                    if (nextPatchSource.IsNull())
+                    if (!TryGetPeer(key, out var peer)) {
                         continue;
+                    }
+                    var nextPatchSource = peer.NextPatchSource;
+                    if (nextPatchSource.IsNull()) {
+                        continue;
+                    }
                     // set patch source (diff reference) only if entity is tracked
                     peer.SetPatchSource(nextPatchSource);
                     peer.SetNextPatchSourceNull();
@@ -222,6 +226,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (result is TaskErrorResult taskError) {
                 deleteTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
+            }
+            if (task.all == true) {
+                DeletePeers();
             }
             var ids = task.ids;
             if (ids != null) {

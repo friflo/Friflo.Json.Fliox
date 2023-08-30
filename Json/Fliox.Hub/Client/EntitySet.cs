@@ -534,7 +534,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (entity == null)                             throw new ArgumentNullException(nameof(entity));
             var key     = Static.EntityKeyTMap.GetKey(entity);
             if (Static.KeyConvert.IsKeyNull(key))           throw new ArgumentException($"entity key must not be null.");
-            if (!instance.TryGetPeerByKey(key, out var peer))        throw new ArgumentException($"entity is not tracked. key: {key}");
+            if (!instance.TryGetPeer(key, out var peer))    throw new ArgumentException($"entity is not tracked. key: {key}");
             var task    = new DetectPatchesTask<TKey,T>(instance);
             instance.AddDetectPatches(task);
             var objectMapper = client.ObjectMapper();
@@ -558,7 +558,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (entity == null)                         throw new ArgumentException($"entities[{n}] is null");
                 var key     = Static.EntityKeyTMap.GetKey(entity);
                 if (Static.KeyConvert.IsKeyNull(key))       throw new ArgumentException($"entity key must not be null. entities[{n}]");
-                if (!instance.TryGetPeerByKey(key, out var peer))    throw new ArgumentException($"entity is not tracked. entities[{n}] key: {key}");
+                if (!instance.TryGetPeer(key, out var peer))throw new ArgumentException($"entity is not tracked. entities[{n}] key: {key}");
                 instance.DetectPeerPatches(key, peer, task, mapper);
                 n++;
             }

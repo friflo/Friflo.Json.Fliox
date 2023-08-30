@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         [DebuggerBrowsable(Never)]  internal  readonly  JsonKey         id;     // never null
                                     private             T               entity; // can be null 
-                                    internal            EntityError     error;
+                                    private             EntityError     error;
         [DebuggerBrowsable(Never)]  internal            PeerState       state;
 
         [DebuggerBrowsable(Never)]  private             JsonValue       patchSource;
@@ -84,6 +84,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             }
             if (entity != this.entity) throw new ArgumentException($"Entity is already tracked by another instance. id: '{id}'");
+        }
+        
+        internal void SetError(EntityError error) {
+            this.error = error;
         }
 
         internal void SetPatchSource(in JsonValue value) {

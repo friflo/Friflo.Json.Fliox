@@ -24,37 +24,37 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.set        = set;
         }
         
-        private void AddPeer (Peer<T> peer) {
-            entities.Add(new KeyEntity<T>(peer.id, peer.Entity));   // sole place an entity is added
-            peer.state = PeerState.Create;                          // sole place Updated is set
+        private void AddEntity (T entity) {
+            var id = set.TrackEntity(entity, PeerState.Create);
+            entities.Add(new KeyEntity<T>(id, entity));   // sole place an entity is added
         }
         
         public void Add(T entity) {
-            if (entity == null)
+            if (entity == null) {
                 throw new ArgumentException($"CreateTask<{set.name}>.Add() entity must not be null.");
-            var peer = set.CreatePeer(entity);
-            AddPeer(peer);
+            }
+            AddEntity(entity);
         }
         
         public void AddRange(List<T> entities) {
             int n = 0;
             foreach (var entity in entities) {
-                if (entity == null)
+                if (entity == null) {
                     throw new ArgumentException($"CreateTask<{set.name}>.AddRange() entities[{n}] must not be null.");
+                }
                 n++;
-                var peer = set.CreatePeer(entity);
-                AddPeer(peer);
+                AddEntity(entity);
             }
         }
         
         public void AddRange(ICollection<T> entities) {
             int n = 0;
             foreach (var entity in entities) {
-                if (entity == null)
+                if (entity == null) {
                     throw new ArgumentException($"CreateTask<{set.name}>.AddRange() entities[{n}] must not be null.");
+                }
                 n++;
-                var peer = set.CreatePeer(entity);
-                AddPeer(peer);
+                AddEntity(entity);
             }
         }
         

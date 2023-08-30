@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  SyncTask            SubscribeChangesInternal(Change change);
         internal  abstract  SubscribeChanges    GetSubscription();
         internal  abstract  void                GetRawEntities(List<object> result);
-        internal  abstract  EntityValue[]       AddReferencedEntities (ReferencesResult referenceResult, ObjectReader reader);
+        internal  abstract  Entity[]            AddReferencedEntities (ReferencesResult referenceResult, ObjectReader reader);
         
         internal readonly struct SetInit
         {
@@ -152,6 +152,17 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     notFound.Add(value.key);
                 }
             }
+        }
+    }
+    
+    internal readonly struct Entity
+    {
+        internal readonly object        value;
+        internal readonly EntityError   error;
+        
+        internal Entity(object value, EntityError error) {
+            this.value  = value;
+            this.error  = error;
         }
     }
     

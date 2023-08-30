@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
@@ -69,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return new TaskAlreadySyncedException($"Task already executed. {Label}");
         }
         
-        internal abstract void    SetResult (Set set, EntityValue[] values);
+        internal abstract void    SetResult (Entity[] objects);
     }
     
     public abstract class ReadRelationsFunction<T> : ReadRelationsFunction, IReadRelationsTask<T> where T : class
@@ -149,17 +148,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.Relation   = relation;
         }
 
-        internal override void SetResult(Set set, EntityValue[] values)
+        internal override void SetResult(Entity[] entities)
         {
-            var entitySet = (Set<T>) set;
-            result = new List<T>(values.Length);
+            result = new List<T>(entities.Length);
             var entityErrorInfo = new TaskErrorInfo();
-            foreach (var value in values) {
-                var peer = entitySet.GetPeerById(value.key);
-                if (peer.error == null) {
-                    result.Add(peer.Entity);
+            foreach (var entity in entities) {
+                if (entity.error == null) {
+                    result.Add((T)entity.value);
                 } else {
-                    entityErrorInfo.AddEntityError(peer.error);
+                    entityErrorInfo.AddEntityError(entity.error);
                 }
             }
             if (entityErrorInfo.HasErrors) {

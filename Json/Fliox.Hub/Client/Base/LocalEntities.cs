@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public void Add(T entity) {
-            set.CreatePeer(entity);
+            set.TrackEntity(entity, PeerState.None);
         }
 
         private int GetCount() {

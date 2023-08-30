@@ -3,7 +3,6 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Client.Internal;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -38,20 +37,19 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.Relation   = relation;
         }
         
-        internal override void SetResult(Set set, EntityValue[] values) {
-            if (values.Length == 0) {
+        internal override void SetResult(Entity[] entities) {
+            if (entities.Length == 0) {
                 return;
             }
-            if (values.Length != 1)
-                throw new InvalidOperationException($"Expect values with one element. got: {values.Length}, task: {this}");
-            var entitySet = (Set<T>) set;
-            var id      = values[0].key;
-            var peer    = entitySet.GetPeerById(id);
-            if (peer.error == null) {
-                entity  = peer.Entity;
+            if (entities.Length != 1) {
+                throw new InvalidOperationException($"Expect values with one element. got: {entities.Length}, task: {this}");
+            }
+            var entity0    = entities[0];
+            if (entity0.error == null) {
+                entity  = (T)entity0.value;
             } else {
                 var entityErrorInfo = new TaskErrorInfo();
-                entityErrorInfo.AddEntityError(peer.error);
+                entityErrorInfo.AddEntityError(entity0.error);
                 state.SetError(entityErrorInfo);
             }
         }
