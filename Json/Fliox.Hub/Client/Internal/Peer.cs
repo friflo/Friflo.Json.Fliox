@@ -5,7 +5,6 @@ using System;
 using System.Diagnostics;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
@@ -20,9 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // neither Peer<T> is a class nor a struct.
     internal sealed class Peer<TKey, T> where T : class
     {
-        [DebuggerBrowsable(Never)]  internal  readonly  TKey            key;     // never null
+        [DebuggerBrowsable(Never)]  internal  readonly  TKey            key;    // never null
                                     private             T               entity; // can be null 
-                                    private             EntityError     error;
         [DebuggerBrowsable(Never)]  internal            PeerState       state;
 
         [DebuggerBrowsable(Never)]  private             JsonValue       patchSource;
@@ -60,11 +58,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 sb.Append(state);
                 isFirst = false;
             }
-            if (error != null) {
-                sb.Append(isFirst ? "  (": ", ");
-                sb.Append(error.type);
-                isFirst = false;
-            }
             if (!isFirst) {
                 sb.Append(')');
             }
@@ -87,9 +80,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (entity != this.entity) throw new ArgumentException($"Entity is already tracked by another instance. id: '{key}'");
         }
         
-        internal void SetError(EntityError error) {
+        /* internal void SetError(EntityError error) {
             this.error = error;
-        }
+        } */
 
         internal void SetPatchSource(in JsonValue value) {
             if (value.IsNull())

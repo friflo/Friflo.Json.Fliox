@@ -175,10 +175,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var count       = values.Count;
             var typeMapper  = GetTypeMapper();
             for (int n = 0; n < count; n++) {
-                var id          = keys[n];
-                var peer        = GetPeerById(id);
-
-                peer.SetError(null);
+                var id      = keys[n];
+                var peer    = GetPeerById(id);
                 var entity  = peer.NullableEntity;
                 ApplyInfoType applyType;
                 if (entity == null) {
@@ -202,13 +200,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         private Entity ReadEntity (in EntityValue value, ObjectReader reader) {
-            var key     = KeyConvert.IdToKey(value.key);
-            var entity  = GetOrCreateEntity(key, out var peer);
             var error = value.Error;
             if (error != null) {
-                peer.SetError(value.Error);
                 return new Entity(null, error);
             }
+            var key     = KeyConvert.IdToKey(value.key);
+            var entity  = GetOrCreateEntity(key, out var peer);
             var json = value.Json;
             if (json.IsNull()) {
                 peer.SetEntity(null);   // Could delete peer instead
@@ -217,7 +214,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var typeMapper  = GetTypeMapper();
             if (entity == null) {
-                entity          = (T)typeMapper.NewInstance();
+                entity  = (T)typeMapper.NewInstance();
                 EntityKeyTMap.SetKey(entity, key);
                 peer.SetEntity(entity);
             }
