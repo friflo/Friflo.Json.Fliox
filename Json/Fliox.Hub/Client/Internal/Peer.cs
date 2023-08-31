@@ -4,7 +4,6 @@
 using System;
 using System.Diagnostics;
 using System.Text;
-using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
@@ -39,13 +38,45 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal Peer(in TKey key, T entity) {
-            if (entity == null)
-                throw new NullReferenceException($"entity must not be null. Type: {typeof(T)}");
+            AssertNotNull(entity);
             this.key    = key;
             this.entity = entity;
         }
         
-        internal static  readonly   KeyConverter<TKey>          KeyConvert      = KeyConverter.GetConverter<TKey>();
+        internal void SetEntityNull() {
+            entity = null;
+        }
+        
+        internal void SetEntity(T entity) {
+            AssertNotNull(entity);
+            if (this.entity == null) {
+                this.entity = entity;
+                return;
+            }
+            if (entity != this.entity) throw new ArgumentException($"Entity is already tracked by another instance. id: '{key}'");
+        }
+        
+        private static void AssertNotNull(T entity) {
+            if (entity == null) throw new ArgumentNullException(nameof(entity), $"entity must not be null. Type: {typeof(T)}");
+        }
+        
+        internal void SetPatchSource(in JsonValue value) {
+            if (value.IsNull()) throw new InvalidOperationException("SetPatchSource() - expect value not null");
+            JsonValue.Copy(ref patchSource, value); // reuse JsonValue.array if big enough
+        }
+        
+        internal void SetPatchSourceNull() {
+            patchSource = default;
+        }
+        
+        internal void SetNextPatchSource(in JsonValue value) {
+            if (value.IsNull()) throw new InvalidOperationException("SetNextPatchSource() - expect value not null");
+            JsonValue.Copy(ref nextPatchSource, value);
+        }
+        
+        internal void SetNextPatchSourceNull() {
+            nextPatchSource = default;
+        }
         
         private string FormatToString() {
             var sb = new StringBuilder();
@@ -62,46 +93,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 sb.Append(')');
             }
             return sb.ToString();            
-        }
-        
-        internal void SetEntity(T entity)
-        {
-            /* alternative solution: delete peers, in this case this check need to be enabled 
-            if (entity == null)
-                throw new InvalidOperationException("Expect entity not null"); */
-            if (this.entity == null) {
-                this.entity = entity;
-                return;
-            }
-            if (entity == null) {
-                this.entity = null;
-                return;
-            }
-            if (entity != this.entity) throw new ArgumentException($"Entity is already tracked by another instance. id: '{key}'");
-        }
-        
-        /* internal void SetError(EntityError error) {
-            this.error = error;
-        } */
-
-        internal void SetPatchSource(in JsonValue value) {
-            if (value.IsNull())
-                throw new InvalidOperationException("SetPatchSource() - expect value not null");
-            JsonValue.Copy(ref patchSource, value); // reuse JsonValue.array if big enough
-        }
-        
-        internal void SetPatchSourceNull() {
-            patchSource = default;
-        }
-        
-        internal void SetNextPatchSource(in JsonValue value) {
-            if (value.IsNull())
-                throw new InvalidOperationException("SetNextPatchSource() - expect value not null");
-            JsonValue.Copy(ref nextPatchSource, value);
-        }
-        
-        internal void SetNextPatchSourceNull() {
-            nextPatchSource = default;
         }
     }
     

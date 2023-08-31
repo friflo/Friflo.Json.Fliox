@@ -208,7 +208,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var entity  = GetOrCreateEntity(key, out var peer);
             var json = value.Json;
             if (json.IsNull()) {
-                peer.SetEntity(null);   // Could delete peer instead
+                peer.SetEntityNull();   // Could delete peer instead
                 peer.SetPatchSourceNull();
                 return new Entity(null, null);
             }

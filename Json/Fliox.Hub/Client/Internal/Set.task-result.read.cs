@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
                 if (TryGetPeer(pair.Key, out var peer)) {
                     peer.SetPatchSourceNull();
-                    peer.SetEntity(null);
+                    peer.SetEntityNull();
                 }
             }
             var taskError = entityErrorInfo.TaskError;
