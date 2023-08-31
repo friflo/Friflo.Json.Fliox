@@ -40,7 +40,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Return all tracked entities in the <see cref="EntitySet{TKey,T}"/> </summary>
         public              T[]             Entities    => EntitiesToArray();
 
-        private  readonly   Set<TKey, T>    set;
+        private  readonly   Dictionary<TKey,Peer<TKey, T>>  peers;
+        private  readonly   Set<TKey, T>                    set;
         
         public   override   string          ToString() => $"{set.name}: {GetCount()}";
         
@@ -48,7 +49,8 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     #region - initialize
         internal LocalEntities (Set<TKey, T> set) {
-            this.set  = set;
+            peers       = set.GetPeers();
+            this.set    = set;
         }
         #endregion
     
@@ -57,9 +59,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the passed <paramref name="key"/>
         /// </summary>
         public bool ContainsKey(TKey key) {
-            var peers = set.GetPeers();
-            if (peers == null)
-                return false;
             return peers.ContainsKey(key);
         }
 
@@ -68,8 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Return true if the <see cref="EntitySet{TKey,T}"/> contains an entity with the given key. Otherwise false.
         /// </summary>
         public bool TryGetEntity(TKey key, out T entity) {
-            var peers = set.GetPeers();
-            if (peers != null && peers.TryGetValue(key, out Peer<TKey, T> peer)) {
+            if (peers.TryGetValue(key, out Peer<TKey, T> peer)) {
                 entity = peer.NullableEntity;
                 return true;
             }
@@ -81,8 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Gets the tracked entity associated with the specified <paramref name="key"/>.
         /// </summary>
         public T this[TKey key] { get {
-            var peers = set.GetPeers();
-            if (peers != null && peers.TryGetValue(key, out Peer<TKey, T> peer)) {
+            if (peers.TryGetValue(key, out Peer<TKey, T> peer)) {
                 return peer.NullableEntity;
             }
             var msg = $"key '{key}' not found in {set.name}.Local";
@@ -117,15 +114,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         private int GetCount() {
-            var peers   = set.GetPeers();
-            if (peers == null)
-                return 0;
             return peers.Count;
         }
         
         private TKey[] KeysToArray() {
-            var peers   = set.GetPeers();
-            if (peers == null) {
+            if (peers.Count == 0) {
                 return Array.Empty<TKey>();
             }
             var result  = new TKey[peers.Count];
@@ -137,8 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private T[] EntitiesToArray() {
-            var peers   = set.GetPeers();
-            if (peers == null) {
+            if (peers.Count == 0) {
                 return Array.Empty<T>();
             }
             var result  = new T[peers.Count];
@@ -155,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region - IEnumerable<>
         /// <summary> Returns an enumerator that iterates through the <see cref="LocalEntities{TKey,T}"/> </summary>
         public IEnumerator<KeyValuePair<TKey, T>> GetEnumerator() {
-            return new Enumerator(set);
+            return new Enumerator(peers);
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
@@ -166,23 +158,13 @@ namespace Friflo.Json.Fliox.Hub.Client
     #region ---- Enumerator ----
         private struct Enumerator : IEnumerator<KeyValuePair<TKey, T>>
         {
-            private             Dictionary<TKey,Peer<TKey, T>>.Enumerator enumerator;
-            private  readonly   bool                                isEmpty;
+            private Dictionary<TKey,Peer<TKey, T>>.Enumerator enumerator;
 
-            internal Enumerator(Set<TKey, T> set) {
-                var peers   = set.GetPeers();
-                if (peers == null) {
-                    isEmpty     = true;
-                    enumerator  = default;
-                    return;
-                }
-                isEmpty     = false;
+            internal Enumerator(Dictionary<TKey, Peer<TKey, T>> peers) {
                 enumerator  = peers.GetEnumerator();
             }
 
             public bool MoveNext() {
-                if (isEmpty)
-                    return false;
                 return enumerator.MoveNext();
             }
 

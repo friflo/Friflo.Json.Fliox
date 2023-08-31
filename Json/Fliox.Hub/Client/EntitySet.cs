@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         public  SyncTask[]              Tasks       => GetInstance().GetTasks();
         
         /// <summary> Provide access to the <see cref="LocalEntities{TKey,T}"/> tracked by the <see cref="EntitySet{TKey,T}"/> </summary>
-                        public  LocalEntities<TKey,T>   Local       => GetInstance().Local;
+                        public  LocalEntities<TKey,T>   Local       => GetLocal();
         
                         public  string                  Name        => client._readonly.entityInfos[index].container;
                         
@@ -520,6 +520,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <remarks> Consider using <see cref="DetectPatches(T)"/> or <see cref="DetectPatches(IEnumerable{T})"/>
         /// as this method run detection on all tracked entities. </remarks>
         public DetectPatchesTask<TKey,T> DetectPatches() {
+            FlioxClient.AssertTrackEntities(client, nameof(DetectPatches));
             var instance    = GetInstance();
             var task        = instance.DetectPatches();
             client.AddTask(task);
@@ -531,6 +532,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/>
         /// </summary>
         public DetectPatchesTask<TKey,T> DetectPatches(T entity) {
+            FlioxClient.AssertTrackEntities(client, nameof(DetectPatches));
             var instance = GetInstance();
             if (entity == null)                             throw new ArgumentNullException(nameof(entity));
             var key     = Static.EntityKeyTMap.GetKey(entity);
@@ -549,6 +551,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Detected patches are applied to the container when calling <see cref="FlioxClient.SyncTasks"/>
         /// </summary>
         public DetectPatchesTask<TKey,T> DetectPatches(IEnumerable<T> entities) {
+            FlioxClient.AssertTrackEntities(client, nameof(DetectPatches));
             var instance = GetInstance();
             if(entities == null)                            throw new ArgumentNullException(nameof(entities));
             int n       = 0;
@@ -603,6 +606,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             return (Set<TKey,T>)client.CreateEntitySet(index);
         }
+        
+        private LocalEntities<TKey,T> GetLocal() {
+            FlioxClient.AssertTrackEntities(client, nameof(Local));
+            return GetInstance().Local;
+        } 
         #endregion
     }
 }

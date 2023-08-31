@@ -117,13 +117,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 entityErrorInfo.AddEntityError(entity.error);
             }
             // set all peers to null not found in result.entities
-            foreach (var pair in readResult) {
-                if (pair.Value != null) {
-                    continue;
-                }
-                if (TryGetPeer(pair.Key, out var peer)) {
-                    peer.SetPatchSourceNull();
-                    peer.SetEntityNull();
+            if (TrackEntities) {
+                foreach (var pair in readResult) {
+                    if (pair.Value != null) {
+                        continue;
+                    }
+                    if (TryGetPeer(pair.Key, out var peer)) {
+                        peer.SetPatchSourceNull();
+                        peer.SetEntityNull();
+                    }
                 }
             }
             var taskError = entityErrorInfo.TaskError;

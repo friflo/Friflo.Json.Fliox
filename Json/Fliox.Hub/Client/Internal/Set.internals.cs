@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal override void Reset() {
-            peerMap.Clear();
+            peerMap?.Clear(); // TEST_NONTRACK
             intern.writePretty  = ClientStatic.DefaultWritePretty;
             intern.writeNull    = ClientStatic.DefaultWriteNull;
         }

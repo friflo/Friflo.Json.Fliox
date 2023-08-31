@@ -12,7 +12,7 @@ namespace Friflo.Json.Tests.Provider.Test
         [TestCase(memory_db, Category = memory_db)] [TestCase(test_db, Category = test_db)] [TestCase(sqlite_db, Category = sqlite_db)]
         public static async Task Test_7_FindDeleted(string db)
         {
-            var client  = await GetClient(db);
+            var client  = await GetClient(db, trackEntities: true);
             
             var testDelete = new TestMutate { id = "test-delete-1" };
             client.testMutate.DeleteAll();
@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Provider.Test
 
             await client1.SyncTasksEnv();
             
-            var client2  = await GetClient(db);
+            var client2  = await GetClient(db, trackEntities: true);
             client2.testMutate.Find(testDelete.id);
             await client2.SyncTasksEnv();
             NotNull(client2.testMutate.Local[testDelete.id]);

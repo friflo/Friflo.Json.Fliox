@@ -135,6 +135,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             throw new InvalidOperationException($"unknown EntitySet. name: {name}");
         }
         
+        internal static void AssertTrackEntities(FlioxClient client, string methodName) {
+            if (client.TrackEntities) {
+                return;
+            }
+            var msg = $"{methodName}() requires {client.GetType().Name}.{nameof(TrackEntities)} = true";
+            throw new InvalidOperationException(msg);
+        }
+        
         private SyncRequest CreateSyncRequest(out SyncStore syncStore) {
             var mapper = ObjectMapper();
             return CreateSyncRequest(out syncStore, mapper);

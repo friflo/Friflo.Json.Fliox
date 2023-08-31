@@ -95,6 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Apply all <see cref="Changes"/> of the <see cref="EventContext"/> the given <paramref name="client"/> </summary>
         public void ApplyChangesTo(FlioxClient client)
         {
+            FlioxClient.AssertTrackEntities(client, nameof(ApplyChangesTo));
             foreach (var entityChanges in processor.contextChanges) {
                 var container = entityChanges.ContainerShort;
                 if (!client.TryGetSetByName(container, out var entitySet))

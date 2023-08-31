@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Provider
             return _seedSource = new FileDatabase("file_db", TestDbFolder, Schema);
         } }
         
-        internal static async Task<TestClient> GetClient(string db, bool seed = true)
+        internal static async Task<TestClient> GetClient(string db, bool seed = true, bool trackEntities = false )
         {
             if (!hubs.TryGetValue(db, out var hub)) {
                 var schema      = SeedSource.Schema;
@@ -104,7 +104,7 @@ namespace Friflo.Json.Tests.Provider
                 }
                 await hub.database.SeedDatabase(source).ConfigureAwait(false);
             }
-            return new TestClient(hub);
+            return new TestClient(hub) { TrackEntities = trackEntities };
         }
 
 #if UNITY_5_3_OR_NEWER

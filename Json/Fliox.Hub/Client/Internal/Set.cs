@@ -177,7 +177,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                         
         /// <summary> key: <see cref="Peer{TKey,T}.entity"/>.id </summary>
         [Browse(Never)] private readonly Dictionary<TKey,Peer<TKey, T>> peerMap;        //  Note: must be private by all means
-        [Browse(Never)] internal            bool                        TrackEntities   =>  peerMap != null;
+        [Browse(Never)] private             bool                        TrackEntities   =>  peerMap != null;
         
         /// <summary> enable access to entities in debugger. Not used internally. </summary>
         // Note: using Dictionary.Values is okay. The ValueCollection is instantiated only once for a Dictionary instance
@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         [Browse(Never)] internal            LocalEntities<TKey,T>       Local           => local   ??= new LocalEntities<TKey, T>(this);
         [Browse(Never)] private             LocalEntities<TKey,T>       local;
         /// <summary> Note! Must be called only from <see cref="LocalEntities{TKey,T}"/> to preserve maintainability </summary>
-                        internal            Dictionary<TKey, Peer<TKey, T>>   GetPeers()      => peerMap;
+                        internal          Dictionary<TKey,Peer<TKey,T>> GetPeers()      => peerMap;
                         public   override   string                      ToString()      => SetInfo.ToString();
 
         [Browse(Never)] internal override   SetInfo                     SetInfo         => GetSetInfo();

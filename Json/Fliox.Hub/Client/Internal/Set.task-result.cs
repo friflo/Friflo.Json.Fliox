@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             WriteTask<T>                        writeTask,
             IDictionary<JsonKey, EntityError>   writeErrors)
         {
-            if (peerMap != null) {
+            if (TrackEntities) {
                 for (int n = 0; n < entities.Count; n++) {
                     var entity = entities[n];
                     // if (entity.json == null)  continue; // TAG_ENTITY_NULL

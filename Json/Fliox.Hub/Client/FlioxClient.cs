@@ -177,6 +177,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// run detection on all tracked entities in all <see cref="EntitySet{TKey,T}"/>s.
         /// </remarks>
         public DetectAllPatches DetectAllPatches() {
+            AssertTrackEntities(this, nameof(DetectAllPatches));
             var task = _intern.syncStore.CreateDetectAllPatchesTask();
             var mapper = ObjectMapper();
             foreach (var set in entitySets) {
