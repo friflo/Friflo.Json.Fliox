@@ -200,6 +200,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> Apply the container changes to the given <paramref name="entitySet"/> </summary>
         public ApplyResult<TKey,T> ApplyChangesTo(EntitySet<TKey, T> entitySet, Change change = Change.All) {
             var instance = entitySet.GetInstance();
+            if (!instance.TrackEntities) {
+                var msg = $"{nameof(ApplyChangesTo)}() requires {instance.GetType().Name}.{nameof(FlioxClient.TrackEntities)} = true";
+                throw new InvalidOperationException(msg);
+            }
             return ApplyChangesToInternal(instance, change);
         }
         

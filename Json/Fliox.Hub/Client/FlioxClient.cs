@@ -64,6 +64,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         [Browse(Never)] private     ClientOptions               options;
                         public      ref ClientOptions           Options         => ref options;
+                        
+                        public      bool                        TrackEntities   { get; init; } = true;
         
         /// <summary> Used to send typed messages / commands by classes extending <see cref="FlioxClient"/></summary>
         [Browse(Never)] protected readonly  SendTask            send;

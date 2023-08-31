@@ -93,20 +93,21 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             WriteTask<T>                        writeTask,
             IDictionary<JsonKey, EntityError>   writeErrors)
         {
-            for (int n = 0; n < entities.Count; n++) {
-                var entity = entities[n];
-                // if (entity.json == null)  continue; // TAG_ENTITY_NULL
-                var id = entity.key;
-                if (writeErrors.TryGetValue(id, out EntityError _)) {
-                    continue;
-                }
-                var key = KeyConvert.IdToKey(id);
-                if (TryGetPeer(key, out var peer)) {
-                    peer.state  = PeerState.None;
-                    peer.SetPatchSource(entity.value);
+            if (peerMap != null) {
+                for (int n = 0; n < entities.Count; n++) {
+                    var entity = entities[n];
+                    // if (entity.json == null)  continue; // TAG_ENTITY_NULL
+                    var id = entity.key;
+                    if (writeErrors.TryGetValue(id, out EntityError _)) {
+                        continue;
+                    }
+                    var key = KeyConvert.IdToKey(id);
+                    if (TryGetPeer(key, out var peer)) {
+                        peer.state  = PeerState.None;
+                        peer.SetPatchSource(entity.value);
+                    }
                 }
             }
-
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var entity in writeTask.entities) {
                 if (writeErrors.TryGetValue(entity.key, out EntityError error)) {
@@ -227,13 +228,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 deleteTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            if (task.all == true) {
-                DeletePeers();
-            }
-            var ids = task.ids;
-            if (ids != null) {
-                foreach (var id in ids.GetReadOnlySpan()) {
-                    DeletePeer(id);
+            if (TrackEntities) {
+                if (task.all == true) {
+                    DeletePeers();
+                }
+                var ids = task.ids;
+                if (ids != null) {
+                    foreach (var id in ids.GetReadOnlySpan()) {
+                        DeletePeer(id);
+                    }
                 }
             }
             var deleteResult = (DeleteEntitiesResult)result;

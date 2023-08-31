@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         
         private SetInfo GetSetInfo() {
-            var info    = new SetInfo (name) { peers = peerMap.Count };
+            var info    = new SetInfo (name) { peers = peerMap?.Count ?? 0 };
             var tasks   = GetTasks();
             SetTaskInfo(ref info, tasks);
             return info;
@@ -117,7 +117,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal override JsonKey TrackEntity (T entity, PeerState state) {
             var key     = EntityKeyTMap.GetKey(entity);
             var id      = KeyConvert.KeyToId(key);
-            var peers = peerMap;
+            var peers   = peerMap;
+            if (peers == null) {
+                return id;
+            }
             if (peers.TryGetValue(key, out Peer<TKey, T> peer)) {
                 peer.SetEntity(entity);
                 peer.state = state;
@@ -204,24 +207,35 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (error != null) {
                 return new Entity(null, error);
             }
-            var key     = KeyConvert.IdToKey(value.key);
-            var entity  = GetOrCreateEntity(key, out var peer);
             var json = value.Json;
-            if (json.IsNull()) {
-                peer.SetEntityNull();   // Could delete peer instead
-                peer.SetPatchSourceNull();
-                return new Entity(null, null);
-            }
-            var typeMapper  = GetTypeMapper();
-            if (entity == null) {
-                entity  = (T)typeMapper.NewInstance();
-                EntityKeyTMap.SetKey(entity, key);
-                peer.SetEntity(entity);
-            }
-            reader.ReadToMapper(typeMapper, json, entity, false);
-            if (reader.Success) {
-                peer.SetPatchSource(json);
-                return new Entity(entity, null);
+            if (!TrackEntities) {
+                if (json.IsNull()) {
+                    return new Entity(null, null);
+                }
+                var typeMapper  = GetTypeMapper();
+                T entity  = (T)typeMapper.NewInstance();
+                reader.ReadToMapper(typeMapper, json, entity, false);
+                if (reader.Success) {
+                    return new Entity(entity, null);
+                }
+            } else {
+                var key     = KeyConvert.IdToKey(value.key);
+                T entity    = GetOrCreateEntity(key, out var peer);
+                if (json.IsNull()) {
+                    peer.SetEntityNull();   // Could delete peer instead
+                    peer.SetPatchSourceNull();
+                    return new Entity(null, null);
+                }
+                var typeMapper  = GetTypeMapper();
+                if (entity == null) {
+                    entity  = (T)typeMapper.NewInstance();
+                    peer.SetEntity(entity);
+                }
+                reader.ReadToMapper(typeMapper, json, entity, false);
+                if (reader.Success) {
+                    peer.SetPatchSource(json);
+                    return new Entity(entity, null);
+                }
             }
             var entityError = new EntityError(EntityErrorType.ParseError, nameShort, value.key, reader.Error.msg.ToString());
             return new Entity(null, entityError);

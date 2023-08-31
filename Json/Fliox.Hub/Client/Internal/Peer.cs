@@ -56,6 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (entity != this.entity) throw new ArgumentException($"Entity is already tracked by another instance. id: '{key}'");
         }
         
+        [Conditional("DEBUG")]
         private static void AssertNotNull(T entity) {
             if (entity == null) throw new ArgumentNullException(nameof(entity), $"entity must not be null. Type: {typeof(T)}");
         }
