@@ -26,12 +26,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal static string  SyncKeyName (string keyName)    => keyName == "id" ? null : keyName;
         internal static bool?   IsIntKey    (bool isIntKey)     => isIntKey ? true : null;
         
-        internal static HashSet<TKey> CreateHashSet<TKey>(int capacity = 0) {
-            if (typeof(TKey) == typeof(JsonKey))
-                return (HashSet<TKey>)(object)Helper.CreateHashSet(capacity, JsonKey.Equality);
-            return Helper.CreateHashSet<TKey>(capacity);
-        }
-        
         internal static Dictionary<TKey, T> CreateDictionary<TKey, T>(int capacity = 0) {
             if (typeof(TKey) == typeof(JsonKey))
                 return (Dictionary<TKey, T>)(object)new Dictionary<JsonKey, T>(capacity, JsonKey.Equality);
@@ -95,9 +89,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         {
             if (TrackEntities) {
                 for (int n = 0; n < entities.Count; n++) {
-                    var entity = entities[n];
-                    // if (entity.json == null)  continue; // TAG_ENTITY_NULL
-                    var id = entity.key;
+                    var entity  = entities[n];
+                    var id      = entity.key;
                     if (writeErrors.TryGetValue(id, out EntityError _)) {
                         continue;
                     }
@@ -138,13 +131,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
 
-        private void AddEntityResponseError(in JsonKey id, Dictionary<JsonKey, EntityValue> entities, ref TaskErrorInfo entityErrorInfo) {
-            var responseError = new EntityError(EntityErrorType.ReadError, nameShort, id, "requested entity missing in response results");
-            entityErrorInfo.AddEntityError(responseError);
-            var value = new EntityValue(id, responseError); 
-            entities.Add(id, value);
-        }
-        
         internal override void QueryEntitiesResult(QueryEntities task, SyncTaskResult result) {
             var query   = (QueryTask<TKey, T>)task.intern.syncTask;
             if (result is TaskErrorResult taskError) {
