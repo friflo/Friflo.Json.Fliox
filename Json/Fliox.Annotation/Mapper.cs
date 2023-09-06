@@ -36,6 +36,20 @@ namespace Friflo.Json.Fliox
         public InstanceTypeAttribute (Type instance) {}
     }
     
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct)]
+    public sealed class JsonNamingAttribute : Attribute {
+        public JsonNamingAttribute (JsonNamingType namingType) { NamingType = namingType; }
+        
+        public JsonNamingType NamingType { get; }
+    }
+    
+    public enum JsonNamingType
+    {
+        Default,
+        CamelCase,
+        PascalCase,
+    }
+    
 
     // -------------------------------- field & property attributes ------------------------------
     /// <summary> Serialize the annotated private / internal member as a JSON field </summary>

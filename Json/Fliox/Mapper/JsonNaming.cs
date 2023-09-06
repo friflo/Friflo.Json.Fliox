@@ -9,6 +9,8 @@ namespace Friflo.Json.Fliox.Mapper
     
     public sealed class DefaultNaming : IJsonNaming
     {
+        public static readonly IJsonNaming Instance = new DefaultNaming();
+        
         public string PropertyName(string name) {
             return name;
         }
@@ -16,6 +18,8 @@ namespace Friflo.Json.Fliox.Mapper
     
     public sealed class CamelCaseNaming : IJsonNaming
     {
+        public static readonly IJsonNaming Instance = new CamelCaseNaming();
+        
         public string PropertyName(string name) {
             return char.ToLower(name[0]) + name.Substring(1);
         }
@@ -23,6 +27,8 @@ namespace Friflo.Json.Fliox.Mapper
     
     public sealed class PascalCaseNaming : IJsonNaming
     {
+        public static readonly IJsonNaming Instance = new PascalCaseNaming();
+        
         public string PropertyName(string name) {
             return char.ToUpper(name[0]) + name.Substring(1);
         }

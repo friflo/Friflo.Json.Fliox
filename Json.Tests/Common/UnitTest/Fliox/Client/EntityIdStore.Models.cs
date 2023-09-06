@@ -22,6 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public int  id;
     }
     
+    [JsonNaming(JsonNamingType.Default)]
     public class LongEntity {
         [Key]
         public long Id { get; set; }

@@ -154,6 +154,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
                 var fieldType       = field.type;
                 var keyName         = fieldType.keyFieldName ?? "id";
                 fieldType.keyField  = fieldType.FindField(keyName);
+                if (fieldType.keyField == null) throw new NullReferenceException("keyField");
             }
         }
     }

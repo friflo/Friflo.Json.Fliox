@@ -127,6 +127,18 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             }
             return false;
         }
+        
+        public static bool JsonNamingType(IEnumerable<CustomAttributeData> attributes, out JsonNamingType type) {
+            foreach (var attr in attributes) {
+                if (attr.AttributeType == typeof(JsonNamingAttribute)) {
+                    var arguments   = attr.ConstructorArguments;
+                    type = (JsonNamingType)arguments[0].Value;
+                    return true;
+                }
+            }
+            type = default;
+            return false;
+        }
     }
             
     public enum HandlerType

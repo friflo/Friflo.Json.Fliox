@@ -233,7 +233,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out var info)) {
                 typeDef = new NativeTypeDef(mapper, info.typeName, "Standard", null, info.typeId, Utf8Buffer);
             } else {
-                var keyField = mapper.PropFields?.KeyField?.name;
+                var keyField = mapper.PropFields?.KeyField?.jsonName;
                 var typeId   = mapper.type.IsEnum ? StandardTypeId.Enum : StandardTypeId.None;
                 var ns       = nonNullableType.Namespace ?? TypeDef.DefaultNamespace;
                 typeDef = new NativeTypeDef(mapper, nonNullableType.Name, ns, keyField, typeId, Utf8Buffer);

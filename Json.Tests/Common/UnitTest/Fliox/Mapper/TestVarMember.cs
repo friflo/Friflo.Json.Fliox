@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Utils;
@@ -15,6 +16,7 @@ using static NUnit.Framework.Assert;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
+    [JsonNaming(JsonNamingType.Default)]
     public class TestMemberClass {
         public DateTime     DateTime    { get; set; }
         public DateTime     dateTime;

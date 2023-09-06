@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 ""upper"":      12,
                 ""field"":      13
             }";
-            using (var typeStore =  new TypeStore(new StoreConfig(typeAccess, new CamelCaseNaming())))
+            using (var typeStore =  new TypeStore(new StoreConfig(typeAccess, CamelCaseNaming.Instance)))
             using (var m = new ObjectMapper(typeStore)) {
                 var naming = m.Read<Naming>(json);
                 var result = m.Write(naming);
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 ""Upper"":      12,
                 ""field"":      13
             }";
-            using (var typeStore = new TypeStore(new StoreConfig(typeAccess, new PascalCaseNaming())))
+            using (var typeStore = new TypeStore(new StoreConfig(typeAccess, PascalCaseNaming.Instance)))
             using (var m = new ObjectMapper(typeStore)) {
                 var naming = m.Read<Naming>(json);
                 var result = m.Write(naming);
