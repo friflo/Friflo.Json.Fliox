@@ -22,10 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
     public class TestMapper : LeakTestsFixture
     { 
-        [Test] public void  TestEnumMapperReflect()   { TestEnumMapper(TypeAccess.Reflection); }
-        [Test] public void  TestEnumMapperIL()        { TestEnumMapper(TypeAccess.IL); }
-        
-        private void TestEnumMapper(TypeAccess typeAccess) {
+        [Test]
+        public void TestEnumMapper() {
             // C#/.NET behavior in case of duplicate enum v
             AreEqual(EnumClass.Value1, EnumClass.Value3);
             var value1 = "\"Value1\"";
@@ -35,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var num11 =  "11";
             var num999 = "999";
 
-            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig()))
             using (var enc   = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var write = new ObjectWriter(typeStore))
             {
@@ -54,13 +52,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(EnumClass.Value2, enumValue2);
                 
                 // --- check allocation Write()
-                if (typeAccess == TypeAccess.Reflection) {
-                    start = Mem.GetAllocatedBytes();
-                    write.WriteAsBytes(enumValue1);
-                    write.WriteAsBytes(enumValue2);
-                    diff = Mem.GetAllocatedBytes() - start;
-                    Mem.NoAlloc(diff);
-                }
+
+                start = Mem.GetAllocatedBytes();
+                write.WriteAsBytes(enumValue1);
+                write.WriteAsBytes(enumValue2);
+                diff = Mem.GetAllocatedBytes() - start;
+                Mem.NoAlloc(diff);
+
 
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass>(value1));
                 AreEqual(EnumClass.Value2, enc.Read<EnumClass>(value2));
@@ -99,13 +97,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        [Test] public void  TestBigIntegerReflect()   { TestBigInteger(TypeAccess.Reflection); }
-        [Test] public void  TestBigIntegerIL()        { TestBigInteger(TypeAccess.IL); }
         
-        private void TestBigInteger(TypeAccess typeAccess) {
+        [Test]
+        public void TestBigInteger() {
             const string bigIntStr = "1234567890123456789012345678901234567890";
             var bigIntNum = BigInteger.Parse(bigIntStr);
-            using (var typeStore    = new TypeStore(new StoreConfig(typeAccess)))
+            using (var typeStore    = new TypeStore(new StoreConfig()))
             using (var enc          = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var bigInt       = new Bytes($"\"{bigIntStr}\"")) {
                 AreEqual(bigIntNum, enc.Read<BigInteger>(bigInt));
@@ -116,11 +113,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             public RecursiveClass recField;
         }
         
-        [Test] public void  TestMaxDepthReflect()   { TestMaxDepth(TypeAccess.Reflection); }
-        [Test] public void  TestMaxDepthIL()        { TestMaxDepth(TypeAccess.IL); }
-        
-        private void TestMaxDepth(TypeAccess typeAccess) {
-            using (var typeStore    = new TypeStore(new StoreConfig(typeAccess)))
+        [Test]
+        public void TestMaxDepth() {
+            using (var typeStore    = new TypeStore(new StoreConfig()))
             using (var enc          = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer       = new ObjectWriter(typeStore))
             using (var recDepth1    = new Bytes("{\"recField\":null}"))
@@ -175,11 +170,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
 
-        [Test] public void  TestDerivedClassReflect()   { TestDerivedClass(TypeAccess.Reflection); }
-        [Test] public void  TestDerivedClassIL()        { TestDerivedClass(TypeAccess.IL); }
-        
-        private void TestDerivedClass(TypeAccess typeAccess) {
-            using (var typeStore    = new TypeStore(new StoreConfig(typeAccess)))
+        [Test]
+        public void TestDerivedClass() {
+            using (var typeStore    = new TypeStore(new StoreConfig()))
             using (var derivedJson  = new Bytes("{\"baseField\":10,\"Int32\":20,\"derivedField\":21}"))
             using (var reader       = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer       = new ObjectWriter(typeStore))
@@ -190,9 +183,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(derivedJson.AsString(), jsonResult);
             }
         }
-
-
-        
 
     }
 }

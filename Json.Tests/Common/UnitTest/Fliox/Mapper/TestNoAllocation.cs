@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
              // --- class/map
             var testClass =     testClassJson; 
             
-            using (var typeStore    = new TypeStore(new StoreConfig(TypeAccess.Reflection)))
+            using (var typeStore    = new TypeStore(new StoreConfig()))
             using (var enc          = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var write        = new ObjectWriter(typeStore))
             {

@@ -33,10 +33,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             public int         namedProperty { get; set; }
         }
         
-        [Test] public void CamelCaseReflect()    { CamelCase(TypeAccess.Reflection); }
-        [Test] public void CamelCaseIL()         { CamelCase(TypeAccess.IL); }
-
-        private void CamelCase(TypeAccess typeAccess) {
+        [Test]
+        public void CamelCase() {
             string json = @"
             {
                 ""property"":   10,
@@ -44,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 ""upper"":      12,
                 ""field"":      13
             }";
-            using (var typeStore =  new TypeStore(new StoreConfig(typeAccess))) // ,CamelCaseNaming.Instance)))
+            using (var typeStore =  new TypeStore(new StoreConfig())) // ,CamelCaseNaming.Instance)))
             using (var m = new ObjectMapper(typeStore)) {
                 var naming = m.Read<Naming>(json);
                 var result = m.Write(naming);

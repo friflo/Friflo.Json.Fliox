@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         [Test]
         public void TestIList() {
-            using (var typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
+            using (var typeStore   = new TypeStore(new StoreConfig()))
             using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
             using (var dst         = new TestBytes())
@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
         [Test]
         public void TestICollection() {
-            using (var typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
+            using (var typeStore   = new TypeStore(new StoreConfig()))
             using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
             using (var dst         = new TestBytes())
@@ -111,7 +111,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         [Test]
         public void TestIEnumerable() {
-            using (var typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
+            using (var typeStore   = new TypeStore(new StoreConfig()))
             using (var writer      = new ObjectWriter(typeStore))
             {
                 // --- IEnumerable<>
@@ -128,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         [Test]
         public void TestReadOnlyCollection() {
-            using (var typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
+            using (var typeStore   = new TypeStore(new StoreConfig()))
             using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
             using (var dst         = new TestBytes())
@@ -165,7 +165,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
         [Test]
         public void TestStack() {
-            using (var typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
+            using (var typeStore   = new TypeStore(new StoreConfig()))
             using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
             using (var dst         = new TestBytes())
@@ -183,7 +183,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         [Test]
         public void TestQueue() {
-            using (var typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
+            using (var typeStore   = new TypeStore(new StoreConfig()))
             using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
             using (var dst         = new TestBytes())
@@ -200,7 +200,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
         [Test]
         public void TestIDictionary() {
-            using (var typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
+            using (var typeStore   = new TypeStore(new StoreConfig()))
             using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow})
             using (var writer      = new ObjectWriter(typeStore))
             using (var dst         = new TestBytes())

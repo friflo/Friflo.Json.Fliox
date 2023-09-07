@@ -25,7 +25,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public  readonly    bool            isNullable;
         public  readonly    bool            isValueType;
         public  readonly    Type            nullableUnderlyingType;
-        public  readonly    bool            useIL;
         public  readonly    string          docs;
         internal            int             classId;    // id >= 0 for reference types. Otherwise -1
 #if DEBUG
@@ -59,8 +58,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 if (isNull != isNullable)
                     throw new Invalid("invalid parameter: isNullable");
             }
-            this.useIL                  = config != null && config.useIL && isValueType && !type.IsPrimitive;
-            
             var assemblyDocs = config?.assemblyDocs;
             if (assemblyDocs != null && !type.IsGenericType) {
                 var assembly    = type.Assembly;

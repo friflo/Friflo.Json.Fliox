@@ -28,10 +28,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             public EnumNull?    nullableEnum;
         }
         
-        [Test] public void WriteNullReflect()   { WriteNull(TypeAccess.Reflection); }
-        [Test] public void WriteNullIL()        { WriteNull(TypeAccess.IL); }
         
-        private void WriteNull(TypeAccess typeAccess) {
+        [Test]
+        public void WriteNull() {
             string json = @"
             {
                 ""int32"":          null,
@@ -39,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 ""nullableStruct"": null,
                 ""nullableEnum"":   null
             }";
-            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig()))
             using (var m = new ObjectMapper(typeStore)) {
                 var naming = m.Read<TestNull>(json);
                 var result = m.Write(naming);
@@ -49,12 +48,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        [Test] public void OmitNullReflect()    { OmitNull(TypeAccess.Reflection); }
-        [Test] public void OmitNullIL()         { OmitNull(TypeAccess.IL); }
-
-        private void OmitNull(TypeAccess typeAccess) {
+        [Test]
+        public void OmitNull() {
             string json = "{}";
-            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig()))
             using (var m = new ObjectMapper(typeStore)) {
                 m.WriteNullMembers = false;
                 var naming = m.Read<TestNull>(json);

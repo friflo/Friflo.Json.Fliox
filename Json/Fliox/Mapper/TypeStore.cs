@@ -18,12 +18,10 @@ namespace Friflo.Json.Fliox.Mapper
     [CLSCompliant(true)]
 #endif
     public sealed class StoreConfig {
-        public   readonly   bool                        useIL;
         internal readonly   Dictionary<Type, KeyMapper> keyMappers;
         internal            AssemblyDocs                assemblyDocs;
 
-        public StoreConfig(TypeAccess typeAccess = TypeAccess.Reflection) {
-            this.useIL = typeAccess == TypeAccess.IL;
+        public StoreConfig() {
             this.keyMappers = KeyMapper.CreateDefaultKeyMappers();
         }
         
@@ -32,11 +30,6 @@ namespace Friflo.Json.Fliox.Mapper
         }
     }
 
-    public enum TypeAccess {
-        Reflection  = 1,
-        IL          = 2
-    }
-    
     /// <summary>
     /// Thread safe store containing the required <see cref="Type"/> information for marshalling and unmarshalling.
     /// Can be shared across threads by <see cref="Reader"/> and <see cref="ObjectWriter"/> instances.

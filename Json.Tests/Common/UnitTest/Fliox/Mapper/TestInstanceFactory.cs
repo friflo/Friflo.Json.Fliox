@@ -39,12 +39,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
 
 
-        [Test]  public void  TestInterfaceReflect()   { TestInterface(TypeAccess.Reflection); }
-        [Test]  public void  TestInterfaceIL()        { TestInterface(TypeAccess.IL); }
-        
-        private void TestInterface(TypeAccess typeAccess) {
+        [Test]
+        public void TestInterface() {
             var json = "{\"int32\":123}";
-            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig()))
             using (var reader = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer = new ObjectWriter(typeStore))
             {
@@ -96,12 +94,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             public int int32;
         }
         
-        [Test]  public void  TestPolymorphicReflect()   { TestPolymorphic(TypeAccess.Reflection); }
-        [Test]  public void  TestPolymorphicIL()        { TestPolymorphic(TypeAccess.IL); }
-        
-        private void TestPolymorphic(TypeAccess typeAccess) {
+       
+        [Test]
+        public void TestPolymorphic() {
             var json = "{\"animalType\":\"lion\",\"int32\":123}";
-            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig()))
             using (var reader = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer = new ObjectWriter(typeStore))
             {
@@ -142,12 +139,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             public int int32;
         }
 
-        [Test]  public void  TestAbstractReflect()   { TestAbstract(TypeAccess.Reflection); }
-        [Test]  public void  TestAbstractIL()        { TestAbstract(TypeAccess.IL); }
-        
-        private void TestAbstract(TypeAccess typeAccess) {
+       
+        [Test]
+        public void TestAbstract() {
             var json = "{\"personType\":\"Employee\",\"int32\":123}";
-            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig()))
             using (var reader = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer = new ObjectWriter(typeStore))
             {
@@ -168,10 +164,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             public List<IAnimal>    animals = new List<IAnimal>();
         }
         
-        [Test]  public void  TestFactoryCollectionReflect()   { TestFactoryCollection(TypeAccess.Reflection); }
-        [Test]  public void  TestFactoryCollectionIL()        { TestFactoryCollection(TypeAccess.IL); }
-        
-        private void TestFactoryCollection(TypeAccess typeAccess) {
+        [Test]
+        public void TestFactoryCollection() {
             var json = @"
 {
     ""books"": [
@@ -188,7 +182,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 }";
             string expect = string.Concat(json.Where(c => !char.IsWhiteSpace(c)));
             
-            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig()))
             using (var reader = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer = new ObjectWriter(typeStore))
             {
