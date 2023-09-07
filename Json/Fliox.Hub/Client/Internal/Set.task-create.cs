@@ -216,7 +216,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var filterTree  = FilterToJson(query.filter, context.mapper);
             return new QueryEntities {
                 container   = nameShort,
-                keyName     = SyncKeyName(keyName),
                 isIntKey    = IsIntKey(isIntKey),
                 // using filter is sufficient. Pass filterTree to avoid parsing filter in Protocol.Tasks.QueryEntities
                 filterTree  = filterTree, // default,
@@ -262,7 +261,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var list = new List<JsonEntity>(patches.Count);
             foreach (var patch in patches) {
-                list.Add(new JsonEntity(patch.entityPatch));
+                var id = KeyConvert.KeyToId(patch.Key);
+                list.Add(new JsonEntity(id, patch.entityPatch));
             }
             return new MergeEntities {
                 container   = nameShort,

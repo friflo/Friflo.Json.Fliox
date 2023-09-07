@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         protected readonly  string                              instanceName;
         internal  readonly  EntityDatabase                      database;
         internal  readonly  Dictionary<string, QueryEnumerator> cursors = new Dictionary<string, QueryEnumerator>();
-        internal  readonly  string                              keyName;
+        public    readonly  string                              keyName;
 
         public    virtual   bool                                Pretty      => false;
         public    override  string                              ToString()  => $"{GetType().Name} - {instanceName}";

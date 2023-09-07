@@ -86,7 +86,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             IsFalse(sync.Success);
             IsFalse(createTask.Success);
-            AreEqual("InvalidTask ~ error at entities[0]: entity value must be an object.", createTask.Error.Message);
+            AreEqual(@"EntityErrors ~ count: 1
+| WriteError: articles [invalid-json], unexpected character while reading value. Found: X at Article > (root), pos: 1", createTask.Error.Message);
 
         }
     }

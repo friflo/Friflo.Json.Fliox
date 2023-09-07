@@ -179,7 +179,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
                 }
             }
             var entities    = new List<EntityValue>(documents.Count);
-            KeyValueUtils.CopyEntities(documents, "id", command.isIntKey, command.keyName, entities, syncContext);
+            KeyValueUtils.CopyEntities(documents, "id", command.isIntKey, keyName, entities, syncContext);
             if (filterByClient) {
                 throw new NotImplementedException();
                 // return FilterEntities(command, entities, syncContext);

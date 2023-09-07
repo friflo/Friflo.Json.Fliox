@@ -374,8 +374,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var entityTypes     = Schema.typeSchema.GetEntityTypes();
                 foreach (var pair in entityTypes) {
                     var container   = pair.Key;
-                    string keyName  = pair.Value.KeyField.name;
-                    await SeedContainer(src, container, keyName, maxCount, syncContext).ConfigureAwait(false);
+                    await SeedContainer(src, container, maxCount, syncContext).ConfigureAwait(false);
                 }
             }
             finally {
@@ -384,7 +383,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return this;
         }
         
-        private async Task SeedContainer(EntityDatabase src, string container, string keyName, int? maxCount, SyncContext syncContext)
+        private async Task SeedContainer(EntityDatabase src, string container, int? maxCount, SyncContext syncContext)
         {
             var containerName   = new ShortString(container);
             var srcContainer    = src.GetOrCreateContainer(containerName);
@@ -394,7 +393,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             var query           = new QueryEntities {
                 container       = containerName,
                 filterContext   = filterContext,
-                keyName         = keyName,
                 maxCount        = maxCount,
             };
             while (true) {
@@ -403,11 +401,11 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var values      = queryResult.entities.Values;
                 var entities    = new List<JsonEntity>(values.Length);
                 foreach (var entity in values) {
-                    entities.Add(new JsonEntity(entity.Json));
+                    entities.Add(new JsonEntity(entity.key, entity.Json));
                 }
-                if (!KeyValueUtils.GetKeysFromEntities (keyName, entities, syncContext.sharedEnv, out string error)) {
+                /* if (!KeyValueUtils.GetKeysFromEntities (keyName, entities, syncContext.sharedEnv, out string error)) {
                     throw new InvalidOperationException($"seeding data error. container: {container}, error: {error}");
-                }
+                } */
                 var upsert = new UpsertEntities { container = containerName, entities = entities };
                 var result = await dstContainer.UpsertEntitiesAsync(upsert, syncContext).ConfigureAwait(false);
                 var upsertError = result.Error; 

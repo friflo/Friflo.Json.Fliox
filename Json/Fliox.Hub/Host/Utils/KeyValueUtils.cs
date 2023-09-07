@@ -62,6 +62,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             SharedEnv           env,
             out string          error
         ) {
+            if (entities.Count == 0 || !entities[0].key.IsNull()) {
+                // early out: in case of direct (!= remote) execution keys are set by the client
+                error = null;
+                return true;
+            }
             using (var pooled = env.pool.EntityProcessor.Get()) {
                 var processor = pooled.instance;
                 for (int n = 0; n < entities.Count; n++) {
