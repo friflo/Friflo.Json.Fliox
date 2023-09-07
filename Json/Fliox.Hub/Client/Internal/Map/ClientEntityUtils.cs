@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                         continue;
                     var mapper      = GetEntitySetMapper(propType);
                     var genericArgs = propType.GetGenericArguments();
-                    var info        = new EntitySetInfo (index++, property.Name, propType, genericArgs[0], genericArgs[1], client, mapper, property );
+                    var info        = new EntitySetInfo (index++, propType, genericArgs[0], genericArgs[1], client, mapper, property );
                     entityInfos.Add(info);
                 }
                 FieldInfo[] fields = client.GetFields(flags);
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                         continue;
                     var mapper      = GetEntitySetMapper(fieldType);
                     var genericArgs = fieldType.GetGenericArguments();
-                    var info        = new EntitySetInfo (index++, field.Name, fieldType, genericArgs[0], genericArgs[1], client, mapper, field);
+                    var info        = new EntitySetInfo (index++, fieldType, genericArgs[0], genericArgs[1], client, mapper, field);
                     entityInfos.Add(info);
                 }
                 result = entityInfos.ToArray();
@@ -90,6 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
     
     public readonly struct EntitySetInfo
     {
+        public   readonly   string              memberName;
         public   readonly   string              container;
         public   readonly   ShortString         containerShort;
         public   readonly   Type                keyType;
@@ -104,7 +105,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
 
         internal EntitySetInfo (
             int                 index,
-            string              container,
             Type                entitySetType,
             Type                keyType,
             Type                entityType,
@@ -113,10 +113,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             MemberInfo          member)
         {
             this.index          = index;
-            containerMember     = mapper.CreateContainerMember(client, container);
-            AttributeUtils.Property(member.CustomAttributes, out string name);
-            this.container      = name ?? container;
-            this.containerShort = new ShortString(this.container);
+            memberName          = member.Name;
+            container           = AttributeUtils.GetMemberJsonName(member);
+            containerShort      = new ShortString(container);
+            containerMember     = mapper.CreateContainerMember(client, memberName);
             this.entitySetType  = entitySetType;
             this.keyType        = keyType;
             this.entityType     = entityType;

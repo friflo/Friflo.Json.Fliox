@@ -26,14 +26,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static void TraceExpression(Expression expression, StringBuilder sb, ref bool isArraySelector) {
             switch (expression) {
                 case MemberExpression member:
-                    MemberInfo memberInfo = member.Member;
-                    var name = memberInfo.Name;
-                    AttributeUtils.Property(memberInfo.CustomAttributes, out var customName);
-                    if (customName != null)
-                        name = customName;
-                    
+                    var memberInfo  = member.Member;
+                    var jsonName    = AttributeUtils.GetMemberJsonName(memberInfo);
                     sb.Append('.');
-                    sb.Append(name);
+                    sb.Append(jsonName);
                     var type = expression.Type;
                     if (type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type)) {
                         sb.Append("[*]");

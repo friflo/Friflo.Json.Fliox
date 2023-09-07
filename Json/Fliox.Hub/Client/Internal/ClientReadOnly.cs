@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         // Validate [Relation(<container>)] fields / properties
         private static string ValidateMappers(Type clientType, IEntitySetMapper[] mappers, EntitySetInfo[] entityInfos) {
-            var entityInfoMap = entityInfos.ToDictionary(entityInfo => entityInfo.container);
+            var entityInfoMap = entityInfos.ToDictionary(entityInfo => entityInfo.memberName);
             for (int n = 0; n < mappers.Length; n++) {
                 var typeMapper      = (TypeMapper)mappers[n];
                 var info            = entityInfos[n];

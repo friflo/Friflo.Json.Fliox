@@ -19,13 +19,11 @@ namespace Friflo.Json.Fliox.Mapper
 #endif
     public sealed class StoreConfig {
         public   readonly   bool                        useIL;
-        public   readonly   IJsonNaming                 jsonNaming;
         internal readonly   Dictionary<Type, KeyMapper> keyMappers;
         internal            AssemblyDocs                assemblyDocs;
 
-        public StoreConfig(TypeAccess typeAccess = TypeAccess.Reflection, IJsonNaming jsonNaming = null) {
+        public StoreConfig(TypeAccess typeAccess = TypeAccess.Reflection) {
             this.useIL = typeAccess == TypeAccess.IL;
-            this.jsonNaming = jsonNaming ?? new DefaultNaming();
             this.keyMappers = KeyMapper.CreateDefaultKeyMappers();
         }
         

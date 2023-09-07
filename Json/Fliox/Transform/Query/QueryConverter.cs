@@ -148,14 +148,10 @@ namespace Friflo.Json.Fliox.Transform.Query
 
         public static string GetMemberName(MemberExpression member, LambdaCx cx) {
             MemberInfo memberInfo = member.Member;
-            AttributeUtils.Property(memberInfo.CustomAttributes, out var customName);
-            if (customName != null) {
-                return customName;
-            }
             switch (memberInfo) {
                 case FieldInfo:
                 case PropertyInfo:
-                    return memberInfo.Name;
+                    return AttributeUtils.GetMemberJsonName(memberInfo);
                 default:
                     throw NotSupported($"Member not supported: {member}", cx);
             }

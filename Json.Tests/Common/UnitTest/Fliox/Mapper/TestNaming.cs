@@ -13,6 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     public class TestNaming : LeakTestsFixture
     {
+        [JsonNaming(JsonNamingType.CamelCase)]
         class Naming {
             public int      lower;
             public int      Upper;
@@ -43,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 ""upper"":      12,
                 ""field"":      13
             }";
-            using (var typeStore =  new TypeStore(new StoreConfig(typeAccess, CamelCaseNaming.Instance)))
+            using (var typeStore =  new TypeStore(new StoreConfig(typeAccess))) // ,CamelCaseNaming.Instance)))
             using (var m = new ObjectMapper(typeStore)) {
                 var naming = m.Read<Naming>(json);
                 var result = m.Write(naming);
@@ -53,27 +54,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        [Test] public void PascalCaseReflect()    { PascalCase(TypeAccess.Reflection); }
-        [Test] public void PascalCaseIL()         { PascalCase(TypeAccess.IL); }
-        
-        private void PascalCase(TypeAccess typeAccess) {
-            string json = @"
-            {
-                ""property"":   10,
-                ""Lower"":      11,
-                ""Upper"":      12,
-                ""field"":      13
-            }";
-            using (var typeStore = new TypeStore(new StoreConfig(typeAccess, PascalCaseNaming.Instance)))
-            using (var m = new ObjectMapper(typeStore)) {
-                var naming = m.Read<Naming>(json);
-                var result = m.Write(naming);
-                string expect = string.Concat(json.Where(c => !char.IsWhiteSpace(c)));
-
-                AreEqual(expect, result);
-            }
-        }
-
         [JsonNaming(JsonNamingType.CamelCase)]
         class CamelCaseClass {
             public int      lowerProperty { get; set; }

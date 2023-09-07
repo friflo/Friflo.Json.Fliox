@@ -30,33 +30,19 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     public sealed class  FieldQuery<T> : FieldQuery
     {
         internal readonly   List<PropField<T>>  fieldList = new List <PropField<T>>();
-        private  readonly   IJsonNaming         jsonNaming;
 
         public FieldQuery(TypeStore typeStore, Type type, Type genClass, FieldFilter fieldFilter = null)
             : base(typeStore, type, genClass, fieldFilter ?? FieldFilter.DefaultMemberFilter)
         {
-            if (AttributeUtils.JsonNamingType(type.CustomAttributes, out var namingType)) {
-                jsonNaming = namingType switch
-                {
-                    JsonNamingType.Default      => DefaultNaming.Instance,
-                    JsonNamingType.CamelCase    => CamelCaseNaming.Instance,
-                    JsonNamingType.PascalCase   => PascalCaseNaming.Instance,
-                    _                           => typeStore.config.jsonNaming
-                };
-            } else {
-                jsonNaming = typeStore.config.jsonNaming;
-            }
-            
             TraverseMembers(type, true);
             foreach (var field in fieldList) {
                 fields.Add(field);
             }
         }
-
+        
         private void CreatePropField (Type type, string fieldName, PropertyInfo property, FieldInfo field, bool addMembers) {
             // getter have higher priority than fields with the same fieldName. Same behavior as other serialization libs
             Type            memberType;
-            string          jsonName;
             bool            required;
             MemberInfo      memberInfo;
             string          docPrefix;
@@ -64,7 +50,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 memberInfo   = property;
                 docPrefix    = "P:";
                 memberType   = property.PropertyType;
-                AttributeUtils.Property(property.CustomAttributes, out jsonName);
                 required    = AttributeUtils.IsRequired(property.CustomAttributes);
                 if (property.GetSetMethod(false) == null) {
                     required = true;
@@ -73,7 +58,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 memberInfo   = field;
                 docPrefix    = "F:";
                 memberType   = field.FieldType;
-                AttributeUtils.Property(field.CustomAttributes, out jsonName);
                 required    = AttributeUtils.IsRequired(field.CustomAttributes);
                 // used for fields like: readonly EntitySet<Order>
                 if ((field.Attributes & FieldAttributes.InitOnly) != 0) {
@@ -94,7 +78,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 bool isNullableEnum      = ut != null && ut.IsEnum;
                 
                 if (addMembers) {
-                    jsonName          ??= jsonNaming.PropertyName(fieldName);
+                    var jsonName        = AttributeUtils.GetMemberJsonName(memberInfo);
                     string docs         = null;
                     var assemblyDocs    = typeStore.assemblyDocs;
                     var declaringType   = memberInfo.DeclaringType;

@@ -11,16 +11,48 @@ namespace Friflo.Json.Fliox.Mapper.Utils
 {
     public static class AttributeUtils {
                 
-        public static void Property(IEnumerable<CustomAttributeData> attributes, out string name) {
-            name        = null;
-            foreach (var attr in attributes) {
-                if (attr.AttributeType != typeof(SerializeAttribute))
+        public static string GetMemberJsonName(MemberInfo memberInfo) {
+            foreach (var attr in memberInfo.CustomAttributes) {
+                if (attr.AttributeType != typeof(SerializeAttribute)) {
                     continue;
+                }
                 var arguments   = attr.ConstructorArguments;
-                name = arguments.Count < 1 ? null : (string)arguments[0].Value;
+                if (arguments.Count >= 1) {
+                    var name = (string)arguments[0].Value;
+                    if (name != null) {
+                        return name;
+                    }
+                }
+                break;
             }
+            var jsonNaming = GetJsonNaming(memberInfo.DeclaringType);
+            return jsonNaming.PropertyName(memberInfo.Name);
+        }
+
+        private static IJsonNaming GetJsonNaming(Type type) {
+            if (JsonNamingType(type.CustomAttributes, out var namingType)) {
+                return namingType switch {
+                    Fliox.JsonNamingType.Default    => DefaultNaming.Instance,
+                    Fliox.JsonNamingType.CamelCase  => CamelCaseNaming.Instance,
+                    Fliox.JsonNamingType.PascalCase => PascalCaseNaming.Instance,
+                    _                               => DefaultNaming.Instance
+                };
+            }
+            return DefaultNaming.Instance;
         }
         
+        private static bool JsonNamingType(IEnumerable<CustomAttributeData> attributes, out JsonNamingType type) {
+            foreach (var attr in attributes) {
+                if (attr.AttributeType == typeof(JsonNamingAttribute)) {
+                    var arguments   = attr.ConstructorArguments;
+                    type = (JsonNamingType)arguments[0].Value;
+                    return true;
+                }
+            }
+            type = default;
+            return false;
+        }
+
         public static string CommandName(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
                 if (attr.AttributeType != typeof(DatabaseCommandAttribute))
@@ -125,18 +157,6 @@ namespace Friflo.Json.Fliox.Mapper.Utils
                 if (attr.AttributeType == typeof(AutoIncrementAttribute))
                     return true;
             }
-            return false;
-        }
-        
-        public static bool JsonNamingType(IEnumerable<CustomAttributeData> attributes, out JsonNamingType type) {
-            foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(JsonNamingAttribute)) {
-                    var arguments   = attr.ConstructorArguments;
-                    type = (JsonNamingType)arguments[0].Value;
-                    return true;
-                }
-            }
-            type = default;
             return false;
         }
     }
