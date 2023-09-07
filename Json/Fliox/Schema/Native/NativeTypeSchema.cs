@@ -53,8 +53,9 @@ namespace Friflo.Json.Fliox.Schema.Native
             using (var typeStore = new TypeStore())
             {
                 typeStore.AddMappers(typeList);
-                var typeMappers = typeStore.GetTypeMappers();
-                TypeMapper rootTypeMapper = typeMappers[rootType];
+                var typeMappers     = typeStore.GetTypeMappers();
+                var rootMapper      = typeMappers[rootType];
+                var containerFields = rootMapper.PropFields?.fields;
 
                 // Collect all types into containers to simplify further processing
                 nativeTypes     = new Dictionary<Type, NativeTypeDef>(typeMappers.Count);
@@ -63,17 +64,6 @@ namespace Friflo.Json.Fliox.Schema.Native
                     TypeMapper  mapper  = pair.Value;
                     AddType(types, mapper, typeStore);
                 }
-                /* typeMappers = typeStore.GetTypeMappers();
-                foreach (var pair in typeMappers) {
-                    TypeMapper  mapper  = pair.Value;
-                    if (mapper.type == typeof(Guid?)) {
-                        int x = 1;
-                    }
-                    if (mapper.type == typeof(Guid)) {
-                        int x = 1;
-                    }
-                    AddType(types, mapper, typeStore);
-                } */
                 // in case any Nullable<> was found - typeStore contain now also their non-nullable counterparts.
                 typeMappers = typeStore.GetTypeMappers();
                 
@@ -103,7 +93,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                     if (propFields == null) {
                         continue;
                     }
-                    InitClassType(typeDef);
+                    InitClassType(typeDef, containerFields);
                     if (HubMessagesUtils.IsSchemaType(typeDef.native)) {
                         var commands = HubMessagesUtils.GetMessageInfos(typeDef.native, typeStore);
                         AddSchemaMessages(typeDef, commands);
@@ -121,7 +111,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             }
         }
         
-        private void InitClassType(NativeTypeDef typeDef)
+        private void InitClassType(NativeTypeDef typeDef, PropField[] containerFields)
         {
             // --- add class / struct fields
             var fields              = typeDef.mapper.PropFields.fields;
@@ -145,11 +135,14 @@ namespace Friflo.Json.Fliox.Schema.Native
                         type = nativeTypes[underlyingMapper.type];
                     }
                 } else {
-                    type            = nativeTypes[nonNullableType];
+                    type = nativeTypes[nonNullableType];
                 }
-                var relation    = propField.relation;
-                var required    = propField.required || !isNullable;
-                bool isAutoIncrement = AttributeUtils.IsAutoIncrement(propField.Member.CustomAttributes);
+                string relation = null;
+                if (containerFields != null && propField.relation != null) {
+                    relation = GetContainerField(containerFields, propField.relation)?.jsonName;
+                }
+                var required        = propField.required || !isNullable;
+                var isAutoIncrement = AttributeUtils.IsAutoIncrement(propField.Member.CustomAttributes);
 
                 var fieldDef = new FieldDef (propField.jsonName, propField.name, required, isAutoIncrement, type, propField,
                     isArray, isDictionary, isNullableElement, typeDef, relation, propField.docs, Utf8Buffer);
@@ -297,6 +290,15 @@ namespace Friflo.Json.Fliox.Schema.Native
                 }
             }
             return new ArgAttributes(required, typeDef, isArray);
+        }
+        
+        private static PropField GetContainerField(PropField[] containers, string name) {
+            foreach (var container in containers) {
+                if (container.name == name) {
+                    return container;
+                }
+            }
+            throw new InvalidOperationException($"container not found: {name}");
         }
     }
     

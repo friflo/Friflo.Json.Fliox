@@ -100,7 +100,12 @@ namespace Friflo.Json.Fliox.Schema.Definition
                     var relation = typeField.relation;
                     if (relation == null)
                         continue;
-                    typeField.relationType = rootTypeDef.FindField(relation).type;
+                    var relationField = rootTypeDef.FindField(relation);
+                    if (relationField == null) {
+                        var msg = $"[Relation(\"{relation}\")] at {type.Namespace}.{type.Name}#{typeField.name} not found";
+                        throw new InvalidOperationException(msg);
+                    }
+                    typeField.relationType = relationField.type;
                 }
             }
         }
