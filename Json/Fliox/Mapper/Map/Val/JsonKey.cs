@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     return new JsonKey();
                 case JsonEvent.ValueString:
                     success = true;
-                    return new JsonKey(parser.value.AsSpan());
+                    return new JsonKey(parser.value.AsSpan(), default);
                 case JsonEvent.ValueNumber:
                     success = true;
                     return new JsonKey(parser.value, value);

@@ -51,6 +51,8 @@ namespace Friflo.Json.Fliox
         [MethodImpl(AggressiveInlining)] public     bool    IsNull()        => keyObj == null;
         [MethodImpl(AggressiveInlining)] internal   int     GetShortLength()=> (int)(lng2 >> ShortStringUtils.ShiftLength) - 1;
                                          public     bool    IsLong()        => keyObj == LONG;
+                                         public     bool    IsGuid()        => keyObj == GUID;
+                                         public     bool    IsString()      => keyObj == STRING_SHORT || keyObj is string;
         
         public      override    string  ToString()  => GetString(); 
 
@@ -94,20 +96,6 @@ namespace Friflo.Json.Fliox
         public JsonKey (in Bytes bytes, in JsonKey oldKey)
             : this (bytes.AsSpan(), oldKey)
         { }
-        
-        public JsonKey (in ReadOnlySpan<byte> bytes) {
-            var bytesLen = bytes.Length;
-            if (bytesLen == Bytes.GuidLength && Bytes.TryParseGuid(bytes, out var guid)) {
-                keyObj  = GUID;
-                GuidUtils.GuidToLongLong(guid, out lng, out lng2);
-                return;
-            }
-            if (ShortStringUtils.BytesToLongLong(bytes, out lng, out lng2)) {
-                keyObj  = STRING_SHORT;
-            } else {
-                keyObj  = ShortString.GetString(bytes, null, out lng, out lng2);
-            }
-        }
         
         public JsonKey (in ReadOnlySpan<byte> bytes, in JsonKey oldKey) {
             if (Bytes.IsIntegral(bytes)) {

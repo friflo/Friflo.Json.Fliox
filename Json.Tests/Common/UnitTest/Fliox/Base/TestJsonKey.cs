@@ -79,6 +79,47 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Base
             }
         }
         
+        [Test]
+        public static void JsonKeyTests_Serialization () {
+            var mapper = new ObjectMapper(new TypeStore());
+            {
+                var key     = new JsonKey("123");
+                var json    = mapper.writer.Write(key);
+                AreEqual("123", json);
+                var result  = mapper.Read<JsonKey>(json);
+                IsTrue(result.IsLong());
+                IsTrue(key.IsEqual(result));
+            } {
+                // keys are normalized to either: LONG, string or GUID
+                var key     = new JsonKey("456");
+                var json    = "\"456\""; // normalized to LONG
+                var result  = mapper.Read<JsonKey>(json);
+                IsTrue(result.IsLong());
+                IsTrue(key.IsEqual(result));
+            } {
+                var key     = new JsonKey("55554444-3333-2222-1111-666677778888");
+                var json    = mapper.writer.Write(key);
+                AreEqual("\"55554444-3333-2222-1111-666677778888\"", json);
+                var result  = mapper.Read<JsonKey>(json);
+                IsTrue(result.IsGuid());
+                IsTrue(key.IsEqual(result));
+            } {
+                var key     = new JsonKey("short string");
+                var json    = mapper.writer.Write(key);
+                AreEqual("\"short string\"", json);
+                var result  = mapper.Read<JsonKey>(json);
+                IsTrue(result.IsString());
+                IsTrue(key.IsEqual(result));
+            } {
+                var key     = new JsonKey("string longer than 15 characters");
+                var json    = mapper.writer.Write(key);
+                AreEqual("\"string longer than 15 characters\"", json);
+                var result  = mapper.Read<JsonKey>(json);
+                IsTrue(result.IsString());
+                IsTrue(key.IsEqual(result));
+            }
+        }
+        
         /// <summary>
         /// Compare performance of <see cref="ShortStringUtils"/> optimization using 15 / 16 characters 
         /// </summary>
