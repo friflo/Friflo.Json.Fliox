@@ -35,10 +35,10 @@ public class TodoCommands : IServiceCommands
             return Result.Error(error);
         }
         var client  = new TodoClient(context.Hub); 
-        var jobs    = client.jobs.Query(job => job.completed == param.Value);
+        var jobs    = client.Jobs.Query(job => job.completed == param.Value);
         await client.SyncTasks();
 
-        client.jobs.DeleteRange(jobs.Result);
+        client.Jobs.DeleteRange(jobs.Result);
         await client.SyncTasks();
         
         return jobs.Result.Count;

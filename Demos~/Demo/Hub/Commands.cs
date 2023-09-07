@@ -42,11 +42,11 @@ public class DemoCommands : IServiceCommands
         }
         var result = FakeUtils.CreateFakes(fake);
         
-        if (result.articles     != null)    client.articles  .UpsertRange(result.articles);
-        if (result.customers    != null)    client.customers .UpsertRange(result.customers);
-        if (result.employees    != null)    client.employees .UpsertRange(result.employees);
-        if (result.orders       != null)    client.orders    .UpsertRange(result.orders);
-        if (result.producers    != null)    client.producers .UpsertRange(result.producers);
+        if (result.articles     != null)    client.Articles  .UpsertRange(result.articles);
+        if (result.customers    != null)    client.Customers .UpsertRange(result.customers);
+        if (result.employees    != null)    client.Employees .UpsertRange(result.employees);
+        if (result.orders       != null)    client.Orders    .UpsertRange(result.orders);
+        if (result.producers    != null)    client.Producers .UpsertRange(result.producers);
         
         await client.SyncTasks();
         
@@ -74,11 +74,11 @@ public class DemoCommands : IServiceCommands
         var seconds         = duration ?? 60;
         var from            = DateTime.Now.AddSeconds(-seconds);
 
-        var articleCount    = client.articles.   Count(o => o.created >= from);
-        var customerCount   = client.customers.  Count(o => o.created >= from);
-        var employeeCount   = client.employees.  Count(o => o.created >= from);
-        var orderCount      = client.orders.     Count(o => o.created >= from);
-        var producerCount   = client.producers.  Count(o => o.created >= from);
+        var articleCount    = client.Articles.   Count(o => o.created >= from);
+        var customerCount   = client.Customers.  Count(o => o.created >= from);
+        var employeeCount   = client.Employees.  Count(o => o.created >= from);
+        var orderCount      = client.Orders.     Count(o => o.created >= from);
+        var producerCount   = client.Producers.  Count(o => o.created >= from);
         
         await client.SyncTasks();
         
@@ -104,11 +104,11 @@ public class DemoCommands : IServiceCommands
         var seconds         = duration ?? 60;
         var from            = DateTime.Now.AddSeconds(-seconds);
 
-        var articleCount    = client.articles.   Query(o => o.created >= from);
-        var customerCount   = client.customers.  Query(o => o.created >= from);
-        var employeeCount   = client.employees.  Query(o => o.created >= from);
-        var orderCount      = client.orders.     Query(o => o.created >= from);
-        var producerCount   = client.producers.  Query(o => o.created >= from);
+        var articleCount    = client.Articles.   Query(o => o.created >= from);
+        var customerCount   = client.Customers.  Query(o => o.created >= from);
+        var employeeCount   = client.Employees.  Query(o => o.created >= from);
+        var orderCount      = client.Orders.     Query(o => o.created >= from);
+        var producerCount   = client.Producers.  Query(o => o.created >= from);
         
         await client.SyncTasks();
         

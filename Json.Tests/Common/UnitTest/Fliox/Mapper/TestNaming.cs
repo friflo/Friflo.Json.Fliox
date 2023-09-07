@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
     public class TestNaming : LeakTestsFixture
     {
-        [JsonNaming(JsonNamingType.CamelCase)]
+        [NamingPolicy(NamingPolicyType.CamelCase)]
         class Naming {
             public int      lower;
             public int      Upper;
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
         }
         
-        [JsonNaming(JsonNamingType.CamelCase)]
+        [NamingPolicy(NamingPolicyType.CamelCase)]
         class CamelCaseClass {
             public int      lowerProperty { get; set; }
             public int      UpperProperty { get; set; }
@@ -76,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             AreEqual(4, result.UpperField);
         }
         
-        [JsonNaming(JsonNamingType.PascalCase)]
+        [NamingPolicy(NamingPolicyType.PascalCase)]
         class PascalCaseClass {
             public int      lowerProperty { get; set; }
             public int      UpperProperty { get; set; }

@@ -37,11 +37,11 @@ public static class TodoTests
     {
         var hub         = CreateTodoHub();
         var client      = new TodoClient(hub);
-        var jobs        = client.jobs.QueryAll();
+        var jobs        = client.Jobs.QueryAll();
         await client.SyncTasks();
         
         AreEqual(2, jobs.Result.Count);
-        AreEqual(2, client.jobs.Local.Count);
+        AreEqual(2, client.Jobs.Local.Count);
     }
     
     [Test]
@@ -49,11 +49,11 @@ public static class TodoTests
     {
         var hub         = CreateTodoHub();
         var client      = new TodoClient(hub);
-        var jobs        = client.jobs.Query(o => o.completed == true);
+        var jobs        = client.Jobs.Query(o => o.completed == true);
         await client.SyncTasks();
         
         AreEqual(1, jobs.Result.Count);
-        AreEqual(1, client.jobs.Local.Count);
+        AreEqual(1, client.Jobs.Local.Count);
     }
     
     [Test]
@@ -61,7 +61,7 @@ public static class TodoTests
     {
         var hub         = CreateTodoHub();
         var client      = new TodoClient(hub);
-        var query       = client.jobs.QueryAll();
+        var query       = client.Jobs.QueryAll();
         query.maxCount  = 1; // query with cursor
         var count       = 0;
         while (true) {
@@ -80,7 +80,7 @@ public static class TodoTests
     {
         var hub         = CreateTodoHub();
         var client      = new TodoClient(hub);
-        var jobs        = client.jobs.CountAll();
+        var jobs        = client.Jobs.CountAll();
         await client.SyncTasks();
         
         AreEqual(2, jobs.Result);
@@ -91,7 +91,7 @@ public static class TodoTests
     {
         var hub         = CreateTodoHub();
         var client      = new TodoClient(hub);
-        var jobs        = client.jobs.Count(o => o.completed == true);
+        var jobs        = client.Jobs.Count(o => o.completed == true);
         await client.SyncTasks();
         
         AreEqual(1, jobs.Result);
@@ -102,11 +102,11 @@ public static class TodoTests
     {
         var hub         = CreateTodoHub();
         var client      = new TodoClient(hub);
-        var readJob     = client.jobs.Read().Find(1);
+        var readJob     = client.Jobs.Read().Find(1);
         await client.SyncTasks();
         
         AreEqual("buy milk", readJob.Result.title);
-        AreEqual(1, client.jobs.Local.Count);
+        AreEqual(1, client.Jobs.Local.Count);
     }
     
     [Test]
@@ -114,13 +114,13 @@ public static class TodoTests
     {
         var hub         = CreateTodoHub();
         var client      = new TodoClient(hub);
-        var readJob     = client.jobs.Read().FindRange(new long [] { 1, 2, 3 });
+        var readJob     = client.Jobs.Read().FindRange(new long [] { 1, 2, 3 });
         await client.SyncTasks();
         
         AreEqual(3, readJob.Result.Count);
         NotNull(readJob.Result[1]);
         NotNull(readJob.Result[2]);
         IsNull (readJob.Result[3]);
-        AreEqual(3, client.jobs.Local.Count);
+        AreEqual(3, client.Jobs.Local.Count);
     }
 }

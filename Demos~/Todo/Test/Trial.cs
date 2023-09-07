@@ -27,11 +27,11 @@ internal static class Trial
         var hub         = new FlioxHub(database);
 
         var client      = new TodoClient(hub);
-        client.jobs.UpsertRange(new[] {
+        client.Jobs.UpsertRange(new[] {
             new Job { id = 1, title = "Buy milk", completed = true },
             new Job { id = 2, title = "Buy cheese", completed = false }
         });
-        var jobs = client.jobs.Query(job => job.completed == true);
+        var jobs = client.Jobs.Query(job => job.completed == true);
         await client.SyncTasks(); // execute UpsertRange & Query task
     
         foreach (var job in jobs.Result) {
@@ -44,8 +44,8 @@ internal static class Trial
     private static async Task RemoteDatabaseExample() {
         var hub     = new WebSocketClientHub("todo_db", "ws://localhost:5000/fliox/");
         var client  = new TodoClient(hub);
-        var jobs    = client.jobs.Query(job => job.completed == true);
-        client.jobs.SubscribeChanges(Change.All, (changes, context) => {
+        var jobs    = client.Jobs.Query(job => job.completed == true);
+        client.Jobs.SubscribeChanges(Change.All, (changes, context) => {
             Console.WriteLine(changes);
         });
         await client.SyncTasks(); // execute Query & SubscribeChanges task
@@ -63,7 +63,7 @@ internal static class Trial
         var option  = args.FirstOrDefault() ?? "http";
         var hub     = CreateHub(option);
         var client  = new TodoClient(hub);
-        var jobs    = client.jobs.QueryAll();
+        var jobs    = client.Jobs.QueryAll();
         await client.SyncTasks();
 
         Console.WriteLine($"\n--- jobs:");
@@ -78,7 +78,7 @@ internal static class Trial
     {
         var hub         = CreateHub("ws");
         var client      = new TodoClient(hub) { UserId = "admin", Token = "admin" };
-        client.jobs.SubscribeChanges(Change.All, (changes, context) => {
+        client.Jobs.SubscribeChanges(Change.All, (changes, context) => {
             foreach (var upsert in changes.Upserts) {
                 var job = upsert.entity;
                 Console.WriteLine($"EventSeq: {context.EventSeq} - upsert job: {job.id}, name: {job.title}");

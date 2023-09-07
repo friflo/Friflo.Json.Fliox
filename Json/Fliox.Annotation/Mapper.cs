@@ -36,17 +36,28 @@ namespace Friflo.Json.Fliox
         public InstanceTypeAttribute (Type instance) {}
     }
     
+    /// <summary>
+    /// Defines the naming policy used for class fields and properties.<br/>
+    /// It can be used to serialize field and property names as <see cref="NamingPolicyType.CamelCase"/> while
+    /// using pascal case names in C# code.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct)]
-    public sealed class JsonNamingAttribute : Attribute {
-        public JsonNamingAttribute (JsonNamingType namingType) { NamingType = namingType; }
+    public sealed class NamingPolicyAttribute : Attribute {
+        public NamingPolicyAttribute (NamingPolicyType type) { Type = type; }
         
-        public JsonNamingType NamingType { get; }
+        public NamingPolicyType Type { get; }
     }
     
-    public enum JsonNamingType
+    /// <summary>
+    /// Naming policy used to serialize class fields and properties to JSON.<br/>  
+    /// </summary>
+    public enum NamingPolicyType
     {
+        /// <summary> Fields and properties serialized unchanged </summary>
         Default,
+        /// <summary> Fields and properties serialized as <c>camelCase</c> </summary>
         CamelCase,
+        /// <summary> Fields and properties serialized as <c>PascalCase</c> </summary>
         PascalCase,
     }
     

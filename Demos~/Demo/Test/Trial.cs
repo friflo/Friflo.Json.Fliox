@@ -23,8 +23,8 @@ internal static class Trial
         var option      = args.FirstOrDefault() ?? "http";
         var hub         = CreateHub(option);
         var client      = new DemoClient(hub) { UserId = "admin", Token = "admin" };
-        var orders      = client.orders.QueryAll();
-        var articles    = orders.ReadRelations(client.articles, o => o.items.Select(a => a.article));
+        var orders      = client.Orders.QueryAll();
+        var articles    = orders.ReadRelations(client.Articles, o => o.items.Select(a => a.article));
         await client.SyncTasks();
             
         Console.WriteLine($"\n--- orders:");
@@ -43,7 +43,7 @@ internal static class Trial
     {
         var hub         = CreateHub("ws");
         var client      = new DemoClient(hub) { UserId = "admin", Token = "admin" };
-        client.articles.SubscribeChanges(Change.All, (changes, context) => {
+        client.Articles.SubscribeChanges(Change.All, (changes, context) => {
             foreach (var entity in changes.Patches) {
                 Console.WriteLine($"EventSeq: {context.EventSeq} - merge article: {entity.key}, patch: {entity.patch}");
             }

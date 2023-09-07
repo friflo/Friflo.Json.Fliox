@@ -16,7 +16,7 @@ public class Article
     [Key]       public  long            id;
     ///<summary> Descriptive article name - may use Unicodes like 👕 🍏 🍓 </summary>
     [Required]  public  string          name;
-    [Relation(nameof(DemoClient.producers))]
+    [Relation(nameof(DemoClient.Producers))]
                 public  long            producer;
                 public  DateTime?       created;
 }
@@ -39,7 +39,7 @@ public class Employee
 public class Order
 {
     [Key]       public  long            id;
-    [Relation(nameof(DemoClient.customers))]
+    [Relation(nameof(DemoClient.Customers))]
                 public  long            customer;
                 public  DateTime        created;
                 public  List<OrderItem> items = new List<OrderItem>();
@@ -47,7 +47,7 @@ public class Order
 
 public class OrderItem
 {
-    [Relation(nameof(DemoClient.articles))]
+    [Relation(nameof(DemoClient.Articles))]
     [Required]  public  long            article;
                 public  int             amount;
                 public  string          name;
@@ -57,7 +57,7 @@ public class Producer
 {
     [Key]       public  long            id;
     [Required]  public  string          name;
-    [Relation(nameof(DemoClient.employees))]
+    [Relation(nameof(DemoClient.Employees))]
                 public  List<long>      employees;
                 public  DateTime?       created;
 }

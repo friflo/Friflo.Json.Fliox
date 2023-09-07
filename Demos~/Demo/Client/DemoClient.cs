@@ -15,14 +15,15 @@ namespace Demo;
 /// <remarks>Command handlers are implemented at <c>DemoHub/MessageHandler.cs</c> using <see cref="DemoClient"/> clients</remarks>
 [OpenAPIServer(description : "public DemoHub API", url : "http://ec2-18-215-176-108.compute-1.amazonaws.com/fliox/rest/main_db")]
 [MessagePrefix("demo.")]
+[NamingPolicy(NamingPolicyType.CamelCase)]
 public class DemoClient : FlioxClient
 {
     // --- containers
-    public readonly EntitySet <long, Article>     articles;
-    public readonly EntitySet <long, Customer>    customers;
-    public readonly EntitySet <long, Employee>    employees;
-    public readonly EntitySet <long, Order>       orders;
-    public readonly EntitySet <long, Producer>    producers;
+    public readonly EntitySet <long, Article>     Articles;
+    public readonly EntitySet <long, Customer>    Customers;
+    public readonly EntitySet <long, Employee>    Employees;
+    public readonly EntitySet <long, Order>       Orders;
+    public readonly EntitySet <long, Producer>    Producers;
     
     // --- commands
     /// <summary> generate random entities (records) in the containers listed in the <see cref="Fake"/> param </summary>

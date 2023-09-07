@@ -43,9 +43,9 @@ public static class DemoTests
         Seed(database);
         var hub         = new FlioxHub(database);
         var client      = new DemoClient(hub);
-        var orders      = client.orders.QueryAll();
-        var articles    = orders.ReadRelations(client.articles, o => o.items.Select(a => a.article));
-        var producers   = articles.ReadRelations(client.producers, o => o.producer);
+        var orders      = client.Orders.QueryAll();
+        var articles    = orders.ReadRelations(client.Articles, o => o.items.Select(a => a.article));
+        var producers   = articles.ReadRelations(client.Producers, o => o.producer);
         await client.SyncTasks();
         
         var orderIds = orders.Result.Select(o => o.id);
@@ -64,14 +64,14 @@ public static class DemoTests
         var database    = CreateDatabase("test");
         var hub         = new FlioxHub(database);
         var client      = new DemoClient(hub);
-        client.articles.Create (new Article { id = 111, name = "Article-1" });
-        client.employees.Create(new Employee { id = 222, firstName = "James", lastName = "Bond"});
+        client.Articles.Create (new Article { id = 111, name = "Article-1" });
+        client.Employees.Create(new Employee { id = 222, firstName = "James", lastName = "Bond"});
         await client.SyncTasks();
         
         // create a second client to verify mutations
         var client2     = new DemoClient(hub);
-        var articles    = client2.articles.QueryAll();
-        var employees   = client2.employees.QueryAll();
+        var articles    = client2.Articles.QueryAll();
+        var employees   = client2.Employees.QueryAll();
         await client2.SyncTasks();
         
         var articleIds = articles.Result.Select(o => o.id);
@@ -88,8 +88,8 @@ public static class DemoTests
         Seed(database);
         var hub         = new FlioxHub(database);
         var client      = new DemoClient(hub);
-        var articles    = client.articles.QueryAll();
-        var customers   = client.customers.QueryAll();
+        var articles    = client.Articles.QueryAll();
+        var customers   = client.Customers.QueryAll();
         await client.SyncTasks();
         
         // assert containers are not already empty
@@ -97,14 +97,14 @@ public static class DemoTests
         AreEqual(1, customers.Result.Count);
 
         // delete some entities            
-        client.articles.DeleteAll();
-        client.customers.Delete(12);
+        client.Articles.DeleteAll();
+        client.Customers.Delete(12);
         await client.SyncTasks();
         
         // create a second client to verify mutations
         var client2     = new DemoClient(hub);
-        var articles2   = client2.articles.QueryAll();
-        var customers2  = client2.customers.QueryAll();
+        var articles2   = client2.Articles.QueryAll();
+        var customers2  = client2.Customers.QueryAll();
         await client2.SyncTasks();
         
         AreEqual(0, articles2.Result.Count);
@@ -126,11 +126,11 @@ public static class DemoTests
         
         // create a second client to verify mutations
         var client2         = new DemoClient(hub);
-        var articleCount    = client2.articles.CountAll();
-        var customerCount   = client2.customers.CountAll();
-        var employeeCount   = client2.employees.CountAll();
-        var orderCount      = client2.orders.CountAll();
-        var producerCount   = client2.producers.CountAll();
+        var articleCount    = client2.Articles.CountAll();
+        var customerCount   = client2.Customers.CountAll();
+        var employeeCount   = client2.Employees.CountAll();
+        var orderCount      = client2.Orders.CountAll();
+        var producerCount   = client2.Producers.CountAll();
         await client2.SyncTasks();
         
         AreEqual(1, articleCount.Result);
@@ -150,7 +150,7 @@ public static class DemoTests
         // setup subscriber client
         var subClient       = new DemoClient(hub) { UserId = "admin", Token = "admin", ClientId = "sub-1" };
         var createdArticles = new List<long[]>();
-        subClient.articles.SubscribeChanges(Change.All, (changes, context) => {
+        subClient.Articles.SubscribeChanges(Change.All, (changes, context) => {
             var created = changes.Creates.Select(create => create.key).ToArray();
             createdArticles.Add(created);
         });
@@ -158,14 +158,14 @@ public static class DemoTests
         
         // perform change with different client
         var client    = new DemoClient(hub) { UserId = "admin", Token = "admin" };
-        client.articles.Create(new Article{id = 10, name = "Article-10"});
+        client.Articles.Create(new Article{id = 10, name = "Article-10"});
         await client.SyncTasks();
         
         AreEqual(1,                 createdArticles.Count);
         AreEqual(new long[] { 10 }, createdArticles[0]);
         
         // unsubscribe to free subscription resources on Hub
-        subClient.articles.SubscribeChanges(Change.None, (changes, context) => { });
+        subClient.Articles.SubscribeChanges(Change.None, (changes, context) => { });
         await subClient.SyncTasks();
         AreEqual(1, hub.EventDispatcher.SubscribedClientsCount);
     }

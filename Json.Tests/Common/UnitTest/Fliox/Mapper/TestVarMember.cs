@@ -16,7 +16,7 @@ using static NUnit.Framework.Assert;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
-    [JsonNaming(JsonNamingType.Default)]
+    [NamingPolicy(NamingPolicyType.Default)]
     public class TestMemberClass {
         public DateTime     DateTime    { get; set; }
         public DateTime     dateTime;

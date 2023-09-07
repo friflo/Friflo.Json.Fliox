@@ -163,7 +163,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             public int baseField = 0;
         }
 
-        [JsonNaming(JsonNamingType.Default)]
+        [NamingPolicy(NamingPolicyType.Default)]
         class Derived : Base {
             [Serialize] private     int derivedField = 0;
             [Serialize] private     int Int32 { get; set; }  // compiler auto generate backing field

@@ -32,20 +32,20 @@ namespace Friflo.Json.Fliox.Mapper.Utils
         private static IJsonNaming GetJsonNaming(Type type) {
             if (JsonNamingType(type.CustomAttributes, out var namingType)) {
                 return namingType switch {
-                    Fliox.JsonNamingType.Default    => DefaultNaming.Instance,
-                    Fliox.JsonNamingType.CamelCase  => CamelCaseNaming.Instance,
-                    Fliox.JsonNamingType.PascalCase => PascalCaseNaming.Instance,
+                    Fliox.NamingPolicyType.Default    => DefaultNaming.Instance,
+                    Fliox.NamingPolicyType.CamelCase  => CamelCaseNaming.Instance,
+                    Fliox.NamingPolicyType.PascalCase => PascalCaseNaming.Instance,
                     _                               => DefaultNaming.Instance
                 };
             }
             return DefaultNaming.Instance;
         }
         
-        private static bool JsonNamingType(IEnumerable<CustomAttributeData> attributes, out JsonNamingType type) {
+        private static bool JsonNamingType(IEnumerable<CustomAttributeData> attributes, out NamingPolicyType type) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(JsonNamingAttribute)) {
+                if (attr.AttributeType == typeof(NamingPolicyAttribute)) {
                     var arguments   = attr.ConstructorArguments;
-                    type = (JsonNamingType)arguments[0].Value;
+                    type = (NamingPolicyType)arguments[0].Value;
                     return true;
                 }
             }

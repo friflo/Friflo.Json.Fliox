@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
@@ -10,10 +11,11 @@ using Friflo.Json.Fliox.Hub.Host;
 /// 1. Defines a database <b>schema</b> by declaring its containers, commands and messages<br/>
 /// 2. Is a database <b>client</b> providing type-safe access to its containers, commands and messages <br/>
 /// </summary>
+[NamingPolicy(NamingPolicyType.CamelCase)]
 public class TodoClient : FlioxClient
 {
     // --- containers
-    public  readonly    EntitySet <long, Job>   jobs;
+    public  readonly    EntitySet <long, Job>   Jobs;
     
     // --- commands
     /// <summary>Delete all jobs marked as completed / not completed</summary>
