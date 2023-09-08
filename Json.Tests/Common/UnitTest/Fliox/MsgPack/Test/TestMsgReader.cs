@@ -16,6 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         public static void Read_uint64_FFFF_FFFF()
         {
             var data = HexToSpan("cf 00 00 00 00 ff ff ff ff"); // 4294967295 (uint64)
+            AreEqual((byte)MsgFormat.uint64, data[0]);
             {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
@@ -47,6 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         public static void Read_fixint()
         {
             var data = HexToSpan("04"); // 4 (+fixint)
+            IsTrue(data[0] < (byte)MsgFormat.fixintPosMax);
             {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
@@ -78,6 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         public static void Read_fixint_negative()
         {
             var data = HexToSpan("FC"); // -4 (-fixint)
+            IsTrue(data[0] > (byte)MsgFormat.fixintNeg);
             {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
@@ -111,11 +114,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         {
             {
                 var data = HexToSpan("C2"); // false
+                AreEqual((byte)MsgFormat.False, data[0]);
                 var reader = new MsgReader(data);
                 var x = reader.ReadBool();
                 IsFalse(x);
             } {
                 var data = HexToSpan("C3"); // true
+                AreEqual((byte)MsgFormat.True, data[0]);
                 var reader = new MsgReader(data);
                 var x = reader.ReadBool();
                 IsTrue(x);
@@ -132,24 +137,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         {
             {
                 var data = HexToSpan("A3 61 62 63"); // "abc" (fixstr)
+                AreEqual((byte)MsgFormat.fixstr, data[0] & 0xe0);
+                
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("abc", x);
             }
             {
                 var data = HexToSpan("D9 0A 30 31 32 33 34 35 36 37 38 39");
+                AreEqual((byte)MsgFormat.str8, data[0]);
+                
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("0123456789", x);
             }
             {
                 var data = HexToSpan("DA 00 0A 30 31 32 33 34 35 36 37 38 39");
+                AreEqual((byte)MsgFormat.str16, data[0]);
+                
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("0123456789", x);
             }
             {
                 var data = HexToSpan("DB 00 00 00 0A 30 31 32 33 34 35 36 37 38 39");
+                AreEqual((byte)MsgFormat.str32, data[0]);
+                
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("0123456789", x);

@@ -56,11 +56,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         
         [Test]
         public static void MemberError() {
-            var data = HexToSpan("81 A1 63"); // [81 A1 63 0B] - {"c": 11}
+            var data = HexToSpan("81 A1 63"); // [81 A1 63 0B] - { "c": 11 }
             MsgPackMapper.Deserialize<Sample>(data, out var error);
             AreEqual("MessagePack error - unexpected EOF. pos: 3 - last key: 'c'", error);
             
-            data = HexToSpan("81 A1 78"); // [81 A1 78 2A] - {"x": 42}
+            data = HexToSpan("81 A1 78"); // [81 A1 78 2A] - { "x": 42 }
             MsgPackMapper.Deserialize<Sample>(data, out error);
             AreEqual("MessagePack error - unexpected EOF. pos: 3 - last key: 'x'", error);
         }
