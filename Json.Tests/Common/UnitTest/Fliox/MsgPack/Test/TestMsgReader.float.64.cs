@@ -59,27 +59,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
                 AreEqual(double.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadFloat32();
-                AreEqual("MessagePack error - value out of range. was: 1,7976931348623157E+308 float64(0xCB) pos: 0 (root)", reader.Error);
+                AreEqual(ErrFloat64, reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt64();
-                AreEqual("MessagePack error - value out of range. was: 1,7976931348623157E+308 float64(0xCB) pos: 0 (root)", reader.Error);
+                AreEqual(ErrFloat64, reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt32();
-                AreEqual("MessagePack error - value out of range. was: 1,7976931348623157E+308 float64(0xCB) pos: 0 (root)", reader.Error);
+                AreEqual(ErrFloat64, reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt16();
-                AreEqual("MessagePack error - value out of range. was: 1,7976931348623157E+308 float64(0xCB) pos: 0 (root)", reader.Error);
+                AreEqual(ErrFloat64, reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();
-                AreEqual("MessagePack error - value out of range. was: 1,7976931348623157E+308 float64(0xCB) pos: 0 (root)", reader.Error);
+                AreEqual(ErrFloat64, reader.Error);
             }
         }
+        
+
     }
 }

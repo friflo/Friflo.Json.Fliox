@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Globalization;
 using System.Text;
 
 namespace Friflo.Json.Fliox.MsgPack
@@ -31,9 +32,11 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var sb  = SetError();
-            sb.Append($"MessagePack error - value out of range. was: {value:G} {MsgFormatUtils.Name(type)}(0x{(int)type:X})");
+            var val = value.ToString(NumberFormat);
+            sb.Append($"MessagePack error - value out of range. was: {val} {MsgFormatUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
+        private static readonly NumberFormatInfo NumberFormat = CultureInfo.InvariantCulture.NumberFormat;
         
         private void SetEofError(int cur) {
             if (pos == MsgError) {

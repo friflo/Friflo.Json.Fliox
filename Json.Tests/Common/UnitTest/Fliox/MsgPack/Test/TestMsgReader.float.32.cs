@@ -69,20 +69,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt64();
-                AreEqual("MessagePack error - value out of range. was: 3,4028234663852886E+38 float32(0xCA) pos: 0 (root)", reader.Error);
+                AreEqual(ErrFloat32, reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt32();
-                AreEqual("MessagePack error - value out of range. was: 3,4028234663852886E+38 float32(0xCA) pos: 0 (root)", reader.Error);
+                AreEqual(ErrFloat32, reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt16();
-                AreEqual("MessagePack error - value out of range. was: 3,4028234663852886E+38 float32(0xCA) pos: 0 (root)", reader.Error);
+                AreEqual(ErrFloat32, reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();
-                AreEqual("MessagePack error - value out of range. was: 3,4028234663852886E+38 float32(0xCA) pos: 0 (root)", reader.Error);
+                AreEqual(ErrFloat32, reader.Error);
             }
         }
+        
+#if UNITY_5_3_OR_NEWER
+        private const string ErrFloat64 = "MessagePack error - value out of range. was: 1.79769313486232E+308 float64(0xCB) pos: 0 (root)";
+        private const string ErrFloat32 = "MessagePack error - value out of range. was: 3.40282346638529E+38 float32(0xCA) pos: 0 (root)";
+#else
+        private const string ErrFloat64 = "MessagePack error - value out of range. was: 1.7976931348623157E+308 float64(0xCB) pos: 0 (root)";
+        private const string ErrFloat32 = "MessagePack error - value out of range. was: 3.4028234663852886E+38 float32(0xCA) pos: 0 (root)";
+#endif
+       
     }
 }
