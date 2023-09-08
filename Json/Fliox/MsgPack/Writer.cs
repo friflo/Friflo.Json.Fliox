@@ -18,8 +18,9 @@ namespace Friflo.Json.Fliox.MsgPack
         public          int                 Length => pos;
         
         public          ReadOnlySpan<byte>  Data        => new ReadOnlySpan<byte>(target, 0, pos);
-        public          string              DataDec     => MsgFormatUtils.GetDataDec(target, pos);
+        /// <summary> Convert hex to JSON with [Online msgpack converter]<br/>https://msgpack.solder.party/  </summary>
         public          string              DataHex     => MsgFormatUtils.GetDataHex(target, pos);
+        public          string              DataDec     => MsgFormatUtils.GetDataDec(target, pos);
         public override string              ToString()  => $"pos: {pos}";
 
         public MsgWriter(byte[] target, bool writeNil) {
