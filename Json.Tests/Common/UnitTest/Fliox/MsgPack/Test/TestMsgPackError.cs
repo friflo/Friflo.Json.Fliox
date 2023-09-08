@@ -1,7 +1,7 @@
-﻿using System;
-using Friflo.Json.Fliox.MsgPack;
+﻿using Friflo.Json.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Fliox.MsgPack.MsgFormatUtils;
 
 // ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable StringLiteralTypo
@@ -12,62 +12,62 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
     {
         [Test]
         public static void TestError_ObjectWasFixInt() {
-            ReadOnlySpan<byte> data = new byte[] { 0 };
+            var data = ByteToSpan(MsgFormat.fixintPos);
             MsgPackMapper.Deserialize<Sample>(data, out var error);
             AreEqual("MessagePack error - expect object or null. was: +fixint(0x0) pos: 0 (root)", error);
             
-            data = new byte[] { (byte)MsgFormat.fixintPosMax };
+            data = ByteToSpan(MsgFormat.fixintPosMax);
             MsgPackMapper.Deserialize<Sample>(data, out error);
             AreEqual("MessagePack error - expect object or null. was: +fixint(0x7F) pos: 0 (root)", error);
         }
         
         [Test]
         public static void ObjectWasFixInt() {
-            ReadOnlySpan<byte> data = new byte[] { (byte)MsgFormat.fixstr };
+            var data = ByteToSpan(MsgFormat.fixstr);
             MsgPackMapper.Deserialize<Sample>(data, out var error);
             AreEqual("MessagePack error - expect object or null. was: fixstr(0xA0) pos: 0 (root)", error);
             
-            data = new byte[] { (byte)MsgFormat.fixstrMax };
+            data = ByteToSpan(MsgFormat.fixstrMax);
             MsgPackMapper.Deserialize<Sample>(data, out error);
             AreEqual("MessagePack error - expect object or null. was: fixstr(0xBF) pos: 0 (root)", error);
         }
         
         [Test]
         public static void ObjectWasFixArray() {
-            ReadOnlySpan<byte> data = new byte[] { (byte)MsgFormat.fixarray };
+            var data = ByteToSpan(MsgFormat.fixarray);
             MsgPackMapper.Deserialize<Sample>(data, out var error);
             AreEqual("MessagePack error - expect object or null. was: fixarray(0x90) pos: 0 (root)", error);
             
-            data = new byte[] { (byte)MsgFormat.fixarrayMax };
+            data = ByteToSpan(MsgFormat.fixarrayMax);
             MsgPackMapper.Deserialize<Sample>(data, out error);
             AreEqual("MessagePack error - expect object or null. was: fixarray(0x9F) pos: 0 (root)", error);
         }
         
         [Test]
         public static void ObjectWasFixIntNegative() {
-            ReadOnlySpan<byte> data = new byte[] { (byte)MsgFormat.fixintNeg };
+            var data = ByteToSpan(MsgFormat.fixintNeg);
             MsgPackMapper.Deserialize<Sample>(data, out var error);
             AreEqual("MessagePack error - expect object or null. was: -fixint(0xE0) pos: 0 (root)", error);
             
-            data = new byte[] { (byte)MsgFormat.fixintNegMax };
+            data = ByteToSpan(MsgFormat.fixintNegMax);
             MsgPackMapper.Deserialize<Sample>(data, out error);
             AreEqual("MessagePack error - expect object or null. was: -fixint(0xFF) pos: 0 (root)", error);
         }
         
         [Test]
         public static void MemberError() {
-            ReadOnlySpan<byte> data = new byte[] { 129, 161, 99 }; // [129, 161, 99, 11] - {"c": 11}
+            var data = HexToSpan("81 A1 63"); // [81 A1 63 0B] - {"c": 11}
             MsgPackMapper.Deserialize<Sample>(data, out var error);
             AreEqual("MessagePack error - unexpected EOF. pos: 3 - last key: 'c'", error);
             
-            data = new byte[] { 129, 161, 120 }; // [129, 161, 120, 42] - {"x": 42}
+            data = HexToSpan("81 A1 78"); // [81 A1 78 2A] - {"x": 42}
             MsgPackMapper.Deserialize<Sample>(data, out error);
             AreEqual("MessagePack error - unexpected EOF. pos: 3 - last key: 'x'", error);
         }
         
         [Test]
         public static void Int32_OutOfRange() {
-            ReadOnlySpan<byte> data = new byte[] { 129, 161, 120, 203, 65, 239, 255, 255, 255, 224, 0, 0 }; // { "x": 4294967295 }
+            var data = HexToSpan("81 A1 78 CB 41 EF FF FF FF E0 00 00"); // { "x": 4294967295 }
             MsgPackMapper.Deserialize<Sample>(data, out var error);
             AreEqual("MessagePack error - value out of range. was: 4294967295 float64(0xCB) pos: 3 - last key: 'x'", error);
         }

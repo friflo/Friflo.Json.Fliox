@@ -1,7 +1,8 @@
-﻿using System;
-using Friflo.Json.Fliox.MsgPack;
+﻿using Friflo.Json.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Fliox.MsgPack.MsgFormatUtils;
+
 
 // ReSharper disable CommentTypo
 // ReSharper disable StringLiteralTypo
@@ -14,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         [Test]
         public static void Read_uint64_FFFF_FFFF()
         {
-            ReadOnlySpan<byte> data = new byte[] { 207,  0,0,0,0,  255,255,255,255 }; // 4294967295 (uint64)
+            var data = HexToSpan("cf 00 00 00 00 ff ff ff ff"); // 4294967295 (uint64)
             {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
@@ -45,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         [Test]
         public static void Read_fixint()
         {
-            ReadOnlySpan<byte> data = new byte[] { 4 }; // 4 (+fixint)
+            var data = HexToSpan("04"); // 4 (+fixint)
             {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
@@ -76,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         [Test]
         public static void Read_fixint_negative()
         {
-            ReadOnlySpan<byte> data = new byte[] { 252 }; // -4 (-fixint)
+            var data = HexToSpan("FC"); // -4 (-fixint)
             {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
@@ -109,17 +110,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         public static void Read_Boolean()
         {
             {
-                ReadOnlySpan<byte> data = new byte[] { 194 }; // false
+                var data = HexToSpan("C2"); // false
                 var reader = new MsgReader(data);
                 var x = reader.ReadBool();
                 IsFalse(x);
             } {
-                ReadOnlySpan<byte> data = new byte[] { 195 }; // true
+                var data = HexToSpan("C3"); // true
                 var reader = new MsgReader(data);
                 var x = reader.ReadBool();
                 IsTrue(x);
             } {
-                ReadOnlySpan<byte> data = new byte[] { 4 }; // 4 (+fixint)
+                var data = HexToSpan("04"); // 4 (+fixint)
                 var reader = new MsgReader(data);
                 reader.ReadBool();
                 AreEqual("MessagePack error - expect boolean. was: +fixint(0x4) pos: 0 (root)", reader.Error);
@@ -130,42 +131,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         public static void Read_String()
         {
             {
-                ReadOnlySpan<byte> data = new byte[] { 163, 97, 98, 99 }; // "abc" (fixstr)
+                var data = HexToSpan("A3 61 62 63"); // "abc" (fixstr)
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("abc", x);
             }
             {
-                ReadOnlySpan<byte> data = new byte[] {
-                    0xd9, 10, 
-                    48, 49, 50, 51, 52, 53, 54, 55, 56, 57 };
+                var data = HexToSpan("D9 0A 30 31 32 33 34 35 36 37 38 39");
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("0123456789", x);
             }
             {
-                ReadOnlySpan<byte> data = new byte[] {
-                    0xda, 0, 10, 
-                    48, 49, 50, 51, 52, 53, 54, 55, 56, 57 };
+                var data = HexToSpan("DA 00 0A 30 31 32 33 34 35 36 37 38 39");
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("0123456789", x);
             }
             {
-                ReadOnlySpan<byte> data = new byte[] {
-                    0xdb, 0, 0, 0, 10, 
-                    48, 49, 50, 51, 52, 53, 54, 55, 56, 57 };
+                var data = HexToSpan("DB 00 00 00 0A 30 31 32 33 34 35 36 37 38 39");
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("0123456789", x);
             }
             {
-                ReadOnlySpan<byte> data = new byte[] { 4 }; // 4 (+fixint)
+                var data = HexToSpan("04"); // 4 (+fixint)
                 var reader = new MsgReader(data);
                 reader.ReadString();
                 AreEqual("MessagePack error - expect string or null. was: +fixint(0x4) pos: 0 (root)", reader.Error);
             }
         }
         
+
     }
 }

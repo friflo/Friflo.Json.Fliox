@@ -1,7 +1,7 @@
-﻿using System;
-using Friflo.Json.Fliox.MsgPack;
+﻿using Friflo.Json.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Fliox.MsgPack.MsgFormatUtils;
 
 // ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable StringLiteralTypo
@@ -11,14 +11,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
     {
         [Test]
         public static void Test_ReadFixInt() {
-            ReadOnlySpan<byte> data = new byte[] { 129, 161, 120, 42 }; // {"x": 42}
+            var data = HexToSpan("81 A1 78 2A"); // {"x": 42}
             var obj = MsgPackMapper.Deserialize<Sample>(data, out _);
             AreEqual(obj.x, 42);
         }
         
         [Test]
         public static void Test_ReadFixIntNegative() {
-            ReadOnlySpan<byte> data = new byte[] { 129, 161, 120, 224 }; // {"x": -32}
+            var data = HexToSpan("81 A1 78 E0"); // {"x": -32}
             var obj = MsgPackMapper.Deserialize<Sample>(data, out _);
             AreEqual(obj.x, -32);
         }

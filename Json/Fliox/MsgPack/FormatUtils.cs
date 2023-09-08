@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Text;
 using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 
@@ -8,7 +9,7 @@ using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 // ReSharper disable CommentTypo
 namespace Friflo.Json.Fliox.MsgPack
 {
-    internal static class MsgFormatUtils
+    public static class MsgFormatUtils
     {
         internal static string Name(MsgFormat type)
         {
@@ -94,6 +95,19 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             if (len > 0) sb.Length--;
             return sb.ToString();
+        }
+        
+        public static ReadOnlySpan<byte> HexToSpan(string hex) {
+            var items = hex.Split(' ');
+            var result = new byte[items.Length];
+            for (int n = 0; n < items.Length; n++) {
+                result[n] = Convert.ToByte(items[n], 16);
+            }
+            return new ReadOnlySpan<byte>(result);
+        }
+        
+        public static ReadOnlySpan<byte> ByteToSpan(MsgFormat value) {
+            return new ReadOnlySpan<byte>(new byte[] { (byte)value });
         }
     }
 }
