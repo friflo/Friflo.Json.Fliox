@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Native;
@@ -17,13 +16,13 @@ namespace Friflo.Json.Fliox.Schema.Language
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardType;
-        private  readonly   Assembly                    assembly;
+        private  readonly   string                      assemblyName;
 
         private CSharpOptimizeGenerator (Generator generator) {
             this.generator  = generator;
             standardType    = GetStandardTypes(generator.standardTypes);
             var nativeRoot  = (NativeTypeDef)generator.rootType;
-            assembly        = nativeRoot.native.Assembly;
+            assemblyName    = nativeRoot.AssemblyName;
         }
         
         public static void Generate(Generator generator) {
@@ -31,7 +30,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var sb      = new StringBuilder();
             foreach (var type in generator.types) {
                 var nativeType = (NativeTypeDef)type;
-                if (nativeType.native.Assembly != emitter.assembly)
+                if (nativeType.AssemblyName != emitter.assemblyName)
                     continue;
                 sb.Clear();
                 var result = emitter.EmitType(type, sb);
@@ -143,7 +142,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 suffix = "Class";
                 return false;
             }
-            var type = (NativeTypeDef)field.type;
+            var type = field.type;
             var std = generator.standardTypes;
             if (type == std.String) {
                 suffix = "String";
@@ -175,7 +174,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 }
                 return true;
             }
-            if (type.native.IsValueType) {
+            if (type.IsStruct) {
                 if (field.required) {
                     suffix = "Struct";
                 } else {

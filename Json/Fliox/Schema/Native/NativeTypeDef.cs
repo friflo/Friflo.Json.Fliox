@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         internal            bool                        isAbstract;
         
         // --- TypeDef
+        public   override   string                      AssemblyName    => native.Assembly.FullName;
         public   override   TypeDef                     BaseType        => baseType;
         public   override   bool                        IsEnum          { get; }
         public   override   bool                        IsStruct        { get; }

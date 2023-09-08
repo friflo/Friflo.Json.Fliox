@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         internal readonly   JsonType                    type;
         
         // --- TypeDef
+        public   override   string                      AssemblyName    => null;
         public   override   TypeDef                     BaseType        => baseType;
         public   override   bool                        IsStruct        => isStruct;
         public   override   IReadOnlyList<FieldDef>     Fields          => fields;

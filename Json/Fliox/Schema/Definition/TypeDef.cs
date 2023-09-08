@@ -21,6 +21,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
     public abstract class TypeDef {
         public              string                      Name            { get; }
         public   readonly   Utf8String                  nameUtf8;
+        public   abstract   string                      AssemblyName    { get; }
         public              StandardTypeId              TypeId          { get; }
 
         /// <summary>
