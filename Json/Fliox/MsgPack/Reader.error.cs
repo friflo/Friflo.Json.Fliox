@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var sb  = SetError();
-            sb.Append($"MessagePack error - value out of range. was: {value} {MsgFormatUtils.Name(type)}(0x{(int)type:X})");
+            sb.Append($"MessagePack error - value out of range. was: {value:G} {MsgFormatUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
         
