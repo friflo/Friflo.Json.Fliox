@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         public static void Perf_MapperRead()
         {
             var sample = new Sample { x = int.MaxValue };
-            ReadOnlySpan<byte> data = Sample.Test;
+            var data = Sample.Test;
             MsgPackMapper.DeserializeTo(data, ref sample);
             AreEqual(int.MaxValue, sample.x);
             
@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         [Test]
         public static void Perf_Read()
         {
-            ReadOnlySpan<byte> data = Sample.Test;
+            var data = Sample.Test;
             var reader = new MsgReader();
             var sample = new Sample();
             reader.Init(data);
