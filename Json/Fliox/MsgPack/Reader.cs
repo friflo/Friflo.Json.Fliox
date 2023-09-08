@@ -14,10 +14,11 @@ namespace Friflo.Json.Fliox.MsgPack
     public ref partial struct MsgReader
     {
                         private     ReadOnlySpan<byte>  data;
-                        private     int                 pos;
+        [Browse(Never)] private     int                 pos;
         [Browse(Never)] private     string              error;
         [Browse(Never)] private     ReadOnlySpan<byte>  keyName;
         
+                        public      int                 Pos => pos;
         /// <summary><see cref="keyName"/> is set in <see cref="ReadKey"/></summary>
                         public      ReadOnlySpan<byte>  KeyName         => keyName;
                         public      string              KeyNameString   => keyName == null ? null : SpanToString(keyName);

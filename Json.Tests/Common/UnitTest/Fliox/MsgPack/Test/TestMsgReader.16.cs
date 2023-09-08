@@ -21,18 +21,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
                 AreEqual(ushort.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat32();
                 AreEqual(ushort.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadInt64();
                 AreEqual(ushort.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadInt32();
                 AreEqual(ushort.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt16();
@@ -53,22 +57,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
                 AreEqual(short.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat32();
                 AreEqual(short.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadInt64();
                 AreEqual(short.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadInt32();
                 AreEqual(short.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadInt16();
                 AreEqual(short.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();

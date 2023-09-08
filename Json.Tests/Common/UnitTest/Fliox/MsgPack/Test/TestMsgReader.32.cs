@@ -21,14 +21,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
                 AreEqual(4294967295, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat32();
                 AreEqual(4294967295, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadInt64();
                 AreEqual(4294967295, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt32();
@@ -53,18 +56,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
                 AreEqual(int.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat32();
                 AreEqual(int.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadInt64();
                 AreEqual(int.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadInt32();
                 AreEqual(int.MaxValue, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt16();
