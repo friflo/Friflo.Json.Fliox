@@ -56,7 +56,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 reader.ReadFloat32();
                 AreEqual("MessagePack error - unexpected EOF. type: float32(0xCA) pos: 0 (root)", reader.Error);
-            } {
+            }
+            // --- signed int
+            {
                 var data = HexToSpan("d3 00 00 00 00 ff ff ff"); // 4294967295 (uint64)
                 AreEqual((byte)MsgFormat.int64, data[0]);
                 var reader = new MsgReader(data);
@@ -80,6 +82,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 reader.ReadByte();
                 AreEqual("MessagePack error - unexpected EOF. type: int8(0xD0) pos: 0 (root)", reader.Error);
+            }
+            // --- unisgend signed int
+            {
+                var data = HexToSpan("cf 00 00 00 00 ff ff ff");
+                AreEqual((byte)MsgFormat.uint64, data[0]);
+                var reader = new MsgReader(data);
+                reader.ReadInt64();
+                AreEqual("MessagePack error - unexpected EOF. type: uint64(0xCF) pos: 0 (root)", reader.Error);
+            } {
+                var data = HexToSpan("ce 7f ff ff");
+                AreEqual((byte)MsgFormat.uint32, data[0]);
+                var reader = new MsgReader(data);
+                reader.ReadInt32();
+                AreEqual("MessagePack error - unexpected EOF. type: uint32(0xCE) pos: 0 (root)", reader.Error);
+            } {
+                var data = HexToSpan("cd 7f");
+                AreEqual((byte)MsgFormat.uint16, data[0]);
+                var reader = new MsgReader(data);
+                reader.ReadInt16();
+                AreEqual("MessagePack error - unexpected EOF. type: uint16(0xCD) pos: 0 (root)", reader.Error);
+            } {
+                var data = HexToSpan("cc");
+                AreEqual((byte)MsgFormat.uint8, data[0]);
+                var reader = new MsgReader(data);
+                reader.ReadByte();
+                AreEqual("MessagePack error - unexpected EOF. type: uint8(0xCC) pos: 0 (root)", reader.Error);
             }
         }
         
