@@ -6,7 +6,7 @@ using static NUnit.Framework.Assert;
 // ReSharper disable CommentTypo
 // ReSharper disable StringLiteralTypo
 // ReSharper disable IdentifierTypo
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
 {
 
     public static class TestMsgReaderError

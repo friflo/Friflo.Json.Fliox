@@ -6,16 +6,18 @@ using Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
 {
     public static class TestMsgPackPerf {
-        public const long Count = 1; // 100_000_000L;
+        private const long Count = 1; // 100_000_000L;
 
         [Test]
         public static void Perf_Write()
         {
-            var writer = new MsgWriter(new byte[10]);
+            var writer = new MsgWriter(new byte[10], true);
             var sample = new Sample { x = int.MaxValue };
+            Gen_Sample.WriteMsg(ref sample, ref writer);
+            AreEqual(15, writer.Length);
             
             // MsgWrite<Sample> write =  Gen_Sample.WriteBin;
             MsgWrite<Sample> write = Gen_Sample.WriteMsg;

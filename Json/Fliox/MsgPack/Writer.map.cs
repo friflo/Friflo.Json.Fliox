@@ -35,12 +35,15 @@ namespace Friflo.Json.Fliox.MsgPack
         
         // --- write key
         public bool WriteMapKey(int keyLen , ulong key, bool exists, ref int count) {
-            var cur     = pos;
-            pos         = cur + 1 + keyLen;
-            var data    = Reserve(1 + 8);
-            WriteKey(data, cur, keyLen, key);
-            count++;
-            return true;
+            if (writeNil || exists) {
+                var cur     = pos;
+                pos         = cur + 1 + keyLen;
+                var data    = Reserve(1 + 8);
+                WriteKey(data, cur, keyLen, key);
+                count++;
+                return true;
+            }
+            return false;
         }
         
         private static void WriteKey(byte[]data, int cur, int keyLen , ulong key) {

@@ -11,14 +11,19 @@ namespace Friflo.Json.Fliox.MsgPack
 
     public partial struct MsgWriter
     {
-        internal    byte[]  target;
-        private     int     pos;
+        internal        byte[]              target;
+        private         int                 pos;
+        private         bool                writeNil;
         
-        public ReadOnlySpan<byte>  Data => new ReadOnlySpan<byte>(target, 0, pos);
-            
-        public MsgWriter(byte[] target) {
-            this.target = target;
-            pos         = 0;
+        public          int                 Length => pos;
+        
+        public          ReadOnlySpan<byte>  Data        => new ReadOnlySpan<byte>(target, 0, pos);
+        public override string              ToString()  => $"pos: {pos}";
+
+        public MsgWriter(byte[] target, bool writeNil) {
+            this.target     = target;
+            pos             = 0;
+            this.writeNil   = writeNil;
         }
         
         public void Init() {

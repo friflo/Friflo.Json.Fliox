@@ -5,7 +5,7 @@ using static NUnit.Framework.Assert;
 
 // ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable StringLiteralTypo
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
 {
     public static class TestMsgPackHappy
     {

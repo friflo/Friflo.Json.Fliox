@@ -16,20 +16,22 @@ namespace Friflo.Json.Fliox.MsgPack
 
     public class MsgPackMapper
     {
-        private byte[]          data = new byte[4];
+        private         byte[]  data        = new byte[4];
+        private         bool    writeNil    = true;
+        
         [ThreadStatic]
-        private static byte[]   _dataTls;
+        private static  byte[]   _dataTls;
         
         public ReadOnlySpan<byte> Write<T>(T value) {
-            var writer = new MsgWriter(data);
+            var writer = new MsgWriter(data, writeNil);
             MsgPackMapper<T>.Instance.write(ref value, ref writer);
             data = writer.target;
             return writer.Data;
         }
         
-        public static ReadOnlySpan<byte> Serialize<T>(T value) {
+        public static ReadOnlySpan<byte> Serialize<T>(T value, bool writeNil = true) {
             _dataTls  ??= new byte[4];
-            var writer  = new MsgWriter(_dataTls);
+            var writer  = new MsgWriter(_dataTls, writeNil);
             MsgPackMapper<T>.Instance.write(ref value, ref writer);
             _dataTls    = writer.target;
             return writer.Data;
