@@ -178,8 +178,12 @@ namespace Friflo.Json.Fliox.MsgPack
         private float read_float32(int cur) {
             pos = cur + 5;
             if (pos <= data.Length) {
+#if NETSTANDARD2_0
+                throw new NotSupportedException();
+#else
                 var bits = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
-                return BitConverter.Int32BitsToSingle(bits);
+                return BitConverter.Int32BitsToSingle(bits);    // missing in netstandard2.0
+#endif
             }
             SetEofErrorType(MsgFormat.float32, cur);
             return 0;
