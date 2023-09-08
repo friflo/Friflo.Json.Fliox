@@ -9,7 +9,7 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
 {
 
-    public static class TestMsgReaderError
+    public static class TestMsgReader
     {
         [Test]
         public static void Read_uint64_FFFF_FFFF()

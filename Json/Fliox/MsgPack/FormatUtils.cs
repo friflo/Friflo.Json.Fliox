@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System.Text;
 using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 
 // ReSharper disable StringLiteralTypo
@@ -72,6 +74,26 @@ namespace Friflo.Json.Fliox.MsgPack
                 default:
                     return type.ToString();
             }
+        }
+        
+        internal static string GetDataDec(byte[] data, int len) {
+            var sb = new StringBuilder();
+            for (int n = 0; n < len; n++) {
+                sb.Append(data[n]);
+                sb.Append(", ");
+            }
+            if (len > 0) sb.Length -= 2;
+            return sb.ToString();
+        }
+        
+        internal static string GetDataHex(byte[] data, int len) {
+            var sb = new StringBuilder();
+            for (int n = 0; n < len; n++) {
+                sb.Append($"{data[n]:X2}");
+                sb.Append(' ');
+            }
+            if (len > 0) sb.Length--;
+            return sb.ToString();
         }
     }
 }

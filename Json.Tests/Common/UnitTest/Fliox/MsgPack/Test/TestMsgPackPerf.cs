@@ -18,6 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var sample = new Sample { x = int.MaxValue };
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(15, writer.Length);
+            AreEqual("82 A1 78 D2 7F FF FF FF A5 63 68 69 6C 64 C0", writer.DataHex);
             
             // MsgWrite<Sample> write =  Gen_Sample.WriteBin;
             MsgWrite<Sample> write = Gen_Sample.WriteMsg;
