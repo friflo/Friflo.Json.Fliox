@@ -18,11 +18,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], true);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(18, writer.Length);
-            AreEqual("82 A1 78 D2 7F FF FF FF A5 63 68 69 6C 64 81 A1 79 2A", writer.DataHex);
+            AreEqual("82 A1 78 CE 7F FF FF FF A5 63 68 69 6C 64 81 A1 79 2A", writer.DataHex);
         }
         
+        // --------------------------------- (+) integer ---------------------------------
         [Test]
-        public static void Write_FixInt_0()
+        public static void Write_int_fix_0()
         {
             var sample = new Sample { x = 0 };
             var writer = new MsgWriter(new byte[10], false);
@@ -32,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         [Test]
-        public static void Write_FixInt_127()
+        public static void Write_int_fix_127()
         {
             var sample = new Sample { x = 127 };
             var writer = new MsgWriter(new byte[10], false);
@@ -42,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         [Test]
-        public static void Write_FixInt_128()
+        public static void Write_int_128()
         {
             var sample = new Sample { x = 128 };
             var writer = new MsgWriter(new byte[10], false);
@@ -52,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         [Test]
-        public static void Write_FixInt_255()
+        public static void Write_int_255()
         {
             var sample = new Sample { x = 255 };
             var writer = new MsgWriter(new byte[10], false);
@@ -61,6 +62,69 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual("81 A1 78 CC FF", writer.DataHex);
         }
         
+        [Test]
+        public static void Write_int_256()
+        {
+            var sample = new Sample { x = 256 };
+            var writer = new MsgWriter(new byte[10], false);
+            Gen_Sample.WriteMsg(ref sample, ref writer);
+            AreEqual(6, writer.Length);
+            AreEqual("81 A1 78 CD 01 00", writer.DataHex);
+        }
+        
+        [Test]
+        public static void Write_int_65535()
+        {
+            var sample = new Sample { x = ushort.MaxValue };
+            var writer = new MsgWriter(new byte[10], false);
+            Gen_Sample.WriteMsg(ref sample, ref writer);
+            AreEqual(6, writer.Length);
+            AreEqual("81 A1 78 CD FF FF", writer.DataHex);
+        }
+        
+        [Test]
+        public static void Write_Int_65536()
+        {
+            var sample = new Sample { x = 65536 };
+            var writer = new MsgWriter(new byte[10], false);
+            Gen_Sample.WriteMsg(ref sample, ref writer);
+            AreEqual(8, writer.Length);
+            AreEqual("81 A1 78 CE 00 01 00 00", writer.DataHex);
+        }
+        
+        [Test]
+        public static void Write_int_4294967295()
+        {
+            var sample = new Sample { x = uint.MaxValue };
+            var writer = new MsgWriter(new byte[10], false);
+            Gen_Sample.WriteMsg(ref sample, ref writer);
+            AreEqual(8, writer.Length);
+            AreEqual("81 A1 78 CE FF FF FF FF", writer.DataHex);
+        }
+        
+        [Test]
+        public static void Write_int_4294967296()
+        {
+            var sample = new Sample { x = 4294967296 };
+            var writer = new MsgWriter(new byte[10], false);
+            Gen_Sample.WriteMsg(ref sample, ref writer);
+            AreEqual(12, writer.Length);
+            AreEqual("81 A1 78 CF 00 00 00 01 00 00 00 00", writer.DataHex);
+        }
+        
+        [Test]
+        public static void Write_int_long_max()
+        {
+            var sample = new Sample { x = long.MaxValue };
+            var writer = new MsgWriter(new byte[10], false);
+            Gen_Sample.WriteMsg(ref sample, ref writer);
+            AreEqual(12, writer.Length);
+            AreEqual("81 A1 78 CF 7F FF FF FF FF FF FF FF", writer.DataHex);
+        }
+        
+
+        
+        // --------------------------------- (-) integer ---------------------------------
         [Test]
         public static void Write_FixInt_neg_32()
         {

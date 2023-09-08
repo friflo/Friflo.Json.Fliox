@@ -121,19 +121,19 @@ namespace Friflo.Json.Fliox.MsgPack
         {
             switch (val)
             {
-                case > int.MaxValue:
-                    data[cur]       = (byte)MsgFormat.int64;
-                    BinaryPrimitives.WriteInt64BigEndian (new Span<byte>(data, cur + 1, 8), val);
+                case > uint.MaxValue:
+                    data[cur]       = (byte)MsgFormat.uint64;
+                    BinaryPrimitives.WriteUInt64BigEndian (new Span<byte>(data, cur + 1, 8), (ulong)val);
                     pos = cur + 9;
                     return;
-                case > short.MaxValue:
-                    data[cur]       = (byte)MsgFormat.int32;
-                    BinaryPrimitives.WriteInt32BigEndian (new Span<byte>(data, cur + 1, 4), (int)val);
+                case > ushort.MaxValue:
+                    data[cur]       = (byte)MsgFormat.uint32;
+                    BinaryPrimitives.WriteUInt32BigEndian (new Span<byte>(data, cur + 1, 4), (uint)val);
                     pos = cur + 5;
                     return;
                 case > byte.MaxValue:
-                    data[cur]       = (byte)MsgFormat.int16;
-                    BinaryPrimitives.WriteInt16BigEndian (new Span<byte>(data, cur + 1, 2), (short)val);
+                    data[cur]       = (byte)MsgFormat.uint16;
+                    BinaryPrimitives.WriteUInt16BigEndian (new Span<byte>(data, cur + 1, 2), (ushort)val);
                     pos = cur + 3;
                     return;
                 case > sbyte.MaxValue:
