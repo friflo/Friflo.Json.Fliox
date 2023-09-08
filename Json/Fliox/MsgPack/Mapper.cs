@@ -6,8 +6,8 @@ using System;
 namespace Friflo.Json.Fliox.MsgPack
 {
 
-    internal delegate void MsgWrite<T>(ref T item, ref MsgWriter writer);
-    internal delegate void MsgRead<T> (ref T item, ref MsgReader reader);
+    public      delegate void MsgWrite<T>(ref T item, ref MsgWriter writer);    // TODO make internal
+    internal    delegate void MsgRead<T> (ref T item, ref MsgReader reader);
 
     public class ReadException : Exception
     {

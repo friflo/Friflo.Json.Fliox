@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.MsgPack
 
                         private     const int           MsgError = int.MaxValue;
         
-        internal MsgReader(ReadOnlySpan<byte> data) {
+        public MsgReader(ReadOnlySpan<byte> data) {
             this.data   = data;
             pos         = 0;
             error       = null;

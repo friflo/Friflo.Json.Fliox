@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.MsgPack
         
         public ReadOnlySpan<byte>  Data => new ReadOnlySpan<byte>(target, 0, pos);
             
-        internal MsgWriter(byte[] target) {
+        public MsgWriter(byte[] target) {
             this.target = target;
             pos         = 0;
         }

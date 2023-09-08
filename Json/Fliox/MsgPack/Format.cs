@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.MsgPack
     /// [MsgPack Converter | MsgPack to JSON Decoder and Encoder] https://ref45638.github.io/msgpack-converter/
     /// [Online msgpack converter] https://msgpack.solder.party/
     /// </summary>
-    internal enum MsgFormat
+    public enum MsgFormat
     {
         fixintPos   = 0x00, fixintPosMax    = 0x7f,     // 0xxxxxxx          range: [0, 127]
         fixmap      = 0x80, fixmapMax       = 0x8f,     // 1000xxxx (8x)     + N*2 objects
