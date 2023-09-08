@@ -1,6 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+
 namespace Friflo.Json.Fliox.Schema.Definition
 {
     /// <summary>
@@ -61,5 +65,42 @@ namespace Friflo.Json.Fliox.Schema.Definition
         Object      = 18,
         Array       = 19,
         Dictionary  = 20,
+    }
+    
+    internal static class StandardTypeUtils
+    {
+        private static void AssertTypeId(TypeDef type, TypeDef standardType, StandardTypeId typeId) {
+            if ((type == standardType) != (type.TypeId == typeId)) {
+                throw new InvalidOperationException($"invalid typeId: {typeId} type: '{type}' standardType: '{standardType}'");
+            }
+        }
+        
+        [Conditional("DEBUG")]
+        internal static void AssertTypeIds(IReadOnlyList<FieldDef> fields, StandardTypes standard)
+        {
+            foreach (var field in fields) {
+                var type = field.type;
+                AssertTypeId(type, standard.Boolean,    StandardTypeId.Boolean);
+                // AssertTypeId(type, standard.String, StandardTypeId.String);
+            
+                AssertTypeId(type, standard.Uint8,      StandardTypeId.Uint8);
+                AssertTypeId(type, standard.Int16,      StandardTypeId.Int16);
+                AssertTypeId(type, standard.Int32,      StandardTypeId.Int32);
+                AssertTypeId(type, standard.Int64,      StandardTypeId.Int64);
+
+                AssertTypeId(type, standard.Float,      StandardTypeId.Float);
+                AssertTypeId(type, standard.Double,     StandardTypeId.Double);
+
+                AssertTypeId(type, standard.BigInteger, StandardTypeId.BigInteger);
+                AssertTypeId(type, standard.DateTime,   StandardTypeId.DateTime);
+            
+                AssertTypeId(type, standard.Guid,       StandardTypeId.Guid);
+                AssertTypeId(type, standard.JsonValue,  StandardTypeId.JsonValue);
+                AssertTypeId(type, standard.JsonKey,    StandardTypeId.JsonKey);
+                AssertTypeId(type, standard.JsonEntity, StandardTypeId.JsonEntity);
+                
+                AssertTypeId(type, standard.JsonTable,  StandardTypeId.JsonTable);
+            }
+        }
     }
 }

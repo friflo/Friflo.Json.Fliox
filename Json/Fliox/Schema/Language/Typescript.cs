@@ -105,6 +105,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var context         = new TypeContext (generator, imports, type);
             var dependencies    = new List<TypeDef>();
             var fields          = type.Fields;
+            StandardTypeUtils.AssertTypeIds(fields, context.standardTypes);
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var extendsStr      = "";
             var baseType        = type.BaseType;
@@ -257,5 +258,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 emitFile.header = sb.ToString();
             }
         }
+        
+
     }
 }

@@ -67,6 +67,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private EmitType EmitClassType(TypeDef type, StringBuilder sb) {
             var fields      = type.Fields;
+            StandardTypeUtils.AssertTypeIds(fields, generator.standardTypes);
             var emitFields = new List<EmitField>(fields.Count);
             foreach (var field in fields) {
                 var emitField = new EmitField(null, field);
