@@ -99,6 +99,9 @@ namespace Friflo.Json.Fliox.MsgPack
         
         /// <summary> Convert hex to JSON with [Online msgpack converter] <br/> https://msgpack.solder.party/  </summary>
         public static ReadOnlySpan<byte> HexToSpan(string hex) {
+            if (hex.Length == 0) {
+                return new ReadOnlySpan<byte>(Array.Empty<byte>());
+            }
             var items = hex.Split(' ');
             var result = new byte[items.Length];
             for (int n = 0; n < items.Length; n++) {
