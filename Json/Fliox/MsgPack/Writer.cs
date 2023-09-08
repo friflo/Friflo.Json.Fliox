@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.MsgPack
         public void WriteMapInt32(int keyLen , ulong key, int val) {
             var cur     = pos;
             pos         = cur + 1 + keyLen;
-            var data    = Reserve(1 + 8 + 5);
+            var data    = Reserve(1 + 8 + 8);       // key: 1 + 8,  val: 8
             WriteKey(data, cur, keyLen, key);
             WriteLong(data, cur + keyLen + 1, val);
         }
@@ -88,69 +88,60 @@ namespace Friflo.Json.Fliox.MsgPack
             var cur     = pos;
             var keyLen  = key.Length;
             pos         = cur + 1 + keyLen;
-            var data    = Reserve(2 + keyLen + 5);
+            var data    = Reserve(2 + keyLen + 8);  // key: 2 + keyLen,  val: 8
             WriteKey(data, cur, key);
             WriteLong(data, cur + keyLen + 1, val);
         }
         
-        private void WriteLong(byte[]data, int cur, long val) {
-            if (val < 128) {
-                if (val >= 0) {
+        private void WriteLong(byte[]data, int cur, long val)
+        {
+            switch (val)
+            {
+                case > int.MaxValue:
+                    data[cur]       = (byte)MsgFormat.int64;
+                    BinaryPrimitives.WriteInt64BigEndian (new Span<byte>(data, cur + 1, 8), val);
+                    pos = cur + 9;
+                    return;
+                case > short.MaxValue:
+                    data[cur]       = (byte)MsgFormat.int32;
+                    BinaryPrimitives.WriteInt32BigEndian (new Span<byte>(data, cur + 1, 4), (int)val);
+                    pos = cur + 5;
+                    return;
+                case > byte.MaxValue:
+                    data[cur]       = (byte)MsgFormat.int16;
+                    BinaryPrimitives.WriteInt16BigEndian (new Span<byte>(data, cur + 1, 2), (short)val);
+                    pos = cur + 3;
+                    return;
+                case >= 0:
                     data[cur]   = (byte)val;
                     pos = cur + 1;
-                    return;                    
-                }
-                if (val >= -32) {
+                    return;
+                // --------------------------------- val < 0  ---------------------------------
+                case >= -32:
                     data[cur] = (byte)(0xe0 | val);
                     pos = cur + 1;
                     return;
-                }
-                // --------------------------------- case: val < -32 ---------------------------------
-                if (val >= sbyte.MinValue) {
-                    data[cur]       = (byte)MsgFormat.int8;
+                case >= sbyte.MinValue:
+                    data[cur]       = (byte)MsgFormat.uint8;
                     data[cur + 1]   = (byte)val;
                     pos = cur + 2;
                     return;
-                }
-                if (val >= short.MinValue) {
+                case >= short.MinValue:
                     data[cur]       = (byte)MsgFormat.int16;
-                    BinaryPrimitives.WriteInt16BigEndian(new Span<byte>(data, cur + 1, 2), (short)val);
+                    BinaryPrimitives.WriteInt16BigEndian (new Span<byte>(data, cur + 1, 2), (short)val);
                     pos = cur + 3;
                     return;
-                }
-                if (val >= int.MinValue) {
+                case >= int.MinValue:
                     data[cur]       = (byte)MsgFormat.int32;
-                    BinaryPrimitives.WriteInt32BigEndian(new Span<byte>(data, cur + 1, 4), (int)val);
+                    BinaryPrimitives.WriteInt32BigEndian (new Span<byte>(data, cur + 1, 4), (int)val);
                     pos = cur + 5;
                     return;
-                }
-                data[cur]       = (byte)MsgFormat.int64;
-                BinaryPrimitives.WriteInt64BigEndian(new Span<byte>(data, cur + 1, 8), val);
-                pos = cur + 9;
-                return;
+                case >= long.MinValue:
+                    data[cur]       = (byte)MsgFormat.int64;
+                    BinaryPrimitives.WriteInt64BigEndian (new Span<byte>(data, cur + 1, 8), val);
+                    pos = cur + 9;
+                    return;
             }
-            // --------------------------------- case: val >= 128 ---------------------------------
-            if (val <= byte.MaxValue) {
-                data[cur]       = (byte)MsgFormat.uint8;
-                data[cur + 1]   = (byte)val;
-                pos = cur + 2;
-                return;
-            }
-            if (val <= short.MaxValue) {
-                data[cur]       = (byte)MsgFormat.int16;
-                BinaryPrimitives.WriteInt16BigEndian(new Span<byte>(data, cur + 1, 2), (short)val);
-                pos = cur + 3;
-                return;
-            }
-            if (val <= int.MaxValue) {
-                data[cur]       = (byte)MsgFormat.int32;
-                BinaryPrimitives.WriteInt32BigEndian(new Span<byte>(data, cur + 1, 4), (int)val);
-                pos = cur + 5;
-                return;
-            }
-            data[cur]       = (byte)MsgFormat.int64;
-            BinaryPrimitives.WriteInt64BigEndian(new Span<byte>(data, cur + 1, 8), val);
-            pos = cur + 9;
         }
     }
 }

@@ -30,6 +30,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         [Test]
+        public static void Perf_Write_2() { Perf_Write(); }
+        
+        [Test]
         public static void Perf_MapperWrite()
         {
             var sample = new Sample { x = int.MaxValue };
@@ -74,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         [Test]
-        public static void Perf_Read2()
+        public static void Perf_Read_2()
         {
             Perf_Read();
         }
