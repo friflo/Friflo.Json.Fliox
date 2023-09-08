@@ -4,6 +4,8 @@
 using System;
 using System.Buffers.Binary;
 
+#pragma warning disable CS3001 // CS3001 : Argument type 'ulong' is not CLS-compliant
+
 // ReSharper disable CommentTypo
 namespace Friflo.Json.Fliox.MsgPack
 {
