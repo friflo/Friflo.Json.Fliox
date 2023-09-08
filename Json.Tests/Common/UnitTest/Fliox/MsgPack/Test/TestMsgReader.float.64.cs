@@ -23,14 +23,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
                 AreEqual(4294967295, x);
+                AreEqual(data.Length, reader.Pos);
             }         {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat32();
                 AreEqual(4294967295, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 var x = reader.ReadInt64();
                 AreEqual(4294967295, x);
+                AreEqual(data.Length, reader.Pos);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt32();
@@ -47,36 +50,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         [Test]
-        public static void Read_float32()
+        public static void Read_float64_max()
         {
-            var data = HexToSpan("ca 4A FF FF FE"); // 8388607 (float32)
-            var value = BitConverter.SingleToInt32Bits(8388607);
-            
-            AreEqual((byte)MsgFormat.float32, data[0]);
+            var data = HexToSpan("cb 7F EF FF FF FF FF FF FF"); // double.MaxValue (float64)
+            var value = BitConverter.DoubleToInt64Bits(double.MaxValue);
+            AreEqual((byte)MsgFormat.float64, data[0]);
             {
                 var reader = new MsgReader(data);
                 var x = reader.ReadFloat64();
-                AreEqual(8388607, x);
+                AreEqual(double.MaxValue, x);
             } {
                 var reader = new MsgReader(data);
-                var x = reader.ReadFloat32();
-                AreEqual(8388607, x);
+                reader.ReadFloat32();
+                AreEqual("MessagePack error - value out of range. was: 1,7976931348623157E+308 float64(0xCB) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
-                var x = reader.ReadInt64();
-                AreEqual(8388607, x);
+                reader.ReadInt64();
+                AreEqual("MessagePack error - value out of range. was: 1,7976931348623157E+308 float64(0xCB) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
-                var x = reader.ReadInt32();
-                AreEqual(8388607, x);
+                reader.ReadInt32();
+                AreEqual("MessagePack error - value out of range. was: 1,7976931348623157E+308 float64(0xCB) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt16();
-                AreEqual("MessagePack error - value out of range. was: 8388607 float32(0xCA) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range. was: 1,7976931348623157E+308 float64(0xCB) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();
-                AreEqual("MessagePack error - value out of range. was: 8388607 float32(0xCA) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range. was: 1,7976931348623157E+308 float64(0xCB) pos: 0 (root)", reader.Error);
             }
         }
     }
