@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.MsgPack
             WriteInt32(data, cur + 1, val);
         } */
         
-        public void WriteMapInt32(int keyLen , ulong key, int val) {
+        public void WriteMapInt32(int keyLen , ulong key, long val) {
             var cur     = pos;
             pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 8);       // key: 1 + 8,  val: 8
@@ -91,6 +91,30 @@ namespace Friflo.Json.Fliox.MsgPack
             var data    = Reserve(2 + keyLen + 8);  // key: 2 + keyLen,  val: 8
             WriteKey(data, cur, key);
             WriteLong(data, cur + keyLen + 1, val);
+        }
+        
+        public void WriteMapByte(int keyLen , ulong key, byte val) {
+            var cur     = pos;
+            pos         = cur + 1 + keyLen;
+            var data    = Reserve(1 + 8 + 2);       // key: 1 + 8,  val: 2
+            WriteKey(data, cur, keyLen, key);
+            WriteByte(data, cur, val);
+        }
+        
+        private void WriteByte(byte[]data, int cur, byte val)
+        {
+            switch (val)
+            {
+                case >= (int)sbyte.MaxValue:
+                    data[cur]   = (byte)MsgFormat.int8;
+                    data[cur]   = (byte)val;
+                    pos = cur + 1;
+                    return;
+                default:
+                    data[cur]   = val;
+                    pos = cur + 1;
+                    return;
+            }
         }
         
         private void WriteLong(byte[]data, int cur, long val)
@@ -112,6 +136,11 @@ namespace Friflo.Json.Fliox.MsgPack
                     BinaryPrimitives.WriteInt16BigEndian (new Span<byte>(data, cur + 1, 2), (short)val);
                     pos = cur + 3;
                     return;
+                case > sbyte.MaxValue:
+                    data[cur]       = (byte)MsgFormat.uint8;
+                    data[cur + 1]   = (byte)val;
+                    pos = cur + 2;
+                    return;
                 case >= 0:
                     data[cur]   = (byte)val;
                     pos = cur + 1;
@@ -122,7 +151,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     pos = cur + 1;
                     return;
                 case >= sbyte.MinValue:
-                    data[cur]       = (byte)MsgFormat.uint8;
+                    data[cur]       = (byte)MsgFormat.int8;
                     data[cur + 1]   = (byte)val;
                     pos = cur + 2;
                     return;

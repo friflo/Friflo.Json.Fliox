@@ -68,8 +68,11 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
             int map = writer.WriteMapFix();
             int count = 1;
             // writer.WriteInt32   (_val, obj.val);
-            writer.WriteMapInt32   (1, _x, obj.x);
             // writer.WriteInt32   (_x2, obj.x);
+            
+            writer.WriteMapInt32   (1, _x, obj.x);
+            // writer.WriteMapByte   (1, _x, (byte)obj.x);
+            
             if (writer.AddKey(obj.child != null)) {
                 writer.WriteMapKey (5, _child, ref count); 
                 Gen_Child.WriteMsg (ref obj.child, ref writer);
