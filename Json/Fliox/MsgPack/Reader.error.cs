@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var sb  = SetError();
-            sb.Append($"MessagePack error - {expect}. was: {MsgFormatUtils.Name(type)}(0x{(int)type:X})");
+            sb.Append($"MessagePack error - {expect}. was: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
         
@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var sb  = SetError();
-            sb.Append($"MessagePack error - value out of range. was: {value} {MsgFormatUtils.Name(type)}(0x{(int)type:X})");
+            sb.Append($"MessagePack error - value out of range. was: {value} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
         
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             var sb  = SetError();
             var val = value.ToString(NumberFormat);
-            sb.Append($"MessagePack error - value out of range. was: {val} {MsgFormatUtils.Name(type)}(0x{(int)type:X})");
+            sb.Append($"MessagePack error - value out of range. was: {val} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
         private static readonly NumberFormatInfo NumberFormat = CultureInfo.InvariantCulture.NumberFormat;
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var sb  = SetError();
-            sb.Append($"MessagePack error - unexpected EOF. type: {MsgFormatUtils.Name(type)}(0x{(int)type:X})");
+            sb.Append($"MessagePack error - unexpected EOF. type: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
         

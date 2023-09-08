@@ -1,5 +1,5 @@
 ﻿using System;
-using static Friflo.Json.Fliox.MsgPack.MsgFormatUtils;
+using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack
 {

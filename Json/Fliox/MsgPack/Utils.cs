@@ -9,7 +9,7 @@ using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 // ReSharper disable CommentTypo
 namespace Friflo.Json.Fliox.MsgPack
 {
-    public static class MsgFormatUtils
+    public static class MsgPackUtils
     {
         internal static string Name(MsgFormat type)
         {

@@ -2,7 +2,7 @@
 using Friflo.Json.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
-using static Friflo.Json.Fliox.MsgPack.MsgFormatUtils;
+using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
 
 
 // ReSharper disable CommentTypo
