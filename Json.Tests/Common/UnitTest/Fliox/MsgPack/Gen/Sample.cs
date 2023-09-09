@@ -35,7 +35,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
                     case _x:        obj.x = reader.ReadInt32 ();                    continue;
                     case _child:    Gen_Child.ReadMsg(ref obj.child, ref reader);   continue;
                 }
-                reader.SkipTree(); break;
+                reader.SkipTree();
             }
         }
         

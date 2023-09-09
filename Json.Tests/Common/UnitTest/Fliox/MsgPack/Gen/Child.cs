@@ -26,7 +26,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
                     // case _val:      obj.val = reader.ReadInt32 (); break;
                     case _y:    obj.y = reader.ReadInt32 (); continue;
                 }
-                reader.SkipTree(); break;
+                reader.SkipTree();
             }
         }
 
