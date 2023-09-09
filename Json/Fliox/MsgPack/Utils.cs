@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (hex.Length == 0) {
                 return new ReadOnlySpan<byte>(Array.Empty<byte>());
             }
-            var items = hex.Split(' ');
+            var items = WhiteSpace.Split(hex);
             var result = new byte[items.Length];
             for (int n = 0; n < items.Length; n++) {
                 result[n] = Convert.ToByte(items[n], 16);
