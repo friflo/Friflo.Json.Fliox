@@ -5,7 +5,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack
 {
     public class Sample
     {
-        public long     x;
+        public int      x;
         public Child    child;
         
         // { "x": 2147483647, "child": null }
