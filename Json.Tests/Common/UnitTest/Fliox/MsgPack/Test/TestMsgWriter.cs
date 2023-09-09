@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual(HexNorm("82 A1 78 CE 7F FF FF FF A5 63 68 69 6C 64 81 A1 79 2A"), writer.DataHex);
         }
         
-        // --------------------------------- (+) integer ---------------------------------
+        // --------------------------- Key (fixstr) / Value (+) integer ---------------------------------
         private const   ulong     X            = 0x78;
         
         [TestCase(Byte)] [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
@@ -199,7 +199,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         
 
         
-        // --------------------------------- (-) integer ---------------------------------
+        // --------------------------------- Key (fixstr) / Value (-) integer ---------------------------------
         [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_FixInt_neg_32(DataType type)
         {
@@ -345,6 +345,97 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual(12, writer.Length);
             AreEqual(HexNorm("81 A1 78  D3  80 00 00 00 00 00 00 00"), writer.DataHex);
             AreEqual((byte)MsgFormat.int64, writer.Data[3]);
+        }
+        
+        // --------------------------------- Value integer ---------------------------------
+        [Test]
+        public static void Write_Byte()
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteByte(0);
+            AreEqual(1, writer.Length);
+            AreEqual(HexNorm("00"), writer.DataHex);
+        }
+        
+        [Test]
+        public static void Write_Int16()
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteInt16(32767);
+            AreEqual(3, writer.Length);
+            AreEqual(HexNorm("CD 7F FF"), writer.DataHex);
+            AreEqual((byte)MsgFormat.uint16, writer.Data[0]);
+        }
+        
+        [Test]
+        public static void Write_Int32()
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteInt32(2147483647);
+            AreEqual(5, writer.Length);
+            AreEqual(HexNorm("CE 7F FF FF FF"), writer.DataHex);
+            AreEqual((byte)MsgFormat.uint32, writer.Data[0]);
+        }
+        
+        [Test]
+        public static void Write_Int64()
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteInt64(9223372036854775807L);
+            AreEqual(9, writer.Length);
+            AreEqual(HexNorm("CF 7F FF FF FF FF FF FF FF"), writer.DataHex);
+            AreEqual((byte)MsgFormat.uint64, writer.Data[0]);
+        }
+        
+        // --------------------------------- Key (str) / Value integer ---------------------------------
+        private static readonly byte[]     XArr = new byte[] { (byte)'x'};
+        
+        [Test]
+        public static void Write_KeyStr8_Byte()
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteMapFix();
+            writer.WriteKeyByte(XArr, 0);
+            writer.WriteMapFixCount(0, 1);
+            
+            AreEqual(4, writer.Length);
+            AreEqual(HexNorm("81 A1 78 00"), writer.DataHex);
+        }
+        
+        [Test]
+        public static void Write_KeyStr8_Int16()
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteMapFix();
+            writer.WriteKeyInt16(XArr, 0);
+            writer.WriteMapFixCount(0, 1);
+            
+            AreEqual(4, writer.Length);
+            AreEqual(HexNorm("81 A1 78 00"), writer.DataHex);
+        }
+        
+        [Test]
+        public static void Write_KeyStr8_Int32()
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteMapFix();
+            writer.WriteKeyInt32(XArr, 0);
+            writer.WriteMapFixCount(0, 1);
+            
+            AreEqual(4, writer.Length);
+            AreEqual(HexNorm("81 A1 78 00"), writer.DataHex);
+        }
+        
+        [Test]
+        public static void Write_KeyStr8_Int64()
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteMapFix();
+            writer.WriteKeyInt64(XArr, 0);
+            writer.WriteMapFixCount(0, 1);
+            
+            AreEqual(4, writer.Length);
+            AreEqual(HexNorm("81 A1 78 00"), writer.DataHex);
         }
     }
 }
