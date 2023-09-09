@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.MsgPack
             return writeNil || exists;
         }
         
-        public void WriteMapKey(int keyLen, ulong key, ref int count) {
+        public void WriteKey(int keyLen, ulong key, ref int count) {
             count++;
             var cur     = pos;
             pos         = cur + 1 + keyLen;

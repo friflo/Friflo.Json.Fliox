@@ -74,7 +74,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
             // writer.WriteMapByte   (1, _x, (byte)obj.x);
             
             if (writer.AddKey(obj.child != null)) {
-                writer.WriteMapKey (5, _child, ref count); 
+                writer.WriteKey (5, _child, ref count); 
                 Gen_Child.WriteMsg (ref obj.child, ref writer);
             }
             writer.WriteMapFixCount(map, count); // write element count
