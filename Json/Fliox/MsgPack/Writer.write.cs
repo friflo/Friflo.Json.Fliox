@@ -3,6 +3,8 @@
 
 using System;
 using System.Buffers.Binary;
+using System.Text;
+
 
 // #pragma warning disable CS3001  // Argument type 'ulong' is not CLS-compliant
 
@@ -11,6 +13,39 @@ namespace Friflo.Json.Fliox.MsgPack
 
     public partial struct MsgWriter
     {
+        private void Write_string(string val) {
+            var len     = Encoding.UTF8.GetByteCount(val);
+            var data    = Reserve(1 + 4 + len);
+            var cur     = pos;
+            switch (len) {
+                case <= 31:
+                    data[cur]       = (byte)((int)MsgFormat.fixstr | len);
+                    cur += 1;
+                    break;
+                case <= byte.MaxValue:
+                    data[cur]       = (byte)MsgFormat.str8;
+                    data[cur + 1]   = (byte)len;
+                    cur += 2;
+                    break;
+                case <= short.MaxValue:
+                    data[cur]       = (byte)MsgFormat.str16;
+                    data[cur + 1]   = (byte)len;
+                    cur += 3;
+                    break;
+                case <=  int.MaxValue:
+                    data[cur]       = (byte)MsgFormat.str16;
+                    data[cur + 1]   = (byte)len;
+                    cur += 5;
+                    break;
+            }
+            pos = cur + len;
+            var dest    = new Span<byte>(data, cur, len);
+            var source  = val.AsSpan();
+            Encoding.UTF8.GetBytes(source, dest);
+        }
+        
+        
+        // ----------------------------------- byte, short, int long -----------------------------------
         private void Write_byte(byte[]data, int cur, byte val)
         {
             switch (val)
