@@ -3,13 +3,19 @@ using Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
-using static Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.IntType;
+using static Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.KeyType;
 
 // ReSharper disable CommentTypo
 // ReSharper disable StringLiteralTypo
 // ReSharper disable IdentifierTypo
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
 {
+    public enum KeyType
+    {
+        FixStr,
+        Str8,
+    }
+    
     public static class TestMsgWriter
     {
         [Test]
@@ -25,27 +31,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         private const               long    X       = 0x78;
         private static  readonly    byte[]  XArr    = new byte[] { (byte)'x'};
         
-        [Test]
-        public static void Write_keyfix_strfix()
+        [TestCase(FixStr)] [TestCase(Str8)]
+        public static void Write_keyfix_strfix(KeyType keyType)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
-            writer.WriteKeyString (1, X, "abc");
+            switch (keyType) {
+                case FixStr:    writer.WriteKeyString (1, X, "abc");    break;
+                case Str8:      writer.WriteKeyString (XArr, "abc");    break;
+            }
             writer.WriteMapFixCount(0, 1);
             
             AreEqual(HexNorm("81 A1 78 A3 61 62 63"), writer.DataHex);
         }
         
-        [Test]
-        public static void Write_keystr_strfix()
+       
+        [TestCase(FixStr)] [TestCase(Str8)]
+        public static void Write_keyfix_str8(KeyType keyType)
         {
+            var val = "_123456789_123456789_123456789_123456789";
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
-            writer.WriteKeyString (XArr, "abc");
+            switch (keyType) {
+                case FixStr:    writer.WriteKeyString (1, X, val);      break;
+                case Str8:      writer.WriteKeyString (XArr, val);      break;
+            }
             writer.WriteMapFixCount(0, 1);
             
-            AreEqual(HexNorm("81 A1 78 A3 61 62 63"), writer.DataHex);
+            AreEqual(HexNorm("81 A1 78 D9 28 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39"), writer.DataHex);
         }
-        
     }
 }
