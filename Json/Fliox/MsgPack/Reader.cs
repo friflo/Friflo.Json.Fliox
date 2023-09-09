@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         SetEofErrorType(type, cur);
                         return null;
                     }
-                    int len = data[1] << 8 | data [2];
+                    int len = data[cur + 1] << 8 | data [cur + 2];
                     if (!read_str(out var span, cur + 3, len, type)) {
                         return null;
                     }

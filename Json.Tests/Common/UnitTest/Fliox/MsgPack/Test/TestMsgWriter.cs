@@ -60,5 +60,45 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             
             AreEqual(HexNorm("81 A1 78 D9 28 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39"), writer.DataHex);
         }
+        
+        [TestCase(FixStr)] [TestCase(Str8)]
+        public static void Write_keyfix_str16(KeyType keyType)
+        {
+            var val = new string('a', 300);
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteMapFix();
+            switch (keyType) {
+                case FixStr:    writer.WriteKeyString (1, X, val);      break;
+                case Str8:      writer.WriteKeyString (XArr, val);      break;
+            }
+            writer.WriteMapFixCount(0, 1);
+            
+            var reader = new MsgReader(writer.Data);
+            reader.ReadObject(out _);
+            reader.ReadKey();
+            var x = reader.ReadString();
+            AreEqual(300, x.Length);
+            AreEqual(val, x);
+        }
+        
+        [TestCase(FixStr)] [TestCase(Str8)]
+        public static void Write_keyfix_str32(KeyType keyType)
+        {
+            var val = new string('a', 70000);
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteMapFix();
+            switch (keyType) {
+                case FixStr:    writer.WriteKeyString (1, X, val);      break;
+                case Str8:      writer.WriteKeyString (XArr, val);      break;
+            }
+            writer.WriteMapFixCount(0, 1);
+            
+            var reader = new MsgReader(writer.Data);
+            reader.ReadObject(out _);
+            reader.ReadKey();
+            var x = reader.ReadString();
+            AreEqual(70000, x.Length);
+            AreEqual(val, x);
+        }
     }
 }

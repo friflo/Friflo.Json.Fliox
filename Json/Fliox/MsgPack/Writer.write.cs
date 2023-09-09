@@ -29,12 +29,12 @@ namespace Friflo.Json.Fliox.MsgPack
                     break;
                 case <= short.MaxValue:
                     data[cur]       = (byte)MsgFormat.str16;
-                    data[cur + 1]   = (byte)len;
+                    BinaryPrimitives.WriteUInt16BigEndian (new Span<byte>(data, cur + 1, 2), (ushort)len);
                     cur += 3;
                     break;
                 case <=  int.MaxValue:
-                    data[cur]       = (byte)MsgFormat.str16;
-                    data[cur + 1]   = (byte)len;
+                    data[cur]       = (byte)MsgFormat.str32;
+                    BinaryPrimitives.WriteUInt32BigEndian (new Span<byte>(data, cur + 1, 4), (uint)len);
                     cur += 5;
                     break;
             }
