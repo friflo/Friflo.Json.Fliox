@@ -76,20 +76,20 @@ namespace Friflo.Json.Fliox.MsgPack
             WriteInt32(data, cur + 1, val);
         } */
         
-        public void WriteMapInt32(int keyLen , ulong key, long val) {
+        public void WriteKeyInt32(int keyLen , ulong key, long val) {
             var cur     = pos;
             pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 8);       // key: 1 + 8,  val: 8
-            WriteKey(data, cur, keyLen, key);
+            WriteKeyFix(data, cur, keyLen, key);
             WriteLong(data, cur + keyLen + 1, val);
         }
         
-        public void WriteMapInt32(ReadOnlySpan<byte> key, int val) {
+        public void WriteKeyInt32(ReadOnlySpan<byte> key, int val) {
             var cur     = pos;
             var keyLen  = key.Length;
             pos         = cur + 1 + keyLen;
             var data    = Reserve(2 + keyLen + 8);  // key: 2 + keyLen,  val: 8
-            WriteKey(data, cur, key);
+            WriteKeySpan(data, cur, key);
             WriteLong(data, cur + keyLen + 1, val);
         }
         
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.MsgPack
             var cur     = pos;
             pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 2);       // key: 1 + 8,  val: 2
-            WriteKey(data, cur, keyLen, key);
+            WriteKeyFix(data, cur, keyLen, key);
             WriteByte(data, cur, val);
         }
         

@@ -43,15 +43,15 @@ namespace Friflo.Json.Fliox.MsgPack
             var cur     = pos;
             pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8);
-            WriteKey(data, cur, keyLen, key);
+            WriteKeyFix(data, cur, keyLen, key);
         }
         
-        private static void WriteKey(byte[]data, int cur, int keyLen , ulong key) {
+        private static void WriteKeyFix(byte[]data, int cur, int keyLen, ulong key) {
             data[cur] = (byte)((int)MsgFormat.fixstr | keyLen);
             BinaryPrimitives.WriteUInt64LittleEndian(new Span<byte>(data, cur + 1, 8), key);
         }
         
-        private static void WriteKey(byte[]data, int cur, ReadOnlySpan<byte> key) {
+        private static void WriteKeySpan(byte[]data, int cur, ReadOnlySpan<byte> key) {
             var keyLen  = key.Length;
             if (keyLen <= 15) {
                 data[cur] = (byte)((int)MsgFormat.fixstr | keyLen);

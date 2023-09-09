@@ -38,7 +38,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
             int map = writer.WriteMapFix();
             int count = 1;
             // writer.WriteInt32   (_val, obj.val);
-            writer.WriteMapInt32   (1, _y, obj.y);
+            writer.WriteKeyInt32   (1, _y, obj.y);
             // writer.WriteInt32   (_x2, obj.x);
             writer.WriteMapFixCount(map, count); // write element count
         }
