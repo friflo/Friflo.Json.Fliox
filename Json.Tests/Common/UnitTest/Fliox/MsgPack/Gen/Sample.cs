@@ -14,8 +14,8 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
     {
         private const   int       _val          = 0;
         private const   ulong     _abcdefgh     = 0x6867_6665_6463_6261;
-        private const   ulong     _x            = 0x0000_0000_0000_0078;
-        private const   ulong     _child        = 0x0000_0064_6c69_6863;
+        private const   long      _x            = 0x0000_0000_0000_0078;
+        private const   long      _child        = 0x0000_0064_6c69_6863;
         private static  byte[]    _x2           = new byte[] { (byte)'x' };
 
         public static void ReadMsg (ref Sample obj, ref MsgReader reader)

@@ -9,7 +9,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
 
     static class Gen_Child
     {
-        private const   ulong     _y          = 0x0000_0000_0000_0079;
+        private const   long     _y          = 0x0000_0000_0000_0079;
 
         public static void ReadMsg (ref Child obj, ref MsgReader reader) {
             if (!reader.ReadObject(out int len)) {

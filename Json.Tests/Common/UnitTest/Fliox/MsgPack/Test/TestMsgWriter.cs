@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         // --------------------------- Key (fixstr) / Value (+) integer ---------------------------------
-        private const   ulong     X            = 0x78;
+        private const   long     X            = 0x78;
         
         [TestCase(Byte)] [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_int_fix_0(DataType type)

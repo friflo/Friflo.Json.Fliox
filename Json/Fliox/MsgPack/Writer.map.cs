@@ -4,7 +4,7 @@
 using System;
 using System.Buffers.Binary;
 
-#pragma warning disable CS3001 // CS3001 : Argument type 'ulong' is not CLS-compliant
+// #pragma warning disable CS3001 // CS3001 : Argument type 'ulong' is not CLS-compliant
 
 // ReSharper disable CommentTypo
 namespace Friflo.Json.Fliox.MsgPack
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.MsgPack
             return writeNil || exists;
         }
         
-        public void WriteKey(int keyLen, ulong key, ref int count) {
+        public void WriteKey(int keyLen, long key, ref int count) {
             count++;
             var cur     = pos;
             pos         = cur + 1 + keyLen;
@@ -46,9 +46,9 @@ namespace Friflo.Json.Fliox.MsgPack
             WriteKeyFix(data, cur, keyLen, key);
         }
         
-        private static void WriteKeyFix(byte[]data, int cur, int keyLen, ulong key) {
+        private static void WriteKeyFix(byte[]data, int cur, int keyLen, long key) {
             data[cur] = (byte)((int)MsgFormat.fixstr | keyLen);
-            BinaryPrimitives.WriteUInt64LittleEndian(new Span<byte>(data, cur + 1, 8), key);
+            BinaryPrimitives.WriteInt64LittleEndian(new Span<byte>(data, cur + 1, 8), key);
         }
         
         private static void WriteKeySpan(byte[]data, int cur, ReadOnlySpan<byte> key) {

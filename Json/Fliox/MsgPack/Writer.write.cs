@@ -4,7 +4,7 @@
 using System;
 using System.Buffers.Binary;
 
-#pragma warning disable CS3001  // Argument type 'ulong' is not CLS-compliant
+// #pragma warning disable CS3001  // Argument type 'ulong' is not CLS-compliant
 
 namespace Friflo.Json.Fliox.MsgPack
 {

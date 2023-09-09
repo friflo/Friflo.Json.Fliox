@@ -3,7 +3,7 @@
 
 using System;
 
-#pragma warning disable CS3001  // Argument type 'ulong' is not CLS-compliant
+// #pragma warning disable CS3001  // Argument type 'ulong' is not CLS-compliant
 
 namespace Friflo.Json.Fliox.MsgPack
 {
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.MsgPack
             Write_byte(data, pos, val);
         }
         
-        public void WriteKeyByte(int keyLen, ulong key, byte val) {
+        public void WriteKeyByte(int keyLen, long key, byte val) {
             var cur     = pos;
             pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 2);       // key: 1 + 8,  val: 2
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.MsgPack
             Write_short(data, pos, val);
         }
         
-        public void WriteKeyInt16(int keyLen, ulong key, short val) {
+        public void WriteKeyInt16(int keyLen, long key, short val) {
             var cur     = pos;
             pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 3);       // key: 1 + 8,  val: 3
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.MsgPack
             Write_int(data, pos, val);
         }
         
-        public void WriteKeyInt32(int keyLen, ulong key, int val) {
+        public void WriteKeyInt32(int keyLen, long key, int val) {
             var cur     = pos;
             pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 5);       // key: 1 + 8,  val: 5
@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.MsgPack
             Write_long(data, pos, val);
         }
         
-        public void WriteKeyInt64(int keyLen, ulong key, long val) {
+        public void WriteKeyInt64(int keyLen, long key, long val) {
             var cur     = pos;
             pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 9);       // key: 1 + 8,  val: 9
