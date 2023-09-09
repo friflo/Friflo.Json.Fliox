@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.MsgPack
             pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 2);       // key: 1 + 8,  val: 2
             WriteKeyFix(data, cur, keyLen, key);
-            Write_byte(data, cur, val);
+            Write_byte(data, cur + keyLen + 1, val);
         }
         
         public void WriteKeyByte(ReadOnlySpan<byte> key, byte val) {

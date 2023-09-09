@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case > (int)sbyte.MaxValue:
                     data[cur]       = (byte)MsgFormat.uint8;
                     data[cur + 1]   = val;
-                    pos = cur + 1;
+                    pos = cur + 2;
                     return;
                 default:
                     data[cur]   = val;
