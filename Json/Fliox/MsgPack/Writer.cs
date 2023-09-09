@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Buffers.Binary;
 
 #pragma warning disable CS3001  // Argument type 'ulong' is not CLS-compliant
 
@@ -33,8 +32,6 @@ namespace Friflo.Json.Fliox.MsgPack
             pos = 0;
         }
         
-
-        
         private byte[] Reserve(int length) {
             int len = pos + length;
             if (len <= target.Length) {
@@ -52,125 +49,50 @@ namespace Friflo.Json.Fliox.MsgPack
             data[pos++] = (byte)MsgFormat.nil;
         }
         
-        /*
-        public void WriteUint8(int id, byte val) {
-            if (id >= 0x80) throw new InvalidOperationException();
-            var data        = Reserve(2);
-            data[cur + 0]   = (byte)id;
-            data[cur + 1]   = BinFormat.Uint8;
-            data[cur + 2]   = val;
+        // --- byte
+        public void WriteByte(byte val) {
+            var data    = Reserve(2);               // val: 2
+            Write_byte(data, pos, val);
         }
         
-        public void WriteInt16(int id, short val) {
-            if (id >= 0x80) throw new InvalidOperationException();
-            var cur = pos;
-            var data        = Reserve(4);
-            data[cur + 0]   = (byte)id;
-            data[cur + 1]   = BinFormat.Int16;
-            BinaryPrimitives.WriteInt16BigEndian(new Span<byte>(data, cur + 2, 2), val);
-        } */
-        
-        /* public void WriteIdInt32(int id, int val) {
-            var data        = Reserve(1 + 5, out int cur);
-            data[cur + 0]   = (byte)id;
-            WriteInt32(data, cur + 1, val);
-        } */
-        
-        public void WriteKeyInt32(int keyLen , ulong key, long val) {
-            var cur     = pos;
-            pos         = cur + 1 + keyLen;
-            var data    = Reserve(1 + 8 + 8);       // key: 1 + 8,  val: 8
-            WriteKeyFix(data, cur, keyLen, key);
-            WriteLong(data, cur + keyLen + 1, val);
-        }
-        
-        public void WriteKeyInt32(ReadOnlySpan<byte> key, int val) {
-            var cur     = pos;
-            var keyLen  = key.Length;
-            pos         = cur + 1 + keyLen;
-            var data    = Reserve(2 + keyLen + 8);  // key: 2 + keyLen,  val: 8
-            WriteKeySpan(data, cur, key);
-            WriteLong(data, cur + keyLen + 1, val);
-        }
-        
-        public void WriteMapByte(int keyLen , ulong key, byte val) {
+        public void WriteKeyByte(int keyLen, ulong key, byte val) {
             var cur     = pos;
             pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 2);       // key: 1 + 8,  val: 2
             WriteKeyFix(data, cur, keyLen, key);
-            WriteByte(data, cur, val);
+            Write_byte(data, cur, val);
         }
         
-        private void WriteByte(byte[]data, int cur, byte val)
-        {
-            switch (val)
-            {
-                case >= (int)sbyte.MaxValue:
-                    data[cur]   = (byte)MsgFormat.int8;
-                    data[cur]   = (byte)val;
-                    pos = cur + 1;
-                    return;
-                default:
-                    data[cur]   = val;
-                    pos = cur + 1;
-                    return;
-            }
+        public void WriteKeyByte(ReadOnlySpan<byte> key, byte val) {
+            var cur     = pos;
+            var keyLen  = key.Length;
+            pos         = cur + 1 + keyLen;
+            var data    = Reserve(2 + keyLen + 2);  // key: 2 + keyLen,  val: 2
+            WriteKeySpan(data, cur, key);
+            Write_byte(data, cur + keyLen + 1, val);
         }
         
-        private void WriteLong(byte[]data, int cur, long val)
-        {
-            switch (val)
-            {
-                case > uint.MaxValue:
-                    data[cur]       = (byte)MsgFormat.uint64;
-                    BinaryPrimitives.WriteUInt64BigEndian (new Span<byte>(data, cur + 1, 8), (ulong)val);
-                    pos = cur + 9;
-                    return;
-                case > ushort.MaxValue:
-                    data[cur]       = (byte)MsgFormat.uint32;
-                    BinaryPrimitives.WriteUInt32BigEndian (new Span<byte>(data, cur + 1, 4), (uint)val);
-                    pos = cur + 5;
-                    return;
-                case > byte.MaxValue:
-                    data[cur]       = (byte)MsgFormat.uint16;
-                    BinaryPrimitives.WriteUInt16BigEndian (new Span<byte>(data, cur + 1, 2), (ushort)val);
-                    pos = cur + 3;
-                    return;
-                case > sbyte.MaxValue:
-                    data[cur]       = (byte)MsgFormat.uint8;
-                    data[cur + 1]   = (byte)val;
-                    pos = cur + 2;
-                    return;
-                case >= 0:
-                    data[cur]   = (byte)val;
-                    pos = cur + 1;
-                    return;
-                // --------------------------------- val < 0  ---------------------------------
-                case >= -32:
-                    data[cur] = (byte)(0xe0 | val);
-                    pos = cur + 1;
-                    return;
-                case >= sbyte.MinValue:
-                    data[cur]       = (byte)MsgFormat.int8;
-                    data[cur + 1]   = (byte)val;
-                    pos = cur + 2;
-                    return;
-                case >= short.MinValue:
-                    data[cur]       = (byte)MsgFormat.int16;
-                    BinaryPrimitives.WriteInt16BigEndian (new Span<byte>(data, cur + 1, 2), (short)val);
-                    pos = cur + 3;
-                    return;
-                case >= int.MinValue:
-                    data[cur]       = (byte)MsgFormat.int32;
-                    BinaryPrimitives.WriteInt32BigEndian (new Span<byte>(data, cur + 1, 4), (int)val);
-                    pos = cur + 5;
-                    return;
-                case >= long.MinValue:
-                    data[cur]       = (byte)MsgFormat.int64;
-                    BinaryPrimitives.WriteInt64BigEndian (new Span<byte>(data, cur + 1, 8), val);
-                    pos = cur + 9;
-                    return;
-            }
+        // --- long
+        public void WriteInt64(long val) {
+            var data    = Reserve(9);               // val: 9
+            Write_long(data, pos, val);
+        }
+        
+        public void WriteKeyInt64(int keyLen, ulong key, long val) {
+            var cur     = pos;
+            pos         = cur + 1 + keyLen;
+            var data    = Reserve(1 + 8 + 9);       // key: 1 + 8,  val: 9
+            WriteKeyFix(data, cur, keyLen, key);
+            Write_long(data, cur + keyLen + 1, val);
+        }
+        
+        public void WriteKeyInt64(ReadOnlySpan<byte> key, int val) {
+            var cur     = pos;
+            var keyLen  = key.Length;
+            pos         = cur + 1 + keyLen;
+            var data    = Reserve(2 + keyLen + 9);  // key: 2 + keyLen,  val: 9
+            WriteKeySpan(data, cur, key);
+            Write_long(data, cur + keyLen + 1, val);
         }
     }
 }

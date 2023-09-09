@@ -92,6 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         {
             var sample = new Sample { x = 65536 };
             var writer = new MsgWriter(new byte[10], false);
+
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(8, writer.Length);
             AreEqual(HexNorm("81 A1 78  CE  00 01 00 00"), writer.DataHex);

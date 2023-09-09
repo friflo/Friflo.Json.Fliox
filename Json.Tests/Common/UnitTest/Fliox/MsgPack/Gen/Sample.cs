@@ -70,7 +70,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
             // writer.WriteInt32   (_val, obj.val);
             // writer.WriteInt32   (_x2, obj.x);
             
-            writer.WriteKeyInt32   (1, _x, obj.x);
+            writer.WriteKeyInt64   (1, _x, obj.x);
             // writer.WriteMapByte   (1, _x, (byte)obj.x);
             
             if (writer.AddKey(obj.child != null)) {
