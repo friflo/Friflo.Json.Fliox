@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.MsgPack
     /// <summary>
     /// Spec: [msgpack/spec.md · msgpack/msgpack] https://github.com/msgpack/msgpack/blob/master/spec.md <br/>
     /// Online converters:<br/>
-    /// hex     [Online msgpack converter] https://msgpack.solder.party/
+    /// hex     [msgpack-lite demo] https://kawanet.github.io/msgpack-lite/
     /// dec     [MsgPack Converter | MsgPack to JSON Decoder and Encoder] https://ref45638.github.io/msgpack-converter/
     /// </summary>
     public enum MsgFormat

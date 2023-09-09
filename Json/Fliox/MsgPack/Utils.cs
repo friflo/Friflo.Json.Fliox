@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.MsgPack
             return sb.ToString();
         }
         
-        /// <summary> Convert hex to JSON with [Online msgpack converter] <br/> https://msgpack.solder.party/  </summary>
+        /// <summary> Convert hex to JSON with [msgpack-lite demo] https://kawanet.github.io/msgpack-lite/ </summary>
         public static ReadOnlySpan<byte> HexToSpan(string hex) {
             if (hex.Length == 0) {
                 return new ReadOnlySpan<byte>(Array.Empty<byte>());
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.MsgPack
             return new ReadOnlySpan<byte>(new byte[] { (byte)value });
         }
         
-        /// <summary> Convert hex to JSON with [Online msgpack converter]<br/>https://msgpack.solder.party/  </summary>
+        /// <summary> Convert hex to JSON with [msgpack-lite demo] https://kawanet.github.io/msgpack-lite/ </summary>
         public static string HexNorm(string hex) {
             return WhiteSpace.Replace(hex, " " );
         }
