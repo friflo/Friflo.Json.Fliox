@@ -33,13 +33,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         // --------------------------------- (+) integer ---------------------------------
         private const   ulong     X            = 0x78;
         
-        [TestCase(Byte)] [TestCase(Int64)]
+        [TestCase(Byte)] [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_int_fix_0(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
                 case Byte:  writer.WriteKeyByte (1, X, 0); break;
+                case Int16: writer.WriteKeyInt16(1, X, 0); break;
+                case Int32: writer.WriteKeyInt32(1, X, 0); break;
                 case Int64: writer.WriteKeyInt64(1, X, 0); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -48,13 +50,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual(HexNorm("81 A1 78  00"), writer.DataHex);
         }
         
-        [TestCase(Byte)] [TestCase(Int64)]
+        [TestCase(Byte)] [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_int_fix_127(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
                 case Byte:  writer.WriteKeyByte (1, X, 127); break;
+                case Int16: writer.WriteKeyInt16(1, X, 127); break;
+                case Int32: writer.WriteKeyInt32(1, X, 127); break;
                 case Int64: writer.WriteKeyInt64(1, X, 127); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -63,13 +67,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual(HexNorm("81 A1 78  7F"), writer.DataHex);
         }
         
-        [TestCase(Byte)] [TestCase(Int64)]
+        [TestCase(Byte)] [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_int_128(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
                 case Byte:  writer.WriteKeyByte (1, X, 128); break;
+                case Int16: writer.WriteKeyInt16(1, X, 128); break;
+                case Int32: writer.WriteKeyInt32(1, X, 128); break;;
                 case Int64: writer.WriteKeyInt64(1, X, 128); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -79,13 +85,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.uint8, writer.Data[3]);
         }
         
-        [TestCase(Byte)] [TestCase(Int64)]
+        [TestCase(Byte)] [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_int_255(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
                 case Byte:  writer.WriteKeyByte (1, X, 255); break;
+                case Int16: writer.WriteKeyInt16(1, X, 255); break;
+                case Int32: writer.WriteKeyInt32(1, X, 255); break;
                 case Int64: writer.WriteKeyInt64(1, X, 255); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -95,12 +103,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.uint8, writer.Data[3]);
         }
         
-        [TestCase(Int64)]
+        [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_int_256(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
+                case Int16: writer.WriteKeyInt16(1, X, 256); break;
+                case Int32: writer.WriteKeyInt32(1, X, 256); break;
                 case Int64: writer.WriteKeyInt64(1, X, 256); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -110,12 +120,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.uint16, writer.Data[3]);
         }
         
-        [TestCase(Int64)]
+        [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_int_65535(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
+                case Int32: writer.WriteKeyInt32(1, X, ushort.MaxValue); break;
                 case Int64: writer.WriteKeyInt64(1, X, ushort.MaxValue); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -125,12 +136,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.uint16, writer.Data[3]);
         }
         
-        [TestCase(Int64)]
+        [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_Int_65536(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
+                case Int32: writer.WriteKeyInt32(1, X, 65536); break;
                 case Int64: writer.WriteKeyInt64(1, X, 65536); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -188,12 +200,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
 
         
         // --------------------------------- (-) integer ---------------------------------
-        [TestCase(Int64)]
+        [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_FixInt_neg_32(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
+                case Int16: writer.WriteKeyInt16(1, X, -32); break;
+                case Int32: writer.WriteKeyInt32(1, X, -32); break;
                 case Int64: writer.WriteKeyInt64(1, X, -32); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -202,12 +216,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual(HexNorm("81 A1 78  E0"), writer.DataHex);
         }
         
-        [TestCase(Int64)]
+        [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_FixInt_neg_33(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
+                case Int16: writer.WriteKeyInt16(1, X, -33); break;
+                case Int32: writer.WriteKeyInt32(1, X, -33); break;
                 case Int64: writer.WriteKeyInt64(1, X, -33); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -218,12 +234,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
 
         }
         
-        [TestCase(Int64)]
+        [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_FixInt_neg_128(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
+                case Int16: writer.WriteKeyInt16(1, X, sbyte.MinValue); break;
+                case Int32: writer.WriteKeyInt32(1, X, sbyte.MinValue); break;
                 case Int64: writer.WriteKeyInt64(1, X, sbyte.MinValue); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -233,12 +251,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.int8, writer.Data[3]);
         }
         
-        [TestCase(Int64)]
+        [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_FixInt_neg_129(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
+                case Int16: writer.WriteKeyInt16(1, X, -129); break;
+                case Int32: writer.WriteKeyInt32(1, X, -129); break;
                 case Int64: writer.WriteKeyInt64(1, X, -129); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -248,12 +268,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.int16, writer.Data[3]);
         }
         
-        [TestCase(Int64)]
+        [TestCase(Int16)] [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_FixInt_neg_32768(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
+                case Int16: writer.WriteKeyInt16(1, X, short.MinValue); break;
+                case Int32: writer.WriteKeyInt32(1, X, short.MinValue); break;
                 case Int64: writer.WriteKeyInt64(1, X, short.MinValue); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -263,12 +285,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.int16, writer.Data[3]);
         }
         
-        [TestCase(Int64)]
+        [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_FixInt_neg_32769(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
+                case Int32: writer.WriteKeyInt32(1, X, -32769); break;
                 case Int64: writer.WriteKeyInt64(1, X, -32769); break;
             }
             writer.WriteMapFixCount(0, 1);
@@ -278,12 +301,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.int32, writer.Data[3]);
         }
         
-        [TestCase(Int64)]
+        [TestCase(Int32)] [TestCase(Int64)]
         public static void Write_FixInt_neg_2147483648(DataType type)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
             switch (type) {
+                case Int32: writer.WriteKeyInt32(1, X, int.MinValue); break;
                 case Int64: writer.WriteKeyInt64(1, X, int.MinValue); break;
             }
             writer.WriteMapFixCount(0, 1);

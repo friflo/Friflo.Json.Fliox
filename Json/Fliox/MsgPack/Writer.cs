@@ -72,6 +72,55 @@ namespace Friflo.Json.Fliox.MsgPack
             Write_byte(data, cur + keyLen + 1, val);
         }
         
+        
+        // --- short
+        public void WriteInt16(short val) {
+            var data    = Reserve(3);               // val: 3
+            Write_short(data, pos, val);
+        }
+        
+        public void WriteKeyInt16(int keyLen, ulong key, short val) {
+            var cur     = pos;
+            pos         = cur + 1 + keyLen;
+            var data    = Reserve(1 + 8 + 3);       // key: 1 + 8,  val: 3
+            WriteKeyFix(data, cur, keyLen, key);
+            Write_short(data, cur + keyLen + 1, val);
+        }
+        
+        public void WriteKeyInt16(ReadOnlySpan<byte> key, short val) {
+            var cur     = pos;
+            var keyLen  = key.Length;
+            pos         = cur + 1 + keyLen;
+            var data    = Reserve(2 + keyLen + 3);  // key: 2 + keyLen,  val: 3
+            WriteKeySpan(data, cur, key);
+            Write_short(data, cur + keyLen + 1, val);
+        }
+        
+        
+        // --- int
+        public void WriteInt32(int val) {
+            var data    = Reserve(5);               // val: 5
+            Write_int(data, pos, val);
+        }
+        
+        public void WriteKeyInt32(int keyLen, ulong key, int val) {
+            var cur     = pos;
+            pos         = cur + 1 + keyLen;
+            var data    = Reserve(1 + 8 + 5);       // key: 1 + 8,  val: 5
+            WriteKeyFix(data, cur, keyLen, key);
+            Write_int(data, cur + keyLen + 1, val);
+        }
+        
+        public void WriteKeyInt32(ReadOnlySpan<byte> key, int val) {
+            var cur     = pos;
+            var keyLen  = key.Length;
+            pos         = cur + 1 + keyLen;
+            var data    = Reserve(2 + keyLen + 5);  // key: 2 + keyLen,  val: 5
+            WriteKeySpan(data, cur, key);
+            Write_int(data, cur + keyLen + 1, val);
+        }
+        
+        
         // --- long
         public void WriteInt64(long val) {
             var data    = Reserve(9);               // val: 9
