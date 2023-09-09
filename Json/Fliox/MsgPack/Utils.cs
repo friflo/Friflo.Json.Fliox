@@ -3,6 +3,7 @@
 
 using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 
 // ReSharper disable StringLiteralTypo
@@ -113,5 +114,12 @@ namespace Friflo.Json.Fliox.MsgPack
         public static ReadOnlySpan<byte> ByteToSpan(MsgFormat value) {
             return new ReadOnlySpan<byte>(new byte[] { (byte)value });
         }
+        
+        /// <summary> Convert hex to JSON with [Online msgpack converter]<br/>https://msgpack.solder.party/  </summary>
+        public static string HexNorm(string hex) {
+            return WhiteSpace.Replace(hex, " " );
+        }
+        
+        private static readonly Regex WhiteSpace = new Regex(@"\s+");
     }
 }

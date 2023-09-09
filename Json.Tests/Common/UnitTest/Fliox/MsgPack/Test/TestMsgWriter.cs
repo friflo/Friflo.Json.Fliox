@@ -2,6 +2,7 @@
 using Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
 
 // ReSharper disable CommentTypo
 // ReSharper disable StringLiteralTypo
@@ -18,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], true);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(18, writer.Length);
-            AreEqual("82 A1 78 CE 7F FF FF FF A5 63 68 69 6C 64 81 A1 79 2A", writer.DataHex);
+            AreEqual(HexNorm("82 A1 78 CE 7F FF FF FF A5 63 68 69 6C 64 81 A1 79 2A"), writer.DataHex);
         }
         
         // --------------------------------- (+) integer ---------------------------------
@@ -29,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(4, writer.Length);
-            AreEqual("81 A1 78 00", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  00"), writer.DataHex);
         }
         
         [Test]
@@ -39,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(4, writer.Length);
-            AreEqual("81 A1 78 7F", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  7F"), writer.DataHex);
         }
         
         [Test]
@@ -49,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(5, writer.Length);
-            AreEqual("81 A1 78 CC 80", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  CC  80"), writer.DataHex);
             AreEqual((byte)MsgFormat.uint8, writer.Data[3]);
         }
         
@@ -60,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(5, writer.Length);
-            AreEqual("81 A1 78 CC FF", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  CC  FF"), writer.DataHex);
             AreEqual((byte)MsgFormat.uint8, writer.Data[3]);
         }
         
@@ -71,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(6, writer.Length);
-            AreEqual("81 A1 78 CD 01 00", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  CD  01 00"), writer.DataHex);
             AreEqual((byte)MsgFormat.uint16, writer.Data[3]);
         }
         
@@ -82,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(6, writer.Length);
-            AreEqual("81 A1 78 CD FF FF", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  CD  FF FF"), writer.DataHex);
             AreEqual((byte)MsgFormat.uint16, writer.Data[3]);
         }
         
@@ -93,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(8, writer.Length);
-            AreEqual("81 A1 78 CE 00 01 00 00", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  CE  00 01 00 00"), writer.DataHex);
             AreEqual((byte)MsgFormat.uint32, writer.Data[3]);
         }
         
@@ -104,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(8, writer.Length);
-            AreEqual("81 A1 78 CE FF FF FF FF", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  CE  FF FF FF FF"), writer.DataHex);
             AreEqual((byte)MsgFormat.uint32, writer.Data[3]);
         }
         
@@ -115,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(12, writer.Length);
-            AreEqual("81 A1 78 CF 00 00 00 01 00 00 00 00", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  CF  00 00 00 01  00 00 00 00"), writer.DataHex);
             AreEqual((byte)MsgFormat.uint64, writer.Data[3]);
         }
         
@@ -126,7 +127,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(12, writer.Length);
-            AreEqual("81 A1 78 CF 7F FF FF FF FF FF FF FF", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  CF  7F FF FF FF  FF FF FF FF"), writer.DataHex);
             AreEqual((byte)MsgFormat.uint64, writer.Data[3]);
         }
         
@@ -140,7 +141,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(4, writer.Length);
-            AreEqual("81 A1 78 E0", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  E0"), writer.DataHex);
         }
         
         [Test]
@@ -150,7 +151,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(5, writer.Length);
-            AreEqual("81 A1 78 D0 DF", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  D0  DF"), writer.DataHex);
             AreEqual((byte)MsgFormat.int8, writer.Data[3]);
 
         }
@@ -162,7 +163,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(5, writer.Length);
-            AreEqual("81 A1 78 D0 80", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  D0  80"), writer.DataHex);
             AreEqual((byte)MsgFormat.int8, writer.Data[3]);
         }
         
@@ -173,7 +174,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(6, writer.Length);
-            AreEqual("81 A1 78 D1 FF 7F", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  D1  FF 7F"), writer.DataHex);
             AreEqual((byte)MsgFormat.int16, writer.Data[3]);
         }
         
@@ -184,7 +185,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(6, writer.Length);
-            AreEqual("81 A1 78 D1 80 00", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  D1  80 00"), writer.DataHex);
             AreEqual((byte)MsgFormat.int16, writer.Data[3]);
         }
         
@@ -195,7 +196,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(8, writer.Length);
-            AreEqual("81 A1 78 D2 FF FF 7F FF", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  D2  FF FF 7F FF"), writer.DataHex);
             AreEqual((byte)MsgFormat.int32, writer.Data[3]);
         }
         
@@ -206,7 +207,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(8, writer.Length);
-            AreEqual("81 A1 78 D2 80 00 00 00", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  D2  80 00 00 00"), writer.DataHex);
             AreEqual((byte)MsgFormat.int32, writer.Data[3]);
         }
         
@@ -217,7 +218,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(12, writer.Length);
-            AreEqual("81 A1 78 D3 FF FF FF FF 7F FF FF FF", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  D3  FF FF FF FF 7F FF FF FF"), writer.DataHex);
             AreEqual((byte)MsgFormat.int64, writer.Data[3]);
         }
         
@@ -228,7 +229,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var writer = new MsgWriter(new byte[10], false);
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(12, writer.Length);
-            AreEqual("81 A1 78 D3 80 00 00 00 00 00 00 00", writer.DataHex);
+            AreEqual(HexNorm("81 A1 78  D3  80 00 00 00 00 00 00 00"), writer.DataHex);
             AreEqual((byte)MsgFormat.int64, writer.Data[3]);
         }
     }

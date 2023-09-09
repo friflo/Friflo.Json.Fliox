@@ -5,6 +5,7 @@ using Friflo.Json.Fliox.MsgPack;
 using Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
 {
@@ -18,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var sample = new Sample { x = int.MaxValue };
             Gen_Sample.WriteMsg(ref sample, ref writer);
             AreEqual(15, writer.Length);
-            AreEqual("82 A1 78 CE 7F FF FF FF A5 63 68 69 6C 64 C0", writer.DataHex);
+            AreEqual(HexNorm("82 A1 78 CE 7F FF FF FF A5 63 68 69 6C 64 C0"), writer.DataHex);
             
             // MsgWrite<Sample> write =  Gen_Sample.WriteBin;
             MsgWrite<Sample> write = Gen_Sample.WriteMsg;
