@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         private static  readonly    byte[]  XArr    = new byte[] { (byte)'x'};
         
         [TestCase(FixStr)] [TestCase(Str8)]
-        public static void Write_keyfix_strfix(KeyType keyType)
+        public static void Write_key_strfix(KeyType keyType)
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         
        
         [TestCase(FixStr)] [TestCase(Str8)]
-        public static void Write_keyfix_str8(KeyType keyType)
+        public static void Write_key_str8(KeyType keyType)
         {
             var val = "_123456789_123456789_123456789_123456789";
             var writer = new MsgWriter(new byte[10], false);
@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         [TestCase(FixStr)] [TestCase(Str8)]
-        public static void Write_keyfix_str16(KeyType keyType)
+        public static void Write_key_str16(KeyType keyType)
         {
             var val = new string('a', 300);
             var writer = new MsgWriter(new byte[10], false);
@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         [TestCase(FixStr)] [TestCase(Str8)]
-        public static void Write_keyfix_str32(KeyType keyType)
+        public static void Write_key_str32(KeyType keyType)
         {
             var val = new string('a', 70000);
             var writer = new MsgWriter(new byte[10], false);
@@ -99,6 +99,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var x = reader.ReadString();
             AreEqual(70000, x.Length);
             AreEqual(val, x);
+        }
+        
+        [TestCase(FixStr)] [TestCase(Str8)]
+        public static void Write_key_bool(KeyType keyType)
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteMapFix();
+            switch (keyType) {
+                case FixStr:    writer.WriteKeyBool (1, X, true);      break;
+                case Str8:      writer.WriteKeyBool (XArr, true);      break;
+            }
+            writer.WriteMapFixCount(0, 1);
+            
+            AreEqual(HexNorm("81 A1 78 C3"), writer.DataHex);
         }
     }
 }

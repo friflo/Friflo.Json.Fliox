@@ -108,6 +108,47 @@ namespace Friflo.Json.Fliox.MsgPack
             Write_string(val);
         }
         
+        
+        // --- bool
+        public void WriteBool(bool val) {
+            var data    = Reserve(1);               // val: 2
+            Write_bool(data, pos, val);
+        }
+        
+        public void WriteKeyBool(int keyLen, long key, bool val) {
+            var cur     = pos;
+            pos         = cur + 1 + keyLen;
+            var data    = Reserve(1 + 8 + 1);       // key: 1 + 8,  val: 1
+            WriteKeyFix(data, cur, keyLen, key);
+            Write_bool(data, cur + keyLen + 1, val);
+        }
+        
+        public void WriteKeyBool(int keyLen, long key, bool? val) {
+            if (val.HasValue) {
+                WriteKeyBool(keyLen, key, val.Value);
+                return;
+            }
+            WriteKeyNil(keyLen, key);
+        }
+        
+        public void WriteKeyBool(ReadOnlySpan<byte> key, bool val) {
+            var cur     = pos;
+            var keyLen  = key.Length;
+            pos         = cur + 1 + keyLen;
+            var data    = Reserve(2 + keyLen + 1);  // key: 2 + keyLen,  val: 1
+            WriteKeySpan(data, cur, key);
+            Write_bool(data, cur + keyLen + 1, val);
+        }
+        
+        public void WriteKeyBool(ReadOnlySpan<byte> key, bool? val) {
+            if (val.HasValue) {
+                WriteKeyBool(key, val.Value);
+                return;
+            }
+            WriteKeyNil(key);
+        }
+        
+        
         // --- byte
         public void WriteByte(byte val) {
             var data    = Reserve(2);               // val: 2

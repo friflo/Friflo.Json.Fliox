@@ -44,6 +44,13 @@ namespace Friflo.Json.Fliox.MsgPack
             Encoding.UTF8.GetBytes(source, dest);
         }
         
+        // --- bool
+        private void Write_bool(byte[]data, int cur, bool val)
+        {
+            pos = cur + 1;
+            data[cur] = (byte)(val ? MsgFormat.True : MsgFormat.False);
+        }
+        
         
         // ----------------------------------- byte, short, int long -----------------------------------
         private void Write_byte(byte[]data, int cur, byte val)
