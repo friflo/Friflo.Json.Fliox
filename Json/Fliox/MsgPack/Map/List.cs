@@ -7,7 +7,7 @@ namespace Friflo.Json.Fliox.MsgPack.Map
 {
     internal static class MsgPackList
     {
-        // --- List[]
+        // --- List<T>
         internal static void ReadMsg<T> (ref MsgReader reader, ref List<T> list)
         {
             var length  = ReadStart(ref reader, ref list);
