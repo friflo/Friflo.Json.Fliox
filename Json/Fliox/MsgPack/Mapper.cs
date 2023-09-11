@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.MsgPack
             var listType = typeof(T);
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (listType, typeof(List<>) );
             if (args == null) {
-                return null;
+                return default;
             }
             Type elementType = args[0];
             var genType = typeof(MsgPackList<>).MakeGenericType(elementType);
@@ -155,16 +155,16 @@ namespace Friflo.Json.Fliox.MsgPack
         }
     }
 
-    internal class MsgPackMapper<T> : MsgPackMapper
+    internal readonly struct MsgPackMapper<T>
     {
-        internal static readonly MsgPackMapper<T> Instance = CreateMapper<T>();
+        internal static readonly MsgPackMapper<T> Instance = MsgPackMapper.CreateMapper<T>();
         
         internal readonly MsgWrite<T>    write;
         internal readonly MsgRead<T>     read;
         
         internal MsgPackMapper(MsgWrite<T>  write, MsgRead<T> read) {
-            this.write = write;
-            this.read = read;
+            this.write  = write;
+            this.read   = read;
         }
     }
 }
