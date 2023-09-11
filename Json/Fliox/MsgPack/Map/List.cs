@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.MsgPack.Map
 {
-    internal static class MsgPackList<T>
+    internal static class MsgPackList
     {
-        internal static void ReadMsg (ref MsgReader reader, ref List<T> list)
+        internal static void ReadMsg<T> (ref MsgReader reader, ref List<T> list)
         {
             if (!reader.ReadArray(out int length)) {
                 list = null;
@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.MsgPack.Map
             }
         }
         
-        internal static void WriteMsg (ref MsgWriter writer, ref List<T> list) {
+        internal static void WriteMsg<T> (ref MsgWriter writer, ref List<T> list) {
             if (list == null) {
                 writer.WriteNull();
                 return;

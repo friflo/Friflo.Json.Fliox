@@ -3,9 +3,9 @@
 
 namespace Friflo.Json.Fliox.MsgPack.Map
 {
-    internal static class MsgPackArray<T>
+    internal static class MsgPackArray
     {
-        internal static void ReadMsg (ref MsgReader reader, ref T[] array)
+        internal static void ReadMsg<T> (ref MsgReader reader, ref T[] array)
         {
             if (!reader.ReadArray(out int length)) {
                 array = null;
@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.MsgPack.Map
             }
         }
         
-        internal static void WriteMsg(ref MsgWriter writer, ref T[] array) {
+        internal static void WriteMsg<T>(ref MsgWriter writer, ref T[] array) {
             if (array == null) {
                 writer.WriteNull();
                 return;

@@ -52,37 +52,33 @@ namespace Friflo.Json.Fliox.MsgPack
         private static MsgPackMapper<T> CreateArrayMapper<T>() {
             var type        = typeof(T);
             var elementType = type.GetElementType();
-
-            var genType = typeof(MsgPackArray<>).MakeGenericType(elementType);
-            if (genType == null)        throw new InvalidOperationException($"type not found: {genType}");
-            var writeMethod = genType.GetMethod(WriteMsg, Flags);
-            if (writeMethod == null)    throw new InvalidOperationException($"method not found: {genType}.{WriteMsg}");
-            var write       = (MsgWrite<T>)Delegate.CreateDelegate(typeof(MsgWrite<>).MakeGenericType(type), writeMethod);
-            
-            var readMethod  = genType.GetMethod(ReadMsg, Flags);
-            if (readMethod == null)     throw new InvalidOperationException($"method not found: {genType}.{ReadMsg}");
-            var read        = (MsgRead<T>)Delegate.CreateDelegate(typeof(MsgRead<>).MakeGenericType(type), readMethod);
-            
-            return new MsgPackMapper<T>(write, read);
+            return CreateMapper<T>(typeof(MsgPackArray), elementType);
         }
         
         // --- List<T>
         private static MsgPackMapper<T> CreateListMapper<T>() {
-            var type = typeof(T);
-            Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof(List<>) );
+            Type[] args = ReflectUtils.GetGenericInterfaceArgs (typeof(T), typeof(List<>) );
             if (args == null) {
                 return default;
             }
-            Type elementType = args[0];
-            var genType = typeof(MsgPackList<>).MakeGenericType(elementType);
-            if (genType == null)        throw new InvalidOperationException($"type not found: {genType}");
-            var writeMethod = genType.GetMethod(WriteMsg, Flags);
-            if (writeMethod == null)    throw new InvalidOperationException($"method not found: {genType}.{WriteMsg}");
-            var write       = (MsgWrite<T>)Delegate.CreateDelegate(typeof(MsgWrite<>).MakeGenericType(type), writeMethod);
+            var elementType = args[0];
+            return CreateMapper<T>(typeof(MsgPackList), elementType);
+        }
+        
+        private static MsgPackMapper<T> CreateMapper<T>(Type mapperType, Type elementType) {
+            var type = typeof(T);
             
-            var readMethod  = genType.GetMethod(ReadMsg, Flags);
-            if (readMethod == null)     throw new InvalidOperationException($"method not found: {genType}.{ReadMsg}");
-            var read        = (MsgRead<T>)Delegate.CreateDelegate(typeof(MsgRead<>).MakeGenericType(type), readMethod);
+            var writeMethod = mapperType.GetMethod(WriteMsg, Flags);
+            if (writeMethod == null)    throw new InvalidOperationException($"method not found: {mapperType}.{WriteMsg}");
+            var writeGen    = writeMethod.MakeGenericMethod(elementType);
+            var writeDel    = Delegate.CreateDelegate(typeof(MsgWrite<>).MakeGenericType(type), writeGen);
+            var write       = (MsgWrite<T>)writeDel;
+            
+            var readMethod  = mapperType.GetMethod(ReadMsg, Flags);
+            if (readMethod == null)     throw new InvalidOperationException($"method not found: {mapperType}.{ReadMsg}");
+            var readGen     = readMethod.MakeGenericMethod(elementType);
+            var readDel     = Delegate.CreateDelegate(typeof(MsgRead<>).MakeGenericType(type), readGen);
+            var read        = (MsgRead<T>)readDel;
             
             return new MsgPackMapper<T>(write, read);
         }
