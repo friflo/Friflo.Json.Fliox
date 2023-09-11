@@ -46,19 +46,22 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
             }
             int map = writer.WriteMapFix();
             int count = 0;
-            
-            writer.WriteKey(6, _childL, ref count);
-            writer.WriteMsg(ref obj.childL);
-            
-            writer.WriteKey(6, _childA, ref count);
-            writer.WriteMsg(ref obj.childA);
-            
-            writer.WriteKey(4, _intA, ref count);
-            writer.WriteMsg(ref obj.intA);
-            
-            writer.WriteKey(4, _intL, ref count);
-            writer.WriteMsg(ref obj.intL);
-
+            if (writer.AddKey(obj.childL != null)) {
+                writer.WriteKey(6, _childL, ref count);
+                writer.WriteMsg(ref obj.childL);
+            }
+            if (writer.AddKey(obj.childA != null)) {
+                writer.WriteKey(6, _childA, ref count);
+                writer.WriteMsg(ref obj.childA);
+            }
+            if (writer.AddKey(obj.intA != null)) {
+                writer.WriteKey(4, _intA, ref count);
+                writer.WriteMsg(ref obj.intA);
+            }
+            if (writer.AddKey(obj.intL != null)) {
+                writer.WriteKey(4, _intL, ref count);
+                writer.WriteMsg(ref obj.intL);
+            }
             writer.WriteMapFixCount(map, count); // write element count
         }
     }
