@@ -37,8 +37,9 @@ namespace Friflo.Json.Fliox.MsgPack
             if (len <= target.Length) {
                 return target;
             }
-            var newTarget = new byte[len];
-            for (int n = 0; n < pos; n++) {
+            var newTarget = new byte[2 * len];
+            var targetLen = pos;
+            for (int n = 0; n < targetLen; n++) {
                 newTarget[n] = target[n];
             }
             return target = newTarget;

@@ -4,7 +4,7 @@
 using System;
 using System.Buffers.Binary;
 
-#pragma warning disable CS3002 // CS3002 : Return type of 'MsgReader.ReadKey()' is not CLS-compliant
+// #pragma warning disable CS3002 // CS3002 : Return type of 'MsgReader.ReadKey()' is not CLS-compliant
 
 // ReSharper disable ReplaceSliceWithRangeIndexer
 namespace Friflo.Json.Fliox.MsgPack
