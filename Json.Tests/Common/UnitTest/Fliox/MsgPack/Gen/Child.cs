@@ -11,7 +11,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
     {
         private const   long     _y          = 0x0000_0000_0000_0079;
 
-        public static void ReadMsg (ref Child obj, ref MsgReader reader) {
+        public static void ReadMsg (this ref MsgReader reader, ref Child obj) {
             if (!reader.ReadObject(out int len)) {
                 obj = null;
                 return;
@@ -30,7 +30,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
             }
         }
 
-        public static void WriteMsg(ref Child obj, ref MsgWriter writer) {
+        public static void WriteMsg(this ref MsgWriter writer, ref Child obj) {
             if (obj == null) {
                 writer.WriteNull();
                 return;

@@ -18,7 +18,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
         private const   long      _child        = 0x0000_0064_6c69_6863;
         private static  byte[]    _x2           = new byte[] { (byte)'x' };
 
-        public static void ReadMsg (ref MsgReader reader, ref Sample obj)
+        public static void ReadMsg (this ref MsgReader reader, ref Sample obj)
         {
             if (!reader.ReadObject(out int len)) {
                 obj = null;
@@ -33,7 +33,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
                 switch (reader.ReadKey()) {
                     // case _val:      obj.val = reader.ReadInt32 (); break;
                     case _x:        obj.x = reader.ReadInt32 ();                    continue;
-                    case _child:    Gen_Child.ReadMsg(ref obj.child, ref reader);   continue;
+                    case _child:    reader.ReadMsg(ref obj.child) ;   continue;
                 }
                 reader.SkipTree();
             }
@@ -53,13 +53,13 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
             while (len-- > 0) {
                 switch (reader.ReadKey()) {
                     case _x:        if (reader.KeyName.SequenceEqual(_x2) ) { obj.x = reader.ReadInt32 (); continue; } break;
-                    case _child:    Gen_Child.ReadMsg(ref obj.child, ref reader);           continue;
+                    case _child:    reader.ReadMsg(ref obj.child);           continue;
                 }
                 reader.SkipTree();
             }
         }
 
-        public static void WriteMsg(ref MsgWriter writer, ref Sample obj)
+        public static void WriteMsg(this ref MsgWriter writer, ref Sample obj)
         {
             if (obj == null) {
                 writer.WriteNull();
@@ -75,7 +75,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
             
             if (writer.AddKey(obj.child != null)) {
                 writer.WriteKey (5, _child, ref count); 
-                Gen_Child.WriteMsg (ref obj.child, ref writer);
+                Gen_Child.WriteMsg (ref writer, ref obj.child);
             }
             writer.WriteMapFixCount(map, count); // write element count
         }
