@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack
@@ -18,5 +19,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack
     public class Child
     {
         public int y;
+    }
+    
+    public class TestTypes
+    {
+        public List<int>    intL;
+        public int[]        intA;
+        
+        public List<Child>  childL;
+        public Child[]      childA;
     }
 }

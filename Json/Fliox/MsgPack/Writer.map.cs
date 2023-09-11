@@ -41,8 +41,8 @@ namespace Friflo.Json.Fliox.MsgPack
         public void WriteKey(int keyLen, long key, ref int count) {
             count++;
             var cur     = pos;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8);
+            pos         = cur + 1 + keyLen;
             WriteKeyFix(data, cur, keyLen, key);
         }
         

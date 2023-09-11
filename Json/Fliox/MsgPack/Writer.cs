@@ -56,8 +56,8 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var cur     = pos;
-            pos         = cur + 1 + keyLen + 1;
             var data    = Reserve(1 + 8 + 1);       // key: 1 + 8,  val: 1
+            pos         = cur + 1 + keyLen + 1;
             WriteKeyFix(data, cur, keyLen, key);
             data[cur + 1 + keyLen] = (byte)MsgFormat.nil;
         }
@@ -68,8 +68,8 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             var cur     = pos;
             var keyLen  = key.Length;
-            pos         = cur + 2 + keyLen + 1;
             var data    = Reserve(2 + keyLen + 1);  // key: 2 + keyLen,  val: 1
+            pos         = cur + 2 + keyLen + 1;
             WriteKeySpan(data, cur, key);
             data[cur + 2 + keyLen] = (byte)MsgFormat.nil;
         }
@@ -89,8 +89,8 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var cur     = pos;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8);           // key: 1 + 8
+            pos         = cur + 1 + keyLen;
             WriteKeyFix(data, cur, keyLen, key);
             Write_string(val);
         }
@@ -103,8 +103,8 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             var cur     = pos;
             var keyLen  = key.Length;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + keyLen);      // key: 2 + keyLen
+            pos         = cur + 1 + keyLen;
             WriteKeySpan(data, cur, key);
             Write_string(val);
         }
@@ -118,8 +118,8 @@ namespace Friflo.Json.Fliox.MsgPack
         
         public void WriteKeyBool(int keyLen, long key, bool val) {
             var cur     = pos;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 1);       // key: 1 + 8,  val: 1
+            pos         = cur + 1 + keyLen;
             WriteKeyFix(data, cur, keyLen, key);
             Write_bool(data, cur + keyLen + 1, val);
         }
@@ -135,8 +135,8 @@ namespace Friflo.Json.Fliox.MsgPack
         public void WriteKeyBool(ReadOnlySpan<byte> key, bool val) {
             var cur     = pos;
             var keyLen  = key.Length;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(2 + keyLen + 1);  // key: 2 + keyLen,  val: 1
+            pos         = cur + 1 + keyLen;
             WriteKeySpan(data, cur, key);
             Write_bool(data, cur + keyLen + 1, val);
         }
@@ -158,8 +158,8 @@ namespace Friflo.Json.Fliox.MsgPack
         
         public void WriteKeyByte(int keyLen, long key, byte val) {
             var cur     = pos;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 2);       // key: 1 + 8,  val: 2
+            pos         = cur + 1 + keyLen;
             WriteKeyFix(data, cur, keyLen, key);
             Write_byte(data, cur + keyLen + 1, val);
         }
@@ -175,8 +175,8 @@ namespace Friflo.Json.Fliox.MsgPack
         public void WriteKeyByte(ReadOnlySpan<byte> key, byte val) {
             var cur     = pos;
             var keyLen  = key.Length;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(2 + keyLen + 2);  // key: 2 + keyLen,  val: 2
+            pos         = cur + 1 + keyLen;
             WriteKeySpan(data, cur, key);
             Write_byte(data, cur + keyLen + 1, val);
         }
@@ -198,8 +198,8 @@ namespace Friflo.Json.Fliox.MsgPack
         
         public void WriteKeyInt16(int keyLen, long key, short val) {
             var cur     = pos;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 3);       // key: 1 + 8,  val: 3
+            pos         = cur + 1 + keyLen;
             WriteKeyFix(data, cur, keyLen, key);
             Write_short(data, cur + keyLen + 1, val);
         }
@@ -215,8 +215,8 @@ namespace Friflo.Json.Fliox.MsgPack
         public void WriteKeyInt16(ReadOnlySpan<byte> key, short val) {
             var cur     = pos;
             var keyLen  = key.Length;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(2 + keyLen + 3);  // key: 2 + keyLen,  val: 3
+            pos         = cur + 1 + keyLen;
             WriteKeySpan(data, cur, key);
             Write_short(data, cur + keyLen + 1, val);
         }
@@ -238,8 +238,8 @@ namespace Friflo.Json.Fliox.MsgPack
         
         public void WriteKeyInt32(int keyLen, long key, int val) {
             var cur     = pos;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 5);       // key: 1 + 8,  val: 5
+            pos         = cur + 1 + keyLen;
             WriteKeyFix(data, cur, keyLen, key);
             Write_int(data, cur + keyLen + 1, val);
         }
@@ -255,8 +255,8 @@ namespace Friflo.Json.Fliox.MsgPack
         public void WriteKeyInt32(ReadOnlySpan<byte> key, int val) {
             var cur     = pos;
             var keyLen  = key.Length;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(2 + keyLen + 5);  // key: 2 + keyLen,  val: 5
+            pos         = cur + 1 + keyLen;
             WriteKeySpan(data, cur, key);
             Write_int(data, cur + keyLen + 1, val);
         }
@@ -278,8 +278,8 @@ namespace Friflo.Json.Fliox.MsgPack
         
         public void WriteKeyInt64(int keyLen, long key, long val) {
             var cur     = pos;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(1 + 8 + 9);       // key: 1 + 8,  val: 9
+            pos         = cur + 1 + keyLen;
             WriteKeyFix(data, cur, keyLen, key);
             Write_long(data, cur + keyLen + 1, val);
         }
@@ -295,8 +295,8 @@ namespace Friflo.Json.Fliox.MsgPack
         public void WriteKeyInt64(ReadOnlySpan<byte> key, int val) {
             var cur     = pos;
             var keyLen  = key.Length;
-            pos         = cur + 1 + keyLen;
             var data    = Reserve(2 + keyLen + 9);  // key: 2 + keyLen,  val: 9
+            pos         = cur + 1 + keyLen;
             WriteKeySpan(data, cur, key);
             Write_long(data, cur + keyLen + 1, val);
         }
