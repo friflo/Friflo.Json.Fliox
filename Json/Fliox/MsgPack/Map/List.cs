@@ -7,7 +7,7 @@ namespace Friflo.Json.Fliox.MsgPack.Map
 {
     internal static class MsgPackList<T>
     {
-        internal static void ReadMsg (ref List<T> list, ref MsgReader reader)
+        internal static void ReadMsg (ref MsgReader reader, ref List<T> list)
         {
             if (!reader.ReadArray(out int length)) {
                 list = null;
@@ -20,12 +20,12 @@ namespace Friflo.Json.Fliox.MsgPack.Map
             }
             T item = default;
             for (int n = 0; n < length; n++) {
-                MsgPackMapper<T>.Instance.read(ref item, ref reader);
+                MsgPackMapper<T>.Instance.read(ref reader, ref item);
                 list.Add(item);
             }
         }
         
-        internal static void WriteMsg(ref List<T> list, ref MsgWriter writer) {
+        internal static void WriteMsg (ref MsgWriter writer, ref List<T> list) {
             if (list == null) {
                 writer.WriteNull();
                 return;
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.MsgPack.Map
             writer.WriteArray(length);
             for (int n = 0; n < length; n++) {
                 T item = list[n];
-                MsgPackMapper<T>.Instance.write(ref item, ref writer);
+                MsgPackMapper<T>.Instance.write(ref writer, ref item);
             }
         }
     }

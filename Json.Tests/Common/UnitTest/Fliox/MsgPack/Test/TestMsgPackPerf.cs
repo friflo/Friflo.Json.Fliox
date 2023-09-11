@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         {
             var writer = new MsgWriter(new byte[10], true);
             var sample = new Sample { x = int.MaxValue };
-            Gen_Sample.WriteMsg(ref sample, ref writer);
+            Gen_Sample.WriteMsg(ref writer, ref sample);
             AreEqual(15, writer.Length);
             AreEqual(HexNorm("82 A1 78 CE 7F FF FF FF A5 63 68 69 6C 64 C0"), writer.DataHex);
             
@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             MsgWrite<Sample> write = Gen_Sample.WriteMsg;
             for (long n = 0; n < Count; n++) {
                 writer.Init();
-                Gen_Sample.WriteMsg(ref sample, ref writer);
+                Gen_Sample.WriteMsg(ref writer, ref sample);
                 // write(ref sample, ref writer);
             }
         }
@@ -90,12 +90,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var reader = new MsgReader();
             var sample = new Sample();
             reader.Init(data);
-            Gen_Sample.ReadMsg(ref sample, ref reader);
+            Gen_Sample.ReadMsg(ref reader, ref sample);
             AreEqual(int.MaxValue, sample.x);
             
             for (long n = 0; n < Count; n++) {
                 reader.Init(data);
-                Gen_Sample.ReadMsg(ref sample, ref reader);
+                Gen_Sample.ReadMsg(ref reader, ref sample);
             }
         }
     }

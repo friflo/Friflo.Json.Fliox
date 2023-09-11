@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         {
             var sample = new Sample { x = int.MaxValue, child = new Child { y = 42 } };
             var writer = new MsgWriter(new byte[10], true);
-            Gen_Sample.WriteMsg(ref sample, ref writer);
+            Gen_Sample.WriteMsg(ref writer, ref sample);
             AreEqual(18, writer.Length);
             AreEqual(HexNorm("82 A1 78 CE 7F FF FF FF A5 63 68 69 6C 64 81 A1 79 2A"), writer.DataHex);
         }

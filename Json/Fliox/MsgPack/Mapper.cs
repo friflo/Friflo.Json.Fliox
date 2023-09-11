@@ -6,8 +6,8 @@ using System;
 namespace Friflo.Json.Fliox.MsgPack
 {
 
-    public      delegate void MsgWrite<T>(ref T item, ref MsgWriter writer);    // TODO make internal
-    internal    delegate void MsgRead<T> (ref T item, ref MsgReader reader);
+    public      delegate void MsgWrite<T>(ref MsgWriter writer, ref T item);    // TODO make internal
+    internal    delegate void MsgRead<T> (ref MsgReader reader, ref T item);
 
     public class ReadException : Exception
     {
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.MsgPack
         
         public ReadOnlySpan<byte> Write<T>(T value)
         {
-            MsgPackMapper<T>.Instance.write(ref value, ref writer);
+            MsgPackMapper<T>.Instance.write(ref writer, ref value);
             data = writer.target;
             return writer.Data;
         }
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.MsgPack
         {
             _dataTls  ??= new byte[4];
             var writer  = new MsgWriter(_dataTls, writeNil);
-            MsgPackMapper<T>.Instance.write(ref value, ref writer);
+            MsgPackMapper<T>.Instance.write(ref writer, ref value);
             _dataTls    = writer.target;
             return writer.Data;
         }
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.MsgPack
         {
             var reader  = new MsgReader(data);
             T result = default;
-            MsgPackMapper<T>.Instance.read(ref result, ref reader);
+            MsgPackMapper<T>.Instance.read(ref reader, ref result);
             error = reader.Error;
             return result;
         }
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.MsgPack
         {
             var reader  = new MsgReader(data);
             T result = default;
-            MsgPackMapper<T>.Instance.read(ref result, ref reader);
+            MsgPackMapper<T>.Instance.read(ref reader, ref result);
             if (reader.Error != null) {
                 throw new ReadException(reader.Error);
             }
@@ -69,14 +69,14 @@ namespace Friflo.Json.Fliox.MsgPack
         public static void DeserializeTo<T>(ReadOnlySpan<byte> data, ref T result, out string error)
         {
             var reader = new MsgReader(data);
-            MsgPackMapper<T>.Instance.read(ref result, ref reader);
+            MsgPackMapper<T>.Instance.read(ref reader, ref result);
             error = reader.Error;
         }
         
         public static void DeserializeTo<T>(ReadOnlySpan<byte> data, ref T result)
         {
             var reader = new MsgReader(data);
-            MsgPackMapper<T>.Instance.read(ref result, ref reader);
+            MsgPackMapper<T>.Instance.read(ref reader, ref result);
             if (reader.Error != null) {
                 throw new ReadException(reader.Error);
             }

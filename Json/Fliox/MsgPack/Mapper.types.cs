@@ -44,8 +44,8 @@ namespace Friflo.Json.Fliox.MsgPack
             return default;
         }
         
-        private static void ReadMsg_Int32 (ref int value, ref MsgReader reader) { value = reader.ReadInt32(); }
-        private static void WriteMsg_Int32(ref int value, ref MsgWriter writer) { writer.WriteInt32(value);   }
+        private static void ReadMsg_Int32 (ref MsgReader reader, ref int value) { value = reader.ReadInt32(); }
+        private static void WriteMsg_Int32(ref MsgWriter writer, ref int value) { writer.WriteInt32(value);   }
         
         
         // --- List<T>
