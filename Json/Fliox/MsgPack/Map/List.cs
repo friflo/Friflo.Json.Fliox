@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.MsgPack.Map
 {
-    internal static class MsgPackList
+    public static class MsgPackList
     {
         // --- List<T>
-        internal static void ReadMsg<T> (ref MsgReader reader, ref List<T> list)
+        public static void ReadMsg<T> (this ref MsgReader reader, ref List<T> list)
         {
             var length  = ReadStart(ref reader, ref list);
             T item      = default;
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.MsgPack.Map
             }
         }
         
-        internal static void WriteMsg<T> (ref MsgWriter writer, ref List<T> list)
+        public static void WriteMsg<T> (this ref MsgWriter writer, ref List<T> list)
         {
             var length  = WriteStart (ref writer, ref list);
             var write   = MsgPackMapper<T>.Instance.write;
@@ -30,14 +30,14 @@ namespace Friflo.Json.Fliox.MsgPack.Map
         }
         
         // --- List<int>
-        internal static void ReadInt32 (ref MsgReader reader, ref List<int> list) {
+        public static void ReadMsg (this ref MsgReader reader, ref List<int> list) {
             var length = ReadStart(ref reader, ref list);
             for (int n = 0; n < length; n++) {
                 list.Add(reader.ReadInt32());
             }
         }
         
-        internal static void WriteInt32 (ref MsgWriter writer, ref List<int> list) {
+        public static void WriteMsg (this ref MsgWriter writer, ref List<int> list) {
             var length = WriteStart (ref writer, ref list);
             for (int n = 0; n < length; n++) {
                 writer.WriteInt32(list[n]);

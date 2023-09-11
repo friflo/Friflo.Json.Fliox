@@ -11,9 +11,9 @@ namespace Friflo.Json.Fliox.MsgPack
 {
     public partial class MsgPackMapper
     {
-        private const string        WriteMsg = "WriteMsg";
-        private const string        ReadMsg  = "ReadMsg";
-        private const BindingFlags  Flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+        private const string        WriteMsg    = "WriteMsg";
+        private const string        ReadMsg     = "ReadMsg";
+        private const BindingFlags  Flags       = BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly;
 
         
         internal static MsgPackMapper<T> CreateMapper<T>() {
@@ -53,10 +53,14 @@ namespace Friflo.Json.Fliox.MsgPack
             var type        = typeof(T);
             var elementType = type.GetElementType();
             if (elementType == typeof(int)) {
-                return (MsgPackMapper<T>)(object) new MsgPackMapper<int[]>(MsgPackArray.WriteInt32, MsgPackArray.ReadInt32);
+                return (MsgPackMapper<T>)(object) new MsgPackMapper<int[]>(MsgPackArray.WriteMsg, MsgPackArray.ReadMsg);
             }
-            return CreateMapper<T>(typeof(MsgPackArray), elementType);
+            return CreateGenericMapper<T>(GenericListWrite, GenericListRead, elementType);
         }
+        
+        private static readonly MethodInfo GenericListWrite = GetGenericMethod(typeof(MsgPackArray), WriteMsg, typeof(MsgWriter).MakeByRefType());
+        private static readonly MethodInfo GenericListRead  = GetGenericMethod(typeof(MsgPackArray), ReadMsg,  typeof(MsgReader).MakeByRefType());
+
         
         // --- List<T>
         private static MsgPackMapper<T> CreateListMapper<T>() {
@@ -66,27 +70,39 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             var elementType = args[0];
             if (elementType == typeof(int)) {
-                return (MsgPackMapper<T>)(object) new MsgPackMapper<List<int>>(MsgPackList.WriteInt32, MsgPackList.ReadInt32);
+                return (MsgPackMapper<T>)(object) new MsgPackMapper<List<int>>(MsgPackList.WriteMsg, MsgPackList.ReadMsg);
             }
-            return CreateMapper<T>(typeof(MsgPackList), elementType);
+            return CreateGenericMapper<T>(GenericArrayWrite, GenericArrayRead, elementType);
         }
         
-        private static MsgPackMapper<T> CreateMapper<T>(Type mapperType, Type elementType) {
-            var type = typeof(T);
+        private static readonly MethodInfo GenericArrayWrite = GetGenericMethod(typeof(MsgPackList), WriteMsg, typeof(MsgWriter).MakeByRefType());
+        private static readonly MethodInfo GenericArrayRead  = GetGenericMethod(typeof(MsgPackList), ReadMsg,  typeof(MsgReader).MakeByRefType());
+        
+        private static MsgPackMapper<T> CreateGenericMapper<T>(MethodInfo genWrite, MethodInfo genRead, Type elementType) {
+            var type        = typeof(T);
             
-            var writeMethod = mapperType.GetMethod(WriteMsg, Flags);
-            if (writeMethod == null)    throw new InvalidOperationException($"method not found: {mapperType}.{WriteMsg}");
-            var writeGen    = writeMethod.MakeGenericMethod(elementType);
+            var writeGen    = genWrite.MakeGenericMethod(elementType);
             var writeDel    = Delegate.CreateDelegate(typeof(MsgWrite<>).MakeGenericType(type), writeGen);
             var write       = (MsgWrite<T>)writeDel;
             
-            var readMethod  = mapperType.GetMethod(ReadMsg, Flags);
-            if (readMethod == null)     throw new InvalidOperationException($"method not found: {mapperType}.{ReadMsg}");
-            var readGen     = readMethod.MakeGenericMethod(elementType);
+            var readGen     = genRead.MakeGenericMethod(elementType);
             var readDel     = Delegate.CreateDelegate(typeof(MsgRead<>).MakeGenericType(type), readGen);
             var read        = (MsgRead<T>)readDel;
             
             return new MsgPackMapper<T>(write, read);
+        }
+        
+        private static MethodInfo GetGenericMethod(Type mapperType, string name, Type param0) {
+            var methods     = mapperType.GetMethods(Flags);
+            foreach (var method in methods) {
+                if (method.Name == name && method.IsGenericMethod) {
+                    var parameters = method.GetParameters();
+                    if (parameters[0].ParameterType == param0) {
+                        return method;
+                    }
+                }
+            }
+            return null;
         }
         
         // --- class

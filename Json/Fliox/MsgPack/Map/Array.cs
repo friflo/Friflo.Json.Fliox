@@ -3,10 +3,10 @@
 
 namespace Friflo.Json.Fliox.MsgPack.Map
 {
-    internal static class MsgPackArray
+    public static class MsgPackArray
     {
         // --- T[]
-        internal static void ReadMsg<T> (ref MsgReader reader, ref T[] array)
+        public static void ReadMsg<T> (this ref MsgReader reader, ref T[] array)
         {
             var length = ReadStart(ref reader, ref array);
             T item = default;
@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.MsgPack.Map
             }
         }
         
-        internal static void WriteMsg<T>(ref MsgWriter writer, ref T[] array)
+        public static void WriteMsg<T>(this ref MsgWriter writer, ref T[] array)
         {
             var length = WriteStart(ref writer, ref array);
             var write = MsgPackMapper<T>.Instance.write;
@@ -27,14 +27,14 @@ namespace Friflo.Json.Fliox.MsgPack.Map
         }
 
         // --- int[]
-        internal static void ReadInt32 (ref MsgReader reader, ref int[] array) {
+        public static void ReadMsg (this ref MsgReader reader, ref int[] array) {
             var length = ReadStart(ref reader, ref array);
             for (int n = 0; n < length; n++) {
                 array[n] = reader.ReadInt32();
             }
         }
         
-        internal static void WriteInt32(ref MsgWriter writer, ref int[] array) {
+        public static void WriteMsg(this ref MsgWriter writer, ref int[] array) {
             var length = WriteStart(ref writer, ref array);
             for (int n = 0; n < length; n++) {
                 writer.WriteInt32(array[n]);
