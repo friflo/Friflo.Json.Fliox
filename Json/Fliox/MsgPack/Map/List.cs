@@ -19,8 +19,9 @@ namespace Friflo.Json.Fliox.MsgPack.Map
                 list.Clear();
             }
             T item = default;
+            var read = MsgPackMapper<T>.Instance.read;
             for (int n = 0; n < length; n++) {
-                MsgPackMapper<T>.Instance.read(ref reader, ref item);
+                read(ref reader, ref item);
                 list.Add(item);
             }
         }
@@ -32,9 +33,10 @@ namespace Friflo.Json.Fliox.MsgPack.Map
             }
             int length = list.Count;
             writer.WriteArray(length);
+            var write = MsgPackMapper<T>.Instance.write;
             for (int n = 0; n < length; n++) {
                 T item = list[n];
-                MsgPackMapper<T>.Instance.write(ref writer, ref item);
+                write(ref writer, ref item);
             }
         }
     }
