@@ -87,8 +87,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             }; 
             var data    = mapper.Write(types);
             AreEqual("84 A6 63 68 69 6C 64 41 91 81 A1 79 00 A6 63 68 69 6C 64 4C 91 81 A1 79 00 A4 69 6E 74 41 91 01 A4 69 6E 74 4C 91 02", mapper.DataHex);
+            AreEqual(39, data.Length);
             
-            var count = 1; // 10_000_000
+            var count = 1; // 100_000_000 (7.6 sec)
             for (int n = 0; n < count; n++) {
                 mapper.Write(types);
             }
