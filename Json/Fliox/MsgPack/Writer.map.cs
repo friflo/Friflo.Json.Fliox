@@ -42,8 +42,8 @@ namespace Friflo.Json.Fliox.MsgPack
             count++;
             var cur     = pos;
             var data    = Reserve(1 + 8);
-            pos         = cur + 1 + keyLen;
             WriteKeyFix(data, cur, keyLen, key);
+            pos         = cur + 1 + keyLen;
         }
         
         private static void WriteKeyFix(byte[]data, int cur, int keyLen, long key) {
@@ -51,12 +51,13 @@ namespace Friflo.Json.Fliox.MsgPack
             BinaryPrimitives.WriteInt64LittleEndian(new Span<byte>(data, cur + 1, 8), key);
         }
         
-        private static void WriteKeySpan(byte[]data, int cur, ReadOnlySpan<byte> key) {
+        private static void WriteKeySpan(byte[]data, ref int cur, ReadOnlySpan<byte> key) {
             var keyLen  = key.Length;
             if (keyLen <= 15) {
                 data[cur] = (byte)((int)MsgFormat.fixstr | keyLen);
                 var target = new Span<byte>(data, cur + 1, keyLen);
                 key.CopyTo(target);
+                cur += 1 + keyLen;
                 return;
             }
             if (keyLen <= 255) {
@@ -64,7 +65,10 @@ namespace Friflo.Json.Fliox.MsgPack
                 data[cur + 1] = (byte)keyLen;
                 var target = new Span<byte>(data, cur + 2, keyLen);
                 key.CopyTo(target);
+                cur += 2 + keyLen;
+                return;
             }
+            throw new NotSupportedException($"expect keyLen <= 255. was {keyLen}");
         }
     }
 }

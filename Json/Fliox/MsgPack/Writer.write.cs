@@ -13,10 +13,10 @@ namespace Friflo.Json.Fliox.MsgPack
 
     public partial struct MsgWriter
     {
-        private void Write_string(string val) {
+        private void Write_string_pos(string val) {
             var len     = Encoding.UTF8.GetByteCount(val);
             var data    = Reserve(1 + 4 + len);
-            var cur     = pos;
+            int cur     = pos;
             switch (len) {
                 case <= 31:
                     data[cur]       = (byte)((int)MsgFormat.fixstr | len);
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.MsgPack
         }
         
         // --- bool
-        private void Write_bool(byte[]data, int cur, bool val)
+        private void Write_bool_pos(byte[]data, int cur, bool val)
         {
             pos = cur + 1;
             data[cur] = (byte)(val ? MsgFormat.True : MsgFormat.False);
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.MsgPack
         
         
         // ----------------------------------- byte, short, int long -----------------------------------
-        private void Write_byte(byte[]data, int cur, byte val)
+        private void Write_byte_pos(byte[]data, int cur, byte val)
         {
             switch (val)
             {
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.MsgPack
             }
         }
         
-        private void Write_short(byte[]data, int cur, short val)
+        private void Write_short_pos(byte[]data, int cur, short val)
         {
             switch (val)
             {
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.MsgPack
             }
         }
         
-        private void Write_int(byte[]data, int cur, int val)
+        private void Write_int_pos(byte[]data, int cur, int val)
         {
             switch (val)
             {
@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.MsgPack
             }
         }
         
-        private void Write_long(byte[]data, int cur, long val)
+        private void Write_long_pos(byte[]data, int cur, long val)
         {
             switch (val)
             {
