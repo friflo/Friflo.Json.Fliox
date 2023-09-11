@@ -17,17 +17,15 @@ namespace Friflo.Json.Fliox.MsgPack.Map
             }
         }
         
-        private static int WriteStart<T> (ref MsgWriter writer, ref T[] array)
+        internal static void WriteMsg<T>(ref MsgWriter writer, ref T[] array)
         {
-            if (array == null) {
-                writer.WriteNull();
-                return 0;
+            var length = WriteStart(ref writer, ref array);
+            var write = MsgPackMapper<T>.Instance.write;
+            for (int n = 0; n < length; n++) {
+                write(ref writer, ref array[n]);
             }
-            int length = array.Length;
-            writer.WriteArray(length);
-            return length;
         }
-        
+
         // --- int[]
         internal static void ReadInt32 (ref MsgReader reader, ref int[] array) {
             var length = ReadStart(ref reader, ref array);
@@ -44,15 +42,6 @@ namespace Friflo.Json.Fliox.MsgPack.Map
         }
         
         // --- utils
-        internal static void WriteMsg<T>(ref MsgWriter writer, ref T[] array)
-        {
-            var length = WriteStart(ref writer, ref array);
-            var write = MsgPackMapper<T>.Instance.write;
-            for (int n = 0; n < length; n++) {
-                write(ref writer, ref array[n]);
-            }
-        }
-        
         private static int ReadStart<T> (ref MsgReader reader, ref T[] array)
         {
             if (!reader.ReadArray(out int length)) {
@@ -62,6 +51,17 @@ namespace Friflo.Json.Fliox.MsgPack.Map
             if (array == null || array.Length != length) {
                 array = new T[length];
             }
+            return length;
+        }
+        
+        private static int WriteStart<T> (ref MsgWriter writer, ref T[] array)
+        {
+            if (array == null) {
+                writer.WriteNull();
+                return 0;
+            }
+            int length = array.Length;
+            writer.WriteArray(length);
             return length;
         }
     }
