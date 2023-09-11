@@ -52,6 +52,9 @@ namespace Friflo.Json.Fliox.MsgPack
         private static MsgPackMapper<T> CreateArrayMapper<T>() {
             var type        = typeof(T);
             var elementType = type.GetElementType();
+            if (elementType == typeof(int)) {
+                return (MsgPackMapper<T>)(object) new MsgPackMapper<int[]>(MsgPackArray.WriteInt32, MsgPackArray.ReadInt32);
+            }
             return CreateMapper<T>(typeof(MsgPackArray), elementType);
         }
         
