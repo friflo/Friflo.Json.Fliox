@@ -11,12 +11,17 @@ namespace Friflo.Json.Fliox.MsgPack
 {
     public partial class MsgPackMapper
     {
-        private const string WriteMsg = "WriteMsg";
-        private const string ReadMsg  = "ReadMsg";
+        private const string        WriteMsg = "WriteMsg";
+        private const string        ReadMsg  = "ReadMsg";
+        private const BindingFlags  Flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+
         
         internal static MsgPackMapper<T> CreateMapper<T>() {
             var type        = typeof(T);
             if (type.IsClass) {
+                if (type.IsArray) {
+                    return CreateArrayMapper<T>();
+                }
                 if (type.IsGenericType) {
                     if (type.GetGenericTypeDefinition() == typeof(List<>)) {
                         return CreateListMapper<T>();
@@ -42,12 +47,29 @@ namespace Friflo.Json.Fliox.MsgPack
         private static void ReadMsg_Int32 (ref int value, ref MsgReader reader) { value = reader.ReadInt32(); }
         private static void WriteMsg_Int32(ref int value, ref MsgWriter writer) { writer.WriteInt32(value);   }
         
-        // --- List<>
-        private const BindingFlags Flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
         
+        // --- List<T>
+        private static MsgPackMapper<T> CreateArrayMapper<T>() {
+            var type        = typeof(T);
+            var elementType = type.GetElementType();
+
+            var genType = typeof(MsgPackArray<>).MakeGenericType(elementType);
+            if (genType == null)        throw new InvalidOperationException($"type not found: {genType}");
+            var writeMethod = genType.GetMethod(WriteMsg, Flags);
+            if (writeMethod == null)    throw new InvalidOperationException($"method not found: {genType}.{WriteMsg}");
+            var write       = (MsgWrite<T>)Delegate.CreateDelegate(typeof(MsgWrite<>).MakeGenericType(type), writeMethod);
+            
+            var readMethod  = genType.GetMethod(ReadMsg, Flags);
+            if (readMethod == null)     throw new InvalidOperationException($"method not found: {genType}.{ReadMsg}");
+            var read        = (MsgRead<T>)Delegate.CreateDelegate(typeof(MsgRead<>).MakeGenericType(type), readMethod);
+            
+            return new MsgPackMapper<T>(write, read);
+        }
+        
+        // --- List<T>
         private static MsgPackMapper<T> CreateListMapper<T>() {
-            var listType = typeof(T);
-            Type[] args = ReflectUtils.GetGenericInterfaceArgs (listType, typeof(List<>) );
+            var type = typeof(T);
+            Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof(List<>) );
             if (args == null) {
                 return default;
             }
@@ -56,11 +78,11 @@ namespace Friflo.Json.Fliox.MsgPack
             if (genType == null)        throw new InvalidOperationException($"type not found: {genType}");
             var writeMethod = genType.GetMethod(WriteMsg, Flags);
             if (writeMethod == null)    throw new InvalidOperationException($"method not found: {genType}.{WriteMsg}");
-            var write       = (MsgWrite<T>)Delegate.CreateDelegate(typeof(MsgWrite<>).MakeGenericType(listType), writeMethod);
+            var write       = (MsgWrite<T>)Delegate.CreateDelegate(typeof(MsgWrite<>).MakeGenericType(type), writeMethod);
             
             var readMethod  = genType.GetMethod(ReadMsg, Flags);
             if (readMethod == null)     throw new InvalidOperationException($"method not found: {genType}.{ReadMsg}");
-            var read        = (MsgRead<T>)Delegate.CreateDelegate(typeof(MsgRead<>).MakeGenericType(listType), readMethod);
+            var read        = (MsgRead<T>)Delegate.CreateDelegate(typeof(MsgRead<>).MakeGenericType(type), readMethod);
             
             return new MsgPackMapper<T>(write, read);
         }
