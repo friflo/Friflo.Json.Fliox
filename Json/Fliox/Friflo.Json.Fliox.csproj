@@ -65,4 +65,5 @@ Compatible to .NET Core &amp; Unity</Description>
       <None Include="..\package-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 	
+	
 </Project>

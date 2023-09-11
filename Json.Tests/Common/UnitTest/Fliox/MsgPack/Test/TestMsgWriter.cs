@@ -144,6 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             
             var reader = new MsgReader(writer.Data);
             reader.ReadArray(out int length);
+            AreEqual(16, length);
             for (int n = 0; n < length; n++) {
                 var item = reader.ReadInt32();
                 AreEqual(n, item);
