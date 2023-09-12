@@ -36,11 +36,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         {
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
+            int count = 0;
             switch (keyType) {
-                case FixStr:    writer.WriteKeyString (1, X, "abc");    break;
-                case Str8:      writer.WriteKeyString (XArr, "abc");    break;
+                case FixStr:    writer.WriteKeyString (1, X, "abc", ref count);    break;
+                case Str8:      writer.WriteKeyString (XArr, "abc", ref count);    break;
             }
             writer.WriteMapFixCount(0, 1);
+            AreEqual(1, count);
             
             AreEqual(HexNorm("81 A1 78 A3 61 62 63"), writer.DataHex);
         }
@@ -52,11 +54,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var val = "_123456789_123456789_123456789_123456789";
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
+            int count = 0;
             switch (keyType) {
-                case FixStr:    writer.WriteKeyString (1, X, val);      break;
-                case Str8:      writer.WriteKeyString (XArr, val);      break;
+                case FixStr:    writer.WriteKeyString (1, X, val, ref count);      break;
+                case Str8:      writer.WriteKeyString (XArr, val, ref count);      break;
             }
             writer.WriteMapFixCount(0, 1);
+            AreEqual(1, count);
             
             AreEqual(HexNorm("81 A1 78 D9 28 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39"), writer.DataHex);
         }
@@ -67,11 +71,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var val = new string('a', 300);
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
+            int count = 0;
             switch (keyType) {
-                case FixStr:    writer.WriteKeyString (1, X, val);      break;
-                case Str8:      writer.WriteKeyString (XArr, val);      break;
+                case FixStr:    writer.WriteKeyString (1, X, val, ref count);      break;
+                case Str8:      writer.WriteKeyString (XArr, val, ref count);      break;
             }
             writer.WriteMapFixCount(0, 1);
+            AreEqual(1, count);
             
             var reader = new MsgReader(writer.Data);
             reader.ReadObject(out _);
@@ -87,11 +93,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var val = new string('a', 70000);
             var writer = new MsgWriter(new byte[10], false);
             writer.WriteMapFix();
+            int count = 0;
             switch (keyType) {
-                case FixStr:    writer.WriteKeyString (1, X, val);      break;
-                case Str8:      writer.WriteKeyString (XArr, val);      break;
+                case FixStr:    writer.WriteKeyString (1, X, val, ref count);      break;
+                case Str8:      writer.WriteKeyString (XArr, val, ref count);      break;
             }
             writer.WriteMapFixCount(0, 1);
+            AreEqual(1, count);
             
             var reader = new MsgReader(writer.Data);
             reader.ReadObject(out _);
@@ -191,6 +199,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             
             AreEqual(0x6867_6665_6463_6261, reader.ReadKey());
             AreEqual("abcdefgh", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+        }
+        
+        [Test]
+        public static void Write_key8()
+        {
+            var writer = new MsgWriter(new byte[10], true);
+            var count = 0;
+            writer.WriteMapFix();
+
+            writer.WriteKeyString("".String2Span(), null, ref count);
+            writer.WriteKeyString("abcdefg".String2Span(), null, ref count);
+            writer.WriteKeyString("_123456789_123456789_123456789_123456789".String2Span(), null, ref count);
+            writer.WriteMapFixCount(0, 3);
+            
+            AreEqual(HexNorm("83 A0 C0 A7 61 62 63 64 65 66 67 C0 D9 28 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39 C0"), writer.DataHex);
+            
+            var reader = new MsgReader(writer.Data);
+            reader.ReadObject(out int length);
+            AreEqual(3, length);
+            
+            AreEqual(0, reader.ReadKey());
+            AreEqual("", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+            
+            AreEqual(0x0067_6665_6463_6261, reader.ReadKey());
+            AreEqual("abcdefg", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+            
+            AreEqual(0x3736_3534_3332_315f, reader.ReadKey());
+            AreEqual("_123456789_123456789_123456789_123456789", reader.KeyName.DataString());
             IsNull(reader.ReadString());
         }
         

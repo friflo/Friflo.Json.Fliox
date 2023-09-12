@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case 0: return 0;
                 case 1: return name[0];
                 case 2: return (ulong)(name[0] | name[1] << 8);
-                case 3: return BinaryPrimitives.ReadUInt16LittleEndian(name.Slice(0, 4)) |
+                case 3: return BinaryPrimitives.ReadUInt16LittleEndian(name.Slice(0, 2)) |
                                ((ulong)name[2] << 16);
                 case 4: return BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(0, 4));
                 case 5: return BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(0, 4)) |
