@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return;
                 }
                 default:
-                    SetTypeError("unsupported type", type, cur);
+                    SetError(MsgReaderState.UnsupportedType, type, cur);
                     return;
             }
             if (pos > data.Length) {

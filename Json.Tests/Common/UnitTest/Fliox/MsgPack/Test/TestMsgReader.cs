@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var data = HexToSpan("04"); // 4 (+fixint)
                 var reader = new MsgReader(data);
                 reader.ReadBool();
-                AreEqual("MessagePack error - expect boolean. was: +fixint(0x4) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - expect bool. was: +fixint(0x4) pos: 0 (root)", reader.Error);
             }
         }
         

@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case    MsgFormat.float32:      return (byte)   read_float32_range  (cur, 0, byte.MaxValue);
                 case    MsgFormat.float64:      return (byte)   read_float64_range  (cur, 0, byte.MaxValue);
             }
-            SetTypeError("expect uint8 compatible type", type, cur);
+            SetError(MsgReaderState.ExpectUint8, type, cur);
             return 0;
         }
         
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case    MsgFormat.float32:      return (short)  read_float32_range  (cur, short.MinValue, short.MaxValue);
                 case    MsgFormat.float64:      return (short)  read_float64_range  (cur, short.MinValue, short.MaxValue);
             }
-            SetTypeError("expect int16 compatible type", type, cur);
+            SetError(MsgReaderState.ExpectInt16, type, cur);
             return 0;
         }
         
@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case    MsgFormat.float32:      return (int)    read_float32_range  (cur, int.MinValue, int.MaxValue);
                 case    MsgFormat.float64:      return (int)    read_float64_range  (cur, int.MinValue, int.MaxValue);
             }
-            SetTypeError("expect int32 compatible type", type, cur);
+            SetError(MsgReaderState.ExpectInt32, type, cur);
             return 0;
         }
         
@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case    MsgFormat.float32:      return (long)   read_float32_range  (cur, long.MinValue, long.MaxValue);
                 case    MsgFormat.float64:      return (long)   read_float64_range  (cur, long.MinValue, long.MaxValue);
             }
-            SetTypeError("expect int64 compatible type", type, cur);
+            SetError(MsgReaderState.ExpectInt64, type, cur);
             return 0;
         }
         
@@ -146,7 +146,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case    MsgFormat.float32:      return          read_float32        (cur);
                 case    MsgFormat.float64:      return (float)  read_float64_range  (cur, float.MinValue, float.MaxValue);
             }
-            SetTypeError("expect float32 compatible type", type, cur);
+            SetError(MsgReaderState.ExpectFloat32, type, cur);
             return 0;
         }
         
@@ -175,7 +175,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case    MsgFormat.float32:      return          read_float32        (cur);
                 case    MsgFormat.float64:      return          read_float64        (cur);
             }
-            SetTypeError("expect float64 compatible type", type, cur);
+            SetError(MsgReaderState.ExpectFloat64, type, cur);
             return 0;
         }
     }

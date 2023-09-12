@@ -78,6 +78,29 @@ namespace Friflo.Json.Fliox.MsgPack
             }
         }
         
+        internal static string Error(MsgReaderState state)
+        {
+            switch (state) {
+                case MsgReaderState.ExpectArrayError:   return "expect array or null";
+                case MsgReaderState.ExpectByteArray:    return "expect byte[] or null";
+                case MsgReaderState.ExpectBool:         return "expect bool";
+                case MsgReaderState.ExpectString:       return "expect string or null";
+                case MsgReaderState.ExpectObject:       return "expect object or null";
+                case MsgReaderState.ExpectKeyString:    return "expect key type string";
+                //
+                case MsgReaderState.ExpectUint8:        return "expect uint8 compatible type";
+                case MsgReaderState.ExpectInt16:        return "expect int16 compatible type";
+                case MsgReaderState.ExpectInt32:        return "expect int32 compatible type";
+                case MsgReaderState.ExpectInt64:        return "expect int64 compatible type";
+                case MsgReaderState.ExpectFloat32:      return "expect float32 compatible type";
+                case MsgReaderState.ExpectFloat64:      return "expect float64 compatible type";
+                //                
+                case MsgReaderState.UnsupportedType:    return "unsupported type";
+                
+                default:                                return state.ToString();
+            }
+        }
+        
         internal static string SpanToString(in ReadOnlySpan<byte> span) {
 #if NETSTANDARD2_0
             throw new NotSupportedException(); 

@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return true;
                 }
             }
-            SetTypeError("expect object or null", type, cur);
+            SetError(MsgReaderState.ExpectObject, type, cur);
             length = -1;
             return false;
         }
@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return KeyAsLong    (8,   keyName);
                 }
             }
-            SetTypeError("expect key type string", type, cur);
+            SetError(MsgReaderState.ExpectKeyString, type, cur);
             return 0;
         }
         

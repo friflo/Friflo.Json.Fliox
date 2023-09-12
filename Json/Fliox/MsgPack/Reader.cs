@@ -12,10 +12,26 @@ namespace Friflo.Json.Fliox.MsgPack
 {
     public enum MsgReaderState
     {
-        Ok              = 0,
-        UnexpectedEof   = 1,
-        UnexpectedType  = 2,
-        RangeError      = 3
+        Ok                  = 0,
+        //
+        UnexpectedEof       = 1,
+        //
+        ExpectArrayError    = 2,
+        ExpectByteArray     = 3,
+        ExpectBool          = 4,
+        ExpectString        = 5,
+        ExpectObject        = 6,
+        ExpectKeyString     = 7,
+        //
+        ExpectUint8         = 8,
+        ExpectInt16         = 9,
+        ExpectInt32         = 10,
+        ExpectInt64         = 11,
+        ExpectFloat32       = 12,
+        ExpectFloat64       = 13,
+        //
+        RangeError          = 14,
+        UnsupportedType     = 15,
     }
 
     public ref partial struct MsgReader
@@ -79,7 +95,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.True:    return true;
                 case MsgFormat.False:   return false;
             }
-            SetTypeError("expect boolean", type, cur);
+            SetError(MsgReaderState.ExpectBool, type, cur);
             return false;
         }
         
@@ -134,7 +150,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return MsgPackUtils.SpanToString(span);
                 }
             }
-            SetTypeError("expect string or null", type, cur);
+            SetError(MsgReaderState.ExpectString, type, cur);
             return null;
         }
     }

@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return read_bin(cur + 5, len, type);
                 }
             }
-            SetTypeError("expect byte array or null", type, cur);
+            SetError(MsgReaderState.ExpectByteArray, type, cur);
             return default;
         }
     }

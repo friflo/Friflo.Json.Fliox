@@ -8,12 +8,12 @@ namespace Friflo.Json.Fliox.MsgPack
 {
     public ref partial struct MsgReader
     {
-        private void SetTypeError(string expect, MsgFormat type, int cur) {
+        private void SetError(MsgReaderState error, MsgFormat type, int cur) {
             if (state != MsgReaderState.Ok) {
                 return;
             }
-            var sb  = SetError(MsgReaderState.UnexpectedType);
-            sb.Append($"MessagePack error - {expect}. was: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
+            var sb  = SetErrorIntern(error);
+            sb.Append($"MessagePack error - {MsgPackUtils.Error(error)}. was: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
         
@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (state != MsgReaderState.Ok) {
                 return;
             }
-            var sb  = SetError(MsgReaderState.RangeError);
+            var sb  = SetErrorIntern(MsgReaderState.RangeError);
             sb.Append($"MessagePack error - value out of range. was: {value} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (state != MsgReaderState.Ok) {
                 return;
             }
-            var sb  = SetError(MsgReaderState.RangeError);
+            var sb  = SetErrorIntern(MsgReaderState.RangeError);
             var val = value.ToString(NumberFormat);
             sb.Append($"MessagePack error - value out of range. was: {val} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (state != MsgReaderState.Ok) {
                 return;
             }
-            var sb  = SetError(MsgReaderState.UnexpectedEof);
+            var sb  = SetErrorIntern(MsgReaderState.UnexpectedEof);
             sb.Append("MessagePack error - unexpected EOF.");
             SetMessage(sb, cur);
         }
@@ -50,12 +50,12 @@ namespace Friflo.Json.Fliox.MsgPack
             if (state != MsgReaderState.Ok) {
                 return;
             }
-            var sb  = SetError(MsgReaderState.UnexpectedEof);
+            var sb  = SetErrorIntern(MsgReaderState.UnexpectedEof);
             sb.Append($"MessagePack error - unexpected EOF. type: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
         
-        private StringBuilder SetError(MsgReaderState state) {
+        private StringBuilder SetErrorIntern(MsgReaderState state) {
             this.state  = state;
             pos         = MsgError;
             return new StringBuilder();

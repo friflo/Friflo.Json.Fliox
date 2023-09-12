@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return true;
                 }
             }
-            SetTypeError("expect array or null", type, cur);
+            SetError(MsgReaderState.ExpectArrayError, type, cur);
             length = -1;
             return false;
         }
