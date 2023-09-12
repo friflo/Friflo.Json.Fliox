@@ -30,33 +30,30 @@ namespace Friflo.Json.Fliox.MsgPack
                 // --- bin
                 case MsgFormat.bin8:
                 {
-                    pos     = cur + 2;
-                    if (pos >= data.Length) {
+                    if (cur + 1 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return;
                     }
                     int len = data[cur + 1];
-                    pos += len;
+                    pos = 1 + cur + 1 + len;
                     break;
                 }
                 case MsgFormat.bin16: {
-                    pos     = cur + 3;       
-                    if (pos >= data.Length) {
+                    if (cur + 2 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return;
                     }
                     int len = BinaryPrimitives.ReadInt16BigEndian(data.Slice(cur + 1, 2));
-                    pos += len;
+                    pos = 1 + cur + 2 + len;
                     break;
                 }
                 case MsgFormat.bin32: {
-                    pos     = cur + 5;       
-                    if (pos >= data.Length) {
+                    if (cur + 4 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return;
                     }
                     int len = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
-                    pos += len;
+                    pos = 1 + cur + 4 + len;
                     break;
                 }
                 case MsgFormat.int8:
@@ -85,33 +82,30 @@ namespace Friflo.Json.Fliox.MsgPack
                     break;
                 }
                 case MsgFormat.str8: {
-                    pos = cur + 2;
-                    if (pos > data.Length) {
+                    if (cur + 1 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return;
                     }
                     int len = data[cur + 1];
-                    pos += len;
+                    pos = 1 + cur + 1 + len;
                     break;
                 }
                 case MsgFormat.str16: {
-                    pos = cur + 3;
-                    if (pos > data.Length) {
+                    if (cur + 2 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return;
                     }
                     int len = (data[cur + 1] << 8) + data[cur + 2];
-                    pos += len;
+                    pos = 1 + cur + 2 + len;
                     break;
                 }
                 case MsgFormat.str32: {
-                    pos = cur + 5;
-                    if (pos > data.Length) {
+                    if (cur + 4 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return;
                     }
                     int len = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
-                    pos += len;
+                    pos = 1 + cur + 4 + len;
                     break;
                 }
                 
@@ -123,7 +117,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         SetEofErrorType(type, cur);
                         return;
                     }
-                    SkipArray(data[cur] & 0x0f);
+                    SkipArray((int)type & 0x0f);
                     return;
                 case MsgFormat.array16: {
                     pos = cur + 3;
@@ -153,7 +147,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         SetEofErrorType(type, cur);
                         return;
                     }
-                    int len = data[cur] & 0x0f;
+                    int len = (int)type & 0x0f;
                     SkipMap(len);
                     return;
                 }

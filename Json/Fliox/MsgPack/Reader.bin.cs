@@ -25,8 +25,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return default;
                 case MsgFormat.bin8:
                 {
-                    pos     = cur + 1;
-                    if (pos >= data.Length) {
+                    if (cur + 1 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return default;
                     }
@@ -34,8 +33,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return read_bin(cur + 2, len, type);
                 }
                 case MsgFormat.bin16: {
-                    pos     = cur + 3;       
-                    if (pos >= data.Length) {
+                    if (cur + 2 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return default;
                     }
@@ -43,8 +41,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return read_bin(cur + 3, len, type);
                 }
                 case MsgFormat.bin32: {
-                    pos     = cur + 5;       
-                    if (pos >= data.Length) {
+                    if (cur + 4 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return default;
                     }
