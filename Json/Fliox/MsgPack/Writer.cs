@@ -312,5 +312,31 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             WriteKeyNil(key, ref count);
         }
+        
+        // --- bin
+        public void WriteBin(ReadOnlySpan<byte> bytes) {
+            if (bytes == null) {
+                WriteNull();
+                return;
+            }
+            var data    = Reserve(5 + bytes.Length);                // val: 5 + bytes.Length
+            Write_bin(data, pos, bytes);
+        }
+        
+        public void WriteKeyBin(int keyLen, long key, ReadOnlySpan<byte> bytes) {
+            var cur     = pos;
+            var data    = Reserve(1 + 8 + 5 + bytes.Length);        // key: 1 + 8,  val: 5 + bytes.Length
+            WriteKeyFix(data, cur, keyLen, key);
+            Write_bin(data, cur + 1 + keyLen, bytes);
+        }
+        
+        
+        public void WriteKeyBin(ReadOnlySpan<byte> key, ReadOnlySpan<byte> bytes) {
+            var cur     = pos;
+            var keyLen  = key.Length;
+            var data    = Reserve(2 + keyLen + 5 + bytes.Length);   // key: 2 + keyLen,  val: 5 + bytes.Length
+            WriteKeySpan(data, ref cur, key);
+            Write_bin(data, cur, bytes);
+        }
     }
 }

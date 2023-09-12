@@ -1,3 +1,4 @@
+using System;
 using Friflo.Json.Fliox.MsgPack;
 using Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack;
 using NUnit.Framework;
@@ -288,6 +289,70 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var item = reader.ReadInt32();
                 if (item != n) Fail("expected: {n}, was: {item}");
             }
+        }
+        
+        // --- bin (byte array)
+        [Test]
+        public static void Write_bin_null()
+        {
+            var span    = new ReadOnlySpan<byte>();
+            var writer  = new MsgWriter(new byte[10], false);
+            writer.WriteBin(span);
+            AreEqual("C0", writer.DataHex);
+            
+            var reader = new MsgReader(writer.Data);
+            var result = reader.ReadBin();
+            IsTrue(result == null);
+            AreEqual(writer.Data.Length, reader.Pos);
+        }
+        
+        [Test]
+        public static void Write_bin8()
+        {
+            var hex     = "0A"; 
+            var span    = HexToSpan(hex);
+            var writer  = new MsgWriter(new byte[10], false);
+            writer.WriteBin(span);
+            AreEqual("C4 01 0A", writer.DataHex);
+            
+            var reader = new MsgReader(writer.Data);
+            var result = reader.ReadBin();
+            AreEqual(hex, result.DataHex());
+            AreEqual(writer.Data.Length, reader.Pos);
+        }
+        
+        [Test]
+        public static void Write_bin16()
+        {
+            var data    = new byte[300];
+            data[0]     = 10;
+            data[299]   = 11;
+            var span    = new ReadOnlySpan<byte>(data);
+            var writer  = new MsgWriter(new byte[10], false);
+            writer.WriteBin(span);
+            AreEqual(303, writer.Data.Length);
+            
+            var reader = new MsgReader(writer.Data);
+            var result = reader.ReadBin();
+            IsTrue(span.SequenceEqual(result));
+            AreEqual(writer.Data.Length, reader.Pos);
+        }
+        
+        [Test]
+        public static void Write_bin32()
+        {
+            var data        = new byte[0x10001];
+            data[0]         = 10;
+            data[0x10000]   = 11;
+            var span    = new ReadOnlySpan<byte>(data);
+            var writer  = new MsgWriter(new byte[10], false);
+            writer.WriteBin(span);
+            AreEqual(0x10006, writer.Data.Length);
+            
+            var reader = new MsgReader(writer.Data);
+            var result = reader.ReadBin();
+            IsTrue(span.SequenceEqual(result));
+            AreEqual(writer.Data.Length, reader.Pos);
         }
     }
 }

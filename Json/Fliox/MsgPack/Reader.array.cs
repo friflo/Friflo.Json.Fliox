@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case >= MsgFormat.fixarray and <= MsgFormat.fixarrayMax:
                 {
                     pos     = cur + 1;
-                    if (pos > data.Length) {
+                    if (pos >= data.Length) {
                         SetEofErrorType(type, cur);
                         length  = -1;
                         return false;
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.array16: {
                     pos     = cur + 3;       
-                    if (pos > data.Length) {
+                    if (pos >= data.Length) {
                         SetEofErrorType(type, cur);
                         length  = -1;
                         return false;
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.array32: {
                     pos     = cur + 5;       
-                    if (pos > data.Length) {
+                    if (pos >= data.Length) {
                         SetEofErrorType(type, cur);
                         length  = -1;
                         return false;

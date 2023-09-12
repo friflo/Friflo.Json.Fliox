@@ -206,5 +206,35 @@ namespace Friflo.Json.Fliox.MsgPack
                     return;
             }
         }
+        
+        private void Write_bin(byte[] data, int cur, ReadOnlySpan<byte> bytes)
+        {
+            int len = bytes.Length;
+            switch (len) 
+            {
+                case <= byte.MaxValue: {
+                    data[cur]       = (byte)MsgFormat.bin8;
+                    data[cur + 1]   = (byte)len;
+                    bytes.CopyTo(new Span<byte>(data, cur + 2, len));
+                    pos = cur + 2 + len;
+                    return;
+                }
+                case <= ushort.MaxValue: {
+                    data[cur]       = (byte)MsgFormat.bin16;
+                    data[cur + 1]   = (byte)(len >> 8);
+                    data[cur + 2]   = (byte)len;
+                    bytes.CopyTo(new Span<byte>(data, cur + 3, len));
+                    pos = cur + 3 + len;
+                    return;
+                }
+                case <= int.MaxValue: {
+                    data[cur]       = (byte)MsgFormat.bin32;
+                    BinaryPrimitives.WriteInt32BigEndian (new Span<byte>(data, cur + 1, 4), len);
+                    bytes.CopyTo(new Span<byte>(data, cur + 5, len));
+                    pos = cur + 5 + len;
+                    return;
+                }
+            }
+        }
     }
 }
