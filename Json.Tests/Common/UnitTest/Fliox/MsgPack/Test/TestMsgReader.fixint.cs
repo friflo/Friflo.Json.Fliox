@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();
-                AreEqual("MessagePack error - expect uint8 compatible type. was: -fixint(0xFC) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - expect uint8. was: -fixint(0xFC) pos: 0 (root)", reader.Error);
             }
         }
     }

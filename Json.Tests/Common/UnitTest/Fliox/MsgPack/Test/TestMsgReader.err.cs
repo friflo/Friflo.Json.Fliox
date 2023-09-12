@@ -23,27 +23,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             {
                 var reader = new MsgReader(data);
                 reader.ReadFloat64();
-                AreEqual("MessagePack error - expect float64 compatible type. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - expect float64. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadFloat32();
-                AreEqual("MessagePack error - expect float32 compatible type. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - expect float32. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt64();
-                AreEqual("MessagePack error - expect int64 compatible type. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - expect int64. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt32();
-                AreEqual("MessagePack error - expect int32 compatible type. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - expect int32. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt16();
-                AreEqual("MessagePack error - expect int16 compatible type. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - expect int16. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();
-                AreEqual("MessagePack error - expect uint8 compatible type. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - expect uint8. was: fixstr(0xA3) pos: 0 (root)", reader.Error);
             }
         }
     }

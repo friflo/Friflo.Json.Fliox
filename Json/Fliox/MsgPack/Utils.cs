@@ -88,12 +88,12 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgReaderState.ExpectObject:       return "expect object or null";
                 case MsgReaderState.ExpectKeyString:    return "expect key type string";
                 //
-                case MsgReaderState.ExpectUint8:        return "expect uint8 compatible type";
-                case MsgReaderState.ExpectInt16:        return "expect int16 compatible type";
-                case MsgReaderState.ExpectInt32:        return "expect int32 compatible type";
-                case MsgReaderState.ExpectInt64:        return "expect int64 compatible type";
-                case MsgReaderState.ExpectFloat32:      return "expect float32 compatible type";
-                case MsgReaderState.ExpectFloat64:      return "expect float64 compatible type";
+                case MsgReaderState.ExpectUint8:        return "expect uint8";
+                case MsgReaderState.ExpectInt16:        return "expect int16";
+                case MsgReaderState.ExpectInt32:        return "expect int32";
+                case MsgReaderState.ExpectInt64:        return "expect int64";
+                case MsgReaderState.ExpectFloat32:      return "expect float32";
+                case MsgReaderState.ExpectFloat64:      return "expect float64";
                 //
                 case MsgReaderState.RangeError:         return "value out of range";
                 case MsgReaderState.UnsupportedType:    return "unsupported type";
