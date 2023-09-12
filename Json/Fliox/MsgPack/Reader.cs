@@ -10,13 +10,21 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.MsgPack
 {
+    public enum MsgReaderState
+    {
+        Ok              = 0,
+        UnexpectedEof   = 1,
+        UnexpectedType  = 2,
+        RangeError      = 3
+    }
 
     public ref partial struct MsgReader
     {
                         private     ReadOnlySpan<byte>  data;
         [Browse(Never)] private     int                 pos;
-        [Browse(Never)] private     string              error;
         [Browse(Never)] private     ReadOnlySpan<byte>  keyName;
+        [Browse(Never)] private     MsgReaderState      state;
+        [Browse(Never)] private     string              error;
         
                         public      int                 Pos => pos;
         /// <summary><see cref="keyName"/> is set in <see cref="ReadKey"/></summary>
@@ -24,6 +32,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         public      string              KeyNameString   => keyName == null ? null : MsgPackUtils.SpanToString(keyName);
         
                         public      string              Error           => error;
+                        public      MsgReaderState      State           => state;
                         public      override string     ToString()      => GetString();
 
                         public      const int           MsgError = int.MaxValue;
@@ -31,15 +40,17 @@ namespace Friflo.Json.Fliox.MsgPack
         public MsgReader(ReadOnlySpan<byte> data) {
             this.data   = data;
             pos         = 0;
-            error       = null;
             keyName     = default;
+            state       = MsgReaderState.Ok;
+            error       = null;
         }
         
         public void Init(ReadOnlySpan<byte> data) {
             this.data   = data;
             pos         = 0;
-            error       = null;
             keyName     = default;
+            state       = MsgReaderState.Ok;
+            error       = null;
         }
         
         private string GetString() {

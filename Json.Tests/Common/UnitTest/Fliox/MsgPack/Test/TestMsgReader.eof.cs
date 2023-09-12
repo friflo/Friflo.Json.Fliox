@@ -18,12 +18,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             // --- OK
             var ok = new MsgReader(data);
             action(ref ok);
-            IsNull (ok.Error);
+            AreEqual(MsgReaderState.Ok, ok.State);
             AreNotEqual(MsgReader.MsgError, ok.Pos);
+            
             
             // --- Empty
             var empty = new MsgReader(data.Slice(0,0));
             action(ref empty);
+            AreEqual(MsgReaderState.UnexpectedEof, empty.State);
             AreEqual("MessagePack error - unexpected EOF. pos: 0 (root)", empty.Error);
             AreEqual(MsgReader.MsgError, empty.Pos);
             
@@ -33,12 +35,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var subData = data.Slice(0, n);
                 var reader = new MsgReader(subData);
                 action(ref reader);
+                AreEqual(MsgReaderState.UnexpectedEof, reader.State);
                 AreEqual(error, reader.Error);
                 AreEqual(MsgReader.MsgError, reader.Pos);
                 
                 // --- skip data sub-section
                 var skipReader = new MsgReader(subData);
                 skipReader.SkipTree();
+                AreEqual(MsgReaderState.UnexpectedEof, skipReader.State);
                 AreEqual(error, skipReader.Error);
                 AreEqual(MsgReader.MsgError, skipReader.Pos);
             }
@@ -119,6 +123,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var data = HexToSpan("cc 7f");
             AreEqual((byte)MsgFormat.uint8, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadByte(), "MessagePack error - unexpected EOF. type: uint8(0xCC) pos: 0 (root)");
+        }
+        
+        // --- string
+        // [Test]
+        public static void Read_Eof_str8()
+        {
+            var data = HexToSpan("d9 01 61");
+            AreEqual((byte)MsgFormat.str8, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadString(), "MessagePack error - unexpected EOF. type: str8(0xD9) pos: 0 (root)");
         }
     }
 }
