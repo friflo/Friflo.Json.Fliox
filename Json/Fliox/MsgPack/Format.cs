@@ -29,14 +29,14 @@ namespace Friflo.Json.Fliox.MsgPack
         True        = 0xc3,
         
         // --- bin
-        bin8        = 0xc4,
-        bin16       = 0xc5,
-        bin32       = 0xc6,
+        bin8        = 0xc4,     // + 1 byte  length(N) + N bytes
+        bin16       = 0xc5,     // + 2 bytes length(N) + N bytes
+        bin32       = 0xc6,     // + 4 bytes length(N) + N bytes
         
         // --- ext
-        ext8        = 0xc7,
-        ext16       = 0xc8,
-        ext32       = 0xc9,
+        ext8        = 0xc7,     // + 1 byte  length(N) + 1 byte type + N bytes
+        ext16       = 0xc8,     // + 2 bytes length(N) + 1 byte type + N bytes
+        ext32       = 0xc9,     // + 4 bytes length(N) + 1 byte type + N bytes
         
         // --- float
         float32     = 0xca,     // + 4 bytes data
@@ -54,20 +54,20 @@ namespace Friflo.Json.Fliox.MsgPack
         int64       = 0xd3,     // + 8 bytes data
         
         // --- fixext
-        fixext1     = 0xd4,
-        fixext2     = 0xd5,
-        fixext4     = 0xd6,
-        fixext8     = 0xd7,
-        fixext16    = 0xd8,
+        fixext1     = 0xd4,     // + 1 byte type +  1 byte  data
+        fixext2     = 0xd5,     // + 1 byte type +  2 bytes data
+        fixext4     = 0xd6,     // + 1 byte type +  4 bytes data
+        fixext8     = 0xd7,     // + 1 byte type +  8 bytes data
+        fixext16    = 0xd8,     // + 1 byte type + 16 bytes data
         
         // --- string
-        str8        = 0xd9,     // + 1 byte  length(N) + N bytes 
-        str16       = 0xda,     // + 2 bytes length(N) + N bytes 
-        str32       = 0xdb,     // + 4 bytes length(N) + N bytes 
+        str8        = 0xd9,     // + 1 byte  length(N) + N bytes
+        str16       = 0xda,     // + 2 bytes length(N) + N bytes
+        str32       = 0xdb,     // + 4 bytes length(N) + N bytes
         
         // --- array
-        array16     = 0xdc,     // + 2 bytes length(N) + N objects 
-        array32     = 0xdd,     // + 4 bytes length(N) + N objects 
+        array16     = 0xdc,     // + 2 bytes length(N) + N objects
+        array32     = 0xdd,     // + 4 bytes length(N) + N objects
         
         // --- map
         map16       = 0xde,     // + 2 bytes length(N) + N*2 objects
