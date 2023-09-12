@@ -1,4 +1,5 @@
-﻿using Friflo.Json.Fliox.MsgPack;
+﻿using System;
+using Friflo.Json.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
@@ -79,6 +80,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 reader.ReadString();
                 AreEqual("MessagePack error - expect string or null. was: +fixint(0x4) pos: 0 (root)", reader.Error);
             }
+        }
+        
+
+        internal static void AssertSkip(ReadOnlySpan<byte> data) {
+            var reader = new MsgReader(data);
+            reader.SkipTree();
+            IsNull(reader.Error);
+            AreEqual(data.Length, reader.Pos);
         }
         
 

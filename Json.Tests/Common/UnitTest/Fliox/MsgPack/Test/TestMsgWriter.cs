@@ -27,6 +27,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             writer.WriteMsg(ref sample);
             AreEqual(18, writer.Length);
             AreEqual(HexNorm("82 A1 78 CE 7F FF FF FF A5 63 68 69 6C 64 81 A1 79 2A"), writer.DataHex);
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         private const               long    X       = 0x78;
@@ -46,6 +48,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual(1, count);
             
             AreEqual(HexNorm("81 A1 78 A3 61 62 63"), writer.DataHex);
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
        
@@ -64,6 +68,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual(1, count);
             
             AreEqual(HexNorm("81 A1 78 D9 28 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39 5F 31 32 33 34 35 36 37 38 39"), writer.DataHex);
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         [TestCase(FixStr)] [TestCase(Str8)]
@@ -86,6 +92,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var x = reader.ReadString();
             AreEqual(300, x.Length);
             AreEqual(val, x);
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         [TestCase(FixStr)] [TestCase(Str8)]
@@ -108,6 +116,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var x = reader.ReadString();
             AreEqual(70000, x.Length);
             AreEqual(val, x);
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         [TestCase(FixStr)] [TestCase(Str8)]
@@ -122,6 +132,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             writer.WriteMapFixCount(0, 1);
             
             AreEqual(HexNorm("81 A1 78 C3"), writer.DataHex);
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         [Test]
@@ -201,6 +213,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual(0x6867_6665_6463_6261, reader.ReadKey());
             AreEqual("abcdefgh", reader.KeyName.DataString());
             IsNull(reader.ReadString());
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         [Test]
@@ -232,6 +246,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual(0x3736_3534_3332_315f, reader.ReadKey());
             AreEqual("_123456789_123456789_123456789_123456789", reader.KeyName.DataString());
             IsNull(reader.ReadString());
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         
@@ -250,6 +266,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual(1, length);
             var item = reader.ReadInt32();
             AreEqual(42, item);
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         [Test]
@@ -270,6 +288,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var item = reader.ReadInt32();
                 AreEqual(n, item);
             }
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         [Test]
@@ -289,6 +308,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var item = reader.ReadInt32();
                 if (item != n) Fail("expected: {n}, was: {item}");
             }
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         // --- bin (byte array)
@@ -304,6 +324,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var result = reader.ReadBin();
             IsTrue(result == null);
             AreEqual(writer.Data.Length, reader.Pos);
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         [Test]
@@ -319,6 +341,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var result = reader.ReadBin();
             AreEqual(hex, result.DataHex());
             AreEqual(writer.Data.Length, reader.Pos);
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         [Test]
@@ -336,6 +360,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var result = reader.ReadBin();
             IsTrue(span.SequenceEqual(result));
             AreEqual(writer.Data.Length, reader.Pos);
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
         
         [Test]
@@ -353,6 +379,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var result = reader.ReadBin();
             IsTrue(span.SequenceEqual(result));
             AreEqual(writer.Data.Length, reader.Pos);
+            
+            TestMsgReader.AssertSkip(writer.Data);
         }
     }
 }
