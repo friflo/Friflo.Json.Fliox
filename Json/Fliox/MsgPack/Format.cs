@@ -74,6 +74,9 @@ namespace Friflo.Json.Fliox.MsgPack
         map32       = 0xdf,     // + 4 bytes length(N) + N*2 objects
         
         // --- fixint - negative 
-        fixintNeg   = 0xe0, fixintNegMax = 0xff     // 111xxxxx (Ex, Fx)  range: [-32(0xE0), -1(0xFF)] 
+        fixintNeg   = 0xe0, fixintNegMax = 0xff,     // 111xxxxx (Ex, Fx)  range: [-32(0xE0), -1(0xFF)]
+        //
+        //
+        root        = 0x100     // Note: not part of spec
     }
 }

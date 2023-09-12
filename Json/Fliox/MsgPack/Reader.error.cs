@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (state != MsgReaderState.Ok) {
                 return;
             }
-            var sb  = SetErrorIntern(error);
+            var sb  = StopReader(error, type, cur);
             sb.Append($"MessagePack error - {MsgPackUtils.Error(error)}. was: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (state != MsgReaderState.Ok) {
                 return;
             }
-            var sb  = SetErrorIntern(MsgReaderState.RangeError);
+            var sb  = StopReader(MsgReaderState.RangeError, type, cur);
             sb.Append($"MessagePack error - value out of range. was: {value} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (state != MsgReaderState.Ok) {
                 return;
             }
-            var sb  = SetErrorIntern(MsgReaderState.RangeError);
+            var sb  = StopReader(MsgReaderState.RangeError, type, cur);
             var val = value.ToString(NumberFormat);
             sb.Append($"MessagePack error - value out of range. was: {val} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (state != MsgReaderState.Ok) {
                 return;
             }
-            var sb  = SetErrorIntern(MsgReaderState.UnexpectedEof);
+            var sb  = StopReader(MsgReaderState.UnexpectedEof, MsgFormat.root, cur);
             sb.Append("MessagePack error - unexpected EOF.");
             SetMessage(sb, cur);
         }
@@ -50,14 +50,16 @@ namespace Friflo.Json.Fliox.MsgPack
             if (state != MsgReaderState.Ok) {
                 return;
             }
-            var sb  = SetErrorIntern(MsgReaderState.UnexpectedEof);
+            var sb  = StopReader(MsgReaderState.UnexpectedEof, type, cur);
             sb.Append($"MessagePack error - unexpected EOF. type: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
         
-        private StringBuilder SetErrorIntern(MsgReaderState state) {
+        private StringBuilder StopReader(MsgReaderState state, MsgFormat type, int cur) {
             this.state  = state;
             pos         = MsgError;
+            errorType   = type;
+            errorPos    = cur;
             return new StringBuilder();
         }
         

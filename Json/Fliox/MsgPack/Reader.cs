@@ -40,6 +40,8 @@ namespace Friflo.Json.Fliox.MsgPack
         [Browse(Never)] private     int                 pos;
         [Browse(Never)] private     ReadOnlySpan<byte>  keyName;
         [Browse(Never)] private     MsgReaderState      state;
+        [Browse(Never)] private     MsgFormat           errorType;
+        [Browse(Never)] private     int                 errorPos;
         [Browse(Never)] private     string              error;
         
                         public      int                 Pos => pos;
@@ -58,6 +60,8 @@ namespace Friflo.Json.Fliox.MsgPack
             pos         = 0;
             keyName     = default;
             state       = MsgReaderState.Ok;
+            errorType   = MsgFormat.root;
+            errorPos    = 0;
             error       = null;
         }
         
@@ -66,6 +70,8 @@ namespace Friflo.Json.Fliox.MsgPack
             pos         = 0;
             keyName     = default;
             state       = MsgReaderState.Ok;
+            errorType   = MsgFormat.root;
+            errorPos    = 0;
             error       = null;
         }
         

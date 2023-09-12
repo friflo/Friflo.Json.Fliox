@@ -94,7 +94,8 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgReaderState.ExpectInt64:        return "expect int64 compatible type";
                 case MsgReaderState.ExpectFloat32:      return "expect float32 compatible type";
                 case MsgReaderState.ExpectFloat64:      return "expect float64 compatible type";
-                //                
+                //
+                case MsgReaderState.RangeError:         return "value out of range";
                 case MsgReaderState.UnsupportedType:    return "unsupported type";
                 
                 default:                                return state.ToString();
