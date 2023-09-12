@@ -78,8 +78,17 @@ namespace Friflo.Json.Fliox.MsgPack
             }
         }
         
-        internal static string GetDataDec(byte[] data, int len) {
-            var sb = new StringBuilder();
+        internal static string SpanToString(in ReadOnlySpan<byte> span) {
+#if NETSTANDARD2_0
+            throw new NotSupportedException(); 
+#else
+            return Encoding.UTF8.GetString(span);
+#endif
+        }
+        
+        internal static string GetDataDec(ReadOnlySpan<byte> data) {
+            var sb  = new StringBuilder();
+            var len = data.Length;
             for (int n = 0; n < len; n++) {
                 sb.Append(data[n]);
                 sb.Append(", ");
@@ -88,8 +97,9 @@ namespace Friflo.Json.Fliox.MsgPack
             return sb.ToString();
         }
         
-        internal static string GetDataHex(byte[] data, int len) {
-            var sb = new StringBuilder();
+        internal static string GetDataHex(ReadOnlySpan<byte> data) {
+            var sb  = new StringBuilder();
+            var len = data.Length;
             for (int n = 0; n < len; n++) {
                 sb.Append($"{data[n]:X2}");
                 sb.Append(' ');

@@ -116,6 +116,87 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         [Test]
+        public static void Write_keyfix()
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            var count = 0;
+            writer.WriteMapFix();
+
+            writer.WriteKey(0, 0x0000_0000_0000_0000, ref count);
+            writer.WriteNull();
+            
+            writer.WriteKey(1, 0x0000_0000_0000_0061, ref count);
+            writer.WriteNull();
+            
+            writer.WriteKey(2, 0x0000_0000_0000_6261, ref count);
+            writer.WriteNull();
+            
+            writer.WriteKey(3, 0x0000_0000_0063_6261, ref count);
+            writer.WriteNull();
+            
+            writer.WriteKey(4, 0x0000_0000_6463_6261, ref count);
+            writer.WriteNull();
+            
+            writer.WriteKey(5, 0x0000_0065_6463_6261, ref count);
+            writer.WriteNull();
+            
+            writer.WriteKey(6, 0x0000_6665_6463_6261, ref count);
+            writer.WriteNull();
+            
+            writer.WriteKey(7, 0x0067_6665_6463_6261, ref count);
+            writer.WriteNull();
+            
+            writer.WriteKey(8, 0x6867_6665_6463_6261, ref count);
+            writer.WriteNull();
+            
+            writer.WriteMapFixCount(0, count);
+            AreEqual(9, count);
+            AreEqual(HexNorm("89 A0 C0 A1 61 C0 A2 61 62 C0 A3 61 62 63 C0 A4 61 62 63 64 C0 A5 61 62 63 64 65 C0 A6 61 62 63 64 65 66 C0 A7 61 62 63 64 65 66 67 C0 A8 61 62 63 64 65 66 67 68 C0"), writer.DataHex);
+            
+            var reader = new MsgReader(writer.Data);
+            reader.ReadObject(out int length);
+            AreEqual(9, length);
+            
+            AreEqual(0, reader.ReadKey());
+            AreEqual("", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+            
+            AreEqual(0x61, reader.ReadKey());
+            AreEqual("a", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+            
+            AreEqual(0x6261, reader.ReadKey());
+            AreEqual("ab", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+            
+            AreEqual(0x63_6261, reader.ReadKey());
+            AreEqual("abc", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+            
+            AreEqual(0x6463_6261, reader.ReadKey());
+            AreEqual("abcd", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+            
+            AreEqual(0x65_6463_6261, reader.ReadKey());
+            AreEqual("abcde", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+            
+            AreEqual(0x6665_6463_6261, reader.ReadKey());
+            AreEqual("abcdef", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+            
+            AreEqual(0x67_6665_6463_6261, reader.ReadKey());
+            AreEqual("abcdefg", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+            
+            AreEqual(0x6867_6665_6463_6261, reader.ReadKey());
+            AreEqual("abcdefgh", reader.KeyName.DataString());
+            IsNull(reader.ReadString());
+        }
+        
+        
+        // --- array
+        [Test]
         public static void Write_array_fix()
         {
             var writer = new MsgWriter(new byte[10], false);

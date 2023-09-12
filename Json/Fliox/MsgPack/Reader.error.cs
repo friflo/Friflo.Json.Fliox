@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (keyName == null) {
                 sb.Append(" (root)");
             } else {
-                var key = SpanToString(keyName);
+                var key = MsgPackUtils.SpanToString(keyName);
                 sb.Append(" - last key: '");
                 sb.Append(key);
                 sb.Append('\'');

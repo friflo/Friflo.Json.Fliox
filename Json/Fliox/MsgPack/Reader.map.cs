@@ -107,17 +107,18 @@ namespace Friflo.Json.Fliox.MsgPack
         {
             switch (len)
             {
+                case 0: return 0;
                 case 1: return name[0];
                 case 2: return (ulong)(name[0] | name[1] << 8);
-                case 3: return (ulong)(name[0] | name[1] << 8 | name[2] << 16);
+                case 3: return BinaryPrimitives.ReadUInt16LittleEndian(name.Slice(0, 4)) |
+                               ((ulong)name[2] << 16);
                 case 4: return BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(0, 4));
                 case 5: return BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(0, 4)) |
                                ((ulong)name[4] << 32);
                 case 6: return BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(0, 4)) | 
                                ((ulong)BinaryPrimitives.ReadUInt16LittleEndian(name.Slice(4, 2)) << 32);
                 case 7: return BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(0, 4)) | 
-                               ((ulong)BinaryPrimitives.ReadUInt16LittleEndian(name.Slice(4, 2)) << 32) |
-                                (ulong)name[6] << 48;
+                               (ulong)BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(3, 4)) << 24;
                 case 8: return BinaryPrimitives.ReadUInt64LittleEndian(name.Slice(0, 8));
                 default: throw new InvalidOperationException($"expect len <= 8. was: {len}");
             }

@@ -18,8 +18,8 @@ namespace Friflo.Json.Fliox.MsgPack
         
         public          ReadOnlySpan<byte>  Data        => new ReadOnlySpan<byte>(target, 0, pos);
         /// <summary> Convert hex to JSON with [msgpack-lite demo] https://kawanet.github.io/msgpack-lite/ </summary>
-        public          string              DataHex     => MsgPackUtils.GetDataHex(target, pos);
-        public          string              DataDec     => MsgPackUtils.GetDataDec(target, pos);
+        public          string              DataHex     => MsgPackUtils.GetDataHex(Data);
+        public          string              DataDec     => MsgPackUtils.GetDataDec(Data);
         public override string              ToString()  => $"pos: {pos}";
 
         public MsgWriter(byte[] target, bool writeNil) {

@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         public      int                 Pos => pos;
         /// <summary><see cref="keyName"/> is set in <see cref="ReadKey"/></summary>
                         public      ReadOnlySpan<byte>  KeyName         => keyName;
-                        public      string              KeyNameString   => keyName == null ? null : SpanToString(keyName);
+                        public      string              KeyNameString   => keyName == null ? null : MsgPackUtils.SpanToString(keyName);
         
                         public      string              Error           => error;
                         public      override string     ToString()      => GetString();
@@ -56,14 +56,6 @@ namespace Friflo.Json.Fliox.MsgPack
             return sb.ToString();
         }
         
-        private static string SpanToString(in ReadOnlySpan<byte> span) {
-#if NETSTANDARD2_0
-            throw new NotSupportedException(); 
-#else
-            return Encoding.UTF8.GetString(span);
-#endif
-        }
-        
         public bool ReadBool ()
         {
             int cur = pos;
@@ -90,12 +82,13 @@ namespace Friflo.Json.Fliox.MsgPack
             var type = (MsgFormat)data[cur];
             switch (type) {
                 case MsgFormat.nil:
+                    pos = cur + 1;
                     return null;
                 case >= MsgFormat.fixstr and <= MsgFormat.fixstrMax: {
                     if (!read_str(out var span, cur + 1, (int)type & 0x1f, type)) {
                         return null;
                     }
-                    return SpanToString(span);
+                    return MsgPackUtils.SpanToString(span);
                 }
                 case MsgFormat.str8: {
                     if (cur + 1 >= data.Length) {
@@ -105,7 +98,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     if (!read_str(out var span, cur + 2, data[cur + 1], type)) {
                         return null;
                     }
-                    return SpanToString(span);
+                    return MsgPackUtils.SpanToString(span);
                 }
                 case MsgFormat.str16: {
                     if (cur + 2 >= data.Length) {
@@ -116,7 +109,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     if (!read_str(out var span, cur + 3, len, type)) {
                         return null;
                     }
-                    return SpanToString(span);
+                    return MsgPackUtils.SpanToString(span);
                 }
                 case MsgFormat.str32: {
                     if (cur + 4 >= data.Length) {
@@ -127,7 +120,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     if (!read_str(out var span, cur + 5, (int)len, type)) {
                         return null;
                     }
-                    return SpanToString(span);
+                    return MsgPackUtils.SpanToString(span);
                 }
             }
             SetTypeError("expect string or null", type, cur);
