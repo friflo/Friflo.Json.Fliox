@@ -13,9 +13,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
 
     public static partial class TestMsgReader
     {
-        
-            
-            
         [Test]
         public static void Read_Boolean()
         {
@@ -25,12 +22,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 var x = reader.ReadBool();
                 IsFalse(x);
+                AssertSkip(data);
             } {
                 var data = HexToSpan("C3"); // true
                 AreEqual((byte)MsgFormat.True, data[0]);
                 var reader = new MsgReader(data);
                 var x = reader.ReadBool();
                 IsTrue(x);
+                AssertSkip(data);
             } {
                 var data = HexToSpan("04"); // 4 (+fixint)
                 var reader = new MsgReader(data);
@@ -49,6 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("abc", x);
+                AssertSkip(data);
             }
             {
                 var data = HexToSpan("D9 0A 30 31 32 33 34 35 36 37 38 39");
@@ -57,6 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("0123456789", x);
+                AssertSkip(data);
             }
             {
                 var data = HexToSpan("DA 00 0A 30 31 32 33 34 35 36 37 38 39");
@@ -65,6 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("0123456789", x);
+                AssertSkip(data);
             }
             {
                 var data = HexToSpan("DB 00 00 00 0A 30 31 32 33 34 35 36 37 38 39");
@@ -73,6 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(data);
                 var x = reader.ReadString();
                 AreEqual("0123456789", x);
+                AssertSkip(data);
             }
             {
                 var data = HexToSpan("04"); // 4 (+fixint)
