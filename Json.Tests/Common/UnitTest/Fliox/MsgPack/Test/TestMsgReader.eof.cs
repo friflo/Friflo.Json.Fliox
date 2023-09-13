@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var ok = new MsgReader(data);
             action(ref ok);
             AreEqual(MsgReaderState.Ok, ok.State);
-            AreNotEqual(MsgReader.MsgError, ok.Pos);
+            AreEqual(data.Length, ok.Pos);
             
             
             // --- Empty
@@ -27,7 +27,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             action(ref empty);
             AreEqual(MsgReaderState.UnexpectedEof, empty.State);
             AreEqual("MessagePack error - unexpected EOF. pos: 0 (root)", empty.Error);
-            AreEqual(MsgReader.MsgError, empty.Pos);
             
             for (int n = 1; n < data.Length; n++)
             {
@@ -37,14 +36,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 action(ref reader);
                 AreEqual(MsgReaderState.UnexpectedEof, reader.State);
                 AreEqual(error, reader.Error);
-                AreEqual(MsgReader.MsgError, reader.Pos);
                 
                 // --- skip data sub-section
                 var skipReader = new MsgReader(subData);
                 skipReader.SkipTree();
                 AreEqual(MsgReaderState.UnexpectedEof, skipReader.State);
                 AreEqual(error, skipReader.Error);
-                AreEqual(MsgReader.MsgError, skipReader.Pos);
             }
         }
 

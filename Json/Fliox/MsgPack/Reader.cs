@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         public      MsgReaderState      State           => state;
                         public      override string     ToString()      => GetString();
 
-                        public      const int           MsgError = int.MaxValue;
+                        private     const int           MsgError = int.MaxValue;
         
         public MsgReader(ReadOnlySpan<byte> data) {
             this.data   = data;
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.MsgPack
         }
         
         private string GetString() {
-            if (pos == MsgError) {
+            if (state != MsgReaderState.Ok) {
                 return CreateErrorMessage();
             }
             var sb = new StringBuilder();
