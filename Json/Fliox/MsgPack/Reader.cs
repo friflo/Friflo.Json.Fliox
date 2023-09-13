@@ -42,14 +42,13 @@ namespace Friflo.Json.Fliox.MsgPack
         [Browse(Never)] private     MsgReaderState      state;
         [Browse(Never)] private     MsgFormat           errorType;
         [Browse(Never)] private     int                 errorPos;
-        [Browse(Never)] private     string              error;
         
-                        public      int                 Pos => pos;
+                        public      int                 Pos             => pos;
         /// <summary><see cref="keyName"/> is set in <see cref="ReadKey"/></summary>
                         public      ReadOnlySpan<byte>  KeyName         => keyName;
                         public      string              KeyNameString   => keyName == null ? null : MsgPackUtils.SpanToString(keyName);
         
-                        public      string              Error           => error;
+                        public      string              Error           => CreateErrorMessage();
                         public      MsgReaderState      State           => state;
                         public      override string     ToString()      => GetString();
 
@@ -62,7 +61,6 @@ namespace Friflo.Json.Fliox.MsgPack
             state       = MsgReaderState.Ok;
             errorType   = MsgFormat.root;
             errorPos    = 0;
-            error       = null;
         }
         
         public void Init(ReadOnlySpan<byte> data) {
@@ -72,12 +70,11 @@ namespace Friflo.Json.Fliox.MsgPack
             state       = MsgReaderState.Ok;
             errorType   = MsgFormat.root;
             errorPos    = 0;
-            error       = null;
         }
         
         private string GetString() {
             if (pos == MsgError) {
-                return error;
+                return CreateErrorMessage();
             }
             var sb = new StringBuilder();
             sb.Append($"pos: {pos} ");

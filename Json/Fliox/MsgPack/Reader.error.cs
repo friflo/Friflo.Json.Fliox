@@ -12,7 +12,6 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             StopReader(error, type, cur);
-            this.error = CreateErrorMessage();
         }
         
         private void SetRangeError(MsgFormat type, int cur) {
@@ -20,7 +19,6 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             StopReader(MsgReaderState.RangeError, type, cur);
-            error = CreateErrorMessage();
         }
         
         private void SetEofError(int cur) {
@@ -28,7 +26,6 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             StopReader(MsgReaderState.UnexpectedEof, MsgFormat.root, cur);
-            error = CreateErrorMessage();
         }
         
         private void SetEofErrorType(MsgFormat type, int cur) {
@@ -36,12 +33,14 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             StopReader(MsgReaderState.UnexpectedEof, type, cur);
-            error = CreateErrorMessage();
         }
         
         // ----------------------------------------- utils -----------------------------------------
         private string CreateErrorMessage()
         {
+            if (state == MsgReaderState.Ok) {
+                return null;
+            }
             var sb = new StringBuilder();
             sb.Append("MessagePack error - ");
             sb.Append(MsgPackUtils.Error(state));
