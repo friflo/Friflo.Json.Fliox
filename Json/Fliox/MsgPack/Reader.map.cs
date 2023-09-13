@@ -4,6 +4,7 @@
 using System;
 using System.Buffers.Binary;
 using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
+using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 
 // #pragma warning disable CS3002 // CS3002 : Return type of 'MsgReader.ReadKey()' is not CLS-compliant
 
@@ -24,17 +25,17 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             var type    = (MsgFormat)data[cur];
             switch (type) {
-                case MsgFormat.nil:
+                case nil:
                     pos     = cur + 1;
                     length  = -1;
                     return false;
-                case >= MsgFormat.fixmap and <= MsgFormat.fixmapMax:
+                case >= fixmap and <= fixmapMax:
                 {
                     pos = cur + 1;
                     length  = (int)type & 0x0f;
                     return true;
                 }
-                case MsgFormat.map16: {
+                case map16: {
                     pos     = cur + 3;       
                     if (pos > data.Length) {
                         SetEofErrorType(type, cur);
@@ -44,7 +45,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     length  = BinaryPrimitives.ReadInt16BigEndian(data.Slice(cur + 1, 2));
                     return true;
                 }
-                case MsgFormat.map32: {
+                case map32: {
                     pos     = cur + 5;       
                     if (pos > data.Length) {
                         SetEofErrorType(type, cur);
@@ -70,7 +71,7 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             var type    = (MsgFormat)data[cur];
             switch (type) {
-                case >= MsgFormat.fixstr and <= MsgFormat.fixstrMax: {
+                case >= fixstr and <= fixstrMax: {
                     int len = (int)type & 0x1f;
                     pos     = cur + 1 + len;
                     if (pos > data.Length) {
@@ -83,7 +84,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     }
                     return KeyAsLong    (8,   keyName);
                 }
-                case MsgFormat.str8: {
+                case str8: {
                     if (cur + 1 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return 0;

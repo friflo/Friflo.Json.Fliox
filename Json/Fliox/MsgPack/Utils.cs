@@ -71,11 +71,11 @@ namespace Friflo.Json.Fliox.MsgPack
                 case map32:     return "map32";
                 
                 // --- fix*
-                case <= fixintPosMax:                               return "+fixint";
-                case >= fixstr    and <= fixstrMax:                 return "fixstr";
-                case >= fixmap    and <= fixmapMax:                 return "fixmap";
-                case >= fixarray  and <= fixarrayMax:               return "fixarray";
-                case >= fixintNeg and <= MsgFormat.fixintNegMax:    return "-fixint";
+                case <= fixintPosMax:                   return "+fixint";
+                case >= fixstr    and <= fixstrMax:     return "fixstr";
+                case >= fixmap    and <= fixmapMax:     return "fixmap";
+                case >= fixarray  and <= fixarrayMax:   return "fixarray";
+                case >= fixintNeg and <= fixintNegMax:  return "-fixint";
                 //
                 case root:      return "root";
                 default:

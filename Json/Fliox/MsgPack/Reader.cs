@@ -7,6 +7,7 @@ using System.Text;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
+using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.MsgPack
@@ -64,7 +65,7 @@ namespace Friflo.Json.Fliox.MsgPack
             pos         = 0;
             keyName     = default;
             state       = Ok;
-            errorType   = MsgFormat.root;
+            errorType   = root;
             errorPos    = 0;
         }
         
@@ -73,7 +74,7 @@ namespace Friflo.Json.Fliox.MsgPack
             pos         = 0;
             keyName     = default;
             state       = Ok;
-            errorType   = MsgFormat.root;
+            errorType   = root;
             errorPos    = 0;
         }
         
@@ -107,8 +108,8 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             var type = (MsgFormat)data[cur];
             switch (type) {
-                case MsgFormat.True:    pos = cur + 1; return true;
-                case MsgFormat.False:   pos = cur + 1; return false;
+                case True:      pos = cur + 1; return true;
+                case False:     pos = cur + 1; return false;
             }
             SetError(ExpectBool, type, cur);
             return false;
@@ -123,16 +124,16 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             var type = (MsgFormat)data[cur];
             switch (type) {
-                case MsgFormat.nil:
+                case nil:
                     pos = cur + 1;
                     return null;
-                case >= MsgFormat.fixstr and <= MsgFormat.fixstrMax: {
+                case >= fixstr and <= fixstrMax: {
                     if (!read_str(out var span, cur + 1, (int)type & 0x1f, type)) {
                         return null;
                     }
                     return MsgPackUtils.SpanToString(span);
                 }
-                case MsgFormat.str8: {
+                case str8: {
                     if (cur + 1 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return null;
@@ -143,7 +144,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     }
                     return MsgPackUtils.SpanToString(span);
                 }
-                case MsgFormat.str16: {
+                case str16: {
                     if (cur + 2 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return null;
@@ -154,7 +155,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     }
                     return MsgPackUtils.SpanToString(span);
                 }
-                case MsgFormat.str32: {
+                case str32: {
                     if (cur + 4 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return null;

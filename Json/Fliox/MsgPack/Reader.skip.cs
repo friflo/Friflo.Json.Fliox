@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Buffers.Binary;
+using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 
 namespace Friflo.Json.Fliox.MsgPack
 {
@@ -19,17 +20,17 @@ namespace Friflo.Json.Fliox.MsgPack
             var type = (MsgFormat)data[cur];
             switch (type) {
                 // ----------------- ensure - subsequent cases end with: break; -----------------
-                case MsgFormat.nil:
-                case MsgFormat.True:
-                case MsgFormat.False:
+                case nil:
+                case True:
+                case False:
                     pos = cur + 1;
                     break;
-                case <= MsgFormat.fixintPosMax:
-                case >= MsgFormat.fixintNeg and <= MsgFormat.fixintNegMax: 
+                case <= fixintPosMax:
+                case >= fixintNeg and <= fixintNegMax: 
                     pos = cur + 1;
                     break;
                 // --- bin
-                case MsgFormat.bin8:
+                case bin8:
                 {
                     if (cur + 1 >= data.Length) {
                         SetEofErrorType(type, cur);
@@ -39,7 +40,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     pos = 1 + cur + 1 + len;
                     break;
                 }
-                case MsgFormat.bin16: {
+                case bin16: {
                     if (cur + 2 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return;
@@ -48,7 +49,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     pos = 1 + cur + 2 + len;
                     break;
                 }
-                case MsgFormat.bin32: {
+                case bin32: {
                     if (cur + 4 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return;
@@ -57,47 +58,47 @@ namespace Friflo.Json.Fliox.MsgPack
                     pos = 1 + cur + 4 + len;
                     break;
                 }
-                case MsgFormat.int8:
-                case MsgFormat.uint8:
+                case int8:
+                case uint8:
                     pos = cur + 2;
                     break;
-                case MsgFormat.int16:
-                case MsgFormat.uint16:
+                case int16:
+                case uint16:
                     pos = cur + 3;
                     break;
-                case MsgFormat.int32:
-                case MsgFormat.uint32:
-                case MsgFormat.float32:
+                case int32:
+                case uint32:
+                case float32:
                     pos = cur + 5;
                     break;
-                case MsgFormat.int64:
-                case MsgFormat.uint64:
-                case MsgFormat.float64:
+                case int64:
+                case uint64:
+                case float64:
                     pos = cur + 9;
                     break;
-                case MsgFormat.fixext1:
+                case fixext1:
                     pos = cur + 3;
                     break;
-                case MsgFormat.fixext2:
+                case fixext2:
                     pos = cur + 4;
                     break;
-                case MsgFormat.fixext4:
+                case fixext4:
                     pos = cur + 6;
                     break;
-                case MsgFormat.fixext8:
+                case fixext8:
                     pos = cur + 10;
                     break;
-                case MsgFormat.fixext16:
+                case fixext16:
                     pos = cur + 18;
                     break;
                 
                 // --- string
-                case >= MsgFormat.fixstr and <= MsgFormat.fixstrMax: {
+                case >= fixstr and <= fixstrMax: {
                     int len = (int)type & 0x1f;
                     pos = cur + 1 + len;
                     break;
                 }
-                case MsgFormat.str8: {
+                case str8: {
                     if (cur + 1 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return;
@@ -106,7 +107,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     pos = 1 + cur + 1 + len;
                     break;
                 }
-                case MsgFormat.str16: {
+                case str16: {
                     if (cur + 2 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return;
@@ -115,7 +116,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     pos = 1 + cur + 2 + len;
                     break;
                 }
-                case MsgFormat.str32: {
+                case str32: {
                     if (cur + 4 >= data.Length) {
                         SetEofErrorType(type, cur);
                         return;
@@ -127,11 +128,11 @@ namespace Friflo.Json.Fliox.MsgPack
                 
                 // ----------------- ensure - subsequent cases end with: return; -----------------
                 // --- array
-                case >= MsgFormat.fixarray and <= MsgFormat.fixarrayMax:
+                case >= fixarray and <= fixarrayMax:
                     pos = cur + 1;
                     SkipArray((int)type & 0x0f);
                     return;
-                case MsgFormat.array16: {
+                case array16: {
                     pos = cur + 3;
                     if (pos > data.Length) {
                         SetEofErrorType(type, cur);
@@ -141,7 +142,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     SkipArray(len);
                     return;
                 }
-                case MsgFormat.array32: {
+                case array32: {
                     pos = cur + 5;
                     if (pos > data.Length) {
                         SetEofErrorType(type, cur);
@@ -153,13 +154,13 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 
                 // --- map
-                case >= MsgFormat.fixmap and <= MsgFormat.fixmapMax: {
+                case >= fixmap and <= fixmapMax: {
                     pos = cur + 1;
                     int len = (int)type & 0x0f;
                     SkipMap(len);
                     return;
                 }
-                case MsgFormat.map16: {
+                case map16: {
                     pos = cur + 3;
                     if (pos > data.Length) {
                         SetEofErrorType(type, cur);
@@ -169,7 +170,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     SkipMap(len);
                     return;
                 }
-                case MsgFormat.map32: {
+                case map32: {
                     pos = cur + 5;
                     if (pos > data.Length) {
                         SetEofErrorType(type, cur);
