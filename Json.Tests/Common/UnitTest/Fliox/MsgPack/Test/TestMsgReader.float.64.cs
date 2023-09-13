@@ -37,15 +37,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt32();
-                AreEqual("MessagePack error - value out of range. was: 4294967295 float64(0xCB) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect int32. was: 4294967295 float64(0xCB) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt16();
-                AreEqual("MessagePack error - value out of range. was: 4294967295 float64(0xCB) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect int16. was: 4294967295 float64(0xCB) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();
-                AreEqual("MessagePack error - value out of range. was: 4294967295 float64(0xCB) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect uint8. was: 4294967295 float64(0xCB) pos: 0 (root)", reader.Error);
             }
         }
         
@@ -63,23 +63,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             } {
                 var reader = new MsgReader(data);
                 reader.ReadFloat32();
-                AreEqual(ErrFloat64, reader.Error);
+                That(reader.Error, Does.StartWith("MessagePack error - value out of range / expect float32. was: 1.7976931348623"));
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt64();
-                AreEqual(ErrFloat64, reader.Error);
+                That(reader.Error, Does.StartWith("MessagePack error - value out of range / expect int64. was: 1.7976931348623"));
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt32();
-                AreEqual(ErrFloat64, reader.Error);
+                That(reader.Error, Does.StartWith("MessagePack error - value out of range / expect int32. was: 1.7976931348623"));
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt16();
-                AreEqual(ErrFloat64, reader.Error);
+                That(reader.Error, Does.StartWith("MessagePack error - value out of range / expect int16. was: 1.7976931348623"));
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();
-                AreEqual(ErrFloat64, reader.Error);
+                That(reader.Error, Does.StartWith("MessagePack error - value out of range / expect uint8. was: 1.7976931348623"));
             }
         }
         

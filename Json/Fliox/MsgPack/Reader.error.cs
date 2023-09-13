@@ -2,52 +2,59 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Text;
+using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
 
 namespace Friflo.Json.Fliox.MsgPack
 {
     public ref partial struct MsgReader
     {
         private void SetError(MsgReaderState error, MsgFormat type, int cur) {
-            if (state != MsgReaderState.Ok) {
+            if (state != Ok) {
                 return;
             }
             StopReader(error, type, cur);
         }
         
         private void SetRangeError(MsgReaderState expect, MsgFormat type, int cur) {
-            if (state != MsgReaderState.Ok) {
+            if (state != Ok) {
                 return;
             }
-            StopReader(MsgReaderState.RangeError, type, cur);
+            StopReader(expect | RangeError, type, cur);
         }
         
         private void SetEofError(int cur) {
-            if (state != MsgReaderState.Ok) {
+            if (state != Ok) {
                 return;
             }
-            StopReader(MsgReaderState.UnexpectedEof, MsgFormat.root, cur);
+            StopReader(UnexpectedEof, MsgFormat.root, cur);
         }
         
         private void SetEofErrorType(MsgReaderState expect, MsgFormat type, int cur) {
-            if (state != MsgReaderState.Ok) {
+            if (state != Ok) {
                 return;
             }
-            StopReader(MsgReaderState.UnexpectedEof, type, cur);
+            StopReader(UnexpectedEof, type, cur);
         }
         
         // ----------------------------------------- utils -----------------------------------------
         private string CreateErrorMessage()
         {
-            if (state == MsgReaderState.Ok) {
+            if (state == Ok) {
                 return null;
             }
+            var isRangeError = (state & RangeError) != 0;
             var sb = new StringBuilder();
             sb.Append("MessagePack error - ");
-            sb.Append(MsgPackUtils.Error(state));
+            if (isRangeError) {
+                sb.Append("value out of range / ");
+                sb.Append(MsgPackUtils.Error(state));
+            } else {
+                sb.Append(MsgPackUtils.Error(state));
+            }
             sb.Append('.');
             if (errorType != MsgFormat.root) {
                 sb.Append(" was: ");
-                if (state == MsgReaderState.RangeError) {
+                if (isRangeError) {
                     MsgPackUtils.AppendValue(sb, data, errorType, errorPos);
                     sb.Append(' ');
                 }

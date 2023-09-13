@@ -11,28 +11,32 @@ using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.MsgPack
 {
+    [Flags]
     public enum MsgReaderState
     {
-        Ok                  = 0,
+        Ok                      = 0,
+        // 
+        RangeError              = 0b1000_0000, // bit set for Expect* values
         //
-        UnexpectedEof       = 1,
+        Mask                    = 0x7f,
         //
-        ExpectArray         = 2,
-        ExpectByteArray     = 3,
-        ExpectBool          = 4,
-        ExpectString        = 5,
-        ExpectObject        = 6,
-        ExpectKeyString     = 7,
+        UnexpectedEof           = 0x10,
+        UnsupportedType         = 0x20,
+        // --- expected state / error
         //
-        ExpectUint8         = 8,
-        ExpectInt16         = 9,
-        ExpectInt32         = 10,
-        ExpectInt64         = 11,
-        ExpectFloat32       = 12,
-        ExpectFloat64       = 13,
+        ExpectArray             = 0x01,
+        ExpectByteArray         = 0x02,
+        ExpectBool              = 0x03,
+        ExpectString            = 0x04,
+        ExpectObject            = 0x05,
+        ExpectKeyString         = 0x06,
         //
-        RangeError          = 14,
-        UnsupportedType     = 15,
+        ExpectUint8             = 0x07,
+        ExpectInt16             = 0x08,
+        ExpectInt32             = 0x09,
+        ExpectInt64             = 0x0a,
+        ExpectFloat32           = 0x0b,
+        ExpectFloat64           = 0x0c,
     }
 
     public ref partial struct MsgReader

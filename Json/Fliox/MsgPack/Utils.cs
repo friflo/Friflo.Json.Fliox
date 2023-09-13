@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using static Friflo.Json.Fliox.MsgPack.MsgFormat;
+using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable CommentTypo
@@ -84,29 +85,30 @@ namespace Friflo.Json.Fliox.MsgPack
         
         internal static string Error(MsgReaderState state)
         {
-            switch (state) {
-                case MsgReaderState.Ok:                 return "OK";
+            var error = state & Mask;
+            switch (error)
+            {
+                case Ok:                return "OK";
                 //
-                case MsgReaderState.UnexpectedEof:      return "unexpected EOF";
+                case UnexpectedEof:     return "unexpected EOF";
                 //
-                case MsgReaderState.ExpectArray:        return "expect array or null";
-                case MsgReaderState.ExpectByteArray:    return "expect byte[] or null";
-                case MsgReaderState.ExpectBool:         return "expect bool";
-                case MsgReaderState.ExpectString:       return "expect string or null";
-                case MsgReaderState.ExpectObject:       return "expect object or null";
-                case MsgReaderState.ExpectKeyString:    return "expect key type string";
+                case ExpectArray:       return "expect array or null";
+                case ExpectByteArray:   return "expect byte[] or null";
+                case ExpectBool:        return "expect bool";
+                case ExpectString:      return "expect string or null";
+                case ExpectObject:      return "expect object or null";
+                case ExpectKeyString:   return "expect key type string";
                 //
-                case MsgReaderState.ExpectUint8:        return "expect uint8";
-                case MsgReaderState.ExpectInt16:        return "expect int16";
-                case MsgReaderState.ExpectInt32:        return "expect int32";
-                case MsgReaderState.ExpectInt64:        return "expect int64";
-                case MsgReaderState.ExpectFloat32:      return "expect float32";
-                case MsgReaderState.ExpectFloat64:      return "expect float64";
+                case ExpectUint8:       return "expect uint8";
+                case ExpectInt16:       return "expect int16";
+                case ExpectInt32:       return "expect int32";
+                case ExpectInt64:       return "expect int64";
+                case ExpectFloat32:     return "expect float32";
+                case ExpectFloat64:     return "expect float64";
                 //
-                case MsgReaderState.RangeError:         return "value out of range";
-                case MsgReaderState.UnsupportedType:    return "unsupported type";
+                case UnsupportedType:   return "unsupported type";
                 
-                default:                                return state.ToString();
+                default:                return state.ToString();
             }
         }
         

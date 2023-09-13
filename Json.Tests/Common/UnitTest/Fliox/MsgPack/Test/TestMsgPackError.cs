@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         public static void Int32_OutOfRange() {
             var data = HexToSpan("81 A1 78 CB 41 EF FF FF FF E0 00 00"); // { "x": 4294967295 }
             MsgPackMapper.Deserialize<Sample>(data, out var error);
-            AreEqual("MessagePack error - value out of range. was: 4294967295 float64(0xCB) pos: 3 - last key: 'x'", error);
+            AreEqual("MessagePack error - value out of range / expect int32. was: 4294967295 float64(0xCB) pos: 3 - last key: 'x'", error);
         }
     }
 }

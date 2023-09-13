@@ -40,11 +40,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt16();
-                AreEqual("MessagePack error - value out of range. was: 65535 uint16(0xCD) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect int16. was: 65535 uint16(0xCD) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();
-                AreEqual("MessagePack error - value out of range. was: 65535 uint16(0xCD) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect uint8. was: 65535 uint16(0xCD) pos: 0 (root)", reader.Error);
             }
         }
         
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();
-                AreEqual("MessagePack error - value out of range. was: 32767 int16(0xD1) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect uint8. was: 32767 int16(0xD1) pos: 0 (root)", reader.Error);
             }
         }
     }

@@ -35,15 +35,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt32();
-                AreEqual("MessagePack error - value out of range. was: 4294967295 uint64(0xCF) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect int32. was: 4294967295 uint64(0xCF) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt16();
-                AreEqual("MessagePack error - value out of range. was: 4294967295 uint64(0xCF) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect int16. was: 4294967295 uint64(0xCF) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();
-                AreEqual("MessagePack error - value out of range. was: 4294967295 uint64(0xCF) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect uint8. was: 4294967295 uint64(0xCF) pos: 0 (root)", reader.Error);
             }
         }
         
@@ -70,15 +70,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt32();
-                AreEqual("MessagePack error - value out of range. was: 4294967295 int64(0xD3) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect int32. was: 4294967295 int64(0xD3) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadInt16();
-                AreEqual("MessagePack error - value out of range. was: 4294967295 int64(0xD3) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect int16. was: 4294967295 int64(0xD3) pos: 0 (root)", reader.Error);
             } {
                 var reader = new MsgReader(data);
                 reader.ReadByte();
-                AreEqual("MessagePack error - value out of range. was: 4294967295 int64(0xD3) pos: 0 (root)", reader.Error);
+                AreEqual("MessagePack error - value out of range / expect uint8. was: 4294967295 int64(0xD3) pos: 0 (root)", reader.Error);
             }
         }
     }
