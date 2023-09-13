@@ -9,7 +9,8 @@ namespace Friflo.Json.Fliox.MsgPack
     public ref partial struct MsgReader
     {
         /// <summary>Is called subsequently after <see cref="ReadObject"/> of unknown keys</summary>
-        public void SkipTree() {
+        public void SkipTree()
+        {
             int cur = pos;
             if (cur >= data.Length) {
                 SetEofError(cur);

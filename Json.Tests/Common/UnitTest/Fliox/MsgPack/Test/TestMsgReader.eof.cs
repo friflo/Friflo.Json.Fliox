@@ -66,15 +66,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             }
         }
         
-        // --- nil
-        [Test]
-        public static void Read_Eof_nil()
-        {
-            var data = HexToSpan("c0"); // 0 (double)
-            AreEqual((byte)MsgFormat.nil, data[0]);
-            AssertEof(data, (ref MsgReader r) => r.ReadString(), null);
-        }
-        
         // --- bool
         [Test]
         public static void Read_Eof_bool()
@@ -189,6 +180,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         
         // --- string
         [Test]
+        public static void Read_Eof_str_nil()
+        {
+            var data = HexToSpan("c0");
+            AreEqual((byte)MsgFormat.nil, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadString(), null);
+        }
+        
+        [Test]
         public static void Read_Eof_strfix()
         {
             var data = HexToSpan("a1 61");
@@ -221,6 +220,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         
         // --- bin
         [Test]
+        public static void Read_Eof_bin_nil()
+        {
+            var data = HexToSpan("c0");
+            AreEqual((byte)MsgFormat.nil, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadBin(), null);
+        }
+        
+        [Test]
         public static void Read_Eof_bin8()
         {
             var data = HexToSpan("c4 01 09");
@@ -246,6 +253,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         
         // --- array
         [Test]
+        public static void Read_Eof_array_nil()
+        {
+            var data = HexToSpan("c0");
+            AreEqual((byte)MsgFormat.nil, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadArray(out _), null);
+        }
+        
+        [Test]
         public static void Read_Eof_array_fix()
         {
             var data = HexToSpan("90");
@@ -270,6 +285,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         // --- map
+        [Test]
+        public static void Read_Eof_map_nil()
+        {
+            var data = HexToSpan("c0");
+            AreEqual((byte)MsgFormat.nil, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadObject(out _), null);
+        }
+        
         [Test]
         public static void Read_Eof_map_fix()
         {
