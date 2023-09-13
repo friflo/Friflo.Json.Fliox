@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var sb  = StopReader(error, type, cur);
-            sb.Append($"MessagePack error - {MsgPackUtils.Error(error)}. was: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
+            CreateErrorMessage(sb);
             SetMessage(sb, cur);
         }
         
@@ -40,8 +40,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var sb  = StopReader(MsgReaderState.UnexpectedEof, type, cur);
-            var msg = MsgPackUtils.Error(MsgReaderState.UnexpectedEof);
-            sb.Append($"MessagePack error - {msg}. type: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
+            CreateErrorMessage(sb);
             SetMessage(sb, cur);
         }
         
