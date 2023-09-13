@@ -22,7 +22,8 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var sb  = StopReader(MsgReaderState.RangeError, type, cur);
-            sb.Append($"MessagePack error - value out of range. was: {value} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
+            var msg = MsgPackUtils.Error(MsgReaderState.RangeError);
+            sb.Append($"MessagePack error - {msg}. was: {value} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
         
@@ -32,7 +33,8 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             var sb  = StopReader(MsgReaderState.RangeError, type, cur);
             var val = value.ToString(NumberFormat);
-            sb.Append($"MessagePack error - value out of range. was: {val} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
+            var msg = MsgPackUtils.Error(MsgReaderState.RangeError);
+            sb.Append($"MessagePack error - {msg}. was: {val} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
         private static readonly NumberFormatInfo NumberFormat = CultureInfo.InvariantCulture.NumberFormat;
@@ -42,7 +44,8 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var sb  = StopReader(MsgReaderState.UnexpectedEof, MsgFormat.root, cur);
-            sb.Append("MessagePack error - unexpected EOF.");
+            var msg = MsgPackUtils.Error(MsgReaderState.UnexpectedEof);
+            sb.Append($"MessagePack error - {msg}.");
             SetMessage(sb, cur);
         }
         
@@ -51,7 +54,8 @@ namespace Friflo.Json.Fliox.MsgPack
                 return;
             }
             var sb  = StopReader(MsgReaderState.UnexpectedEof, type, cur);
-            sb.Append($"MessagePack error - unexpected EOF. type: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
+            var msg = MsgPackUtils.Error(MsgReaderState.UnexpectedEof);
+            sb.Append($"MessagePack error - {msg}. type: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
         }
         

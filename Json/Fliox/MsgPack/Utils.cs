@@ -81,6 +81,10 @@ namespace Friflo.Json.Fliox.MsgPack
         internal static string Error(MsgReaderState state)
         {
             switch (state) {
+                case MsgReaderState.Ok:                 return "OK";
+                //
+                case MsgReaderState.UnexpectedEof:      return "unexpected EOF";
+                //
                 case MsgReaderState.ExpectArrayError:   return "expect array or null";
                 case MsgReaderState.ExpectByteArray:    return "expect byte[] or null";
                 case MsgReaderState.ExpectBool:         return "expect bool";
