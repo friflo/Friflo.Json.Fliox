@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case    MsgFormat.int32:        return (byte)   read_int32_range    (ExpectUint8, cur, 0, byte.MaxValue);
                 case    MsgFormat.int64:        return (byte)   read_int64_range    (ExpectUint8, cur, 0, byte.MaxValue);
                 //
-                case    MsgFormat.uint8:        return          read_uint8          (ExpectUint8, cur);
+                case    MsgFormat.uint8:        return          read_uint8          (cur);
                 case    MsgFormat.uint16:       return (byte)   read_uint16_max     (ExpectUint8, cur,    byte.MaxValue);
                 case    MsgFormat.uint32:       return (byte)   read_uint32_max     (ExpectUint8, cur,    byte.MaxValue);
                 case    MsgFormat.uint64:       return (byte)   read_uint64_max     (ExpectUint8, cur,    byte.MaxValue);
@@ -48,12 +48,12 @@ namespace Friflo.Json.Fliox.MsgPack
                 case <= MsgFormat.fixintPosMax: return          read_fixInt         (cur, type);
                 case >= MsgFormat.fixintNeg:    return          read_fixInt_neg     (cur, type);
                 //
-                case    MsgFormat.int8:         return          read_int8           (ExpectInt16, cur);
-                case    MsgFormat.int16:        return          read_int16          (ExpectInt16, cur);
+                case    MsgFormat.int8:         return          read_int8           (cur);
+                case    MsgFormat.int16:        return          read_int16          (cur);
                 case    MsgFormat.int32:        return (short)  read_int32_range    (ExpectInt16, cur, short.MinValue, short.MaxValue);
                 case    MsgFormat.int64:        return (short)  read_int64_range    (ExpectInt16, cur, short.MinValue, short.MaxValue);
                 //
-                case    MsgFormat.uint8:        return          read_uint8          (ExpectInt16, cur);
+                case    MsgFormat.uint8:        return          read_uint8          (cur);
                 case    MsgFormat.uint16:       return (short)  read_uint16_max     (ExpectInt16, cur,                 short.MaxValue);
                 case    MsgFormat.uint32:       return (short)  read_uint32_max     (ExpectInt16, cur,                 short.MaxValue);
                 case    MsgFormat.uint64:       return (short)  read_uint64_max     (ExpectInt16, cur,           (long)short.MaxValue);
@@ -77,13 +77,13 @@ namespace Friflo.Json.Fliox.MsgPack
                 case <= MsgFormat.fixintPosMax: return          read_fixInt         (cur, type);
                 case >= MsgFormat.fixintNeg:    return          read_fixInt_neg     (cur, type);
                 //
-                case    MsgFormat.int8:         return          read_int8           (ExpectInt32, cur);
-                case    MsgFormat.int16:        return          read_int16          (ExpectInt32, cur);
-                case    MsgFormat.int32:        return          read_int32          (ExpectInt32, cur);
+                case    MsgFormat.int8:         return          read_int8           (cur);
+                case    MsgFormat.int16:        return          read_int16          (cur);
+                case    MsgFormat.int32:        return          read_int32          (cur);
                 case    MsgFormat.int64:        return (int)    read_int64_range    (ExpectInt32, cur, int.MinValue, int.MaxValue);
                 //
-                case    MsgFormat.uint8:        return          read_uint8          (ExpectInt32, cur);
-                case    MsgFormat.uint16:       return          read_uint16         (ExpectInt32, cur);
+                case    MsgFormat.uint8:        return          read_uint8          (cur);
+                case    MsgFormat.uint16:       return          read_uint16         (cur);
                 case    MsgFormat.uint32:       return (int)    read_uint32_max     (ExpectInt32, cur,               int.MaxValue);
                 case    MsgFormat.uint64:       return (int)    read_uint64_max     (ExpectInt32, cur,               int.MaxValue);
                 //
@@ -106,14 +106,14 @@ namespace Friflo.Json.Fliox.MsgPack
                 case <= MsgFormat.fixintPosMax: return          read_fixInt         (cur, type);
                 case >= MsgFormat.fixintNeg:    return          read_fixInt_neg     (cur, type);
                 //
-                case    MsgFormat.int8:         return          read_int8           (ExpectInt64, cur);
-                case    MsgFormat.int16:        return          read_int16          (ExpectInt64, cur);
-                case    MsgFormat.int32:        return          read_int32          (ExpectInt64, cur);
-                case    MsgFormat.int64:        return          read_int64          (ExpectInt64, cur);
+                case    MsgFormat.int8:         return          read_int8           (cur);
+                case    MsgFormat.int16:        return          read_int16          (cur);
+                case    MsgFormat.int32:        return          read_int32          (cur);
+                case    MsgFormat.int64:        return          read_int64          (cur);
                 //
-                case    MsgFormat.uint8:        return          read_uint8          (ExpectInt64, cur);
-                case    MsgFormat.uint16:       return          read_uint16         (ExpectInt64, cur);
-                case    MsgFormat.uint32:       return          read_uint32         (ExpectInt64, cur);
+                case    MsgFormat.uint8:        return          read_uint8          (cur);
+                case    MsgFormat.uint16:       return          read_uint16         (cur);
+                case    MsgFormat.uint32:       return          read_uint32         (cur);
                 case    MsgFormat.uint64:       return (long)   read_uint64_max     (ExpectInt64, cur,                long.MaxValue);
                 //
                 case    MsgFormat.float32:      return (long)   read_float32_range  (ExpectInt64, cur, long.MinValue, long.MaxValue);
@@ -135,17 +135,17 @@ namespace Friflo.Json.Fliox.MsgPack
                 case <= MsgFormat.fixintPosMax: return          read_fixInt         (cur, type);
                 case >= MsgFormat.fixintNeg:    return          read_fixInt_neg     (cur, type);
                 //
-                case    MsgFormat.int8:         return          read_int8           (ExpectFloat32, cur);
-                case    MsgFormat.int16:        return          read_int16          (ExpectFloat32, cur);
-                case    MsgFormat.int32:        return          read_int32          (ExpectFloat32, cur);
-                case    MsgFormat.int64:        return          read_int64          (ExpectFloat32, cur);
+                case    MsgFormat.int8:         return          read_int8           (cur);
+                case    MsgFormat.int16:        return          read_int16          (cur);
+                case    MsgFormat.int32:        return          read_int32          (cur);
+                case    MsgFormat.int64:        return          read_int64          (cur);
                 //
-                case    MsgFormat.uint8:        return          read_uint8          (ExpectFloat32, cur);
-                case    MsgFormat.uint16:       return          read_uint16         (ExpectFloat32, cur);
-                case    MsgFormat.uint32:       return          read_uint32         (ExpectFloat32, cur);
-                case    MsgFormat.uint64:       return          read_uint64         (ExpectFloat32, cur);
+                case    MsgFormat.uint8:        return          read_uint8          (cur);
+                case    MsgFormat.uint16:       return          read_uint16         (cur);
+                case    MsgFormat.uint32:       return          read_uint32         (cur);
+                case    MsgFormat.uint64:       return          read_uint64         (cur);
                 //
-                case    MsgFormat.float32:      return          read_float32        (ExpectFloat32, cur);
+                case    MsgFormat.float32:      return          read_float32        (cur);
                 case    MsgFormat.float64:      return (float)  read_float64_range  (ExpectFloat32, cur, float.MinValue, float.MaxValue);
             }
             SetError(ExpectFloat32, type, cur);
@@ -164,18 +164,18 @@ namespace Friflo.Json.Fliox.MsgPack
                 case <= MsgFormat.fixintPosMax: return          read_fixInt         (cur, type);
                 case >= MsgFormat.fixintNeg:    return          read_fixInt_neg     (cur, type);
                 //
-                case    MsgFormat.int8:         return          read_int8           (ExpectFloat64, cur);
-                case    MsgFormat.int16:        return          read_int16          (ExpectFloat64, cur);
-                case    MsgFormat.int32:        return          read_int32          (ExpectFloat64, cur);
-                case    MsgFormat.int64:        return          read_int64          (ExpectFloat64, cur);
+                case    MsgFormat.int8:         return          read_int8           (cur);
+                case    MsgFormat.int16:        return          read_int16          (cur);
+                case    MsgFormat.int32:        return          read_int32          (cur);
+                case    MsgFormat.int64:        return          read_int64          (cur);
                 //
-                case    MsgFormat.uint8:        return          read_uint8          (ExpectFloat64, cur);
-                case    MsgFormat.uint16:       return          read_uint16         (ExpectFloat64, cur);
-                case    MsgFormat.uint32:       return          read_uint32         (ExpectFloat64, cur);
-                case    MsgFormat.uint64:       return          read_uint64         (ExpectFloat64, cur);
+                case    MsgFormat.uint8:        return          read_uint8          (cur);
+                case    MsgFormat.uint16:       return          read_uint16         (cur);
+                case    MsgFormat.uint32:       return          read_uint32         (cur);
+                case    MsgFormat.uint64:       return          read_uint64         (cur);
                 //
-                case    MsgFormat.float32:      return          read_float32        (ExpectFloat64, cur);
-                case    MsgFormat.float64:      return          read_float64        (ExpectFloat64, cur);
+                case    MsgFormat.float32:      return          read_float32        (cur);
+                case    MsgFormat.float64:      return          read_float64        (cur);
             }
             SetError(ExpectFloat64, type, cur);
             return 0;

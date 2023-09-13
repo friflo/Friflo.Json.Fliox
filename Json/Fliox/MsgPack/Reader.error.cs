@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.MsgPack
             StopReader(UnexpectedEof, MsgFormat.root, cur);
         }
         
-        private void SetEofErrorType(MsgReaderState expect, MsgFormat type, int cur) {
+        private void SetEofErrorType(MsgFormat type, int cur) {
             if (state != Ok) {
                 return;
             }

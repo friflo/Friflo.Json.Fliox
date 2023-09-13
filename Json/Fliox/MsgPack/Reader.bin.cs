@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.bin8:
                 {
                     if (cur + 1 >= data.Length) {
-                        SetEofErrorType(ExpectByteArray, type, cur);
+                        SetEofErrorType(type, cur);
                         return default;
                     }
                     int len = data[cur + 1];
@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.bin16: {
                     if (cur + 2 >= data.Length) {
-                        SetEofErrorType(ExpectByteArray, type, cur);
+                        SetEofErrorType(type, cur);
                         return default;
                     }
                     int len = BinaryPrimitives.ReadInt16BigEndian(data.Slice(cur + 1, 2));
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.bin32: {
                     if (cur + 4 >= data.Length) {
-                        SetEofErrorType(ExpectByteArray, type, cur);
+                        SetEofErrorType(type, cur);
                         return default;
                     }
                     int len = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));

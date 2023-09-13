@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.array16: {
                     pos     = cur + 3;       
                     if (pos > data.Length) {
-                        SetEofErrorType(ExpectArray, type, cur);
+                        SetEofErrorType(type, cur);
                         length  = -1;
                         return false;
                     }
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.array32: {
                     pos     = cur + 5;       
                     if (pos > data.Length) {
-                        SetEofErrorType(ExpectArray, type, cur);
+                        SetEofErrorType(type, cur);
                         length  = -1;
                         return false;
                     }
