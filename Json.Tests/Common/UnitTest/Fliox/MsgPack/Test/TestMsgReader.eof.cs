@@ -316,5 +316,54 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.map32, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadObject(out _), null);
         }
+        
+        // --- map key
+        [Test]
+        public static void Read_Eof_map_key_fixstr_len1()
+        {
+            var data = HexToSpan("81 a1 61 c3");    // {"a": true }
+            AreEqual((byte)MsgFormat.fixstr + 1, data[1]);
+            AssertEof(data, (ref MsgReader reader) => {
+                reader.ReadObject(out _);
+                reader.ReadKey();
+                reader.ReadBool();
+            }, null);
+        }
+        
+        [Test]
+        public static void Read_Eof_map_key_fixstr_len9()
+        {
+            var data = HexToSpan("81 a9 61 62 63 64 65 66 67 68 69 c3"); // { "abcdefghi": true }
+            AreEqual((byte)MsgFormat.fixstr + 9, data[1]);
+            AssertEof(data, (ref MsgReader reader) => {
+                reader.ReadObject(out _);
+                reader.ReadKey();
+                reader.ReadBool();
+            }, null);
+        }
+        
+        [Test]
+        public static void Read_Eof_map_key_str8_len1()
+        {
+            var data = HexToSpan("81 d9 01 61 c3"); // { "a": true }
+            AreEqual((byte)MsgFormat.str8, data[1]);
+            AssertEof(data, (ref MsgReader reader) => {
+                reader.ReadObject(out _);
+                reader.ReadKey();
+                reader.ReadBool();
+            }, null);
+        }
+        
+        [Test]
+        public static void Read_Eof_map_key_str8_len9()
+        {
+            var data = HexToSpan("81 d9 09 61 62 63 64 65 66 67 68 69 c3"); // { "abcdefghi": true }
+            AreEqual((byte)MsgFormat.str8, data[1]);
+            AssertEof(data, (ref MsgReader reader) => {
+                reader.ReadObject(out _);
+                reader.ReadKey();
+                reader.ReadBool();
+            }, null);
+        }
     }
 }

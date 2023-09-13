@@ -68,10 +68,6 @@ namespace Friflo.Json.Fliox.MsgPack
                 return 0;
             }
             var type    = (MsgFormat)data[cur];
-            /* if ((type & 0x80) == 0) {
-                pos = cur + 1;
-                return (ulong)(type & 0x7f);
-            } */
             switch (type) {
                 case >= MsgFormat.fixstr and <= MsgFormat.fixstrMax: {
                     int len = (int)type & 0x1f;
