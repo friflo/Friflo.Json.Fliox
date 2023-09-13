@@ -3,6 +3,7 @@
 
 using System;
 using System.Buffers.Binary;
+using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
 
 // ReSharper disable ReplaceSliceWithRangeIndexer
 namespace Friflo.Json.Fliox.MsgPack
@@ -26,7 +27,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.bin8:
                 {
                     if (cur + 1 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectByteArray, type, cur);
                         return default;
                     }
                     int len = data[cur + 1];
@@ -34,7 +35,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.bin16: {
                     if (cur + 2 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectByteArray, type, cur);
                         return default;
                     }
                     int len = BinaryPrimitives.ReadInt16BigEndian(data.Slice(cur + 1, 2));
@@ -42,14 +43,14 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.bin32: {
                     if (cur + 4 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectByteArray, type, cur);
                         return default;
                     }
                     int len = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
                     return read_bin(cur + 5, len, type);
                 }
             }
-            SetError(MsgReaderState.ExpectByteArray, type, cur);
+            SetError(ExpectByteArray, type, cur);
             return default;
         }
     }

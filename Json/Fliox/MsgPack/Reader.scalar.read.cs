@@ -24,158 +24,158 @@ namespace Friflo.Json.Fliox.MsgPack
         
 
         // --- int8
-        private sbyte read_int8(int cur) {
+        private sbyte read_int8(MsgReaderState expect, int cur) {
             pos = cur + 2;
             if (pos <= data.Length) {
                 return (sbyte)data[cur + 1];
             }
-            SetEofErrorType(MsgFormat.int8, cur);
+            SetEofErrorType(expect, MsgFormat.int8, cur);
             return 0;
         }
         
-        private sbyte read_int8_pos(int cur) {
-            var value = read_int8(cur);
+        private sbyte read_int8_pos(MsgReaderState expect, int cur) {
+            var value = read_int8(expect, cur);
             if (value >= 0) {
                 return value;
             }
-            SetRangeError(MsgFormat.int8, cur);
+            SetRangeError(expect, MsgFormat.int8, cur);
             return 0;
         }
         
         
         // --- uint8
-        private byte read_uint8(int cur) {
+        private byte read_uint8(MsgReaderState expect, int cur) {
             pos = cur + 2;
             if (pos <= data.Length) {
                 return data[cur + 1];
             }
-            SetEofErrorType(MsgFormat.uint8, cur);
+            SetEofErrorType(expect, MsgFormat.uint8, cur);
             return 0;
         }
         
        
         // --- int16
-        private short read_int16(int cur) {
+        private short read_int16(MsgReaderState expect, int cur) {
             pos = cur + 3;
             if (pos <= data.Length) {
                 return BinaryPrimitives.ReadInt16BigEndian(data.Slice(cur + 1, 2));
             }
-            SetEofErrorType(MsgFormat.int16, cur);
+            SetEofErrorType(expect, MsgFormat.int16, cur);
             return 0;
         }
         
-        private short read_int16_range(int cur, int min, int max) {
-            var value = read_int16(cur);
+        private short read_int16_range(MsgReaderState expect, int cur, int min, int max) {
+            var value = read_int16(expect, cur);
             if (min <= value && value <= max) {
                 return value;
             }
-            SetRangeError(MsgFormat.int16, cur);
+            SetRangeError(expect, MsgFormat.int16, cur);
             return 0;
         }
         
         
         // --- uint16
-        private ushort read_uint16(int cur) {
+        private ushort read_uint16(MsgReaderState expect, int cur) {
             pos = cur + 3;
             if (pos <= data.Length) {
                 return BinaryPrimitives.ReadUInt16BigEndian(data.Slice(cur + 1, 2));
             }
-            SetEofErrorType(MsgFormat.uint16, cur);
+            SetEofErrorType(expect, MsgFormat.uint16, cur);
             return 0;
         }
         
-        private ushort read_uint16_max(int cur, int max) {
-            var value = read_uint16(cur);
+        private ushort read_uint16_max(MsgReaderState expect, int cur, int max) {
+            var value = read_uint16(expect, cur);
             if (value <= max) {
                 return value;
             }
-            SetRangeError(MsgFormat.uint16, cur);
+            SetRangeError(expect, MsgFormat.uint16, cur);
             return 0;
         }
         
         
         // --- int32
-        private int read_int32(int cur) {
+        private int read_int32(MsgReaderState expect, int cur) {
             pos = cur + 5;
             if (pos <= data.Length) {
                 return BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
             }
-            SetEofErrorType(MsgFormat.int32, cur);
+            SetEofErrorType(expect, MsgFormat.int32, cur);
             return 0;
         }
        
-        private int read_int32_range(int cur, int min, int max) {
-            var value = read_int32(cur);
+        private int read_int32_range(MsgReaderState expect, int cur, int min, int max) {
+            var value = read_int32(expect, cur);
             if (min <= value && value <= max) {
                 return value;
             }
-            SetRangeError(MsgFormat.int32, cur);
+            SetRangeError(expect, MsgFormat.int32, cur);
             return 0;
         }
         
         
         // --- uint32
-        private uint read_uint32(int cur) {
+        private uint read_uint32(MsgReaderState expect, int cur) {
             pos = cur + 5;
             if (pos <= data.Length) {
                 return BinaryPrimitives.ReadUInt32BigEndian(data.Slice(cur + 1, 4));
             }
-            SetEofErrorType(MsgFormat.uint32, cur);
+            SetEofErrorType(expect, MsgFormat.uint32, cur);
             return 0;
         }
         
-        private uint read_uint32_max(int cur, int max) {
-            var value = read_uint32(cur);
+        private uint read_uint32_max(MsgReaderState expect, int cur, int max) {
+            var value = read_uint32(expect, cur);
             if (value <= max) {
                 return value;
             }
-            SetRangeError(MsgFormat.uint32, cur);
+            SetRangeError(expect, MsgFormat.uint32, cur);
             return 0;
         }
         
         
         // --- int64
-        private long read_int64(int cur) {
+        private long read_int64(MsgReaderState expect, int cur) {
             pos = cur + 9;
             if (pos <= data.Length) {
                 return BinaryPrimitives.ReadInt64BigEndian(data.Slice(cur + 1, 8));
             }
-            SetEofErrorType(MsgFormat.int64, cur);
+            SetEofErrorType(expect, MsgFormat.int64, cur);
             return 0;
         }
         
-        private long read_int64_range(int cur, long min, long max) {
-            var value = read_int64(cur);
+        private long read_int64_range(MsgReaderState expect, int cur, long min, long max) {
+            var value = read_int64(expect, cur);
             if (min <= value && value <= max) {
                 return value;
             }
-            SetRangeError(MsgFormat.int64, cur);
+            SetRangeError(expect, MsgFormat.int64, cur);
             return 0;
         }
         
         
         // --- uint64
-        private ulong read_uint64(int cur) {
+        private ulong read_uint64(MsgReaderState expect, int cur) {
             pos = cur + 9;
             if (pos <= data.Length) {
                 return BinaryPrimitives.ReadUInt64BigEndian(data.Slice(cur + 1, 8));
             }
-            SetEofErrorType(MsgFormat.uint64, cur);
+            SetEofErrorType(expect, MsgFormat.uint64, cur);
             return 0;
         }
         
-        private ulong read_uint64_max(int cur, ulong max) {
-            var value = read_uint64(cur);
+        private ulong read_uint64_max(MsgReaderState expect, int cur, ulong max) {
+            var value = read_uint64(expect, cur);
             if (value <= max) {
                 return value;
             }
-            SetRangeError(MsgFormat.uint64, cur);
+            SetRangeError(expect, MsgFormat.uint64, cur);
             return 0;
         }
         
         
         // --- float32
-        private float read_float32(int cur) {
+        private float read_float32(MsgReaderState expect, int cur) {
             pos = cur + 5;
             if (pos <= data.Length) {
 #if NETSTANDARD2_0
@@ -185,37 +185,37 @@ namespace Friflo.Json.Fliox.MsgPack
                 return BitConverter.Int32BitsToSingle(bits);    // missing in netstandard2.0
 #endif
             }
-            SetEofErrorType(MsgFormat.float32, cur);
+            SetEofErrorType(expect, MsgFormat.float32, cur);
             return 0;
         }
         
-        private float read_float32_range(int cur, float min, float max) {
-            var value = read_float32(cur);
+        private float read_float32_range(MsgReaderState expect, int cur, float min, float max) {
+            var value = read_float32(expect, cur);
             if (min <= value && value <= max) {
                 return value;
             }
-            SetRangeError(MsgFormat.float32, cur);
+            SetRangeError(expect, MsgFormat.float32, cur);
             return 0;
         }
         
         
         // --- float64
-        private double read_float64(int cur) {
+        private double read_float64(MsgReaderState expect, int cur) {
             pos = cur + 9;
             if (pos <= data.Length) {
                 var bits = BinaryPrimitives.ReadInt64BigEndian(data.Slice(cur + 1, 8));
                 return BitConverter.Int64BitsToDouble(bits);
             }
-            SetEofErrorType(MsgFormat.float64, cur);
+            SetEofErrorType(expect, MsgFormat.float64, cur);
             return 0;
         }
         
-        private double read_float64_range(int cur, double min, double max) {
-            var value = read_float64(cur);
+        private double read_float64_range(MsgReaderState expect, int cur, double min, double max) {
+            var value = read_float64(expect, cur);
             if (min <= value && value <= max) {
                 return value;
             }
-            SetRangeError(MsgFormat.float64, cur);
+            SetRangeError(expect, MsgFormat.float64, cur);
             return 0;
         }
         
@@ -223,7 +223,7 @@ namespace Friflo.Json.Fliox.MsgPack
         private  bool read_str (out ReadOnlySpan<byte> target, int cur, int len, MsgFormat type) {
             pos     = cur + len;
             if (pos > data.Length) {
-                SetEofErrorType(type, cur);
+                SetEofErrorType(MsgReaderState.ExpectString, type, cur);
                 target = default;
                 return false;
             }
@@ -235,7 +235,7 @@ namespace Friflo.Json.Fliox.MsgPack
         private   ReadOnlySpan<byte> read_bin(int cur, int len, MsgFormat type) {
             pos     = cur + len;
             if (pos > data.Length) {
-                SetEofErrorType(type, cur);
+                SetEofErrorType(MsgReaderState.ExpectByteArray, type, cur);
                 return default;
             }
             return data.Slice(cur, len);

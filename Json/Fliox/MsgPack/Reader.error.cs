@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.MsgPack
             StopReader(error, type, cur);
         }
         
-        private void SetRangeError(MsgFormat type, int cur) {
+        private void SetRangeError(MsgReaderState expect, MsgFormat type, int cur) {
             if (state != MsgReaderState.Ok) {
                 return;
             }
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.MsgPack
             StopReader(MsgReaderState.UnexpectedEof, MsgFormat.root, cur);
         }
         
-        private void SetEofErrorType(MsgFormat type, int cur) {
+        private void SetEofErrorType(MsgReaderState expect, MsgFormat type, int cur) {
             if (state != MsgReaderState.Ok) {
                 return;
             }

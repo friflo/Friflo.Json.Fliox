@@ -3,6 +3,7 @@
 
 using System;
 using System.Buffers.Binary;
+using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
 
 // #pragma warning disable CS3002 // CS3002 : Return type of 'MsgReader.ReadKey()' is not CLS-compliant
 
@@ -36,7 +37,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.map16: {
                     pos     = cur + 3;       
                     if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectObject, type, cur);
                         length  = -1;
                         return false;
                     }
@@ -46,7 +47,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.map32: {
                     pos     = cur + 5;       
                     if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectObject, type, cur);
                         length  = -1;
                         return false;
                     }
@@ -54,7 +55,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return true;
                 }
             }
-            SetError(MsgReaderState.ExpectObject, type, cur);
+            SetError(ExpectObject, type, cur);
             length = -1;
             return false;
         }
@@ -73,7 +74,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     int len = (int)type & 0x1f;
                     pos     = cur + 1 + len;
                     if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectKeyString, type, cur);
                         return 0;
                     }
                     keyName = data.Slice(cur + 1, len);
@@ -84,7 +85,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.str8: {
                     if (cur + 1 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectKeyString, type, cur);
                         return 0;
                     }
                     int len = data[cur + 1];
@@ -97,7 +98,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return KeyAsLong    (8,   keyName);
                 }
             }
-            SetError(MsgReaderState.ExpectKeyString, type, cur);
+            SetError(ExpectKeyString, type, cur);
             return 0;
         }
         

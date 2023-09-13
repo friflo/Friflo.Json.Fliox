@@ -6,6 +6,7 @@ using System.Buffers.Binary;
 using System.Text;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
+using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.MsgPack
@@ -16,7 +17,7 @@ namespace Friflo.Json.Fliox.MsgPack
         //
         UnexpectedEof       = 1,
         //
-        ExpectArrayError    = 2,
+        ExpectArray         = 2,
         ExpectByteArray     = 3,
         ExpectBool          = 4,
         ExpectString        = 5,
@@ -58,7 +59,7 @@ namespace Friflo.Json.Fliox.MsgPack
             this.data   = data;
             pos         = 0;
             keyName     = default;
-            state       = MsgReaderState.Ok;
+            state       = Ok;
             errorType   = MsgFormat.root;
             errorPos    = 0;
         }
@@ -67,7 +68,7 @@ namespace Friflo.Json.Fliox.MsgPack
             this.data   = data;
             pos         = 0;
             keyName     = default;
-            state       = MsgReaderState.Ok;
+            state       = Ok;
             errorType   = MsgFormat.root;
             errorPos    = 0;
         }
@@ -80,7 +81,7 @@ namespace Friflo.Json.Fliox.MsgPack
         }
         
         private string GetString() {
-            if (state != MsgReaderState.Ok) {
+            if (state != Ok) {
                 return CreateErrorMessage();
             }
             var sb = new StringBuilder();
@@ -105,7 +106,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.True:    pos = cur + 1; return true;
                 case MsgFormat.False:   pos = cur + 1; return false;
             }
-            SetError(MsgReaderState.ExpectBool, type, cur);
+            SetError(ExpectBool, type, cur);
             return false;
         }
         
@@ -129,7 +130,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.str8: {
                     if (cur + 1 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectString, type, cur);
                         return null;
                     }
                     int len = data[cur + 1];
@@ -140,7 +141,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.str16: {
                     if (cur + 2 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectString, type, cur);
                         return null;
                     }
                     int len = data[cur + 1] << 8 | data [cur + 2];
@@ -151,7 +152,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.str32: {
                     if (cur + 4 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectString, type, cur);
                         return null;
                     }
                     var len = BinaryPrimitives.ReadUInt32BigEndian(data.Slice(cur + 1, 4));
@@ -161,7 +162,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return MsgPackUtils.SpanToString(span);
                 }
             }
-            SetError(MsgReaderState.ExpectString, type, cur);
+            SetError(ExpectString, type, cur);
             return null;
         }
     }

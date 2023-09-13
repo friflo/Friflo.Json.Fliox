@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Buffers.Binary;
+using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
 
 // ReSharper disable ReplaceSliceWithRangeIndexer
 namespace Friflo.Json.Fliox.MsgPack
@@ -33,7 +34,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.array16: {
                     pos     = cur + 3;       
                     if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectArray, type, cur);
                         length  = -1;
                         return false;
                     }
@@ -43,7 +44,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.array32: {
                     pos     = cur + 5;       
                     if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(ExpectArray, type, cur);
                         length  = -1;
                         return false;
                     }
@@ -51,7 +52,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return true;
                 }
             }
-            SetError(MsgReaderState.ExpectArrayError, type, cur);
+            SetError(ExpectArray, type, cur);
             length = -1;
             return false;
         }

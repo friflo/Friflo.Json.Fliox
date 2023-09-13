@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.bin8:
                 {
                     if (cur + 1 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(0, type, cur);
                         return;
                     }
                     int len = data[cur + 1];
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.bin16: {
                     if (cur + 2 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(0, type, cur);
                         return;
                     }
                     int len = BinaryPrimitives.ReadInt16BigEndian(data.Slice(cur + 1, 2));
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.bin32: {
                     if (cur + 4 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(0, type, cur);
                         return;
                     }
                     int len = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.str8: {
                     if (cur + 1 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(0, type, cur);
                         return;
                     }
                     int len = data[cur + 1];
@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.str16: {
                     if (cur + 2 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(0, type, cur);
                         return;
                     }
                     int len = (data[cur + 1] << 8) + data[cur + 2];
@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
                 case MsgFormat.str32: {
                     if (cur + 4 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(0, type, cur);
                         return;
                     }
                     int len = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.array16: {
                     pos = cur + 3;
                     if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(0, type, cur);
                         return;
                     }
                     int len = data[cur + 1] << 8 | data[cur + 2];  
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.array32: {
                     pos = cur + 5;
                     if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(0, type, cur);
                         return;
                     }
                     int len = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
@@ -162,7 +162,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.map16: {
                     pos = cur + 3;
                     if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(0, type, cur);
                         return;
                     }
                     int len = data[cur + 1] << 8 | data[cur + 2];  
@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.map32: {
                     pos = cur + 5;
                     if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
+                        SetEofErrorType(0, type, cur);
                         return;
                     }
                     int len = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));  
@@ -184,7 +184,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     return;
             }
             if (pos > data.Length) {
-                SetEofErrorType(type, cur);
+                SetEofErrorType(0, type, cur);
             }
         }
         

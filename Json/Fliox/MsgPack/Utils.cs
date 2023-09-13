@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 //
                 case MsgReaderState.UnexpectedEof:      return "unexpected EOF";
                 //
-                case MsgReaderState.ExpectArrayError:   return "expect array or null";
+                case MsgReaderState.ExpectArray:        return "expect array or null";
                 case MsgReaderState.ExpectByteArray:    return "expect byte[] or null";
                 case MsgReaderState.ExpectBool:         return "expect bool";
                 case MsgReaderState.ExpectString:       return "expect string or null";
