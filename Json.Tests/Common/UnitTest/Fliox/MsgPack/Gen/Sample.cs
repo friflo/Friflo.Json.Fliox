@@ -12,11 +12,11 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
 
     static class Gen_Sample
     {
-        private const   int       _val          = 0;
-        private const   ulong     _abcdefgh     = 0x6867_6665_6463_6261;
-        private const   long      _x            = 0x0000_0000_0000_0078;
-        private const   long      _child        = 0x0000_0064_6c69_6863;
-        private static  byte[]    _x2           = new byte[] { (byte)'x' };
+        private const           int       _val          = 0;
+        private const           ulong     _abcdefgh     = 0x6867_6665_6463_6261;
+        private const           long      _x            = 0x0000_0000_0000_0078;
+        private const           long      _child        = 0x0000_0064_6c69_6863;
+        private static readonly byte[]    _x2           = new byte[] { (byte)'x' };
 
         public static void ReadMsg (this ref MsgReader reader, ref Sample obj)
         {
@@ -52,7 +52,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
             }
             while (len-- > 0) {
                 switch (reader.ReadKey()) {
-                    case _x:        if (reader.KeyName.SequenceEqual(_x2) ) { obj.x = reader.ReadInt32 (); continue; } break;
+                    case _x:        if (reader.IsKeyEquals(_x2)) { obj.x = reader.ReadInt32 (); continue; } break;
                     case _child:    reader.ReadMsg(ref obj.child);           continue;
                 }
                 reader.SkipTree();

@@ -72,6 +72,13 @@ namespace Friflo.Json.Fliox.MsgPack
             errorPos    = 0;
         }
         
+        /// <summary>
+        /// Return true if the given <paramref name="key"/> is equal to <see cref="KeyName"/>
+        /// </summary>
+        public bool IsKeyEquals(byte[] key) {
+            return keyName.SequenceEqual(key);
+        }
+        
         private string GetString() {
             if (state != MsgReaderState.Ok) {
                 return CreateErrorMessage();
