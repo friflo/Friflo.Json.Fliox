@@ -75,6 +75,21 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.float64:
                     pos = cur + 9;
                     break;
+                case MsgFormat.fixext1:
+                    pos = cur + 3;
+                    break;
+                case MsgFormat.fixext2:
+                    pos = cur + 4;
+                    break;
+                case MsgFormat.fixext4:
+                    pos = cur + 6;
+                    break;
+                case MsgFormat.fixext8:
+                    pos = cur + 10;
+                    break;
+                case MsgFormat.fixext16:
+                    pos = cur + 18;
+                    break;
                 
                 // --- string
                 case >= MsgFormat.fixstr and <= MsgFormat.fixstrMax: {
