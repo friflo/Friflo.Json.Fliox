@@ -84,5 +84,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             
             TestMsgReader.AssertSkip(writer.Data);
         }
+        
+        [TestCase(FixStr)] [TestCase(Str8)]
+        public static void Write_key_fixext16(KeyType keyType)
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteMapFix();
+            switch (keyType) {
+                case FixStr:    writer.WriteKeyExt16(1, X,  1, 0x4444_3333_2222_1111, 0x0888_7777_6666_5555);    break;
+                case Str8:      writer.WriteKeyExt16 (XArr, 1, 0x4444_3333_2222_1111, 0x0888_7777_6666_5555);    break;
+            }
+            writer.WriteMapFixCount(0, 1);
+            
+            AreEqual(HexNorm("81 A1 78 D8 01 11 11 22 22 33 33 44 44 55 55 66 66 77 77 88 08"), writer.DataHex);
+            AreEqual((byte)MsgFormat.fixext16, writer.Data[3]);
+            
+            TestMsgReader.AssertSkip(writer.Data);
+        }
     }
 }
