@@ -23,7 +23,6 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
             }
             while (len-- > 0) {
                 switch (reader.ReadKey()) {
-                    // case _val:      obj.val = reader.ReadInt32 (); break;
                     case _y:    obj.y = reader.ReadInt32 (); continue;
                 }
                 reader.SkipTree();
@@ -37,9 +36,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
             }
             int map = writer.WriteMapFix();
             int count = 1;
-            // writer.WriteInt32   (_val, obj.val);
             writer.WriteKeyInt64   (1, _y, obj.y);
-            // writer.WriteInt32   (_x2, obj.x);
             writer.WriteMapFixCount(map, count); // write element count
         }
     }
