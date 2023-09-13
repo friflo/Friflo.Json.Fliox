@@ -365,5 +365,51 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 reader.ReadBool();
             }, null);
         }
+        
+        // --- ext
+        /// payload from <see cref="TestMsgWriter_ext.Write_key_fixext1"/>
+        [Test]
+        public static void Read_Eof_fixext1()
+        {
+            var data = HexToSpan("D4 01 FF");
+            AreEqual((byte)MsgFormat.fixext1, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.SkipTree(), null);
+        }
+        
+        /// payload from <see cref="TestMsgWriter_ext.Write_key_fixext2"/>
+        [Test]
+        public static void Read_Eof_fixext2()
+        {
+            var data = HexToSpan("D5 01 11 22");
+            AreEqual((byte)MsgFormat.fixext2, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.SkipTree(), null);
+        }
+        
+        /// payload from <see cref="TestMsgWriter_ext.Write_key_fixext4"/>
+        [Test]
+        public static void Read_Eof_fixext4()
+        {
+            var data = HexToSpan("D6 01 11 22 33 44");
+            AreEqual((byte)MsgFormat.fixext4, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.SkipTree(), null);
+        }
+        
+        /// payload from <see cref="TestMsgWriter_ext.Write_key_fixext8"/>
+        [Test]
+        public static void Read_Eof_fixext8()
+        {
+            var data = HexToSpan("D7 01 11 22 33 44 55 66 77 00");
+            AreEqual((byte)MsgFormat.fixext8, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.SkipTree(), null);
+        }
+        
+        /// payload from <see cref="TestMsgWriter_ext.Write_key_fixext16"/>
+        [Test]
+        public static void Read_Eof_fixext16()
+        {
+            var data = HexToSpan("D8 01 11 11 22 22 33 33 44 44 55 55 66 66 77 77 88 08");
+            AreEqual((byte)MsgFormat.fixext16, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.SkipTree(), null);
+        }
     }
 }
