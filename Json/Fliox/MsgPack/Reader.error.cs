@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Globalization;
 using System.Text;
 
 namespace Friflo.Json.Fliox.MsgPack
@@ -17,27 +16,14 @@ namespace Friflo.Json.Fliox.MsgPack
             SetMessage(sb, cur);
         }
         
-        private void SetIntRangeError(MsgFormat type, long value, int cur) {
+        private void SetRangeError(MsgFormat type, int cur) {
             if (state != MsgReaderState.Ok) {
                 return;
             }
             var sb  = StopReader(MsgReaderState.RangeError, type, cur);
-            var msg = MsgPackUtils.Error(MsgReaderState.RangeError);
-            sb.Append($"MessagePack error - {msg}. was: {value} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
+            CreateErrorMessage(sb);
             SetMessage(sb, cur);
         }
-        
-        private void SetFloatRangeError(MsgFormat type, double value, int cur) {
-            if (state != MsgReaderState.Ok) {
-                return;
-            }
-            var sb  = StopReader(MsgReaderState.RangeError, type, cur);
-            var val = value.ToString(NumberFormat);
-            var msg = MsgPackUtils.Error(MsgReaderState.RangeError);
-            sb.Append($"MessagePack error - {msg}. was: {val} {MsgPackUtils.Name(type)}(0x{(int)type:X})");
-            SetMessage(sb, cur);
-        }
-        private static readonly NumberFormatInfo NumberFormat = CultureInfo.InvariantCulture.NumberFormat;
         
         private void SetEofError(int cur) {
             if (state != MsgReaderState.Ok) {
@@ -57,6 +43,19 @@ namespace Friflo.Json.Fliox.MsgPack
             var msg = MsgPackUtils.Error(MsgReaderState.UnexpectedEof);
             sb.Append($"MessagePack error - {msg}. type: {MsgPackUtils.Name(type)}(0x{(int)type:X})");
             SetMessage(sb, cur);
+        }
+        
+        // ----------------------------------------- utils -----------------------------------------
+        private void CreateErrorMessage(StringBuilder sb) {
+            sb.Append("MessagePack error - ");
+            sb.Append(MsgPackUtils.Error(state));
+            sb.Append('.');
+            sb.Append(" was: ");
+            if (state == MsgReaderState.RangeError) {
+                MsgPackUtils.AppendValue(sb, data, errorType, errorPos);
+                sb.Append(' ');
+            }
+            sb.Append($"{MsgPackUtils.Name(errorType)}(0x{(int)errorType:X})");
         }
         
         private StringBuilder StopReader(MsgReaderState state, MsgFormat type, int cur) {

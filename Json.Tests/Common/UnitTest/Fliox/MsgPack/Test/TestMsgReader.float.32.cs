@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         private const string ErrFloat32 = "MessagePack error - value out of range. was: 3.40282346638529E+38 float32(0xCA) pos: 0 (root)";
 #else
         private const string ErrFloat64 = "MessagePack error - value out of range. was: 1.7976931348623157E+308 float64(0xCB) pos: 0 (root)";
-        private const string ErrFloat32 = "MessagePack error - value out of range. was: 3.4028234663852886E+38 float32(0xCA) pos: 0 (root)";
+        private const string ErrFloat32 = "MessagePack error - value out of range. was: 3.4028235E+38 float32(0xCA) pos: 0 (root)";
 #endif
        
     }

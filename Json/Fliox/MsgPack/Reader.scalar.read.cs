@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (value >= 0) {
                 return value;
             }
-            SetIntRangeError(MsgFormat.int8, value, cur);
+            SetRangeError(MsgFormat.int8, cur);
             return 0;
         }
         
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (min <= value && value <= max) {
                 return value;
             }
-            SetIntRangeError(MsgFormat.int16, value, cur);
+            SetRangeError(MsgFormat.int16, cur);
             return 0;
         }
         
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (value <= max) {
                 return value;
             }
-            SetIntRangeError(MsgFormat.uint16, value, cur);
+            SetRangeError(MsgFormat.uint16, cur);
             return 0;
         }
         
@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (min <= value && value <= max) {
                 return value;
             }
-            SetIntRangeError(MsgFormat.int32, value, cur);
+            SetRangeError(MsgFormat.int32, cur);
             return 0;
         }
         
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (value <= max) {
                 return value;
             }
-            SetIntRangeError(MsgFormat.uint32, value, cur);
+            SetRangeError(MsgFormat.uint32, cur);
             return 0;
         }
         
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (min <= value && value <= max) {
                 return value;
             }
-            SetIntRangeError(MsgFormat.int64, value, cur);
+            SetRangeError(MsgFormat.int64, cur);
             return 0;
         }
         
@@ -169,7 +169,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (value <= max) {
                 return value;
             }
-            SetIntRangeError(MsgFormat.uint64, (long)value, cur);
+            SetRangeError(MsgFormat.uint64, cur);
             return 0;
         }
         
@@ -194,7 +194,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (min <= value && value <= max) {
                 return value;
             }
-            SetFloatRangeError(MsgFormat.float32, value, cur);
+            SetRangeError(MsgFormat.float32, cur);
             return 0;
         }
         
@@ -215,7 +215,7 @@ namespace Friflo.Json.Fliox.MsgPack
             if (min <= value && value <= max) {
                 return value;
             }
-            SetFloatRangeError(MsgFormat.float64, value, cur);
+            SetRangeError(MsgFormat.float64, cur);
             return 0;
         }
         
