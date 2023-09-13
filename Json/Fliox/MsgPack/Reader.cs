@@ -95,8 +95,8 @@ namespace Friflo.Json.Fliox.MsgPack
             }
             var type = (MsgFormat)data[cur];
             switch (type) {
-                case MsgFormat.True:    return true;
-                case MsgFormat.False:   return false;
+                case MsgFormat.True:    pos = cur + 1; return true;
+                case MsgFormat.False:   pos = cur + 1; return false;
             }
             SetError(MsgReaderState.ExpectBool, type, cur);
             return false;
@@ -125,7 +125,8 @@ namespace Friflo.Json.Fliox.MsgPack
                         SetEofErrorType(type, cur);
                         return null;
                     }
-                    if (!read_str(out var span, cur + 2, data[cur + 1], type)) {
+                    int len = data[cur + 1];
+                    if (!read_str(out var span, cur + 2, len, type)) {
                         return null;
                     }
                     return MsgPackUtils.SpanToString(span);

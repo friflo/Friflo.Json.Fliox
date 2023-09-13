@@ -15,18 +15,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
     {
         private static void AssertEof(ReadOnlySpan<byte> data, ReadAction action, string error)
         {
-            // --- OK
-            var ok = new MsgReader(data);
-            action(ref ok);
-            AreEqual(MsgReaderState.Ok, ok.State);
-            AreEqual(data.Length, ok.Pos);
-            
-            
-            // --- Empty
-            var empty = new MsgReader(data.Slice(0,0));
-            action(ref empty);
-            AreEqual(MsgReaderState.UnexpectedEof, empty.State);
-            AreEqual("MessagePack error - unexpected EOF. pos: 0 (root)", empty.Error);
+            // --- read
+            {
+                var reader = new MsgReader(data);
+                action(ref reader);
+                AreEqual(MsgReaderState.Ok, reader.State);
+                AreEqual(data.Length, reader.Pos);
+            }
+            // --- skip
+            {
+                var reader = new MsgReader(data);
+                reader.SkipTree();
+                AreEqual(MsgReaderState.Ok, reader.State);
+                AreEqual(data.Length, reader.Pos);
+            }
+            var empty = data.Slice(0,0);
+            // --- read empty
+            {
+                var reader = new MsgReader(empty);
+                action(ref reader);
+                AreEqual(MsgReaderState.UnexpectedEof, reader.State);
+                AreEqual("MessagePack error - unexpected EOF. pos: 0 (root)", reader.Error);
+            }
+            // --- skip empty
+            {
+                var reader = new MsgReader(empty);
+                reader.SkipTree();
+                AreEqual(MsgReaderState.UnexpectedEof, reader.State);
+                AreEqual("MessagePack error - unexpected EOF. pos: 0 (root)", reader.Error);
+            }
             
             for (int n = 1; n < data.Length; n++)
             {
@@ -35,14 +52,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 var reader = new MsgReader(subData);
                 action(ref reader);
                 AreEqual(MsgReaderState.UnexpectedEof, reader.State);
-                AreEqual(error, reader.Error);
+                if (error != null) { 
+                    AreEqual(error, reader.Error);
+                }
                 
                 // --- skip data sub-section
                 var skipReader = new MsgReader(subData);
                 skipReader.SkipTree();
                 AreEqual(MsgReaderState.UnexpectedEof, skipReader.State);
-                AreEqual(error, skipReader.Error);
+                if (error != null) {
+                    AreEqual(error, skipReader.Error);
+                }
             }
+        }
+        
+        // --- bool
+        [Test]
+        public static void Read_Eof_bool()
+        {
+            var data = HexToSpan("c3"); // 0 (double)
+            AreEqual((byte)MsgFormat.True, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadBool(), "MessagePack error - unexpected EOF. was: float64(0xCB) pos: 0 (root)");
         }
 
         // --- floating point
@@ -122,13 +152,56 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AssertEof(data, (ref MsgReader r) => r.ReadByte(), "MessagePack error - unexpected EOF. was: uint8(0xCC) pos: 0 (root)");
         }
         
+        // --- fixint +/-1
+        
+        [Test]
+        public static void Read_Eof_intfix()
+        {
+            var data = HexToSpan("7f");                      // 127 (fixint)
+            AreEqual((byte)MsgFormat.fixintPosMax, data[0]);
+            
+            AssertEof(data, (ref MsgReader r) => r.ReadByte(), null);
+        }
+        
+        [Test]
+        public static void Read_Eof_intfix_negative()
+        {
+            var data = HexToSpan("e0");                      // -32 (-fixint)
+            AreEqual((byte)MsgFormat.fixintNeg, data[0]);
+
+            AssertEof(data, (ref MsgReader r) => r.ReadInt16(), null);
+        }
+        
         // --- string
-        // [Test]
+        [Test]
+        public static void Read_Eof_strfix()
+        {
+            var data = HexToSpan("a1 61");
+            AssertEof(data, (ref MsgReader r) => r.ReadString(), null);
+        }
+        
+        [Test]
         public static void Read_Eof_str8()
         {
             var data = HexToSpan("d9 01 61");
             AreEqual((byte)MsgFormat.str8, data[0]);
-            AssertEof(data, (ref MsgReader r) => r.ReadString(), "MessagePack error - unexpected EOF. was: str8(0xD9) pos: 0 (root)");
+            AssertEof(data, (ref MsgReader r) => r.ReadString(), null);
+        }
+        
+        [Test]
+        public static void Read_Eof_str16()
+        {
+            var data = HexToSpan("da 00 01 61");
+            AreEqual((byte)MsgFormat.str16, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadString(), null);
+        }
+        
+        [Test]
+        public static void Read_Eof_str32()
+        {
+            var data = HexToSpan("db 00 00 00 01 61");
+            AreEqual((byte)MsgFormat.str32, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadString(), null);
         }
     }
 }
