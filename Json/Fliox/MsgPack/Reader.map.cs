@@ -26,18 +26,10 @@ namespace Friflo.Json.Fliox.MsgPack
                 case MsgFormat.nil:
                     pos     = cur + 1;
                     length  = -1;
-                    if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
-                    }
                     return false;
                 case >= MsgFormat.fixmap and <= MsgFormat.fixmapMax:
                 {
-                    pos     = cur + 1;
-                    if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
-                        length  = -1;
-                        return false;
-                    }
+                    pos = cur + 1;
                     length  = (int)type & 0x0f;
                     return true;
                 }
@@ -49,6 +41,16 @@ namespace Friflo.Json.Fliox.MsgPack
                         return false;
                     }
                     length  = BinaryPrimitives.ReadInt16BigEndian(data.Slice(cur + 1, 2));
+                    return true;
+                }
+                case MsgFormat.map32: {
+                    pos     = cur + 5;       
+                    if (pos > data.Length) {
+                        SetEofErrorType(type, cur);
+                        length  = -1;
+                        return false;
+                    }
+                    length  = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
                     return true;
                 }
             }

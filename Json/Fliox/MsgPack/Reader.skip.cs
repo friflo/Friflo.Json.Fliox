@@ -113,10 +113,6 @@ namespace Friflo.Json.Fliox.MsgPack
                 // --- array
                 case >= MsgFormat.fixarray and <= MsgFormat.fixarrayMax:
                     pos = cur + 1;
-                    if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
-                        return;
-                    }
                     SkipArray((int)type & 0x0f);
                     return;
                 case MsgFormat.array16: {
@@ -143,10 +139,6 @@ namespace Friflo.Json.Fliox.MsgPack
                 // --- map
                 case >= MsgFormat.fixmap and <= MsgFormat.fixmapMax: {
                     pos = cur + 1;
-                    if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
-                        return;
-                    }
                     int len = (int)type & 0x0f;
                     SkipMap(len);
                     return;

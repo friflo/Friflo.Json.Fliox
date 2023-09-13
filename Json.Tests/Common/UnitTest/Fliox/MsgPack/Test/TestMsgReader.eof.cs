@@ -66,13 +66,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             }
         }
         
+        // --- nil
+        [Test]
+        public static void Read_Eof_nil()
+        {
+            var data = HexToSpan("c0"); // 0 (double)
+            AreEqual((byte)MsgFormat.nil, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadString(), null);
+        }
+        
         // --- bool
         [Test]
         public static void Read_Eof_bool()
         {
             var data = HexToSpan("c3"); // 0 (double)
             AreEqual((byte)MsgFormat.True, data[0]);
-            AssertEof(data, (ref MsgReader r) => r.ReadBool(), "MessagePack error - unexpected EOF. was: float64(0xCB) pos: 0 (root)");
+            AssertEof(data, (ref MsgReader r) => r.ReadBool(), null);
         }
 
         // --- floating point
@@ -83,6 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.float64, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadFloat64(), "MessagePack error - unexpected EOF. was: float64(0xCB) pos: 0 (root)");
         }
+        
         [Test]
         public static void Read_Eof_float()
         {
@@ -99,6 +109,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.int64, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadInt64(), "MessagePack error - unexpected EOF. was: int64(0xD3) pos: 0 (root)");
         }
+        
         [Test]
         public static void Read_Eof_int32()
         {
@@ -106,6 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.int32, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadInt32(), "MessagePack error - unexpected EOF. was: int32(0xD2) pos: 0 (root)");
         }
+        
         [Test]
         public static void Read_Eof_int16()
         {
@@ -113,6 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.int16, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadInt16(), "MessagePack error - unexpected EOF. was: int16(0xD1) pos: 0 (root)");
         }
+        
         [Test]
         public static void Read_Eof_int8()
         {
@@ -130,6 +143,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.uint64, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadInt64(), "MessagePack error - unexpected EOF. was: uint64(0xCF) pos: 0 (root)");
         }
+        
         [Test]
         public static void Read_Eof_uint32()
         {
@@ -137,6 +151,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.uint32, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadInt32(), "MessagePack error - unexpected EOF. was: uint32(0xCE) pos: 0 (root)");
         }
+        
         [Test]
         public static void Read_Eof_uint16()
         {
@@ -144,6 +159,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             AreEqual((byte)MsgFormat.uint16, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadInt16(), "MessagePack error - unexpected EOF. was: uint16(0xCD) pos: 0 (root)");
         }
+        
         [Test]
         public static void Read_Eof_uint8()
         {
@@ -153,7 +169,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         }
         
         // --- fixint +/-1
-        
         [Test]
         public static void Read_Eof_intfix()
         {
@@ -202,6 +217,81 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var data = HexToSpan("db 00 00 00 01 61");
             AreEqual((byte)MsgFormat.str32, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadString(), null);
+        }
+        
+        // --- bin
+        [Test]
+        public static void Read_Eof_bin8()
+        {
+            var data = HexToSpan("c4 01 09");
+            AreEqual((byte)MsgFormat.bin8, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadBin(), null);
+        }
+        
+        [Test]
+        public static void Read_Eof_bin16()
+        {
+            var data = HexToSpan("c5 00 01 09");
+            AreEqual((byte)MsgFormat.bin16, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadBin(), null);
+        }
+        
+        [Test]
+        public static void Read_Eof_bin32()
+        {
+            var data = HexToSpan("c6 00 00 00 01 09");
+            AreEqual((byte)MsgFormat.bin32, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadBin(), null);
+        }
+        
+        // --- array
+        [Test]
+        public static void Read_Eof_array_fix()
+        {
+            var data = HexToSpan("90");
+            AreEqual((byte)MsgFormat.fixarray, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadArray(out _), null);
+        }
+        
+        [Test]
+        public static void Read_Eof_array16()
+        {
+            var data = HexToSpan("dc 00 00");
+            AreEqual((byte)MsgFormat.array16, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadArray(out _), null);
+        }
+        
+        [Test]
+        public static void Read_Eof_array32()
+        {
+            var data = HexToSpan("dd 00 00 00 00");
+            AreEqual((byte)MsgFormat.array32, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadArray(out _), null);
+        }
+        
+        // --- map
+        [Test]
+        public static void Read_Eof_map_fix()
+        {
+            var data = HexToSpan("80");
+            AreEqual((byte)MsgFormat.fixmap, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadObject(out _), null);
+        }
+        
+        [Test]
+        public static void Read_Eof_map16()
+        {
+            var data = HexToSpan("de 00 00");
+            AreEqual((byte)MsgFormat.map16, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadObject(out _), null);
+        }
+        
+        [Test]
+        public static void Read_Eof_map32()
+        {
+            var data = HexToSpan("df 00 00 00 00");
+            AreEqual((byte)MsgFormat.map32, data[0]);
+            AssertEof(data, (ref MsgReader r) => r.ReadObject(out _), null);
         }
     }
 }
