@@ -130,8 +130,10 @@ namespace Friflo.Json.Fliox.MsgPack
                 case uint64:            sb.Append(BinaryPrimitives.ReadUInt64BigEndian(data.Slice(cur + 1, 8)));    break;
                 //
                 case float32: {
+#if !NETSTANDARD2_0
                     var flt = BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4)));
                     sb.Append(flt.ToString(NumberFormat));
+#endif
                     break;
                 }
                 case float64: {
