@@ -98,7 +98,6 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                         return;
                 }
                 // --- read value
-                Bytes keyBytes = default; // TODO use key from above
                 var valueType = msgReader.NextMsg();
                 switch (valueType)
                 {
@@ -115,26 +114,25 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                     case    int32:
                     case    int64: {
                         var value = msgReader.ReadInt64();
-                        jsonWriter.MemberLng(keyBytes, value);
+                        jsonWriter.MemberLng(key, value);
                         break;
                     }
                     case    float32: {
                         var value = msgReader.ReadFloat32();
-                        jsonWriter.MemberDbl(keyBytes, value);
+                        jsonWriter.MemberDbl(key, value);
                         break;
                     }
                     case    float64: {
                         var value = msgReader.ReadFloat64();
-                        jsonWriter.MemberDbl(keyBytes, value);
+                        jsonWriter.MemberDbl(key, value);
                         break;
                     }
                     case >= fixstr and <= fixstrMax:
                     case    str8:
                     case    str16:
                     case    str32: {
-                        // TODO enable writing ReadOnlySpan<byte> value
-                        // var value = msgReader.ReadStringSpan();
-                        // jsonWriter.MemberStr(keyBytes, value);
+                        var value = msgReader.ReadStringSpan();
+                        jsonWriter.MemberStr(key, value);
                         break;
                     }
                 }

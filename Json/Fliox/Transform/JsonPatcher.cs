@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Transform
                         case PatchType.Add:
                             patchParser.InitParser(patch.json);
                             patchParser.NextEvent();
-                            serializer.WriteMember(p.key, ref patchParser);
+                            serializer.WriteMember(p.key.AsSpan(), ref patchParser);
                             targetParser.SkipEvent();
                             node.children.Remove(key);
                             continue;
@@ -84,24 +84,24 @@ namespace Friflo.Json.Fliox.Transform
                 }
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
-                        serializer.MemberArrayStart(in p.key);
+                        serializer.MemberArrayStart(p.key.AsSpan());
                         TraceArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
-                        serializer.MemberObjectStart(in p.key);
+                        serializer.MemberObjectStart(p.key.AsSpan());
                         TraceObject(ref p);
                         break;
                     case JsonEvent.ValueString:
-                        serializer.MemberStr(in p.key, in p.value);
+                        serializer.MemberStr(p.key.AsSpan(), p.value.AsSpan());
                         break;
                     case JsonEvent.ValueNumber:
-                        serializer.MemberBytes(in p.key, p.value);
+                        serializer.MemberBytes(p.key.AsSpan(), p.value);
                         break;
                     case JsonEvent.ValueBool:
-                        serializer.MemberBln(in p.key, p.boolValue);
+                        serializer.MemberBln(p.key.AsSpan(), p.boolValue);
                         break;
                     case JsonEvent.ValueNull:
-                        serializer.MemberNul(in p.key);
+                        serializer.MemberNul(p.key.AsSpan());
                         break;
                     case JsonEvent.ObjectEnd:
                     case JsonEvent.ArrayEnd:
@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Transform
                                 // keyBytes.AppendString(key);
                                 patchParser.InitParser(patch.json);
                                 patchParser.NextEvent();
-                                serializer.WriteMember(keyBytes, ref patchParser);
+                                serializer.WriteMember(keyBytes.AsSpan(), ref patchParser);
                                 continue;
                             case PatchType.Remove:
                             case null:
@@ -179,7 +179,7 @@ namespace Friflo.Json.Fliox.Transform
                         TraceObject(ref p);
                         break;
                     case JsonEvent.ValueString:
-                        serializer.ElementStr(in p.value);
+                        serializer.ElementStr(p.value.AsSpan());
                         break;
                     case JsonEvent.ValueNumber:
                         serializer.ElementBytes (p.value);
@@ -230,7 +230,7 @@ namespace Friflo.Json.Fliox.Transform
                     serializer.ArrayStart(true);
                     return TraceArray(ref p);
                 case JsonEvent.ValueString:
-                    serializer.ElementStr(in p.value);
+                    serializer.ElementStr(p.value.AsSpan());
                     return true;
                 case JsonEvent.ValueNumber:
                     serializer.ElementBytes(p.value);

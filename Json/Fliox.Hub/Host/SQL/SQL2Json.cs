@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
                             // writer.MemberNul(objectMember.nameBytes); // omit writing member with value null
                             continue;
                         }
-                        writer.MemberObjectStart(objectMember.nameBytes);
+                        writer.MemberObjectStart(objectMember.nameBytes.AsSpan());
                         Traverse(objectMember);
                         writer.ObjectEnd();
                         break;

@@ -327,11 +327,11 @@ namespace Friflo.Json.Burst
         }
 
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
-        public void MemberStr(Str32 key, in Bytes value) {
+        public void MemberStr(Str32 key, ReadOnlySpan<byte> value) {
             AssertMember();
             AddSeparator();
             AppendKeyString(ref json, key);
-            AppendEscStringBytes(ref json, in value);
+            AppendEscStringBytes(ref json, value);
         }
 
         /// <summary>
@@ -361,9 +361,9 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
-        public void MemberBytes(in Bytes key, in Bytes value) {
+        public void MemberBytes(ReadOnlySpan<byte> key, in Bytes value) {
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
+            AppendKeyBytes(ref json, key);
             /*
             // Conversion to long or double is expensive and not required 
             if (p.isFloat)
@@ -417,10 +417,10 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Write an array element of type "string"</summary>
-        public void ElementStr(in Bytes value) {
+        public void ElementStr(ReadOnlySpan<byte> value) {
             AssertElement();
             AddSeparator();
-            AppendEscStringBytes(ref json, in value);
+            AppendEscStringBytes(ref json, value);
         }
 
         /// <summary>Write an array element of type <see cref="string"/></summary>
@@ -464,28 +464,31 @@ namespace Friflo.Json.Burst
         }
         
         // ----------------- utilities
-        public bool WriteObject(ref Utf8JsonParser p) {
-            while (NextObjectMember(ref p)) {
-                switch (p.Event) {
+        public bool WriteObject(ref Utf8JsonParser p)
+        {
+            while (NextObjectMember(ref p))
+            {
+                switch (p.Event)
+                {
                     case JsonEvent.ArrayStart:
-                        MemberArrayStart(in p.key);
+                        MemberArrayStart(p.key.AsSpan());
                         WriteArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
-                        MemberObjectStart(in p.key);
+                        MemberObjectStart(p.key.AsSpan());
                         WriteObject(ref p);
                         break;
                     case JsonEvent.ValueString:
-                        MemberStr(in p.key, in p.value);
+                        MemberStr(p.key.AsSpan(), p.value.AsSpan());
                         break;
                     case JsonEvent.ValueNumber:
-                        MemberBytes(in p.key, p.value);
+                        MemberBytes(p.key.AsSpan(), p.value);
                         break;
                     case JsonEvent.ValueBool:
-                        MemberBln(in p.key, p.boolValue);
+                        MemberBln(p.key.AsSpan(), p.boolValue);
                         break;
                     case JsonEvent.ValueNull:
-                        MemberNul(in p.key);
+                        MemberNul(p.key.AsSpan());
                         break;
                     case JsonEvent.ObjectEnd:
                     case JsonEvent.ArrayEnd:
@@ -518,7 +521,7 @@ namespace Friflo.Json.Burst
                         WriteObject(ref p);
                         break;
                     case JsonEvent.ValueString:
-                        ElementStr(in p.value);
+                        ElementStr(p.value.AsSpan());
                         break;
                     case JsonEvent.ValueNumber:
                         ElementBytes(p.value);
@@ -556,7 +559,7 @@ namespace Friflo.Json.Burst
                     ArrayStart(true);
                     return WriteArray(ref p);
                 case JsonEvent.ValueString:
-                    ElementStr(in p.value);
+                    ElementStr(p.value.AsSpan());
                     return true;
                 case JsonEvent.ValueNumber:
                     ElementBytes(p.value);
@@ -571,7 +574,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        public bool WriteMember(in Bytes key, ref Utf8JsonParser p) {
+        public bool WriteMember(ReadOnlySpan<byte> key, ref Utf8JsonParser p) {
             switch (p.Event) {
                 case JsonEvent.ArrayStart:
                     MemberArrayStart(key);
@@ -582,7 +585,7 @@ namespace Friflo.Json.Burst
                     WriteObject(ref p);
                     break;
                 case JsonEvent.ValueString:
-                    MemberStr(key, in p.value);
+                    MemberStr(key, p.value.AsSpan());
                     break;
                 case JsonEvent.ValueNumber:
                     MemberBytes(key, p.value);

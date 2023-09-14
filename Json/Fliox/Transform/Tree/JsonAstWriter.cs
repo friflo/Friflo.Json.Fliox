@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                     break;
                 case ValueString:
                     value. Set(node.value);
-                    writer.ElementStr(value);
+                    writer.ElementStr(value.AsSpan());
                     break;
             }
         }
@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 case  ObjectStart:
                     if (node.child != -1) {
                         key.   Set(node.key);
-                        writer.MemberObjectStart(key);
+                        writer.MemberObjectStart(key.AsSpan());
                         WriteObject(node.child, ref writer);
                         writer.ObjectEnd();
                     }
@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 case  ArrayStart:
                     if (node.child != -1) {
                         key.   Set(node.key);
-                        writer.MemberArrayStart(key);
+                        writer.MemberArrayStart(key.AsSpan());
                         WriteArray(node.child, ref writer);
                         writer.ArrayEnd();
                     }
@@ -136,19 +136,19 @@ namespace Friflo.Json.Fliox.Transform.Tree
                 case ValueNull:
                     if (WriteNullMembers) { 
                         key.   Set(node.key);
-                        writer.MemberNul(key);
+                        writer.MemberNul(key.AsSpan());
                     }
                     break;
                 case ValueBool:
                 case ValueNumber:
                     key.   Set(node.key);
                     value. Set(node.value);
-                    writer.MemberBytes(key, value);
+                    writer.MemberBytes(key.AsSpan(), value);
                     break;
                 case ValueString:
                     key.   Set(node.key);
                     value. Set(node.value);
-                    writer.MemberStr(key, value);
+                    writer.MemberStr(key.AsSpan(), value.AsSpan());
                     break;
             }
             return node.next;

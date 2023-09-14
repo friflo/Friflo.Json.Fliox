@@ -27,16 +27,15 @@ namespace Friflo.Json.Burst
         
         
         // --- comment to enable source alignment in WinMerge
-        public static void AppendEscStringBytes(ref Bytes dst, in Bytes src) {
-            int srcLen      = src.end - src.start;
+        public static void AppendEscStringBytes(ref Bytes dst, ReadOnlySpan<byte> src)
+        {
+            int srcLen      = src.Length;
             dst.EnsureCapacity(2 * srcLen + 1);
-            int end     = src.end;
             var dstArr  = dst.buffer;
-            var srcArr  = src.buffer; 
             
             dstArr[dst.end++] = (byte)'"';
-            for (int n = src.start; n < end; n++) {
-                byte c =  srcArr[n];
+            for (int n = 0; n < srcLen; n++) {
+                byte c =  src[n];
 
                 switch (c) {
                     case (byte) '"':  dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) '\"'; break;
@@ -54,8 +53,9 @@ namespace Friflo.Json.Burst
             dstArr[dst.end++] = (byte)'"';
         }
 
-        private void AppendKeyBytes(ref Bytes dst, in Bytes key) {
-            AppendEscStringBytes(ref dst, in key);
+        private void AppendKeyBytes(ref Bytes dst, ReadOnlySpan<byte> key)
+        {
+            AppendEscStringBytes(ref dst, key);
             ref var dstArr = ref dst.buffer;
             dst.EnsureCapacityAbs(dst.end + 1);
             dstArr[dst.end++] = (byte)':';
@@ -74,86 +74,86 @@ namespace Friflo.Json.Burst
         
         // --- comment to enable source alignment in WinMerge
         /// <summary>Writes the key of key/value pair where the value will be an array</summary>
-        public void MemberArrayStart(in Bytes key) {
+        public void MemberArrayStart(ReadOnlySpan<byte> key) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
+            AppendKeyBytes(ref json, key);
             SetStartGuard();
             ArrayStart(true);
         }
         
         /// <summary>Writes the key of key/value pair where the value will be an object</summary>
-        public void MemberObjectStart(in Bytes key) {
+        public void MemberObjectStart(ReadOnlySpan<byte> key) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
+            AppendKeyBytes(ref json, key);
             SetStartGuard();
             ObjectStart();
         }
         
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
-        public void MemberStr(in Bytes key, in Bytes value) {
+        public void MemberStr(ReadOnlySpan<byte> key, ReadOnlySpan<byte> value) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
-            AppendEscStringBytes(ref json, in value);
+            AppendKeyBytes(ref json, key);
+            AppendEscStringBytes(ref json, value);
         }
         
         /// <summary>
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// </summary>
-        public void MemberStr(in Bytes key, in ReadOnlySpan<char> value) {
+        public void MemberStr(ReadOnlySpan<byte> key, in ReadOnlySpan<char> value) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
+            AppendKeyBytes(ref json, key);
             AppendEscString(ref json, value);
         }
 
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
-        public void MemberDbl(in Bytes key, double value) {
+        public void MemberDbl(ReadOnlySpan<byte> key, double value) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
+            AppendKeyBytes(ref json, key);
             format.AppendDbl(ref json, value);
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
-        public void MemberLng(in Bytes key, long value) {
+        public void MemberLng(ReadOnlySpan<byte> key, long value) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
+            AppendKeyBytes(ref json, key);
             format.AppendLong(ref json, value);
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
-        public void MemberBln(in Bytes key, bool value) {
+        public void MemberBln(ReadOnlySpan<byte> key, bool value) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
+            AppendKeyBytes(ref json, key);
             format.AppendBool(ref json, value);
         }
         
         /// <summary>Writes a key/value pair where the value is null</summary>
-        public void MemberNul(in Bytes key) {
+        public void MemberNul(ReadOnlySpan<byte> key) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
+            AppendKeyBytes(ref json, key);
             json.AppendStr32(@null);
         }
         
         /// <summary>Writes a key/value pair where the value is JSON</summary>
-        public void MemberArr(in Bytes key, in Bytes jsonValue) {
+        public void MemberArr(ReadOnlySpan<byte> key, in Bytes jsonValue) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
+            AppendKeyBytes(ref json, key);
             json.AppendBytes(jsonValue);
         }
         
         /// <summary>Writes a key/value pair where the value is Guid</summary>
-        public void MemberGuid(in Bytes key, in Guid guid) {
+        public void MemberGuid(ReadOnlySpan<byte> key, in Guid guid) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
+            AppendKeyBytes(ref json, key);
             Span<char> chars = stackalloc char[Bytes.GuidLength]; 
             json.AppendChar('\"');
             json.AppendGuid(guid, chars);
@@ -161,10 +161,10 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is DateTime</summary>
-        public void MemberDate(in Bytes key, in DateTime dateTime) {
+        public void MemberDate(ReadOnlySpan<byte> key, in DateTime dateTime) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref json, in key);
+            AppendKeyBytes(ref json, key);
             Span<char> chars = stackalloc char[Bytes.DateTimeLength]; 
             json.AppendChar('\"');
             json.AppendDateTime(dateTime, chars);

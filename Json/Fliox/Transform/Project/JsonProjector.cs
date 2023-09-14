@@ -66,24 +66,24 @@ namespace Friflo.Json.Fliox.Transform.Project
                 }
                 switch (parser.Event) {
                     case JsonEvent.ArrayStart:
-                        serializer.MemberArrayStart(in parser.key);
+                        serializer.MemberArrayStart(parser.key.AsSpan());
                         TraceArray(subNode);
                         break;
                     case JsonEvent.ObjectStart:
-                        serializer.MemberObjectStart(in parser.key);
+                        serializer.MemberObjectStart(parser.key.AsSpan());
                         TraceObject(subNode);
                         break;
                     case JsonEvent.ValueString:
-                        serializer.MemberStr(in parser.key, in parser.value);
+                        serializer.MemberStr(parser.key.AsSpan(), parser.value.AsSpan());
                         break;
                     case JsonEvent.ValueNumber:
-                        serializer.MemberBytes(in parser.key, parser.value);
+                        serializer.MemberBytes(parser.key.AsSpan(), parser.value);
                         break;
                     case JsonEvent.ValueBool:
-                        serializer.MemberBln(in parser.key, parser.boolValue);
+                        serializer.MemberBln(parser.key.AsSpan(), parser.boolValue);
                         break;
                     case JsonEvent.ValueNull:
-                        serializer.MemberNul(in parser.key);
+                        serializer.MemberNul(parser.key.AsSpan());
                         break;
                     case JsonEvent.ObjectEnd:
                     case JsonEvent.ArrayEnd:
@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Transform.Project
                 } else {
                     unionType.CopyTo    (ref valueBuf);
                 }
-                serializer.MemberStr(__typename, valueBuf);
+                serializer.MemberStr(__typename.AsSpan(), valueBuf.AsSpan());
             }
             serializer.ObjectEnd();
             return true;
@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Transform.Project
                         TraceObject(node);
                         break;
                     case JsonEvent.ValueString:
-                        serializer.ElementStr(in parser.value);
+                        serializer.ElementStr(parser.value.AsSpan());
                         break;
                     case JsonEvent.ValueNumber:
                         serializer.ElementBytes (parser.value);
@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Transform.Project
                     serializer.ArrayStart(true);
                     return TraceArray(node);
                 case JsonEvent.ValueString:
-                    serializer.ElementStr(in parser.value);
+                    serializer.ElementStr(parser.value.AsSpan());
                     return true;
                 case JsonEvent.ValueNumber:
                     serializer.ElementBytes(parser.value);

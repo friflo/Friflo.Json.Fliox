@@ -94,12 +94,12 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
         public void WriteJsonMember(SQL2Json sql2Json, ColumnInfo column)
         {
             ref var cell    = ref sql2Json.cells[column.ordinal];
-            ref var writer  = ref sql2Json.writer;
-            var key         = column.nameBytes;
             if (cell.type == ColumnType.None) {
                 // writer.MemberNul(key); // omit writing member with value null
                 return;
             }
+            ref var writer  = ref sql2Json.writer;
+            var key         = column.nameBytes.AsSpan();
             cell.type = ColumnType.None;
             switch (column.type) {
                 case ColumnType.Boolean:    writer.MemberBln    (key, cell.lng != 0);               break;

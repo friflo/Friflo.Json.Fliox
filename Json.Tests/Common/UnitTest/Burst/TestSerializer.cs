@@ -83,13 +83,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 {
                     s.InitSerializer();
                     s.ObjectStart();
-                    s.MemberStr(in key1, "World 🌎");
-                    s.MemberDbl(in key2, 10.5);
-                    s.MemberLng(in key3, 42);
-                    s.MemberBln(in key4, true);
-                    s.MemberNul(in key5);
-                    s.MemberNul(in key6);
-                    s.MemberNul(in key7);
+                    s.MemberStr(key1.AsSpan(), "World 🌎");
+                    s.MemberDbl(key2.AsSpan(), 10.5);
+                    s.MemberLng(key3.AsSpan(), 42);
+                    s.MemberBln(key4.AsSpan(), true);
+                    s.MemberNul(key5.AsSpan());
+                    s.MemberNul(key6.AsSpan());
+                    s.MemberNul(key7.AsSpan());
                     s.ObjectEnd();
                 }
                 AreEqual("{\"1-\\r\":\"World 🌎\",\"2-\\n\":10.5,\"3-\\t\":42,\"4-\\\"\":true,\"5-\\\\\":null,\"6-\\b\":null,\"7-\\f\":null}", s.json.AsString());
@@ -113,16 +113,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 // - array
                 s.InitSerializer();
                 s.ArrayStart(true);
-                s.ElementStr(in textValue);
+                s.ElementStr(textValue.AsSpan());
                 s.ArrayEnd();
                 AreEqual("[\"textValue\"]", s.json.AsString());
                 
                 // - object
                 s.InitSerializer();
                 s.ObjectStart();
-                s.MemberStr(in str, "hello");
-                s.MemberDbl(in dbl, 10.5);
-                s.MemberLng(in lng, 42);
+                s.MemberStr(str.AsSpan(), "hello");
+                s.MemberDbl(dbl.AsSpan(), 10.5);
+                s.MemberLng(lng.AsSpan(), 42);
                 s.ObjectEnd();
                 AreEqual("{\"str\":\"hello\",\"dbl\":10.5,\"lng\":42}", s.json.AsString());
             }
