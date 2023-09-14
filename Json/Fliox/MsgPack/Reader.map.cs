@@ -87,7 +87,8 @@ namespace Friflo.Json.Fliox.MsgPack
                         return 0;
                     }
                     int len = data[cur + 1];
-                    if (!read_str(out keyName, cur + 2, len, type)) {
+                    keyName = read_str(cur + 2, len, type);
+                    if (keyName == null) {
                         return 0;
                     }
                     return KeyAsLong(len, keyName);

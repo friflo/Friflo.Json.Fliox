@@ -144,10 +144,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     pos = cur + 1;
                     return null;
                 case >= fixstr and <= fixstrMax: {
-                    if (!read_str(out var span, cur + 1, (int)type & 0x1f, type)) {
-                        return null;
-                    }
-                    return span;
+                    return read_str(cur + 1, (int)type & 0x1f, type);
                 }
                 case str8: {
                     if (cur + 1 >= data.Length) {
@@ -155,10 +152,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         return null;
                     }
                     int len = data[cur + 1];
-                    if (!read_str(out var span, cur + 2, len, type)) {
-                        return null;
-                    }
-                    return span;
+                    return read_str(cur + 2, len, type);
                 }
                 case str16: {
                     if (cur + 2 >= data.Length) {
@@ -166,10 +160,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         return null;
                     }
                     int len = data[cur + 1] << 8 | data [cur + 2];
-                    if (!read_str(out var span, cur + 3, len, type)) {
-                        return null;
-                    }
-                    return span;
+                    return read_str(cur + 3, len, type);
                 }
                 case str32: {
                     if (cur + 4 >= data.Length) {
@@ -177,10 +168,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         return null;
                     }
                     var len = BinaryPrimitives.ReadUInt32BigEndian(data.Slice(cur + 1, 4));
-                    if (!read_str(out var span, cur + 5, (int)len, type)) {
-                        return null;
-                    }
-                    return span;
+                    return read_str(cur + 5, (int)len, type);
                 }
             }
             SetError(ExpectString, type, cur);
