@@ -15,29 +15,31 @@ namespace Friflo.Json.Fliox.MsgPack
     [Flags]
     public enum MsgReaderState
     {
-        Ok                      = 0,
-        // 
-        RangeError              = 0b1000_0000, // bit set for Expect* values
+        Ok              = 0,
+        /// <summary>
+        /// bit set in case of range errors for <see cref="ExpectUint8"/>, ..., <see cref="ExpectFloat64"/>
+        /// </summary>
+        RangeError      = 0b_00001_0000, 
         //
-        Mask                    = 0x7f,
-        //
-        UnexpectedEof           = 0x10,
-        UnsupportedType         = 0x20,
+        /// used to mask subsequent states / errors
+        Mask            = 0x0f, 
         // --- expected state / error
+        ExpectArray     = 0x01,
+        ExpectByteArray = 0x02,
+        ExpectBool      = 0x03,
+        ExpectString    = 0x04,
+        ExpectObject    = 0x05,
+        ExpectKeyString = 0x06,
         //
-        ExpectArray             = 0x01,
-        ExpectByteArray         = 0x02,
-        ExpectBool              = 0x03,
-        ExpectString            = 0x04,
-        ExpectObject            = 0x05,
-        ExpectKeyString         = 0x06,
-        //
-        ExpectUint8             = 0x07,
-        ExpectInt16             = 0x08,
-        ExpectInt32             = 0x09,
-        ExpectInt64             = 0x0a,
-        ExpectFloat32           = 0x0b,
-        ExpectFloat64           = 0x0c,
+        ExpectUint8     = 0x07,
+        ExpectInt16     = 0x08,
+        ExpectInt32     = 0x09,
+        ExpectInt64     = 0x0a,
+        ExpectFloat32   = 0x0b,
+        ExpectFloat64   = 0x0c,
+        // --- general errors
+        UnexpectedEof   = 0x0d,
+        UnsupportedType = 0x0e,
     }
 
     public ref partial struct MsgReader
