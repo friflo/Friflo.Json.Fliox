@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.MsgPack.Json
 {
     public struct MsgPack2Json
     {
-        private Utf8JsonWriter jsonWriter;
+        private     Utf8JsonWriter      jsonWriter;
         
         public JsonValue ToJson(ReadOnlySpan<byte> msg)
         {
@@ -21,7 +21,12 @@ namespace Friflo.Json.Fliox.MsgPack.Json
         
         private void WriteElement(ref MsgReader msgReader)
         {
-            var type = msgReader.NextMsg();
+            var data = msgReader.data;
+            if (msgReader.Pos >= data.Length) {
+                return;
+            }
+            var type = (MsgFormat)data[msgReader.Pos];
+
             switch (type)
             {
                 case nil:
@@ -84,8 +89,12 @@ namespace Friflo.Json.Fliox.MsgPack.Json
             for (int n = 0; n < length; n++)
             {
                 // --- read key
+                var data = msgReader.data;
+                if (msgReader.Pos >= data.Length) {
+                    return;
+                }
                 ReadOnlySpan<byte> key;
-                var keyType = msgReader.NextMsg();
+                var keyType = (MsgFormat)data[msgReader.Pos];
                 switch (keyType) {
                     case >= fixstr and <= fixstrMax:
                     case    str8:
@@ -98,7 +107,10 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                         return;
                 }
                 // --- read value
-                var valueType = msgReader.NextMsg();
+                if (msgReader.Pos >= data.Length) {
+                    return;
+                }
+                var valueType = (MsgFormat)data[msgReader.Pos];
                 switch (valueType)
                 {
                     case <= fixintPosMax:

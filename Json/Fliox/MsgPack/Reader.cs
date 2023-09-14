@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.MsgPack
     public ref partial struct MsgReader
     {
         // --- private fields
-                        private     ReadOnlySpan<byte>  data;
+                        public      ReadOnlySpan<byte>  data;
         [Browse(Never)] private     int                 pos;
         [Browse(Never)] private     ReadOnlySpan<byte>  keyName;
         [Browse(Never)] private     MsgReaderState      state;
@@ -80,10 +80,6 @@ namespace Friflo.Json.Fliox.MsgPack
             state       = Ok;
             errorType   = root;
             errorPos    = 0;
-        }
-        
-        public MsgFormat NextMsg() {
-            return (MsgFormat)data[pos];
         }
         
         /// <summary>
