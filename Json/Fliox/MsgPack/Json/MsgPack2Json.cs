@@ -132,8 +132,9 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                     case    str8:
                     case    str16:
                     case    str32: {
-                        var value = msgReader.ReadString();
-                        jsonWriter.MemberStr(keyBytes, value);
+                        // TODO enable writing ReadOnlySpan<byte> value
+                        // var value = msgReader.ReadStringSpan();
+                        // jsonWriter.MemberStr(keyBytes, value);
                         break;
                     }
                 }
