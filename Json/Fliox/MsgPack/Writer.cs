@@ -33,13 +33,17 @@ namespace Friflo.Json.Fliox.MsgPack
         }
         
         private byte[] Reserve(int length) {
-            int len = pos + length;
-            if (len <= target.Length) {
+            if (pos + length <= target.Length) {
                 return target;
             }
-            var newTarget = new byte[2 * len];
-            var targetLen = pos;
-            for (int n = 0; n < targetLen; n++) {
+            return Resize(length);
+        }
+        
+        private byte[] Resize(int length) {
+            int newLen      = 2 * (pos + length);
+            var newTarget   = new byte[newLen];
+            var copyLen     = pos;
+            for (int n = 0; n < copyLen; n++) {
                 newTarget[n] = target[n];
             }
             return target = newTarget;
