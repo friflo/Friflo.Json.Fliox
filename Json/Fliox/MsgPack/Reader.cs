@@ -82,6 +82,10 @@ namespace Friflo.Json.Fliox.MsgPack
             errorPos    = 0;
         }
         
+        public MsgFormat NextMsg() {
+            return (MsgFormat)data[pos];
+        }
+        
         /// <summary>
         /// Return true if the given <paramref name="key"/> is equal to <see cref="KeyName"/>
         /// </summary>
@@ -119,7 +123,15 @@ namespace Friflo.Json.Fliox.MsgPack
             return false;
         }
         
-        public string ReadString ()
+        public string ReadString () {
+            var span = ReadStringSpan();
+            if (span != null) {
+                return MsgPackUtils.SpanToString(span);
+            }
+            return null;
+        }
+        
+        public ReadOnlySpan<byte> ReadStringSpan ()
         {
             int cur = pos;
             if (cur >= data.Length) {
@@ -135,7 +147,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     if (!read_str(out var span, cur + 1, (int)type & 0x1f, type)) {
                         return null;
                     }
-                    return MsgPackUtils.SpanToString(span);
+                    return span;
                 }
                 case str8: {
                     if (cur + 1 >= data.Length) {
@@ -146,7 +158,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     if (!read_str(out var span, cur + 2, len, type)) {
                         return null;
                     }
-                    return MsgPackUtils.SpanToString(span);
+                    return span;
                 }
                 case str16: {
                     if (cur + 2 >= data.Length) {
@@ -157,7 +169,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     if (!read_str(out var span, cur + 3, len, type)) {
                         return null;
                     }
-                    return MsgPackUtils.SpanToString(span);
+                    return span;
                 }
                 case str32: {
                     if (cur + 4 >= data.Length) {
@@ -168,7 +180,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     if (!read_str(out var span, cur + 5, (int)len, type)) {
                         return null;
                     }
-                    return MsgPackUtils.SpanToString(span);
+                    return span;
                 }
             }
             SetError(ExpectString, type, cur);
