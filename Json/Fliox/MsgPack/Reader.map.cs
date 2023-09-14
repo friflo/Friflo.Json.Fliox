@@ -74,24 +74,23 @@ namespace Friflo.Json.Fliox.MsgPack
                 case >= fixstr and <= fixstrMax: {
                     int len = (int)type & 0x1f;
                     pos     = cur + 1 + len;
-                    if (pos > data.Length) {
-                        SetEofErrorType(type, cur);
-                        return 0;
+                    if (pos <= data.Length) {
+                        keyName = data.Slice(cur + 1, len);
+                        return KeyAsLong(len, keyName);
                     }
-                    keyName = data.Slice(cur + 1, len);
-                    return KeyAsLong(len, keyName);
+                    SetEofErrorType(type, cur);
+                    return 0;
                 }
                 case str8: {
-                    if (cur + 1 >= data.Length) {
-                        SetEofErrorType(type, cur);
+                    if (cur + 1 < data.Length) {
+                        int len = data[cur + 1];
+                        if (read_str(out keyName, cur + 2, len, type)) {
+                            return KeyAsLong(len, keyName);
+                        }
                         return 0;
                     }
-                    int len = data[cur + 1];
-                    keyName = read_str(cur + 2, len, type);
-                    if (keyName == null) {
-                        return 0;
-                    }
-                    return KeyAsLong(len, keyName);
+                    SetEofErrorType(type, cur);
+                    return 0;
                 }
             }
             SetError(ExpectKeyString, type, cur);

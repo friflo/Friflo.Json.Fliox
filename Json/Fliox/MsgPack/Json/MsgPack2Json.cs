@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                     case    str8:
                     case    str16:
                     case    str32: {
-                        key = msgReader.ReadStringSpan();
+                        msgReader.ReadStringSpan(out key);
                         break;
                     }
                     default:
@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                     case    str8:
                     case    str16:
                     case    str32: {
-                        var value = msgReader.ReadStringSpan();
+                        msgReader.ReadStringSpan(out var value);
                         jsonWriter.MemberStr(key, value);
                         break;
                     }

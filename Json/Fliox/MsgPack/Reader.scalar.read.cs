@@ -220,13 +220,15 @@ namespace Friflo.Json.Fliox.MsgPack
         }
         
         // --- str
-        private  ReadOnlySpan<byte> read_str (int cur, int len, MsgFormat type) {
+        private  bool read_str (out ReadOnlySpan<byte> result, int cur, int len, MsgFormat type) {
             pos     = cur + len;
             if (pos > data.Length) {
                 SetEofErrorType(type, cur);
-                return default;
+                result = default;
+                return false;
             }
-            return data.Slice(cur, len);
+            result = data.Slice(cur, len);
+            return true;
         }
         
         // --- bin
