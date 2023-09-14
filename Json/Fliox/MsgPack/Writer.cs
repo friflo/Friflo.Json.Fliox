@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 WriteNull();
                 return;
             }
-            Write_string_pos(val);
+            Write_string_pos(val.AsSpan());
         }
         
         public void WriteKeyString(int keyLen, long key, string val, ref int count) {
@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.MsgPack
             var data    = Reserve(1 + 8);           // key: 1 + 8
             WriteKeyFix(data, cur, keyLen, key);
             pos         = cur + 1 + keyLen;
-            Write_string_pos(val);
+            Write_string_pos(val.AsSpan());
         }
 
         
@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.MsgPack
             var data    = Reserve(1 + keyLen);      // key: 2 + keyLen
             WriteKeySpan(data, ref cur, key);
             pos         = cur;
-            Write_string_pos(val);
+            Write_string_pos(val.AsSpan());
         }
         
         // --- string - UTF-8 ReadOnlySpan<byte>

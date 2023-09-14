@@ -12,12 +12,11 @@ namespace Friflo.Json.Fliox.MsgPack
 
     public partial struct MsgWriter
     {
-        private void Write_string_pos(string val)
+        private void Write_string_pos(ReadOnlySpan<char> val)
         {
             var len     = Encoding.UTF8.GetByteCount(val);
             var cur     = Write_string_len(len);
-            var dest    = new Span<byte>(target, cur, len);
-            Encoding.UTF8.GetBytes(val, dest);
+            Encoding.UTF8.GetBytes(val, new Span<byte>(target, cur, len));
             pos = cur + len;
         }
         
