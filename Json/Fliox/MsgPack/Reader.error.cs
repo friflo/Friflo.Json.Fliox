@@ -37,6 +37,13 @@ namespace Friflo.Json.Fliox.MsgPack
         }
         
         // ----------------------------------------- utils -----------------------------------------
+        private void StopReader(MsgReaderState state, MsgFormat type, int cur) {
+            this.state  = state;
+            pos         = MsgError;
+            errorType   = type;
+            errorPos    = cur;
+        }
+        
         private string CreateErrorMessage()
         {
             if (state == Ok) {
@@ -71,13 +78,6 @@ namespace Friflo.Json.Fliox.MsgPack
                 sb.Append('\'');
             }
             return sb.ToString();
-        }
-        
-        private void StopReader(MsgReaderState state, MsgFormat type, int cur) {
-            this.state  = state;
-            pos         = MsgError;
-            errorType   = type;
-            errorPos    = cur;
         }
     }
 }
