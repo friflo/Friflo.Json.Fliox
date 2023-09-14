@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using static System.Buffers.Binary.BinaryPrimitives;
 
 namespace Friflo.Json.Fliox.MsgPack
 {
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.MsgPack
         private short read_int16(int cur) {
             pos = cur + 3;
             if (pos <= data.Length) {
-                return BinaryPrimitives.ReadInt16BigEndian(data.Slice(cur + 1, 2));
+                return ReadInt16BigEndian(data.Slice(cur + 1, 2));
             }
             SetEofErrorType(MsgFormat.int16, cur);
             return 0;
@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.MsgPack
         private ushort read_uint16(int cur) {
             pos = cur + 3;
             if (pos <= data.Length) {
-                return BinaryPrimitives.ReadUInt16BigEndian(data.Slice(cur + 1, 2));
+                return ReadUInt16BigEndian(data.Slice(cur + 1, 2));
             }
             SetEofErrorType(MsgFormat.uint16, cur);
             return 0;
@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.MsgPack
         private int read_int32(int cur) {
             pos = cur + 5;
             if (pos <= data.Length) {
-                return BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
+                return ReadInt32BigEndian(data.Slice(cur + 1, 4));
             }
             SetEofErrorType(MsgFormat.int32, cur);
             return 0;
@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.MsgPack
         private uint read_uint32(int cur) {
             pos = cur + 5;
             if (pos <= data.Length) {
-                return BinaryPrimitives.ReadUInt32BigEndian(data.Slice(cur + 1, 4));
+                return ReadUInt32BigEndian(data.Slice(cur + 1, 4));
             }
             SetEofErrorType(MsgFormat.uint32, cur);
             return 0;
@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.MsgPack
         private long read_int64(int cur) {
             pos = cur + 9;
             if (pos <= data.Length) {
-                return BinaryPrimitives.ReadInt64BigEndian(data.Slice(cur + 1, 8));
+                return ReadInt64BigEndian(data.Slice(cur + 1, 8));
             }
             SetEofErrorType(MsgFormat.int64, cur);
             return 0;
@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.MsgPack
         private ulong read_uint64(int cur) {
             pos = cur + 9;
             if (pos <= data.Length) {
-                return BinaryPrimitives.ReadUInt64BigEndian(data.Slice(cur + 1, 8));
+                return ReadUInt64BigEndian(data.Slice(cur + 1, 8));
             }
             SetEofErrorType(MsgFormat.uint64, cur);
             return 0;
@@ -181,7 +181,7 @@ namespace Friflo.Json.Fliox.MsgPack
 #if NETSTANDARD2_0
                 throw new NotSupportedException();
 #else
-                var bits = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
+                var bits = ReadInt32BigEndian(data.Slice(cur + 1, 4));
                 return BitConverter.Int32BitsToSingle(bits);    // missing in netstandard2.0
 #endif
             }
@@ -203,7 +203,7 @@ namespace Friflo.Json.Fliox.MsgPack
         private double read_float64(int cur) {
             pos = cur + 9;
             if (pos <= data.Length) {
-                var bits = BinaryPrimitives.ReadInt64BigEndian(data.Slice(cur + 1, 8));
+                var bits = ReadInt64BigEndian(data.Slice(cur + 1, 8));
                 return BitConverter.Int64BitsToDouble(bits);
             }
             SetEofErrorType(MsgFormat.float64, cur);

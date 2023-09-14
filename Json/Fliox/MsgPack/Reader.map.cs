@@ -2,9 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Buffers.Binary;
 using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
 using static Friflo.Json.Fliox.MsgPack.MsgFormat;
+using static System.Buffers.Binary.BinaryPrimitives;
 
 // #pragma warning disable CS3002 // CS3002 : Return type of 'MsgReader.ReadKey()' is not CLS-compliant
 
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         length  = -1;
                         return false;
                     }
-                    length  = BinaryPrimitives.ReadInt16BigEndian(data.Slice(cur + 1, 2));
+                    length  = ReadInt16BigEndian(data.Slice(cur + 1, 2));
                     return true;
                 }
                 case map32: {
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         length  = -1;
                         return false;
                     }
-                    length  = BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4));
+                    length  = ReadInt32BigEndian(data.Slice(cur + 1, 4));
                     return true;
                 }
             }
@@ -107,16 +107,16 @@ namespace Friflo.Json.Fliox.MsgPack
                 case 0: return 0;
                 case 1: return name[0];
                 case 2: return (ulong)(name[0] | name[1] << 8);
-                case 3: return BinaryPrimitives.ReadUInt16LittleEndian(name.Slice(0, 2)) |
+                case 3: return ReadUInt16LittleEndian(name.Slice(0, 2)) |
                                ((ulong)name[2] << 16);
-                case 4: return BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(0, 4));
-                case 5: return BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(0, 4)) |
+                case 4: return ReadUInt32LittleEndian(name.Slice(0, 4));
+                case 5: return ReadUInt32LittleEndian(name.Slice(0, 4)) |
                                ((ulong)name[4] << 32);
-                case 6: return BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(0, 4)) | 
-                               ((ulong)BinaryPrimitives.ReadUInt16LittleEndian(name.Slice(4, 2)) << 32);
-                case 7: return BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(0, 4)) | 
-                               (ulong)BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(3, 4)) << 24;
-                case 8: return BinaryPrimitives.ReadUInt64LittleEndian(name.Slice(0, 8));
+                case 6: return ReadUInt32LittleEndian(name.Slice(0, 4)) | 
+                               ((ulong)ReadUInt16LittleEndian(name.Slice(4, 2)) << 32);
+                case 7: return ReadUInt32LittleEndian(name.Slice(0, 4)) | 
+                               (ulong)ReadUInt32LittleEndian(name.Slice(3, 4)) << 24;
+                case 8: return ReadUInt64LittleEndian(name.Slice(0, 8));
                 default:        throw new InvalidOperationException($"expect len <= 8. was: {len}");
             }
         }

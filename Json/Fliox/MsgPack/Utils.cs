@@ -2,12 +2,12 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Buffers.Binary;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
+using static System.Buffers.Binary.BinaryPrimitives;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable CommentTypo
@@ -118,28 +118,28 @@ namespace Friflo.Json.Fliox.MsgPack
         {
             switch (type)
             {
-                case <= fixintPosMax:   sb.Append((byte)type);                                                      break;
-                case >= fixintNeg:      sb.Append((sbyte)((int)type - 256));                                        break;
+                case <= fixintPosMax:   sb.Append((byte)type);                                  break;
+                case >= fixintNeg:      sb.Append((sbyte)((int)type - 256));                    break;
                 //
-                case int8:              sb.Append((sbyte)data[cur + 1]);                                            break;
-                case int16:             sb.Append(BinaryPrimitives.ReadInt16BigEndian(data.Slice(cur + 1, 2)));     break;
-                case int32:             sb.Append(BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4)));     break;
-                case int64:             sb.Append(BinaryPrimitives.ReadInt64BigEndian(data.Slice(cur + 1, 8)));     break;
+                case int8:              sb.Append((sbyte)data[cur + 1]);                        break;
+                case int16:             sb.Append(ReadInt16BigEndian(data.Slice(cur + 1, 2)));  break;
+                case int32:             sb.Append(ReadInt32BigEndian(data.Slice(cur + 1, 4)));  break;
+                case int64:             sb.Append(ReadInt64BigEndian(data.Slice(cur + 1, 8)));  break;
                 //
-                case uint8:             sb.Append(data[cur + 1]);                                                   break;
-                case uint16:            sb.Append(BinaryPrimitives.ReadUInt16BigEndian(data.Slice(cur + 1, 2)));    break;
-                case uint32:            sb.Append(BinaryPrimitives.ReadUInt32BigEndian(data.Slice(cur + 1, 4)));    break;
-                case uint64:            sb.Append(BinaryPrimitives.ReadUInt64BigEndian(data.Slice(cur + 1, 8)));    break;
+                case uint8:             sb.Append(data[cur + 1]);                               break;
+                case uint16:            sb.Append(ReadUInt16BigEndian(data.Slice(cur + 1, 2))); break;
+                case uint32:            sb.Append(ReadUInt32BigEndian(data.Slice(cur + 1, 4))); break;
+                case uint64:            sb.Append(ReadUInt64BigEndian(data.Slice(cur + 1, 8))); break;
                 //
                 case float32: {
 #if !NETSTANDARD2_0
-                    var flt = BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32BigEndian(data.Slice(cur + 1, 4)));
+                    var flt = BitConverter.Int32BitsToSingle(ReadInt32BigEndian(data.Slice(cur + 1, 4)));
                     sb.Append(flt.ToString(NumberFormat));
 #endif
                     break;
                 }
                 case float64: {
-                    var dbl = BitConverter.Int64BitsToDouble(BinaryPrimitives.ReadInt64BigEndian(data.Slice(cur + 1, 8)));
+                    var dbl = BitConverter.Int64BitsToDouble(ReadInt64BigEndian(data.Slice(cur + 1, 8)));
                     sb.Append(dbl.ToString(NumberFormat));
                     break;
                 }
