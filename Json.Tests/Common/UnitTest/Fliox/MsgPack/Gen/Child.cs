@@ -34,10 +34,10 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
                 writer.WriteNull();
                 return;
             }
-            int map = writer.WriteMapFix();
+            int map = writer.WriteMapFixBegin();
             int count = 1;
             writer.WriteKeyInt64   (1, _y, obj.y);
-            writer.WriteMapFixCount(map, count); // write element count
+            writer.WriteMapFixEnd(map, count); // write element count
         }
     }
 }

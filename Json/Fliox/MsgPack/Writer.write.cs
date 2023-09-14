@@ -12,35 +12,45 @@ namespace Friflo.Json.Fliox.MsgPack
 
     public partial struct MsgWriter
     {
-        private void Write_string_pos(string val) {
+        private void Write_string_pos(string val)
+        {
             var len     = Encoding.UTF8.GetByteCount(val);
+            var cur     = Write_string_len(len);
+            var dest    = new Span<byte>(target, cur, len);
+            Encoding.UTF8.GetBytes(val, dest);
+            pos = cur + len;
+        }
+        
+        private void Write_string_pos(ReadOnlySpan<byte> val)
+        {
+            var len     = val.Length;
+            var cur     = Write_string_len(len);
+            val.CopyTo(new Span<byte>(target, cur, len));
+            pos = cur + len;
+        }
+        
+        private int Write_string_len(int len)
+        {
             var data    = Reserve(1 + 4 + len);
             int cur     = pos;
             switch (len) {
                 case <= 31:
                     data[cur]       = (byte)((int)MsgFormat.fixstr | len);
-                    cur += 1;
-                    break;
+                    return cur + 1;
                 case <= byte.MaxValue:
                     data[cur]       = (byte)MsgFormat.str8;
                     data[cur + 1]   = (byte)len;
-                    cur += 2;
-                    break;
+                    return cur + 2;
                 case <= short.MaxValue:
                     data[cur]       = (byte)MsgFormat.str16;
                     WriteUInt16BigEndian (new Span<byte>(data, cur + 1, 2), (ushort)len);
-                    cur += 3;
-                    break;
+                    return cur + 3;
                 case <=  int.MaxValue:
                     data[cur]       = (byte)MsgFormat.str32;
                     WriteUInt32BigEndian (new Span<byte>(data, cur + 1, 4), (uint)len);
-                    cur += 5;
-                    break;
+                    return cur + 5;
             }
-            pos = cur + len;
-            var dest    = new Span<byte>(data, cur, len);
-            var source  = val.AsSpan();
-            Encoding.UTF8.GetBytes(source, dest);
+            throw new InvalidOperationException("unexpected string len");
         }
         
         // --- bool

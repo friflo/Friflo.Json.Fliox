@@ -36,5 +36,15 @@ namespace Friflo.Json.Fliox.MsgPack
                 }
             }
         }
+        
+        // --- array32
+        public int WriteArray32Start() {
+            return pos += 5;
+        }
+        
+        public void WriteArray32End(int pos, int count) {
+            target[pos] = (byte)MsgFormat.array32;
+            BinaryPrimitives.WriteInt32BigEndian (new Span<byte>(target, pos + 1, 4), count);
+        }
     }
 }

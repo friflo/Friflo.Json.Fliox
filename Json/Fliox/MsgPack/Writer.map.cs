@@ -12,11 +12,11 @@ namespace Friflo.Json.Fliox.MsgPack
     public partial struct MsgWriter
     {
         // --- fixmap
-        public int WriteMapFix() {
+        public int WriteMapFixBegin() {
             return pos++;
         }
         
-        public void WriteMapFixCount(int pos, int count) {
+        public void WriteMapFixEnd(int pos, int count) {
             target[pos] = (byte)((int)MsgFormat.fixmap | count);
         }
         

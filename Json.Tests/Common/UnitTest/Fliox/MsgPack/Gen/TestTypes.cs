@@ -44,7 +44,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
                 writer.WriteNull();
                 return;
             }
-            int map = writer.WriteMapFix();
+            int map = writer.WriteMapFixBegin();
             int count = 0;
             if (writer.AddKey(obj.childL != null)) {
                 writer.WriteKey(6, _childL, ref count);
@@ -62,7 +62,7 @@ namespace Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack {
                 writer.WriteKey(4, _intL, ref count);
                 writer.WriteMsg(ref obj.intL);
             }
-            writer.WriteMapFixCount(map, count); // write element count
+            writer.WriteMapFixEnd(map, count); // write element count
         }
     }
 }
