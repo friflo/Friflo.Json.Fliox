@@ -39,7 +39,9 @@ namespace Friflo.Json.Fliox.MsgPack
         
         // --- array32
         public int WriteArray32Start() {
-            return pos += 5;
+            var cur = pos;
+            pos = cur + 5;
+            return cur;
         }
         
         public void WriteArray32End(int pos, int count) {

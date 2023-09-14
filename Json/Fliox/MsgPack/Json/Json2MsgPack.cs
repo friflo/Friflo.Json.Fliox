@@ -60,10 +60,10 @@ namespace Friflo.Json.Fliox.MsgPack.Json
         
         private void WriteObject()
         {
-            var map = msgWriter.WriteMapFixBegin(); // TODO add WriteMap32Begin()
+            var map = msgWriter.WriteMap32Begin();
             var count = 1;
             
-            msgWriter.WriteMapFixEnd(map, count);
+            msgWriter.WriteMap32End(map, count);
         }
         
         private void WriteArray()

@@ -20,6 +20,18 @@ namespace Friflo.Json.Fliox.MsgPack
             target[pos] = (byte)((int)MsgFormat.fixmap | count);
         }
         
+        // --- map32
+        public int WriteMap32Begin() {
+            var cur = pos;
+            pos = cur + 5;
+            return cur;
+        }
+        
+        public void WriteMap32End(int pos, int count) {
+            target[pos] = (byte)MsgFormat.map32;
+            BinaryPrimitives.WriteInt32BigEndian(new Span<byte>(target, pos + 1, 4), count);
+        }
+        
         // --- map16
         public int WriteMap16() {
             var cur = pos;
