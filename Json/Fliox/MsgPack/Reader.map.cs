@@ -79,10 +79,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         return 0;
                     }
                     keyName = data.Slice(cur + 1, len);
-                    if (len <= 8) {
-                        return KeyAsLong(len, keyName);
-                    }
-                    return KeyAsLong    (8,   keyName);
+                    return KeyAsLong(len, keyName);
                 }
                 case str8: {
                     if (cur + 1 >= data.Length) {
@@ -93,10 +90,7 @@ namespace Friflo.Json.Fliox.MsgPack
                     if (!read_str(out keyName, cur + 2, len, type)) {
                         return 0;
                     }
-                    if (len <= 8) {
-                        return KeyAsLong(len, keyName);
-                    }
-                    return KeyAsLong    (8,   keyName);
+                    return KeyAsLong(len, keyName);
                 }
             }
             SetError(ExpectKeyString, type, cur);
@@ -105,6 +99,9 @@ namespace Friflo.Json.Fliox.MsgPack
         
         private static ulong KeyAsLong(int len, in ReadOnlySpan<byte> name)
         {
+            if (len > 8) {
+                len = 8;
+            }
             switch (len)
             {
                 case 0: return 0;
@@ -120,7 +117,7 @@ namespace Friflo.Json.Fliox.MsgPack
                 case 7: return BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(0, 4)) | 
                                (ulong)BinaryPrimitives.ReadUInt32LittleEndian(name.Slice(3, 4)) << 24;
                 case 8: return BinaryPrimitives.ReadUInt64LittleEndian(name.Slice(0, 8));
-                default: throw new InvalidOperationException($"expect len <= 8. was: {len}");
+                default:        throw new InvalidOperationException($"expect len <= 8. was: {len}");
             }
         }
     }
