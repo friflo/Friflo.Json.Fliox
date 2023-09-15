@@ -87,11 +87,9 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                 case >= fixstr and <= fixstrMax:
                 case    str8:
                 case    str16:
-                case    str32: {
-                    msgReader.ReadStringSpan(out var value);
-                    jsonWriter.ElementStr(value);
+                case    str32:
+                    jsonWriter.ElementStr(msgReader.ReadStringSpan());
                     return;
-                }
                 case >= fixmap and <= fixmapMax:
                 case    map16:
                 case    map32:
@@ -172,11 +170,9 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                     case >= fixstr and <= fixstrMax:
                     case    str8:
                     case    str16:
-                    case    str32: {
-                        msgReader.ReadStringSpan(out var value);
-                        jsonWriter.MemberStr(msgReader.KeyName, value);
+                    case    str32:
+                        jsonWriter.MemberStr(msgReader.KeyName,  msgReader.ReadStringSpan());
                         break;
-                    }
                     case >= fixmap and <= fixmapMax:
                     case    map16:
                     case    map32:

@@ -84,10 +84,11 @@ namespace Friflo.Json.Fliox.MsgPack
                 case str8: {
                     if (cur + 1 < data.Length) {
                         int len = data[cur + 1];
-                        if (read_str(out keyName, cur + 2, len, type)) {
-                            return KeyAsLong(len, keyName);
+                        keyName = read_str(cur + 2, len, type);
+                        if (keyName == null) {
+                            return 0;
                         }
-                        return 0;
+                        return KeyAsLong(len, keyName);
                     }
                     SetEofErrorType(type, cur);
                     return 0;

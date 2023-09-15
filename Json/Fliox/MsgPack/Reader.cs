@@ -120,61 +120,57 @@ namespace Friflo.Json.Fliox.MsgPack
             return false;
         }
         
-        public string ReadString () {
-            if (ReadStringSpan(out var span)) {
-                return MsgPackUtils.SpanToString(span);
+        public string ReadString ()
+        {
+            var span = ReadStringSpan();
+            if (span == null) {
+                return null;
             }
-            return null;
+            return MsgPackUtils.SpanToString(span);
         }
         
-        public bool ReadStringSpan (out ReadOnlySpan<byte> result)
+        public ReadOnlySpan<byte> ReadStringSpan ()
         {
             int cur = pos;
             if (cur >= data.Length) {
                 SetEofError(cur);
-                result = default;
-                return false;
+                return default;
             }
             var type = (MsgFormat)data[cur];
             switch (type) {
                 case nil:
                     pos = cur + 1;
-                    result = default;
-                    return false;
+                    return default;
                 case >= fixstr and <= fixstrMax: {
-                    return read_str(out result, cur + 1, (int)type & 0x1f, type);
+                    return read_str(cur + 1, (int)type & 0x1f, type);
                 }
                 case str8: {
                     if (cur + 1 >= data.Length) {
                         SetEofErrorType(type, cur);
-                        result = default;
-                        return false;
+                        return default;
                     }
                     int len = data[cur + 1];
-                    return read_str(out result, cur + 2, len, type);
+                    return read_str(cur + 2, len, type);
                 }
                 case str16: {
                     if (cur + 2 >= data.Length) {
                         SetEofErrorType(type, cur);
-                        result = default;
-                        return false;
+                        return default;
                     }
                     int len = data[cur + 1] << 8 | data [cur + 2];
-                    return read_str(out result, cur + 3, len, type);
+                    return read_str(cur + 3, len, type);
                 }
                 case str32: {
                     if (cur + 4 >= data.Length) {
                         SetEofErrorType(type, cur);
-                        result = default;
-                        return false;
+                        return default;
                     }
                     var len = BinaryPrimitives.ReadUInt32BigEndian(data.Slice(cur + 1, 4));
-                    return read_str(out result, cur + 5, (int)len, type);
+                    return read_str(cur + 5, (int)len, type);
                 }
             }
             SetError(ExpectString, type, cur);
-            result = default;
-            return false;
+            return default;
         }
     }
 }
