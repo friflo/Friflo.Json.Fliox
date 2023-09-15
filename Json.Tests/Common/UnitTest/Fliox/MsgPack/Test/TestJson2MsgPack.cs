@@ -44,8 +44,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json        = new JsonValue("12.5");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
-            AreEqual("CB 40 29 00 00 00 00 00 00", msg.DataHex());
-            AreEqual((byte)MsgFormat.float64, msg[0]);      // TODO should create float32
+            AreEqual("CA 41 48 00 00", msg.DataHex());
+            AreEqual((byte)MsgFormat.float32, msg[0]);
+        }
+        
+        [Test]
+        public static void Test_Msg2Json_double()
+        {
+            var json        = new JsonValue("1222333444.5");
+            var json2Msg    = new Json2MsgPack();
+            var msg         = json2Msg.ToMsgPack(json);
+            AreEqual("CB 41 D2 36 D5 01 20 00 00", msg.DataHex());
+            AreEqual((byte)MsgFormat.float64, msg[0]);
         }
         
         // --- object

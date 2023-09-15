@@ -379,6 +379,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             TestMsgReader.AssertSkip(writer.Data);
         }
         
+        // --- float / double
+        [Test]
+        public static void Write_Float32()
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteFloat64(12.5);
+            
+            AreEqual(HexNorm("CA 41 48 00 00"), writer.DataHex);
+            AreEqual((byte)MsgFormat.float32, writer.Data[0]);
+            TestMsgReader.AssertSkip(writer.Data);
+        }
+        
+        [Test]
+        public static void Write_Float64()
+        {
+            var writer = new MsgWriter(new byte[10], false);
+            writer.WriteFloat64(1222333444.5);
+            
+            AreEqual(HexNorm("CB 41 D2 36 D5 01 20 00 00"), writer.DataHex);
+            AreEqual((byte)MsgFormat.float64, writer.Data[0]);
+            TestMsgReader.AssertSkip(writer.Data);
+        }
+        
         // --------------------------------- Key (str) / Value integer ---------------------------------
         private static readonly byte[]     XArr = new byte[] { (byte)'x'};
         

@@ -34,6 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         private const               long    X       = 0x78;
         private static  readonly    byte[]  XArr    = new byte[] { (byte)'x'};
         
+        // --- string
         [TestCase(FixStr)] [TestCase(Str8)]
         public static void Write_key_strfix(KeyType keyType)
         {

@@ -53,9 +53,19 @@ namespace Friflo.Json.Fliox.MsgPack
         // ----------------------------------- utils ----------------------------------- 
         private void Write_float64_pos(byte[]data, int cur, double val)
         {
+            var flt = (float)val;
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (flt == val) {
+                // case: double value can be encoded as float
+                data[cur]   = (byte)MsgFormat.float32;
+                var bits32  = BitConverter.SingleToInt32Bits(flt);
+                BinaryPrimitives.WriteInt32BigEndian(new Span<byte>(data, cur + 1, 4), bits32);
+                pos = cur + 5;
+                return;
+            }
             data[cur]   = (byte)MsgFormat.float64;
-            var bits    = BitConverter.DoubleToInt64Bits(val);
-            BinaryPrimitives.WriteInt64BigEndian(new Span<byte>(data, cur + 1, 8), bits);
+            var bits64  = BitConverter.DoubleToInt64Bits(val);
+            BinaryPrimitives.WriteInt64BigEndian(new Span<byte>(data, cur + 1, 8), bits64);
             pos = cur + 9;
         }
     }
