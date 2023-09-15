@@ -4,7 +4,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
 {
     public static class TestMsgPack2Json
     {

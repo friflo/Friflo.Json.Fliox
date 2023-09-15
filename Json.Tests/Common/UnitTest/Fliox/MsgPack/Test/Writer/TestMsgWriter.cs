@@ -1,15 +1,16 @@
 using System;
 using Friflo.Json.Fliox.MsgPack;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Reader;
 using Gen.Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
-using static Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.KeyType;
+using static Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Writer.KeyType;
 
 // ReSharper disable CommentTypo
 // ReSharper disable StringLiteralTypo
 // ReSharper disable IdentifierTypo
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Writer
 {
     public enum KeyType
     {

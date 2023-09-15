@@ -1,5 +1,4 @@
-﻿using System;
-using Friflo.Json.Fliox.MsgPack;
+﻿using Friflo.Json.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
@@ -7,7 +6,7 @@ using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
 // ReSharper disable CommentTypo
 // ReSharper disable StringLiteralTypo
 // ReSharper disable IdentifierTypo
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Reader
 {
     public static partial class TestMsgReader
     {

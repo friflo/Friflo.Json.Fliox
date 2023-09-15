@@ -3,7 +3,7 @@ using Friflo.Json.Fliox.MsgPack;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
 {
     public static class TestJson2MsgPack
     {

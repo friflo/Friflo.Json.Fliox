@@ -6,7 +6,7 @@ using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
 // ReSharper disable CommentTypo
 // ReSharper disable StringLiteralTypo
 // ReSharper disable IdentifierTypo
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Reader
 {
     public static partial class TestMsgReader
     {

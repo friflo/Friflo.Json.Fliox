@@ -5,7 +5,7 @@ using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;
 
 // ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable StringLiteralTypo
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Map
 {
 
     public static class TestMsgPackError
