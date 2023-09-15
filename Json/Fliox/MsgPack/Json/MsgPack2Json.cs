@@ -5,18 +5,24 @@ using System;
 using System.Text;
 using Friflo.Json.Burst;
 using static Friflo.Json.Fliox.MsgPack.MsgFormat;
+using static System.Diagnostics.DebuggerBrowsableState;
+using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
 namespace Friflo.Json.Fliox.MsgPack.Json
 {
     public sealed class MsgPack2Json
     {
-        private     Utf8JsonWriter      jsonWriter;
-        private     string              error;
-        private     MsgReaderState      readerState;
-        private     StringBuilder       errorBuilder; 
+        // --- private fields
+                        private     Utf8JsonWriter      jsonWriter;
+        [Browse(Never)] private     string              error;
+                        private     MsgReaderState      readerState;
+                        private     StringBuilder       errorBuilder; 
         
-        public      string              Error       => error;
-        public      MsgReaderState      ReaderState => readerState;
+        // --- public properties
+                        public      string              Error       => error;
+                        public      MsgReaderState      ReaderState => readerState;
+
+        public override string ToString() => readerState == MsgReaderState.Ok ? "Ok" : Error;
         
         public JsonValue ToJson(ReadOnlySpan<byte> msg)
         {
@@ -33,6 +39,7 @@ namespace Friflo.Json.Fliox.MsgPack.Json
             errorBuilder ??= new StringBuilder();
             errorBuilder.Clear();
             error = msgReader.CreateErrorMessage(errorBuilder);
+            errorBuilder.Clear();
             return default;
         }
         
