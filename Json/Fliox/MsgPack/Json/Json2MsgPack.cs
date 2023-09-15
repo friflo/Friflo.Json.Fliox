@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
+using static Friflo.Json.Burst.JsonEvent;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.MsgPack
@@ -27,13 +28,13 @@ namespace Friflo.Json.Fliox.MsgPack
         {
             switch (ev)
             {
-                case JsonEvent.ValueNull:
+                case ValueNull:
                     msgWriter.WriteNull();
                     return;
-                case JsonEvent.ValueBool:
+                case ValueBool:
                     msgWriter.WriteBool(parser.boolValue);
                     return;
-                case JsonEvent.ValueNumber:
+                case ValueNumber:
                     if (parser.isFloat) {
                         var value = parser.ValueAsDouble(out bool success);
                         if (!success) {
@@ -48,19 +49,17 @@ namespace Friflo.Json.Fliox.MsgPack
                         msgWriter.WriteInt64(value);
                     }
                     return;
-                case JsonEvent.ValueString: {
+                case ValueString: {
                     var value = parser.value.AsSpan();
                     msgWriter.WriteStringUtf8(value);
                     return;
                 }
-                case JsonEvent.ObjectStart: {
+                case ObjectStart:
                     WriteObject();
                     return;
-                }
-                case JsonEvent.ArrayStart: {
+                case ArrayStart:
                     WriteArray();
                     return;
-                }
             }
         }
         
@@ -72,47 +71,45 @@ namespace Friflo.Json.Fliox.MsgPack
             while (true)
             {
                 var ev  = parser.NextEvent();
-                var key = parser.key.AsSpan();
-                switch (ev) {
-                    case JsonEvent.ValueNull:
-                        msgWriter.WriteKeyNil(key, ref count);
+                switch (ev)
+                {
+                    case ValueNull:
+                        msgWriter.WriteKeyNil(parser.key.AsSpan(), ref count);
                         continue;
-                    case JsonEvent.ValueBool:
+                    case ValueBool:
                         count++;
-                        msgWriter.WriteKeyBool(key, parser.boolValue);
+                        msgWriter.WriteKeyBool(parser.key.AsSpan(), parser.boolValue);
                         continue;
-                    case JsonEvent.ValueNumber:
+                    case ValueNumber:
                         count++;
                         if (parser.isFloat) {
                             var value = parser.ValueAsDouble(out bool success);
                             if (!success) {
                                 return;
                             }
-                            msgWriter.WriteKeyFloat64(key, value);
+                            msgWriter.WriteKeyFloat64(parser.key.AsSpan(), value);
                         } else {
                             var value = parser.ValueAsLong(out bool success);
                             if (!success) {
                                 return;
                             }
-                            msgWriter.WriteKeyInt64(key, value);
+                            msgWriter.WriteKeyInt64(parser.key.AsSpan(), value);
                         }
                         continue;
-                    case JsonEvent.ValueString: {
+                    case ValueString: {
                         var value = parser.value.AsSpan();
-                        msgWriter.WriteKeyStringUtf8(key, value, ref count);
+                        msgWriter.WriteKeyStringUtf8(parser.key.AsSpan(), value, ref count);
                         continue;
                     }
-                    case JsonEvent.ObjectStart: {
-                        msgWriter.WriteKey(key, ref count);
+                    case ObjectStart:
+                        msgWriter.WriteKey(parser.key.AsSpan(), ref count);
                         WriteObject();
                         continue;
-                    }
-                    case JsonEvent.ArrayStart: {
-                        msgWriter.WriteKey(key, ref count);
+                    case ArrayStart:
+                        msgWriter.WriteKey(parser.key.AsSpan(), ref count);
                         WriteArray();
                         continue;
-                    }
-                    case JsonEvent.ObjectEnd:
+                    case ObjectEnd:
                         msgWriter.WriteMap32End(map, count);
                         return;
                 }
@@ -130,16 +127,16 @@ namespace Friflo.Json.Fliox.MsgPack
                 {
                     var ev  = parser.NextEvent();
                     switch (ev) {
-                        case JsonEvent.ValueNull:
-                        case JsonEvent.ValueBool:
-                        case JsonEvent.ValueNumber:
-                        case JsonEvent.ValueString:
-                        case JsonEvent.ObjectStart:
-                        case JsonEvent.ArrayStart:
+                        case ValueNull:
+                        case ValueBool:
+                        case ValueNumber:
+                        case ValueString:
+                        case ObjectStart:
+                        case ArrayStart:
                             count++;
                             WriteElement(ev);
                             continue;
-                        case JsonEvent.ArrayEnd:
+                        case ArrayEnd:
                             msgWriter.WriteArray32End(array, count);
                             return;
                         default:
