@@ -4,7 +4,8 @@
 using System;
 using Friflo.Json.Burst;
 
-namespace Friflo.Json.Fliox.MsgPack.Json
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.MsgPack
 {
     public sealed class Json2MsgPack
     {

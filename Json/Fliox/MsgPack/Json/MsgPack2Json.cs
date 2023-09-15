@@ -8,7 +8,8 @@ using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 using static System.Diagnostics.DebuggerBrowsableState;
 using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 
-namespace Friflo.Json.Fliox.MsgPack.Json
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.MsgPack
 {
     public sealed class MsgPack2Json
     {
@@ -141,18 +142,18 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                 var valueType = (MsgFormat)data[msgReader.Pos];
                 switch (valueType)
                 {
-                    case nil:
+                    case    nil:
                         jsonWriter.MemberNul(msgReader.KeyName);
                         continue;
-                    case True:
+                    case    True:
                         jsonWriter.MemberBln(msgReader.KeyName, true);
                         continue;
-                    case False:
+                    case    False:
                         jsonWriter.MemberBln(msgReader.KeyName, false);
                         continue;
-                    case bin8:
-                    case bin16:
-                    case bin32:
+                    case    bin8:
+                    case    bin16:
+                    case    bin32:
                         WriteBinMember(ref msgReader);
                         continue;
                     case >= fixintPos and <= fixintPosMax:

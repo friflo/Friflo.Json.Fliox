@@ -1,6 +1,5 @@
 using System;
 using Friflo.Json.Fliox.MsgPack;
-using Friflo.Json.Fliox.MsgPack.Json;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Fliox.MsgPack.MsgPackUtils;

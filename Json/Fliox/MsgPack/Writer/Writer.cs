@@ -5,9 +5,9 @@ using System;
 
 // #pragma warning disable CS3001  // Argument type 'ulong' is not CLS-compliant
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.MsgPack
 {
-
     public partial struct MsgWriter
     {
         internal        byte[]              target;

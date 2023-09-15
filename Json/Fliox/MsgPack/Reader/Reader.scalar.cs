@@ -4,6 +4,7 @@
 using static Friflo.Json.Fliox.MsgPack.MsgReaderState;
 using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.MsgPack
 {
     public ref partial struct MsgReader

@@ -7,6 +7,7 @@ using System.Reflection;
 using Friflo.Json.Fliox.Mapper.Utils;
 using Friflo.Json.Fliox.MsgPack.Map;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.MsgPack
 {
     public partial class MsgPackMapper

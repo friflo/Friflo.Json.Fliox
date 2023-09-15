@@ -9,6 +9,7 @@ using static System.Buffers.Binary.BinaryPrimitives;
 // #pragma warning disable CS3002 // CS3002 : Return type of 'MsgReader.ReadKey()' is not CLS-compliant
 
 // ReSharper disable ReplaceSliceWithRangeIndexer
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.MsgPack
 {
 

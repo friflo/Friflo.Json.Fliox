@@ -4,9 +4,9 @@
 using System.Buffers.Binary;
 using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.MsgPack
 {
-
     public ref partial struct MsgReader
     {
         /// <summary>Is called subsequently after <see cref="ReadObject"/> of unknown keys</summary>

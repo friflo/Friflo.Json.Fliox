@@ -6,6 +6,7 @@ using System.Buffers.Binary;
 
 
 // ReSharper disable CommentTypo
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.MsgPack
 {
     public partial struct MsgWriter

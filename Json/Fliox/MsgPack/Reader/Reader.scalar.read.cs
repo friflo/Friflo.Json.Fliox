@@ -5,6 +5,7 @@ using System;
 using System.Runtime.CompilerServices;
 using static System.Buffers.Binary.BinaryPrimitives;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.MsgPack
 {
     public ref partial struct MsgReader
