@@ -58,8 +58,12 @@ namespace Friflo.Json.Fliox.MsgPack
             if (flt == val) {
                 // case: double value can be encoded as float
                 data[cur]   = (byte)MsgFormat.float32;
+#if NETSTANDARD2_0
+                throw new NotSupportedException();
+#else
                 var bits32  = BitConverter.SingleToInt32Bits(flt);
                 BinaryPrimitives.WriteInt32BigEndian(new Span<byte>(data, cur + 1, 4), bits32);
+#endif
                 pos = cur + 5;
                 return;
             }
