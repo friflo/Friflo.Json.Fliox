@@ -184,7 +184,24 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                         msgReader.ReadStringSpan(out var value);
                         jsonWriter.MemberStr(msgReader.KeyName, value);
                         break;
-                    } 
+                    }
+                    case >= fixmap and <= fixmapMax:
+                    case    map16:
+                    case    map32:
+                        jsonWriter.MemberObjectStart(msgReader.KeyName);
+                        TraverseObject(ref msgReader);
+                        jsonWriter.ObjectEnd();
+                        break;
+                    case >= fixarray and <= fixarrayMax:
+                    case    array16:
+                    case    array32:
+                        jsonWriter.MemberArrayStart(msgReader.KeyName);
+                        TraverseArray(ref msgReader);
+                        jsonWriter.ArrayEnd();
+                        return;
+                    default:
+                        msgReader.SkipTree();
+                        break;
                 }
             }
         }

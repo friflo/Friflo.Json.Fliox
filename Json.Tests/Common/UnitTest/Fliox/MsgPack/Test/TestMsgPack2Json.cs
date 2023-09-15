@@ -18,6 +18,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var msg2JSON = new MsgPack2Json();
             var json = msg2JSON.ToJson(data);
             AreEqual("null", json.ToString());
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":null}", json.ToString());
         }
         
         // --- bool
@@ -29,6 +33,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var msg2JSON = new MsgPack2Json();
             var json = msg2JSON.ToJson(data);
             AreEqual("false", json.ToString());
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":false}", json.ToString());
         }
         
         [Test]
@@ -40,6 +48,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("true", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":true}", json.ToString());
         }
         
         // --- string
@@ -52,6 +64,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("\"abc\"", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":\"abc\"}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -63,6 +80,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("\"0123456789\"", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":\"0123456789\"}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -74,6 +96,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("\"0123456789\"", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":\"0123456789\"}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -85,6 +112,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("\"0123456789\"", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":\"0123456789\"}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         // --- integer
@@ -97,6 +129,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("0", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":0}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -108,6 +145,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("-1", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":-1}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -119,6 +161,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("255", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":255}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -130,6 +177,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("127", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":127}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -141,6 +193,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("65535", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":65535}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -152,6 +209,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("32767", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":32767}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -163,6 +225,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("4294967295", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":4294967295}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -174,6 +241,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("2147483647", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":2147483647}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -185,6 +257,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("4294967295", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":4294967295}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -196,6 +273,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("4294967295", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":4294967295}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         // --- float
@@ -208,6 +290,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("8388607", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":8388607}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -219,6 +306,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("4294967295", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":4294967295}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         // --- bin (byte[])
@@ -231,6 +323,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("[9]", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":[9]}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -242,6 +339,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("[9]", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":[9]}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -253,6 +355,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("[9]", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":[9]}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         // --- array
@@ -265,6 +372,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("[0]", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":[0]}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -276,6 +388,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("[0]", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":[0]}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -287,6 +404,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("[0]", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":[0]}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         // --- map
@@ -299,6 +421,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("{\"a\":1}", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":{\"a\":1}}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -310,6 +437,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("{\"a\":1}", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":{\"a\":1}}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         [Test]
@@ -321,6 +453,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json = msg2JSON.ToJson(data);
             AreEqual("{\"a\":1}", json.ToString());
             AssertEof(data, msg2JSON);
+            //
+            var obj = CreateObjectMsg(data);
+            json = msg2JSON.ToJson(obj);
+            AreEqual("{\"x\":{\"a\":1}}", json.ToString());
+            AssertEof(obj, msg2JSON);
         }
         
         // -------------------------------------- utils --------------------------------------
@@ -331,6 +468,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
                 msg2JSON.ToJson(subData);
                 AreEqual(MsgReaderState.UnexpectedEof, msg2JSON.ReaderState);
             }
+        }
+        
+        private static ReadOnlySpan<byte> CreateObjectMsg(ReadOnlySpan<byte> data)
+        {
+            var msg = new byte[3 + data.Length];
+            msg[0] = 0x81;  // fixmap - length: 1
+            msg[1] = 0xA1;  // fixstr - length: 1
+            msg[2] = 0x78;  // 'x'
+            for (int n = 0; n < data.Length; n++) {
+                msg[n + 3] = data[n];
+            }
+            return msg;
         }
     }
 }
