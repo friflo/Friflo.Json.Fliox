@@ -135,18 +135,18 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                 {
                     case nil:
                         jsonWriter.MemberNul(msgReader.KeyName);
-                        break;
+                        continue;
                     case True:
                         jsonWriter.MemberBln(msgReader.KeyName, true);
-                        break;
+                        continue;
                     case False:
                         jsonWriter.MemberBln(msgReader.KeyName, false);
-                        break;
+                        continue;
                     case bin8:
                     case bin16:
                     case bin32:
                         WriteBinMember(ref msgReader);
-                        break;
+                        continue;
                     case >= fixintPos and <= fixintPosMax:
                     case >= fixintNeg and <= fixintNegMax:
                     //
@@ -160,26 +160,26 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                     case    int32:
                     case    int64:
                         jsonWriter.MemberLng(msgReader.KeyName, msgReader.ReadInt64());
-                        break;
+                        continue;
                     case    float32:
                         jsonWriter.MemberDbl(msgReader.KeyName, msgReader.ReadFloat32());
-                        break;
+                        continue;
                     case    float64:
                         jsonWriter.MemberDbl(msgReader.KeyName, msgReader.ReadFloat64());
-                        break;
+                        continue;
                     case >= fixstr and <= fixstrMax:
                     case    str8:
                     case    str16:
                     case    str32:
                         jsonWriter.MemberStr(msgReader.KeyName,  msgReader.ReadStringSpan());
-                        break;
+                        continue;
                     case >= fixmap and <= fixmapMax:
                     case    map16:
                     case    map32:
                         jsonWriter.MemberObjectStart(msgReader.KeyName);
                         TraverseObject(ref msgReader);
                         jsonWriter.ObjectEnd();
-                        break;
+                        continue;
                     case >= fixarray and <= fixarrayMax:
                     case    array16:
                     case    array32:
@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                         return;
                     default:
                         msgReader.SkipTree();
-                        break;
+                        continue;
                 }
             }
         }
