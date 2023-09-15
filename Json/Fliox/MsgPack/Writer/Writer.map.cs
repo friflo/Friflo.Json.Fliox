@@ -59,6 +59,14 @@ namespace Friflo.Json.Fliox.MsgPack
             pos         = cur + 1 + keyLen;
         }
         
+        public void WriteKey(ReadOnlySpan<byte> key, ref int count) {
+            count++;
+            var data    = Reserve(4 + key.Length);
+            var cur     = pos;
+            WriteKeySpan(data, ref cur, key);
+            pos         = cur;
+        }
+        
         private static void WriteKeyFix(byte[]data, int cur, int keyLen, long key) {
             data[cur] = (byte)((int)MsgFormat.fixstr | keyLen);
             BinaryPrimitives.WriteInt64LittleEndian(new Span<byte>(data, cur + 1, 8), key);
