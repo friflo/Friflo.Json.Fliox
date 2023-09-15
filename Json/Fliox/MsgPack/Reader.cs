@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         public      ReadOnlySpan<byte>  KeyName         => keyName;
                         public      string              KeyNameString   => keyName == null ? null : MsgPackUtils.SpanToString(keyName);
         
-                        public      string              Error           => CreateErrorMessage();
+                        public      string              Error           => CreateErrorMessage(null);
                         public      MsgReaderState      State           => state;
                         public      override string     ToString()      => GetString();
         // --- const
@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.MsgPack
         
         private string GetString() {
             if (state != Ok) {
-                return CreateErrorMessage();
+                return CreateErrorMessage(null);
             }
             var sb = new StringBuilder();
             sb.Append($"pos: {pos} ");

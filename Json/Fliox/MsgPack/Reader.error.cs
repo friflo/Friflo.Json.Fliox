@@ -51,13 +51,13 @@ namespace Friflo.Json.Fliox.MsgPack
             errorPos    = cur;
         }
         
-        private string CreateErrorMessage()
+        public string CreateErrorMessage(StringBuilder sb)
         {
             if (state == Ok) {
                 return null;
             }
             var isRangeError = (state & RangeError) != 0;
-            var sb = new StringBuilder();
+            sb ??= new StringBuilder();
             sb.Append("MessagePack error - ");
             if (isRangeError) {
                 sb.Append("value out of range / ");

@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Text;
 using Friflo.Json.Burst;
 using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 
@@ -12,6 +13,7 @@ namespace Friflo.Json.Fliox.MsgPack.Json
         private     Utf8JsonWriter      jsonWriter;
         private     string              error;
         private     MsgReaderState      readerState;
+        private     StringBuilder       errorBuilder; 
         
         public      string              Error       => error;
         public      MsgReaderState      ReaderState => readerState;
@@ -25,7 +27,9 @@ namespace Friflo.Json.Fliox.MsgPack.Json
             
             readerState = msgReader.State;
             if (msgReader.State != MsgReaderState.Ok) {
-                error = msgReader.Error;
+                errorBuilder ??= new StringBuilder();
+                errorBuilder.Clear();
+                error = msgReader.CreateErrorMessage(errorBuilder);
                 return default;
             }
             return new JsonValue(jsonWriter.json);
