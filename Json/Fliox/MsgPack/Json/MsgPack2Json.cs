@@ -10,28 +10,51 @@ namespace Friflo.Json.Fliox.MsgPack.Json
     public struct MsgPack2Json
     {
         private     Utf8JsonWriter      jsonWriter;
+        private     string              error;
+        private     MsgReaderState      readerState;
+        
+        public      string              Error       => error;
+        public      MsgReaderState      ReaderState => readerState;
         
         public JsonValue ToJson(ReadOnlySpan<byte> msg)
         {
             jsonWriter.InitSerializer();
             var msgReader = new MsgReader(msg);
-            WriteElement(ref msgReader);
+            
+            Start(ref msgReader);
+            
+            readerState = msgReader.State;
+            if (msgReader.State != MsgReaderState.Ok) {
+                error = msgReader.Error;
+                return default;
+            }
             return new JsonValue(jsonWriter.json);
         }
         
-        private void WriteElement(ref MsgReader msgReader)
+        private void Start(ref MsgReader msgReader)
         {
-            var data = msgReader.data;
+            var data = msgReader.Data;
             if (msgReader.Pos >= data.Length) {
+                msgReader.SetEofError();
                 return;
             }
             var type = (MsgFormat)data[msgReader.Pos];
-
+            TraverseElement(type, ref msgReader);
+        }
+        
+        private void TraverseElement(MsgFormat type, ref MsgReader msgReader)
+        {
             switch (type)
             {
                 case nil:
                     jsonWriter.ElementNul();
-                    break;
+                    return;
+                case True:
+                    jsonWriter.ElementBln(true);
+                    return;
+                case False:
+                    jsonWriter.ElementBln(false);
+                    return;
                 case <= fixintPosMax:
                 case >= fixintNeg:
                 case    uint8:
@@ -44,70 +67,64 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                 case    int64: {
                     var value = msgReader.ReadInt64();
                     jsonWriter.ElementLng(value);
-                    break;
+                    return;
                 }
                 case    float32: {
                     var value = msgReader.ReadFloat32();
                     jsonWriter.ElementDbl(value);
-                    break;
+                    return;
                 }
                 case    float64: {
                     var value = msgReader.ReadFloat64();
                     jsonWriter.ElementDbl(value);
-                    break;
+                    return;
                 }
                 case >= fixstr and <= fixstrMax:
                 case    str8:
                 case    str16:
                 case    str32: {
-                    var value = msgReader.ReadString();
+                    msgReader.ReadStringSpan(out var value);
                     jsonWriter.ElementStr(value);
-                    break;
+                    return;
                 }
                 case >= fixmap and <= fixmapMax:
                 case    map16:
                 case    map32:
                     jsonWriter.ObjectStart();
-                    WriteObject(ref msgReader);
+                    TraverseObject(ref msgReader);
                     jsonWriter.ObjectEnd();
-                    break;
+                    return;
                 case >= fixarray and <= fixarrayMax:
                 case    array16:
                 case    array32:
                     jsonWriter.ArrayStart(false);
-                    WriteArray(ref msgReader);
+                    TraverseArray(ref msgReader);
                     jsonWriter.ArrayEnd();
-                    break;
+                    return;
+                default:
+                    msgReader.SkipTree();
+                    return;
             }
         }
         
-        private void WriteObject(ref MsgReader msgReader)
+        private void TraverseObject(ref MsgReader msgReader)
         {
             if (!msgReader.ReadObject(out int length)) {
                 return;
             }
+            var data = msgReader.Data;
             for (int n = 0; n < length; n++)
             {
                 // --- read key
-                var data = msgReader.data;
                 if (msgReader.Pos >= data.Length) {
+                    msgReader.SetEofError();
                     return;
                 }
-                ReadOnlySpan<byte> key;
-                var keyType = (MsgFormat)data[msgReader.Pos];
-                switch (keyType) {
-                    case >= fixstr and <= fixstrMax:
-                    case    str8:
-                    case    str16:
-                    case    str32: {
-                        msgReader.ReadStringSpan(out key);
-                        break;
-                    }
-                    default:
-                        return;
-                }
+                msgReader.ReadKey(); // sets msgReader.KeyName
+
                 // --- read value
                 if (msgReader.Pos >= data.Length) {
+                    msgReader.SetEofError();
                     return;
                 }
                 var valueType = (MsgFormat)data[msgReader.Pos];
@@ -126,17 +143,17 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                     case    int32:
                     case    int64: {
                         var value = msgReader.ReadInt64();
-                        jsonWriter.MemberLng(key, value);
+                        jsonWriter.MemberLng(msgReader.KeyName, value);
                         break;
                     }
                     case    float32: {
                         var value = msgReader.ReadFloat32();
-                        jsonWriter.MemberDbl(key, value);
+                        jsonWriter.MemberDbl(msgReader.KeyName, value);
                         break;
                     }
                     case    float64: {
                         var value = msgReader.ReadFloat64();
-                        jsonWriter.MemberDbl(key, value);
+                        jsonWriter.MemberDbl(msgReader.KeyName, value);
                         break;
                     }
                     case >= fixstr and <= fixstrMax:
@@ -144,20 +161,27 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                     case    str16:
                     case    str32: {
                         msgReader.ReadStringSpan(out var value);
-                        jsonWriter.MemberStr(key, value);
+                        jsonWriter.MemberStr(msgReader.KeyName, value);
                         break;
                     }
                 }
             }
         }
         
-        private void WriteArray(ref MsgReader msgReader)
+        private void TraverseArray(ref MsgReader msgReader)
         {
             if (!msgReader.ReadArray(out int length)) {
                 return;
             }
-            for (int n = 0; n < length; n++) {
-                WriteElement(ref msgReader);   
+            var data = msgReader.Data;
+            for (int n = 0; n < length; n++)
+            {
+                if (msgReader.Pos >= data.Length) {
+                    msgReader.SetEofError();
+                    return;
+                }
+                var type = (MsgFormat)data[msgReader.Pos];
+                TraverseElement(type, ref msgReader);   
             }
         }
     }

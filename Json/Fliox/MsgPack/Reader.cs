@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.MsgPack
     public ref partial struct MsgReader
     {
         // --- private fields
-                        public      ReadOnlySpan<byte>  data;
+        [Browse(Never)] private     ReadOnlySpan<byte>  data;
         [Browse(Never)] private     int                 pos;
         [Browse(Never)] private     ReadOnlySpan<byte>  keyName;
         [Browse(Never)] private     MsgReaderState      state;
@@ -53,6 +53,7 @@ namespace Friflo.Json.Fliox.MsgPack
         [Browse(Never)] private     int                 errorPos;
         
         // --- public properties
+                        public      ReadOnlySpan<byte>  Data            => data;
                         public      int                 Pos             => pos;
         /// <summary><see cref="keyName"/> is set in <see cref="ReadKey"/></summary>
                         public      ReadOnlySpan<byte>  KeyName         => keyName;

@@ -11,8 +11,9 @@ namespace Friflo.Json.Fliox.MsgPack.Json
         private MsgWriter       msgWriter;
         private Utf8JsonParser  parser;
         
-        public ReadOnlySpan<byte> ToMsgPack(ReadOnlySpan<byte> msg)
+        public ReadOnlySpan<byte> ToMsgPack(JsonValue json)
         {
+            parser.InitParser(json);
             WriteElement();
             return msgWriter.Data;
         }
