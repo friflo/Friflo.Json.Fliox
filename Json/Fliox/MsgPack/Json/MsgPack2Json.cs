@@ -26,13 +26,14 @@ namespace Friflo.Json.Fliox.MsgPack.Json
             Start(ref msgReader);
             
             readerState = msgReader.State;
-            if (msgReader.State != MsgReaderState.Ok) {
-                errorBuilder ??= new StringBuilder();
-                errorBuilder.Clear();
-                error = msgReader.CreateErrorMessage(errorBuilder);
-                return default;
+            if (msgReader.State == MsgReaderState.Ok) {
+                error = null;
+                return new JsonValue(jsonWriter.json);
             }
-            return new JsonValue(jsonWriter.json);
+            errorBuilder ??= new StringBuilder();
+            errorBuilder.Clear();
+            error = msgReader.CreateErrorMessage(errorBuilder);
+            return default;
         }
         
         private void Start(ref MsgReader msgReader)
