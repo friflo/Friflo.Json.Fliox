@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
             AreEqual("CB 40 29 00 00 00 00 00 00", msg.DataHex());
-            AreEqual((byte)MsgFormat.float64, msg[0]);              // TODO should create float
+            AreEqual((byte)MsgFormat.float64, msg[0]);      // TODO should create float32
         }
         
         // --- object
@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
             AreEqual("DF 00 00 00 01 A1 61 01", msg.DataHex());
-            AreEqual((byte)MsgFormat.map32, msg[0]);
+            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
         }
         
         // --- array
@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
             var json        = new JsonValue("[1]");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
-            AreEqual("DD 00 00 00 01 01", msg.DataHex());
+            AreEqual("DD 00 00 00 01 01", msg.DataHex());   // TODO should create a fixarray
             AreEqual((byte)MsgFormat.array32, msg[0]);
         }
     }

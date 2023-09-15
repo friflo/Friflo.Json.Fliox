@@ -120,28 +120,25 @@ namespace Friflo.Json.Fliox.MsgPack
         {
             int array = msgWriter.WriteArray32Start();
             int count = 0;
-            
+
             while (true)
             {
-                while (true)
-                {
-                    var ev  = parser.NextEvent();
-                    switch (ev) {
-                        case ValueNull:
-                        case ValueBool:
-                        case ValueNumber:
-                        case ValueString:
-                        case ObjectStart:
-                        case ArrayStart:
-                            count++;
-                            WriteElement(ev);
-                            continue;
-                        case ArrayEnd:
-                            msgWriter.WriteArray32End(array, count);
-                            return;
-                        default:
-                            throw new NotImplementedException("todo");
-                    }
+                var ev  = parser.NextEvent();
+                switch (ev) {
+                    case ValueNull:
+                    case ValueBool:
+                    case ValueNumber:
+                    case ValueString:
+                    case ObjectStart:
+                    case ArrayStart:
+                        count++;
+                        WriteElement(ev);
+                        continue;
+                    case ArrayEnd:
+                        msgWriter.WriteArray32End(array, count);
+                        return;
+                    default:
+                        throw new NotImplementedException("todo");
                 }
             }
         }
