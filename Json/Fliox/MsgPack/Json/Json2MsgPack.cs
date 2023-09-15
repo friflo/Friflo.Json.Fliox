@@ -6,7 +6,7 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.MsgPack.Json
 {
-    public class Json2MsgPack
+    public sealed class Json2MsgPack
     {
         private MsgWriter       msgWriter;
         private Utf8JsonParser  parser;

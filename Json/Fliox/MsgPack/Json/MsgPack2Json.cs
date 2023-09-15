@@ -8,7 +8,7 @@ using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 
 namespace Friflo.Json.Fliox.MsgPack.Json
 {
-    public class MsgPack2Json
+    public sealed class MsgPack2Json
     {
         private     Utf8JsonWriter      jsonWriter;
         private     string              error;
