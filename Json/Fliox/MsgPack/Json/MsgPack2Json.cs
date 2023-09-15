@@ -58,18 +58,18 @@ namespace Friflo.Json.Fliox.MsgPack.Json
         {
             switch (type)
             {
-                case nil:
+                case    nil:
                     jsonWriter.ElementNul();
                     return;
-                case True:
+                case    True:
                     jsonWriter.ElementBln(true);
                     return;
-                case False:
+                case    False:
                     jsonWriter.ElementBln(false);
                     return;
-                case bin8:
-                case bin16:
-                case bin32:
+                case    bin8:
+                case    bin16:
+                case    bin32:
                     WriteBinElement(ref msgReader);
                     return;
                 case >= fixintPos and <= fixintPosMax:
