@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                         jsonWriter.MemberArrayStart(msgReader.KeyName);
                         TraverseArray(ref msgReader);
                         jsonWriter.ArrayEnd();
-                        return;
+                        continue;
                     default:
                         msgReader.SkipTree();
                         continue;
