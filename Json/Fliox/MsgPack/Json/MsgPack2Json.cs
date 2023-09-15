@@ -75,21 +75,15 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                 case    int8:
                 case    int16:
                 case    int32:
-                case    int64: {
-                    var value = msgReader.ReadInt64();
-                    jsonWriter.ElementLng(value);
+                case    int64:
+                    jsonWriter.ElementLng(msgReader.ReadInt64());
                     return;
-                }
-                case    float32: {
-                    var value = msgReader.ReadFloat32();
-                    jsonWriter.ElementDbl(value);
+                case    float32:
+                    jsonWriter.ElementDbl(msgReader.ReadFloat32());
                     return;
-                }
-                case    float64: {
-                    var value = msgReader.ReadFloat64();
-                    jsonWriter.ElementDbl(value);
+                case    float64:
+                    jsonWriter.ElementDbl(msgReader.ReadFloat64());
                     return;
-                }
                 case >= fixstr and <= fixstrMax:
                 case    str8:
                 case    str16:
@@ -166,21 +160,15 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                     case    int8:
                     case    int16:
                     case    int32:
-                    case    int64: {
-                        var value = msgReader.ReadInt64();
-                        jsonWriter.MemberLng(msgReader.KeyName, value);
+                    case    int64:
+                        jsonWriter.MemberLng(msgReader.KeyName, msgReader.ReadInt64());
                         break;
-                    }
-                    case    float32: {
-                        var value = msgReader.ReadFloat32();
-                        jsonWriter.MemberDbl(msgReader.KeyName, value);
+                    case    float32:
+                        jsonWriter.MemberDbl(msgReader.KeyName, msgReader.ReadFloat32());
                         break;
-                    }
-                    case    float64: {
-                        var value = msgReader.ReadFloat64();
-                        jsonWriter.MemberDbl(msgReader.KeyName, value);
+                    case    float64:
+                        jsonWriter.MemberDbl(msgReader.KeyName, msgReader.ReadFloat64());
                         break;
-                    }
                     case >= fixstr and <= fixstrMax:
                     case    str8:
                     case    str16:
