@@ -230,7 +230,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         [Test]
         public static void Read_Eof_bin8()
         {
-            var data = HexToSpan("c4 01 09");
+            var data = HexToSpan("c4 01 09");           // [9]
             AreEqual((byte)MsgFormat.bin8, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadBin(), null);
         }
@@ -238,7 +238,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         [Test]
         public static void Read_Eof_bin16()
         {
-            var data = HexToSpan("c5 00 01 09");
+            var data = HexToSpan("c5 00 01 09");        // [9]
             AreEqual((byte)MsgFormat.bin16, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadBin(), null);
         }
@@ -246,7 +246,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test
         [Test]
         public static void Read_Eof_bin32()
         {
-            var data = HexToSpan("c6 00 00 00 01 09");
+            var data = HexToSpan("c6 00 00 00 01 09");  // [9]
             AreEqual((byte)MsgFormat.bin32, data[0]);
             AssertEof(data, (ref MsgReader r) => r.ReadBin(), null);
         }

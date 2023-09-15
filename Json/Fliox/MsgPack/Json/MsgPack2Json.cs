@@ -7,7 +7,7 @@ using static Friflo.Json.Fliox.MsgPack.MsgFormat;
 
 namespace Friflo.Json.Fliox.MsgPack.Json
 {
-    public struct MsgPack2Json
+    public class MsgPack2Json
     {
         private     Utf8JsonWriter      jsonWriter;
         private     string              error;
@@ -55,12 +55,19 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                 case False:
                     jsonWriter.ElementBln(false);
                     return;
-                case <= fixintPosMax:
-                case >= fixintNeg:
+                case bin8:
+                case bin16:
+                case bin32:
+                    WriteBinElement(ref msgReader);
+                    return;
+                case >= fixintPos and <= fixintPosMax:
+                case >= fixintNeg and <= fixintNegMax:
+                //
                 case    uint8:
                 case    uint16:
                 case    uint32:
                 case    uint64:
+                //
                 case    int8:
                 case    int16:
                 case    int32:
@@ -130,8 +137,22 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                 var valueType = (MsgFormat)data[msgReader.Pos];
                 switch (valueType)
                 {
-                    case <= fixintPosMax:
-                    case >= fixintNeg:
+                    case nil:
+                        jsonWriter.MemberNul(msgReader.KeyName);
+                        break;
+                    case True:
+                        jsonWriter.MemberBln(msgReader.KeyName, true);
+                        break;
+                    case False:
+                        jsonWriter.MemberBln(msgReader.KeyName, false);
+                        break;
+                    case bin8:
+                    case bin16:
+                    case bin32:
+                        WriteBinMember(ref msgReader);
+                        break;
+                    case >= fixintPos and <= fixintPosMax:
+                    case >= fixintNeg and <= fixintNegMax:
                     //
                     case    uint8:
                     case    uint16:
@@ -163,7 +184,7 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                         msgReader.ReadStringSpan(out var value);
                         jsonWriter.MemberStr(msgReader.KeyName, value);
                         break;
-                    }
+                    } 
                 }
             }
         }
@@ -183,6 +204,26 @@ namespace Friflo.Json.Fliox.MsgPack.Json
                 var type = (MsgFormat)data[msgReader.Pos];
                 TraverseElement(type, ref msgReader);   
             }
+        }
+        
+        private void WriteBinElement(ref MsgReader msgReader)
+        {
+            jsonWriter.ArrayStart(false);
+            var bytes = msgReader.ReadBin();
+            for (int n = 0; n < bytes.Length; n++) {
+                jsonWriter.ElementLng(bytes[n]);
+            }
+            jsonWriter.ArrayEnd();
+        }
+        
+        private void WriteBinMember(ref MsgReader msgReader)
+        {
+            jsonWriter.MemberArrayStart(msgReader.KeyName);
+            var bytes = msgReader.ReadBin();
+            for (int i = 0; i < bytes.Length; i++) {
+                jsonWriter.ElementLng(bytes[i]);
+            }
+            jsonWriter.ArrayEnd();
         }
     }
 }
