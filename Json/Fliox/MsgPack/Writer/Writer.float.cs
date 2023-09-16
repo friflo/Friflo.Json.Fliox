@@ -53,6 +53,44 @@ namespace Friflo.Json.Fliox.MsgPack
         // ----------------------------------- utils ----------------------------------- 
         private void Write_float64_pos(byte[]data, int cur, double val)
         {
+            int int32 = (int)val;
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (int32 == val)
+            {
+                // case: double value can be encoded as int
+                switch (int32) {
+                    case > ushort.MaxValue:
+                        break;
+                    case > byte.MaxValue:
+                        data[cur]   = (byte)MsgFormat.uint16;
+                        BinaryPrimitives.WriteUInt16BigEndian(new Span<byte>(data, cur + 1, 2), (ushort)int32);
+                        pos = cur + 3;
+                        return;
+                    case > sbyte.MaxValue: 
+                        data[cur]   = (byte)MsgFormat.uint8;
+                        data[cur + 1] = (byte)int32;
+                        pos = cur + 2;
+                        return;
+                    case >= 0:
+                        data[cur]   = (byte)int32;
+                        pos = cur + 1;
+                        return;
+                    case >= -32:
+                        data[cur]   = (byte)int32;
+                        pos = cur + 1;
+                        return;
+                    case >= sbyte.MinValue:
+                        data[cur]   = (byte)MsgFormat.int8;
+                        data[cur + 1] = (byte)int32;
+                        pos = cur + 2;
+                        return;
+                    case >= short.MinValue:
+                        data[cur]   = (byte)MsgFormat.int16;
+                        BinaryPrimitives.WriteInt16BigEndian(new Span<byte>(data, cur + 1, 2), (short)int32);
+                        pos = cur + 3;
+                        return;
+                }
+            }
             var flt = (float)val;
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (flt == val) {
