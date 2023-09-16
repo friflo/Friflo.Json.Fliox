@@ -77,8 +77,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
             var json        = new JsonValue("[1]");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
-            AreEqual("DD 00 00 00 01 01", msg.DataHex());   // TODO should create a fixarray
-            AreEqual((byte)MsgFormat.array32, msg[0]);
+            AreEqual("91 01", msg.DataHex());
+            AreEqual((byte)MsgFormat.fixarray + 1, msg[0]);
             AssertEof(json, json2Msg);
         }
         
@@ -89,8 +89,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
             var json        = new JsonValue("{\"a\":null}");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
-            AreEqual("DF 00 00 00 01 A1 61 C0", msg.DataHex());
-            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AreEqual("81 A1 61 C0", msg.DataHex());
+            AreEqual((byte)MsgFormat.fixmap + 1, msg[0]);
             AssertEof(json, json2Msg);
         }
         
@@ -100,8 +100,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
             var json        = new JsonValue("{\"a\":true}");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
-            AreEqual("DF 00 00 00 01 A1 61 C3", msg.DataHex());
-            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AreEqual("81 A1 61 C3", msg.DataHex());
+            AreEqual((byte)MsgFormat.fixmap + 1, msg[0]);
             AssertEof(json, json2Msg);
         }
         
@@ -111,8 +111,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
             var json        = new JsonValue("{\"a\":1}");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
-            AreEqual("DF 00 00 00 01 A1 61 01", msg.DataHex());
-            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AreEqual("81 A1 61 01", msg.DataHex());
+            AreEqual((byte)MsgFormat.fixmap + 1, msg[0]);
             AssertEof(json, json2Msg);
         }
         
@@ -122,8 +122,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
             var json        = new JsonValue("{\"a\":1.5}");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
-            AreEqual("DF 00 00 00 01 A1 61 CA 3F C0 00 00", msg.DataHex());
-            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AreEqual("81 A1 61 CA 3F C0 00 00", msg.DataHex());
+            AreEqual((byte)MsgFormat.fixmap + 1, msg[0]);
             AssertEof(json, json2Msg);
         }
         
@@ -133,8 +133,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
             var json        = new JsonValue("{\"a\":\"xyz\"}");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
-            AreEqual("DF 00 00 00 01 A1 61 A3 78 79 7A", msg.DataHex());
-            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AreEqual("81 A1 61 A3 78 79 7A", msg.DataHex());
+            AreEqual((byte)MsgFormat.fixmap + 1, msg[0]);
             AssertEof(json, json2Msg);
         }
         
@@ -144,8 +144,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
             var json        = new JsonValue("{\"a\":[]}");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
-            AreEqual("DF 00 00 00 01 A1 61 DD 00 00 00 00", msg.DataHex());
-            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AreEqual("81 A1 61 90", msg.DataHex());
+            AreEqual((byte)MsgFormat.fixmap, msg[0] & 0xf0);
             AssertEof(json, json2Msg);
         }
         
@@ -155,8 +155,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
             var json        = new JsonValue("{\"a\":{}}");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
-            AreEqual("DF 00 00 00 01 A1 61 DF 00 00 00 00", msg.DataHex());
-            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AreEqual("81 A1 61 80", msg.DataHex());
+            AreEqual((byte)MsgFormat.fixmap + 1, msg[0]);
             AssertEof(json, json2Msg);
         }
         

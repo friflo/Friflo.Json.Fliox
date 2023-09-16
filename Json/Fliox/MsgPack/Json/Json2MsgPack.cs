@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.MsgPack
         
         private void WriteObject()
         {
-            var map = msgWriter.WriteMap32Begin();
+            var map = msgWriter.WriteMapFixBegin();
             var count = 0;
             
             while (true)
@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         WriteArray();
                         continue;
                     case ObjectEnd:
-                        msgWriter.WriteMap32End(map, count);
+                        msgWriter.WriteMapFixEnd(map, count);
                         return;
                     case Error:
                         return;
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.MsgPack
         
         private void WriteArray()
         {
-            int array = msgWriter.WriteArray32Start();
+            int array = msgWriter.WriteArrayFixStart();
             int count = 0;
 
             while (true)
@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         WriteElement(ev);
                         continue;
                     case ArrayEnd:
-                        msgWriter.WriteArray32End(array, count);
+                        msgWriter.WriteArrayFixEnd(array, count);
                         return;
                     case Error:
                         return;

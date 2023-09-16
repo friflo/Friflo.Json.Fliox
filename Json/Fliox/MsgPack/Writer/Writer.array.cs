@@ -39,6 +39,16 @@ namespace Friflo.Json.Fliox.MsgPack
         }
         
         // --- array32
+        public int WriteArrayFixStart() {
+            var cur = pos;
+            pos = cur + 1;
+            return cur;
+        }
+        
+        public void WriteArrayFixEnd(int pos, int count) {
+            target[pos] = (byte)((int)MsgFormat.fixarray | count);
+        }
+        
         public int WriteArray32Start() {
             var cur = pos;
             pos = cur + 5;
