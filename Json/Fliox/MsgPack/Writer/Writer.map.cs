@@ -21,7 +21,8 @@ namespace Friflo.Json.Fliox.MsgPack
             target[arrayPos] = (byte)((int)MsgFormat.fixmap | count);
         }
         
-        public void WriteMapDynEnd(int arrayPos, int count) {
+        public void WriteMapDynEnd(int arrayPos, int count)
+        {
             switch (count)
             {
                 case >= 0 and <= 15:
@@ -29,19 +30,11 @@ namespace Friflo.Json.Fliox.MsgPack
                     return;
                 case >= 0 and <= ushort.MaxValue:
                     target[arrayPos] = (byte)MsgFormat.map16;
-                    arrayPos++;
-                    Reserve(2);
-                    Buffer.BlockCopy(target, arrayPos, target, arrayPos + 2, pos - arrayPos); // move +2 bytes
-                    BinaryPrimitives.WriteUInt16BigEndian(new Span<byte>(target, arrayPos, 2), (ushort)count);
-                    pos += 2;
+                    SetLength16(arrayPos + 1, count);
                     return;
                 case >= 0 and <= int.MaxValue:
                     target[arrayPos] = (byte)MsgFormat.map32;
-                    arrayPos++;
-                    Reserve(4);
-                    Buffer.BlockCopy(target, arrayPos, target, arrayPos + 4, pos - arrayPos); // move +4 bytes
-                    BinaryPrimitives.WriteInt32BigEndian (new Span<byte>(target, arrayPos, 4), count);
-                    pos += 4;
+                    SetLength32(arrayPos + 1, count);
                     return;
                 default:
                     throw new InvalidOperationException("unexpected count");

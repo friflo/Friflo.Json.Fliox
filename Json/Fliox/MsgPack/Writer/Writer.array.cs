@@ -49,7 +49,8 @@ namespace Friflo.Json.Fliox.MsgPack
             target[mapPos] = (byte)((int)MsgFormat.fixarray | count);
         }
         
-        public void WriteArrayDynEnd(int mapPos, int count) {
+        public void WriteArrayDynEnd(int mapPos, int count)
+        {
             switch (count)
             {
                 case >= 0 and <= 15:
@@ -57,23 +58,29 @@ namespace Friflo.Json.Fliox.MsgPack
                     return;
                 case >= 0 and <= ushort.MaxValue:
                     target[mapPos] = (byte)MsgFormat.array16;
-                    mapPos++;
-                    Reserve(2);
-                    Buffer.BlockCopy(target, mapPos, target, mapPos + 2, pos - mapPos); // move +2 bytes
-                    BinaryPrimitives.WriteUInt16BigEndian(new Span<byte>(target, mapPos, 2), (ushort)count);
-                    pos += 2;
+                    SetLength16(mapPos + 1, count);
                     return;
                 case >= 0 and <= int.MaxValue:
                     target[mapPos] = (byte)MsgFormat.array32;
-                    mapPos++;
-                    Reserve(4);
-                    Buffer.BlockCopy(target, mapPos, target, mapPos + 4, pos - mapPos); // move +4 bytes
-                    BinaryPrimitives.WriteInt32BigEndian (new Span<byte>(target, mapPos, 4), count);
-                    pos += 4;
+                    SetLength32(mapPos + 1, count);
                     return;
                 default:
                     throw new InvalidOperationException("unexpected count");
             }
+        }
+        
+        private void SetLength16(int start, int count) {
+            Reserve(2);
+            Buffer.BlockCopy(target, start, target, start + 2, pos - start); // move +2 bytes
+            BinaryPrimitives.WriteUInt16BigEndian(new Span<byte>(target, start, 2), (ushort)count);
+            pos += 2;
+        }
+        
+        private void SetLength32(int start, int count) {
+            Reserve(4);
+            Buffer.BlockCopy(target, start, target, start + 4, pos - start); // move +4 bytes
+            BinaryPrimitives.WriteInt32BigEndian(new Span<byte>(target, start, 4), count);
+            pos += 4;
         }
         
         public int WriteArray32Start() {
