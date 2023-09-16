@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         WriteArray();
                         continue;
                     case ObjectEnd:
-                        msgWriter.WriteMapFixEnd(map, count);
+                        msgWriter.WriteMapDynEnd(map, count);
                         return;
                     case Error:
                         return;
@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.MsgPack
                         WriteElement(ev);
                         continue;
                     case ArrayEnd:
-                        msgWriter.WriteArrayFixEnd(array, count);
+                        msgWriter.WriteArrayDynEnd(array, count);
                         return;
                     case Error:
                         return;

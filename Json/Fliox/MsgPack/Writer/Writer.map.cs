@@ -17,8 +17,35 @@ namespace Friflo.Json.Fliox.MsgPack
             return pos++;
         }
         
-        public void WriteMapFixEnd(int pos, int count) {
-            target[pos] = (byte)((int)MsgFormat.fixmap | count);
+        public void WriteMapFixEnd(int arrayPos, int count) {
+            target[arrayPos] = (byte)((int)MsgFormat.fixmap | count);
+        }
+        
+        public void WriteMapDynEnd(int arrayPos, int count) {
+            switch (count)
+            {
+                case >= 0 and <= 15:
+                    target[arrayPos] = (byte)((int)MsgFormat.fixmap | count);
+                    return;
+                case >= 0 and <= ushort.MaxValue:
+                    target[arrayPos] = (byte)MsgFormat.map16;
+                    arrayPos++;
+                    Reserve(2);
+                    Buffer.BlockCopy(target, arrayPos, target, arrayPos + 2, pos - arrayPos); // move +2 bytes
+                    BinaryPrimitives.WriteUInt16BigEndian(new Span<byte>(target, arrayPos, 2), (ushort)count);
+                    pos += 2;
+                    return;
+                case >= 0 and <= int.MaxValue:
+                    target[arrayPos] = (byte)MsgFormat.map32;
+                    arrayPos++;
+                    Reserve(4);
+                    Buffer.BlockCopy(target, arrayPos, target, arrayPos + 4, pos - arrayPos); // move +4 bytes
+                    BinaryPrimitives.WriteInt32BigEndian (new Span<byte>(target, arrayPos, 4), count);
+                    pos += 4;
+                    return;
+                default:
+                    throw new InvalidOperationException("unexpected count");
+            }
         }
         
         // --- map32
@@ -28,9 +55,9 @@ namespace Friflo.Json.Fliox.MsgPack
             return cur;
         }
         
-        public void WriteMap32End(int pos, int count) {
-            target[pos] = (byte)MsgFormat.map32;
-            BinaryPrimitives.WriteInt32BigEndian(new Span<byte>(target, pos + 1, 4), count);
+        public void WriteMap32End(int arrayPos, int count) {
+            target[arrayPos] = (byte)MsgFormat.map32;
+            BinaryPrimitives.WriteInt32BigEndian(new Span<byte>(target, arrayPos + 1, 4), count);
         }
         
         // --- map16
