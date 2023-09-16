@@ -15,6 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
             AreEqual("C3", msg.DataHex());
+            AssertEof(json, json2Msg);
         }
         
         // --- bool
@@ -25,6 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
             AreEqual("C0", msg.DataHex());
+            AssertEof(json, json2Msg);
         }
         
         // --- number
@@ -58,26 +60,129 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.MsgPack.Test.Json
             AreEqual((byte)MsgFormat.float64, msg[0]);
         }
         
-        // --- object
         [Test]
-        public static void Test_Msg2Json_object()
+        public static void Test_Msg2Json_string()
         {
-            var json        = new JsonValue("{\"a\":1}");
+            var json        = new JsonValue("\"abc\"");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
-            AreEqual("DF 00 00 00 01 A1 61 01", msg.DataHex());
-            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AreEqual("A3 61 62 63", msg.DataHex());
+            AreEqual((byte)MsgFormat.fixstr, msg[0] & 0xe0);
         }
         
         // --- array
         [Test]
-        public static void Test_Msg2Json_array()
+        public static void Test_Msg2Json_array_number()
         {
             var json        = new JsonValue("[1]");
             var json2Msg    = new Json2MsgPack();
             var msg         = json2Msg.ToMsgPack(json);
             AreEqual("DD 00 00 00 01 01", msg.DataHex());   // TODO should create a fixarray
             AreEqual((byte)MsgFormat.array32, msg[0]);
+            AssertEof(json, json2Msg);
+        }
+        
+        // --- object
+        [Test]
+        public static void Test_Msg2Json_object_null()
+        {
+            var json        = new JsonValue("{\"a\":null}");
+            var json2Msg    = new Json2MsgPack();
+            var msg         = json2Msg.ToMsgPack(json);
+            AreEqual("DF 00 00 00 01 A1 61 C0", msg.DataHex());
+            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AssertEof(json, json2Msg);
+        }
+        
+        [Test]
+        public static void Test_Msg2Json_object_true()
+        {
+            var json        = new JsonValue("{\"a\":true}");
+            var json2Msg    = new Json2MsgPack();
+            var msg         = json2Msg.ToMsgPack(json);
+            AreEqual("DF 00 00 00 01 A1 61 C3", msg.DataHex());
+            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AssertEof(json, json2Msg);
+        }
+        
+        [Test]
+        public static void Test_Msg2Json_object_int()
+        {
+            var json        = new JsonValue("{\"a\":1}");
+            var json2Msg    = new Json2MsgPack();
+            var msg         = json2Msg.ToMsgPack(json);
+            AreEqual("DF 00 00 00 01 A1 61 01", msg.DataHex());
+            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AssertEof(json, json2Msg);
+        }
+        
+        [Test]
+        public static void Test_Msg2Json_object_float()
+        {
+            var json        = new JsonValue("{\"a\":1.5}");
+            var json2Msg    = new Json2MsgPack();
+            var msg         = json2Msg.ToMsgPack(json);
+            AreEqual("DF 00 00 00 01 A1 61 CA 3F C0 00 00", msg.DataHex());
+            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AssertEof(json, json2Msg);
+        }
+        
+        [Test]
+        public static void Test_Msg2Json_object_string()
+        {
+            var json        = new JsonValue("{\"a\":\"xyz\"}");
+            var json2Msg    = new Json2MsgPack();
+            var msg         = json2Msg.ToMsgPack(json);
+            AreEqual("DF 00 00 00 01 A1 61 A3 78 79 7A", msg.DataHex());
+            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AssertEof(json, json2Msg);
+        }
+        
+        [Test]
+        public static void Test_Msg2Json_object_array()
+        {
+            var json        = new JsonValue("{\"a\":[]}");
+            var json2Msg    = new Json2MsgPack();
+            var msg         = json2Msg.ToMsgPack(json);
+            AreEqual("DF 00 00 00 01 A1 61 DD 00 00 00 00", msg.DataHex());
+            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AssertEof(json, json2Msg);
+        }
+        
+        [Test]
+        public static void Test_Msg2Json_object_object()
+        {
+            var json        = new JsonValue("{\"a\":{}}");
+            var json2Msg    = new Json2MsgPack();
+            var msg         = json2Msg.ToMsgPack(json);
+            AreEqual("DF 00 00 00 01 A1 61 DF 00 00 00 00", msg.DataHex());
+            AreEqual((byte)MsgFormat.map32, msg[0]);        // TODO should create a fixmap
+            AssertEof(json, json2Msg);
+        }
+        
+        
+        // -------------------------------------- utils --------------------------------------
+        private static void AssertEof(JsonValue json, Json2MsgPack json2Msg)
+        {
+            int count = json.Count;
+            for (int n = 0; n < count - 1; n++) {
+                var subJson = new JsonValue(json.MutableArray, 0, n);
+                var msg     = json2Msg.ToMsgPack(subJson);
+                
+                AreEqual(0, msg.Length);
+                IsTrue(json2Msg.HasError);
+            }
+            {
+                var array = new byte[count + 2];
+                json.CopyTo(ref array);
+                array[count]        = (byte)' '; // add space
+                array[count + 1]    = (byte)'1'; // add an invalid character
+                var invalidJson = new JsonValue(array);
+                var msg     = json2Msg.ToMsgPack(invalidJson);
+                
+                AreEqual(0, msg.Length);
+                IsTrue(json2Msg.HasError);
+            }
         }
     }
 }

@@ -13,6 +13,9 @@ namespace Friflo.Json.Fliox.MsgPack
         private MsgWriter       msgWriter = new MsgWriter(new byte[16], true);
         private Utf8JsonParser  parser;
         
+        public  bool            HasError        => parser.error.ErrSet;
+        public  string          ErrorMessage    => parser.error.GetMessage();
+        
         public ReadOnlySpan<byte> ToMsgPack(JsonValue json)
         {
             parser.InitParser(json);
@@ -21,6 +24,10 @@ namespace Friflo.Json.Fliox.MsgPack
             
             WriteElement(ev);
             
+            parser.NextEvent(); // read EOF
+            if (parser.error.ErrSet) {
+                return Array.Empty<byte>();                   
+            }
             return msgWriter.Data;
         }
         
@@ -35,30 +42,20 @@ namespace Friflo.Json.Fliox.MsgPack
                     msgWriter.WriteBool(parser.boolValue);
                     return;
                 case ValueNumber:
-                    if (parser.isFloat) {
-                        var value = parser.ValueAsDouble(out bool success);
-                        if (!success) {
-                            return;
-                        }
-                        msgWriter.WriteFloat64(value);
-                    } else {
-                        var value = parser.ValueAsLong(out bool success);
-                        if (!success) {
-                            return;
-                        }
-                        msgWriter.WriteInt64(value);
-                    }
+                    WriteElementNumber();
                     return;
-                case ValueString: {
-                    var value = parser.value.AsSpan();
-                    msgWriter.WriteStringUtf8(value);
+                case ValueString:
+                    msgWriter.WriteStringUtf8(parser.value.AsSpan());
                     return;
-                }
                 case ObjectStart:
                     WriteObject();
                     return;
                 case ArrayStart:
                     WriteArray();
+                    return;
+                case Error:
+                    return;
+                default:
                     return;
             }
         }
@@ -82,25 +79,11 @@ namespace Friflo.Json.Fliox.MsgPack
                         continue;
                     case ValueNumber:
                         count++;
-                        if (parser.isFloat) {
-                            var value = parser.ValueAsDouble(out bool success);
-                            if (!success) {
-                                return;
-                            }
-                            msgWriter.WriteKeyFloat64(parser.key.AsSpan(), value);
-                        } else {
-                            var value = parser.ValueAsLong(out bool success);
-                            if (!success) {
-                                return;
-                            }
-                            msgWriter.WriteKeyInt64(parser.key.AsSpan(), value);
-                        }
+                        WriteMemberNumber();
                         continue;
-                    case ValueString: {
-                        var value = parser.value.AsSpan();
-                        msgWriter.WriteKeyStringUtf8(parser.key.AsSpan(), value, ref count);
+                    case ValueString:
+                        msgWriter.WriteKeyStringUtf8(parser.key.AsSpan(), parser.value.AsSpan(), ref count);
                         continue;
-                    }
                     case ObjectStart:
                         msgWriter.WriteKey(parser.key.AsSpan(), ref count);
                         WriteObject();
@@ -112,8 +95,48 @@ namespace Friflo.Json.Fliox.MsgPack
                     case ObjectEnd:
                         msgWriter.WriteMap32End(map, count);
                         return;
+                    case Error:
+                        return;
+                    default:
+                        return;
                 }
             }
+        }
+        
+        private void WriteElementNumber()
+        {
+            bool success;
+            if (parser.isFloat) {
+                var dbl = parser.ValueAsDouble(out success);
+                if (!success) {
+                    return;
+                }
+                msgWriter.WriteFloat64(dbl);
+                return;
+            }
+            var lng = parser.ValueAsLong(out success);
+            if (!success) {
+                return;
+            }
+            msgWriter.WriteInt64(lng);
+        }
+        
+        private void WriteMemberNumber()
+        {
+            bool success;
+            if (parser.isFloat) {
+                var dbl = parser.ValueAsDouble(out success);
+                if (!success) {
+                    return;
+                }
+                msgWriter.WriteKeyFloat64(parser.key.AsSpan(), dbl);
+                return;
+            }
+            var lng = parser.ValueAsLong(out success);
+            if (!success) {
+                return;
+            }
+            msgWriter.WriteKeyInt64(parser.key.AsSpan(), lng);
         }
         
         private void WriteArray()
@@ -136,6 +159,8 @@ namespace Friflo.Json.Fliox.MsgPack
                         continue;
                     case ArrayEnd:
                         msgWriter.WriteArray32End(array, count);
+                        return;
+                    case Error:
                         return;
                     default:
                         throw new NotImplementedException("todo");
