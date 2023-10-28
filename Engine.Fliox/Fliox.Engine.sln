@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Engine.ECS", "src\ECS\Fliox.Engine.ECS.csproj", "{1CBCE512-8DE1-4085-83D2-02FF41B8F02D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Engine.Client", "src\Client\Fliox.Engine.Client.csproj", "{5A92A4D9-2AC0-44A2-8330-F33E08FFF545}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox", "..\Json\Fliox\Friflo.Json.Fliox.csproj", "{BF0BDA21-0EBB-4FE1-A540-A42F1BDDF25A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst", "..\Json\Burst\Friflo.Json.Burst.csproj", "{E04FDBDA-B2BD-4C08-ABCB-8983164A5978}"
@@ -17,11 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.Explorer", "..\Json\Fliox.Hub.Explorer\Friflo.Json.Fliox.Hub.Explorer.csproj", "{6D17B47E-F177-4766-B2AA-4F3EE2BECFEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Tests", "Tests\Fliox.Tests.csproj", "{D0B9678A-50BC-451C-A556-3973807B5BC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Engine.ECS", "..\Engine\src\ECS\Fliox.Engine.ECS.csproj", "{D19D4117-7E25-4120-9889-376877389E48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Tests-internal", "Tests-internal\Fliox.Tests-internal.csproj", "{AF6C9BF3-70FC-40F7-9408-59D73B9A8A50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Engine.Client", "..\Engine\src\Client\Fliox.Engine.Client.csproj", "{352FE4F0-7031-4FE2-8B48-57363CF29E7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Editor", "Editor\Fliox.Editor.csproj", "{484AF2EC-BED3-4553-A9FF-8A3DD5ED4615}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Editor", "..\Engine\Editor\Fliox.Editor.csproj", "{93E1C51D-6CD5-4EEC-98A8-8E8ADB0FBAB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Tests", "..\Engine\Tests\Fliox.Tests.csproj", "{C1D3D013-9319-4719-97BA-32D84A75EEBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Tests-internal", "..\Engine\Tests-internal\Fliox.Tests-internal.csproj", "{BCACF3A7-708C-4304-BB2B-3EDF5784530D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,14 +32,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1CBCE512-8DE1-4085-83D2-02FF41B8F02D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1CBCE512-8DE1-4085-83D2-02FF41B8F02D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1CBCE512-8DE1-4085-83D2-02FF41B8F02D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1CBCE512-8DE1-4085-83D2-02FF41B8F02D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5A92A4D9-2AC0-44A2-8330-F33E08FFF545}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A92A4D9-2AC0-44A2-8330-F33E08FFF545}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A92A4D9-2AC0-44A2-8330-F33E08FFF545}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A92A4D9-2AC0-44A2-8330-F33E08FFF545}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BF0BDA21-0EBB-4FE1-A540-A42F1BDDF25A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BF0BDA21-0EBB-4FE1-A540-A42F1BDDF25A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF0BDA21-0EBB-4FE1-A540-A42F1BDDF25A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,17 +52,25 @@ Global
 		{6D17B47E-F177-4766-B2AA-4F3EE2BECFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D17B47E-F177-4766-B2AA-4F3EE2BECFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D17B47E-F177-4766-B2AA-4F3EE2BECFEF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D0B9678A-50BC-451C-A556-3973807B5BC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D0B9678A-50BC-451C-A556-3973807B5BC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0B9678A-50BC-451C-A556-3973807B5BC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0B9678A-50BC-451C-A556-3973807B5BC6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AF6C9BF3-70FC-40F7-9408-59D73B9A8A50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AF6C9BF3-70FC-40F7-9408-59D73B9A8A50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF6C9BF3-70FC-40F7-9408-59D73B9A8A50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AF6C9BF3-70FC-40F7-9408-59D73B9A8A50}.Release|Any CPU.Build.0 = Release|Any CPU
-		{484AF2EC-BED3-4553-A9FF-8A3DD5ED4615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{484AF2EC-BED3-4553-A9FF-8A3DD5ED4615}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{484AF2EC-BED3-4553-A9FF-8A3DD5ED4615}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{484AF2EC-BED3-4553-A9FF-8A3DD5ED4615}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D19D4117-7E25-4120-9889-376877389E48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D19D4117-7E25-4120-9889-376877389E48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D19D4117-7E25-4120-9889-376877389E48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D19D4117-7E25-4120-9889-376877389E48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{352FE4F0-7031-4FE2-8B48-57363CF29E7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{352FE4F0-7031-4FE2-8B48-57363CF29E7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{352FE4F0-7031-4FE2-8B48-57363CF29E7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{352FE4F0-7031-4FE2-8B48-57363CF29E7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93E1C51D-6CD5-4EEC-98A8-8E8ADB0FBAB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93E1C51D-6CD5-4EEC-98A8-8E8ADB0FBAB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93E1C51D-6CD5-4EEC-98A8-8E8ADB0FBAB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93E1C51D-6CD5-4EEC-98A8-8E8ADB0FBAB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1D3D013-9319-4719-97BA-32D84A75EEBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1D3D013-9319-4719-97BA-32D84A75EEBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1D3D013-9319-4719-97BA-32D84A75EEBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1D3D013-9319-4719-97BA-32D84A75EEBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCACF3A7-708C-4304-BB2B-3EDF5784530D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCACF3A7-708C-4304-BB2B-3EDF5784530D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCACF3A7-708C-4304-BB2B-3EDF5784530D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCACF3A7-708C-4304-BB2B-3EDF5784530D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
