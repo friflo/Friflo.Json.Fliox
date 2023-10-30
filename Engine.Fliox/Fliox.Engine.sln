@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Engine.ECS", "..\Engi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Engine.Client", "..\Engine\src\Client\Fliox.Engine.Client.csproj", "{352FE4F0-7031-4FE2-8B48-57363CF29E7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Editor", "..\Engine\Editor\Fliox.Editor.csproj", "{93E1C51D-6CD5-4EEC-98A8-8E8ADB0FBAB2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Tests", "..\Engine\Tests\Fliox.Tests.csproj", "{C1D3D013-9319-4719-97BA-32D84A75EEBA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Tests-internal", "..\Engine\Tests-internal\Fliox.Tests-internal.csproj", "{BCACF3A7-708C-4304-BB2B-3EDF5784530D}"
@@ -60,10 +58,6 @@ Global
 		{352FE4F0-7031-4FE2-8B48-57363CF29E7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{352FE4F0-7031-4FE2-8B48-57363CF29E7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{352FE4F0-7031-4FE2-8B48-57363CF29E7D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93E1C51D-6CD5-4EEC-98A8-8E8ADB0FBAB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93E1C51D-6CD5-4EEC-98A8-8E8ADB0FBAB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93E1C51D-6CD5-4EEC-98A8-8E8ADB0FBAB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93E1C51D-6CD5-4EEC-98A8-8E8ADB0FBAB2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C1D3D013-9319-4719-97BA-32D84A75EEBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1D3D013-9319-4719-97BA-32D84A75EEBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1D3D013-9319-4719-97BA-32D84A75EEBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
