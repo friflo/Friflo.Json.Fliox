@@ -107,14 +107,18 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
     public sealed class EventProcessorQueue : EventProcessor
     {
         private  readonly   MessageBufferQueue<FlioxClient> messageQueue    = new MessageBufferQueue<FlioxClient>();
-        private  readonly   List<MessageItem<FlioxClient>>  messages        = new List<MessageItem<FlioxClient>>(); 
+        private  readonly   List<MessageItem<FlioxClient>>  messages        = new List<MessageItem<FlioxClient>>();
+        private  readonly   Action                          receivedEvent;
 
-        public EventProcessorQueue() { }
+        public EventProcessorQueue(Action receivedEvent = null) {
+            this.receivedEvent = receivedEvent;
+        }
         
         public override void EnqueueEvent(FlioxClient client, in JsonValue eventMessage) {
             lock (messageQueue) {
                 messageQueue.AddTail(eventMessage, client);
             }
+            receivedEvent?.Invoke();
         }
         
         /// <summary>

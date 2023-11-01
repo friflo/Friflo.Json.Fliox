@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Tests", "..\Engine\Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Tests-internal", "..\Engine\Tests-internal\Fliox.Tests-internal.csproj", "{BCACF3A7-708C-4304-BB2B-3EDF5784530D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.Editor", "..\Engine\Editor\Fliox.Editor.csproj", "{B7DFD830-6B99-4AD7-98AA-FF66473D2F7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{BCACF3A7-708C-4304-BB2B-3EDF5784530D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCACF3A7-708C-4304-BB2B-3EDF5784530D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCACF3A7-708C-4304-BB2B-3EDF5784530D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7DFD830-6B99-4AD7-98AA-FF66473D2F7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7DFD830-6B99-4AD7-98AA-FF66473D2F7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7DFD830-6B99-4AD7-98AA-FF66473D2F7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7DFD830-6B99-4AD7-98AA-FF66473D2F7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
