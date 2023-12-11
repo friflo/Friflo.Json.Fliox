@@ -52,11 +52,11 @@ var expect =
     ]
 }
 """;
-        var json = dataEntity.DebugJson;
+        var json = dataEntity.DebugJSON;
         AreEqual(expect, json);
         
         dataEntity.components = new JsonValue("xxx");
-        json = dataEntity.DebugJson;
+        json = dataEntity.DebugJSON;
         AreEqual("'components' error: unexpected character while reading value. Found: x path: '(root)' at position: 1", json);
     }
     
@@ -129,12 +129,12 @@ var expect =
     }
     
     [Test]
-    public static void Test_Entity_DebugJSON()
+    public static void Test_Entity_DebugJSON_get()
     {
         var store       = new EntityStore(PidType.UsePidAsId);
         var entity      = store.CreateEntity(10);
         var child       = store.CreateEntity(11);
-        var unresolved  = new Unresolved { tags = new [] { "xyz " } };
+        var unresolved  = new Unresolved { tags = new [] { "xyz" } };
         entity.AddChild(child);
         entity.AddComponent(new Position { x = 1, y = 2, z = 3 });
         entity.AddComponent(unresolved);
@@ -142,25 +142,27 @@ var expect =
         entity.AddTag<TestTag3>();
         entity.AddScript(new TestScript1 { val1 = 10 });
 
-        var expect =
-"""
-{
-    "id": 10,
-    "children": [
-        11
-    ],
-    "components": {
-        "pos": {"x":1,"y":2,"z":3},
-        "script1": {"val1":10}
-    },
-    "tags": [
-        "test-tag",
-        "TestTag3",
-        "xyz "
-    ]
-}
-""";
-        AreEqual(expect, entity.DebugJSON);
+        AreEqual(SampleJson, entity.DebugJSON);
     }
+    
+    private const string SampleJson =
+    """
+    {
+        "id": 10,
+        "children": [
+            11
+        ],
+        "components": {
+            "pos": {"x":1,"y":2,"z":3},
+            "script1": {"val1":10}
+        },
+        "tags": [
+            "test-tag",
+            "TestTag3",
+            "xyz"
+        ]
+    }
+    """;
+
 }
 

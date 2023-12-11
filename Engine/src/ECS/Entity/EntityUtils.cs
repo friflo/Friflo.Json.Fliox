@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Fliox.Engine.ECS.Serialize;
+using Friflo.Json.Fliox;
 
 // ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable ParameterOnlyUsedForPreconditionCheck.Global
@@ -113,7 +114,7 @@ public static class EntityUtils
         return sb.ToString();
     }
 
-    private static readonly EntitySerializer EntitySerializer = new EntitySerializer();
+    private static readonly EntitySerializer EntitySerializer   = new EntitySerializer();
     
     internal static string EntityToJSON(Entity entity)
     {
@@ -123,13 +124,24 @@ public static class EntityUtils
         }
     }
     
+    /// <remarks> The "id" in the passed JSON <paramref name="value"/> is ignored. </remarks>
+    internal static void JsonToEntity(Entity entity, string value)
+    {
+        if (value == null) throw new ArgumentNullException(nameof(value));
+        var serializer = EntitySerializer;
+        lock (serializer) {
+            var jsonValue = new JsonValue(value);
+            serializer.ReadIntoEntity(entity, jsonValue);
+        }
+    }
+    
     private static readonly DataEntitySerializer DataEntitySerializer = new DataEntitySerializer();
     
     internal static string DataEntityToJSON(DataEntity dataEntity)
     {
-        var convert = DataEntitySerializer;
-        lock (convert) {
-            var json = convert.WriteDataEntity(dataEntity, out string error);
+        var serializer = DataEntitySerializer;
+        lock (serializer) {
+            var json = serializer.WriteDataEntity(dataEntity, out string error);
             if (json == null) {
                 return error;
             }

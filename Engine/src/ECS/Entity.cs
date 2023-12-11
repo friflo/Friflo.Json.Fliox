@@ -145,7 +145,10 @@ public readonly struct Entity
     
     [Browse(Never)] public  bool            IsNull          => store?.nodes[id].archetype == null;
     
-                    public  string          DebugJSON       => EntityUtils.EntityToJSON(this);
+    /// <summary> Counterpart of <see cref="Serialize.DataEntity.DebugJSON"/> </summary>
+    // Assigning JSON in a Debugger does not change the entity state as a developer would expect. So setter is only internal.   
+                    public  string          DebugJSON { get => EntityUtils.EntityToJSON(this); internal set => EntityUtils.JsonToEntity(this, value);  }
+
     #endregion
 
 #region component - properties
@@ -179,9 +182,9 @@ public readonly struct Entity
                     public  Entity              Parent          => archetype.entityStore.GetParent(id);
     
     /// <summary>
-    /// Use <b>ref</b> variable when iterating with <b>foreach</b> to copy struct copy. E.g. 
+    /// Return all child <see cref="Entity"/>'s. Enumerate with: 
     /// <code>
-    ///     foreach (ref var node in entity.ChildNodes)
+    ///     foreach (var child in entity.ChildEntities)
     /// </code>
     /// </summary>
     /// <remarks>Executes in O(1)</remarks>

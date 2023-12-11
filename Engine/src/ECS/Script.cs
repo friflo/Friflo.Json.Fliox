@@ -7,7 +7,7 @@ using Browse = System.Diagnostics.DebuggerBrowsableAttribute;
 namespace Friflo.Fliox.Engine.ECS;
 
 /// <summary>
-/// To enable adding <b>scripts</b> to an <see cref="ECS.Entity"/> it need to extend <see cref="Script"/>.<br/>
+/// To enable adding a script class to an <see cref="ECS.Entity"/> it need to extend <see cref="Script"/>.<br/>
 /// A <b><see cref="Script"/></b> is a reference type (a class) which contains data <b>and</b> script / methods.<br/> 
 /// An <see cref="ECS.Entity"/> can contain multiple <see cref="Script"/>'s but only one of each type.
 /// </summary>
@@ -18,7 +18,7 @@ namespace Friflo.Fliox.Engine.ECS;
 /// Optionally attribute the extended class with <see cref="ComponentKeyAttribute"/><br/>
 /// to assign a custom component key name used for JSON serialization.<br/>
 /// <br/>
-/// <i>Info:</i> Its functionality is similar to classes extending <c>MonoBehaviour</c> and added to <c>GameObject</c>'s in Unity.
+/// <i>Info:</i> Its functionality is similar to a class extending <c>MonoBehaviour</c> added to a <c>GameObject</c> in Unity.
 /// </remarks>
 public abstract class Script
 {
