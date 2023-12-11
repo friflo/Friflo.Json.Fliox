@@ -328,9 +328,16 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             if (!success)
                 return default;
             if (subType != null) {
+                // case: typeof(T) is a class
                 return (T)subType.ReadObject(ref reader, slot, out success);
             }
-            return (T)ReadObject(ref reader, slot, out success);
+            var result = ReadObject(ref reader, slot, out success);
+            // returned result is null in case of success == false.
+            if (success) {
+                return (T)result;
+            }
+            // return default in error case as T can be a struct
+            return default;
         }
         
         internal override object ReadObject(ref Reader reader, object slot, out bool success)

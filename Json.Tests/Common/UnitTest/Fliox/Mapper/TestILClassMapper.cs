@@ -89,6 +89,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AssertStructIL(ref result);
             }
         }
+        
+        [Test]
+        public static void        ReadStruct_Error() {
+            using (var typeStore   = new TypeStore(new StoreConfig()))
+            using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
+            {
+                var json = "{\"structInt\": true}";
+                reader.Read<StructIL>(json);
+                IsTrue (reader.Error.ErrSet);
+                AreEqual("JsonReader/error: Cannot assign bool to int. got: true path: 'structInt' at position: 18", reader.Error.msg.ToString());
+            }
+        }
 
         private static readonly string PayloadStr = $@"
 {{
