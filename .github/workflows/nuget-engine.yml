@@ -1,4 +1,4 @@
-name: CD engine
+name: CD-Engine
 
 on:
   push:
