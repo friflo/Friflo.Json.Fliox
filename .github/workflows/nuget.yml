@@ -15,41 +15,49 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup .NET 6.0
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.405
+
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: GetVersion
-      id: version
-      uses: battila7/get-version-action@v2
+    - name: Set VERSION from git tag 
+      run: |
+        TAG=${{ github.ref_name }}
+        echo tag name: ${TAG}
+        echo "VERSION=${TAG#v}" >> $GITHUB_ENV      # remove prefix 'v' from tag
+
+    - name: Echo version
+      run: |
+        echo package version: ${VERSION}
 
     - name: Build
       run: |
         echo "GITHUB_ACTIONS=true" >> $GITHUB_ENV
-        dotnet build --no-restore /p:Version=${{ steps.version.outputs.version-without-v }} /p:FileVersion=${{ steps.version.outputs.version-without-v }} /p:AssemblyVersion=${{ steps.version.outputs.version-without-v }} -c Release
+        dotnet build --no-restore /p:Version=${VERSION} /p:FileVersion=${VERSION} /p:AssemblyVersion=${VERSION} -c Release
 
     - name: Test
       run: dotnet test --no-build --verbosity normal -c Release
 
     - name: Pack
-      run: dotnet pack --no-restore --no-build -p:PackageVersion=${{ steps.version.outputs.version-without-v }} -p:SymbolPackageFormat=snupkg -p:PackageOutputPath=${{ env.PACKAGE_DIRECTORY }} -c Release
+      run: dotnet pack --no-restore --no-build -p:PackageVersion=${VERSION} -p:SymbolPackageFormat=snupkg -p:PackageOutputPath=${{ env.PACKAGE_DIRECTORY }} -c Release
 
     - name: Push
       run: |
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Burst.${{ steps.version.outputs.version-without-v }}.nupkg                --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.${{ steps.version.outputs.version-without-v }}.nupkg                --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Annotation.${{ steps.version.outputs.version-without-v }}.nupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.${{ steps.version.outputs.version-without-v }}.nupkg            --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.AspNetCore.${{ steps.version.outputs.version-without-v }}.nupkg --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.Cosmos.${{ steps.version.outputs.version-without-v }}.nupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.Explorer.${{ steps.version.outputs.version-without-v }}.nupkg   --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.GraphQL.${{ steps.version.outputs.version-without-v }}.nupkg    --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.MySQL.${{ steps.version.outputs.version-without-v }}.nupkg      --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.PostgreSQL.${{ steps.version.outputs.version-without-v }}.nupkg --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.SQLite.${{ steps.version.outputs.version-without-v }}.nupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
-        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.SQLServer.${{ steps.version.outputs.version-without-v }}.nupkg  --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Burst.${VERSION}.nupkg                --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.${VERSION}.nupkg                --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Annotation.${VERSION}.nupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.${VERSION}.nupkg            --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.AspNetCore.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.Cosmos.${VERSION}.nupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.Explorer.${VERSION}.nupkg   --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.GraphQL.${VERSION}.nupkg    --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.MySQL.${VERSION}.nupkg      --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.PostgreSQL.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.SQLite.${VERSION}.nupkg     --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Json.Fliox.Hub.SQLServer.${VERSION}.nupkg  --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
 
     
