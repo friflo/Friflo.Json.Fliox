@@ -2,9 +2,8 @@ name: CD
 
 on:
   push:
-    branches: [ engine ]
     tags:
-    - 'v*'
+    - 'engine-v*'
   
 env:
   PACKAGE_DIRECTORY: ${{ github.workspace }}/output
@@ -24,15 +23,16 @@ jobs:
       working-directory: ./Engine
       run: dotnet restore
 
-    - name: GetVersion
-      id: version
-      uses: battila7/get-version-action@v2
+    - name: Set VERSION from tag
+      run: | 
+        TAG=${{ github.event.release.tag_name }}
+        echo "VERSION=${TAG#engine-v}" >> $GITHUB_ENV
 
     - name: Build
       working-directory: ./Engine
       run: |
         echo "GITHUB_ACTIONS=true" >> $GITHUB_ENV
-        dotnet build --no-restore /p:Version=${{ steps.version.outputs.version-without-v }} /p:FileVersion=${{ steps.version.outputs.version-without-v }} /p:AssemblyVersion=${{ steps.version.outputs.version-without-v }} -c Release
+        dotnet build --no-restore /p:Version=${VERSION} /p:FileVersion=${VERSION} /p:AssemblyVersion=${VERSION} -c Release
 
     - name: Test
       working-directory: ./Engine
@@ -40,7 +40,7 @@ jobs:
 
     - name: Pack
       working-directory: ./Engine
-      run: dotnet pack --no-restore --no-build -p:PackageVersion=${{ steps.version.outputs.version-without-v }} -p:SymbolPackageFormat=snupkg -p:PackageOutputPath=${{ env.PACKAGE_DIRECTORY }} -c Release
+      run: dotnet pack --no-restore --no-build -p:PackageVersion=${VERSION} -p:SymbolPackageFormat=snupkg -p:PackageOutputPath=${{ env.PACKAGE_DIRECTORY }} -c Release
 
 
     
