@@ -26,7 +26,7 @@ jobs:
     - name: Set VERSION from git tag 
       run: |
         TAG=${{ github.event.release.tag_name }}
-        echo "VERSION=${TAG:8}" >> $GITHUB_ENV      # prefix 'engine-v' 8 characters
+        echo "VERSION=${TAG#engine-v}" >> $GITHUB_ENV      # remove prefix 'engine-v'
 
     - name: Echo version
       run: |
