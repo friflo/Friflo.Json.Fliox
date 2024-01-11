@@ -1,0 +1,46 @@
+name: CD
+
+on:
+  push:
+    branches: [ engine ]
+    tags:
+    - 'v*'
+  
+env:
+  PACKAGE_DIRECTORY: ${{ github.workspace }}/output
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.101
+    - name: Restore dependencies
+      working-directory: ./Engine
+      run: dotnet restore
+
+    - name: GetVersion
+      id: version
+      uses: battila7/get-version-action@v2
+
+    - name: Build
+      working-directory: ./Engine
+      run: |
+        echo "GITHUB_ACTIONS=true" >> $GITHUB_ENV
+        dotnet build --no-restore /p:Version=${{ steps.version.outputs.version-without-v }} /p:FileVersion=${{ steps.version.outputs.version-without-v }} /p:AssemblyVersion=${{ steps.version.outputs.version-without-v }} -c Release
+
+    - name: Test
+      working-directory: ./Engine
+      run: dotnet test --no-build --verbosity normal -c Release
+
+    - name: Pack
+      working-directory: ./Engine
+      run: dotnet pack --no-restore --no-build -p:PackageVersion=${{ steps.version.outputs.version-without-v }} -p:SymbolPackageFormat=snupkg -p:PackageOutputPath=${{ env.PACKAGE_DIRECTORY }} -c Release
+
+
+    
