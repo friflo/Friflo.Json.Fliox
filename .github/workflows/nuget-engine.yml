@@ -47,5 +47,9 @@ jobs:
       working-directory: ./Engine
       run: dotnet pack --no-restore --no-build -p:PackageVersion=${VERSION} -p:SymbolPackageFormat=snupkg -p:PackageOutputPath=${{ env.PACKAGE_DIRECTORY }} -c Release
 
+    - name: Push
+      working-directory: ./Engine
+      run: |
+        dotnet nuget push ${{ env.PACKAGE_DIRECTORY }}/Friflo.Engine.ECS.${VERSION}.nupkg                --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_AUTH_TOKEN }}
 
     
