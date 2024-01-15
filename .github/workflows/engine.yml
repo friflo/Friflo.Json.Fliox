@@ -40,4 +40,16 @@ jobs:
     - name: Run Test to create coverage file
       working-directory: ./Engine
       run: dotnet-coverage collect -f cobertura -o "coverage.cobertura.xml" "dotnet test"
+
+    - name: Upload coverage file to codecov.io
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./
+        env_vars: OS,PYTHON
+        fail_ci_if_error: true
+        files: ./coverage.cobertura.xml
+        flags: unittests
+        name: codecov-umbrella
+        verbose: true
     
