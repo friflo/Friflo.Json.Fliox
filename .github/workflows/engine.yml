@@ -41,9 +41,11 @@ jobs:
       working-directory: ./Engine
       run: dotnet-coverage collect -f cobertura -o "coverage.cobertura.xml" "dotnet test"
 
+
     - name: Upload coverage file to codecov.io
       uses: codecov/codecov-action@v3
       with:
+        working-directory: ./Engine
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: ./
         env_vars: OS,PYTHON
