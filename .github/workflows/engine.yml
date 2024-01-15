@@ -13,18 +13,31 @@ jobs:
     timeout-minutes: 3
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.101
+
     - name: Restore dependencies
       env:
         GITHUB_PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       working-directory: ./Engine
       run: dotnet restore
+
     - name: Build
       working-directory: ./Engine
       run: dotnet build --no-restore
+
     - name: Test
       working-directory: ./Engine
       run: dotnet test --no-build --verbosity normal
+
+
+    - name: Install  dotnet-coverage (.NET CLI Tool)
+      run: dotnet tool install --global dotnet-coverage
+
+    - name: Run Test to create coverage file
+      working-directory: ./Engine
+      run: dotnet-coverage collect -f cobertura -o "coverage.cobertura.xml" "dotnet test"
+    
