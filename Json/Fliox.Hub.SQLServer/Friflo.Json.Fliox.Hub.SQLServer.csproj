@@ -51,7 +51,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+      <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
       <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
       <None Include="..\package-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
