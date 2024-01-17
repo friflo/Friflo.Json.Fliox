@@ -6,8 +6,8 @@
 [![CI](https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml) 
 [![CD](https://github.com/friflo/Friflo.Json.Fliox/workflows/CD/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml) 
 
-![new](docs/images/new.svg) 2023-07-17 · Add support for relational tables storing each class property in its own column.  
-![new](docs/images/new.svg) 2023-06-29 · Published database providers for: SQLite, MySQL, MariaDB, PostgreSQL & SQL Server.  
+![new](docs/images/new.svg) 2024-01-17 · Published new package [**Friflo.Engine.ECS**](https://github.com/friflo/Friflo.Json.Fliox/tree/engine/Engine) on nuget.  
+                              An **Entity Components System** optimized for performance and cache locality.
 
 A client / server **ORM** for **.NET** for **SQL & NoSQL** databases with focus on Web apps and performance.  
 Database access is realized by creating a single class to query, create, update or delete table / container records.  
