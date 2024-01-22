@@ -6,7 +6,7 @@
 [![CI](https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml) 
 [![CD](https://github.com/friflo/Friflo.Json.Fliox/workflows/CD/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml) 
 
-![new](docs/images/new.svg) 2024-01-17 · Published new package [**Friflo.Engine.ECS**](Engine) on nuget.  
+![new](docs/images/new.svg) 2024-01-17 · Published new package [**Friflo.Engine.ECS**](Engine/README.md) on nuget.  
                               An **Entity Components System** optimized for performance and cache locality.
 
 A client / server **ORM** for **.NET** for **SQL & NoSQL** databases with focus on Web apps and performance.  
