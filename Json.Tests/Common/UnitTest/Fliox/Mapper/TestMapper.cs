@@ -171,18 +171,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
 
         [Test]
-        public void TestDerivedClass() {
+        public void TestPropertyWithIndexOperator()
+        {
             using (var typeStore    = new TypeStore(new StoreConfig()))
-            using (var derivedJson  = new Bytes("{\"baseField\":10,\"Int32\":20,\"derivedField\":21}"))
+            using (var json         = new Bytes("{\"X\":1,\"Y\":2,\"Z\":3}"))
             using (var reader       = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer       = new ObjectWriter(typeStore))
             {
-                var result = reader.Read<Derived>(derivedJson);
-                result.AssertFields();
+                var result = reader.Read<Vec3>(json);
+                AreEqual(new Vec3{ X= 1, Y = 2, Z = 3 }, result);
                 var jsonResult = writer.Write(result);
-                AreEqual(derivedJson.AsString(), jsonResult);
+                AreEqual(json.AsString(), jsonResult);
             }
         }
-
     }
+}
+
+/// <summary>
+/// Similar to <see cref="Vector3"/>.
+/// .NET 7 introduced indexer (compiler adds a property named Item) 
+/// </summary>
+struct Vec3
+{
+    public int X;
+    public int Y;
+    public int Z;
+    
+    public int this[int index] { get => 0; set => _ = value; }
 }

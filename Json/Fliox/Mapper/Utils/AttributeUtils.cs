@@ -159,6 +159,20 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             }
             return false;
         }
+        
+        // Is given property an indexer
+        // see: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/indexers/using-indexers
+        // The compiler generate a property named 'Item' for indexers
+        internal static bool IsIndexerProperty(PropertyInfo property)
+        {
+            if (property.GetMethod?.GetParameters().Length > 0) {
+                return true;
+            }
+            if (property.SetMethod?.GetParameters().Length > 1) {
+                return true;
+            }
+            return false;
+        }
     }
             
     public enum HandlerType

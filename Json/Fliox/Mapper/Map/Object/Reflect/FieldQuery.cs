@@ -135,6 +135,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                             continue;
                         if (!fieldFilter.AddField(property))
                             continue;
+                        if (AttributeUtils.IsIndexerProperty(property))
+                            continue;
                         var name = property.Name;
                         CreatePropField(type, name, property, null, addMembers);
                         break;
