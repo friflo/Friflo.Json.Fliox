@@ -38,6 +38,10 @@ Compatible to .NET Core &amp; Unity</Description>
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
       <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
     </ItemGroup>
+    <ItemGroup>
+        <!-- System.Runtime.CompilerServices.Unsafe is required by Unity -->
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    </ItemGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <OutputPath>.bin\Debug\</OutputPath>
