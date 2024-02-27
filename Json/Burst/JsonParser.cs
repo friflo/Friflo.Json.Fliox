@@ -17,9 +17,6 @@ namespace Friflo.Json.Burst
     /// The count numbers are incremented while skipping via one of the <see cref="Utf8JsonParser"/> Skip...() methods like
     /// <see cref="Utf8JsonParser.SkipTree()"/> and <see cref="Utf8JsonParser.SkipEvent"/>. 
     /// </summary>
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public struct SkipInfo {
         public int arrays;
         public int booleans;
@@ -72,9 +69,6 @@ namespace Friflo.Json.Burst
     ///
     /// To maximize performance the <see cref="Utf8JsonParser"/> instance should be reused. This avoids unnecessary allocations on the heap.
     /// </summary>
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public partial struct Utf8JsonParser : IDisposable
     {
         static Utf8JsonParser() { BurstLog.InitialBurstLog(); }

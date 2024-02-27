@@ -8,9 +8,6 @@ using Friflo.Json.Fliox.Transform.Select;
 
 namespace Friflo.Json.Fliox.Transform
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class JsonSelector : IDisposable
     {
         private             Utf8JsonWriter                      serializer;

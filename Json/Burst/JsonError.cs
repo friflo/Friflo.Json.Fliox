@@ -7,9 +7,6 @@ using Str128 = System.String;
 
 namespace Friflo.Json.Burst
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     // Intended to be passed as ref parameter to be able notify a possible error 
     public struct JsonError : IDisposable
     {

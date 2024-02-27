@@ -15,9 +15,6 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // ----------------------------------------- QueryTask -----------------------------------------
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class QueryTask<TKey, T> : SyncTask, IRelationsParent, IReadRelationsTask<T> where T : class
     {
         public              int?            limit;

@@ -11,9 +11,6 @@ namespace Friflo.Json.Fliox.Transform.Tree
     /// <summary>
     /// Used to create a <see cref="JsonValue"/> from the given <see cref="JsonAst"/>
     /// </summary>
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class JsonAstWriter : IDisposable
     {
         private     Utf8JsonWriter  astWriter;

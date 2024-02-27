@@ -17,9 +17,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
     }
 
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public partial struct Reader : IDisposable {
         public              Utf8JsonParser      parser;
         public              Bytes               strBuf;

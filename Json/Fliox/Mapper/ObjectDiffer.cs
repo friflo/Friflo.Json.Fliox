@@ -16,9 +16,6 @@ namespace Friflo.Json.Fliox.Mapper
         DiffArrays      = 2
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class ObjectDiffer : IDisposable
     {
         private readonly Differ differ;

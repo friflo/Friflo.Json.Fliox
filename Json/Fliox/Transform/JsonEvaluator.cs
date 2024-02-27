@@ -9,9 +9,6 @@ using Friflo.Json.Fliox.Transform.Tree;
 
 namespace Friflo.Json.Fliox.Transform
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class JsonEvaluator : IDisposable
     {
         private readonly    JsonAstReader   astReader       = new JsonAstReader();

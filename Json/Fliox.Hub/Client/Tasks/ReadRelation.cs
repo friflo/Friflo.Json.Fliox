@@ -8,9 +8,6 @@ using Friflo.Json.Fliox.Hub.Client.Internal;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // ----------------------------------------- ReadRefTask<T> -----------------------------------------
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class ReadRelation<T> : ReadRelationsFunction<T> where T : class
     {
         private             T                   entity;

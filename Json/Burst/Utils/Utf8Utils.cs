@@ -5,9 +5,6 @@ using System.Runtime.CompilerServices;
 
 namespace Friflo.Json.Burst.Utils
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public struct Utf8Utils
     {
 

@@ -53,9 +53,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal abstract void SetFindResult(Dictionary<TKey, T> values, TaskError taskError, List<TKey> keyBuffer);
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class Find<TKey, T> : FindFunction<TKey, T> where T : class
     {
         private  readonly   TKey        key;
@@ -89,9 +86,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class FindRange<TKey, T> : FindFunction<TKey, T> where T : class
     {
         private  readonly   Dictionary<TKey, T>                 results;

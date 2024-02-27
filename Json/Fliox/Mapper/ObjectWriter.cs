@@ -9,9 +9,6 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public interface IJsonWriter
     {
         // --- Bytes
@@ -32,9 +29,6 @@ namespace Friflo.Json.Fliox.Mapper
         byte[]      WriteObjectAsArray  (object value);
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class ObjectWriter : IJsonWriter, IDisposable
     {
         private     Writer      intern;

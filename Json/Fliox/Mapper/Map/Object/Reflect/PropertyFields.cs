@@ -31,9 +31,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
     }
     
     // PropertyFields
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class PropertyFields<T> : PropertyFields, IDisposable
     {
         public   readonly   PropField<T> []                     typedFields;

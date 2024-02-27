@@ -12,9 +12,6 @@ namespace Friflo.Json.Fliox.Transform.Tree
     /// Used to create a tree representation - a <see cref="JsonAst"/> - for a given <see cref="JsonValue"/>
     /// by using <see cref="CreateAst"/>
     /// </summary>
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class JsonAstReader : IDisposable
     {
         private             Utf8JsonParser      parser;

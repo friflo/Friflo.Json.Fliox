@@ -11,9 +11,6 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class DeleteTask<TKey, T> : SyncTask where T : class
     {
         private  readonly   Set<TKey, T>    set;

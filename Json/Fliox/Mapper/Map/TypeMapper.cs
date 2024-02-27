@@ -14,9 +14,6 @@ using Invalid = System.InvalidOperationException;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public abstract class TypeMapper : IDisposable
     {
         public  readonly    Type            type;
@@ -99,9 +96,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
     }
     
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public abstract class TypeMapper<TVal> : TypeMapper
     {
         protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) :
@@ -215,9 +209,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
     }
 
 
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public interface ITypeMatcher
     {
         TypeMapper MatchTypeMapper(Type type, StoreConfig config);

@@ -5,9 +5,6 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Mapper.Utils
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public static class Arrays
     {
         public static Array CreateInstance (Type componentType, int length)

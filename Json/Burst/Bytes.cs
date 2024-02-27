@@ -15,9 +15,6 @@ using Str128 = System.String;
 
 namespace Friflo.Json.Burst
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public partial struct Bytes : IDisposable
     {
         public  int             start;

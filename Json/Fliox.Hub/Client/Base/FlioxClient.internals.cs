@@ -22,9 +22,6 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // --------------------------------- FlioxClient internals ---------------------------------
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public partial class FlioxClient
     {
     #region - internal methods

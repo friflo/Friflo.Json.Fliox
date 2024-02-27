@@ -8,9 +8,6 @@ namespace Friflo.Json.Burst
     /// <summary>
     /// The set of all JSON events returned by <see cref="Utf8JsonParser.NextEvent()"/> while iterating a JSON document.
     /// </summary>
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public enum JsonEvent
     {
         None        = 0,

@@ -15,9 +15,6 @@ namespace Friflo.Json.Fliox
         public  int     MaxDepth            { get; set; } = 100;
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public static class JsonSerializer
     {
         public   static readonly    TypeStore                   DebugTypeStore  = new TypeStore();

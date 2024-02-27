@@ -8,9 +8,6 @@ using Friflo.Json.Fliox.Transform.Patch;
 
 namespace Friflo.Json.Fliox.Transform
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public sealed class JsonPatcher : IDisposable
     {
         private             Utf8JsonWriter  serializer;
