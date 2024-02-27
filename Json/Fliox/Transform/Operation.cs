@@ -70,6 +70,7 @@ namespace Friflo.Json.Fliox.Transform
     [PolymorphType(typeof(EndsWith),            "endsWith")]
     [PolymorphType(typeof(Length),              "length")]
     
+    [CLSCompliant(true)]
     public abstract partial class Operation
     {
         public    abstract  string  OperationName   { get; }

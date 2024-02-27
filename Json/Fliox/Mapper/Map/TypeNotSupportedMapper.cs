@@ -20,6 +20,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
     }
 
 
+    [CLSCompliant(true)]
     public sealed class TypeNotSupportedMapper<T> : TypeMapper<T>
     {
         private readonly string msg;

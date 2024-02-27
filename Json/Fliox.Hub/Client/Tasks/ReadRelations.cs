@@ -120,6 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
 
     // ----------------------------------------- ReadRefsTask<T> -----------------------------------------
+    [CLSCompliant(true)]
     public sealed class ReadRelations<T> : ReadRelationsFunction<T>  where T : class
     {
         private             List<T>             result;

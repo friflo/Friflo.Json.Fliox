@@ -25,6 +25,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
     }
         
+    [CLSCompliant(true)]
     public abstract class PropField : IDisposable
     {
         public   readonly   string          name;

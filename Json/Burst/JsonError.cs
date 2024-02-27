@@ -7,6 +7,7 @@ using Str128 = System.String;
 
 namespace Friflo.Json.Burst
 {
+    [CLSCompliant(true)]
     // Intended to be passed as ref parameter to be able notify a possible error 
     public struct JsonError : IDisposable
     {

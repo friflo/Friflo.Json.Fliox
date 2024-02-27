@@ -4,6 +4,7 @@ using System;
 
 namespace Friflo.Json.Burst.Utils
 {
+    [CLSCompliant(true)]
     // managed version does not have the constraint: where T : struct
     // JSON_BURST_TAG - was used for JSON_BURST to implement a ValueList<> with a Unity.Collections.NativeList<T>
     public struct ValueList<T> : IDisposable 

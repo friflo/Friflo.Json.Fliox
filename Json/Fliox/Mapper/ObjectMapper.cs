@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Utils;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Mapper
 {
+    [CLSCompliant(true)]
     public sealed class ObjectMapper : IJsonReader, IJsonWriter, IDisposable, IResetable
     {
         public readonly ObjectReader    reader;

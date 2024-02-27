@@ -4,6 +4,7 @@ using System;
 
 namespace Friflo.Json.Burst.Utils
 {
+    [CLSCompliant(true)]
     // JSON_BURST_TAG
     public struct ValueArray<T> : IDisposable where T : struct
     {

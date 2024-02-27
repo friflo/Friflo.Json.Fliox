@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Transform.Select;
 
 namespace Friflo.Json.Fliox.Transform
 {
+    [CLSCompliant(true)]
     public sealed class ScalarSelector : IDisposable
     {
         private             Utf8JsonParser                      targetParser;

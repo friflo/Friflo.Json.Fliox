@@ -21,6 +21,7 @@ namespace Friflo.Json.Fliox.Transform
         Object      = 8
     }
 
+    [CLSCompliant(true)]
     public readonly partial struct Scalar
     {
         public      readonly    ScalarType      type;           // 1 byte - underlying type set to byte

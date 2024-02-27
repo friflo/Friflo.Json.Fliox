@@ -37,6 +37,7 @@ namespace Friflo.Json.Burst
         }
     }
     
+    [CLSCompliant(true)]
     public enum AllocType {
         Temp,
         Persistent

@@ -22,6 +22,7 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // --------------------------------- FlioxClient internals ---------------------------------
+    [CLSCompliant(true)]
     public partial class FlioxClient
     {
     #region - internal methods

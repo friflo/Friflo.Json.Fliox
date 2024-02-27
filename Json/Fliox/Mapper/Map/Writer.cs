@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         ByteWriter  = 2,
     }
     
+    [CLSCompliant(true)]
     public partial struct Writer : IDisposable
     {
         /// <summary>Caches type meta data per thread and provide stats to the cache utilization</summary>

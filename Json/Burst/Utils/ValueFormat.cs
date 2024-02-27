@@ -8,6 +8,7 @@ using Str32 = System.String;
 
 namespace Friflo.Json.Burst.Utils
 {
+    [CLSCompliant(true)]
     public struct ValueFormat : IDisposable
     {
         // need to fit longest string created by double.ToString(). E.g. "-1.9007199254740992e+308"

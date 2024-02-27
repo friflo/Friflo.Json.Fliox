@@ -60,6 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// operating on the same <see cref="FlioxHub"/> instance. <br/>
     /// To maintain thread safety <see cref="FlioxHub"/> implementations must not have any mutable state.
     /// </remarks>
+    [CLSCompliant(true)]
     public partial class FlioxHub : IDisposable, ILogSource
     {
     #region - members

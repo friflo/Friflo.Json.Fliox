@@ -12,6 +12,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // ----------------------------------------- AggregateTask -----------------------------------------
+    [CLSCompliant(true)]
     public abstract class AggregateTask : SyncTask
     {
         [DebuggerBrowsable(Never)]

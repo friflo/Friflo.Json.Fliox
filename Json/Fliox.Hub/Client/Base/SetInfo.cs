@@ -11,6 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary>
     /// Contain the number of tracked entities of an <see cref="EntitySet{TKey,T}"/> and the number of tasks grouped by type.
     /// </summary>
+    [CLSCompliant(true)]
     public struct SetInfo
     {
         /// <summary>container name / <see cref="EntitySet{TKey,T}"/> name</summary>
@@ -106,6 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public static int Count<TCol>  (ICollection<TCol> col) { return col?.Count ?? 0; }
     }
 
+    [CLSCompliant(true)]
     public struct ClientInfo
     {
         // ReSharper disable once UnusedAutoPropertyAccessor.Global

@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
+    [CLSCompliant(true)]
     public abstract class CollectionMapper<TVal, TElm> : TypeMapper<TVal>
     {
         // ReSharper disable once UnassignedReadonlyField

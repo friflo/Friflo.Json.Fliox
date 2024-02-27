@@ -11,6 +11,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
     /// It is created within a <see cref="Reader"/> and <see cref="ObjectWriter"/> to access type information
     /// without locking if already cached.
     /// </summary>
+    [CLSCompliant(true)]
     public sealed class TypeCache
     {
         private readonly    Dictionary <Type,  TypeMapper>  typeMap =      new Dictionary <Type,  TypeMapper >();

@@ -5,12 +5,16 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Utils;
 
+#if !UNITY_5_3_OR_NEWER
+    [assembly: CLSCompliant(true)]
+#endif
 
 namespace Friflo.Json.Fliox.Mapper
 {
     /// <summary>
     /// An immutable configuration class for settings which are used by the lifetime of a <see cref="TypeStore"/>  
     /// </summary>
+    [CLSCompliant(true)]
     public sealed class StoreConfig {
         internal readonly   Dictionary<Type, KeyMapper> keyMappers;
         internal            AssemblyDocs                assemblyDocs;
@@ -30,6 +34,7 @@ namespace Friflo.Json.Fliox.Mapper
     /// <br/>
     /// The intention is to use only a single <see cref="TypeStore"/> instance within the whole application.
     /// </summary>
+    [CLSCompliant(true)]
     public sealed class TypeStore : IDisposable
     {
         private     readonly    Dictionary <Type,  TypeMapper>  typeMap=        new Dictionary <Type,  TypeMapper >();

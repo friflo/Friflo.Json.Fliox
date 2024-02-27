@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Pools;
 namespace Friflo.Json.Fliox.Mapper
 {
     
+    [CLSCompliant(true)]
     public interface IJsonReader
     {
         // --- Bytes
@@ -43,6 +44,7 @@ namespace Friflo.Json.Fliox.Mapper
         object  ReadToObject(in JsonValue utf8Array, object    obj, bool setMissingFields);
     }
     
+    [CLSCompliant(true)]
     public sealed class ObjectReader : IJsonReader, IDisposable
     {
         private             int                 maxDepth;

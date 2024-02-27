@@ -31,6 +31,7 @@ namespace Friflo.Json.Burst
     /// After creating the JSON document by using the appender methods, the JSON document is available
     /// via <exception cref="json"></exception> 
     /// </summary>
+    [CLSCompliant(true)]
     public partial struct Utf8JsonWriter : IDisposable
     {
         static Utf8JsonWriter() { BurstLog.InitialBurstLog(); }

@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Transform.Select;
 
 namespace Friflo.Json.Fliox.Transform
 {
+    [CLSCompliant(true)]
     public sealed class ScalarSelect
     {
         internal readonly   PathNodeTree<ScalarSelectResult>    nodeTree = new PathNodeTree<ScalarSelectResult>();

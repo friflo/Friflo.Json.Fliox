@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Client.Internal;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // ----------------------------------------- ReadRefTask<T> -----------------------------------------
+    [CLSCompliant(true)]
     public sealed class ReadRelation<T> : ReadRelationsFunction<T> where T : class
     {
         private             T                   entity;

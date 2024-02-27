@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Mapper
 {
+    [CLSCompliant(true)]
     public sealed class ObjectPatcher : IDisposable
     {
         private readonly    ObjectMapper    mapper;

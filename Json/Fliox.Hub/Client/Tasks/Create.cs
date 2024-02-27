@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    [CLSCompliant(true)]
     public sealed class CreateTask<T> : WriteTask<T> where T : class
     {
         private readonly    Set<T>      set;

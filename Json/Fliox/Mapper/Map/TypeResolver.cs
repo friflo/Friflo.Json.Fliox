@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Mapper.Map.Val;
 // ReSharper disable InlineOutVariableDeclaration
 namespace Friflo.Json.Fliox.Mapper.Map
 {
+    [CLSCompliant(true)]
     public interface ITypeResolver {
         TypeMapper          CreateTypeMapper        (StoreConfig config, Type type);
         void                AddTypeMapper           (TypeMapper mapper);
@@ -16,6 +17,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         List<ITypeMatcher>  TypeMatcher { get; }
     }
     
+    [CLSCompliant(true)]
     public sealed class DefaultTypeResolver : ITypeResolver
     {
         
