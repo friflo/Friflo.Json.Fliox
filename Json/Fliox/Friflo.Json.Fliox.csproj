@@ -36,7 +36,7 @@ Compatible to .NET Core &amp; Unity</Description>
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
-      <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+      <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     </ItemGroup>
     <ItemGroup>
         <!-- System.Runtime.CompilerServices.Unsafe is required by Unity -->
