@@ -37,6 +37,8 @@
         "Blazor",
         "Browsable",
         "Chapsas",
+        "cobertura",
+        "codecov",
         "cref",
         "datagram",
         "datetime",
