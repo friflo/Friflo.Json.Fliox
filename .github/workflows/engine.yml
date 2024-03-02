@@ -20,8 +20,6 @@ jobs:
         dotnet-version: 8.0.101
 
     - name: Restore dependencies
-      env:
-        GITHUB_PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       working-directory: ./Engine
       run: dotnet restore
 
