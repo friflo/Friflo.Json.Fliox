@@ -1,4 +1,4 @@
-name: CI-Engine
+name: Engine coverage
 
 on:
   push:
