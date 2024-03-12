@@ -58,10 +58,18 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (Match(StringMatcher.        Instance,   config, type, q)) return q.hit;
             if (Match(DoubleMatcher.        Instance,   config, type, q)) return q.hit;
             if (Match(FloatMatcher.         Instance,   config, type, q)) return q.hit;
+            //
             if (Match(LongMatcher.          Instance,   config, type, q)) return q.hit;
             if (Match(IntMatcher.           Instance,   config, type, q)) return q.hit;
             if (Match(ShortMatcher.         Instance,   config, type, q)) return q.hit;
             if (Match(ByteMatcher.          Instance,   config, type, q)) return q.hit;
+            
+            // NON_CLS
+            if (Match(ULongMatcher.         Instance,   config, type, q)) return q.hit;
+            if (Match(UIntMatcher.          Instance,   config, type, q)) return q.hit;
+            if (Match(UShortMatcher.        Instance,   config, type, q)) return q.hit;
+            if (Match(SByteMatcher.         Instance,   config, type, q)) return q.hit;
+            //
             if (Match(BoolMatcher.          Instance,   config, type, q)) return q.hit;
             
             if (Match(JsonTableMatcher.     Instance,   config, type, q)) return q.hit;

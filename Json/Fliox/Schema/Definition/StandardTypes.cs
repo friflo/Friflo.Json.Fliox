@@ -40,31 +40,36 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// </summary>
     public enum StandardTypeId
     {
-        None        = 0,
+        None        =  0,
         //
-        Boolean     = 1,
-        String      = 2,    // used also for ShortString
+        Boolean     =  1,
+        String      =  2,    // used also for ShortString
         // --- integer
-        Uint8       = 3,
-        Int16       = 4,
-        Int32       = 5,
-        Int64       = 6,
+        Uint8       =  3,
+        Int16       =  4,
+        Int32       =  5,
+        Int64       =  6,
+        // --- NON_CLS integer
+        SInt8       =  7,
+        UInt16      =  8,
+        UInt32      =  9,
+        UInt64      = 10,
         // --- floating point
-        Float       = 7,
-        Double      = 8,
+        Float       = 11,
+        Double      = 12,
         // --- specialized
-        BigInteger  = 9,
-        DateTime    = 10,
-        Guid        = 11,
-        JsonValue   = 12,
-        JsonKey     = 13,
-        JsonEntity  = 15,
-        Enum        = 16,
-        JsonTable   = 17,
+        BigInteger  = 13,
+        DateTime    = 14,
+        Guid        = 15,
+        JsonValue   = 16,
+        JsonKey     = 17,
+        JsonEntity  = 19,
+        Enum        = 20,
+        JsonTable   = 21,
         //
-        Object      = 18,
-        Array       = 19,
-        Dictionary  = 20,
+        Object      = 22,
+        Array       = 23,
+        Dictionary  = 24,
     }
     
     internal static class StandardTypeUtils

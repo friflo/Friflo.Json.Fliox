@@ -50,10 +50,17 @@ namespace Friflo.Json.Fliox.Schema.Native
             var map = new Dictionary<Type, StandardTypeInfo> {
                 { typeof(bool),         Info("boolean",     StandardTypeId.Boolean)},
                 { typeof(string),       Info("string",      StandardTypeId.String)},
+                //
                 { typeof(byte),         Info("uint8",       StandardTypeId.Uint8)},
                 { typeof(short),        Info("int16",       StandardTypeId.Int16)},
                 { typeof(int),          Info("int32",       StandardTypeId.Int32)},
                 { typeof(long),         Info("int64",       StandardTypeId.Int64)},
+                // NON_CLS
+                { typeof(sbyte),        Info("int8",        StandardTypeId.SInt8)},
+                { typeof(ushort),       Info("uint16",      StandardTypeId.UInt16)},
+                { typeof(uint),         Info("uint32",      StandardTypeId.UInt32)},
+                { typeof(ulong),        Info("uint64",      StandardTypeId.UInt64)},
+                //
                 { typeof(float),        Info("float",       StandardTypeId.Float)},
                 { typeof(double),       Info("double",      StandardTypeId.Double)},
                 { typeof(BigInteger),   Info("BigInteger",  StandardTypeId.BigInteger)},
