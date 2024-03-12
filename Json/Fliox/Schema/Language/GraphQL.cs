@@ -93,6 +93,12 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.Int32,       Gql.Int(),      $"signed integer 32-bit. Range: [-2147483648, 2147483647]" );
             AddType (map, standard.Int64,       Gql.Int(),      $"signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]{nl}" +
                                                                 $"number in JavaScript.  Range: [-9007199254740991, 9007199254740991]" );
+            // NON_CLS
+            AddType (map, standard.Int8,        Gql.Int(),     $"signed integer 8-bit. Range: [-128 - 127]" );
+            AddType (map, standard.UInt16,      Gql.Int(),     $"unsigned integer 16-bit. Range: [0, 65535]" );
+            AddType (map, standard.UInt32,      Gql.Int(),     $"unsigned integer 32-bit. Range: [0, 4294967295]" );
+            AddType (map, standard.UInt64,      Gql.Int(),     $"unsigned integer 64-bit. Range: [0, 18446744073709551615]{nl}" +
+                                                               $"number in JavaScript.  Range: [0, 9007199254740991]" );
                
             AddType (map, standard.Double,      Gql.Float(),    $"double precision floating point number" );
             AddType (map, standard.Float,       Gql.Float(),    $"single precision floating point number" );
@@ -252,7 +258,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return Gql.Boolean();
             if (type == standard.Float || type == standard.Double)
                 return Gql.Float();
-            if (type == standard.Uint8 || type == standard.Int16 || type == standard.Int32|| type == standard.Int64)
+            if (type == standard.Uint8 || type == standard.Int16  || type == standard.Int32  || type == standard.Int64 ||
+                type == standard.Int8  || type == standard.UInt16 || type == standard.UInt32 || type == standard.UInt64)
                 return Gql.Int();
             context.imports.Add(type);
             var name = GetName(type, kind);
