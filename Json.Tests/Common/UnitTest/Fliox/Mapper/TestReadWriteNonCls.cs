@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -13,7 +14,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
     
     public class TestNonClsClass
     {
-        public int[]    intArray;
+        public ulong[]      ulongArray;
+        public List<ulong>  ulongList;
         //
         public ulong    lngFld;
         public uint     intFld;
@@ -34,6 +36,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         {
             string testClassJson = $@"
 {{
+    ""ulongArray"": [0, 18446744073709551615],
+    ""ulongList"":  [1, 18446744073709551615],
+
     ""lngPrp"": 100,
     ""intPrp"": 101,
     ""srtPrp"": 102,
@@ -59,6 +64,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         private static void AssertMembers(TestNonClsClass obj)
         {
+            AreEqual(new ulong[]    {0, 18446744073709551615}, obj.ulongArray);
+            AreEqual(new List<ulong>{1, 18446744073709551615}, obj.ulongList);
+            
             AreEqual(100, obj.lngPrp);
             AreEqual(101, obj.intPrp);
             AreEqual(102, obj.srtPrp);
