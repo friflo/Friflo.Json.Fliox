@@ -136,6 +136,25 @@ namespace System
             return int.TryParse(span, style, provider, out result);
 #endif
         }
+        
+        // --- NON_CLS
+        internal static bool TryParseULong(ReadOnlySpan<char> span, NumberStyles style, IFormatProvider provider, out ulong result) {
+#if NETSTANDARD2_0
+            var str = span.ToString();  // NETSTANDARD2_0_ALLOC
+            return ulong.TryParse(str, style, provider, out result);
+#else
+            return ulong.TryParse(span, style, provider, out result);
+#endif
+        }
+        
+        internal static bool TryParseUInt(ReadOnlySpan<char> span, NumberStyles style, IFormatProvider provider, out uint result) {
+#if NETSTANDARD2_0
+            var str = span.ToString();  // NETSTANDARD2_0_ALLOC
+            return uint.TryParse(str, style, provider, out result);
+#else
+            return uint.TryParse(span, style, provider, out result);
+#endif
+        }
     }
 }
 

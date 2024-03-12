@@ -1069,6 +1069,53 @@ namespace Friflo.Json.Burst
             return (byte)result;
         }
         
+        // --- NON_CLS
+#pragma warning disable 3002  // Return type of '...' is not CLS-compliant
+        public ulong ValueAsULong(out bool success) {
+            var result = ValueParser.ParseULongStd(value.AsSpan(), ref errVal, out success);
+            if (!success) {
+                SetErrorValue("", errVal);
+            }
+            return result;
+        }
+        
+        public uint ValueAsUInt(out bool success) {
+            var result = ValueParser.ParseUIntStd(value.AsSpan(), ref errVal, out success);
+            if (!success) {
+                SetErrorValue("", errVal);
+            }
+            return result;
+        }
+        
+        public ushort ValueAsUShort(out bool success) {
+            var result = ValueParser.ParseUIntStd(value.AsSpan(), ref errVal, out success);
+            if (!success) {
+                SetErrorValue("", errVal);
+            }
+            if (result > ushort.MaxValue) {
+                SetErrorValue("value is greater than ushort.MaxValue. ", value);
+                return 0;
+            }
+            return (ushort)result;
+        }
+        
+        public sbyte ValueAsSByte(out bool success) {
+            var result = ValueParser.ParseInt(value.AsSpan(), ref errVal, out success);
+            if (!success) {
+                SetErrorValue("",  errVal);
+            }
+            if (result < sbyte.MinValue) {
+                SetErrorValue("value is less than sbyte.MinValue. ", value);
+                return 0;
+            }
+            if (result > sbyte.MaxValue) {
+                SetErrorValue("value is greater than sbyte.MaxValue. ", value);
+                return 0;
+            }
+            return (sbyte)result;
+        }
+        
+        // --- bool
         public bool ValueAsBool(out bool success) {
             if (lastEvent != JsonEvent.ValueBool) {
                 success = false;

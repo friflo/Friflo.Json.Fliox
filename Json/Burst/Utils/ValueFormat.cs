@@ -100,6 +100,28 @@ namespace Friflo.Json.Burst.Utils
                 dst.buffer[last - n] = (byte)('0' + digit.array [n]);
             dst.end += len;
         }
+        
+        // NON_CLS
+#pragma warning disable 3001  // Warning CS3001 : Argument type '...' is not CLS-compliant
+        public void AppendULong (ref Bytes dst, ulong val)
+        {
+            if (val == 0) {
+                dst.AppendChar('0');
+                return;
+            }
+            ulong i = val;
+            int len = 0;
+            while (i > 0)
+            {
+                digit.array[len++] = (int)(i % 10);
+                i /= 10;                
+            }
+            dst.EnsureCapacity (len);
+            int last = dst.end + len - 1;
+            for (int n = 0; n < len; n++)
+                dst.buffer[last - n] = (byte)('0' + digit.array [n]);
+            dst.end += len;
+        }
 
         private static int GetExponent(double d)
         {

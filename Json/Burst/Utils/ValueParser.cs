@@ -253,7 +253,49 @@ namespace Friflo.Json.Burst.Utils
             }
             return result;
         } */
+        
+        // --- NON_CLS
+        private static bool TryParseULong(in ReadOnlySpan<byte> bytes, out ulong result) {
+            var len             = bytes.Length;
+            Span<char> charBuf  = stackalloc char[len];
+            for (int n = 0; n < len; n++) {
+                charBuf[n] = (char)bytes[n];
+            }
+            return MathExt.TryParseULong(charBuf, NumberStyles.None, NumberFormatInfo.InvariantInfo, out result);
+        }
 
+        internal static ulong ParseULongStd(in ReadOnlySpan<byte> bytes, ref Bytes valueError, out bool success) {
+            valueError.Clear();
+            success = true;
+            if (TryParseULong(bytes, out ulong result)) {
+                return result;
+            }
+            success = false;
+            SetErrorFalse ("Parsing ulong failed. val: ", bytes, ref valueError);
+            return 0;
+        }
+        
+        private static bool TryParseUInt(in ReadOnlySpan<byte> bytes, out uint result) {
+            var len             = bytes.Length;
+            Span<char> charBuf  = stackalloc char[len];
+            for (int n = 0; n < len; n++) {
+                charBuf[n] = (char)bytes[n];
+            }
+            return MathExt.TryParseUInt(charBuf, NumberStyles.None, NumberFormatInfo.InvariantInfo, out result);
+        }
+
+        internal static uint ParseUIntStd(in ReadOnlySpan<byte> bytes, ref Bytes valueError, out bool success) {
+            valueError.Clear();
+            success = true;
+            if (TryParseUInt(bytes, out uint result)) {
+                return result;
+            }
+            success = false;
+            SetErrorFalse ("Parsing uint failed. val: ", bytes, ref valueError);
+            return 0;
+        }
+
+        // --- double / float
         private static bool TryParseDouble(in ReadOnlySpan<byte> bytes, out double result) {
             var len             = bytes.Length;
             Span<char> charBuf  = stackalloc char[len];

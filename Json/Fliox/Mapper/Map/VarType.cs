@@ -53,6 +53,17 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (type == typeof(float?))     return TypeNullableFlt.Instance;
             if (type == typeof(double?))    return TypeNullableDbl.Instance;
             if (type == typeof(DateTime?))  return TypeNullableDateTime.Instance;
+            
+            // --- NON_CLS
+            if (type == typeof(sbyte))      return TypeSInt8.Instance;
+            if (type == typeof(ushort))     return TypeUInt16.Instance;
+            if (type == typeof(uint))       return TypeUInt32.Instance;
+            if (type == typeof(ulong))      return TypeUInt64.Instance;
+            
+            if (type == typeof(sbyte?))     return TypeNullableSInt8.Instance;
+            if (type == typeof(ushort?))    return TypeNullableUInt16.Instance;
+            if (type == typeof(uint?))      return TypeNullableUInt32.Instance;
+            if (type == typeof(ulong?))     return TypeNullableUInt64.Instance;
 
             // --- reference type
             if (type == typeof(string))     return TypeString.Instance;

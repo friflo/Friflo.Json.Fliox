@@ -22,11 +22,17 @@ namespace Friflo.Json.Fliox.Mapper.Map
         [FieldOffset(0)] internal   DateTime    dt;
     }
     
+// NON_CLS
+#pragma warning disable 3003  // Warning CS3003 : Type of '...' is not CLS-compliant
+#pragma warning disable 3001  // Warning CS3001 : Argument type '...' is not CLS-compliant
+    
+    
     /// <summary>
     /// <see cref="Var"/> is used to prevent boxing of primitives types when: <br/>
     /// - serializing primitive JSON values like: 123, "abc", true or false <br/>
     /// - accessing primitive class fields or properties like: bool, byte, short, int, long, char, float and double. <br/> 
     /// </summary>
+    [CLSCompliant(true)]
     public readonly partial struct Var
     {
         public override bool    Equals(object obj)  => throw new InvalidOperationException("not implemented intentionally");
@@ -57,6 +63,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
         [Browse(Never)] public  int     Int32       { get { AssertType(TypeInt32.Instance);  return (int)  intern.lng;      } }
         [Browse(Never)] public  long    Int64       { get { AssertType(TypeInt64.Instance);  return        intern.lng;      } }
         
+        // --- NON_CLS
+        [Browse(Never)] public  sbyte   SInt8       { get { AssertType(TypeSInt8.Instance);  return (sbyte) intern.lng;     } }
+        [Browse(Never)] public  ushort  UInt16      { get { AssertType(TypeUInt16.Instance); return (ushort)intern.lng;     } }
+        [Browse(Never)] public  uint    UInt32      { get { AssertType(TypeUInt32.Instance); return (uint)  intern.lng;     } }
+        [Browse(Never)] public  ulong   UInt64      { get { AssertType(TypeUInt64.Instance); return (ulong) intern.lng;     } }
+        
         [Browse(Never)] public  float   Flt32       { get { AssertType(TypeFlt.Instance);    return (float)intern.dbl;      } }
         [Browse(Never)] public  double  Flt64       { get { AssertType(TypeDbl.Instance);    return        intern.dbl;      } }
         
@@ -70,6 +82,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
         [Browse(Never)] public  short?  Int16Null   { get { AssertType(TypeNullableInt16.Instance); return obj != null ? (short?) intern.lng : null; } }
         [Browse(Never)] public  int?    Int32Null   { get { AssertType(TypeNullableInt32.Instance); return obj != null ? (int?)   intern.lng : null; } }
         [Browse(Never)] public  long?   Int64Null   { get { AssertType(TypeNullableInt64.Instance); return obj != null ? (long?)  intern.lng : null; } }
+        
+        // --- NON_CLS
+        [Browse(Never)] public  sbyte?  SInt8Null   { get { AssertType(TypeNullableSInt8.Instance);  return obj != null ? (sbyte?)  intern.lng : null; } }
+        [Browse(Never)] public  ushort? UInt16Null  { get { AssertType(TypeNullableUInt16.Instance); return obj != null ? (ushort?) intern.lng : null; } }
+        [Browse(Never)] public  uint?   UInt32Null  { get { AssertType(TypeNullableUInt32.Instance); return obj != null ? (uint?)   intern.lng : null; } }
+        [Browse(Never)] public  ulong?  UInt64Null  { get { AssertType(TypeNullableUInt64.Instance); return obj != null ? (ulong?)  intern.lng : null; } }
         
         [Browse(Never)] public  float?  Flt32Null   { get { AssertType(TypeNullableFlt.Instance);   return obj != null ? (float?) intern.dbl : null; } }
         [Browse(Never)] public  double? Flt64Null   { get { AssertType(TypeNullableDbl.Instance);   return obj != null ? (double?)intern.dbl : null; } }
@@ -118,6 +136,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public Var (short   value) { type = TypeInt16.Instance;  obj = HasValue; intern = new VarIntern { lng = value }; }
         public Var (int     value) { type = TypeInt32.Instance;  obj = HasValue; intern = new VarIntern { lng = value }; }
         public Var (long    value) { type = TypeInt64.Instance;  obj = HasValue; intern = new VarIntern { lng = value }; }
+        
+        // --- NON_CLS
+        public Var (sbyte   value) { type = TypeSInt8.Instance;  obj = HasValue; intern = new VarIntern { lng = value }; }
+        public Var (ushort  value) { type = TypeUInt16.Instance; obj = HasValue; intern = new VarIntern { lng = value }; }
+        public Var (uint    value) { type = TypeUInt32.Instance; obj = HasValue; intern = new VarIntern { lng = value }; }
+        public Var (ulong   value) { type = TypeUInt64.Instance; obj = HasValue; intern = new VarIntern { lng = (long)value }; }
 
         public Var (float   value) { type = TypeFlt.Instance;    obj = HasValue; intern = new VarIntern { dbl = value }; }
         public Var (double  value) { type = TypeDbl.Instance;    obj = HasValue; intern = new VarIntern { dbl = value }; }
@@ -130,6 +154,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public Var (short?  value) { type = TypeNullableInt16.Instance; obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = value ?? 0 }; }
         public Var (int?    value) { type = TypeNullableInt32.Instance; obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = value ?? 0 }; }
         public Var (long?   value) { type = TypeNullableInt64.Instance; obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = value ?? 0 }; }
+        
+        // --- NON_CLS
+        public Var (sbyte?  value) { type = TypeNullableSInt8.Instance;  obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = value ?? 0 }; }
+        public Var (ushort? value) { type = TypeNullableUInt16.Instance; obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = value ?? 0 }; }
+        public Var (uint?   value) { type = TypeNullableUInt32.Instance; obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = value ?? 0 }; }
+        public Var (ulong?  value) { type = TypeNullableUInt64.Instance; obj = value.HasValue ? HasValue : null; intern = new VarIntern { lng = (long?)value ?? 0 }; }
 
         public Var (float?  value) { type = TypeNullableFlt.Instance;   obj = value.HasValue ? HasValue : null; intern = new VarIntern { dbl = value.HasValue ? value.Value : 0 }; }
         public Var (double? value) { type = TypeNullableDbl.Instance;   obj = value.HasValue ? HasValue : null; intern = new VarIntern { dbl = value.HasValue ? value.Value : 0 }; }

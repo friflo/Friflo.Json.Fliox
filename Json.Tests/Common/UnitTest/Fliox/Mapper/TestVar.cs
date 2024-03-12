@@ -124,6 +124,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             
             AreEqual("string",  VarFromValue("test")        .Name);
             AreEqual("object",  VarFromValue(testObj)       .Name);
+            
+            // NON_CLS
+            AreEqual("sbyte",   VarFromValue((sbyte)1)      .Name);
+            AreEqual("ushort",  VarFromValue((ushort)1)     .Name);
+            AreEqual("uint",    VarFromValue((uint)1)       .Name);
+            AreEqual("ulong",   VarFromValue((ulong)1)      .Name);
+            
+            AreEqual("sbyte?",  VarFromValue((sbyte?)1)     .Name);
+            AreEqual("ushort?", VarFromValue((ushort?)1)    .Name);
+            AreEqual("uint?",   VarFromValue((uint?)1)      .Name);
+            AreEqual("ulong?",  VarFromValue((ulong?)1)     .Name);
         }
         
         private static VarType  VarFromValue<T>(T val) {
@@ -141,7 +152,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             IsTrue('a'              == new Var('a')             .Char);
             IsTrue(true             == new Var(true)            .Bool);
 
-            IsTrue(255              == new Var((byte)255)       .Int8);
+            IsTrue(byte.MaxValue    == new Var(byte.MaxValue)   .Int8);
             IsTrue(short.MaxValue   == new Var(short.MaxValue)  .Int16);
             IsTrue(int.MaxValue     == new Var(int.MaxValue)    .Int32);
             IsTrue(long.MaxValue    == new Var(long.MaxValue)   .Int64);
@@ -153,13 +164,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             IsTrue('a'              == new Var((char?)  'a')            .CharNull);
             IsTrue(true             == new Var((bool?)  true)           .BoolNull);
 
-            IsTrue(255              == new Var((byte?)  255)            .Int8Null);
+            IsTrue(byte.MaxValue    == new Var((byte?)  byte.MaxValue)  .Int8Null);
             IsTrue(short.MaxValue   == new Var((short?) short.MaxValue) .Int16Null);
             IsTrue(int.MaxValue     == new Var((int?)   int.MaxValue)   .Int32Null);
             IsTrue(long.MaxValue    == new Var((long?)  long.MaxValue)  .Int64Null);
             
             IsTrue(float.MaxValue   == new Var((float?) float.MaxValue) .Flt32Null);
             IsTrue(double.MaxValue  == new Var((double?)double.MaxValue).Flt64Null);
+        }
+        
+        // NON_CLS
+        [Test]
+        public static void  TestVarGet_NonCls() {
+            IsTrue(sbyte.MaxValue   == new Var(sbyte.MaxValue)  .SInt8);
+            IsTrue(ushort.MaxValue  == new Var(ushort.MaxValue) .UInt16);
+            IsTrue(uint.MaxValue    == new Var(uint.MaxValue)   .UInt32);
+            IsTrue(ulong.MaxValue   == new Var(ulong.MaxValue)  .UInt64);
+           
+            // --- nullable
+            IsTrue(sbyte.MaxValue   == new Var((sbyte?) sbyte.MaxValue) .SInt8Null);
+            IsTrue(ushort.MaxValue  == new Var((ushort?)ushort.MaxValue).UInt16Null);
+            IsTrue(uint.MaxValue    == new Var((uint?)  uint.MaxValue)  .UInt32Null);
+            IsTrue(ulong.MaxValue   == new Var((ulong?) ulong.MaxValue) .UInt64Null);
         }
         
         [Test]
@@ -204,6 +230,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             IsNull(FromObject((short?)  null).Int16Null);
             IsNull(FromObject((int?)    null).Int32Null);
             IsNull(FromObject((long?)   null).Int64Null);
+            
+            // NON_CLS
+            IsTrue(1        == FromObject((sbyte) 1).SInt8);
+            IsTrue(2        == FromObject((ushort)2).UInt16);
+            IsTrue(3        == FromObject((uint)  3).UInt32);
+            IsTrue(4        == FromObject((ulong) 4).UInt64);
+            
+            IsTrue((sbyte?) 1   == FromObject((sbyte?) 1).SInt8Null);
+            IsTrue((ushort?)2   == FromObject((ushort?)2).UInt16Null);
+            IsTrue((uint?)  3   == FromObject((uint?)  3).UInt32Null);
+            IsTrue((ulong?) 4   == FromObject((ulong?) 4).UInt64Null);
         }
         
         private static Var FromObject<T>(T value) {
@@ -250,6 +287,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             IsTrue(null     == DefaultValue<short?>().  Int16Null);
             IsTrue(null     == DefaultValue<int?>().    Int32Null);
             IsTrue(null     == DefaultValue<long?>().   Int64Null);
+            
+            // NON_CLS
+            IsTrue(0        == DefaultValue<sbyte>().   SInt8);
+            IsTrue(0        == DefaultValue<ushort>().  UInt16);
+            IsTrue(0        == DefaultValue<uint>().    UInt32);
+            IsTrue(0        == DefaultValue<ulong>().   UInt64);
+            
+            IsTrue(null     == DefaultValue<sbyte?>().  SInt8Null);
+            IsTrue(null     == DefaultValue<ushort?>(). UInt16Null);
+            IsTrue(null     == DefaultValue<uint?>().   UInt32Null);
+            IsTrue(null     == DefaultValue<ulong?>().  UInt64Null);
         }
         
         private static Var DefaultValue<T>() {
