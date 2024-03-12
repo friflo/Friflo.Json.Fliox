@@ -104,6 +104,33 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return parser.ValueAsLong(out success);
         }
         
+        // NON_CLS
+        public sbyte ReadSByte (PropField field, out bool success) {
+            if (parser.Event != JsonEvent.ValueNumber)
+                return HandleEventGen<sbyte>(field.fieldType, out success);
+            return parser.ValueAsSByte(out success);
+        }
+        
+        public ushort ReadUInt16 (PropField field, out bool success) {
+            if (parser.Event != JsonEvent.ValueNumber)
+                return HandleEventGen<ushort>(field.fieldType, out success);
+            return parser.ValueAsUShort(out success);
+        }
+        
+        public uint ReadUInt32 (PropField field, out bool success) {
+            if (parser.Event != JsonEvent.ValueNumber)
+                return HandleEventGen<uint>(field.fieldType, out success);
+            return parser.ValueAsUInt(out success);
+        }
+        
+        public ulong ReadUInt64 (PropField field, out bool success) {
+            if (parser.Event != JsonEvent.ValueNumber)
+                return HandleEventGen<ulong>(field.fieldType, out success);
+            return parser.ValueAsULong(out success);
+        }
+        
+        
+        
         // --- floating point ---
         public float ReadSingle (PropField field, out bool success) {
             if (parser.Event != JsonEvent.ValueNumber)
@@ -141,6 +168,31 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (parser.Event != JsonEvent.ValueNumber)
                 return HandleEventGen<long?>(field.fieldType, out success);
             return parser.ValueAsLong(out success);
+        }
+        
+        // --- NON_CLS
+        public sbyte? ReadSByteNull (PropField field, out bool success) {
+            if (parser.Event != JsonEvent.ValueNumber)
+                return HandleEventGen<sbyte?>(field.fieldType, out success);
+            return parser.ValueAsSByte(out success);
+        }
+        
+        public ushort? ReadUInt16Null (PropField field, out bool success) {
+            if (parser.Event != JsonEvent.ValueNumber)
+                return HandleEventGen<ushort?>(field.fieldType, out success);
+            return parser.ValueAsUShort(out success);
+        }
+        
+        public uint? ReadUInt32Null (PropField field, out bool success) {
+            if (parser.Event != JsonEvent.ValueNumber)
+                return HandleEventGen<uint?>(field.fieldType, out success);
+            return parser.ValueAsUInt(out success);
+        }
+        
+        public ulong? ReadUInt64Null (PropField field, out bool success) {
+            if (parser.Event != JsonEvent.ValueNumber)
+                return HandleEventGen<ulong?>(field.fieldType, out success);
+            return parser.ValueAsULong(out success);
         }
         
         // --- floating point ---

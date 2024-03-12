@@ -79,6 +79,27 @@ namespace Friflo.Json.Fliox.Mapper.Map
             format.AppendLong(ref bytes, value);
         }
         
+        // NON_CLS
+        public void WriteSByte (PropField field, sbyte value, ref bool firstMember) {
+            WriteFieldKey(field, ref firstMember);
+            format.AppendInt(ref bytes, value);
+        }
+        
+        public void WriteUInt16 (PropField field, ushort value, ref bool firstMember) {
+            WriteFieldKey(field, ref firstMember);
+            format.AppendInt(ref bytes, value);
+        }
+        
+        public void WriteUInt32 (PropField field, uint value, ref bool firstMember) {
+            WriteFieldKey(field, ref firstMember);
+            format.AppendULong(ref bytes, value);
+        }
+        
+        public void WriteUInt64 (PropField field, ulong value, ref bool firstMember) {
+            WriteFieldKey(field, ref firstMember);
+            format.AppendULong(ref bytes, value);
+        }
+        
         // --- floating point
         public void WriteSingle (PropField field, float value, ref bool firstMember) {
             WriteFieldKey(field, ref firstMember);
@@ -114,6 +135,31 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (value == null) { WriteKeyNull(field, ref firstMember); return; }
             WriteFieldKey(field, ref firstMember);
             format.AppendLong(ref bytes, value.Value);
+        }
+        
+        // NON_CLS
+        public void WriteSByteNull (PropField field, sbyte? value, ref bool firstMember) {
+            if (value == null) { WriteKeyNull(field, ref firstMember); return; }
+            WriteFieldKey(field, ref firstMember);
+            format.AppendInt(ref bytes, value.Value);
+        }
+        
+        public void WriteUInt16Null (PropField field, ushort? value, ref bool firstMember) {
+            if (value == null) { WriteKeyNull(field, ref firstMember); return; }
+            WriteFieldKey(field, ref firstMember);
+            format.AppendInt(ref bytes, value.Value);
+        }
+        
+        public void WriteUInt32Null (PropField field, uint? value, ref bool firstMember) {
+            if (value == null) { WriteKeyNull(field, ref firstMember); return; }
+            WriteFieldKey(field, ref firstMember);
+            format.AppendULong(ref bytes, value.Value);
+        }
+        
+        public void WriteUInt64Null (PropField field, ulong? value, ref bool firstMember) {
+            if (value == null) { WriteKeyNull(field, ref firstMember); return; }
+            WriteFieldKey(field, ref firstMember);
+            format.AppendULong(ref bytes, value.Value);
         }
         
         // --- floating point
