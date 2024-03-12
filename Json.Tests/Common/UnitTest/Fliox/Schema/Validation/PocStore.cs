@@ -25,9 +25,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             using (var validator        = new TypeValidator()) {
                 var validationSet   = new ValidationSet(jsonSchema);
                 var test = new TestTypes {
-                    testType    = jsonSchema.TypeAsValidationType<TestType>(validationSet, "UnitTest.Fliox.Client"),
-                    orderType   = jsonSchema.TypeAsValidationType<Order>   (validationSet, "UnitTest.Fliox.Client"),
-                    articleType = jsonSchema.TypeAsValidationType<Article> (validationSet, "UnitTest.Fliox.Client"),
+                    testType    = jsonSchema.TypeAsValidationType<TestType>     (validationSet, "UnitTest.Fliox.Client"),
+                    orderType   = jsonSchema.TypeAsValidationType<Order>        (validationSet, "UnitTest.Fliox.Client"),
+                    articleType = jsonSchema.TypeAsValidationType<Article>      (validationSet, "UnitTest.Fliox.Client"),
+                    nonClsType  = jsonSchema.TypeAsValidationType<NonClsType>   (validationSet, "UnitTest.Fliox.Client"),
                 };
                 ValidateSuccess(validator, test);
                 ValidateFailure(validator, test);
@@ -41,9 +42,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
                 var validationSet   = new ValidationSet(nativeSchema);
                 validator.qualifiedTypeErrors = false; // ensure API available
                 var test = new TestTypes {
-                    testType    = nativeSchema.TypeAsValidationType<TestType>(validationSet),
-                    orderType   = nativeSchema.TypeAsValidationType<Order>   (validationSet),
-                    articleType = nativeSchema.TypeAsValidationType<Article> (validationSet),
+                    testType    = nativeSchema.TypeAsValidationType<TestType>   (validationSet),
+                    orderType   = nativeSchema.TypeAsValidationType<Order>      (validationSet),
+                    articleType = nativeSchema.TypeAsValidationType<Article>    (validationSet),
+                    nonClsType  = nativeSchema.TypeAsValidationType<NonClsType> (validationSet),
                 };
                 ValidateSuccess(validator, test);
                 ValidateFailure(validator, test);
@@ -54,9 +56,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         {
             var result  = validator.ValidateObject(test.orderValid,         test.orderType, out var err1);
             IsTrue(result);
+            
             result      = validator.ValidateObject(test.testTypeValid,      test.testType,  out var err2);
             IsTrue(result);
+            
             result      =  validator.ValidateObject(test.testTypeValidNull, test.testType,  out var err3);
+            IsTrue(result);
+            
+            result      = validator.ValidateObject(test.nonClsValid,        test.nonClsType,  out var err4);
             IsTrue(result);
         }
         
@@ -112,6 +119,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             IsFalse(validator.ValidateObject("{ \"int32\": 2147483648 }",               test.testType, out error));
             AreEqual("Integer out of range. was: 2147483648, expect: int32 at TestType > int32, pos: 21", error);
             
+            
+            // NON_CLS - integer
+            IsFalse(validator.ValidateObject("{ \"int8\": -129 }",                      test.nonClsType, out error));
+            AreEqual("Integer out of range. was: -129, expect: int8 at NonClsType > int8, pos: 14", error);
+            IsFalse(validator.ValidateObject("{ \"int8\": 128 }",                       test.nonClsType, out error));
+            AreEqual("Integer out of range. was: 128, expect: int8 at NonClsType > int8, pos: 13", error);
+            
+            IsFalse(validator.ValidateObject("{ \"uint16\": -1 }",                      test.nonClsType, out error));
+            AreEqual("Integer out of range. was: -1, expect: uint16 at NonClsType > uint16, pos: 14", error);
+            IsFalse(validator.ValidateObject("{ \"uint16\": 65536 }",                   test.nonClsType, out error));
+            AreEqual("Integer out of range. was: 65536, expect: uint16 at NonClsType > uint16, pos: 17", error);
+            
+            IsFalse(validator.ValidateObject("{ \"uint32\": -1 }",                      test.nonClsType, out error));
+            AreEqual("Integer out of range. was: -1, expect: uint32 at NonClsType > uint32, pos: 14", error);
+            IsFalse(validator.ValidateObject("{ \"uint32\": 4294967296 }",              test.nonClsType, out error));
+            AreEqual("Integer out of range. was: 4294967296, expect: uint32 at NonClsType > uint32, pos: 22", error);
+            
+            // IsFalse(validator.ValidateObject("{ \"uint64\": -1 }",                      test.nonClsType, out error));
+            // AreEqual("Integer out of range. was: -1, expect: uint32 at NonClsType > uint32, pos: 14", error);
+            IsFalse(validator.ValidateObject("{ \"uint64\": 18446744073709551616 }",    test.nonClsType, out error));
+            AreEqual("Invalid integer. was: 18446744073709551616, expect: uint64 at NonClsType > uint64, pos: 32", error);
+            
             // --- Article
             IsFalse(validator.ValidateObject("{ \"id\": \"article\" }",                 test.articleType, out error));
             AreEqual("Missing required fields: [name] at Article > (root), pos: 19", error);
@@ -124,6 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             internal    ValidationType  testType;
             internal    ValidationType  orderType;
             internal    ValidationType  articleType;
+            internal    ValidationType  nonClsType;
             
             internal    readonly string orderValid      = AsJson("{ 'id': 'order-1', 'created': '2021-07-22T06:00:00.000Z' }");
             
@@ -193,6 +223,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
     'testEnum': 'e1',
     'testEnumNull': null
 }");
+            
+internal    readonly string nonClsValid   = 
+@"{
+    ""id"": ""cls-1"",
+    ""int8"": -127,
+    ""uint16"": 1,
+    ""uint32"": 2,
+    ""uint64"": 3
+}";
         }
 
        

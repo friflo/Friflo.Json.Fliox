@@ -21,6 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var employees   = store.employees;
             var customers   = store.customers;
             var types       = store.types;
+            var nonClsTypes = store.nonClsTypes;
             store.types.WriteNull = true;
             
             // delete stored (persisted) entities to enable creation below
@@ -89,6 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var hiddenCreate    = new Article { id = ".hidden-test", name = "test hidden file" };
             var derivedClass    = new DerivedClass{ article = cameraCreate.id };
             var type1           = new TestType { id = "type-1", dateTime = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc), derivedClass = derivedClass };
+            var nonCls1         = new NonClsType { id = "cls-1", int8 = -127, uint16 = 1, uint32 = 2, uint64 = 3 };
             var createCam1      = articles.Create(cameraCreate);
                                   articles.Upsert(notebook);
                                   articles.Create(hiddenCreate);
@@ -198,18 +200,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("orders:    0",                                  orders);
             orders.Upsert(order);
             types.Upsert(type1);
-            AreSimilar("entities: 14, tasks: 5 [container: 5]",         store.ClientInfo);
+            nonClsTypes.Upsert(nonCls1);
+            
+            AreSimilar("entities: 15, tasks: 6 [container: 6]",         store.ClientInfo);
             AreSimilar("orders:    1, tasks: 1 [upsert: 1]",            orders);     // created order
             
             AreSimilar("articles:  7, tasks: 2 [create: 1, read: 1]",   articles);
             AreSimilar("customers: 1, tasks: 1 [create: 1]",            customers);
             var orderPatches = orders.DetectPatches();
             AreEqual(0, orderPatches.Patches.Count);
-            AreSimilar("entities: 14, tasks: 6 [container: 6]",         store.ClientInfo);
-            AreSimilar("articles:  7, tasks: 2 [create: 1, read: 1]",   articles);
-            AreSimilar("customers: 1, tasks: 1 [create: 1]",            customers);
-            AreSimilar("orders:    1, tasks: 2 [upsert: 1, merge: 1]",  orders);
-            AreSimilar("types:     1, tasks: 1 [upsert: 1]",            types);
+            AreSimilar("entities:   15, tasks: 7 [container: 7]",         store.ClientInfo);
+            AreSimilar("articles:    7, tasks: 2 [create: 1, read: 1]",   articles);
+            AreSimilar("customers:   1, tasks: 1 [create: 1]",            customers);
+            AreSimilar("orders:      1, tasks: 2 [upsert: 1, merge: 1]",  orders);
+            AreSimilar("types:       1, tasks: 1 [upsert: 1]",            types);
+            AreSimilar("nonClsTypes: 1, tasks: 1 [upsert: 1]",            nonClsTypes);
 
             var storePatches1 = store.DetectAllPatches();
             AreEqual(0, storePatches1.PatchCount);
@@ -217,14 +222,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var storePatches2 = store.DetectAllPatches();
             AreEqual(0, storePatches2.PatchCount);
             
-            AreSimilar("entities: 14, tasks: 6 [container: 6]",         store.ClientInfo);      // no new changes
+            AreSimilar("entities: 15, tasks: 7 [container: 7]",         store.ClientInfo);      // no new changes
 
             await store.SyncTasks(); // ----------------
             
             IsTrue(orderPatches.Success);
             IsTrue(storePatches1.Success);
             IsTrue(storePatches2.Success);
-            AreSimilar("entities: 14",                                  store.ClientInfo);      // tasks executed and cleared
+            AreSimilar("entities: 15",                                  store.ClientInfo);      // tasks executed and cleared
             
             
             customers.Upsert(new Customer{id = "log-patch-entity-read-error",   name = "used for successful read"});
