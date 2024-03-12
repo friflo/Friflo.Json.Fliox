@@ -15,6 +15,10 @@ import { UserResult }        from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { ClientParam }       from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { ClientResult }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DateTime }          from "./Standard";
+import { int8 }              from "./Standard";
+import { uint16 }            from "./Standard";
+import { uint32 }            from "./Standard";
+import { uint64 }            from "./Standard";
 import { BigInteger }        from "./Standard";
 import { uint8 }             from "./Standard";
 import { int16 }             from "./Standard";
@@ -143,7 +147,15 @@ export class TestCommand {
 }
 
 export class NonClsType {
-    id  : string;
+    id          : string;
+    int8        : int8;
+    uint16      : uint16;
+    uint32      : uint32;
+    uint64      : uint64;
+    int8Null?   : int8 | null;
+    uint16Null? : uint16 | null;
+    uint32Null? : uint32 | null;
+    uint64Null? : uint64 | null;
 }
 
 /**

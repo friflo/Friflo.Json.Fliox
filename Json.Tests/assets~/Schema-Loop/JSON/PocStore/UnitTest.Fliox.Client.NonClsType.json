@@ -6,10 +6,22 @@
         "NonClsType": {
             "type": "object",
             "properties": {
-                "id": { "type": "string" }
+                "id":         { "type": "string" },
+                "int8":       { "$ref": "./Standard.json#/definitions/int8" },
+                "uint16":     { "$ref": "./Standard.json#/definitions/uint16" },
+                "uint32":     { "$ref": "./Standard.json#/definitions/uint32" },
+                "uint64":     { "$ref": "./Standard.json#/definitions/uint64" },
+                "int8Null":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/int8" }, {"type": "null"}] },
+                "uint16Null": { "oneOf": [{ "$ref": "./Standard.json#/definitions/uint16" }, {"type": "null"}] },
+                "uint32Null": { "oneOf": [{ "$ref": "./Standard.json#/definitions/uint32" }, {"type": "null"}] },
+                "uint64Null": { "oneOf": [{ "$ref": "./Standard.json#/definitions/uint64" }, {"type": "null"}] }
             },
             "required": [
-                "id"
+                "id",
+                "int8",
+                "uint16",
+                "uint32",
+                "uint64"
             ],
             "additionalProperties": false
         }

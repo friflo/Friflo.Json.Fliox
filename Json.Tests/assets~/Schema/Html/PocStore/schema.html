@@ -343,6 +343,10 @@
             <li><a href='#Standard.int64'><div><span>int64</span></div></a></li>
             <li><a href='#Standard.float'><div><span>float</span></div></a></li>
             <li><a href='#Standard.double'><div><span>double</span></div></a></li>
+            <li><a href='#Standard.int8'><div><span>int8</span></div></a></li>
+            <li><a href='#Standard.uint16'><div><span>uint16</span></div></a></li>
+            <li><a href='#Standard.uint32'><div><span>uint32</span></div></a></li>
+            <li><a href='#Standard.uint64'><div><span>uint64</span></div></a></li>
             <li><a href='#Standard.JsonTable'><div><span>JsonTable</span></div></a></li>
         </ul>
     </li>
@@ -854,6 +858,38 @@ in documentation</docs></td>
         <tr>
             <td><key>id</key></td>
             <td><type><predef>string</predef></type></td>
+        </tr>
+        <tr>
+            <td><field>int8</field></td>
+            <td><type><a href='#Standard.int8'>int8</a></type></td>
+        </tr>
+        <tr>
+            <td><field>uint16</field></td>
+            <td><type><a href='#Standard.uint16'>uint16</a></type></td>
+        </tr>
+        <tr>
+            <td><field>uint32</field></td>
+            <td><type><a href='#Standard.uint32'>uint32</a></type></td>
+        </tr>
+        <tr>
+            <td><field>uint64</field></td>
+            <td><type><a href='#Standard.uint64'>uint64</a></type></td>
+        </tr>
+        <tr>
+            <td><field>int8Null</field></td>
+            <td><type><a href='#Standard.int8'>int8</a> | null</type></td>
+        </tr>
+        <tr>
+            <td><field>uint16Null</field></td>
+            <td><type><a href='#Standard.uint16'>uint16</a> | null</type></td>
+        </tr>
+        <tr>
+            <td><field>uint32Null</field></td>
+            <td><type><a href='#Standard.uint32'>uint32</a> | null</type></td>
+        </tr>
+        <tr>
+            <td><field>uint64Null</field></td>
+            <td><type><a href='#Standard.uint64'>uint64</a> | null</type></td>
         </tr>
     </table>
     </div>
@@ -1575,6 +1611,30 @@ E.g. <c>ws:[::1]:52089</c> for WebSockets, <c>udp:127.0.0.1:60005</c> for UDP or
         <a href='#Standard.double'>double</a>
     </h3>
     <desc>double precision floating point number</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.int8'>
+        <a href='#Standard.int8'>int8</a>
+    </h3>
+    <desc>signed integer 8-bit. Range: [-128 - 127]</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.uint16'>
+        <a href='#Standard.uint16'>uint16</a>
+    </h3>
+    <desc>unsigned integer 16-bit. Range: [0, 65535]</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.uint32'>
+        <a href='#Standard.uint32'>uint32</a>
+    </h3>
+    <desc>unsigned integer 32-bit. Range: [0, 4294967295]</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.uint64'>
+        <a href='#Standard.uint64'>uint64</a>
+    </h3>
+    <desc>unsigned integer 64-bit. Range: [0, 18446744073709551615]<br/>number in JavaScript.  Range: [0, 9007199254740991]</desc>
     </div>
     <div class='type'>
     <h3 id='Standard.JsonTable'>

@@ -165,7 +165,15 @@ TestType *-- "0..1" TestEnum : testEnumNull
 
 class NonClsType:::cssEntity {
     <<Entity · id>>
-    id  : string
+    id          : string
+    int8        : int8
+    uint16      : uint16
+    uint32      : uint32
+    uint64      : uint64
+    int8Null?   : int8
+    uint16Null? : uint16
+    uint32Null? : uint32
+    uint64Null? : uint64
 }
 
 class TestKeyName:::cssEntity {

@@ -4278,6 +4278,98 @@
                             "name": "String"
                         }
                     }
+                },
+                {
+                    "name": "int8",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "uint16",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "uint32",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "uint64",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "int8Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "uint16Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "uint32Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "uint64Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
                 }
             ],
             "interfaces": [
@@ -4299,6 +4391,98 @@
                             "kind":"SCALAR",
                             "name": "String"
                         }
+                    }
+                },
+                {
+                    "name": "int8",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "uint16",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "uint32",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "uint64",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "int8Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "uint16Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "uint32Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "uint64Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
                     }
                 }
             ]

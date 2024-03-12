@@ -309,11 +309,27 @@ input TestTypeInput {
 }
 
 type NonClsType {
-    id : String!
+    id         : String!
+    int8       : Int!
+    uint16     : Int!
+    uint32     : Int!
+    uint64     : Int!
+    int8Null   : Int
+    uint16Null : Int
+    uint32Null : Int
+    uint64Null : Int
 }
 
 input NonClsTypeInput {
-    id : String!
+    id         : String!
+    int8       : Int!
+    uint16     : Int!
+    uint32     : Int!
+    uint64     : Int!
+    int8Null   : Int
+    uint16Null : Int
+    uint32Null : Int
+    uint64Null : Int
 }
 
 type TestKeyName {

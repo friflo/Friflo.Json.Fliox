@@ -84,7 +84,15 @@
         },
         "NonClsType": {
             "properties": {
-                "id": { "type": "string" }
+                "id":         { "type": "string" },
+                "int8":       { "type": "int8" },
+                "uint16":     { "type": "uint16" },
+                "uint32":     { "type": "uint32" },
+                "uint64":     { "type": "uint64" },
+                "int8Null":   { "type": "int8", "nullable": true },
+                "uint16Null": { "type": "uint16", "nullable": true },
+                "uint32Null": { "type": "uint32", "nullable": true },
+                "uint64Null": { "type": "uint64", "nullable": true }
             }
         },
         "TestKeyName": {

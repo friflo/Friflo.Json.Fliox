@@ -141,10 +141,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     
     public class NonClsType {
         [Key]       public  string          id { get; set; }
-        //          public  sbyte           int8;
-        //          public  ushort          uint16;
-        //          public  uint            uint32;
-        //          public  ulong           uint64;
+        
+                    public  sbyte           int8;
+                    public  ushort          uint16;
+                    public  uint            uint32;
+                    public  ulong           uint64;
+                    
+                    public  sbyte?          int8Null;
+                    public  ushort?         uint16Null;
+                    public  uint?           uint32Null;
+                    public  ulong?          uint64Null;
     }
     
     public struct PocStruct {

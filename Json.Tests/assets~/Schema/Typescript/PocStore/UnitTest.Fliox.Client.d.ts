@@ -21,6 +21,10 @@ import { int16 }             from "./Standard";
 import { int64 }             from "./Standard";
 import { float }             from "./Standard";
 import { double }            from "./Standard";
+import { int8 }              from "./Standard";
+import { uint16 }            from "./Standard";
+import { uint32 }            from "./Standard";
+import { uint64 }            from "./Standard";
 
 /**
  * The **PocStore** offer two functionalities:   
@@ -178,7 +182,15 @@ export class TestType extends PocEntity {
 }
 
 export class NonClsType {
-    id  : string;
+    id          : string;
+    int8        : int8;
+    uint16      : uint16;
+    uint32      : uint32;
+    uint64      : uint64;
+    int8Null?   : int8 | null;
+    uint16Null? : uint16 | null;
+    uint32Null? : uint32 | null;
+    uint64Null? : uint64 | null;
 }
 
 export class TestKeyName {

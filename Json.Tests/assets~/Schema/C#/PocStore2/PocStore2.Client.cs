@@ -105,6 +105,14 @@ public class TestType : PocEntity {
 public class NonClsType {
     [Required]
     string  id;
+    sbyte   int8;
+    ushort  uint16;
+    uint    uint32;
+    ulong   uint64;
+    sbyte?  int8Null;
+    ushort? uint16Null;
+    uint?   uint32Null;
+    ulong?  uint64Null;
 }
 
 public class TestKeyName {

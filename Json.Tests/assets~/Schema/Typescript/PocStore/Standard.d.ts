@@ -25,6 +25,19 @@ export type float = number;
 /** double precision floating point number */
 export type double = number;
 
+/** unsigned integer 8-bit. Range: [-128 - 127]                               */
+export type uint8 = number;
+
+/** signed integer 16-bit. Range: [0, 65535]                                  */
+export type int16 = number;
+
+/** signed integer 32-bit. Range: [0, 4294967295]                             */
+export type int32 = number;
+
+/** signed integer 64-bit. Range: [0, 18446744073709551615]
+ *  number in JavaScript.  Range: [0, 9007199254740991]                       */
+export type int64 = number;
+
 /** array of arrays"                      */
 export type JsonTable = any[][];
 

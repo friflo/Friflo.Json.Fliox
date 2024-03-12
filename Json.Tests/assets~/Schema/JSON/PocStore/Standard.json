@@ -26,6 +26,18 @@
         "double": {
             "type": "number"
         },
+        "int8": {
+            "type": "integer", "minimum": -128, "maximum": 127
+        },
+        "uint16": {
+            "type": "integer", "minimum": 0, "maximum": 65535
+        },
+        "uint32": {
+            "type": "integer", "minimum": 0, "maximum": 4294967295
+        },
+        "uint64": {
+            "type": "integer", "minimum": 0, "maximum": 18446744073709551615
+        },
         "JsonTable": {
             "type": "array", "items": { "type": "array" }
         }

@@ -6,6 +6,7 @@ import CustomSerializer.*
 import kotlinx.datetime.*
 import java.math.*
 import kotlinx.serialization.json.*
+import Standard.*
 
 @Serializable
 abstract class PocStore {
@@ -92,7 +93,15 @@ data class TestType (
 
 @Serializable
 data class NonClsType (
-              val id : String,
+              val id         : String,
+              val int8       : int8,
+              val uint16     : uint16,
+              val uint32     : uint32,
+              val uint64     : uint64,
+              val int8Null   : int8? = null,
+              val uint16Null : uint16? = null,
+              val uint32Null : uint32? = null,
+              val uint64Null : uint64? = null,
 )
 
 @Serializable
