@@ -7,6 +7,9 @@ using Friflo.Json.Fliox.Mapper.Map.Val;
 namespace Friflo.Json.Fliox.Mapper.Map
 {
     delegate void WriteDelegate<T>(ref T obj, PropField[] fields, ref Writer writer, ref bool firstMember);
+    
+    // NON_CLS
+    #pragma warning disable 3001  // Warning CS3001 : Argument type '...' is not CLS-compliant
 
     partial struct Writer
     {

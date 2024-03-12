@@ -62,6 +62,7 @@ namespace Friflo.Json.Fliox.MsgPack
             return false;
         }
         
+#pragma warning disable 3002  // Return type of '...' is not CLS-compliant
         /// <summary>Is called subsequently after <see cref="ReadObject"/></summary>
         public ulong ReadKey()
         {
@@ -98,6 +99,7 @@ namespace Friflo.Json.Fliox.MsgPack
             SetError(ExpectKeyString, type, cur);
             return 0;
         }
+#pragma warning restore 3002
         
         private static ulong KeyAsLong(int len, in ReadOnlySpan<byte> name)
         {

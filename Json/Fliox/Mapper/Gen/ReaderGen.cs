@@ -11,6 +11,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
 {
     delegate bool ReadFieldDelegate<T>(ref T obj, PropField field, ref Reader reader);
 
+    // NON_CLS
+    #pragma warning disable 3002  // Return type of '...' is not CLS-compliant
+    
     partial struct Reader
     {
         private TVal HandleEventGen<TVal>(TypeMapper mapper, out bool success) {
