@@ -409,8 +409,9 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return ErrorType("Incorrect type.", value, false, typeDef.name, typeDef.@namespace, owner);
         }
         
-        private bool ValidateNumber (ValidationTypeDef typeDef, ValidationTypeDef owner) {
-            var typeId = typeDef.typeId; 
+        private bool ValidateNumber (ValidationTypeDef typeDef, ValidationTypeDef owner)
+        {
+            var typeId = typeDef.typeId;
             switch (typeId) {
                 case TypeId.Uint8:
                 case TypeId.Int16:
@@ -421,9 +422,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 case TypeId.Int8:
                 case TypeId.UInt16:
                 case TypeId.UInt32:
-                case TypeId.UInt64:
-                    
-                case TypeId.JsonKey:
                     if (parser.isFloat) {
                         return ErrorType("Invalid integer.", parser.value.AsString(), false, typeDef.name, typeDef.@namespace, owner);
                     }
@@ -441,14 +439,22 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         case TypeId.Int8:   if (-128 <= value && value <=        127)       { return true; } break;   
                         case TypeId.UInt16: if (   0 <= value && value <=      65535)       { return true; } break;
                         case TypeId.UInt32: if (   0 <= value && value <= 4294967295)       { return true; } break;
-                        case TypeId.UInt64:                                                 { return true; }
-                        //
-                        case TypeId.JsonKey:                                                { return true; }
                         default:
                             throw new InvalidOperationException("cant be reached");
                     }
                     return ErrorType("Integer out of range.", parser.value.AsString(), false, typeDef.name, typeDef.@namespace, owner);
                 
+                case TypeId.UInt64:
+                    if (parser.isFloat) {
+                        return ErrorType("Invalid integer.", parser.value.AsString(), false, typeDef.name, typeDef.@namespace, owner);
+                    }
+                    parser.ValueAsULong(out success);
+                    if (!success) {
+                        return ErrorType("Invalid integer.", parser.value.AsString(), false, typeDef.name, typeDef.@namespace, owner);
+                    }
+                    return true;
+                
+                case TypeId.JsonKey:
                 case TypeId.Float:
                 case TypeId.Double:
                 case TypeId.JsonValue:

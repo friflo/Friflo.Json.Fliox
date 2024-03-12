@@ -136,8 +136,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             IsFalse(validator.ValidateObject("{ \"uint32\": 4294967296 }",              test.nonClsType, out error));
             AreEqual("Integer out of range. was: 4294967296, expect: uint32 at NonClsType > uint32, pos: 22", error);
             
-            // IsFalse(validator.ValidateObject("{ \"uint64\": -1 }",                      test.nonClsType, out error));
-            // AreEqual("Integer out of range. was: -1, expect: uint32 at NonClsType > uint32, pos: 14", error);
+            IsFalse(validator.ValidateObject("{ \"uint64\": -1 }",                      test.nonClsType, out error));
+            AreEqual("Invalid integer. was: -1, expect: uint64 at NonClsType > uint64, pos: 14", error);
             IsFalse(validator.ValidateObject("{ \"uint64\": 18446744073709551616 }",    test.nonClsType, out error));
             AreEqual("Invalid integer. was: 18446744073709551616, expect: uint64 at NonClsType > uint64, pos: 32", error);
             

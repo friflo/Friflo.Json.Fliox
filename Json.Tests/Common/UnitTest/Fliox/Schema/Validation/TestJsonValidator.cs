@@ -39,6 +39,66 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             }
         }
         
+        [Test]
+        public static void TestValidateInteger_Happy() {
+            string error;
+            IsTrue(JsonValidator.Validate("0",                      typeof(byte),   out error));
+            IsTrue(JsonValidator.Validate("255",                    typeof(byte),   out error));
+            
+            IsTrue(JsonValidator.Validate("-32768",                 typeof(short),  out error));
+            IsTrue(JsonValidator.Validate("32767",                  typeof(short),  out error));
+            
+            IsTrue(JsonValidator.Validate("-2147483648",            typeof(int),    out error));
+            IsTrue(JsonValidator.Validate("2147483647",             typeof(int),    out error));
+            
+            IsTrue(JsonValidator.Validate("-9223372036854775808",   typeof(long),   out error));
+            IsTrue(JsonValidator.Validate("9223372036854775807",    typeof(long),   out error));
+            
+            // Non_CLS
+            IsTrue(JsonValidator.Validate("-128",                   typeof(sbyte),  out error));
+            IsTrue(JsonValidator.Validate("127",                    typeof(sbyte),  out error));
+            
+            IsTrue(JsonValidator.Validate("0",                      typeof(ushort), out error));
+            IsTrue(JsonValidator.Validate("65535",                  typeof(ushort), out error));
+            
+            IsTrue(JsonValidator.Validate("0",                      typeof(uint),   out error));
+            IsTrue(JsonValidator.Validate("4294967295",             typeof(uint),   out error));
+            
+            IsTrue(JsonValidator.Validate("0",                      typeof(ulong),  out error));
+            IsTrue(JsonValidator.Validate("18446744073709551615",   typeof(ulong),  out error));
+        }
+        
+        [Test]
+        public static void TestValidateInteger_Error() {
+            string error;
+            IsFalse(JsonValidator.Validate("-1",                    typeof(byte),   out error));
+            IsFalse(JsonValidator.Validate("256",                   typeof(byte),   out error));
+            IsFalse(JsonValidator.Validate("1.2",                   typeof(byte),   out error));
+            
+            IsFalse(JsonValidator.Validate("-32769",                typeof(short),  out error));
+            IsFalse(JsonValidator.Validate("32768",                 typeof(short),  out error));
+            
+            IsFalse(JsonValidator.Validate("-2147483649",           typeof(int),    out error));
+            IsFalse(JsonValidator.Validate("2147483648",            typeof(int),    out error));
+            
+            IsFalse(JsonValidator.Validate("-9223372036854775809",  typeof(long),   out error));
+            IsFalse(JsonValidator.Validate("9223372036854775808",   typeof(long),   out error));
+            
+            // Non_CLS
+            IsFalse(JsonValidator.Validate("-129",                  typeof(sbyte),  out error));
+            IsFalse(JsonValidator.Validate("128",                   typeof(sbyte),  out error));
+            
+            IsFalse(JsonValidator.Validate("-1",                    typeof(ushort), out error));
+            IsFalse(JsonValidator.Validate("65536",                 typeof(ushort), out error));
+            
+            IsFalse(JsonValidator.Validate("-1",                    typeof(uint),   out error));
+            IsFalse(JsonValidator.Validate("4294967296",            typeof(uint),   out error));
+            
+            IsFalse(JsonValidator.Validate("-1",                    typeof(ulong),  out error));
+            IsFalse(JsonValidator.Validate("18446744073709551616",  typeof(ulong),  out error));
+            IsFalse(JsonValidator.Validate("1.2",                   typeof(ulong),  out error));
+        }
+        
         // --- array types
         [Test]
         public static void TestValidateArray() {
