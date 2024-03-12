@@ -20,6 +20,11 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public abstract     TypeDef     Int16       { get; }
         public abstract     TypeDef     Int32       { get; }
         public abstract     TypeDef     Int64       { get; }
+        // NON_CLS
+        public abstract     TypeDef     Int8        { get; }
+        public abstract     TypeDef     UInt16      { get; }
+        public abstract     TypeDef     UInt32      { get; }
+        public abstract     TypeDef     UInt64      { get; }
         
         public abstract     TypeDef     Float       { get; }
         public abstract     TypeDef     Double      { get; }
@@ -50,7 +55,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         Int32       =  5,
         Int64       =  6,
         // --- NON_CLS integer
-        SInt8       =  7,
+        Int8        =  7,
         UInt16      =  8,
         UInt32      =  9,
         UInt64      = 10,
@@ -92,6 +97,12 @@ namespace Friflo.Json.Fliox.Schema.Definition
                 AssertTypeId(type, standard.Int16,      StandardTypeId.Int16);
                 AssertTypeId(type, standard.Int32,      StandardTypeId.Int32);
                 AssertTypeId(type, standard.Int64,      StandardTypeId.Int64);
+                
+                // NON_CLS
+                AssertTypeId(type, standard.Int8,       StandardTypeId.Int8);
+                AssertTypeId(type, standard.UInt16,     StandardTypeId.UInt16);
+                AssertTypeId(type, standard.UInt32,     StandardTypeId.UInt32);
+                AssertTypeId(type, standard.UInt64,     StandardTypeId.UInt64);
 
                 AssertTypeId(type, standard.Float,      StandardTypeId.Float);
                 AssertTypeId(type, standard.Double,     StandardTypeId.Double);

@@ -66,6 +66,13 @@ namespace Friflo.Json.Fliox.Schema.JSON
                case "int16":        return StandardTypeId.Int16;
                case "int32":        return StandardTypeId.Int32;
                case "int64":        return StandardTypeId.Int64;
+    
+               // NON_CLS
+               case "int8":         return StandardTypeId.Int8;
+               case "uint16":       return StandardTypeId.UInt16;
+               case "uint32":       return StandardTypeId.UInt32;
+               case "uint64":       return StandardTypeId.UInt64;
+               //
                case "float":        return StandardTypeId.Float;
                case "double":       return StandardTypeId.Double;
                case "BigInteger":   return StandardTypeId.BigInteger;

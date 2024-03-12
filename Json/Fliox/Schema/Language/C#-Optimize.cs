@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -49,6 +50,12 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.Int16,       "Int16" );
             AddType (map, standard.Int32,       "Int32" );
             AddType (map, standard.Int64,       "Int64" );
+            
+            // NON_CLS
+            AddType (map, standard.Int8,        "SByte" );
+            AddType (map, standard.UInt16,      "UInt16" );
+            AddType (map, standard.UInt32,      "UInt32" );
+            AddType (map, standard.UInt64,      "UInt64" );
                
             AddType (map, standard.Double,      "Double" );
             AddType (map, standard.Float,       "Single" );

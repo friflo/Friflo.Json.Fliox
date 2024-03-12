@@ -218,28 +218,34 @@ namespace Friflo.Json.Fliox.Schema.Validation
     
     internal enum TypeId
     {
-        None        = 0,
+        None        =  0,
         // --- object types
-        Class       = 1,
-        Union       = 2,
+        Class       =  1,
+        Union       =  2,
         // --- number types
-        Uint8       = 3,
-        Int16       = 4,
-        Int32       = 5,
-        Int64       = 6,
-        Float       = 7,
-        Double      = 8,
+        Uint8       =  3,
+        Int16       =  4,
+        Int32       =  5,
+        Int64       =  6,
+        // NON_CLS
+        Int8        =  7,
+        UInt16      =  8,
+        UInt32      =  9,
+        UInt64      = 10,
+        // 
+        Float       = 11,
+        Double      = 12,
         // --- boolean type
-        Boolean     = 9,   
+        Boolean     = 13,   
         // --- string types        
-        String      = 10,
-        BigInteger  = 11,
-        DateTime    = 12,
-        Guid        = 13,
-        Enum        = 14,
+        String      = 14,
+        BigInteger  = 15,
+        DateTime    = 16,
+        Guid        = 17,
+        Enum        = 18,
         //
-        JsonKey     = 15,
-        JsonValue   = 16,
-        JsonTable   = 17
+        JsonKey     = 19,
+        JsonValue   = 20,
+        JsonTable   = 21
     }
 }

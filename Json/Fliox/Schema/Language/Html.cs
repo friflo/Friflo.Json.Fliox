@@ -39,11 +39,19 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
+            
             AddType (map, standard.Uint8,       "unsigned integer 8-bit. Range: [0 - 255]" );
             AddType (map, standard.Int16,       "signed integer 16-bit. Range: [-32768, 32767]" );
             AddType (map, standard.Int32,       "signed integer 32-bit. Range: [-2147483648, 2147483647]" );
             AddType (map, standard.Int64,       "signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]<br/>" +
                                                 "number in JavaScript.  Range: [-9007199254740991, 9007199254740991]");
+            
+            // NON_CLS
+            AddType (map, standard.Int8,        "signed integer 8-bit. Range: [-128 - 127]" );
+            AddType (map, standard.UInt16,      "unsigned integer 16-bit. Range: [0, 65535]" );
+            AddType (map, standard.UInt32,      "unsigned integer 32-bit. Range: [0, 4294967295]" );
+            AddType (map, standard.UInt64,      "unsigned integer 64-bit. Range: [0, 18446744073709551615]<br/>" +
+                                                "number in JavaScript.  Range: [0, 9007199254740991]");
                
             AddType (map, standard.Double,      "double precision floating point number" );
             AddType (map, standard.Float,       "single precision floating point number" );

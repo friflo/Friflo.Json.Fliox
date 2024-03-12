@@ -12,10 +12,18 @@ namespace Friflo.Json.Fliox.Schema.Native
     {
         public   override   TypeDef     Boolean     { get; }
         public   override   TypeDef     String      { get; }
+        
         public   override   TypeDef     Uint8       { get; }
         public   override   TypeDef     Int16       { get; }
         public   override   TypeDef     Int32       { get; }
         public   override   TypeDef     Int64       { get; }
+        
+        // NON_CLS
+        public   override   TypeDef     Int8        { get; }
+        public   override   TypeDef     UInt16      { get; }
+        public   override   TypeDef     UInt32      { get; }
+        public   override   TypeDef     UInt64      { get; }
+        
         public   override   TypeDef     Float       { get; }
         public   override   TypeDef     Double      { get; }
         public   override   TypeDef     BigInteger  { get; }
@@ -30,10 +38,18 @@ namespace Friflo.Json.Fliox.Schema.Native
         internal NativeStandardTypes (Dictionary<Type, NativeTypeDef> types) {
             Boolean     = Find(types, typeof(bool));
             String      = Find(types, typeof(string));
+            
             Uint8       = Find(types, typeof(byte));
             Int16       = Find(types, typeof(short));
             Int32       = Find(types, typeof(int));
             Int64       = Find(types, typeof(long));
+            
+            // NON_CLS
+            Int8        = Find(types, typeof(sbyte));
+            UInt16      = Find(types, typeof(ushort));
+            UInt32      = Find(types, typeof(uint));
+            UInt64      = Find(types, typeof(ulong));
+            
             Float       = Find(types, typeof(float));
             Double      = Find(types, typeof(double));
             BigInteger  = Find(types, typeof(BigInteger));
@@ -55,8 +71,9 @@ namespace Friflo.Json.Fliox.Schema.Native
                 { typeof(short),        Info("int16",       StandardTypeId.Int16)},
                 { typeof(int),          Info("int32",       StandardTypeId.Int32)},
                 { typeof(long),         Info("int64",       StandardTypeId.Int64)},
+                
                 // NON_CLS
-                { typeof(sbyte),        Info("int8",        StandardTypeId.SInt8)},
+                { typeof(sbyte),        Info("int8",        StandardTypeId.Int8)},
                 { typeof(ushort),       Info("uint16",      StandardTypeId.UInt16)},
                 { typeof(uint),         Info("uint32",      StandardTypeId.UInt32)},
                 { typeof(ulong),        Info("uint64",      StandardTypeId.UInt64)},

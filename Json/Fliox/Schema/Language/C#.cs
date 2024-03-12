@@ -47,6 +47,12 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.Int16,       "short" );
             AddType (map, standard.Int32,       "int" );
             AddType (map, standard.Int64,       "long" );
+            
+            // NON_CLS
+            AddType (map, standard.Int8,        "sbyte" );
+            AddType (map, standard.UInt16,      "ushort" );
+            AddType (map, standard.UInt32,      "uint" );
+            AddType (map, standard.UInt64,      "ulong" );
                
             AddType (map, standard.Double,      "double" );
             AddType (map, standard.Float,       "float" );

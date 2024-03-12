@@ -42,10 +42,17 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
+            
             AddType (map, standard.Uint8,       "\"type\": \"integer\", \"minimum\": 0, \"maximum\": 255" );
             AddType (map, standard.Int16,       "\"type\": \"integer\", \"minimum\": -32768, \"maximum\": 32767" );
             AddType (map, standard.Int32,       "\"type\": \"integer\", \"minimum\": -2147483648, \"maximum\": 2147483647" );
             AddType (map, standard.Int64,       "\"type\": \"integer\", \"minimum\": -9223372036854775808, \"maximum\": 9223372036854775807" );
+            
+            // NON_CLS
+            AddType (map, standard.Int8,        "\"type\": \"integer\", \"minimum\": -128, \"maximum\": 127" );
+            AddType (map, standard.UInt16,      "\"type\": \"integer\", \"minimum\": 0, \"maximum\": 65535" );
+            AddType (map, standard.UInt32,      "\"type\": \"integer\", \"minimum\": 0, \"maximum\": 4294967295" );
+            AddType (map, standard.UInt64,      "\"type\": \"integer\", \"minimum\": 0, \"maximum\": 18446744073709551615" );
                 
             AddType (map, standard.Double,      "\"type\": \"number\"" );
             AddType (map, standard.Float,       "\"type\": \"number\"" );

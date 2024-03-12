@@ -60,6 +60,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
             AddType (map, standard.Int16,         "int16" );
             AddType (map, standard.Int32,         "int32" );
             AddType (map, standard.Int64,         "int64" );
+            
+            // NON_CLS
+            AddType (map, standard.Int8,          "int8" );
+            AddType (map, standard.UInt16,        "uint16" );
+            AddType (map, standard.UInt32,        "uint32" );
+            AddType (map, standard.UInt64,        "uint64" );
                
             AddType (map, standard.Double,        "double" );
             AddType (map, standard.Float,         "float" );

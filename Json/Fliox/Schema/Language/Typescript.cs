@@ -43,11 +43,20 @@ namespace Friflo.Json.Fliox.Schema.Language
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
             var nl= '\n'; // not Environment.NewLine;
+            
             AddType (map, standard.Uint8,       $"/** unsigned integer 8-bit. Range: [0 - 255]                                  */{nl}export type uint8 = number" );
             AddType (map, standard.Int16,       $"/** signed integer 16-bit. Range: [-32768, 32767]                             */{nl}export type int16 = number" );
             AddType (map, standard.Int32,       $"/** signed integer 32-bit. Range: [-2147483648, 2147483647]                   */{nl}export type int32 = number" );
             AddType (map, standard.Int64,       $"/** signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]{nl}" +
                                                 $" *  number in JavaScript.  Range: [-9007199254740991, 9007199254740991]       */{nl}export type int64 = number" );
+            
+            // NON_CLS
+            AddType (map, standard.Int8,        $"/** unsigned integer 8-bit. Range: [-128 - 127]                               */{nl}export type uint8 = number" );
+            AddType (map, standard.UInt16,      $"/** signed integer 16-bit. Range: [0, 65535]                                  */{nl}export type int16 = number" );
+            AddType (map, standard.UInt32,      $"/** signed integer 32-bit. Range: [0, 4294967295]                             */{nl}export type int32 = number" );
+            AddType (map, standard.UInt64,      $"/** signed integer 64-bit. Range: [0, 18446744073709551615]{nl}" +
+                                                $" *  number in JavaScript.  Range: [0, 9007199254740991]                       */{nl}export type int64 = number" );
+            
                
             AddType (map, standard.Double,      $"/** double precision floating point number */{nl}export type double = number" );
             AddType (map, standard.Float,       $"/** single precision floating point number */{nl}export type float = number" );

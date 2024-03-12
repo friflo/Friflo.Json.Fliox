@@ -47,10 +47,18 @@ namespace Friflo.Json.Fliox.Schema.Validation
             var standardType = schema.StandardTypes;
             AddStandardType(TypeId.Boolean,     standardType.Boolean);
             AddStandardType(TypeId.String,      standardType.String);
+            
             AddStandardType(TypeId.Uint8,       standardType.Uint8);
             AddStandardType(TypeId.Int16,       standardType.Int16);
             AddStandardType(TypeId.Int32,       standardType.Int32);
             AddStandardType(TypeId.Int64,       standardType.Int64);
+
+            // NON_CLS
+            AddStandardType(TypeId.Int8,        standardType.Int8);
+            AddStandardType(TypeId.UInt16,      standardType.UInt16);
+            AddStandardType(TypeId.UInt32,      standardType.UInt32);
+            AddStandardType(TypeId.UInt64,      standardType.UInt64);
+            
             AddStandardType(TypeId.Float,       standardType.Float);
             AddStandardType(TypeId.Double,      standardType.Double);
             AddStandardType(TypeId.BigInteger,  standardType.BigInteger);
@@ -104,6 +112,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 case TypeId.Int16:      return new ValidationTypeDef(typeId, "int16",       typeDef, false);
                 case TypeId.Int32:      return new ValidationTypeDef(typeId, "int32",       typeDef, false);
                 case TypeId.Int64:      return new ValidationTypeDef(typeId, "int64",       typeDef, false);
+                
+                // NON_CLS
+                case TypeId.Int8:       return new ValidationTypeDef(typeId, "int8",        typeDef, false);
+                case TypeId.UInt16:     return new ValidationTypeDef(typeId, "uint16",      typeDef, false);
+                case TypeId.UInt32:     return new ValidationTypeDef(typeId, "uint32",      typeDef, false);
+                case TypeId.UInt64:     return new ValidationTypeDef(typeId, "uint64",      typeDef, false);
+                
                 case TypeId.Float:      return new ValidationTypeDef(typeId, "float",       typeDef, false);
                 case TypeId.Double:     return new ValidationTypeDef(typeId, "double",      typeDef, false);
                 // --- boolean type

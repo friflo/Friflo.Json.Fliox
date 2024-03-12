@@ -13,17 +13,17 @@ namespace Friflo.Json.Fliox.Hub.Host.SQL
     /// </summary>
     public enum ColumnType
     {
-        None        = 0,
+        None        =  0,
         //
-        Boolean     = 1,
-        String      = 2,
+        Boolean     =  1,
+        String      =  2,
         // --- integer
-        Uint8       = 3,
-        Int16       = 4,
-        Int32       = 5,
-        Int64       = 6,
+        Uint8       =  3,
+        Int16       =  4,
+        Int32       =  5,
+        Int64       =  6,
         // --- NON_CLS integer
-        SInt8       =  7,
+        Int8        =  7,
         UInt16      =  8,
         UInt32      =  9,
         UInt64      = 10,

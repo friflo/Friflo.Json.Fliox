@@ -416,6 +416,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 case TypeId.Int16:
                 case TypeId.Int32:
                 case TypeId.Int64:
+                    
+                // NON_CLS
+                case TypeId.Int8:
+                case TypeId.UInt16:
+                case TypeId.UInt32:
+                case TypeId.UInt64:
+                    
                 case TypeId.JsonKey:
                     if (parser.isFloat) {
                         return ErrorType("Invalid integer.", parser.value.AsString(), false, typeDef.name, typeDef.@namespace, owner);
@@ -429,6 +436,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         case TypeId.Int16: if (     -32768 <= value && value <=      32767) { return true; } break;
                         case TypeId.Int32: if (-2147483648 <= value && value <= 2147483647) { return true; } break;
                         case TypeId.Int64:                                                  { return true; }
+                        
+                        // NON_CLS
+                        case TypeId.Int8:   if (-128 <= value && value <=        127)       { return true; } break;   
+                        case TypeId.UInt16: if (   0 <= value && value <=      65535)       { return true; } break;
+                        case TypeId.UInt32: if (   0 <= value && value <= 4294967295)       { return true; } break;
+                        case TypeId.UInt64:                                                 { return true; }
+                        //
                         case TypeId.JsonKey:                                                { return true; }
                         default:
                             throw new InvalidOperationException("cant be reached");
