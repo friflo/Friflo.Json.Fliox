@@ -7,14 +7,15 @@ direction LR
 class PocStore:::cssSchema {
     <<Schema>>
     <<abstract>>
-    orders     : [id] ➞ Order
-    customers  : [id] ➞ Customer
-    articles   : [id] ➞ Article
-    articles2  : [id] ➞ Article
-    producers  : [id] ➞ Producer
-    employees  : [id] ➞ Employee
-    types      : [id] ➞ TestType
-    keyName    : [testId] ➞ TestKeyName
+    orders       : [id] ➞ Order
+    customers    : [id] ➞ Customer
+    articles     : [id] ➞ Article
+    articles2    : [id] ➞ Article
+    producers    : [id] ➞ Producer
+    employees    : [id] ➞ Employee
+    types        : [id] ➞ TestType
+    nonClsTypes  : [id] ➞ NonClsType
+    keyName      : [testId] ➞ TestKeyName
 }
 PocStore *-- "0..*" Order : orders
 PocStore *-- "0..*" Customer : customers
@@ -23,6 +24,7 @@ PocStore *-- "0..*" Article : articles2
 PocStore *-- "0..*" Producer : producers
 PocStore *-- "0..*" Employee : employees
 PocStore *-- "0..*" TestType : types
+PocStore *-- "0..*" NonClsType : nonClsTypes
 PocStore *-- "0..*" TestKeyName : keyName
 
 class Order:::cssEntity {
@@ -107,6 +109,11 @@ TestType *-- "1" DerivedClass : derivedClass
 TestType *-- "0..1" DerivedClass : derivedClassNull
 TestType *-- "1" TestEnum : testEnum
 TestType *-- "0..1" TestEnum : testEnumNull
+
+class NonClsType:::cssEntity {
+    <<Entity · id>>
+    id  : string
+}
 
 class TestKeyName:::cssEntity {
     <<Entity · testId>>

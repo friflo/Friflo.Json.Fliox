@@ -479,6 +479,68 @@
                     }
                 },
                 {
+                    "name": "queryNonClsTypes",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "limit",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "maxCount",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "cursor",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        },
+                        {
+                            "name": "orderByKey",
+                            "type": {
+                                "kind":"ENUM",
+                                "name": "SortOrder",
+                                "enumValues": [
+                                    {
+                                        "name": "asc"
+                                    },
+                                    {
+                                        "name": "desc"
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "QueryNonClsTypesResult"
+                        }
+                    }
+                },
+                {
                     "name": "queryKeyName",
                     "args": [
                         {
@@ -807,6 +869,44 @@
                     }
                 },
                 {
+                    "name": "readNonClsTypes",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "NonClsType"
+                            }
+                        }
+                    }
+                },
+                {
                     "name": "readKeyName",
                     "args": [
                         {
@@ -942,6 +1042,22 @@
                 },
                 {
                     "name": "countTypes",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "countNonClsTypes",
                     "args": [
                         {
                             "name": "filter",
@@ -1891,6 +2007,53 @@
         },
         {
             "kind":"OBJECT",
+            "name": "QueryNonClsTypesResult",
+            "fields": [
+                {
+                    "name": "count",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "cursor",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "items",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "NonClsType"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
             "name": "QueryKeyNameResult",
             "fields": [
                 {
@@ -2202,6 +2365,37 @@
                     }
                 },
                 {
+                    "name": "createNonClsTypes",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "NonClsTypeInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
                     "name": "createKeyName",
                     "args": [
                         {
@@ -2432,6 +2626,37 @@
                                         "ofType": {
                                             "kind":"SCALAR",
                                             "name": "TestTypeInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "upsertNonClsTypes",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "NonClsTypeInput"
                                         }
                                     }
                                 }
@@ -2698,6 +2923,37 @@
                     }
                 },
                 {
+                    "name": "deleteNonClsTypes",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
                     "name": "deleteKeyName",
                     "args": [
                         {
@@ -2799,6 +3055,16 @@
                 },
                 {
                     "name": "types",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                },
+                {
+                    "name": "nonClsTypes",
                     "description": "",
                     "args": [
                     ],
@@ -3991,6 +4257,48 @@
                     "type": {
                         "kind":"SCALAR",
                         "name": "TestEnum"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "NonClsType",
+            "description": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "NonClsTypeInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
                     }
                 }
             ]

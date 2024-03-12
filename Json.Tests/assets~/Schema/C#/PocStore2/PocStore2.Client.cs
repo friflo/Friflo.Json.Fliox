@@ -25,6 +25,8 @@ public abstract class PocStore {
     [Required]
     Dictionary<string, TestType>     types;
     [Required]
+    Dictionary<string, NonClsType>   nonClsTypes;
+    [Required]
     Dictionary<string, TestKeyName>  keyName;
 }
 
@@ -98,6 +100,11 @@ public class TestType : PocEntity {
     DerivedClass  derivedClassNull;
     TestEnum      testEnum;
     TestEnum?     testEnumNull;
+}
+
+public class NonClsType {
+    [Required]
+    string  id;
 }
 
 public class TestKeyName {

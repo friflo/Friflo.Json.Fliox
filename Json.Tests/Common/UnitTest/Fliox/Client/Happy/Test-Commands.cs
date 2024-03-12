@@ -52,18 +52,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             await store.SyncTasks();
             
             var containersResult = containers.Result;
-            AreEqual(8,                 containersResult.containers.Length);
+            AreEqual(9,                 containersResult.containers.Length);
             AreEqual("in-memory",       containersResult.storage);
             
             var schemaResult = schema.Result;
-            AreEqual(11,                schemaResult.jsonSchemas.Count);
+            AreEqual(12,                schemaResult.jsonSchemas.Count);
             AreEqual("SubPocStore",     schemaResult.schemaName);
             AreEqual("Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy.json", schemaResult.schemaPath);
             
             var dbListResult = dbList.Result;
             AreEqual(1,                 dbListResult.databases.Count);
             var database0 = dbListResult.databases[0];
-            AreEqual(8,                 database0.containers.Length);
+            AreEqual(9,                 database0.containers.Length);
             AreEqual("in-memory",       database0.storage);
             
             var commandsResult = commands.Result;

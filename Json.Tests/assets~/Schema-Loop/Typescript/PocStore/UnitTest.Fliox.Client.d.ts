@@ -47,15 +47,16 @@ export class Employee {
 // schema documentation only - not implemented right now
 export interface PocStore {
     // --- containers
-    orders     : { [key: string]: Order };
-    customers  : { [key: string]: Customer };
-    articles   : { [key: string]: Article };
+    orders       : { [key: string]: Order };
+    customers    : { [key: string]: Customer };
+    articles     : { [key: string]: Article };
     /** ensure multiple containers can use same entity Type */
-    articles2  : { [key: string]: Article };
-    producers  : { [key: string]: Producer };
-    employees  : { [key: string]: Employee };
-    types      : { [key: string]: TestType };
-    keyName    : { [key: string]: TestKeyName };
+    articles2    : { [key: string]: Article };
+    producers    : { [key: string]: Producer };
+    employees    : { [key: string]: Employee };
+    types        : { [key: string]: TestType };
+    nonClsTypes  : { [key: string]: NonClsType };
+    keyName      : { [key: string]: TestKeyName };
 
     // --- commands
     ["TestCommand"]                        (param: TestCommand | null) : boolean;
@@ -139,6 +140,10 @@ export type TestEnum =
 
 export class TestCommand {
     text? : string | null;
+}
+
+export class NonClsType {
+    id  : string;
 }
 
 /**

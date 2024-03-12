@@ -79,6 +79,7 @@
         "producers",
         "employees",
         "types",
+        "nonClsTypes",
         "keyName"
     ]
 },
@@ -111,6 +112,10 @@
         {
             "name": "types",
             "count": 1
+        },
+        {
+            "name": "nonClsTypes",
+            "count": 0
         },
         {
             "name": "keyName",

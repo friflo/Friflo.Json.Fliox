@@ -62,6 +62,18 @@ class DatabaseSub {
     }
 }
 class SubEvent {
+    filterSeqSrc(users, seqStart, seqEnd) {
+        return (this.seq >= seqStart) &&
+            (this.seq <= seqEnd) &&
+            (users == null || users.includes(this.usr));
+    }
+    static internName(name) {
+        const intern = SubEvent.internNames[name];
+        if (intern)
+            return intern;
+        SubEvent.internNames[name] = name;
+        return name;
+    }
     constructor(msg, db, ev, seq) {
         this.msg = SubEvent.internName(msg);
         this.db = SubEvent.internName(db);
@@ -93,18 +105,6 @@ class SubEvent {
         if (containers.length > 0) {
             this.containers = containers;
         }
-    }
-    filterSeqSrc(users, seqStart, seqEnd) {
-        return (this.seq >= seqStart) &&
-            (this.seq <= seqEnd) &&
-            (users == null || users.includes(this.usr));
-    }
-    static internName(name) {
-        const intern = SubEvent.internNames[name];
-        if (intern)
-            return intern;
-        SubEvent.internNames[name] = name;
-        return name;
     }
 }
 SubEvent.internNames = {};

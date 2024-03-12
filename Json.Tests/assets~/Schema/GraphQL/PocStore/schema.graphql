@@ -28,6 +28,7 @@ type Query {
     queryProducers                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryProducersResult!
     queryEmployees                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryEmployeesResult!
     queryTypes                    (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryTypesResult!
+    queryNonClsTypes              (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryNonClsTypesResult!
     queryKeyName                  (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean, orderByKey: SortOrder) : QueryKeyNameResult!
     readOrders                    (ids: [String!]!, selectAll: Boolean) : [Order]!
     readCustomers                 (ids: [String!]!, selectAll: Boolean) : [Customer]!
@@ -36,6 +37,7 @@ type Query {
     readProducers                 (ids: [String!]!, selectAll: Boolean) : [Producer]!
     readEmployees                 (ids: [String!]!, selectAll: Boolean) : [Employee]!
     readTypes                     (ids: [String!]!, selectAll: Boolean) : [TestType]!
+    readNonClsTypes               (ids: [String!]!, selectAll: Boolean) : [NonClsType]!
     readKeyName                   (ids: [String!]!, selectAll: Boolean) : [TestKeyName]!
     countOrders                   (filter: String) : Int
     countCustomers                (filter: String) : Int
@@ -44,6 +46,7 @@ type Query {
     countProducers                (filter: String) : Int
     countEmployees                (filter: String) : Int
     countTypes                    (filter: String) : Int
+    countNonClsTypes              (filter: String) : Int
     countKeyName                  (filter: String) : Int
     TestCommand                   (param: TestCommandInput) : Boolean!
     MultiRequests                 (param: Int) : Int!
@@ -121,6 +124,12 @@ type QueryTypesResult {
     items  : [TestType!]!
 }
 
+type QueryNonClsTypesResult {
+    count  : Int!
+    cursor : String
+    items  : [NonClsType!]!
+}
+
 type QueryKeyNameResult {
     count  : Int!
     cursor : String
@@ -134,41 +143,45 @@ type EntityError {
 }
 
 type Mutation {
-    createOrders   (entities: [OrderInput!]!) : [EntityError!]
-    createCustomers(entities: [CustomerInput!]!) : [EntityError!]
-    createArticles (entities: [ArticleInput!]!) : [EntityError!]
-    createArticles2(entities: [ArticleInput!]!) : [EntityError!]
-    createProducers(entities: [ProducerInput!]!) : [EntityError!]
-    createEmployees(entities: [EmployeeInput!]!) : [EntityError!]
-    createTypes    (entities: [TestTypeInput!]!) : [EntityError!]
-    createKeyName  (entities: [TestKeyNameInput!]!) : [EntityError!]
-    upsertOrders   (entities: [OrderInput!]!) : [EntityError!]
-    upsertCustomers(entities: [CustomerInput!]!) : [EntityError!]
-    upsertArticles (entities: [ArticleInput!]!) : [EntityError!]
-    upsertArticles2(entities: [ArticleInput!]!) : [EntityError!]
-    upsertProducers(entities: [ProducerInput!]!) : [EntityError!]
-    upsertEmployees(entities: [EmployeeInput!]!) : [EntityError!]
-    upsertTypes    (entities: [TestTypeInput!]!) : [EntityError!]
-    upsertKeyName  (entities: [TestKeyNameInput!]!) : [EntityError!]
-    deleteOrders   (ids: [String!]!) : [EntityError!]
-    deleteCustomers(ids: [String!]!) : [EntityError!]
-    deleteArticles (ids: [String!]!) : [EntityError!]
-    deleteArticles2(ids: [String!]!) : [EntityError!]
-    deleteProducers(ids: [String!]!) : [EntityError!]
-    deleteEmployees(ids: [String!]!) : [EntityError!]
-    deleteTypes    (ids: [String!]!) : [EntityError!]
-    deleteKeyName  (ids: [String!]!) : [EntityError!]
+    createOrders     (entities: [OrderInput!]!) : [EntityError!]
+    createCustomers  (entities: [CustomerInput!]!) : [EntityError!]
+    createArticles   (entities: [ArticleInput!]!) : [EntityError!]
+    createArticles2  (entities: [ArticleInput!]!) : [EntityError!]
+    createProducers  (entities: [ProducerInput!]!) : [EntityError!]
+    createEmployees  (entities: [EmployeeInput!]!) : [EntityError!]
+    createTypes      (entities: [TestTypeInput!]!) : [EntityError!]
+    createNonClsTypes(entities: [NonClsTypeInput!]!) : [EntityError!]
+    createKeyName    (entities: [TestKeyNameInput!]!) : [EntityError!]
+    upsertOrders     (entities: [OrderInput!]!) : [EntityError!]
+    upsertCustomers  (entities: [CustomerInput!]!) : [EntityError!]
+    upsertArticles   (entities: [ArticleInput!]!) : [EntityError!]
+    upsertArticles2  (entities: [ArticleInput!]!) : [EntityError!]
+    upsertProducers  (entities: [ProducerInput!]!) : [EntityError!]
+    upsertEmployees  (entities: [EmployeeInput!]!) : [EntityError!]
+    upsertTypes      (entities: [TestTypeInput!]!) : [EntityError!]
+    upsertNonClsTypes(entities: [NonClsTypeInput!]!) : [EntityError!]
+    upsertKeyName    (entities: [TestKeyNameInput!]!) : [EntityError!]
+    deleteOrders     (ids: [String!]!) : [EntityError!]
+    deleteCustomers  (ids: [String!]!) : [EntityError!]
+    deleteArticles   (ids: [String!]!) : [EntityError!]
+    deleteArticles2  (ids: [String!]!) : [EntityError!]
+    deleteProducers  (ids: [String!]!) : [EntityError!]
+    deleteEmployees  (ids: [String!]!) : [EntityError!]
+    deleteTypes      (ids: [String!]!) : [EntityError!]
+    deleteNonClsTypes(ids: [String!]!) : [EntityError!]
+    deleteKeyName    (ids: [String!]!) : [EntityError!]
 }
 
 type PocStore {
-    orders    : Any
-    customers : Any
-    articles  : Any
-    articles2 : Any
-    producers : Any
-    employees : Any
-    types     : Any
-    keyName   : Any
+    orders      : Any
+    customers   : Any
+    articles    : Any
+    articles2   : Any
+    producers   : Any
+    employees   : Any
+    types       : Any
+    nonClsTypes : Any
+    keyName     : Any
 }
 
 type Order {
@@ -293,6 +306,14 @@ input TestTypeInput {
     derivedClassNull : DerivedClassInput
     testEnum         : TestEnum!
     testEnumNull     : TestEnum
+}
+
+type NonClsType {
+    id : String!
+}
+
+input NonClsTypeInput {
+    id : String!
 }
 
 type TestKeyName {

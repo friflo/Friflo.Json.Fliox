@@ -35,6 +35,13 @@ const filterRow = el("filterRow");
  * - {@link Entity} and {@link JsonType} for entities
  */
 export class Explorer {
+    getFocusedCell() {
+        const focus = this.focusedCell;
+        if (!focus)
+            return null;
+        const row = focus.parentElement;
+        return { column: focus.cellIndex, row: row.rowIndex };
+    }
     constructor(config) {
         this.focusedCell = null;
         this.editCell = null;
@@ -73,13 +80,6 @@ export class Explorer {
                 this.loadMore();
             }
         });
-    }
-    getFocusedCell() {
-        const focus = this.focusedCell;
-        if (!focus)
-            return null;
-        const row = focus.parentElement;
-        return { column: focus.cellIndex, row: row.rowIndex };
     }
     initFilterEditor() {
         monaco.languages.typescript.typescriptDefaults.setCompilerOptions({

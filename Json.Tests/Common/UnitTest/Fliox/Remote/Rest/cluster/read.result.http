@@ -6,7 +6,7 @@ GET {{base}}/rest/cluster/containers
 # Content-Type: application/json
 
 [
-    {"id":"main_db","storage":"in-memory","containers":["orders","customers","articles","articles2","producers","employees","types","keyName"],"defaultDB":true},
+    {"id":"main_db","storage":"in-memory","containers":["orders","customers","articles","articles2","producers","employees","types","nonClsTypes","keyName"],"defaultDB":true},
     {"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},
     {"id":"monitor","storage":"in-memory","containers":["hosts","users","clients","histories"]},
     {"id":"user_db","storage":"file-system","containers":["credentials","permissions","roles","targets"]},

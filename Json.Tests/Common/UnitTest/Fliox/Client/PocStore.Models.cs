@@ -139,6 +139,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                     public  TestEnum?       testEnumNull;
     }
     
+    public class NonClsType {
+        [Key]       public  string          id { get; set; }
+        //          public  sbyte           int8;
+        //          public  ushort          uint16;
+        //          public  uint            uint32;
+        //          public  ulong           uint64;
+    }
+    
     public struct PocStruct {
         public  int                     value;
     }

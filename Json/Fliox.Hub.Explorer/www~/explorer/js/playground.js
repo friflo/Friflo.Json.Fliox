@@ -15,6 +15,7 @@ const defaultUser = el("user");
 const defaultToken = el("token");
 // ----------------------------------------------- Playground -----------------------------------------------
 export class Playground {
+    getClientId() { var _a; return (_a = this.wsClient) === null || _a === void 0 ? void 0 : _a.clt; }
     constructor() {
         this.websocketCount = 0;
         this.eventCount = 0; // number of received events. Reset for every new wsClient
@@ -42,7 +43,6 @@ export class Playground {
             ackElement.innerText = seq ? String(seq) : " - ";
         };
     }
-    getClientId() { var _a; return (_a = this.wsClient) === null || _a === void 0 ? void 0 : _a.clt; }
     connectWebsocket() {
         this.wsClient.close();
         this.connect();

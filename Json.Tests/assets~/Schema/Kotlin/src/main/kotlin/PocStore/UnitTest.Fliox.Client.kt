@@ -9,14 +9,15 @@ import kotlinx.serialization.json.*
 
 @Serializable
 abstract class PocStore {
-    abstract  val orders    : HashMap<String, Order>
-    abstract  val customers : HashMap<String, Customer>
-    abstract  val articles  : HashMap<String, Article>
-    abstract  val articles2 : HashMap<String, Article>
-    abstract  val producers : HashMap<String, Producer>
-    abstract  val employees : HashMap<String, Employee>
-    abstract  val types     : HashMap<String, TestType>
-    abstract  val keyName   : HashMap<String, TestKeyName>
+    abstract  val orders      : HashMap<String, Order>
+    abstract  val customers   : HashMap<String, Customer>
+    abstract  val articles    : HashMap<String, Article>
+    abstract  val articles2   : HashMap<String, Article>
+    abstract  val producers   : HashMap<String, Producer>
+    abstract  val employees   : HashMap<String, Employee>
+    abstract  val types       : HashMap<String, TestType>
+    abstract  val nonClsTypes : HashMap<String, NonClsType>
+    abstract  val keyName     : HashMap<String, TestKeyName>
 }
 
 @Serializable
@@ -88,6 +89,11 @@ data class TestType (
               val testEnum         : TestEnum,
               val testEnumNull     : TestEnum? = null,
 ) : PocEntity()
+
+@Serializable
+data class NonClsType (
+              val id : String,
+)
 
 @Serializable
 data class TestKeyName (

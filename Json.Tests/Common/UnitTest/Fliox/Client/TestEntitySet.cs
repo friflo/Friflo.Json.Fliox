@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var hub     = new FlioxHub(new MemoryDatabase("test"));
             var client  = new PocStore(hub);
             var infos   = FlioxClient.GetEntitySetInfos(client);
-            AreEqual(8, infos.Length);
+            AreEqual(9, infos.Length);
         }
     }
 }

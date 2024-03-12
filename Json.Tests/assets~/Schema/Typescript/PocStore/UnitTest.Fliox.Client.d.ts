@@ -30,15 +30,16 @@ import { double }            from "./Standard";
 // schema documentation only - not implemented right now
 export interface PocStore {
     // --- containers
-    orders     : { [key: string]: Order };
-    customers  : { [key: string]: Customer };
-    articles   : { [key: string]: Article };
+    orders       : { [key: string]: Order };
+    customers    : { [key: string]: Customer };
+    articles     : { [key: string]: Article };
     /** ensure multiple containers can use same entity Type */
-    articles2  : { [key: string]: Article };
-    producers  : { [key: string]: Producer };
-    employees  : { [key: string]: Employee };
-    types      : { [key: string]: TestType };
-    keyName    : { [key: string]: TestKeyName };
+    articles2    : { [key: string]: Article };
+    producers    : { [key: string]: Producer };
+    employees    : { [key: string]: Employee };
+    types        : { [key: string]: TestType };
+    nonClsTypes  : { [key: string]: NonClsType };
+    keyName      : { [key: string]: TestKeyName };
 
     // --- commands
     ["TestCommand"]                        (param: TestCommand | null) : boolean;
@@ -174,6 +175,10 @@ export class TestType extends PocEntity {
     derivedClassNull? : DerivedClass | null;
     testEnum          : TestEnum;
     testEnumNull?     : TestEnum | null;
+}
+
+export class NonClsType {
+    id  : string;
 }
 
 export class TestKeyName {

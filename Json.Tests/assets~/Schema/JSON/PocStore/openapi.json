@@ -64,6 +64,10 @@
       "description": "entity type: <a target='PocStore' href='html/schema.html#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestType'>TestType</a>"
     },
     {
+      "name": "nonClsTypes",
+      "description": "entity type: <a target='PocStore' href='html/schema.html#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.NonClsType'>NonClsType</a>"
+    },
+    {
       "name": "keyName",
       "description": "entity type: <a target='PocStore' href='html/schema.html#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestKeyName'>TestKeyName</a>"
     }],
@@ -2553,6 +2557,252 @@
       "post": {
         "summary":    "delete multiple records by id in container types",
         "tags":       ["types"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/nonClsTypes": {
+      "get": {
+        "summary":    "return / filter multiple records from container nonClsTypes",
+        "description":    "To process big result sets fetch them iteratively by setting **maxCount** of records per request and use the returned **cursor** on the subsequent request.",
+        "tags":       ["nonClsTypes"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "filter",
+            "schema":   { "type": "string" },
+            "description": "filter returned records by applying a expression predicate. E.g. `o.name == 'Peter'`"
+          },
+          {
+            "in":       "query",
+            "name":     "limit",
+            "schema":   { "type": "integer" },
+            "description": "limit the number of returned records"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "maximum number of records. Result will return a **cursor** if more records available."
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
+            "description": "pass the **cursor** returned by the previous request"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.NonClsType.json#/definitions/NonClsType"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary":    "create or update multiple records in container nonClsTypes",
+        "tags":       ["nonClsTypes"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.NonClsType.json#/definitions/NonClsType" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/nonClsTypes/{id}": {
+      "get": {
+        "summary":    "get a single record from container nonClsTypes",
+        "tags":       ["nonClsTypes"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.NonClsType.json#/definitions/NonClsType"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary":    "write a single record to container nonClsTypes",
+        "tags":       ["nonClsTypes"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.NonClsType.json#/definitions/NonClsType"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary":    "patch a single record in container nonClsTypes",
+        "tags":       ["nonClsTypes"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "op": {
+                        "enum": ["replace"]
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                },
+                "example": [
+                  {
+                    "op":    "replace",
+                    "path":  ".name",
+                    "value": "Hello Patch!"
+                  }
+                ]
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "delete a single record in container nonClsTypes by id",
+        "tags":       ["nonClsTypes"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/nonClsTypes/bulk-get": {
+      "post": {
+        "summary":    "get multiple records by id from container nonClsTypes",
+        "tags":       ["nonClsTypes"],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.NonClsType.json#/definitions/NonClsType" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nonClsTypes/bulk-delete": {
+      "post": {
+        "summary":    "delete multiple records by id in container nonClsTypes",
+        "tags":       ["nonClsTypes"],
         "requestBody": {          
           "content": {
               "application/json": {
