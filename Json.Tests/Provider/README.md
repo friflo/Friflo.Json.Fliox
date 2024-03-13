@@ -60,10 +60,15 @@ Valid  **`TEST_DB_PROVIDER`** values:
 ```
 file
 sqlite
+sqlite_rel
 postgres
+postgres_rel
 sqlserver
+sqlserver_rel
 mysql
+mysql_rel
 mariadb
+mariadb_rel
 cosmos
 ```
 
