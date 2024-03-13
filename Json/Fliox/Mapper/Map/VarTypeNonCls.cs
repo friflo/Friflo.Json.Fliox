@@ -116,6 +116,7 @@ public partial struct Var {
         public    override  Var     FromObject  (object obj)               => new Var((ulong?)obj);
         public    override  object  ToObject    (in Var value)             => value.obj != null ? (ulong?) value.intern.lng : null;
         internal  override  Member  CreateMember<T>(MemberInfo mi)         => new MemberUInt64Null<T>(mi);
+        internal  override  string  AsString    (in Var value)             => value.obj == null ? "null" : ((ulong)value.intern.lng).ToString();
     }
 
 }

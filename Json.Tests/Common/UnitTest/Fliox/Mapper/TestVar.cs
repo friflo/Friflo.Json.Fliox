@@ -186,6 +186,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             IsTrue(ushort.MaxValue  == new Var((ushort?)ushort.MaxValue).UInt16Null);
             IsTrue(uint.MaxValue    == new Var((uint?)  uint.MaxValue)  .UInt32Null);
             IsTrue(ulong.MaxValue   == new Var((ulong?) ulong.MaxValue) .UInt64Null);
+            
+            // ulong specific tests
+            AreEqual("{ulong} 18446744073709551615",    new Var(ulong.MaxValue).ToString());
+            AreEqual("{ulong?} 18446744073709551615",   new Var((ulong?) ulong.MaxValue).ToString());
+            AreEqual("{ulong?} null",                   new Var((ulong?) null).ToString());
         }
         
         [Test]
