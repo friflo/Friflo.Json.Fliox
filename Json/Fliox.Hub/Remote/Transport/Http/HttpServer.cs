@@ -128,13 +128,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 try {
                     await HandleRequest().ConfigureAwait(false);
                 }
-#if UNITY_5_3_OR_NEWER
+// #if UNITY_5_3_OR_NEWER
                 catch (ObjectDisposedException  e) {
+                    // exception is thrown only when running in Unity
                     if (running)
                         LogException("HttpListenerHost - ObjectDisposedException", e);
                     return;
                 }
-#endif
+// #endif
                 catch (HttpListenerException  e) {
                     bool serverStopped = e.ErrorCode == 995 && running == false;
                     if (!serverStopped) 

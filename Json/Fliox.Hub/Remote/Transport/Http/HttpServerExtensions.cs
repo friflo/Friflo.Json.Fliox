@@ -13,6 +13,12 @@ using Friflo.Json.Fliox.Hub.Remote.WebSockets;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Remote
 {
+    public enum AcceptWebSocketType
+    {
+        SystemNet,
+        FrifloWebSockets
+    }
+    
     public static class HttpServerExtensions
     {
         /// <summary>
@@ -29,19 +35,22 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             HttpListenerRequest req  = context.Request;
             WebSocket           websocket = null;
-#if UNITY_5_3_OR_NEWER
-            // Unity <= 2021.3 has currently no support for Server WebSockets  =>  add functionality using ServerWebSocketExtensions
-            // see: [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
-            if (ServerWebSocketExtensions.IsWebSocketRequest(req)) {
-                var wsContext   = await ServerWebSocketExtensions.AcceptWebSocket(context).ConfigureAwait(false);
-                websocket       = wsContext.WebSocket;
+
+            if (httpHost.AcceptWebSocketType == AcceptWebSocketType.FrifloWebSockets) {
+                // Unity <= 2021.3 has currently no support for Server WebSockets  =>  add functionality using ServerWebSocketExtensions
+                // see: [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
+                if (ServerWebSocketExtensions.IsWebSocketRequest(req)) {
+                    var wsContext   = await ServerWebSocketExtensions.AcceptWebSocket(context).ConfigureAwait(false);
+                    websocket       = wsContext.WebSocket;
+                }
             }
-#else
-            if (req.IsWebSocketRequest) {
-                var wsContext   = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
-                websocket       = wsContext.WebSocket;
+            else
+            {
+                if (req.IsWebSocketRequest) {
+                    var wsContext   = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
+                    websocket       = wsContext.WebSocket;
+                }
             }
-#endif
             if (websocket != null) {
                 var remoteClient  = request.RemoteEndPoint;
                 // awaits until thew websocket is closed or disconnected

@@ -59,6 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         public   readonly   SharedEnv               sharedEnv;
                         public              List<string>            Routes      => routes.ToList();
         [Browse(Never)] public              IHubLogger              Logger      => sharedEnv.hubLogger;
+                        public              AcceptWebSocketType     AcceptWebSocketType   { get; init; } = AcceptWebSocketType.SystemNet;
         
                         public   const      string                  DefaultCacheControl = "max-age=600";
         
