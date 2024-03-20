@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         
-        public void SaveToStream(Stream stream)
+        public void WriteToStream(Stream stream)
         {
             var containers = GetContainersSync();
             var bytes = new Bytes(100);

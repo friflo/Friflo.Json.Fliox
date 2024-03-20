@@ -278,5 +278,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             stream.Write(End, 0, End.Length);
         }
+
+        internal void AddKeyValue(JsonKey key, JsonValue value) {
+            keyValues.Add(key, value);
+        }
     }
 }
