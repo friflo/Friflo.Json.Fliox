@@ -2,36 +2,59 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.Utils;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    public class JsonDatabaseReaderResult
+    public class JsonDatabaseDumpResult
     {
-        public readonly     Dictionary<string, int> Containers;
+        public readonly     Dictionary<string, int> containers;
         public readonly     string                  error;
-        
-        internal JsonDatabaseReaderResult(string error, Dictionary<string, int> containers) {
-            Containers = new Dictionary<string, int>(containers);
+        public              int                     EntityCount => GetEntityCount();
+
+        public override     string                  ToString() => GetString();
+
+        internal JsonDatabaseDumpResult(string error, Dictionary<string, int> containers) {
+            this.containers = new Dictionary<string, int>(containers);
             this.error = error;
+        }
+        
+        private int GetEntityCount() {
+            int count = 0;
+            foreach (var pair in containers) {
+                count += pair.Value;
+            }
+            return count;
+        }
+        
+        private string GetString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("entities: ");
+            sb.Append(EntityCount);
+            if (error != null) {
+                sb.Append(" - error: ");
+                sb.Append(error);
+            }
+            return sb.ToString();
         }
     }
     
-    public class JsonDatabaseReader
+    public class JsonDatabaseDumpReader
     {
-        private readonly    EntityProcessor processor = new EntityProcessor();
-        private             Utf8JsonParser  parser;
-        private             JsonValue       databaseJson;
-        private             int             readEntityCount;
-        private readonly    Dictionary<string, int> Containers = new Dictionary<string, int>();
+        private readonly    EntityProcessor         processor = new EntityProcessor();
+        private             Utf8JsonParser          parser;
+        private             JsonValue               databaseJson;
+        private             int                     readEntityCount;
+        private readonly    Dictionary<string, int> containers = new Dictionary<string, int>();
         
-        public JsonDatabaseReaderResult Read(JsonValue json, MemoryDatabase database)
+        public JsonDatabaseDumpResult Read(JsonValue json, MemoryDatabase database)
         {
             databaseJson = json;
-            Containers.Clear();
+            containers.Clear();
             parser.InitParser(json);
             var ev = parser.NextEvent();
             
@@ -50,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        private JsonDatabaseReaderResult ReadContainer(MemoryDatabase database)
+        private JsonDatabaseDumpResult ReadContainer(MemoryDatabase database)
         {
             while (true) {
                 var ev = parser.NextEvent();
@@ -60,6 +83,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                         readEntityCount = 0;
                         var containerName = new ShortString(parser.key.ToString());
                         var container = database.GetOrCreateContainer(containerName);
+                        if (container == null) {
+                            return CreateResult($"container not found. was: {containerName} at position: {parser.Position}");
+                        }
                         var result = ReadRecords(container);
                         if (result != null) {
                             return result;
@@ -75,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        private JsonDatabaseReaderResult ReadRecords(EntityContainer container)
+        private JsonDatabaseDumpResult ReadRecords(EntityContainer container)
         {
             var memoryContainer = (MemoryContainer)container;
             var keyName = memoryContainer.keyName;
@@ -93,20 +119,20 @@ namespace Friflo.Json.Fliox.Hub.Host
                         memoryContainer.AddKeyValue(key, record);
                         break;
                     case JsonEvent.ArrayEnd:
-                        Containers[container.name] = readEntityCount;
+                        containers[container.name] = readEntityCount;
                         return null;
                     case JsonEvent.Error:
-                        Containers[container.name] = readEntityCount;
+                        containers[container.name] = readEntityCount;
                         return CreateResult(parser.error.GetMessage());
                     default:
-                        Containers[container.name] = readEntityCount;
+                        containers[container.name] = readEntityCount;
                         return CreateResult($"expect object. was: {ev} at position: {parser.Position}");
                 }
             }
         }
         
-        private JsonDatabaseReaderResult CreateResult(string error) {
-            var result = new JsonDatabaseReaderResult(error, Containers);
+        private JsonDatabaseDumpResult CreateResult(string error) {
+            var result = new JsonDatabaseDumpResult(error, containers);
             return result;
         }
     }
