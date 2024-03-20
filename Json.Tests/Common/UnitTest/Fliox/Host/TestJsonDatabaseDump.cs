@@ -22,7 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 ]
 }";
         [Test]
-        public static void TestSaveMemoryDatabase() {
+        public static void TestSaveMemoryDatabase()
+        {
             var database    = new MemoryDatabase("test") { ContainerType = MemoryType.NonConcurrent };
             var hub         = new FlioxHub(database);
             var client      = new PocStore(hub);
