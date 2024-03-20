@@ -267,13 +267,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         {
             bool first = true;
             stream.Write(Start, 0, Start.Length);
-            foreach (var keyValue in keyValues) {
+            var map = keyValues;
+            var keys = map.Keys;
+            var sortedKeys = new SortedSet<JsonKey>(keys, JsonKey.Comparer);
+            
+            foreach (var key in sortedKeys) {
                 if (first) {
                     first = false;
                 } else {
                     stream.Write(Delimiter, 0, Delimiter.Length);
                 }
-                var json = keyValue.Value;
+                var json = map[key];
                 stream.Write(json.MutableArray, json.start, json.Count);
             }
             stream.Write(End, 0, End.Length);
