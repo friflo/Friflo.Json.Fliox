@@ -13,8 +13,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 @"{
 ""articles"":
 [
-{""id"":""article-2"",""name"":""Article 2""},
-{""id"":""article-1"",""name"":""Article 1""}
+{""id"":""article-1"",""name"":""Article 1""},
+{""id"":""article-2"",""name"":""Article 2""}
 ],
 ""employees"":
 [
@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
 }";
         [Test]
         public static void TestSaveMemoryDatabase() {
-            var database    = new MemoryDatabase("test");
+            var database    = new MemoryDatabase("test") { ContainerType = MemoryType.NonConcurrent };
             var hub         = new FlioxHub(database);
             var client      = new PocStore(hub);
             client.articles.Create(new Article { id = "article-1", name= "Article 1"});
@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
         public static void TestLoadFrom()
         {
             var schema      = DatabaseSchema.Create<PocStore>();
-            var database    = new MemoryDatabase("test", schema);
+            var database    = new MemoryDatabase("test", schema) { ContainerType = MemoryType.NonConcurrent };
             
             var reader  = new JsonDatabaseReader();
             var json    = new JsonValue(Expect);
