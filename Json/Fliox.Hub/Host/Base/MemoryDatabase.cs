@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.SQL;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -74,6 +76,39 @@ namespace Friflo.Json.Fliox.Hub.Host
         protected override Task DropContainerAsync(ISyncConnection connection, string name) {
             ClearContainers();
             return Task.CompletedTask;
+        }
+        
+        
+        public void SaveToStream(Stream stream)
+        {
+            var containers = GetContainersSync();
+            var bytes = new Bytes(100);
+            bytes.AppendString("{\n");
+            stream.Write(bytes.buffer, 0, bytes.end);
+            bytes.Clear();
+            bool first = true;
+            foreach (var container in containers)
+            {
+                bytes.Clear();
+                var memoryContainer = (MemoryContainer)container;
+                if (first) {
+                    first = false;
+                } else {
+                    bytes.AppendChar(',');
+                    bytes.AppendChar('\n');
+                }
+                bytes.AppendChar('\"');
+                bytes.AppendStringUtf8(container.name);
+                bytes.AppendChar('\"');
+                bytes.AppendChar(':');
+                bytes.AppendChar('\n');
+                stream.Write(bytes.buffer, 0, bytes.end);
+                memoryContainer.SaveToStream(stream);
+            }
+            bytes.Clear();
+            bytes.AppendString("\n}");
+            stream.Write(bytes.buffer, 0, bytes.end);
+            stream.Flush();
         }
     }
     

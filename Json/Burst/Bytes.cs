@@ -365,7 +365,7 @@ namespace Friflo.Json.Burst
             if (maxByteLen > buffer.Length) {
                 DoubleSize(maxByteLen);
             }
-            int byteLen = utf8.GetBytes(str, 0, str.Length, buffer, start);
+            int byteLen = utf8.GetBytes(str, 0, str.Length, buffer, end);
             end += byteLen;
         }
 

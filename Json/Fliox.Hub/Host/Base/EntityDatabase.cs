@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.SQL;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
@@ -281,6 +280,15 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             containers[name] = container = CreateContainer(name, this);
             return container;
+        }
+        
+        protected EntityContainer[] GetContainersSync() {
+            var containerList = new EntityContainer[containers.Count];
+            int n = 0;
+            foreach (var pair in containers) {
+                containerList[n++] = pair.Value;
+            }
+            return containerList;
         }
         
         protected virtual Task<string[]> GetContainers() {

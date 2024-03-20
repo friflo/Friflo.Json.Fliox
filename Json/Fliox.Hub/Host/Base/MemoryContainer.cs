@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -256,6 +257,26 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             // Otherwise:           return value as it is
             return true;
+        }
+        
+        private static readonly byte[] Start        = new byte[] { (byte)'[', (byte)'\n'};
+        private static readonly byte[] Delimiter    = new byte[] { (byte)',', (byte)'\n'};
+        private static readonly byte[] End          = new byte[] { (byte)'\n', (byte)']'};
+        
+        internal void SaveToStream(Stream stream)
+        {
+            bool first = true;
+            stream.Write(Start, 0, Start.Length);
+            foreach (var keyValue in keyValues) {
+                if (first) {
+                    first = false;
+                } else {
+                    stream.Write(Delimiter, 0, Delimiter.Length);
+                }
+                var json = keyValue.Value;
+                stream.Write(json.MutableArray, json.start, json.Count);
+            }
+            stream.Write(End, 0, End.Length);
         }
     }
 }
