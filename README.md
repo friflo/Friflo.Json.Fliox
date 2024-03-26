@@ -6,7 +6,7 @@
 [![CI](https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml) 
 [![CD](https://github.com/friflo/Friflo.Json.Fliox/workflows/CD/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml) 
 
-![new](docs/images/new.svg) 2024-03-26 · Switched to more permissive license LGPL v3.0. Before AGPL v3.0.
+![new](docs/images/new.svg) 2024-03-26 · Switched project to more permissive license LGPL v3.0. Before AGPL v3.0.
 
 
 ![new](docs/images/new.svg) 2024-02-19 · New features in [**Friflo.Engine.ECS - v.1.17.0**](Engine/README.md)  
