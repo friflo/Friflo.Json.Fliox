@@ -6,6 +6,9 @@
 [![CI](https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml) 
 [![CD](https://github.com/friflo/Friflo.Json.Fliox/workflows/CD/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml) 
 
+![new](docs/images/new.svg) 2024-03-26 · Switched to more permissive license LGPL v3.0. Before AGPL v3.0.
+
+
 ![new](docs/images/new.svg) 2024-02-19 · New features in [**Friflo.Engine.ECS - v.1.17.0**](Engine/README.md)  
 Added new features focusing on performance:
 - Add support for multi threaded query (system) execution.
@@ -15,8 +18,6 @@ Added new features focusing on performance:
 - Add SIMD support in multi threaded queries. Execute SIMD operations without a scalar remainder loop.
 
 
-![new](docs/images/new.svg) 2024-01-17 · Published new package [**Friflo.Engine.ECS**](Engine/README.md) on nuget.  
-An **Entity Components System** optimized for performance and cache locality.
 
 <br/>
 
