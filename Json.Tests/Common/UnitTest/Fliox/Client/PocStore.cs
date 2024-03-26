@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// </remarks>
     [OpenAPI(version : "1.0.0",     termsOfService: "https://github.com/friflo/Friflo.Json.Fliox",
         contactName : "Ullrich Praetz", contactUrl      : "https://github.com/friflo/Friflo.Json.Fliox/issues",
-        licenseName : "AGPL-3.0",       licenseUrl      : "https://spdx.org/licenses/AGPL-3.0-only.html")]
+        licenseName : "LGPL-3.0",       licenseUrl      : "https://spdx.org/licenses/LGPL-3.0-only.html")]
     [OpenAPIServer(description : "test localhost",  url : "http://localhost:8010/fliox/rest/main_db")]
     [OpenAPIServer(description : "test 127.0.0.1",  url : "http://127.0.0.1:8010/fliox/rest/main_db")]
     public class PocStore : FlioxClient

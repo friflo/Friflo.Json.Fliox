@@ -12,8 +12,8 @@
       "url": "https://github.com/friflo/Friflo.Json.Fliox/issues"
     },
     "license": {
-      "name": "AGPL-3.0",
-      "url": "https://spdx.org/licenses/AGPL-3.0-only.html"
+      "name": "LGPL-3.0",
+      "url": "https://spdx.org/licenses/LGPL-3.0-only.html"
     }
   },
   "servers": [
