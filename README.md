@@ -611,7 +611,7 @@ Happy coding!
 
 ## License
 
-This project is licensed under AGPLv3.  
+This project is licensed under LGPLv3.  
 
 friflo JSON Fliox  
-Copyright © 2023   Ullrich Praetz
+Copyright © 2024   Ullrich Praetz
