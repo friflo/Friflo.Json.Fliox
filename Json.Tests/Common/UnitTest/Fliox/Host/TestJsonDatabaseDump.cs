@@ -11,14 +11,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Host
     {
         private const string Expect =
 @"{
+""employees"":
+[
+{""id"":""e-1"",""firstName"":""Peter""}
+],
 ""articles"":
 [
 {""id"":""article-1"",""name"":""Article 1""},
 {""id"":""article-2"",""name"":""Article 2""}
-],
-""employees"":
-[
-{""id"":""e-1"",""firstName"":""Peter""}
 ]
 }";
         [Test]
