@@ -116,6 +116,9 @@ namespace Friflo.Json.Fliox.Mapper.Utils
 #if ENABLE_IL2CPP || NETSTANDARD2_0
             return (instance, value) => field.SetValue(instance, value);
 #else
+            if (!SupportIL) {
+                return (instance, value) => field.SetValue(instance, value);
+            } 
             string methodName = "set_" + field.Name;
             DynamicMethod setterMethod = new DynamicMethod(methodName, null, new Type[]{typeof(TInstance),typeof(TField)},true);
             ILGenerator gen = setterMethod.GetILGenerator();
@@ -127,6 +130,17 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             gen.Emit(OpCodes.Ret);
             return (Action<TInstance, TField>)setterMethod.CreateDelegate(typeof(Action<TInstance, TField>));
 #endif
+        }
+        
+        
+        private static readonly bool IsUnityRuntime = GetIsUnityRuntime();
+        
+        private static readonly bool SupportIL = !IsUnityRuntime;
+        
+        private static bool GetIsUnityRuntime() {
+#pragma warning disable RS0030
+            return Type.GetType("UnityEngine.Application, UnityEngine") != null;
+#pragma warning restore RS0030
         }
     }
 } 
