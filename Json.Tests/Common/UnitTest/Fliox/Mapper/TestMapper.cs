@@ -1,6 +1,7 @@
 ﻿// ﻿// Copyright (c) Ullrich Praetz - https://github.com/friflo. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox;
@@ -184,6 +185,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(json.AsString(), jsonResult);
             }
         }
+        
+        [Test]
+        public void TestClassOfGenericBase()
+        {
+            var typeStore = new TypeStore();
+            var mapper = new ObjectMapper(typeStore);
+            
+            var test = new ClassOfGenericBase { value = 42 };
+            var json = mapper.WriteObject(test);
+            AreEqual("{\"value\":42}", json);
+            
+            var test2 = (ClassOfGenericBase)mapper.ReadObject("{\"value\":43}", typeof(ClassOfGenericBase));
+            AreEqual(43, test2.value);
+        }
     }
 }
 
@@ -198,4 +213,14 @@ struct Vec3
     public int Z;
     
     public int this[int index] { get => 0; set => _ = value; }
+}
+
+
+internal class ClassOfGenericBase : GenericBase<int> {
+    public int value;
+}
+
+internal class GenericBase<T1>
+{
+    private List<T1> someList;
 }

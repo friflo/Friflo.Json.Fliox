@@ -10,13 +10,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             return type.IsPrimitive || type == typeof(string) || type.IsArray;
         }
         
+        
         public static bool IsGenericType(Type type) {
-            while (type != null) {
-                if (type.IsConstructedGenericType)
-                    return true;
-                type = type.BaseType;
-            }
-            return false;
+            return type.IsConstructedGenericType;
         }
         
         public static bool IsNullable(Type type) {
