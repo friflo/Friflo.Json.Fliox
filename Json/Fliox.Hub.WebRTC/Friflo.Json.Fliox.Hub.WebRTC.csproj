@@ -59,7 +59,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
-      <PackageReference Include="SIPSorcery" Version="6.0.12" />
+      <PackageReference Include="SIPSorcery" Version="6.2.4" />
       <None Include="..\package-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 

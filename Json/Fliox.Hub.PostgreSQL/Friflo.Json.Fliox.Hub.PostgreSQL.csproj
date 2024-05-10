@@ -51,7 +51,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Npgsql" Version="8.0.1" />
+      <PackageReference Include="Npgsql" Version="8.0.3" />
       <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
       <None Include="..\package-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
