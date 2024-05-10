@@ -16,10 +16,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup .NET 6.0
+    - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.405
+        dotnet-version: 8.0.101
 
     - name: Restore dependencies
       run: dotnet restore
