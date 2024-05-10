@@ -1,7 +1,7 @@
 
 dotnet build -c Release --verbosity:quiet
 
-rem dotnet run -c Release --no-build --framework net6.0 --module DropDatabase
+rem dotnet run -c Release --no-build --framework net8.0 --module DropDatabase
 
 
 dotnet test -c Release --consoleloggerparameters:ErrorsOnly --filter TestCategory=test_db --no-build -e TEST_DB_SYNC=true -e TEST_DB_PROVIDER=sqlite
