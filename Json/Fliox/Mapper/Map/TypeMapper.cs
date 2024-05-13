@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public  readonly    bool            isValueType;
         public  readonly    Type            nullableUnderlyingType;
         public  readonly    string          docs;
+        public  readonly    bool            typeSupported;
         internal            int             classId;    // id >= 0 for reference types. Otherwise -1
 #if DEBUG
         internal            TypeStore       typeStore;
@@ -41,13 +42,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public              Var.Member      GetMember(string name) => PropFields?.GetPropField(name).member;
 
 
-        protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) {
+        protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType, bool typeSupported) {
             this.type                   = type;
             this.mapperType             = GetType();
             this.varType                = VarType.FromType(type);
             this.isNullable             = isNullable;
             this.isValueType            = isValueType;
             this.nullableUnderlyingType = Nullable.GetUnderlyingType(type);
+            this.typeSupported          = typeSupported;
             if (type != typeof(JsonKey)     &&
                 type != typeof(ShortString) &&
                 type != typeof(JsonValue))
@@ -101,11 +103,15 @@ namespace Friflo.Json.Fliox.Mapper.Map
     public abstract class TypeMapper<TVal> : TypeMapper
     {
         protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) :
-            base(config, type, isNullable, isValueType) {
+            base(config, type, isNullable, isValueType, true) {
+        }
+        
+        internal TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType, bool typeSupported) :
+            base(config, type, isNullable, isValueType, typeSupported) {
         }
         
         protected TypeMapper() :
-            base(null, typeof(TVal), TypeUtils.IsNullable(typeof(TVal)), false) {
+            base(null, typeof(TVal), TypeUtils.IsNullable(typeof(TVal)), false, true) {
         }
         
         public abstract bool        IsNull  (ref TVal value);

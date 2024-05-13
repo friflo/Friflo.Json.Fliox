@@ -8,8 +8,10 @@ using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
-
 using static NUnit.Framework.Assert;
+
+#pragma warning disable CS0169 // The field '...' is never used
+#pragma warning disable CS0649 // Field '...' is never assigned to, and will always have its default value
 
 // using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
 
@@ -198,6 +200,53 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             
             var test2 = (ClassOfGenericBase)mapper.ReadObject("{\"value\":43}", typeof(ClassOfGenericBase));
             AreEqual(43, test2.value);
+        }
+ 
+        [Test]
+        // [Generic structs in components is not supported] https://github.com/friflo/Friflo.Json.Fliox/issues/45
+        public static void Test_Ignore_unsupported_generic_fields()
+        {
+            var typeStore = new TypeStore();
+            var mapper = typeStore.GetTypeMapper(typeof(StructWithGenericTypes));
+            AreEqual(0, mapper.PropFields.count);
+            
+            mapper = typeStore.GetTypeMapper(typeof(ClassWithGenericTypes));
+            AreEqual(0, mapper.PropFields.count);
+            
+            mapper = typeStore.GetTypeMapper(typeof(GenericStruct<int>));
+            IsFalse(mapper.typeSupported);
+            
+            mapper = typeStore.GetTypeMapper(typeof(GenericClass<int>));
+            IsFalse(mapper.typeSupported);
+            
+            mapper = typeStore.GetTypeMapper(typeof(IGenericInterface<int>));
+            IsFalse(mapper.typeSupported);
+        }
+    
+        private struct      GenericStruct<T>        { public T value; }
+        private class       GenericClass<T>         { public T value; }
+        private interface   IGenericInterface<T>    { public T Value { get; set; } } 
+
+        private struct StructWithGenericTypes
+        {
+            public GenericStruct<int>       genericStructField;
+            public GenericClass<int>        genericClassField;
+            public IGenericInterface<int>   genericInterfaceField;
+            
+            public GenericStruct<int>       genericStructProperty;
+            public GenericClass<int>        genericClassProperty;
+            public IGenericInterface<int>   genericInterfaceProperty;
+        }
+        
+        private struct ClassWithGenericTypes
+        {
+            public GenericStruct<int>       genericStructField;
+            public GenericClass<int>        genericClassField;
+            public IGenericInterface<int>   genericInterfaceField;
+            
+            public GenericStruct<int>       genericStructProperty;
+            public GenericClass<int>        genericClassProperty;
+            public IGenericInterface<int>   genericInterfaceProperty;
         }
     }
 }

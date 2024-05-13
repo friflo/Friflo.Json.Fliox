@@ -40,7 +40,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
             }
         }
         
-        private void CreatePropField (Type type, string fieldName, PropertyInfo property, FieldInfo field, bool addMembers) {
+        private void CreatePropField (Type type, string fieldName, PropertyInfo property, FieldInfo field, bool addMembers)
+        {
             // getter have higher priority than fields with the same fieldName. Same behavior as other serialization libs
             Type            memberType;
             bool            required;
@@ -68,7 +69,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object.Reflect
                 throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
             }
             try {
-                TypeMapper  mapper      = typeStore.GetTypeMapper(memberType);
+                TypeMapper mapper = typeStore.GetTypeMapper(memberType);
+                if (!mapper.typeSupported) {
+                    return;
+                }
                 /* var refMapper = EntityMatcher.GetRefMapper(memberType, typeStore.config, mapper);
                 if (refMapper != null)
                     mapper = refMapper; */
