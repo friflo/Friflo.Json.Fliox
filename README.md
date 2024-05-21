@@ -7,17 +7,13 @@
 [![CI](https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml) 
 [![CD](https://github.com/friflo/Friflo.Json.Fliox/workflows/CD/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml) 
 
+![new](docs/images/new.svg) 2024-05-21 · Published
+[**Friflo.Engine.ECS v.2.0.0-preview.1**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Engine/README.md)  
+Introduced Systems, System Groups with command buffers and performance monitoring.
+
 ![new](docs/images/new.svg) 2024-03-26 · Switched project to more permissive license LGPL v3.0. Before AGPL v3.0.
 See [#41](https://github.com/friflo/Friflo.Json.Fliox/discussions/41).
 
-
-![new](docs/images/new.svg) 2024-02-19 · New features in [**Friflo.Engine.ECS - v.1.17.0**](Engine/README.md)  
-Added new features focusing on performance:
-- Add support for multi threaded query (system) execution.
-- Added command buffers typically used in multi threaded queries.
-- Support entity creation as batch and bulk operation.
-- Support entity changes - add/remove components and tags - as batch and bulk operation.
-- Add SIMD support in multi threaded queries. Execute SIMD operations without a scalar remainder loop.
 
 
 
