@@ -28,16 +28,17 @@ jobs:
         TAG=${{ github.ref_name }}
         echo tag name: ${TAG}
         echo "VERSION=${TAG#engine-v}" >> $GITHUB_ENV      # remove prefix 'engine-v'
+        echo "FILE_VER=${VERSION%-*}"  >> $GITHUB_ENV      # remove suffix e.g. '-preview.1'
 
     - name: Echo version
       run: |
-        echo package version: ${VERSION}
+        echo package version: ${VERSION} FILE_VER: {${FILE_VER}}
 
     - name: Build
       working-directory: ./Engine
       run: |
         echo "GITHUB_ACTIONS=true" >> $GITHUB_ENV
-        dotnet build --no-restore /p:Version=${VERSION} /p:FileVersion=${VERSION} /p:AssemblyVersion=${VERSION} -c Release
+        dotnet build --no-restore /p:Version=${FILE_VER} /p:FileVersion=${FILE_VER} /p:AssemblyVersion=${FILE_VER} -c Release
 
     - name: Test
       working-directory: ./Engine
