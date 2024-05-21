@@ -28,7 +28,7 @@ jobs:
         TAG=${{ github.ref_name }}
         echo tag name: ${TAG}
         echo "VERSION=${TAG#engine-v}" >> $GITHUB_ENV     # remove prefix 'engine-v'
-        echo "FILE_VER=${VERSION%-*}" >> $GITHUB_ENV      # remove suffix e.g. '-preview.1'
+        echo "FILE_VER=${VERSION%\-*}" >> $GITHUB_ENV     # remove suffix e.g. '-preview.1'
 
     - name: Echo version
       run: |
