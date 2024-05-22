@@ -15,7 +15,7 @@ namespace Friflo.Engine.ECS;
 /// <summary>
 /// A command buffer enables recording entity changes on <b>arbitrary</b> threads.<br/>
 /// These changes are executed by calling <see cref="Playback"/> on the <b>main</b> thread.<br/>
-/// See <a href="https://github.com/friflo/Friflo.Json.Fliox/wiki/Examples-~-General#commandbuffer">Example.</a>
+/// See <a href="https://github.com/friflo/Friflo.Json.Fliox/wiki/Examples-~-Optimization#commandbuffer">Example.</a>
 /// </summary>
 // Note: CommandBuffer is not a struct. Reasons:
 // - struct need to be passed as a ref parameter => easy to forget
@@ -136,7 +136,7 @@ public sealed class CommandBuffer
     
     /// <summary>
     /// Execute recorded entity changes. <see cref="Playback"/> must be called on the <b>main</b> thread.<br/>
-    /// See <a href="https://github.com/friflo/Friflo.Json.Fliox/wiki/Examples-~-General#commandbuffer">Example.</a>
+    /// See <a href="https://github.com/friflo/Friflo.Json.Fliox/wiki/Examples-~-Optimization#commandbuffer">Example.</a>
     /// </summary>
     /// <exception cref="InvalidOperationException">
     /// When recording commands after calling <see cref="Playback"/>.<br/>
@@ -411,7 +411,7 @@ public sealed class CommandBuffer
         if (intern.returnedBuffer) {
             throw CannotReuseCommandBuffer();   
         }
-        var structIndex = StructHeap<T>.StructIndex;
+        var structIndex = StructInfo<T>.Index;
         intern.hasCommands      = true;
         intern.changedComponentTypes.bitSet.SetBit(structIndex);
         var componentCommands   = intern.componentCommandTypes[structIndex];
@@ -441,7 +441,7 @@ public sealed class CommandBuffer
     public void AddTag<T>(int entityId)
         where T : struct, ITag
     {
-        ChangeTag(entityId, TagType<T>.TagIndex, TagChange.Add);
+        ChangeTag(entityId, TagInfo<T>.Index, TagChange.Add);
     }
     
     /// <summary>
@@ -460,7 +460,7 @@ public sealed class CommandBuffer
     public void RemoveTag<T>(int entityId)
         where T : struct, ITag
     {
-        ChangeTag(entityId, TagType<T>.TagIndex, TagChange.Remove);
+        ChangeTag(entityId, TagInfo<T>.Index, TagChange.Remove);
     }
     
     /// <summary>
@@ -498,7 +498,7 @@ public sealed class CommandBuffer
     public void AddScript<T>(int entityId, T script)
         where T : Script, new()
     {
-        ChangeScript(entityId, script, ScriptType<T>.Index, ScriptChangedAction.Add);
+        ChangeScript(entityId, script, ScriptInfo<T>.Index, ScriptChangedAction.Add);
     }
         
     /// <summary>
@@ -507,7 +507,7 @@ public sealed class CommandBuffer
     public void RemoveScript<T>(int entityId)
         where T : Script, new()
     {
-        ChangeScript(entityId, null, ScriptType<T>.Index, ScriptChangedAction.Remove);
+        ChangeScript(entityId, null, ScriptInfo<T>.Index, ScriptChangedAction.Remove);
     }
     
     private void ChangeScript(int entityId, Script script, int scriptIndex, ScriptChangedAction action)
