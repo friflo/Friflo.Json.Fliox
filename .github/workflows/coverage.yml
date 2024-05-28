@@ -30,7 +30,7 @@ jobs:
 
     - name: Test with coverage
       working-directory: ./Engine
-      run: dotnet-coverage collect -f cobertura -s scripts/coverage.settings.xml -o "coverage.cobertura.xml" "dotnet test"
+      run: dotnet-coverage collect -f cobertura -s docs/scripts/coverage.settings.xml -o "coverage.cobertura.xml" "dotnet test"
 
     - name: Upload coverage to codecov
       uses: codecov/codecov-action@v4
