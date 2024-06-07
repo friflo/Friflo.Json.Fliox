@@ -36,8 +36,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             }
             return reader.ErrorMsg<EntityLink>("Invalid entity id", reader.parser.value, out success);
         }
-        
-        public override  StandardTypeId StandardTypeId => StandardTypeId.Object;
     }
     
     public static class TestCustomMapper

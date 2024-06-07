@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public virtual      bool            IsComplex           => false;
         public virtual      bool            IsArray             => false;
         public virtual      bool            IsDictionary        => false;
-        public abstract     StandardTypeId  StandardTypeId      { get; }
+        public virtual      StandardTypeId  StandardTypeId      => StandardTypeId.None;
         public virtual      string          StandardTypeName    => null;
         public virtual      Type            BaseType            => null;
         public virtual      int             Count(object array) => throw new Invalid("Count not applicable");

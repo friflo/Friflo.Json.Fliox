@@ -15,7 +15,6 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
     
     public class StringTokenMapper : TypeMapper<StringTokens>
     {
-        public override StandardTypeId  StandardTypeId                  => StandardTypeId.None;
         public override bool            IsNull(ref StringTokens value)  => value == null;
         
         public override void Write(ref Writer writer, StringTokens value) {
