@@ -61,7 +61,9 @@ namespace Friflo.Json.Fliox.Schema.Native
             JsonEntity  = Find(types, typeof(JsonEntity));
             JsonTable   = Find(types, typeof(JsonTable));
         }
+        //  public override string          StandardTypeName                => xxx;
         
+        /* replaced by TypeMapper.StandardTypeId & TypeMapper.StandardTypeName 
         private static Dictionary<Type, StandardTypeInfo> GetTypes() {
             var map = new Dictionary<Type, StandardTypeInfo> {
                 { typeof(bool),         Info("boolean",     StandardTypeId.Boolean)},
@@ -92,12 +94,13 @@ namespace Friflo.Json.Fliox.Schema.Native
             };
             return map;
         }
+        */
         
         private static StandardTypeInfo Info(string name, StandardTypeId typeId) {
             return new StandardTypeInfo(name, typeId);
         }
         
-        internal static readonly Dictionary<Type, StandardTypeInfo> Types = GetTypes();
+    //  internal static readonly Dictionary<Type, StandardTypeInfo> Types = GetTypes();
 
         private static TypeDef Find (Dictionary<Type, NativeTypeDef> types, Type type) {
             if (types.TryGetValue(type, out var typeDef))
@@ -106,7 +109,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         }
     }
 
-    internal readonly struct StandardTypeInfo {
+    public readonly struct StandardTypeInfo {
         internal    readonly    string          typeName;
         internal    readonly    StandardTypeId  typeId;
         

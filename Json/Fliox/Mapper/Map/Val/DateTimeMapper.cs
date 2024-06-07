@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     internal sealed class DateTimeMapper : TypeMapper<DateTime>
     {
         public override StandardTypeId  StandardTypeId              => StandardTypeId.DateTime;
+        public override string          StandardTypeName            => "DateTime";
         public override string          DataTypeName()              => "DateTime";
         public override bool            IsNull(ref DateTime value)  => false;
         
@@ -65,6 +66,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     internal sealed class NullableDateTimeMapper : TypeMapper<DateTime?>
     {
         public override StandardTypeId  StandardTypeId              => StandardTypeId.DateTime;
+        public override string          StandardTypeName            => "DateTime";
         public override string          DataTypeName()              => "DateTime?";
         public override bool            IsNull(ref DateTime? value) => !value.HasValue;
         

@@ -25,9 +25,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal sealed class ULongMapper : TypeMapper<ulong> {
-        public override StandardTypeId  StandardTypeId  => StandardTypeId.UInt64;
-        public override string  DataTypeName()          => "ulong";
-        public override bool    IsNull(ref ulong value)  => false;
+        public override StandardTypeId  StandardTypeId      => StandardTypeId.UInt64;
+        public override string          StandardTypeName    => "uint64";
+        public override string  DataTypeName()              => "ulong";
+        public override bool    IsNull(ref ulong value)     => false;
 
         public ULongMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
@@ -46,9 +47,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal sealed class NullableULongMapper : TypeMapper<ulong?> {
-        public override StandardTypeId  StandardTypeId  => StandardTypeId.UInt64;
-        public override string  DataTypeName()          => "ulong?";
-        public override bool    IsNull(ref ulong? value) => !value.HasValue;
+        public override StandardTypeId  StandardTypeId      => StandardTypeId.UInt64;
+        public override string          StandardTypeName    => "uint64";
+        public override string  DataTypeName()              => "ulong?";
+        public override bool    IsNull(ref ulong? value)    => !value.HasValue;
 
         public NullableULongMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
@@ -80,9 +82,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal sealed class UIntMapper : TypeMapper<uint> {
-        public override StandardTypeId  StandardTypeId  => StandardTypeId.UInt32;
-        public override string  DataTypeName()          => "uint";
-        public override bool    IsNull(ref uint value)   => false;
+        public override StandardTypeId  StandardTypeId      => StandardTypeId.UInt32;
+        public override string          StandardTypeName    => "uint32";
+        public override string  DataTypeName()              => "uint";
+        public override bool    IsNull(ref uint value)      => false;
 
         public UIntMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
@@ -101,9 +104,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal sealed class NullableUIntMapper : TypeMapper<uint?> {
-        public override StandardTypeId  StandardTypeId  => StandardTypeId.UInt32;
-        public override string  DataTypeName()          => "uint?";
-        public override bool    IsNull(ref uint? value)  => !value.HasValue;
+        public override StandardTypeId  StandardTypeId      => StandardTypeId.UInt32;
+        public override string          StandardTypeName    => "uint32";
+        public override string  DataTypeName()              => "uint?";
+        public override bool    IsNull(ref uint? value)     => !value.HasValue;
 
         public NullableUIntMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
@@ -135,9 +139,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal sealed class UShortMapper : TypeMapper<ushort> {
-        public override StandardTypeId  StandardTypeId  => StandardTypeId.UInt16;
-        public override string  DataTypeName()          => "ushort";
-        public override bool    IsNull(ref ushort value) => false;
+        public override StandardTypeId  StandardTypeId      => StandardTypeId.UInt16;
+        public override string          StandardTypeName    => "uint16";
+        public override string  DataTypeName()              => "ushort";
+        public override bool    IsNull(ref ushort value)    => false;
         
         public UShortMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
 
@@ -157,6 +162,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class NullableUShortMapper : TypeMapper<ushort?> {
         public override StandardTypeId  StandardTypeId      => StandardTypeId.UInt16;
+        public override string          StandardTypeName    => "uint16";
         public override string  DataTypeName()              => "ushort?";
         public override bool    IsNull(ref ushort? value)   => !value.HasValue;
         
@@ -191,9 +197,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal sealed class SByteMapper : TypeMapper<sbyte> {
-        public override StandardTypeId  StandardTypeId  => StandardTypeId.Int8;
-        public override string  DataTypeName()          => "sbyte";
-        public override bool    IsNull(ref sbyte value) => false;
+        public override StandardTypeId  StandardTypeId      => StandardTypeId.Int8;
+        public override string          StandardTypeName    => "int8";
+        public override string  DataTypeName()              => "sbyte";
+        public override bool    IsNull(ref sbyte value)     => false;
 
         public SByteMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
@@ -212,9 +219,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal sealed class NullableSByteMapper : TypeMapper<sbyte?> {
-        public override StandardTypeId  StandardTypeId  => StandardTypeId.Int8;
-        public override string  DataTypeName()          => "sbyte?";
-        public override bool    IsNull(ref sbyte? value) => !value.HasValue;
+        public override StandardTypeId  StandardTypeId      => StandardTypeId.Int8;
+        public override string          StandardTypeName    => "int8";
+        public override string  DataTypeName()              => "sbyte?";
+        public override bool    IsNull(ref sbyte? value)    => !value.HasValue;
 
         public NullableSByteMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         

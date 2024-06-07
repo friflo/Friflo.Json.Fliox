@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     internal sealed class ShortStringMapper : TypeMapper<ShortString>
     {
         public override StandardTypeId  StandardTypeId                  => StandardTypeId.String;
+        public override string          StandardTypeName                => "ShortString";
         public override string          DataTypeName()                  => "ShortString";
         public override bool            IsNull(ref ShortString value)   => value.IsNull();
 

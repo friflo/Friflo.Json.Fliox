@@ -223,9 +223,13 @@ namespace Friflo.Json.Fliox.Schema.Native
             if (nativeTypes.ContainsKey(nonNullableType))
                 return;
             NativeTypeDef typeDef;
-            bool found = NativeStandardTypes.Types.TryGetValue(nonNullableType, out var info);
-            if (found) {
-                typeDef = new NativeTypeDef(mapper, info.typeName, "Standard", null, info.typeId, Utf8Buffer);
+        //  bool isStandardType = NativeStandardTypes.Types.TryGetValue(nonNullableType, out var info);
+            var typeName = typeMapper.StandardTypeName;
+            var isStandardType = typeName != null;
+        //  if (info.typeName != typeName) throw new InvalidOperationException("unexpected behavior");
+            if (isStandardType) {
+        //      typeDef = new NativeTypeDef(mapper, info.typeName, "Standard", null, info.typeId, Utf8Buffer);
+                typeDef = new NativeTypeDef(mapper, typeName, "Standard", null, typeMapper.StandardTypeId, Utf8Buffer);
             } else {
                 var keyField = mapper.PropFields?.KeyField?.jsonName;
                 var typeId   = mapper.type.IsEnum ? StandardTypeId.Enum : StandardTypeId.None;

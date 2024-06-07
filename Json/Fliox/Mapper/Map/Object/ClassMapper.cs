@@ -70,9 +70,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
         private readonly    Type                genClass;
 
 
-        public  override    string              DataTypeName()  => $"class {typeof(T).Name}";
-        public  override    bool                IsComplex       => true;
-        public  override    StandardTypeId      StandardTypeId  => StandardTypeId.Object;
+        public  override    string              DataTypeName()      => $"class {typeof(T).Name}";
+        public  override    bool                IsComplex           => true;
+        public  override    StandardTypeId      StandardTypeId      => StandardTypeId.Object;
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
         public  readonly    PropertyFields<T>   propFields;
         

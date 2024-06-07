@@ -23,6 +23,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     public sealed class JsonValueMapper : TypeMapper<JsonValue>
     {
         public override StandardTypeId  StandardTypeId              => StandardTypeId.JsonValue;
+        public override string          StandardTypeName            => "JsonValue";
         public override string          DataTypeName()              => "JsonValue";
         public override bool            IsNull(ref JsonValue value) => value.IsNull();
 

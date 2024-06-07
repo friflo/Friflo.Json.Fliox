@@ -96,11 +96,13 @@ namespace Friflo.Json.Fliox.Mapper.Map
             this.relation   = GetRelationAttributeType();
             this.isNullable = fieldType.isNullable;
             typeId          = fieldType.StandardTypeId;
-        //  var oldTypeId   = GetTypeId(fieldType);
-        //  if (typeId != oldTypeId) throw new InvalidOperationException("unexpected behavior");
+        //  var oldTypeId   = GetTypeId(fieldType, out var typeName);
+        //  if (fieldType.StandardTypeName != typeName) throw new InvalidOperationException("unexpected behavior");
+        //  if (typeId != oldTypeId)                    throw new InvalidOperationException("unexpected behavior");
         }
         /*
-        private static StandardTypeId GetTypeId(TypeMapper fieldType) {
+        private static StandardTypeId GetTypeId(TypeMapper fieldType, out string name) {
+            name = null;
             var nativeType  = fieldType.type;
             if      (fieldType.IsArray) {
                 return StandardTypeId.Array;
@@ -118,6 +120,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (!NativeStandardTypes.Types.TryGetValue(type, out var typeInfo)) {
                 throw new InvalidOperationException($"invalid standard type. was: {type}");    
             }
+            name = typeInfo.typeName;
             return typeInfo.typeId;
         }
         */

@@ -50,6 +50,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     internal sealed class BigIntMapper : TypeMapper<BigInteger>
     {
         public override StandardTypeId  StandardTypeId                  => StandardTypeId.BigInteger;
+        public override string          StandardTypeName                => "BigInteger";
         public override string          DataTypeName()                  => "BigInteger";
         public override bool            IsNull(ref BigInteger value)    => false;
 
@@ -67,6 +68,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     internal sealed class NullableBigIntMapper : TypeMapper<BigInteger?>
     {
         public override StandardTypeId  StandardTypeId                  => StandardTypeId.BigInteger;
+        public override string          StandardTypeName                => "BigInteger";
         public override string          DataTypeName()                  => "BigInteger?";
         public override bool            IsNull(ref BigInteger? value)   => !value.HasValue;
 

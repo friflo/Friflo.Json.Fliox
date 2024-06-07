@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     internal sealed class GuidMapper : TypeMapper<Guid>
     {
         public override StandardTypeId  StandardTypeId          => StandardTypeId.Guid;
+        public override string          StandardTypeName        => "Guid";
         public override string          DataTypeName()          => "Guid";
         public override bool            IsNull(ref Guid value)  => false;
 
@@ -49,6 +50,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     internal sealed class NullableGuidMapper : TypeMapper<Guid?>
     {
         public override StandardTypeId  StandardTypeId          => StandardTypeId.Guid;
+        public override string          StandardTypeName        => "Guid";
         public override string          DataTypeName()          => "Guid?";
         public override bool            IsNull(ref Guid? value) => !value.HasValue;
         

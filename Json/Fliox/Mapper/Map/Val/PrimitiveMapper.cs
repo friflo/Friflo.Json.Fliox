@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     internal sealed class StringMapper : TypeMapper<string>
     {
         public override StandardTypeId  StandardTypeId      => StandardTypeId.String;
+        public override string          StandardTypeName    => "string";
         public override string  DataTypeName()              => "string";
         public override bool    IsNull(ref string value)    => value == null;
         
@@ -66,6 +67,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class DoubleMapper : TypeMapper<double> {
         public override StandardTypeId  StandardTypeId      => StandardTypeId.Double;
+        public override string          StandardTypeName    => "double";
         public override string  DataTypeName()              => "double";
         public override bool    IsNull(ref double value)    => false;
         
@@ -87,6 +89,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class NullableDoubleMapper : TypeMapper<double?> {
         public override StandardTypeId  StandardTypeId      => StandardTypeId.Double;
+        public override string          StandardTypeName    => "double";
         public override string  DataTypeName()              => "double?";
         public override bool    IsNull(ref double? value)   => !value.HasValue;
         
@@ -121,6 +124,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class FloatMapper : TypeMapper<float> {
         public override StandardTypeId  StandardTypeId  => StandardTypeId.Float;
+        public override string          StandardTypeName=> "float";
         public override string  DataTypeName()          => "float";
         public override bool    IsNull(ref float value) => false;
 
@@ -142,6 +146,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class NullableFloatMapper : TypeMapper<float?> {
         public override StandardTypeId  StandardTypeId      => StandardTypeId.Float;
+        public override string          StandardTypeName    => "float";
         public override string  DataTypeName()              => "float?";
         public override bool    IsNull(ref float? value)    => !value.HasValue;
 
@@ -176,6 +181,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class LongMapper : TypeMapper<long> {
         public override StandardTypeId  StandardTypeId  => StandardTypeId.Int64;
+        public override string          StandardTypeName=> "int64";
         public override string  DataTypeName()          => "long";
         public override bool    IsNull(ref long value)  => false;
 
@@ -197,6 +203,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class NullableLongMapper : TypeMapper<long?> {
         public override StandardTypeId  StandardTypeId  => StandardTypeId.Int64;
+        public override string          StandardTypeName=> "int64";
         public override string  DataTypeName()          => "long?";
         public override bool    IsNull(ref long? value) => !value.HasValue;
 
@@ -231,6 +238,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class IntMapper : TypeMapper<int> {
         public override StandardTypeId  StandardTypeId  => StandardTypeId.Int32;
+        public override string          StandardTypeName=> "int32";
         public override string  DataTypeName()          => "int";
         public override bool    IsNull(ref int value)   => false;
 
@@ -252,6 +260,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class NullableIntMapper : TypeMapper<int?> {
         public override StandardTypeId  StandardTypeId  => StandardTypeId.Int32;
+        public override string          StandardTypeName=> "int32";
         public override string  DataTypeName()          => "int?";
         public override bool    IsNull(ref int? value)  => !value.HasValue;
 
@@ -286,6 +295,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class ShortMapper : TypeMapper<short> {
         public override StandardTypeId  StandardTypeId  => StandardTypeId.Int16;
+        public override string          StandardTypeName=> "int16";
         public override string  DataTypeName()          => "short";
         public override bool    IsNull(ref short value) => false;
         
@@ -306,7 +316,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     internal sealed class NullableShortMapper : TypeMapper<short?> {
-        public override StandardTypeId  StandardTypeId  => StandardTypeId.Int16;
+        public override StandardTypeId  StandardTypeId      => StandardTypeId.Int16;
+        public override string          StandardTypeName    => "int16";
         public override string  DataTypeName()              => "short?";
         public override bool    IsNull(ref short? value)    => !value.HasValue;
         
@@ -342,6 +353,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class ByteMapper : TypeMapper<byte> {
         public override StandardTypeId  StandardTypeId  => StandardTypeId.Uint8;
+        public override string          StandardTypeName=> "uint8";
         public override string  DataTypeName()          => "byte";
         public override bool    IsNull(ref byte value)  => false;
 
@@ -363,6 +375,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class NullableByteMapper : TypeMapper<byte?> {
         public override StandardTypeId  StandardTypeId  => StandardTypeId.Uint8;
+        public override string          StandardTypeName=> "uint8";
         public override string  DataTypeName()          => "byte?";
         public override bool    IsNull(ref byte? value) => !value.HasValue;
 
@@ -398,6 +411,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class BoolMapper : TypeMapper<bool> {
         public override StandardTypeId  StandardTypeId  => StandardTypeId.Boolean;
+        public override string          StandardTypeName=> "boolean";
         public override string  DataTypeName()          => "bool";
         public override bool    IsNull(ref bool value)  => false;
         
@@ -419,6 +433,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     }
     internal sealed class NullableBoolMapper : TypeMapper<bool?> {
         public override StandardTypeId  StandardTypeId  => StandardTypeId.Boolean;
+        public override string          StandardTypeName=> "boolean";
         public override string  DataTypeName()          => "bool?";
         public override bool    IsNull(ref bool? value) => !value.HasValue;
         
