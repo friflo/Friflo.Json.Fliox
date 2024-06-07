@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Utils;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
 {
@@ -24,8 +25,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
     
     internal sealed class FlioxClientMapper<T> : TypeMapper<T>
     {
-        public  override    bool    IsNull(ref T value)  => value == null;
-        public  override    bool    IsComplex => true;
+        public  override    bool                IsNull(ref T value) => value == null;
+        public  override    bool                IsComplex           => true;
+        public  override    StandardTypeId      StandardTypeId      => StandardTypeId.Object;
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
         private readonly    PropertyFields<T>   propFields;
         

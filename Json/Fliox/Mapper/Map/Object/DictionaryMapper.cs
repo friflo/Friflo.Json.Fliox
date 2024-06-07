@@ -7,6 +7,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Utils;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Object
 {
@@ -42,10 +43,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
     {
         private readonly    KeyMapper<TKey> keyMapper;
         
-        public override string  DataTypeName()          => $"IDictionary<{typeof(TKey).Name},{typeof(TElm).Name}>";
-        public override bool    IsNull(ref TMap value)  => value == null;
-        public override bool    IsArray                 => false;
-        public override bool    IsDictionary            => true;
+        public override string          DataTypeName()          => $"IDictionary<{typeof(TKey).Name},{typeof(TElm).Name}>";
+        public override bool            IsNull(ref TMap value)  => value == null;
+        public override bool            IsArray                 => false;
+        public override bool            IsDictionary            => true;
+        public override StandardTypeId  StandardTypeId          => StandardTypeId.Dictionary;
         
         public DictionaryMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, typeof(TElm), 1, typeof(string), constructor)

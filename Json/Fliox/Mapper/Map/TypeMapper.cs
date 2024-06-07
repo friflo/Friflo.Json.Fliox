@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Pools;
+using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform.Select;
 
 using Invalid = System.InvalidOperationException;
@@ -35,6 +36,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public virtual      bool            IsComplex           => false;
         public virtual      bool            IsArray             => false;
         public virtual      bool            IsDictionary        => false;
+        public abstract     StandardTypeId  StandardTypeId      { get; }
         public virtual      Type            BaseType            => null;
         public virtual      int             Count(object array) => throw new Invalid("Count not applicable");
         public virtual      string          DataTypeName()      => type.Name;

@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Mapper.Map.Object.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Map.Val;
 using Friflo.Json.Fliox.Mapper.Utils;
+using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform.Select;
 using static Friflo.Json.Fliox.Mapper.Map.TypeMapperUtils;
 
@@ -71,6 +72,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
 
         public  override    string              DataTypeName()  => $"class {typeof(T).Name}";
         public  override    bool                IsComplex       => true;
+        public  override    StandardTypeId      StandardTypeId  => StandardTypeId.Object;
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
         public  readonly    PropertyFields<T>   propFields;
         

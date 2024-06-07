@@ -95,9 +95,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
             this.docs       = docs;
             this.relation   = GetRelationAttributeType();
             this.isNullable = fieldType.isNullable;
-            typeId          = GetTypeId(fieldType);
+            typeId          = fieldType.StandardTypeId;
+        //  var oldTypeId   = GetTypeId(fieldType);
+        //  if (typeId != oldTypeId) throw new InvalidOperationException("unexpected behavior");
         }
-        
+        /*
         private static StandardTypeId GetTypeId(TypeMapper fieldType) {
             var nativeType  = fieldType.type;
             if      (fieldType.IsArray) {
@@ -118,6 +120,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
             return typeInfo.typeId;
         }
+        */
         
         internal MemberInfo   Member { get {
             if (field != null)

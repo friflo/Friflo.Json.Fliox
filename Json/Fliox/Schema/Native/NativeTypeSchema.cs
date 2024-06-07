@@ -223,7 +223,8 @@ namespace Friflo.Json.Fliox.Schema.Native
             if (nativeTypes.ContainsKey(nonNullableType))
                 return;
             NativeTypeDef typeDef;
-            if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out var info)) {
+            bool found = NativeStandardTypes.Types.TryGetValue(nonNullableType, out var info);
+            if (found) {
                 typeDef = new NativeTypeDef(mapper, info.typeName, "Standard", null, info.typeId, Utf8Buffer);
             } else {
                 var keyField = mapper.PropFields?.KeyField?.jsonName;

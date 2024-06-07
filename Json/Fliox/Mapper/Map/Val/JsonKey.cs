@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
@@ -18,8 +19,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class JsonKeyMapper : TypeMapper<JsonKey>
     {
-        public override string  DataTypeName()              => "JsonKey";
-        public override bool    IsNull(ref JsonKey value)   => value.IsNull();
+        public override StandardTypeId  StandardTypeId              => StandardTypeId.JsonKey;
+        public override string          DataTypeName()              => "JsonKey";
+        public override bool            IsNull(ref JsonKey value)   => value.IsNull();
 
         public JsonKeyMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
         

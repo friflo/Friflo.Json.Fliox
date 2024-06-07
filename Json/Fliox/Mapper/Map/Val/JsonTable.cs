@@ -4,6 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
@@ -24,8 +25,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class JsonTableMapper : TypeMapper<JsonTable>
     {
-        public override string  DataTypeName()              => "JsonTable";
-        public override bool    IsNull(ref JsonTable value) => value == null;
+        public override StandardTypeId  StandardTypeId              => StandardTypeId.JsonTable;
+        public override string          DataTypeName()              => "JsonTable";
+        public override bool            IsNull(ref JsonTable value) => value == null;
 
         private static readonly Bytes NewRow = new Bytes("],\n[");
 

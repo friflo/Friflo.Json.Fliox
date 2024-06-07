@@ -1,6 +1,7 @@
 ﻿// ﻿// Copyright (c) Ullrich Praetz - https://github.com/friflo. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
@@ -25,8 +26,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
     {
         private readonly string msg;
         
-        public override string  DataTypeName()      => "unsupported type";
-        public override bool    IsNull(ref T value) => value == null;
+        public override StandardTypeId  StandardTypeId  => StandardTypeId.None;
+        public override string  DataTypeName()          => "unsupported type";
+        public override bool    IsNull(ref T value)     => value == null;
 
         public TypeNotSupportedMapper(StoreConfig config, Type type, string msg) : base(config, type, !type.IsValueType, false, false) {
             this.msg = msg;

@@ -6,6 +6,7 @@ using System.Reflection;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Utils;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
 {
@@ -37,6 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         private             TypeMapper      elementType;
         
         public  override    bool            IsDictionary        => true;
+        public  override    StandardTypeId  StandardTypeId      => StandardTypeId.Dictionary;
         public  override    TypeMapper      GetElementMapper()  => elementType;
         public  override    bool            IsNull(ref T value) => value == null;
         

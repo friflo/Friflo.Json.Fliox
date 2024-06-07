@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
@@ -17,8 +18,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class ShortStringMapper : TypeMapper<ShortString>
     {
-        public override string  DataTypeName()                  => "ShortString";
-        public override bool    IsNull(ref ShortString value)   => value.IsNull();
+        public override StandardTypeId  StandardTypeId                  => StandardTypeId.String;
+        public override string          DataTypeName()                  => "ShortString";
+        public override bool            IsNull(ref ShortString value)   => value.IsNull();
 
         public ShortStringMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
         

@@ -4,6 +4,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Fliox.Mapper.Utils;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
@@ -21,8 +22,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
         private     readonly    int                 rank;
         private     readonly    Type                keyType;
         
-        public      override    bool                IsArray => true;
-        public      override    TypeMapper          GetElementMapper() => elementType;
+        public      override    bool                IsArray             => true;
+        public      override    StandardTypeId      StandardTypeId      => StandardTypeId.Array;
+        public      override    TypeMapper          GetElementMapper()  => elementType;
         
 
         internal CollectionMapper (

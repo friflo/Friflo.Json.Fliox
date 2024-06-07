@@ -3,6 +3,7 @@
 using System;
 using System.Numerics;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
@@ -48,8 +49,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class BigIntMapper : TypeMapper<BigInteger>
     {
-        public override string  DataTypeName()                  => "BigInteger";
-        public override bool    IsNull(ref BigInteger value)    => false;
+        public override StandardTypeId  StandardTypeId                  => StandardTypeId.BigInteger;
+        public override string          DataTypeName()                  => "BigInteger";
+        public override bool            IsNull(ref BigInteger value)    => false;
 
         public BigIntMapper(StoreConfig config, Type type) : base (config, type, false, false) { }
 
@@ -64,8 +66,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class NullableBigIntMapper : TypeMapper<BigInteger?>
     {
-        public override string  DataTypeName()                  => "BigInteger?";
-        public override bool    IsNull(ref BigInteger? value)   => !value.HasValue;
+        public override StandardTypeId  StandardTypeId                  => StandardTypeId.BigInteger;
+        public override string          DataTypeName()                  => "BigInteger?";
+        public override bool            IsNull(ref BigInteger? value)   => !value.HasValue;
 
         public NullableBigIntMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
 

@@ -1,6 +1,7 @@
 ﻿// ﻿// Copyright (c) Ullrich Praetz - https://github.com/friflo. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
@@ -20,8 +21,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     /// </summary>
     public sealed class JsonEntityMapper : TypeMapper<JsonEntity>
     {
-        public override string  DataTypeName()                  => "JsonEntity";
-        public override bool    IsNull(ref JsonEntity value)    => value.value.IsNull();
+        public override StandardTypeId  StandardTypeId                  => StandardTypeId.JsonEntity;
+        public override string          DataTypeName()                  => "JsonEntity";
+        public override bool            IsNull(ref JsonEntity value)    => value.value.IsNull();
 
         public JsonEntityMapper(StoreConfig config, Type type) : base (config, type, false, false) { }
         

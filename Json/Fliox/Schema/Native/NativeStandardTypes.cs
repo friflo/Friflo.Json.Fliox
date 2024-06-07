@@ -80,6 +80,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                 //
                 { typeof(float),        Info("float",       StandardTypeId.Float)},
                 { typeof(double),       Info("double",      StandardTypeId.Double)},
+                //
                 { typeof(BigInteger),   Info("BigInteger",  StandardTypeId.BigInteger)},
                 { typeof(DateTime),     Info("DateTime",    StandardTypeId.DateTime)},
                 { typeof(Guid),         Info("Guid",        StandardTypeId.Guid)},

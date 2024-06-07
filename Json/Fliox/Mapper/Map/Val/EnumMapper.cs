@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Utils;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
@@ -162,6 +163,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     {
         private readonly    EnumMapperInternal<T>               intern;
 
+        public override     StandardTypeId                      StandardTypeId      => StandardTypeId.Enum;
         public override     string                              DataTypeName()      => $"enum {typeof(T).Name}";
         public override     bool                                IsNull(ref T value) => false;
         public override     IReadOnlyList<string>               GetEnumValues()     => intern.GetEnumValues();
@@ -186,6 +188,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     {
         private readonly    EnumMapperInternal<T>               intern;
 
+        public override     StandardTypeId                      StandardTypeId          => StandardTypeId.Enum;
         public override     string                              DataTypeName()          =>  $"enum {typeof(T).Name}?";
         public override     bool                                IsNull(ref T? value)    => !value.HasValue;
         public override     IReadOnlyList<string>               GetEnumValues()         => intern.GetEnumValues();

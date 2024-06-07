@@ -45,10 +45,10 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// </summary>
     public enum StandardTypeId
     {
-        None        =  0,
+        None        =  0,   // no mapper
         //
         Boolean     =  1,
-        String      =  2,    // used also for ShortString
+        String      =  2,   // used also for ShortString
         // --- integer
         Uint8       =  3,
         Int16       =  4,
@@ -72,9 +72,9 @@ namespace Friflo.Json.Fliox.Schema.Definition
         Enum        = 20,
         JsonTable   = 21,
         //
-        Object      = 22,
-        Array       = 23,
-        Dictionary  = 24,
+        Object      = 22,   // set by mapper
+        Array       = 23,   // set by mapper
+        Dictionary  = 24,   // set by mapper
     }
     
     internal static class StandardTypeUtils

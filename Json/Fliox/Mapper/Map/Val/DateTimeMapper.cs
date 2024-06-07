@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Diff;
+using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
@@ -22,8 +23,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class DateTimeMapper : TypeMapper<DateTime>
     {
-        public override string  DataTypeName()              => "DateTime";
-        public override bool    IsNull(ref DateTime value)  => false;
+        public override StandardTypeId  StandardTypeId              => StandardTypeId.DateTime;
+        public override string          DataTypeName()              => "DateTime";
+        public override bool            IsNull(ref DateTime value)  => false;
         
         public DateTimeMapper(StoreConfig config, Type type) :
             base (config, type, false, true) {
@@ -62,8 +64,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     
     internal sealed class NullableDateTimeMapper : TypeMapper<DateTime?>
     {
-        public override string  DataTypeName()              => "DateTime?";
-        public override bool    IsNull(ref DateTime? value) => !value.HasValue;
+        public override StandardTypeId  StandardTypeId              => StandardTypeId.DateTime;
+        public override string          DataTypeName()              => "DateTime?";
+        public override bool            IsNull(ref DateTime? value) => !value.HasValue;
         
         public override void        WriteVar(ref Writer writer, in Var value)               => Write(ref writer, value.DateTimeNull);
         public override DiffType    DiffVar (Differ differ, in Var left, in Var right)      => Diff(differ, left.DateTimeNull, right.DateTimeNull);

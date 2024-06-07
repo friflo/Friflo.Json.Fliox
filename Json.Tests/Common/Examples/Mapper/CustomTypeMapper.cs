@@ -1,6 +1,7 @@
 ﻿using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Schema.Definition;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -14,7 +15,8 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
     
     public class StringTokenMapper : TypeMapper<StringTokens>
     {
-        public override bool    IsNull(ref StringTokens value)  => value == null;
+        public override StandardTypeId  StandardTypeId                  => StandardTypeId.None;
+        public override bool            IsNull(ref StringTokens value)  => value == null;
         
         public override void Write(ref Writer writer, StringTokens value) {
             writer.WriteString(string.Join(" ", value.tokens));
