@@ -7,9 +7,9 @@
 [![CI](https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml) 
 [![CD](https://github.com/friflo/Friflo.Json.Fliox/workflows/CD/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml) 
 
-![new](docs/images/new.svg) 2024-05-21 · Published
+![new](docs/images/new.svg) 2024-06-09 · Published
 [**Friflo.Engine.ECS v.2.0.0-preview.9**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Engine/README.md)  
-Added support for Native AOT. Added ECS System monitoring for console.
+Added support for Native AOT. Added ECS performance monitoring for console.
 
 ![new](docs/images/new.svg) 2024-05-21 · Published
 [**Friflo.Engine.ECS v.2.0.0-preview.1**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Engine/README.md#systems)  
