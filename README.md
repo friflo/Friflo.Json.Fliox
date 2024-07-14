@@ -15,7 +15,8 @@ New features: **Entity Relationships**, **Relations** and **full-text Search**
 [**Friflo.Engine.ECS v.2.0.0**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Engine/README.md)  
 Added support for **Native AOT**. Added ECS performance monitoring for console.
 
-
+![new](docs/images/new.svg) Created a new GitHub repository [ECS.CSharp.Benchmark - Common use-cases](https://github.com/friflo/ECS.CSharp.Benchmark-common-use-cases)  
+comparing the performance of multiple ECS projects with **simple** benchmarks.
 
 <br/>
 
