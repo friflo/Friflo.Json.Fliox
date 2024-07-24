@@ -22,6 +22,9 @@ Average Performance Ratio - see [C# ECS Benchmark Overview](https://github.com/f
 
 ## News
 
+- [x] ![new](docs/images/new.svg) moved **Friflo.Engine.ECS** to its own repository https://github.com/friflo/Friflo.Engine.ECS  
+  The source code / history will be kept as is in this repo. **Further development in the new repo**.
+
 - [x] Released v3.0.0-preview.5  
   New: **Entity Relationships** 1:1 and 1:many, **Relations** and full-text **Search** executing in O(1). See [Component Types](#-component-types)
 
