@@ -54,8 +54,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabHub", "Demos~\Lab\Hub\La
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabTest", "Demos~\Lab\Test\LabTest.csproj", "{44CEB858-B06C-4B94-AA89-4F21B878DAE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.ECS", "Engine\src\ECS\Engine.ECS.csproj", "{A8B49AE6-44DE-4611-BDCE-6D0E321D157F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -170,9 +168,5 @@ Global
 		{44CEB858-B06C-4B94-AA89-4F21B878DAE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44CEB858-B06C-4B94-AA89-4F21B878DAE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44CEB858-B06C-4B94-AA89-4F21B878DAE0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A8B49AE6-44DE-4611-BDCE-6D0E321D157F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8B49AE6-44DE-4611-BDCE-6D0E321D157F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8B49AE6-44DE-4611-BDCE-6D0E321D157F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8B49AE6-44DE-4611-BDCE-6D0E321D157F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
