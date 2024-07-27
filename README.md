@@ -3,20 +3,18 @@
 # [![JSON Fliox](docs/images/Json-Fliox.svg)](https://github.com/friflo/Friflo.Json.Fliox)    **JSON Fliox** ![SPLASH](docs/images/paint-splatter.svg)
 
 [![nuget](https://buildstats.info/nuget/Friflo.Json.Fliox.Hub)](https://www.nuget.org/packages/Friflo.Json.Fliox.Hub) 
-[![nuget](https://img.shields.io/badge/license-LGPL-blue.svg)](https://github.com/friflo/Friflo.Json.Fliox/blob/main/LICENSE) 
 [![CI](https://github.com/friflo/Friflo.Json.Fliox/workflows/CI/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/dotnet.yml) 
 [![CD](https://github.com/friflo/Friflo.Json.Fliox/workflows/CD/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions/workflows/nuget.yml) 
 
-![new](docs/images/new.svg) 2024-07-09 · Published
-[**Friflo.Engine.ECS v3.0.0 preview.2**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Engine/README.md#component-types)  
-New features: **Entity Relationships**, **Relations** and **full-text Search**
+### **News**
 
-![new](docs/images/new.svg) 2024-06-09 · Published
-[**Friflo.Engine.ECS v.2.0.0**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Engine/README.md)  
-Added support for **Native AOT**. Added ECS performance monitoring for console.
+- [x] Moved **Friflo.Engine.ECS** to its own [GitHub Repository](https://github.com/friflo/Friflo.Engine.ECS)
 
-![new](docs/images/new.svg) Created a new GitHub repository [ECS.CSharp.Benchmark - Common use-cases](https://github.com/friflo/ECS.CSharp.Benchmark-common-use-cases)  
-comparing the performance of multiple ECS projects with **simple** benchmarks.
+- [x] Published [**Friflo.Engine.ECS v3.0.0 preview.6**](https://github.com/friflo/Friflo.Engine.ECS?tab=readme-ov-file#-component-types)  
+  New features: **Entity Relationships**, **Relations**, **full-text Search** and **Range queries**.
+
+- [x] Created a new GitHub repository [**ECS.CSharp.Benchmark - Common use-cases**](https://github.com/friflo/ECS.CSharp.Benchmark-common-use-cases)  
+  comparing the performance of multiple **C# ECS projects** with **simple** benchmarks.
 
 <br/>
 
