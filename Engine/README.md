@@ -1,7 +1,7 @@
 ![splash](https://raw.githubusercontent.com/friflo/Friflo.Json.Fliox/main/docs/images/paint-splatter.svg)
 
 [![nuget](https://img.shields.io/nuget/v/Friflo.Engine.ECS?logo=nuget&logoColor=white)](https://www.nuget.org/packages/Friflo.Engine.ECS)
-[![stars](https://img.shields.io/badge/Friflo.Engine.ECS-➜%20moved%20to%20its%20own%20repository-8A2BE2)](https://github.com/friflo/Friflo.Engine.ECS)
+[![stars](https://img.shields.io/badge/Friflo.Engine.ECS-➜%20moved%20to%20its%20own%20repository-8A2BE2?logo=github&logoColor=white)](https://github.com/friflo/Friflo.Engine.ECS)
 
 
 # 🔥 Friflo.Engine.ECS
