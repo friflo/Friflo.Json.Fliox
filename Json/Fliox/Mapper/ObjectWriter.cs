@@ -60,6 +60,10 @@ namespace Friflo.Json.Fliox.Mapper
             intern.Dispose();
         }
         
+        public void SetMapperContext<T>(T mapperContext)  where T : class, IMapperContext {
+            MapperContext.SetMapperContext(ref intern.contextMap, mapperContext);
+        }
+        
         private void InitJsonWriter() {
             intern.bytes.Clear();
             intern.level = 0;

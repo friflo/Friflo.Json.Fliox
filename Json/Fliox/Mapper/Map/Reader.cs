@@ -29,6 +29,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public   readonly   TypeCache           typeCache;
         public              Utf8JsonWriterStub  jsonWriterStub;
         public              ReaderPool          readerPool;
+        internal            object[]            contextMap;
         
         public              IErrorHandler       ErrorHandler {
             get => parser.error.errorHandler;
@@ -44,6 +45,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             jsonWriterStub  = null;
             setMissingFields= false;
             readerPool      = null;
+            contextMap      = null;
             parser.error.errorHandler = DefaultErrorHandler;
         }
         
@@ -53,6 +55,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             typeCache   .Dispose();
             parser      .Dispose();
         }
+        
+        public T GetMapperContext<T>() where T : class, IMapperContext  => MapperContext.GetMapperContext<T>(contextMap);
         
         public TVal HandleEvent<TVal>(TypeMapper<TVal> mapper, out bool success) {
             switch (parser.Event) {

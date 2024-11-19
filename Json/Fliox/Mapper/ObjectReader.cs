@@ -109,6 +109,10 @@ namespace Friflo.Json.Fliox.Mapper
             intern.         Dispose();
             inputStringBuf.Dispose();
         }
+                
+        public void SetMapperContext<T>(T mapperContext)  where T : class, IMapperContext {
+            MapperContext.SetMapperContext(ref intern.contextMap, mapperContext);
+        }
 
         /// <summary> <see cref="JsonError.Error"/> don't call <see cref="JsonError.errorHandler"/> in
         /// JSON_BURST compilation caused by absence of interfaces. </summary>

@@ -30,6 +30,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         internal            OutputType          outputType;
         public              IBytesWriter        bytesWriter;
+        internal            object[]            contextMap;
         // public           int                 GetLevel() => level;
 
         public Writer(TypeStore typeStore) {
@@ -45,6 +46,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             pretty          = false;
             writeNullMembers= true;
             bytesWriter     = null;
+            contextMap      = null;
         }
         
         public void Dispose() {
@@ -53,6 +55,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             format.Dispose();
             bytes.Dispose();
         }
+        
+        public T GetMapperContext<T>() where T : class, IMapperContext  => MapperContext.GetMapperContext<T>(contextMap);
         
         // --- WriteUtils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
