@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper.Map.Arr;
 using Friflo.Json.Fliox.Mapper.Map.Object;
 using Friflo.Json.Fliox.Mapper.Map.Val;
+using Friflo.Json.Fliox.Mapper.Utils;
 
 // ReSharper disable InlineOutVariableDeclaration
 namespace Friflo.Json.Fliox.Mapper.Map
@@ -92,11 +93,13 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (Match(ListOneMatcher.                   Instance,   config, type, q)) return q.hit;
             if (Match(StackMatcher.                     Instance,   config, type, q)) return q.hit;
             if (Match(QueueMatcher.                     Instance,   config, type, q)) return q.hit;
-            if (Match(GenericIListMatcher.              Instance,   config, type, q)) return q.hit;
-            if (Match(DictionaryMatcher.                Instance,   config, type, q)) return q.hit;
-            if (Match(GenericICollectionMatcher.        Instance,   config, type, q)) return q.hit; // need to be after DictionaryMatcher, GenericIListMatcher
-            if (Match(GenericIReadOnlyCollectionMatcher.Instance,   config, type, q)) return q.hit; // need to be after GenericICollectionMatcher
-            if (Match(GenericIEnumerableMatcher.        Instance,   config, type, q)) return q.hit; // need to be after GenericICollectionMatcher
+            if (type != null && !AttributeUtils.IgnoreCollectionInterfacesAttribute(type.CustomAttributes)) {
+                if (Match(GenericIListMatcher.              Instance,   config, type, q)) return q.hit;
+                if (Match(DictionaryMatcher.                Instance,   config, type, q)) return q.hit;
+                if (Match(GenericICollectionMatcher.        Instance,   config, type, q)) return q.hit; // need to be after DictionaryMatcher, GenericIListMatcher
+                if (Match(GenericIReadOnlyCollectionMatcher.Instance,   config, type, q)) return q.hit; // need to be after GenericICollectionMatcher
+                if (Match(GenericIEnumerableMatcher.        Instance,   config, type, q)) return q.hit; // need to be after GenericICollectionMatcher
+            }
             if (Match(ClassMatcher.                     Instance,   config, type, q)) return q.hit;
 
             return null;

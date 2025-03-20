@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
@@ -292,6 +293,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 iter.MoveNext();
 
             } 
+        }
+        
+        [Test]
+        public void IgnoreCollectionInterfaces()
+        {
+            using (var typeStore   = new TypeStore(new StoreConfig()))
+            using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow})
+            using (var writer      = new ObjectWriter(typeStore)) {
+                var data = new IgnoredCollectionInterface(42); 
+                var json = writer.Write(data);
+                AreEqual("{\"myValue\":42}", json);
+                
+                var result = reader.Read<IgnoredCollectionInterface>(json);
+                AreEqual(42, result.myValue);
+            }
+        }
+        
+        [IgnoreCollectionInterfaces]
+        struct IgnoredCollectionInterface : IReadOnlyList<int>
+        {
+            public IEnumerator<int> GetEnumerator() => throw new System.NotImplementedException();
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+            public int Count { get; }
+            public int this[int index] => throw new System.NotImplementedException();
+            
+            public int myValue;
+            
+            public IgnoredCollectionInterface(int myValue)
+            {
+                this. myValue = myValue;
+                Count = 0;
+            }
         }
     }
 }

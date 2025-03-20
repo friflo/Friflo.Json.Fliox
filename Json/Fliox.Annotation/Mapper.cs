@@ -49,6 +49,15 @@ namespace Friflo.Json.Fliox
     }
     
     /// <summary>
+    /// Ignores collection interfaces implemented by the annotated struct or class.<br/>
+    /// The struct / class is serialized as a JSON object.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public sealed class IgnoreCollectionInterfacesAttribute : Attribute {
+        public IgnoreCollectionInterfacesAttribute () { }
+    }
+    
+    /// <summary>
     /// Naming policy used to serialize class fields and properties to JSON.<br/>  
     /// </summary>
     public enum NamingPolicyType

@@ -127,6 +127,14 @@ namespace Friflo.Json.Fliox.Mapper.Utils
             }
             return false;
         }
+        
+        internal static bool IgnoreCollectionInterfacesAttribute(IEnumerable<CustomAttributeData> attributes) {
+            foreach (var attr in attributes) {
+                if (attr.AttributeType == typeof(IgnoreCollectionInterfacesAttribute))
+                    return true;
+            }
+            return false;
+        }
 
         internal static bool IsRequired(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
