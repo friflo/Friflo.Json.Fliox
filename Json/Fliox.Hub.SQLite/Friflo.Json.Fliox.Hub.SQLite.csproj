@@ -51,9 +51,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="SQLitePCLRaw.core" Version="2.1.8" />
-      <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.8" />
-      <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" Version="2.1.8" />
+      <PackageReference Include="SQLitePCLRaw.core" Version="3.0.5" />
+      <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
+      <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" Version="3.0.5" />
       <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
       <None Include="..\package-icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
