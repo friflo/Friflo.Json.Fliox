@@ -41,17 +41,32 @@ namespace Friflo.Json.Tests.Main
 
             // [Creating Modern And Helpful Command Line Utilities With System.CommandLine - .NET Core Tutorials]
             // https://dotnetcoretutorials.com/2021/01/16/creating-modern-and-helpful-command-line-utilities-with-system-commandline/
-            var moduleOpt = new Option<Module>("--module",  "the module inside Friflo.Json.Tests") {IsRequired = true};
+            var moduleOpt = new Option<Module>("--module") {
+                Required    = true,
+                Description = "the module inside Friflo.Json.Tests"
+            };
+
+            var endpointOpt = new Option<string>("--endpoint") {
+                DefaultValueFactory = result => "http://localhost:8011/",
+                Description         = "endpoint the server listen at"
+            };
+            var clientOpt = new Option<string>("--client") {
+                Description = "client id"
+            };
 
             var rootCommand = new RootCommand {
                 moduleOpt,
-                new Option<string>("--endpoint", () => "http://+:8011/",    "endpoint the server listen at"),
-                new Option<string>("--client",   () => null,                "client id")
+                endpointOpt,
+                clientOpt
             };
             rootCommand.Description = "small tests within Friflo.Json.Tests";
-
-            rootCommand.Handler = CommandHandler.Create<Module, string, string>(async (module, endpoint, client) =>
+            
+            rootCommand.SetAction(async parseResult =>
             {
+                var module   = parseResult.GetValue(moduleOpt);
+                var endpoint = parseResult.GetValue<string>("--endpoint");
+                var client   = parseResult.GetValue<string>("--client");
+                
                 client = string.IsNullOrEmpty(client) ? null : client;
                 Console.WriteLine($"module: {module}");
                 switch (module) {
@@ -98,7 +113,7 @@ namespace Friflo.Json.Tests.Main
                         break;
                 }
             });
-            rootCommand.Invoke(args);
+            rootCommand.Parse(args).Invoke();
         }
     }
 }

@@ -34,7 +34,7 @@
         <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
         <PackageReference Include="SqlKata" Version="4.0.1" />
-        <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21216.1" />
+        <PackageReference Include="System.CommandLine" Version="2.0.12" />
     </ItemGroup>
 
     <ItemGroup>
