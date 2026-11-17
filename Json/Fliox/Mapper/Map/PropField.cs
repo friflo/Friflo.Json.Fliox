@@ -153,6 +153,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (field  != null && (field.DeclaringType.IsValueType)) {
                 return new MemberField(fieldType.varType, field);
             }
+            // A property of a struct must be set on the boxed struct, not on a copy of it.
+            if (field == null && property.DeclaringType.IsValueType) {
+                return new MemberStructProperty(fieldType.varType, property);
+            }
             MemberInfo mi = field != null ? field : property;
             return fieldType.varType.CreateMember<T>(mi);
             
