@@ -18,6 +18,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
     {
         private TVal HandleEventGen<TVal>(TypeMapper mapper, out bool success) {
             switch (parser.Event) {
+                case JsonEvent.ValueString:
+                    if (TryReadNonFinite(out TVal nonFinite)) {
+                        success = true;
+                        return nonFinite;
+                    }
+                    return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
                 case JsonEvent.ValueNull:
                     if (!mapper.isNullable) {
                         return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
