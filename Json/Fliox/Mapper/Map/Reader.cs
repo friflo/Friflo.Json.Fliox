@@ -58,8 +58,36 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         public T GetMapperContext<T>() where T : class, IMapperContext  => MapperContext.GetMapperContext<T>(contextMap);
         
+        /// <summary>
+        /// Reads the strings <c>"NaN"</c>, <c>"Infinity"</c> and <c>"-Infinity"</c> as the value of a float or double (nullable or not).
+        /// The writer writes these values this way as JSON has no number for them.
+        /// </summary>
+        internal bool TryReadNonFinite<TVal>(out TVal result) {
+            result = default;
+            var type    = typeof(TVal);
+            var isFloat = type == typeof(float)  || type == typeof(float?);
+            if (!isFloat && type != typeof(double) && type != typeof(double?)) {
+                return false;
+            }
+            double value;
+            switch (parser.value.AsString()) {
+                case "NaN":         value = double.NaN;               break;
+                case "Infinity":    value = double.PositiveInfinity;  break;
+                case "-Infinity":   value = double.NegativeInfinity;  break;
+                default:            return false;
+            }
+            result = isFloat ? (TVal)(object)(float)value : (TVal)(object)value;
+            return true;
+        }
+        
         public TVal HandleEvent<TVal>(TypeMapper<TVal> mapper, out bool success) {
             switch (parser.Event) {
+                case JsonEvent.ValueString:
+                    if (TryReadNonFinite(out TVal nonFinite)) {
+                        success = true;
+                        return nonFinite;
+                    }
+                    return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
                 case JsonEvent.ValueNull:
                     if (!mapper.isNullable)
                         return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);

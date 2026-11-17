@@ -156,7 +156,26 @@ namespace Friflo.Json.Burst.Utils
             return PowTable[powNeutral + exp];
         }
         
+        /// <summary>
+        /// NaN and the infinities are not JSON numbers: a bare <c>NaN</c> or <c>Infinity</c> makes the document invalid and unreadable.
+        /// They are written as the strings <c>"NaN"</c>, <c>"Infinity"</c> and <c>"-Infinity"</c>, which a float or double member reads back.
+        /// </summary>
+        private static void AppendNonFinite (ref Bytes dst, double val) {
+            string text = double.IsNaN(val) ? "\"NaN\"" : val > 0 ? "\"Infinity\"" : "\"-Infinity\"";
+            dst.EnsureCapacity(text.Length);
+            var buf     = dst.buffer;
+            var start   = dst.end;
+            for (int i = 0; i < text.Length; i++) {
+                buf[start + i] = (byte)text[i];
+            }
+            dst.end += text.Length;
+        }
+        
         public void AppendFlt (ref Bytes dst, float val) {
+            if (float.IsNaN(val) || float.IsInfinity(val)) {
+                AppendNonFinite(ref dst, val);
+                return;
+            }
 #if NETSTANDARD2_0
             var chars   = val.ToString(CultureInfo.InvariantCulture).AsSpan();
             var len     = chars.Length;
@@ -176,6 +195,10 @@ namespace Friflo.Json.Burst.Utils
         }
         
         public void AppendDbl (ref Bytes dst, double val) {
+            if (double.IsNaN(val) || double.IsInfinity(val)) {
+                AppendNonFinite(ref dst, val);
+                return;
+            }
 #if NETSTANDARD2_0
             var chars   = val.ToString(CultureInfo.InvariantCulture).AsSpan();
             var len     = chars.Length;
