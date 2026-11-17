@@ -100,6 +100,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 if (Match(GenericIReadOnlyCollectionMatcher.Instance,   config, type, q)) return q.hit; // need to be after GenericICollectionMatcher
                 if (Match(GenericIEnumerableMatcher.        Instance,   config, type, q)) return q.hit; // need to be after GenericICollectionMatcher
             }
+#if NET8_0_OR_GREATER
+            if (Match(InlineArrayMatcher.               Instance,   config, type, q)) return q.hit;
+#endif
             if (Match(ClassMatcher.                     Instance,   config, type, q)) return q.hit;
 
             return null;
