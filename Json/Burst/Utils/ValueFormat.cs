@@ -59,15 +59,16 @@ namespace Friflo.Json.Burst.Utils
                 return;
             }
 
+            // the magnitude as uint: -int.MinValue does not fit an int and the digit loop below would not run
+            uint i = (uint)val;
             if (val < 0) {
                 dstArr[dst.end++] = (byte)'-'; 
-                val = -val;
+                i = (uint)-(long)val;
             }
-            int i = val;
             int len = 0;
             ref var digits = ref digit.array;
             while (i > 0) {
-                digits[len++] = i % 10;
+                digits[len++] = (int)(i % 10);
                 i /= 10;                
             }
             int last = dst.end + len - 1;
@@ -83,11 +84,12 @@ namespace Friflo.Json.Burst.Utils
                 return;
             }
 
+            // the magnitude as ulong: -long.MinValue does not fit a long and the digit loop below would not run
+            ulong i = (ulong)val;
             if (val < 0) {
                 dst.AppendChar('-');
-                val = -val;
+                i = (ulong)-(val + 1) + 1;
             }
-            long i = val;
             int len = 0;
             while (i > 0)
             {
