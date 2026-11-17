@@ -72,6 +72,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (Match(SByteMatcher.         Instance,   config, type, q)) return q.hit;
             //
             if (Match(BoolMatcher.          Instance,   config, type, q)) return q.hit;
+            if (Match(CharMatcher.          Instance,   config, type, q)) return q.hit;
             
             if (Match(JsonTableMatcher.     Instance,   config, type, q)) return q.hit;
 
