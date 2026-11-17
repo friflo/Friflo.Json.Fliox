@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Object
             while (iter.MoveNext()) {
                 var entry = iter.Current;
                 var value = entry.Value;
-                if (EqualityComparer<TElm>.Default.Equals(value, default)) {
+                if (elementType.IsNull(ref value)) {
                     if (writer.writeNullMembers) {
                         writer.WriteKey(keyMapper, entry.Key, n++);
                         writer.AppendNull();
